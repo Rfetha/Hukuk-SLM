@@ -93,3 +93,6 @@ tmp/
 temp/
 *.tmp
 *.log
+
+# Unsloth derleme cache (generated)
+unsloth_compiled_cache/

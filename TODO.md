@@ -7,14 +7,16 @@
 - [x] Veri envanteri + EDA → OrionCAF + Renicames doğrulandı, EuroHPC reddedildi
 - [x] SFT v0 inşası → `data/processed/sft_v0/` (~32K, hash-split, chat-template)
 - [x] Otoriter kanun zemini → `data/raw/mevzuat_maddeler.jsonl` (40.853 madde) + Bedesten API (canlı, RE edildi)
-- [ ] **Geliştirme ortamı (Adım 1):** WSL2 + Blackwell-uyumlu CUDA + uv + PyTorch(sm_120) + Unsloth/bitsandbytes/flash-attn → smoke test
-- [ ] Bulk kanun çekimi: Bedesten API → `data/raw/mevzuat/{TUR}/` kategorize
-- [ ] v0 baseline SFT (Gemma 4 12B + QLoRA, NF4 yükleme, batch=1) → Muhakim ile ölç → açığı belirle
+- [x] **Geliştirme ortamı (Adım 1):** WSL2 + Blackwell sm_120 stack → `~/code/global_venv` (Py3.12, torch 2.10+cu128, unsloth 2026.6.1, bnb 0.49.2 NF4, xformers fallback). env smoke yeşil, `requirements.lock.txt` donduruldu
+- [x] **Eval terazisi kuruldu** (Muhakim DEĞİL — karar 2026-06-07): `scripts/eval.py` (model→cevap→GPT-4o-mini hakem: doğruluk+sadelik rubriği→skor+göz testi) + `make_eval_sample.py` → `data/eval/eval_sample_v1.jsonl` (sabit-seed 30 soru). ~~Staj/baro MCQ havuzu~~ ertelendi (HF'de hazır yok). `$OPENAI_BUDGET_USD=5` guard.
+- [x] **Otonom driver + smoke:** `scripts/run_phase1.sh` (`set -e`, stage'ler, `PYTHONUNBUFFERED`) + `docs/RUNBOOK_FAZ1.md`. 5-step smoke yeşil. ⚠️ Gemma 4 turn işaretleri düzeltildi (`<|turn>user/model`).
+- [ ] **Ham base ölçümü:** fine-tune'suz Gemma 4 12B → `eval_sample_v1` → referans skor. *(v0 eğitiminden sonra koşar — sıra çevrildi, base donuk)*
+- [~] **v0 baseline SFT** (Gemma 4 12B + QLoRA, NF4, batch=1 grad_accum=16, **1 epoch** ~12h) → 🔄 **ŞU AN KOŞUYOR** → eval ile ölç → açığı belirle
 - [ ] 32K uzman cevabı → sade dil (GPT-4o-mini, ~$13)
 - [ ] Grounded üretim kanıt koşusu (50 örnek, gerçek madde → GPT-4o-mini → doğrula)
 - [ ] Ölçekle → sft_v1 → iteratif SFT
-- [ ] Benchmark/eval: Muhakim + göz testi (10 vatandaş sorusundan 8) + staj sınavı havuzu
-- [ ] **Faz 1 bitti kriteri:** Muhakim'de baz modele +%15 ve göz testi 8/10
+- [ ] **Faz 1 bitti kriteri:** sınav havuzunda baz modele +%15 ve göz testi 8/10
+- [ ] _(Faz 2'ye ertelendi)_ Bulk kanun çekimi: Bedesten API → `data/raw/mevzuat/{TUR}/` (çizelge S1: Faz 1 için donmuş 40K madde yeterli)
 
 ## Faz 2: RAG + Knowledge Graph
 > **Not:** Uzun context (256K) KV-cache büyümesi için **TurboQuant** (arXiv:2504.19874) değerlendirilecek — bkz. `knowledge/summary_turboquant.md`.
