@@ -46,7 +46,7 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 5. Çok adımlı akışlar (soru → veri çek → hesapla → taslak üret)
 6. Dilekçe şablon sistemi (Arabuluculuk, Hakem Heyeti, itiraz)
 7. **Post-SFT RL altyapısı:** no-code UI ile hukukçu/kullanıcı feedback → DPO/RLHF döngüsü
-8. App format kararı (owner belirleyecek, Faz 3/4 geçişinde tartışılacak)
+8. **App:** Web first monorepo (Next.js 14 TS + FastAPI Python). Avukat portalı MVP → vatandaş portalı sonra. Spec: `docs/superpowers/specs/2026-06-07-hakhukuk-web-app-design.md`
 
 **Multimodal Input:**
 9. Belge fotoğrafı / OCR pipeline (`visual_tokens=560-1120`)
@@ -187,7 +187,12 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 | S15 | TurboQuant | KV-cache quantization (arXiv:2504.19874). **Faz 1'de yok.** Faz 2-3 API serving'de değerlendirilecek; 256K context + 4.5× sıkıştırma. Bkz. `knowledge/summary_turboquant.md` |
 | — | In-house ilkesi | 3. parti araç/repo **referans alınıp RE edilir**, runtime'da bağımlılık yok |
 | — | Donanım (düzeltme) | **RTX 5070 Laptop, 12 GB, Blackwell sm_120, CUDA 13.1** (eski dokümanlar 8 GB/4070 diyordu — yanlış) |
-| — | OSS app ref | `github.com/willchen96/mike` — Faz 4/5 final app formatı tartışmasında |
+| — | OSS app ref | `github.com/willchen96/mike` — işlevsel referans (estetik değil); avukat portalı tasarımında kullanıldı |
+| S16 | App stack (2026-06-07) | **Monorepo: Next.js 14 + TypeScript (frontend) + FastAPI Python (backend + inference).** uv paket yönetimi. |
+| S17 | App format + öncelik (2026-06-07) | **Web first. Avukat portalı önce**, vatandaş portalı sonraki iterasyon. Aynı backend, farklı route grubu. |
+| S18 | Inference abstraction (2026-06-07) | `inference/engine.py` — demo'da local llama.cpp/vLLM, prod'da GPU-as-a-Service endpoint. Üst katmanlar (API routers) habersiz; sadece config değişir. |
+| S19 | Auth (2026-06-07) | JWT access 15dk + refresh 7gün, bcrypt. Avukat kaydında baro numarası (şimdilik format validation). |
+| S20 | Abonelik modeli (2026-06-07) | Free / Pro / Enterprise. MVP'de manuel ödeme (havale/EFT, admin onayı). Stripe entegrasyonu Faz 4. |
 
 ---
 
