@@ -32,17 +32,38 @@
 - [ ] TurboQuant KV-cache entegrasyonu (256K context, 4.5× sıkıştırma)
 
 ### Agent + App
-- [x] App format kararı → **Web first, monorepo (Next.js TS + FastAPI Python)**
-- [x] Uygulama tasarım spesifikasyonu → `docs/superpowers/specs/2026-06-07-hakhukuk-web-app-design.md`
-- [ ] **İmplementasyon planı** (writing-plans → adım adım görev listesi)
-- [ ] Monorepo iskelet kurulumu (frontend + backend klasör yapısı, uv, Next.js 14)
-- [ ] Auth (JWT, bcrypt, kullanici/abonelik modeli)
-- [ ] Dosya/dava CRUD API + frontend
-- [ ] Belge upload + async OCR pipeline
-- [ ] Sohbet + SSE streaming (model inference entegrasyonu)
-- [ ] Dilekçe üretimi (tür seç → streaming taslak)
-- [ ] TÜFE hesap aracı (API tool entegrasyonu)
-- [ ] Avukat portalı dashboard (dosya merkezli üç panel ekranı)
+> Spec: `docs/superpowers/specs/2026-06-07-hakhukuk-web-app-design.md`
+
+- [x] App format kararı → **Web first, monorepo (Next.js 14 TS + FastAPI Python)**
+- [x] Uygulama tasarım spesifikasyonu yazıldı
+
+#### Altyapı
+- [ ] Monorepo iskelet: `frontend/` (Next.js 14 + TS + Tailwind) + `backend/` (FastAPI + uv + Alembic)
+- [ ] `inference/engine.py` — llama.cpp / vLLM abstraction (demo=local, prod=GPU endpoint)
+- [ ] PostgreSQL bağlantısı + SQLAlchemy modelleri (users, subscriptions, dosyalar, belgeler, sohbetler, mesajlar, dilekce_taslaklari)
+- [ ] Alembic migration kurulumu
+
+#### Backend — API Rotaları
+- [ ] `auth.py` — POST /auth/register, /login, /refresh (JWT 15dk+7gün, bcrypt)
+- [ ] `documents.py` — GET/POST /dosyalar/, GET/PATCH/DELETE /dosyalar/{id}
+- [ ] `documents.py` — POST /belgeler/upload (multipart, async OCR kuyruğu) + GET /belgeler/{id}/status
+- [ ] `chat.py` — POST /sohbetler/, GET /sohbetler/{id}/mesajlar, POST /sohbetler/{id}/mesaj (SSE streaming)
+- [ ] `dilekce.py` — POST /dilekce/uret (SSE streaming taslak), GET /dilekce/{id}
+- [ ] `tufe.py` — GET /tufe/hesapla (tarih + oran → yasal sınır)
+- [ ] Abonelik limit middleware (kullanim_sayaci → 402 + upgrade yönlendirmesi)
+
+#### Frontend — Avukat Portalı
+- [ ] `(auth)/` — login, register, onboarding sayfaları
+- [ ] `avukat/dashboard` — son dosyalar, son sohbetler, hızlı eylemler
+- [ ] `avukat/dosyalar` — liste + kategori filtresi + yeni dosya
+- [ ] `avukat/dosyalar/[id]` — üç panel (belgeler | sohbet | araçlar)
+- [ ] Belge upload + OCR durum göstergesi (drag-drop + polling)
+- [ ] SSE chat stream (`EventSource` native)
+- [ ] Dilekçe üretimi UI (tür seç → notlar → streaming taslak)
+- [ ] TÜFE hesap aracı UI
+- [ ] `avukat/ayarlar` — profil, baro no, abonelik durumu
+
+#### Agent + Gelişmiş
 - [ ] Agent framework kararı (LangGraph / custom)
 - [ ] RAG sorgu tool (Bedesten canlı → madde getir)
 - [ ] Çok adımlı agent akışı (soru → veri çek → hesapla → taslak üret)

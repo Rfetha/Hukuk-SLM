@@ -71,11 +71,11 @@ flowchart LR
 - TurboQuant KV-cache entegrasyonu (256K context, 4.5× sıkıştırma)
 
 **Agent + App — model artık asistan değil, iş bitirici:**
-- Agent framework (LangGraph / custom) — referans: `github.com/willchen96/mike`
+- **App stack (kilitlendi 2026-06-07):** Monorepo, Next.js 14 TS + FastAPI Python. **Avukat portalı önce**, vatandaş portalı sonraki iterasyon. Spec: `docs/superpowers/specs/2026-06-07-hakhukuk-web-app-design.md`
+- Agent framework (LangGraph / custom) — referans: `github.com/willchen96/mike` (işlevsel)
 - Tool entegrasyonu: TÜFE API, RAG sorgu, Bedesten canlı
 - Dilekçe şablon sistemi (Arabuluculuk, Hakem Heyeti, itiraz)
 - **Post-SFT RL altyapısı:** no-code UI ile hukukçu/kullanıcı feedback → DPO/RLHF döngüsü
-- App format kararı (web / mobil / hybrid — Faz 3/4 geçişinde tartışılır)
 
 **Multimodal Input (native Gemma 4 12B — model kartı teyitli):**
 - Belge fotoğrafı / OCR: mahkeme kararı, sözleşme, tebligat → hukuki yorum (`visual_tokens=560-1120`)
