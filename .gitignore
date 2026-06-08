@@ -38,6 +38,7 @@ ENV/
 *.ggml
 checkpoints/
 outputs/
+models/
 runs/
 saved_model/
 lora_model/

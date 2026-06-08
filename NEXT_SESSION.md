@@ -1,59 +1,70 @@
 # Sonraki Oturum — Durum + Başlangıç
 
-**Proje:** HakHukuk / Hukuk-SLM — Türkçe vatandaş-dilli hukuk SLM.
+**Proje:** HakHukuk / Hukuk-SLM — Türkçe hukuk SLM (çift kitle: profesyonel + vatandaş).
 **Base:** Gemma 4 12B (`gemma-4-12B-it-qat-q4_0-unquantized`) + QLoRA → Q4_0 GGUF deploy.
-**Önce oku:** `CLAUDE.md`, `docs/FAZ1_PLAN.md` (otoriter checklist), `docs/RUNBOOK_FAZ1.md`.
+**Önce oku:** `CLAUDE.md`, `docs/FAZ1_PLAN.md` (otoriter), `docs/PAPER_TARGET.md`, hafıza `[[eval-accuracy-gate]]` + `[[paper-target]]`.
 
 ---
 
-## ŞU AN ne oluyor (2026-06-07)
+## NEREDE KALDIK (2026-06-08)
 
-🔄 **v0 SFT eğitiliyor** — `scripts/run_phase1.sh train-first` arka planda koşuyor.
-- Veri: `data/processed/sft_v0/` (32K jargon Q&A, OrionCAF 18K + Renicames 14K)
-- Config: QLoRA r=16/alpha=32 all-linear, NF4 4-bit, batch=1 grad_accum=16, lr=2e-4, cosine, **1 epoch** (~1815 adım, ~23.5s/adım → ~12h)
-- GPU: RTX 5070 Ti 12GB, ~10GB kullanımda (sığıyor)
-- Zincir (otomatik, `set -e`): **v0 SFT → base eval → v0 eval → `outputs/PHASE1_REPORT.md`**
+Faz 1 v0 eğitildi → **başarısız** (doğruluk düştü). Sebep ölçüldü, çözüm (grounded) kanıtlandı, eval felsefesi yeniden kuruldu. Eğitim YOK, kod bekliyor.
 
-**Bittiğinde nereye bak:**
-- `outputs/PHASE1_REPORT.md` — base vs v0 skor tablosu + delta
-- `outputs/eval/{base,v0}_goz_testi.md` — sade dil göz testi (insan okuması)
-- `outputs/v0/` — eğitilmiş LoRA adapter
+### 3 BÜYÜK KARAR (bu oturumda alındı — hepsi docs + hafızada)
+1. **Ana metrik = GROUNDEDNESS / kaynağa sadakat** (LLM-judge: "uydurma kanun/çelişki var mı?"). Ürün riski = halüsinasyon. **Muhakim = ikincil sinyal**, kapı değil (kısa-sade'ye yanlı — paper K3 kanıtı).
+2. **KISALIK/SADELİK MODEL ŞARTI YOK.** Model dolu+doğru kalır. **Vatandaş sadeleştirmesi = APP katmanı** (prompt config, Faz 3). v0 tuzağı: modeli sade yapmak doğruluğu düşürdü.
+3. **Faz 1 hedefi = TR rakipleri geçen doğru+grounded SLM.** Rakip: `newmindai/Mecellem-Qwen3-4B-TR` (+ `Llama-3.1-8B-Instruct-*` + GPT-4o tavan).
 
-## BİTEN (bu oturum)
+### Ölçülen kanıtlar (Muhakim legal_acc)
+| Ne | legal_acc | Not |
+|---|---|---|
+| base (ham Gemma) | **+0.362** | referans |
+| 32K eğitim verisi (kendisi) | +0.274 | **base-altı** → v0'ı batıran sebep |
+| v0 (model) | +0.124 | başarısız |
+| grounded-GPT veri | (Muhakim 0.248 = yanlı) | **groundedness 10/10**, elle doğru ✅ |
 
-- [x] Ortam (Adım 1): `~/code/global_venv`, Blackwell sm_120 stack, env smoke yeşil
-- [x] Base model indirildi (24GB bf16, tam)
-- [x] **Eval terazisi:** `scripts/eval.py` (GPT-4o-mini hakem: doğruluk+sadelik) + `make_eval_sample.py` → `data/eval/eval_sample_v1.jsonl` (sabit 30 soru)
-- [x] **Driver:** `scripts/run_phase1.sh` + `docs/RUNBOOK_FAZ1.md`
-- [x] **Smoke yeşil** (5-step) — ⚠️ Gemma 4 turn işareti bug'ı yakalandı/düzeltildi (`<|turn>user/model`, eski `<start_of_turn>` değil)
+## ✅ BU SESSION'DA YAPILDI (2026-06-08, ikinci tur)
 
-## SIRADA ne var (v0 bitince)
+**Adım 4b — Groundedness skorlayıcı KURULDU + scorecard'a entegre.**
+- `scripts/groundedness.py` (YENİ): akademik format — **FactScore** iki-aşamalı (claim-extract → kaynağa-karşı-verify, count'u stabilize eder) + **ALCE** gold-bağlı atıf sınıflama (CORRECT / **WRONG_REF** = yanlış maddeye yönlendirme / UNVERIFIABLE). Metrikler: faithfulness, hallucination, wrong_ref_rate, cit_precision/recall, unsupported. Bayraklar: `--runs N`, `--judge-model` (paper: gpt-4o), `--mode data|model`.
+- `scripts/build_scorecard.py` (YENİDEN): **ANA sütun = groundedness**, Muhakim ikincil'e indi. Ayrışma bayrağı Grounded↔Muhakim → "Grounded↑ Muhakim↓" K3 kanıtını otomatik üretiyor.
+- Ölçüm: gnd_gpt **faithfulness 0.97 / hallucination 0.03 / wrong_ref 0.04** (gpt-4o-mini, runs=1). Metrik gerçek kusurları yakalıyor (id=17 stub-halüsinasyon, id=2/12 yanlış atıf).
+- **Açık kalanlar (paper-grade, bilerek):** **#2** hakem self-preference (gpt-4o-mini üretti+yargıladı → şişme + id=17'de kısmi sızıntı; büyük koşuda `--judge-model gpt-4o`). **#3 insan-κ kalibrasyonu = Aşama C** (≥2 avukat gerekir, kod kapatamaz → sayıyı **göreli** oku, "%97 doğru" mutlak iddia HENÜZ değil).
 
-1. **v0 eval sonucunu oku** — `PHASE1_REPORT.md`. Beklenti: doğruluk korunur/artar, **sadelik düşük** ("doğru ama jargonlu" — beklenen, panik yok).
-2. **Karar:** epoch 2 eklemeye değer mi? (Genelde HAYIR — asıl kazanım epoch değil veri.)
-3. **Adım 4 — veriyi iyileştir** (asıl iş):
-   - 4a: 32K uzman cevabı → GPT-4o-mini ile **sade vatandaş Türkçesi** (~$13)
-   - 4b: **grounded üretim** — eksik tipler (terim sadeleştirme, senaryo→atıf, madde özeti) gerçek `mevzuat_maddeler.jsonl` maddelerinden. Önce 50 kanıt (25 GPT-4o-mini + 25 local bake-off) → geçerse ~20K'ya ölçekle.
-   - → birleşik `data/processed/sft_v1/`
-4. **Adım 5 — v1 SFT** (`sft_v1` ile yeniden eğit) → ölç → gerekirse v2…
-5. **Adım 6 — bitiş + deploy:** kriter = base'e +%15 & göz 8/10 → en iyi adapter → merge (bf16) → llama.cpp Q4_0 → **GGUF ~6.5GB**.
+## SIRADA NE VAR — Adım 4 kalan (grounded veri → v1)
+
+`gen_grounded.py`, `groundedness.py`, `build_scorecard.py`, `muhakim_judge.py`, `score_corpus.py`, `dl_muhakim.py` **hazır**. Sıra:
+
+1. **4a — Sampling'i düzelt** — `gen_grounded.py` `usable()` değişiklik-stub'larını (id=17 tipi: "...madde değiştirilmiştir" listeleri) atmıyor + `CITIZEN_LAWS` "ASKERİ CEZA"yı yakalıyor (niş). İkisini sıkılaştır → gerçek vatandaş konuları (kira/iş/icra/aile/tüketici/ceza-genel).
+2. **4c — Local bake-off** — `gen_grounded.py --backend local` aynı maddelerden üret → `groundedness.py` ile GPT'yle kıyas → ucuz+iyi öğretmen kazanır.
+3. **4d — ~20K'ya ölçekle** — kazanan üreticiyle, vatandaş maddelerinden, her örnekte `kaynak_madde`. **Template sızıntısını temizle** (id=18 `<...>` parantez, id=8 bozuk kanun adı). + 32K'dan **savuşturmasız/dolu** olanları filtrele (sadeleştirme YOK) → `data/processed/sft_v1/`.
+4. **v1 SFT** (`from-train` benzeri) → `groundedness.py --runs 3 --judge-model gpt-4o` skorkartı → base/v0/rakiplerle kıyas.
+
+## NEREYE BAK (mevcut çıktılar)
+- `outputs/PHASE1_REPORT.md` — base vs v0 skorkart
+- `outputs/eval/muhakim_*.jsonl` — Muhakim skorları (base/v0/corpus32k/gnd_gpt)
+- `outputs/eval/gnd_gpt_detail.jsonl` — 25 grounded örnek (groundedness 10/10)
+- `outputs/v0/` — v0 LoRA adapter
 
 ## Hızlı komutlar
-
 ```bash
-# Durum:
-tail -f outputs/phase1_run.log
-grep -oE "[0-9]+/1815 \[[^]]*\]" outputs/phase1_run.log | tail -1
-
-# Zinciri yeniden başlat (gerekirse):
-bash scripts/run_phase1.sh train-first      # eğit→base eval→v0 eval→rapor
-bash scripts/run_phase1.sh from-train       # sadece eğit→v0 eval→rapor
-V0_EPOCHS=2 bash scripts/run_phase1.sh from-train   # 2 epoch istenirse
-
-# Tek tek:
-python scripts/eval.py --label base                       # ham base
-python scripts/eval.py --label v0 --adapter outputs/v0    # FT'li
+# Grounded üret (sampling düzeltildikten sonra):
+python scripts/gen_grounded.py --backend gpt   --n 25 --label gnd_gpt   --judge
+python scripts/gen_grounded.py --backend local --n 25 --label gnd_local --judge   # GPU
+# ANA: Groundedness skoru (FactScore+ALCE, claim-level):
+python scripts/groundedness.py --details outputs/eval/gnd_gpt_detail.jsonl --label gnd_gpt
+python scripts/groundedness.py --details outputs/eval/gnd_gpt_detail.jsonl --label gnd_gpt \
+       --judge-model gpt-4o --runs 3        # paper-grade (güçlü hakem + stabil)
+# İKİNCİL: Muhakim skor:
+python scripts/muhakim_judge.py --details outputs/eval/gnd_gpt_detail.jsonl
+# Skorkart (ANA=groundedness, Muhakim ikincil):
+python scripts/build_scorecard.py --labels gnd_gpt
+# Korpus skorla (veriyi eğitmeden ölç):
+python scripts/score_corpus.py --data <jsonl> --label <ad> --n 40
 ```
 
-**Not:** Eğitim/eval **yerel GPU** gerektirir (12GB). Cloud agent'ta GPU+model yok → orada koşmaz.
-Bedesten/mevzuat.gov.tr çekimleri **Türk IP** ister (Faz 2). OpenAI hakem TR IP istemez.
+## Notlar
+- Eğitim/eval **yerel GPU** (12GB). Muhakim 8-bit (~8GB), SLM ile SIRALI koş (çakışma yok).
+- Muhakim yerelde: `models/Muhakim/` (gitignore'lu). Yoksa `python scripts/dl_muhakim.py`.
+- `.env` = `OPENAI_API_KEY` + `OPENAI_BUDGET_USD` (commit ETME).
+- Bedesten/mevzuat.gov.tr **Türk IP** ister (Faz 2). OpenAI hakem TR IP istemez.

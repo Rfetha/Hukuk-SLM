@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # HakHukuk — Faz 1 otonom driver (Adım 1→3).
 #
-# Zincir: smoke (5-step) → base eval → v0 SFT (2 epoch) → v0 eval → rapor.
+# Zincir: smoke → v0 SFT → base eval → v0 eval → Muhakim hakem → birleşik skorkart.
+#   Doğruluk=Muhakim (kapı) · Sadelik=GPT-4o-mini+göz (fark) · Ayrışma bayrağı.
+#   SIRALI: SLM eval'leri (Gemma VRAM'de) bitince Muhakim 8-bit yüklenir → çakışma yok.
 # Herhangi bir adım hata verirse `set -e` ile DURUR (boşa saatlerce eğitim yok).
 # Arka planda koşmak için tasarlandı; tüm çıktı outputs/phase1_run.log'a da gider.
 #
@@ -68,38 +70,31 @@ run_v0_eval() {
   $PY scripts/eval.py --label v0 --adapter outputs/v0
 }
 
+run_muhakim() {
+  # SIRALI: SLM eval'leri bitti (model VRAM'den indi) → Muhakim 8-bit yüklenir.
+  # Kayıtlı {base,v0}_detail.jsonl cevaplarını doğruluk eksenlerinde puanlar.
+  banner "ADIM 3c — MUHAKIM HAKEM (doğruluk kapısı)"
+  $PY scripts/muhakim_judge.py --load 8bit --details \
+    outputs/eval/base_detail.jsonl outputs/eval/v0_detail.jsonl
+}
+
 build_report() {
-  banner "RAPOR — base vs v0"
-  $PY - <<'PYEOF'
-import json, os
-def load(p):
-    return json.load(open(p, encoding="utf-8")) if os.path.exists(p) else None
-base = load("outputs/eval/base_summary.json")
-v0 = load("outputs/eval/v0_summary.json")
-lines = ["# Faz 1 — v0 Raporu\n"]
-def row(s):
-    if not s: return "| (yok) | — | — | — |"
-    return f"| {s['label']} | {s.get('dogruluk_ort')} | {s.get('sadelik_ort')} | {s.get('n_judged')}/{s.get('n')} |"
-lines += ["| Model | Doğruluk | Sadelik | Hakem |", "|---|---|---|---|", row(base), row(v0), ""]
-if base and v0 and base.get("dogruluk_ort") and v0.get("dogruluk_ort"):
-    dd = v0["dogruluk_ort"] - base["dogruluk_ort"]
-    ds = v0["sadelik_ort"] - base["sadelik_ort"]
-    lines.append(f"\n**Delta:** doğruluk {dd:+.2f}, sadelik {ds:+.2f}")
-    lines.append("\n**Beklenti (FAZ1_PLAN Adım 3):** v0 = 'doğru ama jargonlu' → "
-                 "doğruluk korunur/artar, sadelik düşük kalabilir (sadeleştirme = Adım 4).")
-open("outputs/PHASE1_REPORT.md", "w", encoding="utf-8").write("\n".join(lines))
-print("\n".join(lines))
-print("\n[driver] rapor → outputs/PHASE1_REPORT.md")
-PYEOF
+  # Birleşik skorkart: Doğruluk(Muhakim) | Sadelik(GPT+göz) | Ayrışma bayrağı.
+  banner "SKORKART — Doğruluk(Muhakim) · Sadelik(GPT+göz) · Ayrışma"
+  $PY scripts/build_scorecard.py --labels base v0
 }
 
 case "$STAGE" in
   smoke)       run_smoke ;;
-  from-base)   run_base_eval; run_v0_train; run_v0_eval; build_report ;;
-  from-train)  run_v0_train; run_v0_eval; build_report ;;
+  from-base)   run_base_eval; run_v0_train; run_v0_eval; run_muhakim; build_report ;;
+  from-train)  run_v0_train; run_v0_eval; run_muhakim; build_report ;;
   # train-first: asıl FT'yi HEMEN başlat; referans base eval'i sonra koş (sıra bilimsel olarak fark etmez).
-  train-first) run_v0_train; run_base_eval; run_v0_eval; build_report ;;
-  all)         run_smoke; run_base_eval; run_v0_train; run_v0_eval; build_report ;;
+  train-first) run_v0_train; run_base_eval; run_v0_eval; run_muhakim; build_report ;;
+  all)         run_smoke; run_base_eval; run_v0_train; run_v0_eval; run_muhakim; build_report ;;
+  # sadece skorkartı yeniden üret (kayıtlı eval + Muhakim çıktısından, GPU'suz)
+  scorecard)   build_report ;;
+  # sadece Muhakim + skorkart (SLM eval'leri zaten varsa)
+  muhakim)     run_muhakim; build_report ;;
   *) echo "[driver] bilinmeyen stage: $STAGE"; exit 2 ;;
 esac
 
