@@ -39,7 +39,9 @@ Faz 1 v0 eğitildi → **başarısız** (doğruluk düştü). Sebep ölçüldü,
 
 1. **4c — Local bake-off** — `gen_grounded.py --backend local` aynı maddelerden üret → `groundedness.py` ile GPT'yle kıyas → ucuz+iyi öğretmen kazanır. (GPU, yerel)
 2. **4d — ~20K'ya ölçekle** — kazanan üreticiyle; **2759 vatandaş maddesi → madde başına ~7 varyasyon** (temperature/soru-açısı çeşitliliği), her örnekte `kaynak_madde`. + 32K'dan **savuşturmasız/dolu** olanları filtrele (sadeleştirme YOK) → `data/processed/sft_v1/`.
-3. **v1 SFT** → `groundedness.py --runs 3 --judge-model gpt-4o` skorkartı → base/v0/rakiplerle kıyas. **⚠️ GERÇEK eğitim koşusu yerelde DEĞİL — bulut sağlayıcı** (Colab A100 / RunPod / Kaggle); sağlayıcı+teknik o faza gelince seçilecek (CLAUDE.md: yerel=prototip).
+3. **v1 SFT** → `groundedness.py --runs 3 --judge-model gpt-4o` skorkartı → base/v0/rakiplerle kıyas.
+
+**⚙️ BULUT SAĞLAYICI KARARI (2026-06-08): Modal (modal.com), serverless GPU.** Yerel 12GB RTX 5070 sadece prototip/smoke. **4c bake-off + 4d local üretim + gerçek v1 SFT → Modal A100/H100** (`@app.function(gpu=...)`, saniye-başı ödeme). Auth = `modal setup` (kullanıcı tarafı, token). Avantaj: 12B QLoRA artık batch=1/grad-ckpt sıkışıklığı yok. GPT-4o-mini hakem/groundedness Modal istemez (OpenAI API, herhangi yerde).
 
 ## NEREYE BAK (mevcut çıktılar)
 - `outputs/PHASE1_REPORT.md` — base vs v0 skorkart
