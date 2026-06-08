@@ -29,6 +29,8 @@ Kararı değiştirirsek eskiyi SİLMEYİZ → "Süpersed" işaretler, yenisini e
 - [0005](0005-veri-stratejisi.md) — Veri stratejisi: lisans-temiz + EDA-doğrula + grounded sentetik üretim
 - [0006](0006-akademik-hedef-sistem-paper.md) — Akademik hedef: sistem paper'ı (benchmark yan iş)
 - [0007](0007-repo-lisans-private-proprietary.md) — Repo & lisans: private + proprietary
+- [0008](0008-modal-egitim-baslatma-spawn.md) — Modal eğitim başlatma: fire-and-forget `spawn` (WSL-kapanması cancel dersi)
 
 > İlk 7 ADR **geriye dönük** yazıldı (2026-06-08) — kararlar daha önce verildi, bağlam/alternatif/
-> sonuç anlatısı paper için sonradan yapısallaştırıldı. Bundan sonraki kararlar **anında** ADR'lenir.
+> sonuç anlatısı paper için sonradan yapısallaştırıldı. Bundan sonraki kararlar **anında** ADR'lenir
+> (0008 = ilk anında-ADR örneği).
