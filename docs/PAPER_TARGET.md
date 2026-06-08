@@ -117,10 +117,13 @@ hukukçu κ. Güçlü çıkarsa ayrı benchmark paper'ı (LREC); değilse sistem
 - **İkincil + ayrışma bayrağı:** `scripts/build_scorecard.py` (ANA=groundedness, İKİNCİL=Muhakim,
   Sadelik=app sinyali). Ayrışma Grounded↔Muhakim → "Grounded↑ Muhakim↓" = Muhakim'in
   kısa-sade-doğruya körlüğü (**K3 kanıtı otomatik üretiliyor**).
-- **İnsan katmanı (Aşama C — paper kapısı):** ≥2 avukat, körlemesine, AYNI şema
-  (SUPPORTED/CONTRADICTED/NOT_IN_SOURCE) → Cohen's κ ile LLM-judge'ı kalibre et. κ olmadan
-  faithfulness **göreli** (sıralama) okunur, "%97 doğru" mutlak iddia değil. Hakem ayrıca
-  üreticiden FARKLI/güçlü (gpt-4o / cross-family) olmalı — self-preference yanlılığını kes.
+- **Güvenilirlik katmanı (insan-κ DESCOPE, 2026-06-08):** fiziksel insan iş gücü kapasitesi yok →
+  avukat-κ (≥2 avukat) bu kişisel/pre-akademik çalışma için ŞART DEĞİL, açıkça gelecek iş. Yerine
+  SIFIR-EMEK vekil: **hakem-uyumu (inter-judge agreement: gpt-4o-mini ↔ gpt-4o, aynı şema)** +
+  `--runs N` kararlılık + **opsiyonel yazar-örneklem** (~30 örnek maddeye-karşı). Hakem üreticiden
+  FARKLI/güçlü (gpt-4o) olmalı — self-preference'ı kes. κ olmadan faithfulness **göreli** (sıralama)
+  okunur, mutlak değil. Meşru: iddia = kaynağa-sadakat + rakip-göreli üstünlük, mutlak hukuki
+  geçerlilik değil → avukat gerekmez. Paper'da bu sınır açıkça yazılır.
 - **Tekrar-üretilebilirlik:** sabit seed (3407), loglu run (W&B), `requirements.lock.txt`,
   veri+model versiyonlama. CLAUDE.md zaten taahhüt etti.
 - **Ablasyonlar:** (base) → (+SFT sade) → (+RAG) → (+agent) → (+atıf doğrulama). Her
@@ -133,7 +136,7 @@ hukukçu κ. Güçlü çıkarsa ayrı benchmark paper'ı (LREC); değilse sistem
 - base vs v0 skorkart: `outputs/PHASE1_REPORT.md`.
 - Hakem-hakem ayrışması + 11 işaretli soru (insan denetimi için hazır).
 - v0 echo/dejenerasyon bulgusu (kısa-veri artefaktı) — "fine-tune yan etkileri" bölümüne malzeme.
-- → K2'nin (gerilim bulgusu) çekirdeği **zaten var**; sadece n büyüt + insan-κ ekle.
+- → K2'nin (gerilim bulgusu) çekirdeği **zaten var**; sadece n büyüt + hakem-uyumu ekle (insan-κ descope).
 
 ---
 
@@ -165,14 +168,14 @@ Paper, mevcut 5-fazın **doğal çıktısı** — şimdi yazılmaz, şimdi **öl
       ("turbovector")? Faz 2'de netleşir. `knowledge/summary_turboquant.md`.
 - [ ] **Rakip kesinleştir:** Mecellem decoder HF'de public mi? Hangi checkpoint? (kontrol edilecek)
 - [x] **Groundedness metriği operasyonelleştirildi (2026-06-08):** FactScore claim-level
-      faithfulness + ALCE atıf P/R + wrong_ref_rate → `scripts/groundedness.py`. **Açık:**
-      insan-κ kalibrasyonu (Aşama C) + güçlü/cross-family hakem (self-preference) — ikisi de
-      paper'dan önce kapatılmalı; kod hazır, dış kaynak (avukat + gpt-4o bütçesi) bekliyor.
+      faithfulness + ALCE atıf P/R + wrong_ref_rate → `scripts/groundedness.py`. Paper-grade hakem =
+      `--judge-model gpt-4o` (self-preference'ı keser).
+- [x] **İnsan-κ DESCOPE (2026-06-08):** avukat-κ ŞART DEĞİL (insan iş gücü yok) → yerine hakem-uyumu
+      (gpt-4o-mini ↔ gpt-4o) + opsiyonel yazar-örneklem; sayılar göreli. `[[eval-accuracy-gate]]`.
 - [ ] **Anlaşılırlık metriği:** zeminlenmiş okunabilirlik nasıl ölçülür? (kelime/cümle uzunluğu +
-      jargon-sözlük oranı + LLM-judge + insan κ — hangi kombinasyon?) — app/vatandaş-modu eval'i (Faz 3).
-- [ ] **Test seti büyüklüğü + niş dağılımı** (n, kaç niş, kaynak).
-- [ ] **İnsan anotatör** temini (≥2 avukat, κ protokolü).
-- [ ] **Tek/çift-blind, hakem maliyeti, IRB/etik** (vatandaş verisi PII maskeleme zaten kural).
+      jargon-sözlük oranı + LLM-judge) — app/vatandaş-modu eval'i (Faz 3).
+- [ ] **Test seti büyüklüğü + niş dağılımı** (n≥150-200, niş-dengeli).
+- [ ] **Tek/çift-blind, hakem maliyeti** (vatandaş verisi PII maskeleme zaten kural).
 
 ---
 
