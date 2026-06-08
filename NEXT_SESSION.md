@@ -35,10 +35,11 @@ Faz 1 v0 eğitildi → **başarısız** (doğruluk düştü). Sebep ölçüldü,
 
 `gen_grounded.py`, `groundedness.py`, `build_scorecard.py`, `muhakim_judge.py`, `score_corpus.py`, `dl_muhakim.py` **hazır**. Sıra:
 
-1. **4a — Sampling'i düzelt** — `gen_grounded.py` `usable()` değişiklik-stub'larını (id=17 tipi: "...madde değiştirilmiştir" listeleri) atmıyor + `CITIZEN_LAWS` "ASKERİ CEZA"yı yakalıyor (niş). İkisini sıkılaştır → gerçek vatandaş konuları (kira/iş/icra/aile/tüketici/ceza-genel).
-2. **4c — Local bake-off** — `gen_grounded.py --backend local` aynı maddelerden üret → `groundedness.py` ile GPT'yle kıyas → ucuz+iyi öğretmen kazanır.
-3. **4d — ~20K'ya ölçekle** — kazanan üreticiyle, vatandaş maddelerinden, her örnekte `kaynak_madde`. **Template sızıntısını temizle** (id=18 `<...>` parantez, id=8 bozuk kanun adı). + 32K'dan **savuşturmasız/dolu** olanları filtrele (sadeleştirme YOK) → `data/processed/sft_v1/`.
-4. **v1 SFT** (`from-train` benzeri) → `groundedness.py --runs 3 --judge-model gpt-4o` skorkartı → base/v0/rakiplerle kıyas.
+**✅ 4a — Sampling DÜZELTİLDİ (2026-06-08, 3. tur).** `CITIZEN_LAWS` substring → **tam-ad `ALLOWED_LAWS`** (10 kanun: Medeni/Borçlar/İcra-İflas/İş/Tüketici/Aile-Şiddet/HMK/Kat Mülkiyeti/TCK/CMK). `usable()` → mülga + `STUB_MARKERS` + `AMEND_RE` ile id=17 tipi değişiklik/ilga maddelerini eliyor. Template `<...>` sızıntısı düzeltildi (GEN_TEMPLATE + `clean_text()`). **Doğrulandı:** havuz 2759 madde / ASKERİ 0; `gnd_gpt2` faithfulness **1.0** / hall **0.0** / wrong_ref **0.0**.
+
+1. **4c — Local bake-off** — `gen_grounded.py --backend local` aynı maddelerden üret → `groundedness.py` ile GPT'yle kıyas → ucuz+iyi öğretmen kazanır. (GPU, yerel)
+2. **4d — ~20K'ya ölçekle** — kazanan üreticiyle; **2759 vatandaş maddesi → madde başına ~7 varyasyon** (temperature/soru-açısı çeşitliliği), her örnekte `kaynak_madde`. + 32K'dan **savuşturmasız/dolu** olanları filtrele (sadeleştirme YOK) → `data/processed/sft_v1/`.
+3. **v1 SFT** → `groundedness.py --runs 3 --judge-model gpt-4o` skorkartı → base/v0/rakiplerle kıyas. **⚠️ GERÇEK eğitim koşusu yerelde DEĞİL — bulut sağlayıcı** (Colab A100 / RunPod / Kaggle); sağlayıcı+teknik o faza gelince seçilecek (CLAUDE.md: yerel=prototip).
 
 ## NEREYE BAK (mevcut çıktılar)
 - `outputs/PHASE1_REPORT.md` — base vs v0 skorkart
