@@ -97,3 +97,6 @@ temp/
 
 # Unsloth derleme cache (generated)
 unsloth_compiled_cache/
+
+# Claude Code yerel ayarlar/oturum
+.claude/
