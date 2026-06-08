@@ -8,14 +8,17 @@
 - [x] SFT v0 inşası → `data/processed/sft_v0/` (~32K, hash-split, chat-template)
 - [x] Otoriter kanun zemini → `data/raw/mevzuat_maddeler.jsonl` (40.853 madde) + Bedesten API (canlı, RE edildi)
 - [x] **Geliştirme ortamı (Adım 1):** WSL2 + Blackwell sm_120 stack → `~/code/global_venv` (Py3.12, torch 2.10+cu128, unsloth 2026.6.1, bnb 0.49.2 NF4, xformers fallback). env smoke yeşil, `requirements.lock.txt` donduruldu
-- [x] **Eval terazisi kuruldu** (Muhakim DEĞİL — karar 2026-06-07): `scripts/eval.py` (model→cevap→GPT-4o-mini hakem: doğruluk+sadelik rubriği→skor+göz testi) + `make_eval_sample.py` → `data/eval/eval_sample_v1.jsonl` (sabit-seed 30 soru). ~~Staj/baro MCQ havuzu~~ ertelendi (HF'de hazır yok). `$OPENAI_BUDGET_USD=5` guard.
-- [x] **Otonom driver + smoke:** `scripts/run_phase1.sh` (`set -e`, stage'ler, `PYTHONUNBUFFERED`) + `docs/RUNBOOK_FAZ1.md`. 5-step smoke yeşil. ⚠️ Gemma 4 turn işaretleri düzeltildi (`<|turn>user/model`).
-- [ ] **Ham base ölçümü:** fine-tune'suz Gemma 4 12B → `eval_sample_v1` → referans skor. *(v0 eğitiminden sonra koşar — sıra çevrildi, base donuk)*
-- [~] **v0 baseline SFT** (Gemma 4 12B + QLoRA, NF4, batch=1 grad_accum=16, **1 epoch** ~12h) → 🔄 **ŞU AN KOŞUYOR** → eval ile ölç → açığı belirle
-- [ ] 32K uzman cevabı → sade dil (GPT-4o-mini, ~$13)
-- [ ] Grounded üretim kanıt koşusu (50 örnek, gerçek madde → GPT-4o-mini → doğrula)
-- [ ] Ölçekle → sft_v1 → iteratif SFT
-- [ ] **Faz 1 bitti kriteri:** sınav havuzunda baz modele +%15 ve göz testi 8/10
+- [x] **Eval terazisi kuruldu:** `scripts/eval.py` (GPT-4o-mini hakem) + `make_eval_sample.py` → `data/eval/eval_sample_v1.jsonl` (sabit-seed 30 soru). `$OPENAI_BUDGET_USD=5` guard. + `scripts/muhakim_judge.py` (Muhakim ArmoRM 8B) + `scripts/build_scorecard.py` + `scripts/score_corpus.py`.
+- [x] **Otonom driver + smoke:** `scripts/run_phase1.sh` (stage'ler, `PYTHONUNBUFFERED`) + `docs/RUNBOOK_FAZ1.md`. ⚠️ Gemma 4 turn işaretleri `<|turn>user/model`.
+- [x] **Ham base ölçümü:** **base: GPT doğruluk 7.87 / sadelik 6.47 / Muhakim legal_acc +0.362.**
+- [x] **v0 baseline SFT** (1 epoch, loss 1.35→0.63) → **BAŞARISIZ: doğruluk düştü** (GPT 7.87→6.13, Muhakim 0.362→0.124). **Teşhis ölçüldü:** 32K verisinin kendi legal_acc'ı **0.274 < base** → modelden düşük doğrulukta veri → çöktü. Veri sorunu, ayar değil.
+- [x] **⚠️ KARAR 2026-06-08 (`[[eval-accuracy-gate]]`):** (1) ana metrik = **groundedness** (uydurma yok), Muhakim ikincil/yanlı; (2) **kısalık/sadelik MODEL ŞARTI YOK** — sadeleştirme app-layer prompt; (3) Faz 1 hedefi = TR rakipleri (Mecellem-Qwen3-4B vb.) geçen doğru+grounded SLM.
+- [x] **Grounded kanıt koşusu (25 GPT-4o-mini):** gerçek madde → doğru+atıflı cevap. ✅ yaklaşım çalışıyor. (`scripts/gen_grounded.py`)
+- [x] **Adım 4b — Groundedness skorlayıcı kuruldu (`scripts/groundedness.py`):** akademik format — **FactScore** iki-aşamalı (claim-extract → verify) + **ALCE** gold-bağlı atıf (CORRECT/WRONG_REF/UNVERIFIABLE). Metrikler: faithfulness, hallucination, **wrong_ref_rate** (yanlış maddeye yönlendirme), cit_precision/recall, unsupported (makul-ama-kaynaksız ayrımı). `--runs N` (count stabilize), `--judge-model` (paper: gpt-4o), `--mode data|model`. **build_scorecard.py → ANA sütun=groundedness, Muhakim ikincil'e indi.** gnd_gpt: faithfulness 0.97 / halüsinasyon 0.03; ayrışma bayrağı K3'ü otomatik üretiyor (id=8/6 grounded=1.0 ama Muhakim≈0).
+- [ ] **Skorlayıcı açık kalanlar (paper-grade):** #2 hakem gücü → büyük koşuda `--judge-model gpt-4o` (gpt-4o-mini self-preference + id=17 stub'da kısmi sızıntı); **#3 insan-κ kalibrasyonu (≥2 avukat) = Aşama C** (kod kapatamaz, sayı o zamana dek göreli okunur).
+- [ ] **SIRADAKİ — Adım 4 kalan:** (a) sampling'i düzelt (ASKERİ CEZA niş + stub kirliliği çıkar, `usable()` sıkılaştır); (c) local Gemma bake-off (groundedness'le kıyas); (d) ~20K'ya ölçekle + `gen_grounded.py` template sızıntısını temizle (id=18 `<...>`, id=8 bozuk ad) + 32K'dan dolu olanları filtrele → `sft_v1`
+- [ ] v1 SFT → groundedness skorkartı → rakip baseline'larla kıyas
+- [ ] **Faz 1 bitti kriteri:** groundedness'te rakipleri ≥ + base'e göre + (eski "+%15/göz 8/10" askıda)
 - [ ] _(Faz 2'ye ertelendi)_ Bulk kanun çekimi: Bedesten API → `data/raw/mevzuat/{TUR}/` (çizelge S1: Faz 1 için donmuş 40K madde yeterli)
 
 ## Faz 2: RAG + Knowledge Graph
