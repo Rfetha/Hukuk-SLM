@@ -23,6 +23,7 @@ from unsloth.chat_templates import train_on_responses_only
 
 import torch
 from datasets import load_dataset
+from transformers.trainer_utils import get_last_checkpoint
 from trl import SFTTrainer, SFTConfig
 
 # TEKNIK_PLAN Adım 6 — her örneğe eklenen kimlik+davranış system prompt'u.
@@ -126,7 +127,11 @@ def main():
             optim="adamw_8bit",
             bf16=True,
             logging_steps=10,
-            save_strategy="epoch",
+            # Ara checkpoint: kesintide sıfırdan değil son checkpoint'ten devam (resume).
+            # (save_strategy="epoch" idi → epoch bitmeden hiç checkpoint yoktu = kesinti = tam kayıp.)
+            save_strategy="steps",
+            save_steps=200,
+            save_total_limit=3,
             eval_strategy="epoch",
             output_dir=out,
             seed=args.seed,
@@ -142,9 +147,13 @@ def main():
         response_part=GEMMA_ASSISTANT_PART,
     )
 
+    # Otomatik resume: out'ta checkpoint varsa kaldığı yerden, yoksa baştan (idempotent).
+    ckpt = get_last_checkpoint(out) if os.path.isdir(out) else None
+    if ckpt:
+        print(f"[train] RESUME → {ckpt} (kaldığı yerden devam)")
     print(f"[train] GPU: {torch.cuda.get_device_name(0)} | "
-          f"adapter r={args.lora_r} | data={args.data} | out={out}")
-    trainer.train()
+          f"adapter r={args.lora_r} | data={args.data} | out={out} | resume={bool(ckpt)}")
+    trainer.train(resume_from_checkpoint=ckpt)
 
     # --- Adapter kaydet ---
     model.save_pretrained(out)
