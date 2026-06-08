@@ -35,6 +35,7 @@ profesyonel + vatandaş. Model **dolu+doğru** kalır; **vatandaş sadeleştirme
 - [x] **Otonom driver:** `scripts/run_phase1.sh` (smoke→train→base eval→v0 eval→rapor, `set -e`, `V0_EPOCHS` env, `PYTHONUNBUFFERED`). Runbook: `docs/RUNBOOK_FAZ1.md`.
 
 ## Kararlar (sabit)
+> 📒 **Gerekçeli karar kayıtları → `docs/adr/`** (neden/alternatif/sonuç; paper Methodology+Limitations kaynağı). Bu bölüm canlı *özet*; ADR = dondurulmuş anlatı. `[[adr-decision-log]]`
 - **Eval terazisi (GÜNCELLENDİ 2026-06-08, `[[eval-accuracy-gate]]`).** Model hedefi = doğru+tam+kaynağa dayalı; kısalık/sadelik model şartı DEĞİL:
   - **ANA KAPI = Groundedness/sadakat → `scripts/groundedness.py` (KURULDU 4b):** akademik
     format — **FactScore** iki-aşamalı (claim-extract → kaynağa-karşı-verify) + **ALCE** gold-bağlı
