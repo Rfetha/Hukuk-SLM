@@ -6,9 +6,24 @@
 
 ---
 
+## ⏳ GECE BOYUNCA KOŞUYOR (2026-06-09): v1 SFT — Modal A100
+- **App `ap-xdvPwcsAMyCEMe9Y5wNR1g`** (run_name=v1, 1 epoch, 1207 step, ~3.5h). Gece ~01:00'de step 62'deydi, loss ~0.95 plato, ETA ~3.4h → sabaha **BİTMİŞ** olmalı. **PC kapalıyken Modal'da bağımsız koşar** (spawn+detach kanıtlandı: IDE kapat-aç testi geçti, step 29→41→62 kesintisiz, cancellation yok).
+- **⚠️ BAŞLATMA YÖNTEMİ — ÖNEMLİ DERS (ADR-0008):** `modal run [--detach] modal_train.py` (train.remote) client'a bağlı BEKLER → WSL/PC kapanınca client SIGTERM→Modal'a cancel → job ölür (v1 bu yüzden **4 kez** erken öldü, step 31/13/...). **ÇÖZÜM = fire-and-forget:**
+  ```
+  modal run --detach modal_train.py::spawn_train --epochs 1
+  ```
+  spawn = bekleyen client YOK (kapanınca cancel gönderecek şey yok) + --detach = app yaşar.
+- **SABAH İLK İŞ:**
+  1. Bitti mi: `modal app list` (`ap-xdvP...` durum?) + `modal app logs ap-xdvPwcsAMyCEMe9Y5wNR1g | tail` (`[modal] bitti` + eval_loss göründü mü; cancellation = öldü).
+  2. Bittiyse adapter indir: `modal volume ls hukuk-outputs /v1` (adapter_model.safetensors) → `modal volume get hukuk-outputs /v1 ./outputs/v1`
+  3. **ÖLMÜŞSE** (cancellation/stopped): yeniden `modal run --detach modal_train.py::spawn_train --epochs 1`. Checkpoint ≥200 varsa oto-resume kaldığı yerden (save_steps=200 + get_last_checkpoint).
+  4. **Eval LOKAL (asıl karar):** base vs v1 groundedness scorecard (aşağıdaki Adım 6). v1 base'i geçti mi? → geçtiyse bitti; zayıfsa 2. epoch (kredi ~$18-20 → yeter).
+
+---
+
 ## NEREDE KALDIK (2026-06-08)
 
-**Faz 1 Adım 4 (grounded veri) + KALİTE KAPISI BİTTİ. Adım 5 (v1 SFT, Modal A100) BAŞLIYOR.**
+**Faz 1 Adım 4 (grounded veri) + KALİTE KAPISI BİTTİ. Adım 5 (v1 SFT, Modal A100) BAŞLADI/KOŞUYOR.**
 
 - v0 başarısız olmuştu (32K forum verisi base-altı doğruluk → modeli batırdı). Çözüm: doğruluğu **gerçek kanun maddesinden imal et** (grounded). Kanıtlandı.
 - **`data/processed/sft_v1/` üretildi (21458 saf grounded Q&A):** train 19305 / val 1131 / test 1022, ~$1.16. 2716 vatandaş-çekirdek maddesi → madde başına 3-8 ayrık çift, GPT-4o-mini. **32K KATILMADI** (v0'ı batıran + kaynaksız). Üretici `scripts/gen_sft_v1.py` (incremental + resume + timeout).
@@ -25,27 +40,12 @@
 
 ---
 
-## SIRADA NE VAR — Adım 5: v1 SFT (Modal A100)
+## Adım 5: v1 SFT — DURUM (2026-06-09 gece)
+> ✅ Kalite kapısı (faith 0.984) ✅ veri Modal volume'de (`/data/sft_v1`) ✅ smoke yeşil (eval_loss 0.95)
+> ✅ tam koşu BAŞLADI ve gece koşuyor (yukarı bak). Tam koşu ~**3.5h ≈ ~$10** (5.5h değil; v1 daha küçük).
+> Başlatma artık **`modal run --detach modal_train.py::spawn_train --epochs 1`** (ADR-0008).
 
-> ✅ Kalite kapısı geçildi (faith 0.984). ✅ `modal_train.py` artık `/data/sft_v1` + `run_name=v1` **default**.
-> Kalan adımlar (tekrar kalite ön-kontrol GEREKMEZ — geçti):
-
-1. **Modal'a yükle:** `sft_v1` → `hukuk-data` volume (`/data/sft_v1`).
-   ```bash
-   modal volume put hukuk-data data/processed/sft_v1 /sft_v1
-   ```
-
-2. **Smoke → tam koşu** (modal_train default'ları artık v1):
-   ```bash
-   modal run modal_train.py --smoke                 # 50 step, ~$0.15, config/loss doğrula
-   modal run modal_train.py --epochs 1              # tam, ~5.5h ≈ $11.5 (run_name=v1 default)
-   ```
-
-3. **Adapter indir → eval LOKAL:**
-   ```bash
-   modal volume get hukuk-outputs /v1 ./outputs/v1
-   # sonra base/v0/v1 groundedness scorecard (LOKAL, $0)
-   ```
+Kalan: koşu bitsin → adapter indir (`modal volume get hukuk-outputs /v1 ./outputs/v1`) → Adım 6 eval.
 
 > Kalite kapısını tekrar koşmak istersen (kanıtlı doğru köprü):
 > `python scripts/score_grounded_corpus.py --data data/processed/sft_v1/train.jsonl --label sft_v1 --n 40`
