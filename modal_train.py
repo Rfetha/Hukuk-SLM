@@ -56,6 +56,7 @@ def train(run_name: str = "v1", epochs: float = 1.0, max_steps: int = -1,
           data_path: str = "/data/sft_v1", extra_args: list[str] | None = None):
     import subprocess
     import sys
+    import time
 
     cmd = [
         sys.executable, "/root/scripts/train_sft.py",
@@ -70,9 +71,22 @@ def train(run_name: str = "v1", epochs: float = 1.0, max_steps: int = -1,
         cmd += extra_args
 
     print("[modal] çalıştırılıyor:", " ".join(cmd), flush=True)
-    subprocess.run(cmd, check=True)
+    # Popen + periyodik commit: eğitim sürerken ara checkpoint'leri (save_steps=200) buluta
+    # kalıcılaştır. Kesinti olursa son commit'li checkpoint'ten resume edilir (train_sft
+    # get_last_checkpoint ile otomatik). Tek-seferlik son commit yeterli DEĞİL — kesinti
+    # commit'ten önce olursa checkpoint uçar.
+    proc = subprocess.Popen(cmd)
+    while proc.poll() is None:
+        time.sleep(900)  # 15 dk
+        try:
+            out_vol.commit()
+            print("[modal] ara commit → checkpoint kalıcı (resume güvencesi)", flush=True)
+        except Exception as e:
+            print(f"[modal] ara commit atlandı (önemsiz): {e}", flush=True)
+    if proc.returncode != 0:
+        raise SystemExit(f"[modal] train_sft HATA çıkış kodu={proc.returncode}")
 
-    # Çıktıyı kalıcılaştır (yoksa container ölünce uçar).
+    # Final: adapter + cache kalıcılaştır.
     out_vol.commit()
     hf_cache.commit()
     print(f"[modal] bitti → adapter: hukuk-outputs:/{run_name}", flush=True)
