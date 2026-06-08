@@ -102,3 +102,18 @@ def main(smoke: bool = False, epochs: float = 1.0, run_name: str = "v1",
                      data_path=data_path)
     else:
         train.remote(run_name=run_name, epochs=epochs, data_path=data_path)
+
+
+@app.local_entrypoint()
+def spawn_train(epochs: float = 1.0, run_name: str = "v1", data_path: str = "/data/sft_v1"):
+    """FIRE-AND-FORGET tam koşu. train.remote()/--detach client'a bağlı BEKLER → WSL/PC kapanınca
+    client SIGTERM alıp Modal'a cancel yollar (4 kez bu yüzden öldü). train.spawn() ise job'ı
+    kuyruğa atıp HEMEN döner — client/PC kapanması işi ETKİLEMEZ (gerçek bağımsız çalışma).
+
+      modal run modal_train.py::spawn_train --epochs 1
+    """
+    call = train.spawn(run_name=run_name, epochs=epochs, data_path=data_path)
+    print(f"[modal] SPAWNED ✓ FunctionCall={call.object_id} | run={run_name} epochs={epochs}",
+          flush=True)
+    print("[modal] Job Modal'da BAĞIMSIZ koşuyor; client/PC kapanması etkilemez.", flush=True)
+    print(f"[modal] İzle: modal app logs <app-id> | Bitince: hukuk-outputs:/{run_name}", flush=True)
