@@ -40,7 +40,7 @@ image = (
 )
 
 # --- Volume'lar (main env, zaten kurulu) ---
-data_vol = modal.Volume.from_name("hukuk-data")              # /data/sft_v0, /data/eval
+data_vol = modal.Volume.from_name("hukuk-data")              # /data/sft_v1 (yükle: modal volume put), /data/eval
 out_vol = modal.Volume.from_name("hukuk-outputs")            # checkpoint + adapter
 hf_cache = modal.Volume.from_name("hukuk-hf-cache", create_if_missing=True)  # model cache
 
@@ -52,14 +52,14 @@ hf_cache = modal.Volume.from_name("hukuk-hf-cache", create_if_missing=True)  # m
     secrets=[modal.Secret.from_name("huggingface-secret")],   # HF_TOKEN → gated indirme
     timeout=6 * 60 * 60,                     # tam epoch ~2.5h; 6h tampon
 )
-def train(run_name: str = "v0", epochs: float = 1.0, max_steps: int = -1,
-          extra_args: list[str] | None = None):
+def train(run_name: str = "v1", epochs: float = 1.0, max_steps: int = -1,
+          data_path: str = "/data/sft_v1", extra_args: list[str] | None = None):
     import subprocess
     import sys
 
     cmd = [
         sys.executable, "/root/scripts/train_sft.py",
-        "--data", "/data/sft_v0",
+        "--data", data_path,
         "--run-name", run_name,
         "--output-dir", f"/outputs/{run_name}",
         "--epochs", str(epochs),
@@ -79,10 +79,12 @@ def train(run_name: str = "v0", epochs: float = 1.0, max_steps: int = -1,
 
 
 @app.local_entrypoint()
-def main(smoke: bool = False, epochs: float = 1.0, run_name: str = "v0"):
+def main(smoke: bool = False, epochs: float = 1.0, run_name: str = "v1",
+         data_path: str = "/data/sft_v1"):
     if smoke:
         # Kredi-dostu sağlık kontrolü: 50 step, config + loss doğrulama.
         print("[modal] SMOKE: 50 step deneme koşusu (~$0.15)", flush=True)
-        train.remote(run_name=f"{run_name}-smoke", epochs=1.0, max_steps=50)
+        train.remote(run_name=f"{run_name}-smoke", epochs=1.0, max_steps=50,
+                     data_path=data_path)
     else:
-        train.remote(run_name=run_name, epochs=epochs)
+        train.remote(run_name=run_name, epochs=epochs, data_path=data_path)

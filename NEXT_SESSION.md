@@ -8,10 +8,12 @@
 
 ## NEREDE KALDIK (2026-06-08)
 
-**Faz 1 Adım 4 (grounded veri) BİTTİ. SIRADAKİ = Adım 5: v1 SFT (Modal A100).**
+**Faz 1 Adım 4 (grounded veri) + KALİTE KAPISI BİTTİ. Adım 5 (v1 SFT, Modal A100) BAŞLIYOR.**
 
 - v0 başarısız olmuştu (32K forum verisi base-altı doğruluk → modeli batırdı). Çözüm: doğruluğu **gerçek kanun maddesinden imal et** (grounded). Kanıtlandı.
-- **`data/processed/sft_v1/` üretildi (~21K saf grounded Q&A):** 2759 vatandaş-çekirdek maddesi → madde başına 3-8 ayrık çift, her örnekte `kaynak_madde`, GPT-4o-mini ile. **32K KATILMADI** (v0'ı batıran + kaynaksız → groundedness ile puanlanamaz). Üretici `scripts/gen_sft_v1.py` (incremental yazma + resume + timeout — WSL kapansa kayıp yok).
+- **`data/processed/sft_v1/` üretildi (21458 saf grounded Q&A):** train 19305 / val 1131 / test 1022, ~$1.16. 2716 vatandaş-çekirdek maddesi → madde başına 3-8 ayrık çift, GPT-4o-mini. **32K KATILMADI** (v0'ı batıran + kaynaksız). Üretici `scripts/gen_sft_v1.py` (incremental + resume + timeout).
+- **EĞİTİM-ÖNCESİ KALİTE KAPISI GEÇİLDİ (ADR-0002):** `scripts/score_grounded_corpus.py` (madde-metni join → gerçek groundedness; `score_corpus.py` tek başına referans=cevap koyduğu için YANILTICIYDI — köprü o boşluğu kapatır). n=40 → **faithfulness 0.984** / hall 0.016 / cit_precision 1.0 / wrong_ref 0.0. Skorlayıcı meta/atıf-claim artefaktı `groundedness.py`'de giderildi (0.947→0.984; gerçek hata id=32 maskelenmedi → fix prensipli).
+- **Karar defteri kuruldu: `docs/adr/` (7 ADR).** Yeni büyük karar = anında ADR. `[[adr-decision-log]]`
 
 ### Sabit kararlar (bu hafta alındı — docs + hafızada)
 1. **Ana metrik = GROUNDEDNESS** (FactScore+ALCE, `scripts/groundedness.py`). Muhakim = ikincil/yanlı (kısa-sade'ye kör, K3 kanıtı). `[[eval-accuracy-gate]]`
@@ -25,34 +27,29 @@
 
 ## SIRADA NE VAR — Adım 5: v1 SFT (Modal A100)
 
-> Önce veri üretiminin bittiğini doğrula: `wc -l data/processed/sft_v1/train.jsonl` (split dolu olmalı; doluysa `gen_sft_v1.py` finalize'ı koşmuştur).
+> ✅ Kalite kapısı geçildi (faith 0.984). ✅ `modal_train.py` artık `/data/sft_v1` + `run_name=v1` **default**.
+> Kalan adımlar (tekrar kalite ön-kontrol GEREKMEZ — geçti):
 
-1. **Kalite ön-kontrol (İLK İŞ — v0 hatasını tekrarlama):**
-   ```bash
-   python scripts/score_corpus.py --data data/processed/sft_v1/train.jsonl --label sft_v1 --n 40
-   # veya grounded örneklem:
-   python scripts/groundedness.py --details <sft_v1 örneklem jsonl> --label sft_v1
-   ```
-   Eğitmeden ÖNCE: veri base'den iyi doğrulukta mı? Grounded olduğu için iyi çıkmalı ama ÖLÇ.
-
-2. **Modal'a yükle:** `sft_v1` → `hukuk-data` volume (`/data/sft_v1`).
+1. **Modal'a yükle:** `sft_v1` → `hukuk-data` volume (`/data/sft_v1`).
    ```bash
    modal volume put hukuk-data data/processed/sft_v1 /sft_v1
    ```
 
-3. **modal_train.py'yi v1'e yönelt:** satır ~62 `--data /data/sft_v0` → `/data/sft_v1`; `run_name="v1"`.
-
-4. **Smoke → tam koşu:**
+2. **Smoke → tam koşu** (modal_train default'ları artık v1):
    ```bash
    modal run modal_train.py --smoke                 # 50 step, ~$0.15, config/loss doğrula
-   modal run modal_train.py --epochs 1 --run-name v1 # tam, ~5.5h ≈ $11.5
+   modal run modal_train.py --epochs 1              # tam, ~5.5h ≈ $11.5 (run_name=v1 default)
    ```
 
-5. **Adapter indir → eval LOKAL:**
+3. **Adapter indir → eval LOKAL:**
    ```bash
    modal volume get hukuk-outputs /v1 ./outputs/v1
    # sonra base/v0/v1 groundedness scorecard (LOKAL, $0)
    ```
+
+> Kalite kapısını tekrar koşmak istersen (kanıtlı doğru köprü):
+> `python scripts/score_grounded_corpus.py --data data/processed/sft_v1/train.jsonl --label sft_v1 --n 40`
+> (`score_corpus.py`'yi TEK BAŞINA groundedness için kullanma — referans=cevap koyar, yanıltır.)
 
 ## SONRASI — Adım 6 (rakip + güvenilirlik + deploy)
 - **Rakip baseline'ları BİZİM terazide ölç:** `Mecellem-Qwen3-4B`, `Llama-3.1-8B` → groundedness scorecard. ⚠️ paperlarından sayı ALMA — aynı sorular, aynı hakem, aynı seed.
@@ -62,11 +59,12 @@
 ---
 
 ## NEREYE BAK (mevcut çıktılar)
-- `data/processed/sft_v1/raw_pool.jsonl` — ~21K grounded çift (her örnekte kaynak_madde)
+- `data/processed/sft_v1/` — 21458 grounded çift (train/val/test); `raw_pool.jsonl` ham havuz
+- `outputs/eval/gnd_sft_v1_fixed_summary.json` — v1 kalite kapısı (faith 0.984, fixed skorlayıcı)
+- `docs/adr/` — 7 karar kaydı (ADR-0002 = v1 kalite kapısı + bulgular)
 - `outputs/PHASE1_REPORT.md` — base vs v0 skorkart
-- `outputs/eval/gnd_gpt2_detail.jsonl` — 4a doğrulama (faith 1.0)
 - `outputs/v0/` — v0 LoRA adapter (başarısız referans)
-- `modal_train.py` — Modal eğitim (smoke kanıtlı)
+- `modal_train.py` — Modal eğitim (v1 default, smoke kanıtlı)
 
 ## Hızlı komutlar
 ```bash

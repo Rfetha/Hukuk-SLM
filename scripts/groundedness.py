@@ -54,6 +54,10 @@ EXTRACT_SYSTEM = (
     "- Bir iddia = TEK doğrulanabilir hukuki önerme (tek özne + tek yüklem).\n"
     "- Bileşik cümleleri 've / ayrıca / ancak' sınırlarından ayrı iddialara böl.\n"
     "- Selamlama, yönlendirme ('avukata danışın'), atıf parantezi İDDİA DEĞİL — dahil etme.\n"
+    "- META/ATIF iddiası OLGU İDDİASI DEĞİL — ÇIKARMA: bir kanun/maddenin var olduğu, bir konuyu "
+    "'düzenlediği', bir işlemin 'şu kanuna/maddeye tabi olduğu', 'şu maddede yer aldığı' türü "
+    "ifadeler maddenin İÇERİĞİ hakkında bilgi taşımaz (atıf zaten ayrıca puanlanır). SADECE maddenin "
+    "NE DEDİĞİNE — hangi hak/yükümlülük/şart/süre/usulü koyduğuna — dair önermeleri iddia yaz.\n"
     "- İddiayı kaynak metne bakmadan, yalnız cevaptan, kısa ve kendi başına anlaşılır yaz.\n"
     'SADECE JSON: {"claims": ["<iddia>", ...]}'
 )
