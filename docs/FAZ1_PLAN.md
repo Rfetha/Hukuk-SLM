@@ -4,10 +4,11 @@
 > **bu doküman geçerlidir** (en güncel kararlar 2026-06-08). Strateji/gerekçe `TEKNIK_PLAN.md`,
 > veri `VERI_PLANI.md`, akademik hedef `PAPER_TARGET.md`.
 >
-> **EN GÜNCEL DURUM (2026-06-08):** v0 eğitildi → doğruluk düştü; sebep ölçüldü (veri base'den
-> düşük doğrulukta) → çözüm grounded üretim (kanıtlandı). **3 büyük karar:** (1) ana metrik =
-> **groundedness** (Muhakim ikincil/yanlı), (2) **kısalık/sadelik model şartı YOK** — sadeleştirme
-> app-layer, (3) Faz 1 hedefi = TR rakipleri geçen doğru+grounded SLM. Detay aşağıda + `[[eval-accuracy-gate]]`.
+> **EN GÜNCEL DURUM (2026-06-08):** v0 başarısız (veri base-altı) → grounded çözüm kanıtlandı →
+> **Adım 4 BİTTİ: ~21K saf grounded `sft_v1` üretildi** (GPT-4o-mini, incremental+resume). **SIRADAKİ =
+> Adım 5: v1 SFT (Modal A100).** 4 büyük karar: (1) ana metrik = **groundedness** (Muhakim ikincil/yanlı);
+> (2) **sadelik model şartı YOK** — app-layer; (3) hedef = TR rakipleri geçen doğru+grounded SLM;
+> (4) eğitim = **Modal**, insan-κ **descope** (hakem-uyumu). Detay + `[[eval-accuracy-gate]]` + `[[cloud-gpu-modal]]`.
 
 ## Hedef
 Gemma 4 12B'yi Türk hukukunda **doğru + tam + kaynağa dayalı** cevap veren, **diğer TR hukuk
@@ -41,13 +42,16 @@ profesyonel + vatandaş. Model **dolu+doğru** kalır; **vatandaş sadeleştirme
     (doğru kanun yanlış madde / bozuk ad — en tehlikeli), cit_precision/recall, unsupported. Stil-bağımsız.
     Yer-gerçeği: grounded veride kaynak madde (`--mode data`); modelde Faz 2 RAG (`--mode model`).
     `--runs N` count'u stabilize eder; `--judge-model gpt-4o` paper-grade. gnd_gpt: faithfulness **0.97** / hall **0.03**.
-    **Açık (paper-grade):** #2 hakem self-preference (gpt-4o-mini üretti+yargıladı → şişme; gpt-4o'ya geç) +
-    **#3 insan-κ kalibrasyonu = Aşama C** (avukat gerekir, kod kapatamaz → sayı o zamana dek **göreli** okunur).
+    **Açık (paper-grade):** #2 hakem self-preference → büyük koşuda `--judge-model gpt-4o`.
+    **#3 insan-κ → DESCOPE (2026-06-08):** fiziksel insan iş gücü yok → avukat-κ ŞART DEĞİL (gelecek iş).
+    Yerine SIFIR-EMEK vekil: **hakem-uyumu** (gpt-4o-mini ↔ gpt-4o inter-judge agreement) + `--runs N`
+    kararlılık + opsiyonel yazar-örneklem. Sayılar **göreli** okunur; meşru çünkü iddia = kaynağa-sadakat
+    + rakip-göreli üstünlük, mutlak hukuki geçerlilik değil → avukat gerekmez.
   - **İKİNCİL (bilgi) = Muhakim** (ArmoRM 8B, çok-eksen). Derinlik/kapsam/atıf sinyalleri profesyonel-kullanım için raporlanır; **KAPI DEĞİL** çünkü kısa-sade doğru cevapları yanlı cezalıyor (elle doğrulandı: grounded id=8/id=6 doğru ama Muhakim ≈0). Bu yanlılık paper K3 kanıtı.
   - **Sadelik = MODEL GATE DEĞİL.** App/vatandaş-modu eval'ine taşındı (Faz 3, prompt config). GPT-4o-mini doğruluk hakemi de gürültülüydü → ana kapı değil.
   - Skorkart: `scripts/build_scorecard.py` (KURULDU — **ANA sütun = groundedness**, Muhakim ikincil'e indi) → `outputs/PHASE1_REPORT.md`. Ayrışma bayrağı artık Grounded↔Muhakim: "Grounded↑ Muhakim↓" = Muhakim'in kısa-sade-doğruya körlüğü (K3 otomatik kanıt). Muhakim indirme: `scripts/dl_muhakim.py`. `[[eval-harness-decision]]`
-- **Grounded üretici = GPT-4o-mini** (kanıt koşusu $0.006, çok ucuz). Ama **local base bake-off** ile yan yana test edilir — local yeterliyse büyük üretimde (~20K + Faz 4 niş) ona geçilir. "Güvenmeden önce doğrula." (Not: "sadeleştirme öğretmeni" kavramı düştü — sadeleştirme app-layer.)
-- **Eğitim yeri = yerel** (12GB RTX 5070 Ti, batch=1 + grad-ckpt yeter). Büyük ablation → bulut (Faz 1 sonrası, opsiyonel).
+- **Grounded üretici = GPT-4o-mini** (KESİNLEŞTİ 2026-06-08). Kanıtlı faithfulness 1.0, 20K üretim ~$1.2 → para engel değil, kalite kanıtlı. **Yerel Gemma bake-off ATLANDI** (gereksiz). Üretici: `scripts/gen_sft_v1.py` (incremental yazma + resume + timeout). (Not: "sadeleştirme öğretmeni" düştü — sadeleştirme app-layer.)
+- **Eğitim yeri = Modal (serverless A100), `[[cloud-gpu-modal]]`** (KARAR 2026-06-08). Yerel RTX 5070 = sadece prototip/smoke. v1 SFT → Modal A100-40GB (~5.5h/epoch ≈ $11.5, $30 kredi). **Eval + veri üretimi LOKAL/OpenAI** kalır. `modal_train.py` smoke kanıtlandı; auth+secret tamam.
 - **Bulk kanun çekimi → Faz 2'ye ertelendi** (donmuş 40K madde Faz 1 için yeterli, çizelge S1).
 
 ## Akış
@@ -68,30 +72,35 @@ profesyonel + vatandaş. Model **dolu+doğru** kalır; **vatandaş sadeleştirme
 - [x] **Teşhis (ölçüldü, tahmin değil):** 32K = forum savuşturmaları (medyan 21-30 kelime), **kendi legal_acc'ı 0.274 < base 0.362** → modelden düşük doğrulukta veriyle eğittik → doğruluk çöktü + 1 echo dejenerasyon. **Ders: veri sorunu, ayar değil (epoch/lr çözmez).**
 - **Çıktı:** `outputs/v0` + `outputs/PHASE1_REPORT.md`.
 
-### Adım 4 — Veriyi iyileştir (GROUNDED — asıl iş) 🔄 *SIRADAKİ*
-> Karar: doğruluk forumdan gelmez, **gerçek maddeden imal edilir.** Kısalık/sadelik HEDEF DEĞİL → model dolu+doğru kalsın. `scripts/gen_grounded.py` + `scripts/score_corpus.py` hazır.
+### Adım 4 — Veriyi iyileştir (GROUNDED — asıl iş) ✅ *BİTTİ*
+> Karar: doğruluk forumdan gelmez, **gerçek maddeden imal edilir.** Kısalık/sadelik HEDEF DEĞİL → model dolu+doğru kalsın.
 - [x] **Kanıt koşusu (25 GPT-4o-mini):** gerçek madde → soru+doğru+atıflı cevap → grounded yaklaşımı çalışıyor.
-- [x] **4b — Groundedness skorlayıcı KURULDU (`scripts/groundedness.py` + `build_scorecard.py`):** FactScore iki-aşamalı + ALCE gold-bağlı atıf. faithfulness 0.97 / hall 0.03 / wrong_ref 0.04. Scorecard ANA sütun = groundedness; ayrışma bayrağı K3 kanıtını otomatik üretiyor. Detay: TODO.md + `[[eval-accuracy-gate]]`. **Açık: #2 hakem gücü (gpt-4o), #3 insan-κ = Aşama C.**
-- [ ] **4a — Sampling'i düzelt:** `usable()` değişiklik-stub'larını (id=17 tipi) ve `CITIZEN_LAWS` "ASKERİ CEZA" niş kirliliğini atmıyor → sıkılaştır + gerçek vatandaş konularına daralt.
-- [ ] **4c — Local bake-off:** aynı maddelerden local Gemma üret → `groundedness.py` ile GPT'yle kıyas → ucuz+iyi öğretmen kazanır.
-- [ ] **4d — Ölçekle ~20K:** kazanan üreticiyle, vatandaş-konulu maddelerden, her örnekte `kaynak_madde`. **`gen_grounded.py` template sızıntısını temizle** (id=18 `<...>` parantez, id=8 bozuk kanun adı → atıf kalitesi). + 32K'dan **savuşturmasız/dolu** olanları filtrele (sadeleştirme YOK) → birleşik `sft_v1`. Skorla: `groundedness.py --runs 3 --judge-model gpt-4o`.
-- **Çıktı:** `data/processed/sft_v1/` (grounded + filtrelenmiş, doğru+dolu+atıflı).
+- [x] **4b — Groundedness skorlayıcı KURULDU (`scripts/groundedness.py` + `build_scorecard.py`):** FactScore iki-aşamalı + ALCE gold-bağlı atıf. faithfulness 0.97 / hall 0.03 / wrong_ref 0.04. Scorecard ANA sütun = groundedness; ayrışma bayrağı K3 kanıtını otomatik üretiyor.
+- [x] **4a — Sampling düzeltildi (`gen_grounded.py`):** substring `CITIZEN_LAWS` → tam-ad `ALLOWED_LAWS` (10 vatandaş kanunu); `usable()` mülga+`STUB_MARKERS`+`AMEND_RE` ile id=17 tipi maddeleri eler; template `<...>` sızıntısı düzeltildi. Doğrulandı: havuz 2759 madde / ASKERİ 0; gnd_gpt2 faith 1.0 / hall 0.0 / wrong_ref 0.0.
+- [x] **4c — Bake-off ATLANDI:** öğretmen = GPT-4o-mini (kanıtlı, ucuz). Yerel Gemma kıyası gereksiz.
+- [x] **4d — ~21K grounded üretildi (`scripts/gen_sft_v1.py`):** 2759 vatandaş maddesi → madde başına 3-8 ayrık çift. **Incremental yazma (`fsync`) + resume** (WSL-safe) + 4 worker + 60sn timeout. **32K KATILMADI** (v0'ı batıran + kaynaksız → groundedness puanlanamaz; v1 = saf grounded). → `data/processed/sft_v1/{raw_pool,train,validation,test}.jsonl`.
+- **Çıktı:** `data/processed/sft_v1/` (saf grounded, doğru+dolu+atıflı, her örnekte `kaynak_madde`).
 
-### Adım 5 — v1 SFT + iterasyon
-- [ ] `sft_v1` ile FT → **v1 adapter** → groundedness skorkartı → base/v0/rakiplerle kıyas.
-- [ ] İhtiyaca göre v2… (veri ekle / ayar → ölç).
-- **Çıktı:** doğru+grounded model + skor eğrisi.
+### Adım 5 — v1 SFT (Modal A100) + iterasyon 🔄 *SIRADAKİ*
+- [ ] **Kalite ön-kontrol:** `groundedness.py` ile `sft_v1` örneklemi puanla (eğitmeden ÖNCE — v0 hatasını tekrarlama). Grounded olduğu için iyi çıkmalı ama ÖLÇ.
+- [ ] **Modal'a yükle:** `sft_v1` → `hukuk-data` volume (`/data/sft_v1`).
+- [ ] **modal_train.py → v1:** `--data /data/sft_v1`, `run_name=v1` → 50-step smoke ($0.15) → tam koşu (~5.5h ≈ $11.5).
+- [ ] **Adapter indir → eval LOKAL:** `modal volume get` → groundedness skorkartı → base/v0/v1 kıyas.
+- [ ] İhtiyaca göre v2… (veri ekle/ayar → ölç).
+- **Çıktı:** doğru+grounded v1 model + skor eğrisi.
 
-### Adım 6 — Bitiş + deploy artefaktı
-- [ ] Bitiş kriteri: **groundedness'te rakipleri ≥ + base'e göre +** (bkz. Hedef). Rakip baseline'ları skorkarta koş.
+### Adım 6 — Rakip kıyas + güvenilirlik + deploy
+- [ ] **Rakip baseline'ları BİZİM terazide ölç:** `Mecellem-Qwen3-4B`, `Llama-3.1-8B` → groundedness scorecard (paperlarından sayı ALMA).
+- [ ] **Güvenilirlik katmanı (EN SON):** hakem-uyumu (gpt-4o-mini ↔ gpt-4o) + opsiyonel yazar-örneklem. Avukat-κ descope.
+- [ ] Bitiş kriteri: **groundedness'te rakipleri ≥ + base'e göre +.**
 - [ ] Deploy: en iyi adapter → merge (bf16) → llama.cpp Q4_0 → **GGUF ~6.5GB** (8GB VRAM). Vatandaş sadeleştirmesi = app prompt (Faz 3).
 - **Çıktı:** ✅ Faz 1 + GGUF.
 
 ## Döngü özeti
 ```
 base ölç ✅ → FT(32K)=v0 ✅ [başarısız: veri base-altı doğruluk] → teşhis ✅
-   └─ GROUNDED veri imal et (gerçek madde→doğru+atıflı) + 32K'dan dolu olanları filtrele = sft_v1
-        └─ FT(v1) → groundedness skorkartı → [v2…]
-             └─ rakipleri geç (groundedness) → merge → Q4_0 GGUF → Faz 1 bitti
-                (sadeleştirme = app-layer prompt, modele gömülmez)
+   └─ GROUNDED veri imal et (gerçek madde→doğru+atıflı) = sft_v1 ~21K ✅ [32K dahil DEĞİL]
+        └─ kalite ön-kontrol → Modal A100 FT(v1) → groundedness skorkartı → [v2…]
+             └─ rakipleri geç (groundedness) → güvenilirlik (hakem-uyumu) → merge → Q4_0 GGUF → Faz 1 bitti
+                (sadeleştirme = app-layer prompt, modele gömülmez; avukat-κ descope)
 ```
