@@ -24,11 +24,37 @@ import re
 MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
 MAX_MADDE_CHARS = 3000
 
-# Vatandaş-merkezli çekirdek kanunlar (eval seti bunlarla örtüşüyor: icra/kira/miras/iş/ceza).
-CITIZEN_LAWS = [
-    "MEDENİ", "BORÇLAR", "İCRA VE İFLAS", "İŞ KANUNU", "CEZA", "TÜKETİCİNİN",
-    "KİRA", "AİLE", "CEZA MUHAKEMESI", "HUKUK MUHAKEMELERİ", "KAT MÜLKİYETİ",
-]
+# Vatandaş-merkezli çekirdek kanunlar — TAM AD eşleşmesi (substring DEĞİL).
+# Substring tuzağı: "CEZA" → ASKERİ CEZA + 20 değişiklik-kanununu yakalıyordu (niş kirliliği).
+# Kira hukuku ayrı kanun değil; Türk Borçlar Kanunu (m.299+) içinde → allowlist'te BORÇLAR var.
+ALLOWED_LAWS = {
+    "TÜRK MEDENİ KANUNU",
+    "TÜRK BORÇLAR KANUNU",
+    "İCRA VE İFLAS KANUNU",
+    "İŞ KANUNU",
+    "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+    "AİLENİN KORUNMASI VE KADINA KARŞI ŞİDDETİN ÖNLENMESİNE DAİR KANUN",
+    "HUKUK MUHAKEMELERİ KANUNU",
+    "KAT MÜLKİYETİ KANUNU",
+    "TÜRK CEZA KANUNU",
+    "CEZA MUHAKEMESİ KANUNU",
+}
+
+# Değişiklik/ilga maddesi kalıpları — bunlar gerçek hüküm değil, başka kanunu değiştirme
+# talimatı (id=17 tipi: model boş maddeye uydurma yazıyor). Madde gövdesinde geçerse at.
+STUB_MARKERS = (
+    "aşağıdaki şekilde değiştiril",
+    "aşağıdaki şekilde uygulan",
+    "ibaresi eklenmiş",
+    "ibaresi değiştiril",
+    "ibareleri eklenmiş",
+    "fıkra eklenmiş",
+    "bent eklenmiş",
+    "bend eklenmiş",
+)
+# "... sayılı ... Kanununun ... madde(si) ... değiştiril/eklen/kaldırıl" = değişiklik maddesi
+AMEND_RE = re.compile(r"\d{3,5}\s+sayılı.{0,400}?(değiştiril|eklenmiş|yürürlükten kaldırıl)",
+                      re.I | re.S)
 
 GEN_SYSTEM = (
     "Sen Türk hukuku için yüksek kaliteli eğitim verisi üreten bir uzmansın. "
@@ -41,13 +67,14 @@ GEN_TEMPLATE = (
     "- SORU: sıradan bir vatandaşın bu konuda gerçek hayatta soracağı, günlük dilde, "
     "doğal bir soru (hukuk jargonu kullanma).\n"
     "- CEVAP: SADECE bu maddeye dayanarak; hukuken DOĞRU, sade vatandaş Türkçesiyle, "
-    "kısa ama TAM; cevabın sonunda \"(<kanun adı>, <madde no>)\" şeklinde atıf ver. "
+    "kısa ama TAM; cevabın sonunda atıfı tam olarak şu biçimde yaz: ({kanun}, {madde_no}). "
+    "Köşeli parantez veya yer-tutucu KULLANMA, kanun adını ve madde numarasını aynen yaz. "
     "Madde dışına çıkma, uydurma.\n\n"
     "KANUN: {kanun} — {madde_no}\n"
     "MADDE METNİ:\n{text}\n\n"
     "ÇIKTI formatı (başka hiçbir şey yazma):\n"
-    "SORU: <soru>\n"
-    "CEVAP: <cevap>"
+    "SORU: (vatandaşın sorusu)\n"
+    "CEVAP: (sade, doğru, atıflı cevap)"
 )
 
 # --- inline GPT hakem (referans = GERÇEK madde → doğruluk = maddeye sadakat) ---
@@ -83,18 +110,32 @@ def usable(r):
     if len(t) < 250:
         return False
     low = t.lower()
-    if t.startswith("(") and ("işlenmiştir" in low or "değiştir" in low[:120]):
+    head = low[:200]
+    # mülga / yürürlükten kaldırılmış madde
+    if "mülga" in head or "yürürlükten kaldırıl" in head:
         return False
-    if "yürürlükten kaldırıl" in low[:80]:
+    # parantezli değişiklik notuyla başlayan madde
+    if t.startswith("(") and ("işlenmiştir" in head or "değiştir" in head or "eklenmiş" in head):
+        return False
+    # değişiklik-talimatı kalıpları (gerçek hüküm değil)
+    if any(m in low for m in STUB_MARKERS):
+        return False
+    # başka kanunu numarayla referanslayıp değiştiren/ilga eden madde (id=17 tipi)
+    if AMEND_RE.search(low):
         return False
     return True
+
+
+def clean_text(s):
+    # atıftaki köşeli-parantez yer-tutucu sızıntısını gider: "(<Kanun>, Madde 76)" → "(Kanun, Madde 76)"
+    return re.sub(r"[<>]", "", s).strip() if s else s
 
 
 def parse_gen(txt):
     s = re.search(r"SORU:\s*(.+?)\s*CEVAP:\s*(.+)", txt, re.S | re.I)
     if not s:
         return None, None
-    return s.group(1).strip(), s.group(2).strip()
+    return clean_text(s.group(1)), clean_text(s.group(2))
 
 
 def gen_gpt(client, model, prompt):
@@ -123,8 +164,8 @@ def main():
     rows = [json.loads(l) for l in open(MADDE_PATH, encoding="utf-8")]
     pool = [r for r in rows if usable(r)]
     if a.citizen_only:
-        cz = [r for r in pool if any(k in (r.get("kanun_adi") or "").upper()
-                                     for k in CITIZEN_LAWS)]
+        cz = [r for r in pool
+              if (r.get("kanun_adi") or "").strip().upper() in ALLOWED_LAWS]
         if len(cz) >= a.n:
             pool = cz
     random.seed(a.seed)
