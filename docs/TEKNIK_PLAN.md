@@ -161,7 +161,7 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 
 ## Adım 10 — Yayın
 - **[İŞ]** Model ağırlıkları HF'e push (isteğe bağlı public).
-- **[İŞ]** Model kartı: HakHukuk kimliği + sorumluluk reddi + base attribution (Qwen3.5-4B, Apache 2.0).
+- **[İŞ]** Model kartı: HakHukuk kimliği + sorumluluk reddi + base attribution (**Gemma 4 12B**, Apache 2.0).
 - **[İŞ]** Repo: **private** (kod/veri/script). Ticari hak sahipte.
 
 ---
