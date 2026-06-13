@@ -54,6 +54,11 @@ data/external/
 *.csv
 *.tsv
 
+# İSTİSNA — benchmark eval setleri versiyonlanır (araştırma repro'su; bkz docs/record/research_log.md)
+!data/eval/
+!data/eval/core_hard.jsonl
+!data/eval/trap.jsonl
+
 # Weights & Biases
 wandb/
 

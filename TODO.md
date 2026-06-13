@@ -1,35 +1,25 @@
 # HakHukuk — TODO
 
-## Faz 1: LLM Temeli (Aktif)
-> Detaylı execute planı: `docs/TEKNIK_PLAN.md`. Veri planı: `docs/VERI_PLANI.md`.
+> **Milat 2026-06-13.** Geçmiş (tamamlanan işin anlatısı + sayılar) → `docs/record/research_log.md`.
+> Bu dosya **ileriye dönük**: kalan görevler + Faz 2-5. Sabit eksen: `NEXT_SESSION.md`.
+> Detaylı plan: `docs/TEKNIK_PLAN.md` · Veri: `docs/VERI_PLANI.md` · Kararlar: `docs/adr/`.
 
-- [x] Baz model kararı → **Gemma 4 12B** (`gemma-4-12B-it-qat-q4_0-unquantized`, QLoRA → Q4_0 GGUF deploy, Apache 2.0, Unsloth destekli)
-- [x] Veri envanteri + EDA → OrionCAF + Renicames doğrulandı, EuroHPC reddedildi
-- [x] SFT v0 inşası → `data/processed/sft_v0/` (~32K, hash-split, chat-template)
-- [x] Otoriter kanun zemini → `data/raw/mevzuat_maddeler.jsonl` (40.853 madde) + Bedesten API (canlı, RE edildi)
-- [x] **Geliştirme ortamı (Adım 1):** WSL2 + Blackwell sm_120 stack → `~/code/global_venv` (Py3.12, torch 2.10+cu128, unsloth 2026.6.1, bnb 0.49.2 NF4, xformers fallback). env smoke yeşil, `requirements.lock.txt` donduruldu
-- [x] **Eval terazisi kuruldu:** `scripts/eval.py` (GPT-4o-mini hakem) + `make_eval_sample.py` → `data/eval/eval_sample_v1.jsonl` (sabit-seed 30 soru). `$OPENAI_BUDGET_USD=5` guard. + `scripts/muhakim_judge.py` (Muhakim ArmoRM 8B) + `scripts/build_scorecard.py` + `scripts/score_corpus.py`.
-- [x] **Otonom driver + smoke:** `scripts/run_phase1.sh` (stage'ler, `PYTHONUNBUFFERED`) + `docs/RUNBOOK_FAZ1.md`. ⚠️ Gemma 4 turn işaretleri `<|turn>user/model`.
-- [x] **Ham base ölçümü:** **base: GPT doğruluk 7.87 / sadelik 6.47 / Muhakim legal_acc +0.362.**
-- [x] **v0 baseline SFT** (1 epoch, loss 1.35→0.63) → **BAŞARISIZ: doğruluk düştü** (GPT 7.87→6.13, Muhakim 0.362→0.124). **Teşhis ölçüldü:** 32K verisinin kendi legal_acc'ı **0.274 < base** → modelden düşük doğrulukta veri → çöktü. Veri sorunu, ayar değil.
-- [x] **⚠️ KARAR 2026-06-08 (`[[eval-accuracy-gate]]`):** (1) ana metrik = **groundedness** (uydurma yok), Muhakim ikincil/yanlı; (2) **kısalık/sadelik MODEL ŞARTI YOK** — sadeleştirme app-layer prompt; (3) Faz 1 hedefi = TR rakipleri (Mecellem-Qwen3-4B vb.) geçen doğru+grounded SLM.
-- [x] **Grounded kanıt koşusu (25 GPT-4o-mini):** gerçek madde → doğru+atıflı cevap. ✅ yaklaşım çalışıyor. (`scripts/gen_grounded.py`)
-- [x] **Adım 4b — Groundedness skorlayıcı kuruldu (`scripts/groundedness.py`):** akademik format — **FactScore** iki-aşamalı (claim-extract → verify) + **ALCE** gold-bağlı atıf (CORRECT/WRONG_REF/UNVERIFIABLE). Metrikler: faithfulness, hallucination, **wrong_ref_rate** (yanlış maddeye yönlendirme), cit_precision/recall, unsupported (makul-ama-kaynaksız ayrımı). `--runs N` (count stabilize), `--judge-model` (paper: gpt-4o), `--mode data|model`. **build_scorecard.py → ANA sütun=groundedness, Muhakim ikincil'e indi.** gnd_gpt: faithfulness 0.97 / halüsinasyon 0.03; ayrışma bayrağı K3'ü otomatik üretiyor (id=8/6 grounded=1.0 ama Muhakim≈0).
-- [x] **Skorlayıcı açık kalan #2 (hakem gücü):** büyük/paper koşuda `--judge-model gpt-4o` (gpt-4o-mini self-preference). **#3 insan-κ → DESCOPE (2026-06-08):** fiziksel insan iş gücü yok → avukat-κ şart değil; yerine **hakem-uyumu** (gpt-4o-mini ↔ gpt-4o) + opsiyonel yazar-örneklem. Sayılar göreli. `[[eval-accuracy-gate]]`.
-- [x] **Adım 4a — sampling düzeltildi (`gen_grounded.py`):** substring `CITIZEN_LAWS` → **tam-ad `ALLOWED_LAWS`** (10 vatandaş-çekirdek kanun); `usable()` sıkılaştırıldı (mülga + `STUB_MARKERS` + `AMEND_RE` = id=17 tipi değişiklik/ilga maddeleri elenir); template `<...>` sızıntısı düzeltildi. Doğrulandı: havuz 2759 madde / ASKERİ sızıntı 0; gnd_gpt2 **faithfulness 1.0 / hallucination 0.0 / wrong_ref 0.0**.
-- [x] **Adım 4c kararı — bake-off ATLANDI:** öğretmen = **GPT-4o-mini** (kanıtlı faith 1.0, koşu ~$1.2 / 20K — para engel değil, kalite kanıtlı). Yerel Gemma bake-off gereksiz görüldü.
-- [x] **Bulut GPU = Modal** (serverless A100). Yerel RTX 5070 = prototip. Sadece v1 SFT Modal'da; eval+veri üretimi lokal/OpenAI. Auth+secret+`modal_train.py` smoke DONE. `[[cloud-gpu-modal]]`.
-- [x] **Adım 4d — ~21K grounded ÜRETİLDİ (`scripts/gen_sft_v1.py`):** 2716 madde → 21305 çift → dedup **21458** (train 19305 / val 1131 / test 1022), ~$1.16. **Incremental `fsync` + resume**, 4 worker + 60sn timeout. 32K **KATILMADI** (v0'ı batıran + kaynaksız; v1 = saf grounded). → `data/processed/sft_v1/`.
-- [x] **Eğitim-öncesi KALİTE KAPISI GEÇİLDİ (ADR-0002):** `scripts/score_grounded_corpus.py` köprüsü (madde-metni join → gerçek groundedness; tek başına `score_corpus.py` referans=cevap → yanıltıcıydı). n=40 → **faithfulness 0.984** / hallucination 0.016 / cit_precision 1.0 / wrong_ref 0.0. Skorlayıcı meta/atıf-claim artefaktı giderildi (`groundedness.py`, 0.947→0.984; gerçek hata id=32 maskelenmedi). v0 felaketinin izi yok.
-- [x] **Karar defteri kuruldu → `docs/adr/`** (7 ADR, geriye+ileri dönük; paper Methodology/Limitations kaynağı). `[[adr-decision-log]]`
-- [~] **Adım 5 — v1 SFT KOŞUYOR (Modal A100, 2026-06-09 gece):** ✅ kalite kapısı ✅ veri volume'de ✅ smoke yeşil (eval_loss 0.95). Tam koşu (1 epoch, ~3.5h ≈ ~$10) **gece bağımsız koşuyor** (app `ap-xdvP...`). **⚠️ Başlatma = `modal run --detach modal_train.py::spawn_train` (ADR-0008):** train.remote/--detach client'a bağlı bekler → WSL kapanınca cancel → job ölür (4 kez yandı); spawn = bekleyen client yok → kapanma cancel gönderemez. + ara checkpoint (save_steps=200) + oto-resume + 15dk periyodik commit. Kalan: bitince adapter indir → eval.
-- [ ] **v1 scorecard + rakip baseline:** base/v0/v1 groundedness + Muhakim. Rakipleri (`Mecellem-Qwen3-4B`, `Llama-3.1-8B`) **bizim terazide** ölç (paperlarından sayı ALMA).
-- [ ] **Güvenilirlik katmanı (EN SON, paper öncesi):** (a) **hakem-uyumu** gpt-4o-mini ↔ gpt-4o inter-judge agreement (otomatik); (b) **yazar-örneklem** ~30 örnek elle (opsiyonel). Avukat-κ descope. `[[eval-accuracy-gate]]`.
-- [ ] **Faz 1 bitti kriteri:** groundedness'te rakipleri ≥ + base'e göre + (eski "+%15/göz 8/10" askıda)
-- [ ] _(Faz 2'ye ertelendi)_ Bulk kanun çekimi: Bedesten API → `data/raw/mevzuat/{TUR}/` (çizelge S1: Faz 1 için donmuş 40K madde yeterli)
+## Faz 1 — KALAN (aktif)
+
+- [ ] **Benchmark RUN** — base/v0/v1 × {core_hard, trap}, RAG-modu → A1 groundedness + A3 abstention + A4 format → `bench_scorecard.py`. (Komutlar: `NEXT_SESSION.md`.)
+- [ ] **G1 hakem-geçerliliği** — A1/A3 ikinci hakem `--judge-model gpt-4o` (alt-küme) → `judge_agreement.py cross` (κ) + `export`→elle→`author` (~30 yazar spotcheck). κ≥0.6 hedef.
+- [ ] **Meta-analiz → v2 yönü** — v1 TRAP'te base'i geçti mi/geçemedi mi (AbstentionBench öngörüsü: SFT abstention'ı bozar). Sonuç v2 hedge-dilimi miktarını belirler.
+- [ ] **v2 tasarla** — base'den TAZE QLoRA (v1 üstüne DEĞİL): **uzman-register** + **RAG-modu eğitim** (kaynak prompt'ta) + **%15-25 hedge/red** dilimi. Üretim `gen_grounded.py` hattını yeniden kullan, prompt/üslup değiş.
+- [ ] **v2 eğit (Modal A100)** → benchmark'tan geçir → base/v1 ile kıyas (ablasyon).
+- [ ] **Rakip baseline — BİZİM terazide** — `newmindai/Mecellem-Qwen3-4B-TR` (⚠️ continual-pretrain) + `newmindai/Llama-3.1-8B-Instruct-*` → aynı setler/hakem. Paperlarından sayı ALMA.
+- [ ] **ADR-0010** — reframe (uzman birincil register) resmileştir + `VISION.md` ":14 default sade dil" ifadesini kapat.
+- [ ] **Faz 1 kapanış + deploy** — kapı: A3/groundedness'te rakipleri ≥ → merge (bf16) → llama.cpp Q4_0 → GGUF ~6.5GB.
+- [ ] _(Faz 2'ye ertelendi)_ Bulk kanun çekimi: Bedesten API → `data/raw/mevzuat/{TUR}/` (Faz 1 için donmuş 40K madde yeterli).
+
+> **Faz 1 TAMAMLANANLAR (özet; detay → `docs/record/research_log.md`):** geliştirme ortamı (Blackwell sm_120) · eval terazisi + groundedness skorlayıcı · ham base ölçümü · **v0 SFT (forum verisi → battı, K3)** · grounded v1 verisi (21.458) + eğitim-öncesi kalite kapısı (faith 0.984) · **v1 SFT (Modal A100)** · 9 ADR · dış-rapor denetimi (ADR-0009) · **benchmark enstrümanı** (CORE-HARD+TRAP + A1/A3/A4 + G1/G2) · script hafifletme (`_legacy/`).
 
 ## Faz 2: RAG + Knowledge Graph
-> **Not:** Uzun context (256K) KV-cache büyümesi için **TurboQuant** (arXiv:2504.19874) değerlendirilecek — bkz. `knowledge/summary_turboquant.md`.
+> **Not:** Uzun context (256K) KV-cache için **TurboQuant** (arXiv:2504.19874) — `knowledge/summary_turboquant.md`.
 - [ ] Hukuk metni yapı çıkarımı (kanun/madde/fıkra/atıf parser)
 - [ ] Graph DB seçimi (Neo4j vs Memgraph vs FalkorDB)
 - [ ] Embedding modeli (TR-MTEB lideri)
@@ -37,59 +27,30 @@
 - [ ] Vanilla RAG vs Graph-RAG karşılaştırma deneyi
 
 ## Faz 3: Model Serving + Agentic Workflow + App
-> Agent altyapısı olmadan niş özellikler inşa edilemez — önce foundation kurulur.
+> Agent altyapısı olmadan niş özellikler inşa edilemez — önce foundation kurulur. Spec: `docs/superpowers/specs/2026-06-07-hakhukuk-web-app-design.md`
 
 ### Serving
-- [ ] Model serving altyapısı (vLLM + GGUF → FastAPI REST endpoint)
+- [ ] Model serving (vLLM + GGUF → FastAPI REST endpoint)
 - [ ] TurboQuant KV-cache entegrasyonu (256K context, 4.5× sıkıştırma)
 
 ### Agent + App
-> Spec: `docs/superpowers/specs/2026-06-07-hakhukuk-web-app-design.md`
-
 - [x] App format kararı → **Web first, monorepo (Next.js 14 TS + FastAPI Python)**
 - [x] Uygulama tasarım spesifikasyonu yazıldı
-
-#### Altyapı
 - [ ] Monorepo iskelet: `frontend/` (Next.js 14 + TS + Tailwind) + `backend/` (FastAPI + uv + Alembic)
 - [ ] `inference/engine.py` — llama.cpp / vLLM abstraction (demo=local, prod=GPU endpoint)
-- [ ] PostgreSQL bağlantısı + SQLAlchemy modelleri (users, subscriptions, dosyalar, belgeler, sohbetler, mesajlar, dilekce_taslaklari)
-- [ ] Alembic migration kurulumu
-
-#### Backend — API Rotaları
-- [ ] `auth.py` — POST /auth/register, /login, /refresh (JWT 15dk+7gün, bcrypt)
-- [ ] `documents.py` — GET/POST /dosyalar/, GET/PATCH/DELETE /dosyalar/{id}
-- [ ] `documents.py` — POST /belgeler/upload (multipart, async OCR kuyruğu) + GET /belgeler/{id}/status
-- [ ] `chat.py` — POST /sohbetler/, GET /sohbetler/{id}/mesajlar, POST /sohbetler/{id}/mesaj (SSE streaming)
-- [ ] `dilekce.py` — POST /dilekce/uret (SSE streaming taslak), GET /dilekce/{id}
-- [ ] `tufe.py` — GET /tufe/hesapla (tarih + oran → yasal sınır)
-- [ ] Abonelik limit middleware (kullanim_sayaci → 402 + upgrade yönlendirmesi)
-
-#### Frontend — Avukat Portalı
-- [ ] `(auth)/` — login, register, onboarding sayfaları
-- [ ] `avukat/dashboard` — son dosyalar, son sohbetler, hızlı eylemler
-- [ ] `avukat/dosyalar` — liste + kategori filtresi + yeni dosya
-- [ ] `avukat/dosyalar/[id]` — üç panel (belgeler | sohbet | araçlar)
-- [ ] Belge upload + OCR durum göstergesi (drag-drop + polling)
-- [ ] SSE chat stream (`EventSource` native)
-- [ ] Dilekçe üretimi UI (tür seç → notlar → streaming taslak)
-- [ ] TÜFE hesap aracı UI
-- [ ] `avukat/ayarlar` — profil, baro no, abonelik durumu
-
-#### Agent + Gelişmiş
-- [ ] Agent framework kararı (LangGraph / custom)
-- [ ] RAG sorgu tool (Bedesten canlı → madde getir)
-- [ ] Çok adımlı agent akışı (soru → veri çek → hesapla → taslak üret)
-- [ ] No-code RL UI (hukukçu/kullanıcı feedback → DPO/RLHF döngüsü)
+- [ ] PostgreSQL + SQLAlchemy modelleri + Alembic migration
+- [ ] Backend rotaları: `auth` (JWT/bcrypt), `documents` (dosyalar + upload/OCR), `chat` (SSE), `dilekce` (SSE taslak), `tufe`, abonelik limit middleware
+- [ ] Frontend avukat portalı: auth/onboarding, dashboard, dosyalar + [id] (üç panel), belge upload+OCR, SSE chat, dilekçe UI, TÜFE UI, ayarlar
+- [ ] Agent: framework kararı (LangGraph/custom), RAG sorgu tool (Bedesten canlı), çok-adımlı akış, no-code RL UI (feedback → DPO/RLHF)
 
 ### Multimodal Input
-- [ ] Belge fotoğrafı / OCR pipeline (mahkeme kararı, sözleşme, tebligat; visual_tokens=560-1120)
+- [ ] Belge fotoğrafı / OCR pipeline (visual_tokens=560-1120)
 - [ ] Sesli soru input pipeline (audio → hukuki yanıt)
 
 ## Faz 4: Niş Uzmanlıklar
-> Agent framework Faz 3'te kurulu — nişler onun üstüne inşa edilir.
 - [ ] İlk niş seçimi (Kira / İş / Tüketici)
-- [ ] Niş veri üretimi (senaryo → dilekçe taslağı, GPT-4o-mini grounded)
-- [ ] Niş eval rubriği (doğruluk, sade dil, atıf)
+- [ ] Niş veri üretimi (senaryo → dilekçe taslağı, grounded)
+- [ ] Niş eval rubriği
 - [ ] Niş prototipi (agent framework üstünde)
 
 ## Faz 5: Vatandaş Platformu
