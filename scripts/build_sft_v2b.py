@@ -48,6 +48,48 @@ def _norm(v):
     return "" if v is None else str(v).strip()
 
 
+# Kaynak chunk'ı (madde metni) etiketi koruyarak kırp. Tek bir maddenin 12K token olması
+# truncation'a yol açıyordu (%11.6 örnek >2048; cevap kesiliyordu, B-smoke 2026-06-24). Gerçek
+# RAG retriever tam kanunu değil CHUNK döner → kırpmak deployment'a DAHA sadık. Gold chunk'ta
+# cevabın ##begin_quote## span'i pencere içinde KORUNUR (yoksa "context'te olmayanı alıntıla"
+# = halüsinasyon öğretiriz). Cevap (target) ASLA kırpılmaz.
+_KAYNAK_SPLIT = re.compile(r"\n\n\[KAYNAK \d+\]\n")
+
+
+def _clip_chunk(chunk, cap_chars, quote=None):
+    nl = chunk.find("\n")
+    if nl < 0:
+        return chunk[:cap_chars]
+    head, body = chunk[:nl], chunk[nl + 1:]
+    if len(body) <= cap_chars:
+        return chunk
+    if quote:                                    # gold: alıntı span'ini pencerede tut
+        q = re.sub(r"\s+", " ", quote).strip().strip("\"“”„«»'‘’")[:50]
+        pos = body.find(q)
+        if pos < 0:                              # normalize farkı → boşluksuz dene
+            pos = re.sub(r"\s+", " ", body).find(q)
+        if pos >= 0:
+            start = max(0, pos - cap_chars // 2)
+            end = start + cap_chars
+            return (head + "\n" + ("…" if start > 0 else "") + body[start:end]
+                    + ("…" if end < len(body) else ""))
+    return head + "\n" + body[:cap_chars] + "…"  # distractor: baştan kırp
+
+
+def clip_sources_block(sources_block, answer, gold_label, cap_chars):
+    """Her [KAYNAK i] chunk'ını cap_chars'a kırp; gold chunk'ta answer'ın quote'unu koru.
+    gold_label = '{gold_kanun_adi} {gold_madde_no}' (chunk baş satırı ile eşleşir)."""
+    chunks = [re.sub(r"^\[KAYNAK \d+\]\n", "", c) for c in _KAYNAK_SPLIT.split(sources_block)]
+    m = QUOTE_RE.search(answer or "")
+    quote = m.group(1) if m else None
+    gl = _norm(gold_label)
+    out = []
+    for c in chunks:
+        is_gold = bool(gl) and c.split("\n", 1)[0].strip() == gl   # baş satır TAM eşleşme
+        out.append(_clip_chunk(c, cap_chars, quote=quote if is_gold else None))
+    return "\n\n".join(f"[KAYNAK {i+1}]\n{c}" for i, c in enumerate(out))
+
+
 def load_madde_index(path):
     """(kanun_no|madde_no) → en dolu GERÇEK madde metni (gen_eval_grounded ile AYNI mantık).
 
@@ -158,10 +200,14 @@ def cmd_assemble(a):
 
     # chat-template (Adım 5 format)
     def to_chat(r):
+        sb = r["sources_block"]
+        if a.max_chunk_chars > 0:                # uzun-madde truncation fix (2026-06-24)
+            gold_label = f"{_norm(r.get('gold_kanun_adi'))} {_norm(r.get('gold_madde_no'))}"
+            sb = clip_sources_block(sb, r.get("answer", ""), gold_label, a.max_chunk_chars)
         return {
             "messages": [
                 {"role": "system", "content": raft_pack.SYSTEM_PROMPT_RAG_MULTI},
-                {"role": "user", "content": f"KAYNAKLAR:\n{r['sources_block']}\n\nSORU: {r['soru']}"},
+                {"role": "user", "content": f"KAYNAKLAR:\n{sb}\n\nSORU: {r['soru']}"},
                 {"role": "assistant", "content": r["answer"]},
             ],
             "slice": r["slice"],
@@ -227,6 +273,9 @@ def main():
     ap2.add_argument("--answers", required=True, help="B2 çıktısı (packed + 'answer' alanı)")
     ap2.add_argument("--replay", default=None, help="genel TR instruction jsonl (chat-template)")
     ap2.add_argument("--replay-frac", type=float, default=0.03, help="replay oranı (§5.1-D: %1-5)")
+    ap2.add_argument("--max-chunk-chars", type=int, default=900,
+                     help="kaynak madde başına char tavanı (uzun-madde truncation fix; 0=kapalı). "
+                          "900≈243 tok → 5 chunk 2048'e sığar, gold quote span korunur (2026-06-24)")
     ap2.add_argument("--val-frac", type=float, default=0.05)
     ap2.add_argument("--test-frac", type=float, default=0.05)
     ap2.add_argument("--seed", type=int, default=3407)
