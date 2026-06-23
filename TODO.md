@@ -4,19 +4,20 @@
 > Bu dosya **ileriye dönük**: kalan görevler + Faz 2-5. Sabit eksen: `NEXT_SESSION.md`.
 > Detaylı plan: `docs/TEKNIK_PLAN.md` · Veri: `docs/VERI_PLANI.md` · Kararlar: `docs/adr/`.
 
-## Faz 1 — KALAN (aktif)
+## Faz 1 — KALAN (aktif) · v2 planı = `docs/V2_PLAN.md`
 
-- [ ] **Benchmark RUN** — base/v0/v1 × {core_hard, trap}, RAG-modu → A1 groundedness + A3 abstention + A4 format → `bench_scorecard.py`. (Komutlar: `NEXT_SESSION.md`.)
-- [ ] **G1 hakem-geçerliliği** — A1/A3 ikinci hakem `--judge-model gpt-4o` (alt-küme) → `judge_agreement.py cross` (κ) + `export`→elle→`author` (~30 yazar spotcheck). κ≥0.6 hedef.
-- [ ] **Meta-analiz → v2 yönü** — v1 TRAP'te base'i geçti mi/geçemedi mi (AbstentionBench öngörüsü: SFT abstention'ı bozar). Sonuç v2 hedge-dilimi miktarını belirler.
-- [ ] **v2 tasarla** — base'den TAZE QLoRA (v1 üstüne DEĞİL): **uzman-register** + **RAG-modu eğitim** (kaynak prompt'ta) + **%15-25 hedge/red** dilimi. Üretim `gen_grounded.py` hattını yeniden kullan, prompt/üslup değiş.
-- [ ] **v2 eğit (Modal A100)** → benchmark'tan geçir → base/v1 ile kıyas (ablasyon).
-- [ ] **Rakip baseline — BİZİM terazide** — `newmindai/Mecellem-Qwen3-4B-TR` (⚠️ continual-pretrain) + `newmindai/Llama-3.1-8B-Instruct-*` → aynı setler/hakem. Paperlarından sayı ALMA.
-- [ ] **ADR-0010** — reframe (uzman birincil register) resmileştir + `VISION.md` ":14 default sade dil" ifadesini kapat.
-- [ ] **Faz 1 kapanış + deploy** — kapı: A3/groundedness'te rakipleri ≥ → merge (bf16) → llama.cpp Q4_0 → GGUF ~6.5GB.
-- [ ] _(Faz 2'ye ertelendi)_ Bulk kanun çekimi: Bedesten API → `data/raw/mevzuat/{TUR}/` (Faz 1 için donmuş 40K madde yeterli).
+- [ ] **2 deep-research'ü sentezle** (v2 teknikleri + hukuk-veri/eğitim) → `docs/V2_PLAN.md`'yi güncelle. v2 reçetesi netleşsin.
+- [ ] **v2a = base + mühendislik promptu (SFT YOK)** → canon'dan geçir. İlk dene (ucuz, yan-hasarsız). v1'i döverse → "SFT gereksiz" bulgusu.
+- [ ] **Önkoşul (v2-eval'den önce):** register/altitude ekseni + **E (kaynak-eksik) eval seti** (`V2_PLAN §7`).
+- [ ] **Gerekirse v2b = hafif SFT** (RAFT/oracle-mod + ağır hedge ~%20-25 + uzman register + düşük LoRA rank) → Modal A100 → canon. Ablasyon: dozaj + confound (`V2_PLAN §5`).
+- [ ] **Başarı kapısı:** A3≥0.741 + A1∧A2≥0.875 + A4 koru (`V2_PLAN §6`).
+- [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
+- [ ] **ADR-0010** — reframe resmileştir (pilot DOĞRULADI) + `VISION.md §1` "default sade dil" ifadesini kapat.
+- [ ] **Paper öncesi sağlamlaştırma:** G1 cross-**family** judge (Claude/Gemini, κ) · paired McNemar · OOD unseen-statute dilimi · n=100/75 · A1/A2 operasyonel tanım.
+- [ ] **Faz 1 kapanış + deploy** — kapı geçilince → merge (bf16) → llama.cpp Q4_0 → GGUF ~6.5GB. *(Provokatif: Product A ise "deliverable = base+RAG+prompt" olabilir — V2_PLAN §8.)*
+- [ ] _(SONRA)_ outputs/eval/ klasör düzeni (raw/scored/summary nestele) · _(Faz 2)_ Bedesten bulk kanun çekimi.
 
-> **Faz 1 TAMAMLANANLAR (özet; detay → `docs/record/research_log.md`):** geliştirme ortamı (Blackwell sm_120) · eval terazisi + groundedness skorlayıcı · ham base ölçümü · **v0 SFT (forum verisi → battı, K3)** · grounded v1 verisi (21.458) + eğitim-öncesi kalite kapısı (faith 0.984) · **v1 SFT (Modal A100)** · 9 ADR · dış-rapor denetimi (ADR-0009) · **benchmark enstrümanı** (CORE-HARD+TRAP + A1/A3/A4 + G1/G2) · script hafifletme (`_legacy/`).
+> **Faz 1 TAMAMLANANLAR (özet; detay → `docs/record/research_log.md`):** ortam (Blackwell sm_120) · **CANON eval** (4 eksen A1/A2/A3/A4 mod-stratifiye, ADR-0011, /deep-research-doğrulamalı) · **v0 SFT (forum → battı, K3)** · grounded v1 verisi (21.458, faith 0.984) · **v1 SFT (Modal A100)** · **CANON PİLOT base vs v1 → scope=Product A** (ADR-0012; v1 net-negatif, abstention 0.74→0.00) · 12 ADR · dış-rapor denetimi (ADR-0009).
 
 ## Faz 2: RAG + Knowledge Graph
 > **Not:** Uzun context (256K) KV-cache için **TurboQuant** (arXiv:2504.19874) — `knowledge/summary_turboquant.md`.

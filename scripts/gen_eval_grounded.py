@@ -50,6 +50,10 @@ SYSTEM_PROMPT_RAG = (
     "Cevabını kısa ve anlaşılır tut; dayandığın kanun ve madde numarasını belirt."
 )
 
+# M1/M3 — çok-kaynak (RAFT/distractor) sistem promptu: ortak modülden (eğitim ile AYNI, ADR-0013).
+import raft_pack
+SYSTEM_PROMPT_RAG_MULTI = raft_pack.SYSTEM_PROMPT_RAG_MULTI
+
 MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
 
 
@@ -68,7 +72,11 @@ def parse_args():
     p.add_argument("--max-new-tokens", type=int, default=512)
     p.add_argument("--out-dir", default="outputs/eval")
     p.add_argument("--with-source", action="store_true",
-                   help="RAG-modu: madde metnini prompt'a koy (ezber değil, verilen kaynaktan cevap)")
+                   help="M4 RAG-modu: TEK gold madde metnini prompt'a koy (temiz Oracle, iyimser tavan)")
+    p.add_argument("--distractors", type=int, default=0, metavar="N",
+                   help="M1: gold + N hard-negative distractor (RAFT çok-kaynak). v2b grounding manşeti.")
+    p.add_argument("--empty-context", action="store_true",
+                   help="M3 (E-set): hiç kaynak verme (boş bağlam) → doğru davranış=abstention")
     return p.parse_args()
 
 
@@ -112,11 +120,14 @@ def build_model(args):
     return model, tokenizer
 
 
-def generate(model, tokenizer, soru, max_new_tokens, source=None):
-    if source:  # RAG-modu: kaynağı prompt'a koy
+def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
+    if sources_block is not None:  # M1/M3: çok-kaynak (distractor) veya boş bağlam
+        sys = SYSTEM_PROMPT_RAG_MULTI
+        user = f"KAYNAKLAR:\n{sources_block}\n\nSORU: {soru}"
+    elif source:  # M4: tek gold kaynak
         sys = SYSTEM_PROMPT_RAG
         user = f"KAYNAK MADDE:\n{source[:3500]}\n\nSORU: {soru}"
-    else:       # kör mod: sadece soru (parametrik bilgi testi)
+    else:       # M5 kör mod: sadece soru (parametrik bilgi testi)
         sys = SYSTEM_PROMPT
         user = soru
     msgs = [
@@ -146,6 +157,13 @@ def main():
     rows = [json.loads(l) for l in open(a.data, encoding="utf-8") if l.strip()]
     idx = load_madde_index(a.madde_path)
 
+    # M1 distractor modu → ortak RAFT paketleyici (build_sft_v2b ile AYNI; ADR-0013).
+    pool_recs = pool_by_kanun = None
+    if a.distractors > 0:
+        pool_recs, pool_by_kanun = raft_pack.load_madde_pool(a.madde_path)
+        print(f"[gen-eval] distractor havuzu: {len(pool_recs)} madde "
+              f"({len(pool_by_kanun)} kanun) | k={a.distractors} hard-negative")
+
     # Madde metni JOIN olanlardan deterministik örneklem (kapsam=%100 garanti).
     pool = []
     for r in rows:
@@ -162,25 +180,48 @@ def main():
 
     model, tokenizer = build_model(a)
 
+    import random as _rnd
     detail = os.path.join(a.out_dir, f"{a.label}_detail.jsonl")
     with open(detail, "w", encoding="utf-8") as f:
         for i, (rec, soru, src) in enumerate(sample):
             # RAG-modu: kaynağı ETİKETLE (Kanun adı + Madde no) → model atıf no'sunu
             # uydurmasın, verilen etiketten kopyalasın (Faz 2 RAG: chunk atıf taşır).
             labeled_src = f"{rec.get('kanun_adi','')} {rec.get('madde_no','')}\n{src}"
-            cevap = generate(model, tokenizer, soru, a.max_new_tokens,
-                             source=labeled_src if a.with_source else None)
+            sources_block = None
+            context_shown = ""
+            mode = "blind"
+            if a.empty_context:                         # M3 (E-set): hiç kaynak
+                sources_block = "(İlgili kaynak bulunamadı.)"
+                context_shown = ""
+                mode = "empty"
+            elif a.distractors > 0:                     # M1: gold + N distractor
+                rng = _rnd.Random(a.seed + i)           # örnek-başına deterministik
+                chunks, _ = raft_pack.pack_context(
+                    rec, src, pool_recs, pool_by_kanun, a.distractors, rng, include_gold=True)
+                sources_block = raft_pack.format_sources_block(chunks)
+                context_shown = sources_block
+                mode = "distractor"
+            elif a.with_source:                         # M4: tek gold
+                context_shown = labeled_src
+                mode = "oracle"
+
+            cevap = generate(
+                model, tokenizer, soru, a.max_new_tokens,
+                source=labeled_src if (a.with_source and not a.distractors and not a.empty_context) else None,
+                sources_block=sources_block)
             out = {
                 "id": i,
                 "soru": soru,
-                "referans": src,                       # GERÇEK madde metni = yer-gerçeği
+                "referans": src,                       # GERÇEK gold madde = yer-gerçeği (groundedness/correctness)
+                "context_shown": context_shown,        # modele GERÇEKTEN gösterilen bağlam (abstention için)
+                "mode": mode,
                 "cevap": cevap,
                 "kanun_adi": rec.get("kanun_adi"),
                 "madde_no": rec.get("madde_no"),
                 "kanun_no": rec.get("kanun_no"),
             }
             f.write(json.dumps(out, ensure_ascii=False) + "\n")
-            print(f"  [{i+1}/{len(sample)}] {rec.get('kanun_adi')} {rec.get('madde_no')} "
+            print(f"  [{i+1}/{len(sample)}] ({mode}) {rec.get('kanun_adi')} {rec.get('madde_no')} "
                   f"→ {len(cevap)} kar")
 
     print(f"[gen-eval] detay → {detail}")
