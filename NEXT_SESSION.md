@@ -4,6 +4,38 @@
 v2b verisi tamamlandı + truncation fix + replay Modal'a yüklendi, smoke config'i doğruladı →
 sıradaki tek iş: **tam v2b eğitimini `--detach` ile başlat → adapter çek → D1 canon eval**.
 
+## ▶ DÖNÜNCE — HIZLI PLAN (kopyala-yapıştır)
+
+**Adım 0 — ortam:**
+```bash
+cd ~/code/Hukuk-SLM && source ~/code/global_venv/bin/activate
+```
+
+**Adım 1 — tam eğitimi başlat (`--detach` ŞART; ~4-4.5h, ~$15-18):**
+```bash
+modal run --detach modal_train.py::spawn_v2b --run-name v2b --epochs 1
+```
+Çıktıdaki **app-id**'yi not et (`ap-...`). Spawn = fire-and-forget → **PC'yi kapatabilirsin.**
+
+**Adım 2 — koşuyor mu teyit (PC kapatmadan önce 1 kez):**
+```bash
+modal app list | grep <app-id>     # State=ephemeral, Tasks=1 olmalı (stopped/0 = ÖLDÜ, tekrar başlat)
+modal app logs <app-id>            # ilk 5 dk: model yükle→tokenize→step başlar; "Removed N samples" → N küçük olmalı
+```
+
+**Adım 3 — ertesi gün / birkaç saat sonra dönünce: bitti mi?**
+```bash
+modal volume ls hukuk-outputs /v2b | grep adapter_model    # adapter_model.safetensors VARSA → bitti ✅
+modal app list | grep <app-id>                              # State=stopped + adapter var = başarı; task hâlâ varsa sürüyor
+modal app logs <app-id> 2>&1 | tr '\r' '\n' | grep -iE "train_loss|train_runtime|Error|Trace"  # final loss + hata var mı
+```
+- **Bittiyse →** Adım 4'e (adapter çek + eval).
+- **App stopped ama adapter YOKSA (hata/yarıda öldü) →** logda Traceback'i oku; `train_sft.py` ara-checkpoint + oto-resume var → aynı komutu tekrar koş (kaldığı checkpoint'ten devam eder).
+
+**Adım 4 — adapter çek + D1 eval:** aşağıdaki "YAPILACAKLAR" #3-#6. **🔴 D1'den ÖNCE eval-mirror (#4) yapılmazsa eval haksız olur.**
+
+---
+
 ## ŞU AN NEREDEYİZ
 - **A-track ✅** — base baseline ölçülü: M1 faithfulness **0.879**, M3 abstention **1.000**.
 - **B-track ✅ BİTTİ** — `answers.jsonl` **19.305/19.305** (grounded 15.458 / abstain 3.847).
