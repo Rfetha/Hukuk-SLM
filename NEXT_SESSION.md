@@ -1,67 +1,72 @@
-# BURADAYIZ — milat 2026-06-13
+# DEVİR NOTU — 2026-06-14 akşamı (RPD reset bekleniyor)
 
-**Proje:** HakHukuk / Hukuk-SLM — Türkçe hukuk SLM. **Base:** Gemma 4 12B (`gemma-4-12B-it-qat-q4_0-unquantized`) + QLoRA → Q4_0 GGUF.
-**Birincil kitle = UZMAN** (hukukçu); vatandaş = app-layer prompt modu (pending ADR-0010).
-**Ana metrik = groundedness (A1) + abstention/Rejection-Rate (A3).**
+## TEK CÜMLE
+B2 teacher veri üretimi **Tier 1 günlük 10K istek tavanına** çarptı (14.800/19.305). RPD reset'inden
+sonra (gece yarısı UTC) **resume ile bitir → assemble → Modal eğitimi (C1 hazır)**.
 
-**Önce oku:** `docs/record/research_log.md` (GEÇMİŞ — ne oldu, neden), bu dosya (ŞİMDİ + sıradaki), `TODO.md` (görevler), `CLAUDE.md` (kurallar). Geçmiş bu dosyada DEĞİL — research_log'da.
+## ŞU AN NEREDEYİZ
+- **A-track ✅ BİTTİ** — base baseline ölçüldü: M1 (gold+4distractor) faithfulness **0.879**,
+  M3 (empty-context) abstention **1.000**. (`outputs/eval/gnd_bench_m1_base_summary.json`)
+- **B-track ⏸️ DURDU (RPD)** — `data/processed/sft_v2b/answers.jsonl` = **14.800/19.305**
+  (11.781 grounded + 3.019 abstain, 0 bozuk satır). Süreç ölü.
+- **C-track ✅ HAZIR** — `modal_train.py::spawn_v2b` + `train_sft.py` 3e-4 kilidi + warmup flag.
 
----
+## ⚠️ NEDEN ŞİMDİ DURUP EĞİTEMEYİZ (önemli)
+Seed dosyası **kanuna göre SIRALI** (shuffle değil). İlk 14.800 = rastgele örnek DEĞİL →
+**İCRA VE İFLAS KANUNU (2.727 örnek, datasetin ~%14'ü) ve KAT MÜLKİYETİ KANUNU üretilende SIFIR.**
+Slice oranı (80/20) korunmuş ama topik dağılım bozuk. → tam seti bitirmek ZORUNLU.
 
-## DURUM (milat)
-- ✅ **Benchmark enstrümanı KURULDU + smoke yeşil.** Setler `data/eval/{core_hard,trap}.jsonl` (literatüre dayalı: karmaşıklık-seçili + topic-near hard-negative). Skorlayıcılar: A1 `groundedness.py`, A3 `score_abstention.py` (Rej*+Rej), A4 `score_format.py`, birleştirici `bench_scorecard.py`, hakem-geçerliliği `judge_agreement.py` (G1 cross-judge κ + yazar spotcheck).
-- ✅ **v1 SFT = YANLIŞ HEDEF.** RAG modda base≈v1 (faith ~0.97, tavan); v1 vatandaş-register + atıfta hafif geriletti. Veri temiz ama **eğitim hedefi yanlış**. v1 arşiv (ablasyon referansı). Adapter `outputs/v1/`.
-- ✅ **Reframe:** birincil kitle = uzman; sadelik app-layer; doğruluk RAG'dan.
-- 🔜 **v2 = base'den TAZE QLoRA** (v1 üstüne değil): uzman-register + RAG-modu + %15-25 hedge dilimi. Yönü benchmark RUN'ı çizecek.
+## RESET SONRASI YAPILACAKLAR (sırayla)
 
-## SIRADAKİ İLK İŞ (sırayla)
-1. **Benchmark RUN** — base/v0/v1 × {core_hard, trap}, RAG-modu → A1+A3+A4 → scorecard. (Komutlar aşağıda. ~2-2.5h GPU.)
-2. **G1 cross-judge** — A1/A3'ü `--judge-model gpt-4o` ile alt-kümede tekrar koş → `judge_agreement.py cross` (κ). + `export`→elle→`author` (~30 yazar etiketi).
-3. **META-ANALİZ → v2 yönü.** Literatür öngörüsü (AbstentionBench): SFT abstention'ı bozar → v1, TRAP'te base'den DÜŞÜK olmalı. Bunu test et. Sonuç v2 hedge-dilimi miktarını belirler.
-4. **v2 tasarla + Modal'da eğit** → benchmark'tan geçir → base/v1 ile kıyas.
-5. (Sonra) Rakip baseline (Mecellem-Qwen3-4B, Llama-3.1-8B) bizim terazide.
-
-## SABİT EKSEN (değişmez — yeni developer buna uyar)
-- Ana metrik = **groundedness (A1, RAG'da tavan) + abstention (A3, asıl ayırt edici)**. Faithfulness'ı "geçmeyi" hedef yapma (tavan); ayırt edici = A3.
-- Birincil kitle = **uzman**. Eğitim = **Modal A100**. Eval = **lokal** ($0, OpenAI hakem).
-- Veri: yalnız güncel TC mevzuatı; Lexpera/Kazancı ASLA.
-- **Her bulgu → `docs/record/research_log.md`; her büyük karar → `docs/adr/`.** (Makale sigortası.)
-- Python: `source ~/code/global_venv/bin/activate` (aynı komut içinde).
-
-## RUN KOMUTLARI (kopyala-çalıştır)
+### 1) B2'yi resume et (RPD boşalınca)
 ```bash
 cd ~/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
-# 1) ÜRETİM (base/v0/v1 × core+trap, RAG-modu) — arka plan
-nohup bash -c '
-  GV=~/code/global_venv/bin/python
-  for m in "base:" "v0:--adapter outputs/v0" "v1:--adapter outputs/v1"; do
-    name="${m%%:*}"; arg="${m#*:}"
-    $GV -u scripts/gen_eval_grounded.py --label "bench_core_$name" --data data/eval/core_hard.jsonl --n 40 --max-new-tokens 256 --with-source $arg
-    $GV -u scripts/gen_eval_grounded.py --label "bench_trap_$name" --data data/eval/trap.jsonl     --n 35 --max-new-tokens 256 --with-source $arg
-  done; echo "[ÜRETİM BİTTİ]"' > logs_bench.log 2>&1 &
-# 2) SKORLA (üretim bitince) — her model için
-for m in base v0 v1; do
-  python scripts/groundedness.py    --details outputs/eval/bench_core_${m}_detail.jsonl --label bench_core_${m} --mode data
-  python scripts/score_abstention.py --details outputs/eval/bench_trap_${m}_detail.jsonl --label bench_trap_${m}
-  python scripts/score_format.py     --details outputs/eval/bench_core_${m}_detail.jsonl --label bench_core_${m}
-done
-# 3) SCORECARD
-python scripts/bench_scorecard.py --models base v0 v1   # → outputs/BENCHMARK_REPORT.md
+nohup python scripts/gen_v2b_answers.py --workers 4 > /tmp/b2_parallel.log 2>&1 &
+```
+- 14.800'ü atlar, kalan ~4.505'i (İİK dahil) üretir. ~1 saat.
+- **RPD hâlâ doluysa** crawl/HATA görürsün (~7/dk) → biraz daha bekle.
+- **Akıyorsa** ~80/dk (4 worker, Tier 1 TPM 200K güvenli). Takip:
+```bash
+watch -n 30 'cd ~/code/Hukuk-SLM && n=$(wc -l < data/processed/sft_v2b/answers.jsonl); echo "B2: $n/19305 | süreç: $(ps aux|grep gen_v2b|grep -v grep|wc -l) | hata: $(grep -c HATA /tmp/b2_parallel.log)"'
 ```
 
----
-
-## 📋 HAND-OFF PROMPTU (yeni terminale/oturuma yapıştır)
-> Yeni bir Claude Code oturumu açtığında bunu ilk mesaj olarak ver:
-
+### 2) B2 bitince (süreç:0, sayı=19305) → assemble (gate elemesi)
+```bash
+python scripts/build_sft_v2b.py assemble --answers data/processed/sft_v2b/answers.jsonl \
+  --replay data/processed/replay_tr.jsonl --replay-frac 0.03
+# → train/validation/test.jsonl + assemble_report.json (gate ~%92 grounded geçer)
+# NOT: replay dosyası yoksa replay ATLANIR (uyarı basar) — forgetting riski, sonra ekle.
 ```
-HakHukuk projesinde devam ediyoruz. Önce şunları oku: NEXT_SESSION.md (buradayız + sıradaki iş),
-docs/record/research_log.md (geçmiş), CLAUDE.md (kurallar — özellikle Documentation discipline).
 
-Durum: benchmark enstrümanı kuruldu (CORE-HARD+TRAP setleri, A1 groundedness / A3 abstention /
-A4 format skorlayıcıları, G1 cross-judge), smoke yeşil. v1 SFT'nin yanlış hedef olduğu ölçüldü
-(RAG'da base≈v1). Sıradaki iş: NEXT_SESSION'daki RUN KOMUTLARI ile base/v0/v1 benchmark'ını koş,
-sonuçları skorla, meta-analiz yap, v2 yönünü çiz. Ana metrik = groundedness + abstention;
-birincil kitle = uzman. Python için `source ~/code/global_venv/bin/activate`. Her bulguyu
-research_log'a, her kararı ADR'ye yaz. Başlamadan önce GPU boş mu + .env var mı teyit et.
+### 3) Veriyi Modal'a yükle + smoke eğitim
+```bash
+modal volume put hukuk-data data/processed/sft_v2b /sft_v2b
+modal run modal_train.py::spawn_v2b --smoke     # 50 step, ~$0.15, loss düşüyor mu
 ```
+
+### 4) Loss sağlamsa TAM eğitim (fire-and-forget)
+```bash
+modal run modal_train.py::spawn_v2b --run-name v2b --epochs 1
+# reçete §5.1 gömülü: lr=1e-4, r=16/α=32, all-linear, warmup=0.05, --no-system (veri system'i taşır)
+# 3e-4 YASAK (kilit aktif). İzle: modal app logs <app-id>
+```
+
+### 5) Adapter'ı çek → D1 canon eval (base'le kıyas)
+```bash
+modal volume get hukuk-outputs /v2b ./outputs/v2b
+# M1: python scripts/gen_eval_grounded.py --label bench_m1_v2b --adapter outputs/v2b \
+#       --data data/eval/core_hard.jsonl --distractors 4 --n 40
+#     python scripts/groundedness.py --details outputs/eval/bench_m1_v2b_detail.jsonl --label bench_m1_v2b --mode data
+# M3: python scripts/gen_eval_grounded.py --label bench_m3_v2b --adapter outputs/v2b \
+#       --data data/eval/core_hard.jsonl --empty-context --n 40
+# KAPI (§6): M1 faith ≥0.879 KORU · M3 abstention =1.000 KORU · +uzman-register/format eklendi mi
+```
+
+## AÇIK İYİLEŞTİRME (opsiyonel, sonra)
+- B2/pack **shuffle** etmiyor → yarıda-kesilme topik-skew yapıyor. İleride pack seed'leri shuffle'lasın
+  ki herhangi bir partial state temsili kalsın. (Bu sefer %100 bitireceğimiz için kritik değil.)
+
+## DOSYALAR
+- Plan: `docs/V2_PLAN.md` (§5.1 reçete · §5.2 pipeline · §9 execution)
+- Kayıt: `docs/record/research_log.md` (2026-06-14 girdileri: B1 bug · A baseline · C1 prep · RPD)
+- ADR: 0011 (canon eval) · 0012 (scope) · 0013 (5-mod matris)

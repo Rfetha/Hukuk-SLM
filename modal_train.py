@@ -117,3 +117,48 @@ def spawn_train(epochs: float = 1.0, run_name: str = "v1", data_path: str = "/da
           flush=True)
     print("[modal] Job Modal'da BAĞIMSIZ koşuyor; client/PC kapanması etkilemez.", flush=True)
     print(f"[modal] İzle: modal app logs <app-id> | Bitince: hukuk-outputs:/{run_name}", flush=True)
+
+
+# v2b REÇETE varsayılanları (docs/V2_PLAN.md §5.1). v1'den farklar:
+#  · --no-system  → v2b verisi SYSTEM_PROMPT_RAG_MULTI'yi messages[0]'da TAŞIR (çift system'i önle)
+#  · lr=1e-4      → LoRA ≈ full-FT'nin 10x'i; v1'in 2e-4'ünden NAZİK (3e-4 YASAK = train_sft kilidi)
+#  · r=16/α=32    → düşük rank, az-unutan davranışsal SFT (sweep: r=8/16)
+#  · 1 epoch · warmup %5 · replay veride hazır (assemble --replay)
+@app.local_entrypoint()
+def spawn_v2b(run_name: str = "v2b", epochs: float = 1.0, lr: float = 1e-4,
+              lora_r: int = 16, lora_alpha: int = 32, warmup_ratio: float = 0.05,
+              data_path: str = "/data/sft_v2b", smoke: bool = False):
+    """v2b davranışsal RAFT-SFT — FIRE-AND-FORGET, reçete §5.1 varsayılanları.
+
+    ÖN KOŞUL: veri Modal volume'da olmalı:
+      modal volume put hukuk-data data/processed/sft_v2b /sft_v2b
+
+      # 1) Önce SMOKE (~50 step, config+loss doğrula, ~$0.15):
+      modal run modal_train.py::spawn_v2b --smoke
+      # 2) Loss düşüyorsa TAM koşu:
+      modal run modal_train.py::spawn_v2b --run-name v2b --epochs 1
+      # 3) Ablasyon (C2): farklı rank/lr veya ayrı veri dizini + ayrı --run-name
+      modal run modal_train.py::spawn_v2b --run-name v2b-r8 --lora-r 8 --lora-alpha 16
+
+    Bitince adapter: hukuk-outputs:/<run-name> → yerele çek:
+      modal volume get hukuk-outputs /<run-name> ./outputs/<run-name>
+    """
+    extra = [
+        "--no-system",                       # v2b veri system'i zaten taşır
+        "--lr", str(lr),
+        "--lora-r", str(lora_r),
+        "--lora-alpha", str(lora_alpha),
+        "--warmup-ratio", str(warmup_ratio),
+    ]
+    if smoke:
+        print("[modal] v2b SMOKE: 50 step (config+loss doğrulama, ~$0.15)", flush=True)
+        call = train.spawn(run_name=f"{run_name}-smoke", epochs=1.0, max_steps=50,
+                           data_path=data_path, extra_args=extra)
+    else:
+        call = train.spawn(run_name=run_name, epochs=epochs, data_path=data_path,
+                           extra_args=extra)
+    print(f"[modal] v2b SPAWNED ✓ FunctionCall={call.object_id} | run={run_name} "
+          f"lr={lr} r={lora_r} α={lora_alpha} warmup={warmup_ratio} epochs={epochs}", flush=True)
+    print(f"[modal] reçete §5.1: 3e-4 YASAK (kilit aktif) · all-linear · replay veride · {data_path}",
+          flush=True)
+    print(f"[modal] İzle: modal app logs <app-id> | Bitince: hukuk-outputs:/{run_name}", flush=True)

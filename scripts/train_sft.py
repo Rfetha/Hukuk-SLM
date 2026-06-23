@@ -57,9 +57,13 @@ def parse_args():
     p.add_argument("--lora-r", type=int, default=16)
     p.add_argument("--lora-alpha", type=int, default=32)
     p.add_argument("--lora-dropout", type=float, default=0.05)
+    p.add_argument("--warmup-ratio", type=float, default=0.03,
+                   help="warmup oranı (v2b reçete §5.1-C: %3-5; sweep'lenebilir)")
     p.add_argument("--seed", type=int, default=3407)
     p.add_argument("--no-system", action="store_true",
-                   help="system prompt ekleme (ablation için)")
+                   help="system prompt ekleme (ablation; v2b ZORUNLU — veri system'i zaten taşır)")
+    p.add_argument("--allow-high-lr", action="store_true",
+                   help="lr≥3e-4 kilidini aç (NORMALDE KULLANMA — v1 abstention çöküşü rejimi, §5.1-C)")
     p.add_argument("--wandb", action="store_true", help="W&B'ye logla")
     p.add_argument("--max-steps", type=int, default=-1, help="smoke test için sınırla")
     return p.parse_args()
@@ -68,6 +72,14 @@ def parse_args():
 def main():
     args = parse_args()
     out = args.output_dir or f"outputs/{args.run_name}"
+
+    # 🚫 GÜVENLİK KİLİDİ (v2b reçete §5.1-C): 3e-4 re-warming = v1 abstention çöküşü rejimi
+    # (continual-PRETRAINING reçetesi, 2403.08763/2503.02844). Davranışsal SFT'de YASAK.
+    if args.lr >= 3e-4 and not args.allow_high_lr:
+        raise SystemExit(
+            f"[train] 🚫 lr={args.lr} ≥ 3e-4 = v1 abstention-çöküşü rejimi (§5.1-C). "
+            f"Davranışsal SFT için lr≈1e-4 (LoRA, full-FT'nin 10x'i) kullan. "
+            f"Bilerek istiyorsan --allow-high-lr ekle.")
     os.environ["WANDB_PROJECT"] = "hakhukuk-sft"
     report_to = "wandb" if args.wandb else "none"
 
@@ -119,7 +131,7 @@ def main():
             max_seq_length=args.max_seq_len,
             per_device_train_batch_size=args.batch,
             gradient_accumulation_steps=args.grad_accum,
-            warmup_ratio=0.03,
+            warmup_ratio=args.warmup_ratio,
             num_train_epochs=args.epochs,
             max_steps=args.max_steps,
             learning_rate=args.lr,
