@@ -108,6 +108,7 @@ Temiz statute/içtihat corpusu: **madde-bazlı chunk + atıf metadatası + deği
 - `k=5`: örnek başına **1 gold + 4 distractor**; test-time aynı format.
 - `P` (oracle'lı örnek oranı): **başlangıç %80**, ama EVRENSEL OPTİMUM DEĞİL (alan-bağımlı, 40–100% ölçülmüş) → **[60–100%] ablate**. `(1-P)` örnekleri SADECE distractor (oracle yok) → RAG performansını artırır.
 - Cevap: `##begin_quote##` **verbatim alıntı** + CoT + `##Answer`.
+- **Chunk-cap (2026-06-24):** her kaynak madde **≤900 char** (`--max-chunk-chars`). Sebep: tek madde 12.805 tok'a çıkıp `max_seq_len=2048`'i taşırıyordu (%11.6 örnek → cevap truncate). Gerçek retriever zaten tam-kanun değil CHUNK döner. Gold chunk'ta `##begin_quote##` span'i pencere içinde korunur (halüsinasyon-öğretme önlenir). Sonuç: >2048 %11.6→%0.03.
 - ⚠️ 4-distractor + %80, RAFT'ın İngilizce-QA setlerinden ekstrapolasyon; hukuk-RAG'da kanıtlı değil → ablate edilebilir.
 
 **B) Abstention — EN KRİTİK (v1 çöküşü buradaydı)**
@@ -126,6 +127,7 @@ Temiz statute/içtihat corpusu: **madde-bazlı chunk + atıf metadatası + deği
 
 **D) Replay / data-mixing**
 - Genel/instruction **replay karıştır: başlangıç %1–5** (ucuz; %1 bile forgetting'i belirgin azaltır, 2403.08763). Türkçe-hukuk register base'den uzaksa "güçlü shift" → %5'e yakın, gerekirse ↑%25.
+- **Uygulandı (2026-06-24):** `build_replay_tr.py` → `AlicanKiraz0/Turkish-SFT-Dataset-v1.0` (**MIT**, genel hukuk-DIŞI TR instruction, EDA-süzülü: token≤1500, dedup) → assemble `--replay 0.03` → train'e **577 replay** (%3).
 - LoRA + replay → worst-case bounded (0.000 DEĞİL).
 - ⚠️ Oranlar continual-PRETRAINING'den → **ALT-SINIR**; davranışsal SFT'de abstention çöküşü daha keskin olabilir.
 
@@ -186,7 +188,7 @@ Adım 5 — Split + chat-template + sistem promptu → data/processed/sft_v2b/{t
 
 ## 9. EXECUTION SIRASI (ne önce, neye bağlı)
 
-> Durum: strateji+veri planı HAZIR (§1-8). Execution adım-0'da. Kullanıcı sonra başlatacak.
+> Durum (2026-06-24): A ✅ · B ✅ (veri 19.305 + fix + replay, Modal'da) · **C1 HAZIR+smoke-doğrulandı → tam run kullanıcı başlatacak** · D bekliyor (D0 eval-mirror ön koşul).
 > 🔴 = bloke edici · 🟢 = paralel koşabilir · ⚪ = sonra/opsiyonel
 
 ```
@@ -197,15 +199,17 @@ A. EVAL ALTYAPISI (v2b'yi DOĞRU ölçmek için — eğitimden önce kurulmalı)
    A4 ✅ A-register — score_register.py (v1 leksik proxy; LLM-judge=TODO)    [2026-06-14, uzman/vatandaş ayrımı doğrulandı]
 
 B. v2b VERİ (A'ya paralel; A2 ile AYNI raft_pack → dağılım eşleşir)
-   B1 ✅ build_sft_v2b.py pack+assemble — Adım 1/3/4/5 (RAFT paketle + kapı + replay + split)  [2026-06-14, pack 19.305→80/20 + kapı doğrulandı]
-   B2 🟡 Adım 2 — teacher-LLM cevap üretimi: SCRIPT HAZIR `gen_v2b_answers.py` (grounded→gpt-4o-mini, abstain→şablon). KOŞMAK = SEN (OPENAI_API_KEY, ~15K çağrı maliyet). abstain-yolu doğrulandı.
-   B3 🟡 Kalite kapısı: deterministik kısım build_sft_v2b assemble'da ✅; faith≥0.95 LLM-judge AYRI (groundedness hattı)
+   B1 ✅ build_sft_v2b.py pack+assemble — Adım 1/3/4/5 (RAFT paketle + kapı + replay + split)  [2026-06-14]
+   B2 ✅ Adım 2 — teacher-LLM cevap üretimi `gen_v2b_answers.py` → **19.305/19.305** (grounded 15.458 / abstain 3.847). Topik-skew onarıldı (İcra 2.727 + Kat Mülkiyeti 552).  [2026-06-24]
+   B3 ✅ Deterministik kapı assemble'da (kept 18.670 / ret 635 ~%3.3). faith≥0.95 LLM-judge AYRI (groundedness hattı) — opsiyonel B3+.
+   B4 ✅ **Truncation fix** `--max-chunk-chars 900` (gold quote korunur): >2048 %11.6→%0.03. **Replay** `build_replay_tr.py` (AlicanKiraz0 MIT, genel TR) → 577 örnek %3.  [2026-06-24]
 
 C. EĞİTİM (B bitince)
-   C1 🔴 Modal A100 QLoRA — reçete kartı (§5.1): r=8/16, all-linear, LoRA-LR≈10x, 1 epoch, replay, 3e-4 YASAK
+   C1 🟢 Modal A100 QLoRA HAZIR+SMOKE-DOĞRULANDI — `spawn_v2b` reçete §5.1 (lr=1e-4, r=16/α=32, all-linear, 1 epoch, warmup 0.05, replay, 3e-4 YASAK). Smoke: loss 1.411, ~15.75s/step, OOM yok. ⚠️ `modal run --detach` ŞART (yoksa app stopped→task ölür). **Tam run = SEN başlat** (~4-4.5h/$15-18).  [2026-06-24]
    C2 ⚪ Ablasyon: P [60/80/100] · replay [%1/5] · rank [8/16]
 
 D. DEĞERLENDİRME (A + C bitince)
+   D0 🔴 **eval-mirror (ÖN KOŞUL):** 900-char chunk kırpmayı `gen_eval_grounded`/`raft_pack`'e aynala (ADR-0013 eval=train dağılımı). D1'i bloklar.
    D1 🔴 canon koş (base / v1 / v2a-baseline / v2b) → bench_scorecard.py
    D2 🔴 Kapı kontrolü: A3≥0.741 · A1∧A2≥0.875 · A4≥0.9 · KÖR gerilemesin (§6)
    D3 🟢 Bulgu→research_log · karar→ADR
@@ -216,7 +220,7 @@ E. SONRASI (koşula bağlı)
    E3 ⚪ Paper-grade: cross-family κ · McNemar · OOD · n=100/75 · rakip baseline
 ```
 
-**Kritik yol:** `A1+A2 (eval) ∥ B1→B2→B3 (veri) → C1 (eğit) → D1→D2 (ölç)`. İlk başlatılacak: **A1 (ADR-0013) + B1 (build script)** — ikisi paralel, birbirini beklemez.
+**Kritik yol (kalan):** `C1 tam run (eğit) → D0 eval-mirror → D1→D2 (ölç)`. Sıradaki tek iş: **`modal run --detach modal_train.py::spawn_v2b --run-name v2b --epochs 1`** (devir notu `NEXT_SESSION.md`).
 
 ### Yol haritası ufku (OPSİYON — net karar DEĞİL)
 İki ayrı hat: **ağırlık** (pretrain→SFT→RLHF, modeli değiştirir) · **sistem** (RAG = çalışma-anı sarmalayıcı, ağırlığa dokunmaz, dik). Olası sıra:

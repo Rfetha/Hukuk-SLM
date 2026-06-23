@@ -1,72 +1,75 @@
-# DEVİR NOTU — 2026-06-14 akşamı (RPD reset bekleniyor)
+# DEVİR NOTU — 2026-06-24 (v2b veri HAZIR, tam eğitim başlatılacak)
 
 ## TEK CÜMLE
-B2 teacher veri üretimi **Tier 1 günlük 10K istek tavanına** çarptı (14.800/19.305). RPD reset'inden
-sonra (gece yarısı UTC) **resume ile bitir → assemble → Modal eğitimi (C1 hazır)**.
+v2b verisi tamamlandı + truncation fix + replay Modal'a yüklendi, smoke config'i doğruladı →
+sıradaki tek iş: **tam v2b eğitimini `--detach` ile başlat → adapter çek → D1 canon eval**.
 
 ## ŞU AN NEREDEYİZ
-- **A-track ✅ BİTTİ** — base baseline ölçüldü: M1 (gold+4distractor) faithfulness **0.879**,
-  M3 (empty-context) abstention **1.000**. (`outputs/eval/gnd_bench_m1_base_summary.json`)
-- **B-track ⏸️ DURDU (RPD)** — `data/processed/sft_v2b/answers.jsonl` = **14.800/19.305**
-  (11.781 grounded + 3.019 abstain, 0 bozuk satır). Süreç ölü.
-- **C-track ✅ HAZIR** — `modal_train.py::spawn_v2b` + `train_sft.py` 3e-4 kilidi + warmup flag.
+- **A-track ✅** — base baseline ölçülü: M1 faithfulness **0.879**, M3 abstention **1.000**.
+- **B-track ✅ BİTTİ** — `answers.jsonl` **19.305/19.305** (grounded 15.458 / abstain 3.847).
+  İcra ve İflas (2.727) + Kat Mülkiyeti (552) topik-skew onarıldı. assemble (kept 18.670):
+  `train 17.323 / val 962 / test 962`, slice = grounded 13.350 / abstain 3.455 / **replay 518**.
+- **Truncation FIX ✅** — `--max-chunk-chars 900` (gold quote korunur): >2048 **%11.6→%0.03**,
+  quote context'te %100. max_seq_len=2048 kalır.
+- **Replay ✅** — `build_replay_tr.py` (AlicanKiraz0 MIT, genel TR) → 600 örnek, assemble %3.
+- **C-track ✅ HAZIR + DOĞRULANDI** — smoke (eski veri) bitti: loss 1.411, ~15.75s/step, OOM yok.
+  Düzeltilmiş veri Modal'da (`hukuk-data:/sft_v2b`, `--force` yüklendi).
 
-## ⚠️ NEDEN ŞİMDİ DURUP EĞİTEMEYİZ (önemli)
-Seed dosyası **kanuna göre SIRALI** (shuffle değil). İlk 14.800 = rastgele örnek DEĞİL →
-**İCRA VE İFLAS KANUNU (2.727 örnek, datasetin ~%14'ü) ve KAT MÜLKİYETİ KANUNU üretilende SIFIR.**
-Slice oranı (80/20) korunmuş ama topik dağılım bozuk. → tam seti bitirmek ZORUNLU.
+## ⚠️ MODAL DERSİ (PC kapatınca patlamasın)
+**`modal run --detach ...`** ŞART. Detach'siz koşu local entrypoint bitince app'i `stopped` yapıp
+task'ı öldürüyor (gözlemlendi: 0 task). `--detach` = app bulutta `ephemeral`, PC/WSL kopsa da sürer.
 
-## RESET SONRASI YAPILACAKLAR (sırayla)
+## YAPILACAKLAR (sırayla)
 
-### 1) B2'yi resume et (RPD boşalınca)
+### 1) (opsiyonel ama önerilir) Temiz-veri smoke — fix'i pratikte teyit (~$0.15)
 ```bash
-cd ~/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
-nohup python scripts/gen_v2b_answers.py --workers 4 > /tmp/b2_parallel.log 2>&1 &
-```
-- 14.800'ü atlar, kalan ~4.505'i (İİK dahil) üretir. ~1 saat.
-- **RPD hâlâ doluysa** crawl/HATA görürsün (~7/dk) → biraz daha bekle.
-- **Akıyorsa** ~80/dk (4 worker, Tier 1 TPM 200K güvenli). Takip:
-```bash
-watch -n 30 'cd ~/code/Hukuk-SLM && n=$(wc -l < data/processed/sft_v2b/answers.jsonl); echo "B2: $n/19305 | süreç: $(ps aux|grep gen_v2b|grep -v grep|wc -l) | hata: $(grep -c HATA /tmp/b2_parallel.log)"'
-```
-
-### 2) B2 bitince (süreç:0, sayı=19305) → assemble (gate elemesi)
-```bash
-python scripts/build_sft_v2b.py assemble --answers data/processed/sft_v2b/answers.jsonl \
-  --replay data/processed/replay_tr.jsonl --replay-frac 0.03
-# → train/validation/test.jsonl + assemble_report.json (gate ~%92 grounded geçer)
-# NOT: replay dosyası yoksa replay ATLANIR (uyarı basar) — forgetting riski, sonra ekle.
+cd ~/code/Hukuk-SLM && source ~/code/global_venv/bin/activate
+modal run --detach modal_train.py::spawn_v2b --smoke
+# logda "Removed 0 ... samples" görmeli (ilkinde 1.421'di). İzle:
+modal app logs <app-id>
 ```
 
-### 3) Veriyi Modal'a yükle + smoke eğitim
+### 2) TAM eğitim (fire-and-forget, ~4-4.5 saat, ~$15-18)
 ```bash
-modal volume put hukuk-data data/processed/sft_v2b /sft_v2b
-modal run modal_train.py::spawn_v2b --smoke     # 50 step, ~$0.15, loss düşüyor mu
+modal run --detach modal_train.py::spawn_v2b --run-name v2b --epochs 1
+# reçete §5.1 gömülü: lr=1e-4, r=16/α=32, all-linear, warmup=0.05, --no-system, replay veride.
+# 3e-4 YASAK (train_sft kilidi aktif). ~994 step × ~15.75s/step.
+# İzle: modal app logs <app-id>   |   PC'yi kapatabilirsin (detach).
 ```
 
-### 4) Loss sağlamsa TAM eğitim (fire-and-forget)
-```bash
-modal run modal_train.py::spawn_v2b --run-name v2b --epochs 1
-# reçete §5.1 gömülü: lr=1e-4, r=16/α=32, all-linear, warmup=0.05, --no-system (veri system'i taşır)
-# 3e-4 YASAK (kilit aktif). İzle: modal app logs <app-id>
-```
-
-### 5) Adapter'ı çek → D1 canon eval (base'le kıyas)
+### 3) Adapter'ı çek
 ```bash
 modal volume get hukuk-outputs /v2b ./outputs/v2b
-# M1: python scripts/gen_eval_grounded.py --label bench_m1_v2b --adapter outputs/v2b \
-#       --data data/eval/core_hard.jsonl --distractors 4 --n 40
-#     python scripts/groundedness.py --details outputs/eval/bench_m1_v2b_detail.jsonl --label bench_m1_v2b --mode data
-# M3: python scripts/gen_eval_grounded.py --label bench_m3_v2b --adapter outputs/v2b \
-#       --data data/eval/core_hard.jsonl --empty-context --n 40
-# KAPI (§6): M1 faith ≥0.879 KORU · M3 abstention =1.000 KORU · +uzman-register/format eklendi mi
 ```
 
-## AÇIK İYİLEŞTİRME (opsiyonel, sonra)
-- B2/pack **shuffle** etmiyor → yarıda-kesilme topik-skew yapıyor. İleride pack seed'leri shuffle'lasın
-  ki herhangi bir partial state temsili kalsın. (Bu sefer %100 bitireceğimiz için kritik değil.)
+### 4) 🔴 D1 ÖNCESİ — eval=train dağılımı (ADR-0013)
+**900-char chunk kırpmayı eval tarafına AYNALA** (`gen_eval_grounded.py` / `raft_pack.py`),
+yoksa v2b'yi eğitildiğinden uzun context'le ölçeriz (haksız). `clip_sources_block` mantığı
+`build_sft_v2b.py`'de hazır — `raft_pack.labeled_chunk`'a `max_chars` paramı ekleyip
+`gen_eval_grounded` distractor modunda kullan.
+
+### 5) D1 canon eval (base / v1 / v2b — aynı M1/M3)
+```bash
+# M1 (gold+4 distractor, A1): faith ≥0.879 KORU
+python scripts/gen_eval_grounded.py --label bench_m1_v2b --adapter outputs/v2b \
+  --data data/eval/core_hard.jsonl --distractors 4 --n 40
+python scripts/groundedness.py --details outputs/eval/bench_m1_v2b_detail.jsonl --label bench_m1_v2b --mode data
+# M3 (empty-context, A3): abstention =1.000 KORU
+python scripts/gen_eval_grounded.py --label bench_m3_v2b --adapter outputs/v2b \
+  --data data/eval/core_hard.jsonl --empty-context --n 40
+# KAPI (§6): A3≥0.741 · A1∧A2≥0.875 · A4≥0.9 · CORE-KÖR gerilemesin · +uzman-register/format
+```
+
+### 6) Bulgu→research_log, karar→ADR (D3)
+
+## AÇIK İŞLER (bloklamaz, sırası gelince)
+- 🔴 **eval-mirror (madde #4)** — D1'i bloklar, tam-run'u bloklamaz.
+- ⚪ **C2 ablasyon** — P [60/80/100] · replay [%1/5] · rank [8/16] (tam-run iyiyse).
+- ⚪ pack seed'leri shuffle (partial-tolerant) — bu sefer %100 bitti, kritik değil.
 
 ## DOSYALAR
 - Plan: `docs/V2_PLAN.md` (§5.1 reçete · §5.2 pipeline · §9 execution)
-- Kayıt: `docs/record/research_log.md` (2026-06-14 girdileri: B1 bug · A baseline · C1 prep · RPD)
-- ADR: 0011 (canon eval) · 0012 (scope) · 0013 (5-mod matris)
+- Kayıt: `docs/record/research_log.md` (2026-06-24: B2 tam set · replay · truncation fix · detach)
+- ADR: 0008 (spawn) · 0011 (canon eval) · 0012 (scope) · 0013 (5-mod matris)
+- Veri scriptleri: `build_sft_v2b.py` (pack/assemble+clip) · `gen_v2b_answers.py` · `build_replay_tr.py` · `raft_pack.py`
+- Eğitim: `modal_train.py::spawn_v2b` · `train_sft.py` (3e-4 kilidi)
