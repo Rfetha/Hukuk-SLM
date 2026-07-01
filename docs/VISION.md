@@ -11,7 +11,7 @@
 | Prensip | Açıklama |
 | :--- | :--- |
 | **Erişilebilirlik > Devasa Performans** | Model, sıradan bir GPU'da (hatta CPU/edge) çalışabilmeli. Bu yüzden SLM. |
-| **Kitle: Uzman + Vatandaş** ⚠️ | **REVİZE (2026-06-13):** birincil kitle = **uzman (hukukçu)**; çıktı hassas + atıflı. Vatandaş sadeleştirmesi = **app-layer prompt modu**, model eğitim hedefi değil. (Eski "default sade dil" ifadesi descoped — bkz `docs/record/research_log.md` + pending ADR-0010.) |
+| **Kitle: Uzman (birincil) + Vatandaş (app-layer)** | **REVİZE (2026-06-13) → RESMİLEŞTİ (ADR-0010, Yürürlükte):** birincil kitle = **uzman (hukukçu)**; çıktı hassas + atıflı. Vatandaş sadeleştirmesi = **app-layer prompt modu**, model eğitim hedefi değil. Eski "default sade dil" ifadesi descoped — bkz `docs/adr/0010-reframe-birincil-register-uzman.md` + `docs/record/research_log.md` (2026-06-13). |
 | **Güncellik Modelin Beyninde Değil, Kütüphanesinde** | Yasalar değişir; model değişmez. Güncellik RAG katmanında çözülür. |
 | **Lisans-temiz & Tekrarlanabilir** | Sadece açık/kamu veri kaynakları (ticari kaynak yasak). Repo private/proprietary; ağırlıklar + model kartı ileride opsiyonel açılabilir. Seed/log/ablation baştan temiz. |
 | **Genelden Nişe** | Önce genel hukuk yetkinliği, sonra dikey nişler (kira, iş, tüketici) için agentic workflow'lar. |
@@ -134,4 +134,5 @@ Bu yol haritası birden fazla yayınlanabilir çıktı üretir:
 
 - [x] Vizyon ve isim: **HakHukuk**
 - [x] Faz sıralaması: LLM → RAG/Graph → Niş → Agent → Platform
-- [ ] **Sonraki adım:** Faz 1 veri seti envanteri ve baz model seçimi (E2B vs E4B vs Phi-3.5 karşılaştırması)
+- [x] ~~Faz 1 veri seti envanteri ve baz model seçimi (E2B vs E4B vs Phi-3.5)~~ → **TAMAMLANDI:** base = Gemma 4 12B (ADR-0003); veri envanteri `VERI_PLANI.md`; v0/v1 koştu.
+- [ ] **Sonraki adım (2026-07-01):** **v2b SFT tam eğitimi** (Modal A100, `spawn_v2b --detach`) → canon eval. Detay: `NEXT_SESSION.md` + `docs/V2_PLAN.md §9`.

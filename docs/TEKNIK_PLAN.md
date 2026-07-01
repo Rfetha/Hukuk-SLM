@@ -14,7 +14,10 @@
 # BÖLÜM 1 — TÜM PROJE YOL HARİTASI
 
 ## Faz 1 — Hukuk Okuryazarı SLM — *AKTİF*
-**Hedef:** Türk hukuk diline adapte, **vatandaş diliyle** konuşan, ölçülebilir fine-tuned SLM. Kalite barı yüksek — üzerine kurulacak ekosistem (RAG, agent, UI) buna dayanacak.
+> ⚠️ **SÜPERSED (2026-06-13, ADR-0010) → güncel:** hedef "vatandaş diliyle konuşan" DEĞİL; birincil register = **uzman/hukukçu**, kaynak-dayalı. Vatandaş sadeleştirmesi = app-layer prompt modu (model eğitim hedefi değil). Correctness/grounding RAG'den gelir. Aşağıdaki eski ifade iz olarak korunuyor.
+> ⚠️ **SÜPERSED (2026-06-14, V2_PLAN.md) → güncel plan:** aktif iş artık **v2b SFT** (base'den taze QLoRA), bu bölümdeki v0→v1 execute akışı tamamlandı/tarihsel. Güncel yön: `docs/V2_PLAN.md §9` + `NEXT_SESSION.md`.
+
+**Hedef:** Türk hukuk diline adapte, **~~vatandaş diliyle~~ uzman-register ile** konuşan, ölçülebilir fine-tuned SLM. Kalite barı yüksek — üzerine kurulacak ekosistem (RAG, agent, UI) buna dayanacak.
 **Baz model (güncellendi 2026-06-07):** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0) — multimodal, 256K context. Deploy pipeline: QLoRA SFT → merge → Q4_0 GGUF (~6.5GB, 8GB VRAM end-user).
 
 Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → Sadeleştirme → Base hazırlığı → v0 baseline → Grounded üretim → SFT iterasyonları → Eval → Ablation → Yayın.
@@ -103,9 +106,11 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 > **Lisans kuralı (katı):** Lexpera/Kazancı vb. ticari → yasak. Kapsam: güncel TC mevzuatı.
 
 ## Adım 4 — Veri Temizleme & Sadeleştirme
-**Amaç:** 32K uzman-dilli veriyi sadeleştir + temizle → sade-dil SFT setine dönüştür.
+> ⚠️ **SÜPERSED (2026-06-08 / ADR-0010) → güncel:** "32K'yı sadeleştir" adımı **İPTAL** — sadeleştirme app-layer'a taşındı, model eğitim hedefi değil. Ayrıca 32K forum verisi v0'ı batırdı (base-altı doğruluk, research_log 2026-06-07/08) ve v1/v2b'ye **katılmadı**. Aşağıdaki adım iz olarak korunuyor; uygulanmadı.
 
-- **[İŞ]** **32K'yı GPT-4o-mini ile sadeleştir:** uzman cevabı → vatandaş-dili cevap (~$13, OpenAI API key hazır).
+**Amaç (tarihsel):** 32K uzman-dilli veriyi sadeleştir + temizle → sade-dil SFT setine dönüştür.
+
+- **[İŞ] ~~32K'yı GPT-4o-mini ile sadeleştir:~~ İPTAL (ADR-0010)** uzman cevabı → vatandaş-dili cevap (~$13, OpenAI API key hazır). *(sadeleştirme app-layer prompt modu.)*
 - **[İŞ]** Temizleme zinciri (Mecellem reçetesi): exact-hash → SemHash (0.75) → FineWeb → GlotLID (TR only) → Zemberek (suffix>%75, lemma>%50) → token ≤4096 → PII maskeleme.
 - **[İŞ]** Kira(6098)/İş(4857)/Tüketici(6502) maddelerini `niş` alanıyla etiketle (Faz 3'e hazır).
 - **[İŞ]** Train/val/test ayrımı (hash-split, test izole).
@@ -123,6 +128,8 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 > **ℹ️ Bilgi — neden baseline önce, üretim sonra?** v0 baseline'ı (32K uzman veri) önce koşarız → Muhakim'de açığı görürüz (muhtemelen "doğru ama jargonlu") → üretimi **o açığa** yönlendiririz. Körlemesine üretim yok.
 
 ## Adım 6 — Base Model + System Prompt
+> ⚠️ **SÜPERSED (2026-06-14, ADR-0010 + V2_PLAN §5.1) → güncel:** aşağıdaki "sade, anlaşılır Türkçe" system prompt v1-era'dır. v2b'de model gömülü `SYSTEM_PROMPT_RAG_MULTI` (uzman-register, RAFT çok-kaynak) taşır (`build_sft_v2b.py`) ve eğitim `--no-system` ile koşar (çift-system önlemi, ADR-0008). Aşağı iz olarak korunuyor.
+
 - **[İŞ]** Base: **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0), NF4 ile yükle (QLoRA).
 - **[İŞ]** Fine-tune → adapter merge → Q4_0 quantize (llama.cpp) → GGUF deploy (~6.5GB, 8GB VRAM hedef).
 - **Not:** Gemma 4 12B encoder-free unified mimari — ayrı vision/audio encoder yok. `target_modules="all-linear"` kullanılır; text-only SFT multimodal yeteneği bozmaz. Model kartı teyitli: OCR (Türkçe dahil çok dilli), el yazısı tanıma, document/PDF parsing native destekli. Belge görseli kullanımında `visual_tokens=560-1120` (küçük metin okuma için yüksek budget şart).
@@ -175,12 +182,12 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 | S3 | Niş | Faz 1 = **genel hukuk**. Niş maddeler etiketli (kira/iş/tüketici), Faz 3'e hazır |
 | S4 | Üretim zamanı | **Baseline önce** (v0 → Muhakim → açığı gör → hedefli üret). İteratif |
 | S5 | Üretim motoru | **GPT-4o-mini** (~$13 bulk, API key hazır). Gemini plan dışı |
-| S6 | Sade dil | **Veri + prompt ikisi birden.** 32K uzman veri GPT-4o-mini ile sadeleştirilir. Sorumluluk reddi her yanıta gömülü |
+| S6 | Sade dil | ⚠️ **SÜPERSED (2026-06-08 / ADR-0010).** ~~Veri + prompt ikisi birden; 32K uzman veri sadeleştirilir; sorumluluk reddi her yanıta gömülü.~~ → **Güncel:** sadeleştirme = **app-layer prompt modu** (veriye/loss'a girmez); v2b eğitimi `--no-system` (V2_PLAN §5.1). |
 | S7 | Ortam | **WSL2 (Ubuntu 22.04).** Veri pipeline da WSL2'ye taşınır |
 | S8 | Eğitim yeri | **Yerelde** smoke + baseline + iteratif SFT (12 GB RTX 5070 yeter). **Bulut** = ablation + final |
 | S9 | Model kimliği | **(b) Kimlik + davranış + sorumluluk reddi:** "HakHukuk, sade Türkçe, uydurmam, emin olmadığımda söylerim" |
 | S10 | İnsan eval | **Faz 1'de yok.** Muhakim + göz testi yeterli. İnsan feedback = Faz 4 RL altyapısına (no-code UI → DPO/RLHF) |
-| S11 | Faz 1 bitti kriteri | Muhakim'de **+%15** baseline üstü + göz testinde **10/8** vatandaş sorusu doğru/sade |
+| S11 | Faz 1 bitti kriteri | ⚠️ **SÜPERSED (ADR-0001/0011/0012).** ~~Muhakim'de +%15 baseline üstü + göz testinde 10/8 vatandaş sorusu.~~ → **Güncel kapı:** A3 rejection ≥0.741 · A1∧A2 ≥0.875 · A4 paren ≥0.9 · CORE-KÖR gerilemesin (canon eval, V2_PLAN §6). Muhakim ikincil/yanlı; insan-κ descope. |
 | S12 | Lisans/yayın | **Private repo** + proprietary. Model kartı + ağırlıklar HF'te public (isteğe bağlı). Ticari hak sahipte |
 | S13 | Baz model değişikliği (2026-06-07) | **Qwen3.5-4B → Gemma 4 12B** (`gemma-4-12B-it-qat-q4_0-unquantized`). Gerekçe: 256K context, multimodal (gelecek fazlar), QAT → Q4_0 GGUF deploy kalitesi, Apache 2.0 |
 | S14 | Deploy pipeline | FT (NF4 QLoRA) → merge (bf16) → Q4_0 quantize (llama.cpp) → GGUF ~6.5GB → 8GB VRAM end-user |
@@ -197,4 +204,6 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 ---
 
 ## Sıradaki adım
-WSL2 kurulumuna geç → **Adım 1** (Blackwell-uyumlu CUDA + Python + ML stack). Veri pipeline (`scripts/`) WSL2'ye taşınır, ardından **Adım 2** smoke test.
+> ⚠️ **SÜPERSED (2026-07-01) → güncel durum:** aşağıdaki "WSL2 kurulumuna geç → Adım 1" talimatı **2026-05-29 tarihlidir ve TAMAMLANMIŞTIR** — ortam (Blackwell sm_120, `~/code/global_venv`) kuruldu, veri + v0 + v1 tamamlandı, v2b verisi hazır, tam eğitim başlatılıyor. **Güncel sıradaki iş:** `docs/V2_PLAN.md §9` + `NEXT_SESSION.md` (v2b tam eğitimi `modal run --detach ... spawn_v2b`).
+
+*(Tarihsel/ilk talimat, iz olarak korunuyor)* WSL2 kurulumuna geç → **Adım 1** (Blackwell-uyumlu CUDA + Python + ML stack). Veri pipeline (`scripts/`) WSL2'ye taşınır, ardından **Adım 2** smoke test.

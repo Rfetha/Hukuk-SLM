@@ -6,13 +6,13 @@
 
 ## Faz 1 — KALAN (aktif) · v2 planı = `docs/V2_PLAN.md`
 
-- [ ] **2 deep-research'ü sentezle** (v2 teknikleri + hukuk-veri/eğitim) → `docs/V2_PLAN.md`'yi güncelle. v2 reçetesi netleşsin.
-- [ ] **v2a = base + mühendislik promptu (SFT YOK)** → canon'dan geçir. İlk dene (ucuz, yan-hasarsız). v1'i döverse → "SFT gereksiz" bulgusu.
-- [ ] **Önkoşul (v2-eval'den önce):** register/altitude ekseni + **E (kaynak-eksik) eval seti** (`V2_PLAN §7`).
-- [ ] **Gerekirse v2b = hafif SFT** (RAFT/oracle-mod + ağır hedge ~%20-25 + uzman register + düşük LoRA rank) → Modal A100 → canon. Ablasyon: dozaj + confound (`V2_PLAN §5`).
+- [x] ~~**2 deep-research'ü sentezle** (v2 teknikleri + hukuk-veri/eğitim)~~ → **TAMAMLANDI (2026-06-14):** 3 /deep-research sentezlendi, `docs/V2_PLAN.md` (§5.1 reçete kartı dahil) güncellendi.
+- [ ] ⚪ **(opsiyonel baseline) v2a = base + mühendislik promptu (SFT YOK)** → canon'dan geçir. *(2026-06-14 kararı: birincil değil; v2b'nin SFT katkısını izole eden "SFT'siz" referans — V2_PLAN §4 Adım 1.)*
+- [ ] **Önkoşul (v2-eval'den önce):** register/altitude ekseni + **E (kaynak-eksik) eval seti** + 🔴 D0 eval-mirror (900-char chunk aynala) (`V2_PLAN §7/§9-D0`).
+- [x] ~~Gerekirse~~ 🟢 **v2b = hafif RAFT-SFT SEÇİLDİ** — veri HAZIR (19.305 + replay + truncation-fix, Modal'da), smoke doğrulandı → **tam eğitim başlatılacak** (`modal run --detach ... spawn_v2b`, `NEXT_SESSION.md`). Ablasyon (C2): P/replay/rank (`V2_PLAN §5`).
 - [ ] **Başarı kapısı:** A3≥0.741 + A1∧A2≥0.875 + A4 koru (`V2_PLAN §6`).
 - [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
-- [ ] **ADR-0010** — reframe resmileştir (pilot DOĞRULADI) + `VISION.md §1` "default sade dil" ifadesini kapat.
+- [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.
 - [ ] **Paper öncesi sağlamlaştırma:** G1 cross-**family** judge (Claude/Gemini, κ) · paired McNemar · OOD unseen-statute dilimi · n=100/75 · A1/A2 operasyonel tanım.
 - [ ] **Faz 1 kapanış + deploy** — kapı geçilince → merge (bf16) → llama.cpp Q4_0 → GGUF ~6.5GB. *(Provokatif: Product A ise "deliverable = base+RAG+prompt" olabilir — V2_PLAN §8.)*
 - [ ] _(SONRA)_ outputs/eval/ klasör düzeni (raw/scored/summary nestele) · _(Faz 2)_ Bedesten bulk kanun çekimi.

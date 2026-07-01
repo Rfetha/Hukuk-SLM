@@ -8,22 +8,24 @@
 
 ## 1. Hangi veri tiplerine ihtiyacımız var
 
+> ⚠️ **REVİZE (2026-06-13/14, ADR-0010 + V2_PLAN):** birincil register = uzman; "sade cevap" hedefi app-layer'a taşındı. Aktif v2b verisi = **RAFT** (gold+distractor + verbatim alıntı + abstention dilimi), uzman-register. Aşağıdaki tablo Faz-1 ilk kapsamı, iz olarak korunuyor.
+
 | # | Veri tipi | Format | Kaynak yaklaşımı |
 | :-- | :--- | :--- | :--- |
 | 1 | Genel hukuk Q&A | soru → cevap | Hazır (doğrulanmış) + üretim |
-| 2 | Terim sadeleştirme | terim/cümle → sade dil | **Üretim** (grounded) |
+| 2 | Terim sadeleştirme | terim/cümle → ~~sade dil~~ *(app-layer)* | **Üretim** (grounded) |
 | 3 | Madde özetleme | kanun metni → özet | **Üretim** (Mevzuat + LLM) |
 | 4 | Senaryo → ilgili madde | olay → madde atıfı | **Üretim** (grounded) |
-| 5 | Vatandaş nişi (kira/iş/tüketici) | senaryo → sade cevap/dilekçe | **Üretim** + niş hazır setler |
-| 6 | Eval seti | soru → doğru cevap | Kendi setimiz + Muhakim hakem |
+| 5 | Niş (kira/iş/tüketici) | senaryo → ~~sade cevap~~ **uzman-register cevap**/dilekçe (app-layer sadeleştirir) | **Üretim** + niş hazır setler |
+| 6 | Eval seti | soru → doğru cevap | Kendi setimiz (CORE-HARD + TRAP) + hakem |
 
 ---
 
 ## 2. Kaynak Envanteri (EDA bulgularıyla — 2026-05-29 taraması)
 
-`scripts/scan_hf_datasets.py` ile tarandı (72 aday). Durum işaretleri göz denetimine dayanır.
+`scripts/_legacy/scan_hf_datasets.py` ile tarandı (72 aday). Durum işaretleri göz denetimine dayanır. *(Not: v0-era EDA scriptleri artık `scripts/_legacy/` altında.)*
 
-### ✅ Kullanılabilir (doğrulandı, temiz — `scripts/eda_datasets.py` ile tam EDA)
+### ✅ Kullanılabilir (doğrulandı, temiz — `scripts/_legacy/eda_datasets.py` ile tam EDA)
 | Kaynak | Lisans | Hacim | EDA bulgusu |
 | :-- | :-- | :-- | :-- |
 | `OrionCAF/turkish_law_qa_dataset` | Apache 2.0 | 18.305 | %0.7 mükerrer, 0 boş. Soru ~11 / cevap ~19 kelime (kısa-öz). İş K./TCK/idari geniş, düzgün noktalama. **Birincil hazır Q&A.** |
@@ -91,25 +93,27 @@ Gerçek kanun maddesini **kaynak** olarak ver, ürettir:
 ---
 
 ## 4. Temizleme & Format (Mecellem reçetesi)
-exact-hash dedup → SemHash semantik dedup (0.75) → FineWeb kalite → GlotLID (sadece TR) → Zemberek morfoloji (suffix>%75, lemma>%50) → token ≤4096 → PII maskeleme → tek chat-template (`messages`, Qwen) → train/val/test (test izole).
+exact-hash dedup → SemHash semantik dedup (0.75) → FineWeb kalite → GlotLID (sadece TR) → Zemberek morfoloji (suffix>%75, lemma>%50) → token ≤4096 → tek chat-template (`messages`, ~~Qwen~~ **Gemma 4 uyumlu**; base değişti ADR-0003) → PII maskeleme → train/val/test (test izole).
 
 ---
 
 ## 5. İlerleme & sıradaki iş
 
 **✅ Tamamlandı (2026-05-29):**
-- HF tarama (`scripts/scan_hf_datasets.py`) → 72 aday, EuroHPC reddi.
-- Tam EDA (`scripts/eda_datasets.py`) → OrionCAF + Renicames doğrulandı.
-- **SFT v0 inşa edildi** (`scripts/build_sft_dataset.py`) → `data/processed/sft_v0/` : **32.234** temiz chat-template Q&A (train 29.028 / val 1.582 / test 1.624, hash-split). *Uzman dilinde; sade-dil katmanı henüz yok.*
+- HF tarama (`scripts/_legacy/scan_hf_datasets.py`) → 72 aday, EuroHPC reddi.
+- Tam EDA (`scripts/_legacy/eda_datasets.py`) → OrionCAF + Renicames doğrulandı.
+- **SFT v0 inşa edildi** (`scripts/_legacy/build_sft_dataset.py`) → `data/processed/sft_v0/` : **32.234** temiz chat-template Q&A (train 29.028 / val 1.582 / test 1.624, hash-split). *Uzman dilinde. (Not: v0 SFT'yi batırdı → v1/v2b'ye KATILMADI.)*
 
 **✅ Tamamlandı (devam, 2026-05-29):**
 - Mevzuat erişimi çözüldü: mevzuat.gov.tr yabancı IP (VPN) engelliyor; TR IP'den PDF iniyor.
 - **Otoriter kanun zemini bulundu & doğrulandı:** `muhammetakkurt/mevzuat-gov-dataset` (907 kanun / 40.853 madde, tüm nişler). Scraping/OCR gereği Faz 1'de kalktı.
 
-**⏭️ Sıradaki (WSL2 ortamı kurulduktan sonra):**
-1. **Bulk kanun çekimi:** Bedesten API ile 916 kanunu `data/raw/mevzuat/{TUR}/` altına kategorize kaydet (`scripts/bedesten_probe.py` → genişlet).
-2. **v0 baseline SFT:** 32K uzman veri ile eğit → Muhakim ölç → açığı belirle.
-3. **32K sadeleştirme:** GPT-4o-mini ile uzman cevapları → sade dil (~$13).
-4. **Kanıt koşusu:** 50 örnekle grounded üretim (GPT-4o-mini + gerçek madde) → Muhakim doğrulama.
-5. Ölçekle → sft_v1 → iteratif SFT.
+> ⚠️ **SÜPERSED (2026-07-01) → aşağıdaki "Sıradaki" listesi TAMAMLANDI/İPTAL.** v0 koştu (başarısız), grounded v1 üretildi + eğitildi, v2b verisi (19.305, RAFT+replay+truncation-fix) hazır. **32K sadeleştirme (#3) İPTAL** (ADR-0010, app-layer). Güncel sıradaki iş: `docs/V2_PLAN.md §9` + `NEXT_SESSION.md`. Aşağı iz olarak korunuyor.
+
+**⏭️ ~~Sıradaki (WSL2 ortamı kurulduktan sonra)~~ — TARİHSEL:**
+1. **Bulk kanun çekimi:** Bedesten API ile 916 kanunu `data/raw/mevzuat/{TUR}/` altına kategorize kaydet (`scripts/bedesten_probe.py` → genişlet). *(Faz 2'ye ertelendi)*
+2. **v0 baseline SFT:** 32K uzman veri ile eğit → Muhakim ölç → açığı belirle. ✅ *(başarısız, ders alındı)*
+3. **~~32K sadeleştirme:~~ İPTAL (ADR-0010):** GPT-4o-mini ile uzman cevapları → sade dil (~$13). *(sadeleştirme app-layer)*
+4. **Kanıt koşusu:** 50 örnekle grounded üretim (GPT-4o-mini + gerçek madde) → doğrulama. ✅
+5. Ölçekle → sft_v1 → iteratif SFT. ✅ *(v1 + v2b)*
 6. Niş setleri (kilicai TBK/TMK, Labor Law) EDA + entegre (sırası gelince).

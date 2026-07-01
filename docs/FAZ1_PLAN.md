@@ -1,13 +1,16 @@
-# FAZ 1 — Vatandaş-dilli Hukuk SLM — Nihai Execute Planı
+# FAZ 1 — ~~Vatandaş-dilli~~ Uzman-register Hukuk SLM — Nihai Execute Planı
 
-> **Bu doküman Faz 1 için tek otoriter checklist'tir.** `TEKNIK_PLAN.md` ile çeliştiği yerde
+> ⚠️ **SÜPERSED BAŞLIK (2026-06-13, ADR-0010):** "Vatandaş-dilli" → birincil register **uzman/hukukçu**; vatandaş sadeleştirmesi app-layer. Eski başlık iz olarak korunuyor.
+> ⚠️ **DURUM GÜNCELLENDİ (2026-07-01):** bu dosyanın "v0/v1" execute akışı **tamamlandı**. v1 SFT Modal A100'de koştu (2026-06-09), canon pilot v1'i eğitim hedefi olarak reddetti (ADR-0012); aktif iş artık **v2b SFT**. **Güncel otoriter plan: `docs/V2_PLAN.md` + `NEXT_SESSION.md`.** Bu dosya Faz-1 v0/v1 tarihçesi olarak korunuyor.
+
+> **Bu doküman Faz 1 (v0/v1) için tek otoriter checklist'tir.** `TEKNIK_PLAN.md` ile çeliştiği yerde
 > **bu doküman geçerlidir** (en güncel kararlar 2026-06-08). Strateji/gerekçe `TEKNIK_PLAN.md`,
 > veri `VERI_PLANI.md`, akademik hedef `PAPER_TARGET.md`.
 >
-> **EN GÜNCEL DURUM (2026-06-08):** v0 başarısız (veri base-altı) → grounded çözüm kanıtlandı →
-> **Adım 4 BİTTİ: ~21K saf grounded `sft_v1` üretildi** (GPT-4o-mini, incremental+resume). **SIRADAKİ =
-> Adım 5: v1 SFT (Modal A100).** 4 büyük karar: (1) ana metrik = **groundedness** (Muhakim ikincil/yanlı);
-> (2) **sadelik model şartı YOK** — app-layer; (3) hedef = TR rakipleri geçen doğru+grounded SLM;
+> **~~EN GÜNCEL DURUM (2026-06-08)~~ — TARİHSEL (v1-era):** v0 başarısız (veri base-altı) → grounded çözüm kanıtlandı →
+> **Adım 4 BİTTİ: ~21K saf grounded `sft_v1` üretildi** (GPT-4o-mini, incremental+resume). ~~**SIRADAKİ =
+> Adım 5: v1 SFT (Modal A100).**~~ → **v1 SFT KOŞTU (2026-06-09); güncel iş v2b, bkz. V2_PLAN.md.** 4 büyük karar: (1) ana metrik = **groundedness** (Muhakim ikincil/yanlı);
+> (2) **sadelik model şartı YOK** — app-layer (ADR-0010); (3) hedef = TR rakipleri geçen doğru+grounded SLM;
 > (4) eğitim = **Modal**, insan-κ **descope** (hakem-uyumu). Detay + `[[eval-accuracy-gate]]` + `[[cloud-gpu-modal]]`.
 
 ## Hedef
@@ -82,16 +85,18 @@ profesyonel + vatandaş. Model **dolu+doğru** kalır; **vatandaş sadeleştirme
 - [x] **4d — ~21K grounded üretildi (`scripts/gen_sft_v1.py`):** 2759 vatandaş maddesi → madde başına 3-8 ayrık çift. **Incremental yazma (`fsync`) + resume** (WSL-safe) + 4 worker + 60sn timeout. **32K KATILMADI** (v0'ı batıran + kaynaksız → groundedness puanlanamaz; v1 = saf grounded). → `data/processed/sft_v1/{raw_pool,train,validation,test}.jsonl`.
 - **Çıktı:** `data/processed/sft_v1/` (saf grounded, doğru+dolu+atıflı, her örnekte `kaynak_madde`).
 
-### Adım 5 — v1 SFT (Modal A100) + iterasyon 🔄 *SIRADAKİ*
-- [ ] **Kalite ön-kontrol:** `groundedness.py` ile `sft_v1` örneklemi puanla (eğitmeden ÖNCE — v0 hatasını tekrarlama). Grounded olduğu için iyi çıkmalı ama ÖLÇ.
-- [ ] **Modal'a yükle:** `sft_v1` → `hukuk-data` volume (`/data/sft_v1`).
-- [ ] **modal_train.py → v1:** `--data /data/sft_v1`, `run_name=v1` → 50-step smoke ($0.15) → tam koşu (~5.5h ≈ $11.5).
-- [ ] **Adapter indir → eval LOKAL:** `modal volume get` → groundedness skorkartı → base/v0/v1 kıyas.
-- [ ] İhtiyaca göre v2… (veri ekle/ayar → ölç).
-- **Çıktı:** doğru+grounded v1 model + skor eğrisi.
+### Adım 5 — v1 SFT (Modal A100) + iterasyon ✅ *TAMAMLANDI (2026-06-09)*
+> **DURUM (2026-07-01):** v1 SFT Modal A100'de koştu (1 epoch, 1207 step, ~3.5h ≈ $10). Canon pilot (ADR-0012) v1'i **eğitim hedefi olarak reddetti** (abstention 0.741→0.000, oracle'da bile base-altı) → aktif iş **v2b** (base'den taze QLoRA). Detay: `docs/record/research_log.md` 2026-06-09/13, `docs/V2_PLAN.md`.
+- [x] **Kalite ön-kontrol:** `score_grounded_corpus.py` ile `sft_v1` örneklemi puanlandı (n=40, faithfulness 0.984). Grounded olduğu için temiz çıktı (ADR-0002).
+- [x] **Modal'a yükle:** `sft_v1` → `hukuk-data` volume.
+- [x] **modal_train.py → v1:** smoke + tam koşu (Modal A100, spawn/detach — ADR-0008).
+- [x] **Adapter indir → eval LOKAL:** `outputs/v1/`; canon pilot base/v0/v1 kıyası yapıldı (`outputs/BENCHMARK_REPORT.md`).
+- [x] v2 kararı → **v2b** (V2_PLAN); v1 üstüne DEĞİL, base'den taze.
+- **Çıktı:** v1 adapter + canon pilot → scope=Product A kararı.
 
 ### Adım 6 — Rakip kıyas + güvenilirlik + deploy
-- [ ] **Rakip baseline'ları BİZİM terazide ölç:** `Mecellem-Qwen3-4B`, `Llama-3.1-8B` → groundedness scorecard (paperlarından sayı ALMA).
+> ⚠️ **v2b tamamlanmadan başlatılmaz.** Güncel birincil skorlayıcı = `bench_scorecard.py` (canon), `build_scorecard.py` değil.
+- [ ] **Rakip baseline'ları BİZİM terazide ölç:** `Mecellem-Qwen3-4B`, `Llama-3.1-8B` → canon scorecard (paperlarından sayı ALMA).
 - [ ] **Güvenilirlik katmanı (EN SON):** hakem-uyumu (gpt-4o-mini ↔ gpt-4o) + opsiyonel yazar-örneklem. Avukat-κ descope.
 - [ ] Bitiş kriteri: **groundedness'te rakipleri ≥ + base'e göre +.**
 - [ ] Deploy: en iyi adapter → merge (bf16) → llama.cpp Q4_0 → **GGUF ~6.5GB** (8GB VRAM). Vatandaş sadeleştirmesi = app prompt (Faz 3).
