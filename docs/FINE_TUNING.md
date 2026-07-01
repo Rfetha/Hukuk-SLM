@@ -141,9 +141,11 @@ Chat template (Gemma 4 uyumlu — EOS token: `<turn|>`):
 }
 ```
 
-Şu varyantları üretin:
-- **Q&A** (vatandaş sorusu → sade cevap)
-- **Term simplification** (hukuki terim → günlük dil)
+> ⚠️ **SÜPERSED (2026-06-14, ADR-0010 + V2_PLAN §5.2) → güncel format:** v2b verisi RAFT'tır — her örnek 1 gold + 4 distractor kaynak + `##begin_quote##` verbatim alıntı + CoT + `(KANUN, Madde X)`, **uzman-register** (vatandaş/sade DEĞİL) + gömülü `SYSTEM_PROMPT_RAG_MULTI` (`build_sft_v2b.py`). Aşağıdaki varyant listesi v0/v1-era, iz olarak korunuyor.
+
+Şu varyantları üretin *(tarihsel — v0/v1)*:
+- **Q&A** (~~vatandaş sorusu → sade cevap~~ → güncel: soru → uzman-register + kaynak-dayalı cevap)
+- **Term simplification** (hukuki terim → günlük dil) *(app-layer'a taşındı)*
 - **Madde özetleme** (kanun metni → özet)
 - **Senaryo → ilgili madde** (olay anlatımı → atıf)
 
@@ -181,13 +183,15 @@ model = FastLanguageModel.get_peft_model(
 # TrainingArguments — 12B için batch=1 zorunlu
 per_device_train_batch_size=1
 gradient_accumulation_steps=16      # effective batch = 16
-learning_rate=2e-4
-num_train_epochs=2
-warmup_ratio=0.03
+learning_rate=2e-4                  # ⚠️ v0/v1-era; güncel v2b reçetesi: lr=1e-4 (3e-4 YASAK, train_sft.py kilidi) — V2_PLAN §5.1
+num_train_epochs=2                  # ⚠️ güncel v2b: epochs=1 (düşük-rank + az epoch = forgetting kontrolü)
+warmup_ratio=0.03                   # güncel v2b: 0.05
 lr_scheduler_type="cosine"
 optim="adamw_8bit"
 bf16=True
 ```
+
+> ⚠️ **SÜPERSED (2026-06-14, V2_PLAN §5.1) → güncel v2b reçetesi:** `lr=1e-4` (LoRA≈10×full-FT), `epochs=1`, `warmup=0.05`, `r=16/α=32`, `all-linear`, replay %3, `--no-system`. **`lr≥3e-4` YASAK** (v1 abstention çöküşü rejimi = continual-pretrain re-warming; `train_sft.py` güvenlik kilidi).
 
 Beklenen (12B QLoRA, seq 2048, batch 1): ~11–12 GB VRAM (sıkışık, gradient_checkpointing zorunlu), 32K örnek için ~10–16 saat yerelde.
 
@@ -208,7 +212,7 @@ model.save_pretrained_merged("gemma4-hakhukuk-merged", tokenizer)  # bf16
 - `per_device_train_batch_size=8`
 - `gradient_accumulation_steps=4`
 - `max_seq_length=4096`
-- ~1 saat / epoch (13K örnek)
+- ~~~1 saat / epoch (13K örnek)~~ ⚠️ **eski tahmin. Güncel v2b GERÇEK ölçüm (2026-06-24):** 17.323 eğitim örneği, `max_seq_len=2048`, ~994 step × ~15.75s/step ≈ **~4-4.5 saat / epoch ≈ $15-18** (Modal A100-40GB, batch=1). Bkz. `NEXT_SESSION.md`.
 
 ### 5.3 Ablation matrisi (tez için)
 
@@ -226,11 +230,12 @@ model.save_pretrained_merged("gemma4-hakhukuk-merged", tokenizer)  # bf16
 ## 6. Değerlendirme
 
 > Detayları için ileride `BENCHMARK.md`. Burada sadece teknik bağlantı.
+> ⚠️ **SÜPERSED (2026-06-13, ADR-0001/0011) → güncel:** ana metrik = **CANON 4-eksen** (groundedness/correctness/abstention/format), setler CORE-HARD + TRAP, araç `bench_scorecard.py`. Aşağıdaki liste ilk taslak.
 
 - **Otomatik:** Perplexity, BLEU/ROUGE (özet için), exact match (sınav soruları).
-- **LLM-as-judge:** GPT-4o ile karşılaştırmalı (rubric: doğruluk, sade dil, atıf doğruluğu).
-- **İnsan değerlendirmesi:** En az 2 hukukçu, ≥ 100 örnek, inter-annotator agreement (Cohen's κ).
-- **Baselines:** Base Gemma 4 12B (FT öncesi), Qwen3.5-4B (kıyas), GPT-4o, Gemini 2.5, Trendyol-LLM, Llama-3-8B-instruct.
+- **LLM-as-judge:** GPT-4o ile karşılaştırmalı (rubric: doğruluk, ~~sade dil~~ *(app-layer; ADR-0010)*, atıf doğruluğu). Güncel: gpt-4o-mini hakem, cross-family (Claude/Gemini) κ paper öncesi.
+- **~~İnsan değerlendirmesi:~~ DESCOPE (2026-06-08, ADR-0001):** ~~En az 2 hukukçu, ≥ 100 örnek, Cohen's κ.~~ → insan iş gücü yok; yerine **hakem-uyumu** (gpt-4o-mini ↔ cross-family) + `--runs N` kararlılık + ~30 yazar spot-check.
+- **Baselines:** Base Gemma 4 12B (FT öncesi), ~~Qwen3.5-4B (kıyas)~~ *(base değişti, ADR-0003; kıyas rakip = Mecellem-Qwen3-4B)*, GPT-4o, Gemini 2.5, Trendyol-LLM, Llama-3.1-8B-instruct.
 
 ---
 
@@ -247,10 +252,11 @@ model.save_pretrained_merged("gemma4-hakhukuk-merged", tokenizer)  # bf16
 ---
 
 ## 8. Sonraki Adımlar
+> ⚠️ **SÜPERSED (2026-07-01) — bu liste 2026-05-29 tarihli, TAMAMLANDI.** Ortam kuruldu, v0/v1 koştu, v2b verisi hazır. Güncel sıradaki iş: `docs/V2_PLAN.md §9` + `NEXT_SESSION.md`. Aşağı iz olarak korunuyor.
 
-1. WSL2 + Blackwell-uyumlu CUDA + uv + PyTorch (sm_120) kurulumu.
-2. Unsloth ile küçük model üzerinde 100 örnekle pipeline doğrulama (smoke test).
-3. `data/processed/sft_v0/` (32K, hazır) ile format/yükleme kontrolü.
-4. Yerel **Qwen3.5-4B** QLoRA ile v0 baseline koşu.
-5. Sonuçları W&B'ye logla, Muhakim ile ilk eval raporu.
-6. Açığa göre üretim (sadeleştirme/grounded) → sft_v1 → gerekirse buluta ablation.
+1. WSL2 + Blackwell-uyumlu CUDA + uv + PyTorch (sm_120) kurulumu. ✅
+2. Unsloth ile küçük model üzerinde 100 örnekle pipeline doğrulama (smoke test). ✅
+3. `data/processed/sft_v0/` (32K, hazır) ile format/yükleme kontrolü. ✅
+4. Yerel ~~**Qwen3.5-4B**~~ → **Gemma 4 12B** (ADR-0003; Qwen hiç eğitilmedi) QLoRA ile v0 baseline koşu. ✅ *(v0 = Modal, başarısız/ders alındı)*
+5. Sonuçları W&B'ye logla, Muhakim ile ilk eval raporu. ✅
+6. Açığa göre üretim (~~sadeleştirme~~/grounded — ADR-0010: sadeleştirme app-layer) → sft_v1 → v2b → canon eval. 🔄

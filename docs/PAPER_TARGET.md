@@ -50,9 +50,11 @@ tüketici donanımı kısıtında + tek-model-iki-kitle mimarisinde** kazanırı
 
 ## 2. Hedef katkılar (öncelik sırasıyla)
 
+> ℹ️ **Numaralama notu (eklendi 2026-07-01):** buradaki **K1/K2/K3 = paper KATKI (contribution)** etiketleridir (K1=sistem, K2=verimlilik, K3=ampirik bulgu). `docs/record/research_log.md`'deki **K1/K3 = paper BÖLÜM/deney-tipi** etiketleridir (K1=ablasyon tablosu, K3=ayrışma/negatif bulgular). İki şema FARKLI eksenler — karıştırma. research_log'un "K3=negatif bulgu"su bu belgenin "K3=ampirik bulgu" katkısını **besler** (aynı v0/v1 kanıtı).
+
 **(K1 — ANA) Uçtan uca erişilebilir hukuk asistanı sistemi.**
-encoder-free SLM → vatandaş-dilli SFT → TurboQuant'lı RAG → agentic akış, **tüketici
-donanımında**. Doğruluğu RAG'le (gerçek madde) yüksek tut, anlaşılırlığı SFT'le ver,
+encoder-free SLM → **uzman-register + grounding/abstention SFT** (⚠️ 2026-06-13/ADR-0010: "vatandaş-dilli SFT" değil — sade dil app-layer prompt) → TurboQuant'lı RAG → agentic akış, **tüketici
+donanımında**. Doğruluğu RAG'le (gerçek madde) yüksek tut, **davranışı (grounding/abstention/format) SFT'le ver** (anlaşılırlık = app-layer),
 çok-adımlı işi agent'la bağla (getir→hesapla→taslak→atıf doğrula). **Ablasyonla
 kanıtla:** base → +SFT → +RAG → +agent → +atıf-doğrulama; her katmanın doğruluk/
 anlaşılırlık/verimlilik katkısı ayrı.
@@ -62,9 +64,11 @@ TurboQuant (arXiv:2504.19874) KV-cache (uzun mevzuat context, ~256K) + quantize 
 store. "Eşit/küçük dağıtım ayak izinde bu kaliteyi veriyoruz" — paper'ın *erişilebilirlik*
 ekseni. `knowledge/summary_turboquant.md`.
 
-**(K3 — DESTEK) Ampirik bulgu: plainness'i fine-tune'a gömmek doğruluğu düşürür + mevcut metrik körlüğü → mimari sonuç.**
+**(K3 — DESTEK) Ampirik bulgu: SFT bilgi/plainness gömmek doğruluğu bozar + abstention'ı çökertir + mevcut metrik körlüğü → mimari sonuç.**
+> ⚠️ **GÜNCELLENDİ (2026-06-13, research_log + ADR-0011):** K3'ün **ana** bulgusu artık **v1 SFT abstention çöküşü** (TRAP rejection 0.741→0.000; literatürde birebir = **Cor-RAIT UNDER-refusal**, yayınlı FT-harm'ın TERS yönü → özgün K3 bulgusu). v0 plainness bulgusu K3'ün *ikincil alt-bileşeni*.
 Eldeki kanıt (bu projede ölçüldü, §6):
-- **Plainness ağırlığa gömülünce doğruluk düşüyor** (v0: legal_acc 0.362→0.124) → *sade dili fine-tune etme, app-layer'da prompt ile yap* (mimari katkı).
+- **⭐ SFT abstention'ı yok ediyor** (v1: TRAP Rej* 0.741→0.000, tuzakların %100'ünde uydurdu; param_leak=1.000) → temiz grounded SFT bile kalibrasyonu siliyor → *abstention'ı KORU (replay + düşük-rank + CRaFT), bilgiyi RAG'e bırak* (mimari katkı, ADR-0012).
+- **Plainness ağırlığa gömülünce doğruluk düşüyor** (v0: legal_acc 0.362→0.124) → *sade dili fine-tune etme, app-layer'da prompt ile yap* (ADR-0010).
 - Mevcut hukuk reward modeli (Muhakim) **kısa-sade'ye kör + derinlik-yanlı** (`corr(sadelik, legal_acc)=−0.15`; grounded doğru cevaplara ≈0 verdi, elle doğrulandı) → erişilebilirliği yargılayamıyor.
 - İki hakem doğrulukta **zayıf korele** (`+0.34` pooled, `−0.08` base) → tek metriğe güvenilemez; ana metrik **groundedness** olmalı.
 
@@ -107,14 +111,21 @@ hukukçu κ. Güçlü çıkarsa ayrı benchmark paper'ı (LREC); değilse sistem
 
 ## 5. Değerlendirme protokolü
 
-- **Sabit test seti:** vatandaş soruları (şu an `data/eval/eval_sample_v1.jsonl`, n=30 →
-  paper için **n≥150-200**'e büyüt, niş-dengeli: kira/iş/icra/aile/tüketici/ceza).
+> ⚠️ **SÜPERSED (2026-06-13, ADR-0011/0013) → güncel canon eval:** ana eval setleri artık
+> **`data/eval/core_hard.jsonl` + `data/eval/trap.jsonl`** (CORE-HARD + TRAP), metrik sistemi
+> **4-eksen CANON** (A1 groundedness / A2 correctness / A3 abstention / A4 format + A-register),
+> mod-stratifiye (5 mod: M1 distractor / M2 TRAP / M3 E-set / M4 oracle / M5 KÖR), birincil araç
+> **`scripts/bench_scorecard.py`** (`build_scorecard.py` DEĞİL). Aşağıdaki n=30 `eval_sample_v1`
+> + serbest 1-10 protokolü v1-era'dır, iz olarak korunuyor.
+
+- **~~Sabit test seti:~~ (v1-era)** vatandaş soruları (şu an `data/eval/eval_sample_v1.jsonl`, n=30 →
+  paper için **n≥150-200**'e büyüt, niş-dengeli: kira/iş/icra/aile/tüketici/ceza). → **Güncel:** CORE-HARD + TRAP (pilot n=40/35, paper n=100/75).
 - **ANA metrik = Groundedness (`scripts/groundedness.py`, KURULDU):** akademik format —
   **FactScore** (Min+2022) iki-aşamalı claim-level faithfulness (cevabı atomik iddialara böl →
   her iddiayı kaynak maddeye karşı SUPPORTED/CONTRADICTED/NOT_IN_SOURCE) + **ALCE** (Gao+2023)
   gold-bağlı atıf precision/recall + **wrong_ref_rate** (yanlış maddeye yönlendirme). Sayısal,
   tekrar-üretilebilir (`--runs N`), stil-bağımsız. Ölçüm: grounded veri faithfulness 0.97.
-- **İkincil + ayrışma bayrağı:** `scripts/build_scorecard.py` (ANA=groundedness, İKİNCİL=Muhakim,
+- **İkincil + ayrışma bayrağı:** ~~`scripts/build_scorecard.py`~~ → **güncel: `scripts/bench_scorecard.py`** (canon; ANA=groundedness, İKİNCİL=Muhakim,
   Sadelik=app sinyali). Ayrışma Grounded↔Muhakim → "Grounded↑ Muhakim↓" = Muhakim'in
   kısa-sade-doğruya körlüğü (**K3 kanıtı otomatik üretiliyor**).
 - **Güvenilirlik katmanı (insan-κ DESCOPE, 2026-06-08):** fiziksel insan iş gücü kapasitesi yok →
@@ -126,8 +137,8 @@ hukukçu κ. Güçlü çıkarsa ayrı benchmark paper'ı (LREC); değilse sistem
   geçerlilik değil → avukat gerekmez. Paper'da bu sınır açıkça yazılır.
 - **Tekrar-üretilebilirlik:** sabit seed (3407), loglu run (W&B), `requirements.lock.txt`,
   veri+model versiyonlama. CLAUDE.md zaten taahhüt etti.
-- **Ablasyonlar:** (base) → (+SFT sade) → (+RAG) → (+agent) → (+atıf doğrulama). Her
-  katmanın doğruluk/anlaşılırlık katkısı ayrı ayrı.
+- **Ablasyonlar:** (base) → (+SFT **uzman-register/grounding/abstention/format** — ⚠️ "sade" değil, ADR-0010) → (+RAG) → (+agent) → (+atıf doğrulama). Her
+  katmanın doğruluk/anlaşılırlık/verimlilik katkısı ayrı ayrı.
 
 ---
 

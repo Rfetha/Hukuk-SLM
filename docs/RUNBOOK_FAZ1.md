@@ -1,7 +1,9 @@
 # Faz 1 — Otonom Koşu Runbook
 
+> ⚠️ **ARŞİV (2026-07-01).** Bu runbook **v0 koşusu için yazıldı (2026-06-07/08)**. v0 TAMAMLANDI ve **başarısız** olarak kaydedildi (32K forum verisi base-altı doğruluk → research_log 2026-06-07/08). Kullanılan driver `scripts/run_phase1.sh` artık **`scripts/_legacy/`** altında. **Güncel eğitim:** `modal_train.py::spawn_v2b` (Modal A100, `--detach`) → `NEXT_SESSION.md` + `docs/V2_PLAN.md §9`. Aşağısı tarihsel.
+
 > Bu doküman, Faz 1 v0 zincirinin (Adım 1→3) otonom koşusunu tarif eder.
-> Claude Code arka planda `scripts/run_phase1.sh`'i koşar; insan girişi gerekmez.
+> Claude Code arka planda `scripts/_legacy/run_phase1.sh`'i koşar; insan girişi gerekmez.
 
 ## Ne koşuyor
 

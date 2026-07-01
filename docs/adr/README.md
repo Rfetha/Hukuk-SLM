@@ -31,6 +31,7 @@ Kararı değiştirirsek eskiyi SİLMEYİZ → "Süpersed" işaretler, yenisini e
 - [0007](0007-repo-lisans-private-proprietary.md) — Repo & lisans: private + proprietary
 - [0008](0008-modal-egitim-baslatma-spawn.md) — Modal eğitim başlatma: fire-and-forget `spawn` (WSL-kapanması cancel dersi)
 - [0009](0009-v1-filtre-dogrulama-hedefli-audit.md) — `gen_grounded.py` filtresi doğrulandı: dokunma + hedefli v1-audit (404 şüpheli)
+- [0010](0010-reframe-birincil-register-uzman.md) — Reframe: birincil register = uzman/hukukçu; sade dil app-layer'a taşındı (retroaktif yazıldı 2026-07-01, karar 2026-06-13)
 - [0011](0011-eval-metodoloji-canon.md) — CANON eval metodolojisi (4 eksen, mod-stratifiye, literatür-doğrulamalı)
 - [0012](0012-v2-strateji-on-kayit.md) — v2 strateji ön-kayıt (scope Product A; SFT=davranış, bilgi=RAG)
 - [0013](0013-eval-matrisi-v2-genisletme.md) — CANON eval v2 genişletme: 5 mod matrisi (distractor + E-set + register)
