@@ -416,6 +416,9 @@ Otorite: `v2c_roadmap.md` §5 madde 2 (C4) + §7 C4. **DEVAM EDİYOR** — tam T
 | **M1** grounding (gürültü/mirror) | 0.886 · cov 47.5% | **0.920 · cov 72.5%** | 0.918 · **cov 35.0%** (14/40) |
 | **M4** grounding (oracle tavan) | 0.983 · cov 95% | 0.975 · **cov 100%** | 0.921 · **cov 45.0%** (18/40) |
 | **M2b** RAG-ıska abstention (rejection) | 1.0 | 0.96 | 0.919 (fab 0.081, n=40) |
+| **M2** yanlış-kaynak abstention (rejection) | 0.704 | **0.346** ❌ | **1.0** (fab 0.0, n=35) |
+
+**⚠️ M2=1.0 yorumu (kritik, yanıltmasın):** Mecellem'in M2=1.0'ı "mükemmel kalibrasyon" DEĞİL — coverage çöküşünün diğer yüzü. Her şeyi reddettiği için (M1 cov %35, M4 %45) yanlış-kaynağı da reddediyor (base'in M2b=1.0 kör-red artefaktıyla aynı mekanizma). **Paper trade-off bulgusu:** yanlış-kaynak abstention ↔ coverage arasında gerilim var → rakip "hepsini reddet" köşesinde (M2 mükemmel ama kullanılamaz, cov %35-45), v2b "yanlışı da cevapla" köşesinde (M2 0.346, cov yüksek). **v2c'nin hedefi = iyi köşe: yüksek M2 + yüksek coverage birlikte** (§6). Yani M2'yi tek başına kıyaslamak yanıltıcı; M2 × coverage birlikte okunmalı.
 
 **🔑 Bulgular:** (1) Mecellem cevap verdiğinde kaynağa **sadık** (M1 A1=0.918 ≈ v2b) → bilgi/temel yetenek var. (2) Ama **coverage çöküyor**: oracle modda (doğru kaynak elde) bile sadece %45 cevaplıyor, gürültüde %35. base %47.5/%95, v2b %72.5/%100. → **v2b rakibi asıl deployment ekseninde (coverage) ikiye/üçe katlıyor**, eşit faithfulness'ta. (3) **M2b RAG-ıska abstention'da Mecellem iyi** (0.919), v2b (0.96) ve base (1.0)'a yakın — yani gold yokken çoğunlukla reddediyor (erken görülen ~1600-kar tek fabrikasyon örneği aggregate'i temsil etmiyor: 3/37 fabrikasyon). Mecellem'in zayıflığı abstention DEĞİL, **düşük coverage** (kullanabildiği bağlamı bile az kullanması). Kalan M2/M3/M5/register bitince tam Tablo 1.
 
