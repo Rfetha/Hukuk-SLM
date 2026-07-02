@@ -57,7 +57,9 @@ Her v2c koşusu bu 6 sayıyı yeniden ölçer; **biri anlamlı düşerse v2c red
 | **G1** | Yanlış-makul TEK-kaynakta abstention | M2 Rej\* **0.346** · param_leak 0.615 | Rej\* **≥0.90** (base 0.786'yı NET geç, §6) | 🔴 birincil |
 | **G2** | Off-by-one yanlış-madde atfı | CMK 109→"110", İş K 55→"56"… | off-by-one vakalar ↓ | 🟡 ikincil |
 | **G3** | GOLD-jargon sızıntısı | hedef %5.7 · çıktı ~1/40 | ~%0 | 🟢 kozmetik |
-| **G4** | Register/altitude ekseni | hiç ölçülmedi | önce ÖLÇ, sonra hedefle | ⚪ açık eksen |
+| **G4** | Register/altitude ekseni | script VAR, koşulmadı¹ | önce ÖLÇ (proxy), sonra hedefle | ⚪ açık eksen |
+
+> ¹ **Düzeltme (2026-07-02):** `scripts/score_register.py` MEVCUT (v1-leksik-proxy, hakemsiz, bedava). "Hiç ölçülmedi" = script eksik değil, sadece base/v1/v2b üstünde henüz KOŞULMADI. Kanonik metrik (LLM-judge rubriği) hâlâ TODO (ADR-0013). Aç-koş spec → §7·AÇ-KOŞ-1.
 | (yan) | core_hard kötü-eşleşme | ≥3 vaka (KMK Md4 vb.) | benchmark temizliği | 🟡 veri-hijyeni |
 
 ---
@@ -69,17 +71,20 @@ Her v2c koşusu bu 6 sayıyı yeniden ölçer; **biri anlamlı düşerse v2c red
 **A1 · TRAP-tipi abstain dilimi ekle** — *asıl kaldıraç, G1*
 - **Üç girdi de birleşiyor:** v2b-notu #1 · danışman §3/§6 · Claude §1.
 - Mevcut abstain dilimi = "gold yok, sadece distractor" (RAG-ıska) → M2b 0.96 zaten çözdü.
-  EKSİK = "**yanlış-ama-makul TEK/az kaynak var → gerekçeli reddet**". `trap.jsonl` kurgusu gibi:
-  konu-komşusu yanlış madde koy, hedef = kaynağa dayalı red.
-- **Aksiyon:** `gen_v2b_answers.py`'a bu dilim tipini ekle; abstain kompozisyonunu
-  RAG-ıska + TRAP-tipi olarak ikiye böl. **Oranı koru (~%20), TİPİNİ zenginleştir**
-  (Claude §1: sorun oran değil kompozisyon; danışmanın "%20-30 doğru" tespiti doğru ama eksik).
+  EKSİK = "**yanlış-ama-makul TEK/az kaynak var → gerekçeli reddet**". `trap.jsonl` KALIBI gibi
+  (aynı kanun, numara-komşusu yanlış madde) ama **kaynağı trap.jsonl DEĞİL** (eval sızıntısı) →
+  madde havuzundan üret. Hedef = yanlış kaynağı ADIYLA reddet.
+- **Aksiyon:** yeni slice `abstain_trap` — `build_sft_v2b.py pack`'te üret + `gen_v2b_answers.py`'a
+  reddetme şablonu ekle; abstain kompozisyonunu RAG-ıska + TRAP-tipi böl. **Oranı koru (~%20),
+  TİPİNİ zenginleştir** (Claude §1: sorun oran değil kompozisyon).
+- **Aç-koş spec → §7·AÇ-KOŞ-3** (dilim sayısı, komşu-seçimi, şablon, kompozisyon oranları).
 
 **A2 · Anti-parametric-leak counterfactual** — *G1'in ikinci yarısı (param_leak 0.615)*
 - **Kaynak:** v2b-notu #2 (ampirik; danışmanda YOK). Claude §1'in "ORPO M2-negatifleri" ile aynı hedef.
 - Kaynak ezbere aykırı/eksik olduğunda hedef = kaynağa uy ya da reddet, **ezberden tamamlama**.
 - **Aksiyon:** counterfactual örnek imal et (madde metni ↔ ezber çatışır); SFT-içi. ORPO'ya
   gerek YOK bu aşamada — SFT counterfactual dilimi daha ucuz ve ablasyon-temiz (bkz Tier D).
+- **Aç-koş spec → §7·AÇ-KOŞ-2** (otomatik olgu-bozma yöntemi, miktar, gate ayarı — teacher YOK).
 
 ### 🟢 TIER B — VERİ HİJYENİ (gerçekten bedava, regresyon riski ~0)
 
@@ -98,6 +103,7 @@ Benchmark hijyeni; eval adaletini artırır.
 
 **C1 · Register eksenini ÖLÇ** *(G4)* — Claude §1 + v2b-notu #5. **Hedef koymadan önce baseline gerek**
 (ADR-0010/0013 açık eksen). base/v1/v2b üçünde uzman-register skorla.
+**Script MEVCUT** (`score_register.py`, leksik-proxy) → ŞİMDİ koşulabilir. **Aç-koş spec → §7·AÇ-KOŞ-1.**
 
 **C2 · Position-bias shuffle + gold-pozisyon randomizasyon** — danışman §7 · Claude §1.
 `gen_eval_grounded.py`'de gold pozisyonu gerçekten randomize mi TEYİT et; değilse ekle.
@@ -181,3 +187,108 @@ hepsi bütçe/bellek/amaç gerekçesiyle **v2c kapsamı dışı** (gerekçeler g
 - **G3:** GOLD ~%0. **G4:** register ölçüldü.
 - **Güç:** n≥100 + base-rescore + κ tamamlandı.
 - Bulgu → research_log · karar → v2c ADR.
+
+---
+
+## 7. AÇ-KOŞ EKİ — 3 boşluk somutlaştı (spec → çalıştırılabilir)
+
+> **Neden bu ek:** §3'teki A1/A2/C1 "Aksiyon" satırları niyet düzeyindeydi ("dilim ekle",
+> "counterfactual imal et", "register ölç"). Burada her biri **karar kalmadan koşulabilir**
+> seviyeye çekilir: hangi script, hangi fonksiyon, kaç örnek, hangi şablon, hangi gate.
+> Kaynak-teyit: `score_register.py` (var), `build_sft_v2b.py` (pack/gate), `gen_v2b_answers.py`
+> (şablon), `raft_pack.madde_ord`/`pack_context`, `trap.jsonl` (KALIP referansı, veri kaynağı DEĞİL).
+
+### AÇ-KOŞ-1 · Register ölçümü (C1 / G4)
+
+**Durum:** `scripts/score_register.py` MEVCUT — v1 leksik-proxy (EXPERT_PAT vs CITIZEN_PAT oranı,
+`register_score∈[0,1]`, 1=uzman). Hakemsiz, bedava, deterministik. Girdi = `*_detail.jsonl`'ın
+`cevap` alanı (mevcut bench detail'lerinde VAR). Yani **şu an aç-koş.**
+
+**Katman-1 (proxy — ŞİMDİ koş, bedava):**
+```bash
+source ~/code/global_venv/bin/activate
+for m in base v1 v2b; do
+  python scripts/score_register.py \
+    --details outputs/eval/bench_m1_${m}_detail.jsonl --label m1_${m}
+done   # (base/v1 için detail eksikse Tier C3 rescore'da üretilecek → aynı oturumda skorla)
+```
+Manşet: `register_mean` + `expert_frac(>=0.6)` + `citizen_frac(<=0.4)`. base/v1/v2b üçlü tablo → research_log.
+
+**Katman-2 (kanonik — LLM-judge rubriği, ADR-0013 TODO, C1'i kapatır):**
+- Hakem = gpt-4o-mini, çapraz = gpt-4o (κ-vekili). `score_correctness.py`'ın judge-call kalıbını
+  klonla; SADECE rubriği değiştir.
+- 5'li rubrik (1=uzman ↔ 5=vatandaş-basit): (a) madde/kanun atıf dili, (b) resmî bağlaç
+  (uyarınca/gereğince/hükmünce), (c) doğrudan-hitap YOKluğu (yapabilirsiniz/siz), (d) sadeleştirme
+  kalıbı YOKluğu (yani/kısaca/merak etme), (e) genel ton. Çıktı: `outputs/eval/reg_judge_{label}.jsonl`.
+- Proxy ↔ judge uyumunu (κ-vekili) raporla — proxy'yi çapraz-doğrular.
+
+**Hedef (baseline sonrası):** v2c uzman-register **≥ v2b** (`expert_frac` düşmesin, `citizen_frac`
+artmasın). Bu bir **regresyon alt-sınırı**, üstünlük değil — uzman-register zaten v2 tasarımı (§6 dışı).
+
+---
+
+### AÇ-KOŞ-2 · A2 anti-parametric-leak counterfactual üretim yöntemi
+
+**Amaç:** "kaynak metni ↔ parametrik ezber çatışınca **kaynağa uy**" öğret (param_leak 0.615 ↓).
+**Prensip:** teacher-LLM YOK — otomatik + deterministik + ablasyon-temiz (ORPO'ya gerek yok, §3-E).
+
+**Yeni slice `counterfactual` — `build_sft_v2b.py pack` içine ek üretici:**
+1. Grounded tohumun `gold_text`'inde bir **sayısal/somut olgu** yakala (regex):
+   süre `\b\d+\s*(gün|ay|yıl|hafta|saat)`, eşik `%\s*\d+` / `\b\d[\d.]*\s*(TL|lira)`,
+   yaş `\b(on\s?sekiz|\d+)\s*yaş`. Olgu bulunmayan tohumu ATLA.
+2. Olguyu **sistematik boz** (sabit seed'le farklı-ama-akla-yatkın değer: 15 gün→30 gün, %25→%40,
+   on sekiz→yirmi bir). Sonuç = `cf_gold_text` (gold'un counterfactual kopyası).
+3. `cf_gold_text`'i KAYNAK olarak context'e koy (uzak distractor'larla). Hedef cevap ŞABLON:
+   "Verilen kaynağa göre ##begin_quote## [cf_gold'daki DEĞİŞTİRİLMİŞ ifade, verbatim] ##end_quote##
+   … (KANUN, Madde X)." → model **gerçek-dünya ezberini değil KAYNAĞI** izler.
+4. **Gate ayarı:** `_gate` grounded verbatim⊂gold kontrolü, counterfactual slice'ta **cf_gold_text'e**
+   bakmalı (gerçek gold_text'e değil) — yoksa "alıntı gold'da değil" ile reddeder. `row["cf_gold_text"]`
+   alanını ekle, `_gate` slice=="counterfactual" ise onu referans al.
+
+**Miktar:** grounded dilimin ~%10'u (~15K grounded → ~1.5K cf). Regex tutmayan tohum düşer, gerçek sayı loglanır.
+**Kayıt:** kaç tohumda olgu bulundu / kaç bozuldu / hangi olgu-tipleri → research_log (K3 ampirik malzeme).
+
+---
+
+### AÇ-KOŞ-3 · A1 TRAP-abstain dilim speci
+
+**Amaç:** "yanlış-ama-makul TEK/az kaynak var → **gerekçeli reddet**" (M2 Rej* 0.346 → ≥0.90).
+**Kaynak kuralı:** yanlış-komşu maddeler **`trap.jsonl`'DAN ALINMAZ** (eval seti = sızıntı) →
+madde havuzundan (`mevzuat_maddeler.jsonl`) üretilir. trap.jsonl sadece **KALIBI** verir
+(aynı kanun, numara-komşusu yanlış madde no; ör. TMK gold=Md40 → yanlış=Md409).
+
+**Yeni slice `abstain_trap` — `build_sft_v2b.py pack`'te:**
+1. Grounded tohum al (soru + gerçek gold, ör. TMK Md 40).
+2. gold'u context'ten ÇIKAR; yerine **aynı kanun_no**'nun konu-komşusu YANLIŞ maddesini koy
+   + 2-3 uzak distractor. → context'te "makul ama yanlış" tek-kaynak var.
+3. Hedef cevap = **gerekçeli red** ŞABLON (API yok): yanlış kaynağı ADIYLA reddeder
+   (RAG-ıska şablonundan FARKLI — bkz `ABSTAIN_TRAP_TEMPLATES` altında).
+
+**Komşu seçimi (deterministik):** aynı `kanun_no` içinde, `raft_pack.madde_ord` ile
+`0 < |ord(gold) − ord(cand)| ≤ K` (bitişik DEĞİL ama yakın; K≈20) + soruyla düşük leksik örtüşme.
+`pack_context`'in distractor havuzu zaten kanun-içi çeker → aynı mekanizmayı yeniden kullan.
+
+**Kompozisyon (abstain toplam oranı ~%20 KORUNUR, tipi bölünür):**
+- ~%60 **RAG-ıska** (gold yok, sadece uzak distractor) — MEVCUT, M2b 0.96'yı korur.
+- ~%40 **TRAP-tipi** (yanlış-komşu tek-kaynak) — YENİ, M2'yi hedefler.
+- → toplamın ~%12 RAG-ıska + ~%8 TRAP-tipi. (pack'te abstain'e düşen tohumu bu oranla ikiye ayır.)
+
+**Yeni şablon seti — `gen_v2b_answers.py`'a `ABSTAIN_TRAP_TEMPLATES` (4-6 varyant):**
+> "Sağlanan {yanlış_kanun}, {yanlış_madde} farklı bir hususu düzenlemektedir; sorulan konu bu
+> kaynakta yer almamaktadır. Doğru bir atıf için ilgili hükmün ayrıca temini gerekir."
+`worker()`: `slice=="abstain_trap"` → `ABSTAIN_TRAP_TEMPLATES`, `slice=="abstain"` → mevcut
+`ABSTAIN_TEMPLATES`. İkisi de `ABSTAIN_RE`'yi geçer (gate uyumlu).
+
+---
+
+### Küçük netleştirmeler (aç-koş için gerekli, non-blocking)
+
+| Konu | Karar |
+|---|---|
+| **n≥100 (§6 güç şartı)** | core_hard=40, trap=35 → yetersiz. `gen_eval_grounded.py --n 120` (deterministik seed → base ve v-model AYNI sorular). TRAP eval seti: `build_eval_sets.py` trap üreticisini n↑ ile yeniden koş. Hedef: her mod ≥100. |
+| **C4 Mecellem prompt formatı** | CPT / instruction-tuned DEĞİL → chat-template DEĞİL; **completion-style few-shot** (2-3 örnekli, RAG bloğu düz-metin). Paper'da "foundation kıyası" diye yaz (§3-C4). |
+| **Tier A eğitim config** | v2b ile AYNI (lr=1e-4, r=16/α=32, gradient_checkpointing, batch=1). Yeni slice'lar (counterfactual ~%10 + abstain_trap kompozisyon-içi) veri hacmini ~%5-10 artırır → Modal süresi ~orantılı, $30 kredi içinde. rsLoRA/ret-token-loss DAHİL DEĞİL (Tier E ayrı kol). |
+
+**Aç-koş sonucu:** A1/A2/C1 artık "karar bekleyen" değil "koşulabilir." Kalan tek gerçek yeni-kod:
+`build_sft_v2b.py pack`'e 2 slice üretici (`counterfactual`, `abstain_trap`) + `_gate`'e cf-referans +
+`gen_v2b_answers.py`'a `ABSTAIN_TRAP_TEMPLATES`. Register Katman-1 sıfır-kod (mevcut script).
