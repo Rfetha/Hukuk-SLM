@@ -403,6 +403,25 @@ Otorite: `v2c_roadmap.md` §5 madde 2 + Tier C (C1/C3). **Kullanıcı kararı (2
 
 ---
 
+## v2c icra — ADIM 2 · C4 Mecellem rakip baseline — KISMİ (M1/M4 bitti, 2026-07-02)
+Otorite: `v2c_roadmap.md` §5 madde 2 (C4) + §7 C4. **DEVAM EDİYOR** — tam Tablo 1 tüm 6 mod bitince yazılacak; bu ara-kayıt sohbette kaybolmasın diye.
+
+**Model & kurulum (paper Tablo 1):** `newmindai/Mecellem-Qwen3-4B-TR` (Qwen3-4B, CPT ~270B token, **instruction-tuned DEĞİL**, Apache-2.0). Kıyas = base/v2b ile AYNI harness/mod/n(40/35)/seed(3407)/hakem(gpt-4o-mini). Foundation-kıyası → **completion-style few-shot** (2 örnek: biri atıflı-cevap biri red; chat-template YOK, roadmap §7·C4). Yeni kod: `gen_eval_grounded.py --completion-fewshot` (izole dal, mevcut pipeline'a risksiz).
+
+**🔧 Kritik bulgu — Mecellem checkpoint'i SIFIR lm_head taşıyor:** Unsloth 4-bit VE düz transformers bf16 ikisinde de ilk çıktı garbage ("!!!!" = token 0 tekrarı). Tanı: `lm_head.weight std=0.0` (tamamen sıfır), `embed_tokens std=0.0245` (sağlıklı). Config `tie_word_embeddings=True` diyor ama checkpoint ayrı (sıfır) bir lm_head da taşıdığı için transformers "ikisi farklı → tie etme" deyip sıfır head'i kullanıyor → tüm logitler eşit. **Fix:** yüklemeden sonra `lm_head.weight = embed_tokens.weight` elle bağla (std<1e-6 tespitiyle). Sonra düzgün, atıflı, kaynağa-sadık Türkçe üretiyor. → `gen_eval_grounded.build_model` completion-fewshot dalına kalıcı yazıldı. (Rakibi düzgün kurmak da elmayla-elma'nın parçası; bu, foundation-kıyas metodolojisinin K-methodology notu.)
+
+**Kısmi sonuçlar (cevaplanan-only, base/v2b ile AYNI kural):**
+| Mod | base | v2b | **Mecellem** |
+|---|---|---|---|
+| **M1** grounding (gürültü/mirror) | 0.886 · cov 47.5% | **0.920 · cov 72.5%** | 0.918 · **cov 35.0%** (14/40) |
+| **M4** grounding (oracle tavan) | 0.983 · cov 95% | 0.975 · **cov 100%** | 0.921 · **cov 45.0%** (18/40) |
+
+**🔑 İki bulgu:** (1) Mecellem cevap verdiğinde kaynağa **sadık** (M1 A1=0.918 ≈ v2b) → bilgi/temel yetenek var. (2) Ama **coverage çöküyor**: oracle modda (doğru kaynak elde) bile sadece %45 cevaplıyor, gürültüde %35. base %47.5/%95, v2b %72.5/%100. → **v2b rakibi asıl deployment ekseninde (coverage) ikiye/üçe katlıyor**, eşit faithfulness'ta. Mecellem'in instruct-olmaması RAFT-context'i kullanamama/aşırı-çekilme (M2b'de tersine: fabrikasyon, ~1600 kar cevap) olarak yansıyor. Kalan M2/M2b/M3/M5/register bitince tam Tablo 1.
+
+**Kaynak dosyalar:** `outputs/eval/bench_m{1,4}_mecellem_detail.jsonl` · `gnd_bench_m{1,4}_mecellem*`. Driver: `scratchpad/run_mecellem.sh` (PID 6106 koşuyor).
+
+---
+
 ## Açık kararlar / sıradaki
 - [ ] 🎯 **HEDEF YÜKSELTİLDİ (2026-07-02, kullanıcı direktifi): v2c kapısı = REGRESYON değil ÜSTÜNLÜK.** "base'in altına düşme" yetmez → **base'i anlamlı-eksenlerde NET geç** ("küçük fark yeterli değil"). Ezilebilir eksen hedefleri: M2 yanlış-kaynak abstention **≥0.90** (base 0.786, v2b 0.346 → kayıptan net kazanca çevir), M1 grounding **≥0.94** (base 0.879), A4 **≥0.95**. Tavan eksenleri (M3/M4/M2b) BOZULMADAN korunur ("ezdik" denmez). M5 KÖR = anti-hedef (düşük İYİ). NET fark = effect size **+** n≥100 + base-rescore + κ-vekili (ikisi de şart). Detay/tablo: `v2c_roadmap.md §6`.
 - [ ] ✅ **v2c aç-koş EKİ yazıldı (2026-07-02):** roadmap'in 3 niyet-düzeyi boşluğu (register metriği · A2 counterfactual yöntemi · A1 TRAP-abstain dilim speci) çalıştırılabilir seviyeye çekildi → `v2c_roadmap.md §7`. Bulgular: (1) **register script ZATEN VAR** (`score_register.py` leksik-proxy, hakemsiz) — "hiç ölçülmedi" stale idi, gerçek gap = koşulmadı + kanonik LLM-judge rubriği TODO; (2) **A1 yanlış-komşu kaynağı `trap.jsonl`'dan ALINAMAZ** (eval sızıntısı) → madde havuzundan `madde_ord` komşusuyla üret; (3) **n≥100 karşılanmıyor** (core=40/trap=35) → `gen_eval_grounded.py --n 120`. Kalan yeni-kod: pack'e 2 slice üretici (`counterfactual`+`abstain_trap`) + `_gate` cf-referans + `ABSTAIN_TRAP_TEMPLATES`.
