@@ -155,10 +155,10 @@ hepsi bütçe/bellek/amaç gerekçesiyle **v2c kapsamı dışı** (gerekçeler g
 4. ✅ **B1 GOLD-scrub** (Tier B) — TAMAMLANDI 2026-07-02. (a) `gen_v2b_answers.py` TEACHER_SYSTEM'e GOLD-yasağı eklendi (⛓️ 6b hazır). (b) answers.jsonl **1157/19305=%5.99 → 0** (cümle korundu, yedek `.pre_scrub.bak`). Kayıt: research_log ADIM 3-5.
 5. ✅ **B2 replay teyit + B3 core_hard** — 2026-07-02. B2: replay_tr.jsonl = MIT genel-TR (hukuk-dışı, anti-forgetting amaçlı) → DOKUNULMADI. B3: kötü-eşleşme #28&#29 (KMK Md4) belgelendi, kaldırma n=120 regen'ine ERTELENDİ (elmayla-elma). Kayıt: research_log ADIM 3-5.
 6. **Tier A — tek v2c SFT** (sıralı alt-akış):
-   - 6a. **Yeni-kod (4 parça):** `build_sft_v2b.py pack`→`counterfactual` slice (AÇ-KOŞ-2) + `abstain_trap` slice (AÇ-KOŞ-3) · `_gate`→cf-referans · `gen_v2b_answers.py`→`ABSTAIN_TRAP_TEMPLATES`.
-   - 6b. **pack** → **gen_answers** (`⛓️ B1 bitmiş olmalı`) → **assemble** (gate+replay+split).
-   - 6c. **Modal `--detach` eğitim** (config = v2b: lr=1e-4, r=16/α=32) → **adapter çek**.
-   - 6d. **6-mod eval** → §6 üstünlük + §1 regresyon kapısı. **Kapı geçmezse v2c reddedilir.**
+   - 6a. ✅ **Yeni-kod (4 parça) TAMAM** 2026-07-02: `build_sft_v2b.py` counterfactual+abstain_trap slice (ayrı crng→ana akış bozulmaz) · `_gate` cf-referans · kelime-sayı CF · `gen_v2b_answers.py` ABSTAIN_TRAP_TEMPLATES+build_cf_answer+`--reuse-answers`. py_compile OK, birim-test OK.
+   - 6b. ✅ **pack→gen→assemble TAMAM** 2026-07-02 (`data/processed/sft_v2c/`): grounded 14742/cf 716/abstain 2339/trap 1508 (abstain+trap=19.9%✓, trap/abstain=39/61✓); gen **API=0** (grounded v2b-reuse); assemble kept 18701 (CF+trap 0 red), **train 17353/val 963/test 963**. Kayıt: research_log ADIM 6a+6b.
+   - 6c. ⏸️ **Modal `--detach` eğitim** (config = v2b: lr=1e-4, r=16/α=32) → adapter çek. **🔴 PARA-KAPISI: kullanıcı onayı bekleniyor.**
+   - 6d. **6-mod eval** → §6 üstünlük + §1 regresyon kapısı. **Kapı geçmezse v2c reddedilir.** (base/v1 apples-to-apples baseline = ADIM 2 C3, arka planda koşuyor.)
 7. **(kapı geçerse)** Tier D off-by-one mini-tur → Tier E paper ablasyon kolları (bütçe kalırsa).
 
 ## 6. Başarı kapısı (v2c) — 🎯 REGRESYON DEĞİL, ÜSTÜNLÜK
