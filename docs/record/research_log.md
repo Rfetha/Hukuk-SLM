@@ -431,6 +431,14 @@ Otorite: `v2c_roadmap.md` §5 madde 2 (C4) + §7 C4. **ADIM 2 KAPANDI** — base
 
 **Metodoloji notu (K-methodology):** rakibi düzgün kurmak elmayla-elma'nın parçası. Mecellem checkpoint'i SIFIR lm_head taşıyor (std=0.0) + config tie=True → transformers "ikisi farklı→tie etme" deyip sıfır head kullanıyor → garbage "!!!!". Fix: yüklemeden sonra `lm_head.weight = embed_tokens.weight` elle tie (std<1e-6 tespitiyle), `gen_eval_grounded.build_model` completion-fewshot dalına kalıcı. Rakibi kırık kurup "biz kazandık" demek geçersiz olurdu.
 
+**📄 Mecellem paper bağlamı (arXiv 2601.16018, "Mecellem Models: Turkish Models Trained from Scratch and Continually Pre-trained for the Legal Domain", newmindai) — 2026-07-02 tarandı:**
+- **CPT-only, instruction-tuned DEĞİL** (§3.4.3 "CPT applied directly as continuation on Qwen3-Base"). SFT/chat-template/RLHF yok → completion-style kurulumumuz DOĞRU.
+- **Qwen3-4B = TEK-fazlı CPT, 270.8B token** (academic+legal+legislation+web). 4-fazlı curriculum yalnız 1.7B'ye. Ağır CPT → yüksek M5 KÖR (0.35 parametrik ezber) tutarlı.
+- **🔑 Onların eval'i SADECE PERPLEXITY** (%36.2 düşüş) + decoder→encoder çevirip MTEB-TR retrieval. **Hiç QA/grounding/abstention/RAG generatif eval'i YOK.** → **Mecellem'i generatif RAG eksenlerinde ilk ölçen BİZİZ** (paper katkısı: "generatif eksende ilk foundation ölçümü").
+- **🔧 Sıfır-lm_head AÇIKLANDI:** model embedding/RAG-base olarak (decoder→encoder) konumlandığından generatif lm_head hiç eğitilmemiş/doğrulanmamış → sıfır kalmış. Tie-fix generatif kullanım için zorunlu. Paper metodoloji notu.
+- **Konumlama:** embedding/RAG-pipeline base'i, chat/instruct değil → generatif kıyas "off-label" ama en yakın TR hukuk decoder foundation'ı = meşru foundation-baseline. Paper'da "foundation kıyası" + "off-label generatif ölçüm" diye çerçevele; "instruct elmayla-elma" DEME.
+- Kaynak: `https://arxiv.org/abs/2601.16018` · HF `newmindai/Mecellem-Qwen3-4B-TR` (Apache-2.0).
+
 **Kaynak dosyalar:** `outputs/eval/bench_m{1,4}_mecellem_detail.jsonl` · `gnd_bench_m{1,4}_mecellem*`. Driver: `scratchpad/run_mecellem.sh` (PID 6106 koşuyor).
 
 ---
