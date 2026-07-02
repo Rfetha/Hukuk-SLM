@@ -11,11 +11,11 @@
 > M2b 0.96 / M3 1.000 · forgetting nötr). v1'e karşı net kazandı. **Bu doküman (v2c_roadmap.md) = v2c'nin
 > TEK OTORİTESİ** — tüm karar/gerekçe burada; başka yerde v2c detayı tekrarlama.
 >
-> **YAPILACAK (bu dosyanın §5 sırası):**
-> 1. **Tier C** (FT'siz, önce — eval'i adil yapar): C1 register ekseni ÖLÇ (base/v1/v2b) · C2 gold-pozisyon shuffle teyit · C3 base/v1'i M2b (`--no-gold`) + cevaplanan-only modda yeniden skorla + M2b'yi n=40'a tamamla · **C4 rakip baseline (Mecellem-4B) skorla → paper Tablo 1** (C3 ile aynı oturum).
-> 2. **Tier B** (veri hijyeni): B1 GOLD-scrub · B2 replay teyit · B3 core_hard kötü-eşleşme temizliği.
-> 3. **Tier A** (çekirdek, TEK v2c SFT): A1 TRAP-tipi abstain dilimi + A2 anti-leak counterfactual → Modal `--detach` eğitim → adapter çek → **6-mod regresyon eval**.
-> 4. Kapı geçerse Tier D (off-by-one) · Tier E (paper ablasyon kolları) bütçe kalırsa.
+> **YAPILACAK — §5 tek numaralı akış OTORİTE (aşağısı özet):**
+> 1. **C1-v2b register** (sıfır-kod, hemen). 2. **C3+C4+C1-base/v1** tek ölçüm oturumu (rescore + Mecellem Tablo 1 + M2b n=40).
+> 3. **C2** shuffle teyit. 4. **B1 GOLD-scrub** (`⛓️ A gen_answers'tan önce`). 5. **B2+B3** hijyen.
+> 6. **Tier A tek v2c SFT:** 4-parça yeni-kod → pack → gen_answers → assemble → Modal `--detach` → adapter → **6-mod eval (§6+§1 kapı)**.
+> 7. Kapı geçerse **Tier D** (off-by-one) · **Tier E** (paper ablasyon) bütçe kalırsa. **Ayrıntı/bağımlılık: §5.**
 >
 > **DEĞİŞMEZ KURAL:** §1 regresyon kapısındaki 6 sayı (M1 0.904 · M4 0.975 · M2b 0.96 · M3 1.000 · M5 0.175-nötr · A4 0.925) **DÜŞEMEZ** — biri anlamlı düşerse v2c reddedilir.
 > **⚠️ rsLoRA + ret-token loss-masking P0-BEDAVA DEĞİL** → Tier E ablasyon kolu (gerekçe §3-E). Önce VERİ kaldıracı (Tier A).
@@ -144,11 +144,22 @@ hepsi bütçe/bellek/amaç gerekçesiyle **v2c kapsamı dışı** (gerekçeler g
 
 ---
 
-## 5. Sıra (execution)
-1. **Tier C önce** (C1 register ölç, C2 shuffle teyit, C3 base yeniden-skor, **C4 rakip baseline→Tablo 1**) — FT'siz, eval'i adil yapar; C3+C4 tek ölçüm-oturumu.
-2. **Tier B** (B1 GOLD scrub, B2 replay teyit, B3 core_hard temizlik) — veri hazırlanırken.
-3. **Tier A** (A1 TRAP-abstain + A2 counterfactual) → **tek v2c SFT koşusu** → 6-mod regresyon eval.
-4. Kapı geçerse Tier D (off-by-one) sonraki mini-tur; Tier E paper bütçesi kalırsa.
+## 5. Sıra (execution) — TEK NUMARALI AKIŞ (aç-koş)
+
+> Bu liste **tam icra sırası** — yukarıdan aşağı, karar kalmadan koşulur. `⛓️` = bağımlılık
+> (o adım biri BİTMEDEN başlamaz). Tier etiketleri gruplama; **gerçek sıra bu numaralar.**
+
+1. **C1-v2b register** (Tier C) — `score_register.py` v2b detail'i üstünde koş. **Sıfır-kod, bedava, hemen.** (§7·AÇ-KOŞ-1 Katman-1)
+2. **C3 + C4 + C1-base/v1** — TEK ölçüm oturumu: base/v1'i cevaplanan-only+eval-mirror+M2b(`--no-gold`) rescore (C3) · Mecellem-4B baseline→Tablo 1 (C4) · **C1-base/v1 register aynı oturumda** (`⛓️ C1'in base/v1 yarısı C3 rescore'un ürettiği detail'i bekler — §7 satır ~213`). M2b'yi n=40'a tamamla.
+3. **C2 position-shuffle teyit** — `gen_eval_grounded.py` gold-pozisyon randomize mi; değilse ekle. (G2'yi de test eder)
+4. **B1 GOLD-scrub** (Tier B) — `⛓️ A'nın gen_answers'ından ÖNCE bitmeli` (teacher-prompt'u değiştirir → scrub'sız cevap üretilmesin). Önce raporla → cümle bozmadan temizle.
+5. **B2 replay teyit + B3 core_hard temizlik** — B2 önce doğrula (uygunsa dokunma) · B3 benchmark hijyeni.
+6. **Tier A — tek v2c SFT** (sıralı alt-akış):
+   - 6a. **Yeni-kod (4 parça):** `build_sft_v2b.py pack`→`counterfactual` slice (AÇ-KOŞ-2) + `abstain_trap` slice (AÇ-KOŞ-3) · `_gate`→cf-referans · `gen_v2b_answers.py`→`ABSTAIN_TRAP_TEMPLATES`.
+   - 6b. **pack** → **gen_answers** (`⛓️ B1 bitmiş olmalı`) → **assemble** (gate+replay+split).
+   - 6c. **Modal `--detach` eğitim** (config = v2b: lr=1e-4, r=16/α=32) → **adapter çek**.
+   - 6d. **6-mod eval** → §6 üstünlük + §1 regresyon kapısı. **Kapı geçmezse v2c reddedilir.**
+7. **(kapı geçerse)** Tier D off-by-one mini-tur → Tier E paper ablasyon kolları (bütçe kalırsa).
 
 ## 6. Başarı kapısı (v2c) — 🎯 REGRESYON DEĞİL, ÜSTÜNLÜK
 
