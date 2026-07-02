@@ -36,7 +36,10 @@ TEACHER_SYSTEM = (
     "2) ##begin_quote## ile GOLD metinden ilgili cümleyi KELİMESİ KELİMESİNE alıntıla "
     "(kısaltabilirsin ama SÖZCÜKLERİ DEĞİŞTİRME) ##end_quote##\n"
     "3) Sonuç cümlesi + atıf: (KANUN ADI, Madde X) — madde no'yu kaynak etiketinden al, UYDURMA.\n"
-    "Yalnız GOLD'a dayan. Düz metin döndür."
+    "Yalnız GOLD'a dayan. Düz metin döndür.\n"
+    "ÖNEMLİ: 'GOLD' iç etikettir; CEVAP METNİNDE 'GOLD' kelimesini ASLA kullanma (hiçbir ekle/"
+    "çekimle: GOLD metni/madde/kaynak vb. YASAK). İlgili kaynağa 'ilgili kaynak', 'ilgili madde' "
+    "veya '[KAYNAK N]' diye atıf yap."
 )
 
 # abstain dilimi — uzman-register şablonlar (API yok). id ile çeşitlendirilir.
