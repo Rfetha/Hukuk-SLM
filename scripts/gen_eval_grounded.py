@@ -86,6 +86,8 @@ def parse_args():
                         "context uzunluğuyla ölçmek için ŞART (ADR-0013). Sadece --distractors modunda etkin.")
     p.add_argument("--empty-context", action="store_true",
                    help="M3 (E-set): hiç kaynak verme (boş bağlam) → doğru davranış=abstention")
+    p.add_argument("--completion-fewshot", action="store_true",
+                   help="chat-template YERİNE few-shot completion (foundation rakip: Mecellem CPT)")
     p.add_argument("--no-gold", action="store_true",
                    help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
                         "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
@@ -118,6 +120,26 @@ def extract(rec):
 
 
 def build_model(args):
+    # Foundation rakip (Mecellem): düz transformers bf16. Unsloth 4-bit, Mecellem'in
+    # UNTIED embed_tokens/lm_head'ini bozuyor (garbage "!!!!" çıktı) → 4B bf16 (~8GB, 12GB'a sığar).
+    if getattr(args, "completion_fewshot", False):
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained(args.model)
+        model = AutoModelForCausalLM.from_pretrained(
+            args.model, torch_dtype=torch.bfloat16, device_map="cuda",
+        )
+        model.eval()
+        # ⚠️ Mecellem checkpoint'i SIFIR bir lm_head taşıyor (std=0.0) + config tie=True →
+        # transformers "ikisi farklı" deyip sıfır lm_head kullanıyor → garbage "!!!!".
+        # Doğrusu: lm_head embed_tokens'a TIED olmalı → elle bağla (embed std=0.0245, sağlıklı).
+        lm = model.get_output_embeddings().weight
+        if lm.float().std().item() < 1e-6:
+            model.get_output_embeddings().weight = model.get_input_embeddings().weight
+            print("[gen-eval] ⚠️ sıfır lm_head tespit → embed_tokens'a TIED (Mecellem fix)")
+        if tokenizer.pad_token_id is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        print(f"[gen-eval] foundation bf16 yüklendi (transformers): {args.model}")
+        return model, tokenizer
     model, tokenizer = FastModel.from_pretrained(
         model_name=args.model,
         max_seq_length=args.max_seq_len,
@@ -130,6 +152,63 @@ def build_model(args):
         print(f"[gen-eval] adapter yüklendi: {args.adapter}")
     FastModel.for_inference(model)
     return model, tokenizer
+
+
+# ── COMPLETION-STYLE few-shot (C4 rakip baseline: Mecellem CPT/foundation, instruct DEĞİL) ──
+# Mecellem-Qwen3-4B-TR chat-template'i güvenilir takip etmez (CPT ~270B token, instruction-tuned
+# değil, roadmap §7·C4). ADİL kıyas = few-shot completion: 2 örnekle format öğret (biri atıflı-cevap,
+# biri red), sonra gerçek KAYNAK+SORU ver, "CEVAP:" ile tamamlat. Örnekler elde-yazılı, eval'e
+# sızmaz (genel maddeler). Skorlama AYNI (groundedness/score_abstention/score_correctness).
+_FEWSHOT_RAG = (
+    "Aşağıda, verilen KAYNAK metinlere dayanan Türk hukuku soru-cevap örnekleri vardır. "
+    "Cevap YALNIZCA kaynağa dayanır; kaynakta bilgi yoksa reddedilir.\n\n"
+    "KAYNAKLAR:\n[TÜRK BORÇLAR KANUNU Madde 146]\n"
+    "Kanundan doğan alacaklar, aksine bir hüküm bulunmadıkça on yıllık zamanaşımına tabidir.\n"
+    "SORU: Kanundan doğan alacaklarda genel zamanaşımı süresi ne kadardır?\n"
+    "CEVAP: Sağlanan kaynağa göre kanundan doğan alacaklarda genel zamanaşımı süresi on yıldır "
+    "(Türk Borçlar Kanunu, Madde 146).\n\n"
+    "KAYNAKLAR:\n[TÜRK CEZA KANUNU Madde 125]\n"
+    "Bir kimseye onur, şeref ve saygınlığını rencide edebilecek nitelikte fiil isnat eden kişi cezalandırılır.\n"
+    "SORU: Yasal evlenme yaşı kaç yaşındır?\n"
+    "CEVAP: Verilen kaynaklarda evlenme yaşına ilişkin bir düzenleme yer almamaktadır; "
+    "bu konuda ilgili mevzuata başvurulması gerekir.\n\n"
+)
+_FEWSHOT_BLIND = (
+    "Aşağıda Türk hukuku hakkında kısa soru-cevap örnekleri vardır. İlgili kanun ve madde belirtilir.\n\n"
+    "SORU: Türk Medeni Kanunu'na göre kişilik ne zaman başlar?\n"
+    "CEVAP: Kişilik, çocuğun sağ olarak tamamıyla doğduğu anda başlar (Türk Medeni Kanunu, Madde 28).\n\n"
+    "SORU: Borçlar hukukunda genel zamanaşımı süresi kaç yıldır?\n"
+    "CEVAP: Kanundan doğan alacaklarda genel zamanaşımı süresi on yıldır (Türk Borçlar Kanunu, Madde 146).\n\n"
+)
+_STOP_MARKERS = ("\nKAYNAKLAR:", "\nSORU:", "\nCEVAP:", "\n\n")
+
+
+def generate_completion(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
+    """Completion-style few-shot üretim (chat-template YOK) — foundation rakip için."""
+    if sources_block is not None:       # M1/M2b/M3
+        ctx = f"KAYNAKLAR:\n{sources_block}\nSORU: {soru}\nCEVAP:"
+        prompt = _FEWSHOT_RAG + ctx
+    elif source:                        # M4/M2 tek kaynak
+        ctx = f"KAYNAKLAR:\n{source[:3500]}\nSORU: {soru}\nCEVAP:"
+        prompt = _FEWSHOT_RAG + ctx
+    else:                               # M5 kör
+        prompt = _FEWSHOT_BLIND + f"SORU: {soru}\nCEVAP:"
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    with torch.no_grad():
+        out = model.generate(
+            input_ids=inputs.input_ids, attention_mask=inputs.attention_mask,
+            max_new_tokens=max_new_tokens, do_sample=False,
+            temperature=None, top_p=None, top_k=None,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+    gen = tokenizer.decode(out[0][inputs.input_ids.shape[1]:], skip_special_tokens=True)
+    # İlk sınır işaretinde kes (model yeni Q&A üretmesin).
+    cut = len(gen)
+    for m in _STOP_MARKERS:
+        j = gen.find(m)
+        if j != -1:
+            cut = min(cut, j)
+    return gen[:cut].strip()
 
 
 def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
@@ -229,7 +308,8 @@ def main():
                 context_shown = labeled_src
                 mode = "oracle"
 
-            cevap = generate(
+            gen_fn = generate_completion if a.completion_fewshot else generate
+            cevap = gen_fn(
                 model, tokenizer, soru, a.max_new_tokens,
                 source=labeled_src if (a.with_source and not a.distractors and not a.empty_context) else None,
                 sources_block=sources_block)
