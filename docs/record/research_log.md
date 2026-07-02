@@ -410,13 +410,14 @@ Otorite: `v2c_roadmap.md` §5 madde 2 (C4) + §7 C4. **DEVAM EDİYOR** — tam T
 
 **🔧 Kritik bulgu — Mecellem checkpoint'i SIFIR lm_head taşıyor:** Unsloth 4-bit VE düz transformers bf16 ikisinde de ilk çıktı garbage ("!!!!" = token 0 tekrarı). Tanı: `lm_head.weight std=0.0` (tamamen sıfır), `embed_tokens std=0.0245` (sağlıklı). Config `tie_word_embeddings=True` diyor ama checkpoint ayrı (sıfır) bir lm_head da taşıdığı için transformers "ikisi farklı → tie etme" deyip sıfır head'i kullanıyor → tüm logitler eşit. **Fix:** yüklemeden sonra `lm_head.weight = embed_tokens.weight` elle bağla (std<1e-6 tespitiyle). Sonra düzgün, atıflı, kaynağa-sadık Türkçe üretiyor. → `gen_eval_grounded.build_model` completion-fewshot dalına kalıcı yazıldı. (Rakibi düzgün kurmak da elmayla-elma'nın parçası; bu, foundation-kıyas metodolojisinin K-methodology notu.)
 
-**Kısmi sonuçlar (cevaplanan-only, base/v2b ile AYNI kural):**
+**Kısmi sonuçlar (cevaplanan-only A1 / abstention rejection, base/v2b ile AYNI kural):**
 | Mod | base | v2b | **Mecellem** |
 |---|---|---|---|
 | **M1** grounding (gürültü/mirror) | 0.886 · cov 47.5% | **0.920 · cov 72.5%** | 0.918 · **cov 35.0%** (14/40) |
 | **M4** grounding (oracle tavan) | 0.983 · cov 95% | 0.975 · **cov 100%** | 0.921 · **cov 45.0%** (18/40) |
+| **M2b** RAG-ıska abstention (rejection) | 1.0 | 0.96 | 0.919 (fab 0.081, n=40) |
 
-**🔑 İki bulgu:** (1) Mecellem cevap verdiğinde kaynağa **sadık** (M1 A1=0.918 ≈ v2b) → bilgi/temel yetenek var. (2) Ama **coverage çöküyor**: oracle modda (doğru kaynak elde) bile sadece %45 cevaplıyor, gürültüde %35. base %47.5/%95, v2b %72.5/%100. → **v2b rakibi asıl deployment ekseninde (coverage) ikiye/üçe katlıyor**, eşit faithfulness'ta. Mecellem'in instruct-olmaması RAFT-context'i kullanamama/aşırı-çekilme (M2b'de tersine: fabrikasyon, ~1600 kar cevap) olarak yansıyor. Kalan M2/M2b/M3/M5/register bitince tam Tablo 1.
+**🔑 Bulgular:** (1) Mecellem cevap verdiğinde kaynağa **sadık** (M1 A1=0.918 ≈ v2b) → bilgi/temel yetenek var. (2) Ama **coverage çöküyor**: oracle modda (doğru kaynak elde) bile sadece %45 cevaplıyor, gürültüde %35. base %47.5/%95, v2b %72.5/%100. → **v2b rakibi asıl deployment ekseninde (coverage) ikiye/üçe katlıyor**, eşit faithfulness'ta. (3) **M2b RAG-ıska abstention'da Mecellem iyi** (0.919), v2b (0.96) ve base (1.0)'a yakın — yani gold yokken çoğunlukla reddediyor (erken görülen ~1600-kar tek fabrikasyon örneği aggregate'i temsil etmiyor: 3/37 fabrikasyon). Mecellem'in zayıflığı abstention DEĞİL, **düşük coverage** (kullanabildiği bağlamı bile az kullanması). Kalan M2/M3/M5/register bitince tam Tablo 1.
 
 **Kaynak dosyalar:** `outputs/eval/bench_m{1,4}_mecellem_detail.jsonl` · `gnd_bench_m{1,4}_mecellem*`. Driver: `scratchpad/run_mecellem.sh` (PID 6106 koşuyor).
 
