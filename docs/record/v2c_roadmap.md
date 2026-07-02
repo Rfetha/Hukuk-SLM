@@ -12,7 +12,7 @@
 > TEK OTORİTESİ** — tüm karar/gerekçe burada; başka yerde v2c detayı tekrarlama.
 >
 > **YAPILACAK (bu dosyanın §5 sırası):**
-> 1. **Tier C** (FT'siz, önce — eval'i adil yapar): C1 register ekseni ÖLÇ (base/v1/v2b) · C2 gold-pozisyon shuffle teyit · C3 base/v1'i M2b (`--no-gold`) + cevaplanan-only modda yeniden skorla + M2b'yi n=40'a tamamla.
+> 1. **Tier C** (FT'siz, önce — eval'i adil yapar): C1 register ekseni ÖLÇ (base/v1/v2b) · C2 gold-pozisyon shuffle teyit · C3 base/v1'i M2b (`--no-gold`) + cevaplanan-only modda yeniden skorla + M2b'yi n=40'a tamamla · **C4 rakip baseline (Mecellem-4B) skorla → paper Tablo 1** (C3 ile aynı oturum).
 > 2. **Tier B** (veri hijyeni): B1 GOLD-scrub · B2 replay teyit · B3 core_hard kötü-eşleşme temizliği.
 > 3. **Tier A** (çekirdek, TEK v2c SFT): A1 TRAP-tipi abstain dilimi + A2 anti-leak counterfactual → Modal `--detach` eğitim → adapter çek → **6-mod regresyon eval**.
 > 4. Kapı geçerse Tier D (off-by-one) · Tier E (paper ablasyon kolları) bütçe kalırsa.
@@ -106,6 +106,14 @@ Benchmark hijyeni; eval adaletini artırır.
 **C3 · base/v1 yeniden skorla** (cevaplanan-only + eval-mirror + M2b no-gold) → elmayla-elma;
 M2b'yi n=40'a tamamla. (v2b_sonuclar açık işi.)
 
+**C4 · RAKİP BASELINE skorla → paper Tablo 1** *(PAPER_TARGET §4)* — C3 ile AYNI operasyon
+(aynı harness/mod/n/hakem/seed), FT'den bağımsız, C3 ile tek ölçüm-oturumunda batch'le.
+- **Modeller:** `newmindai/Mecellem-Qwen3-4B-TR` (en yakın decoder rakip) + (bütçe/zaman kalırsa) `Mecellem-1.7B`, `Llama-3.1-8B-legal`.
+- **Yerel koşar** (4B → RTX 5070, Modal gerekmez).
+- ⚠️ **Çerçeve:** Mecellem = continual-pretrain, **instruct DEĞİL** → RAFT/RAG promptunu düzgün takip etmez → paper'da **"foundation karşılaştırması"** diye yaz, "instruct elmayla-elma" DEME.
+- ⚠️ **Önce teyit:** HF public mi + hangi checkpoint (PAPER_TARGET §9 açık kararı).
+- **Bu, base-üstünlük kapısından AYRI eksen:** base-gate = katkı izolasyonu · C4 = rekabetçi konumlama (Tablo 1). Çıktı → `PAPER_TARGET.md §4`.
+
 ### 🟡 TIER D — G2 off-by-one *(ikincil, veri+format)*
 - Danışman §2 "citation-tuning" · Claude §1 "madde-no sadakati + distractor kurgusu" · v2b-notu #4.
 - **Kök neden:** bitişik-madde distractor'ından madde-no sızması. → distractor'ı **uzak-madde**
@@ -130,7 +138,7 @@ hepsi bütçe/bellek/amaç gerekçesiyle **v2c kapsamı dışı** (gerekçeler g
 ---
 
 ## 5. Sıra (execution)
-1. **Tier C önce** (C1 register ölç, C2 shuffle teyit, C3 base yeniden-skor) — FT'siz, eval'i adil yapar.
+1. **Tier C önce** (C1 register ölç, C2 shuffle teyit, C3 base yeniden-skor, **C4 rakip baseline→Tablo 1**) — FT'siz, eval'i adil yapar; C3+C4 tek ölçüm-oturumu.
 2. **Tier B** (B1 GOLD scrub, B2 replay teyit, B3 core_hard temizlik) — veri hazırlanırken.
 3. **Tier A** (A1 TRAP-abstain + A2 counterfactual) → **tek v2c SFT koşusu** → 6-mod regresyon eval.
 4. Kapı geçerse Tier D (off-by-one) sonraki mini-tur; Tier E paper bütçesi kalırsa.

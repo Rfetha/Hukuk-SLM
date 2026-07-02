@@ -282,7 +282,7 @@ v2b Modal eğitim hattı kuruldu — mevcut v1 altyapısı (`train_sft.py` + `mo
 - [ ] v2 tasarımı: madde-verili modda veri üretimi + hedge dilimi + uzman register prompt. **Ablasyon gerekli:** hedge dozajı (%15 vs %25) + eğitim-modu-vs-hedge confound ayrımı (pilot bunları çözemez, v2 ablasyonu çözecek).
 - [ ] **Register/altitude ekseni EKSİK (brainstorm 2026-06-13 gece).** Pilot correctness/grounded/abstention ölçüyor ama "çıktı uzman-register mı vatandaş-basit mi" ölçmüyor. v2 hedefi=uzman-register → v2 DEĞERLENDİRMESİNDEN önce register sinyali eklenmeli (yeni eksen veya A4'e altitude metriği). Pilotu bloklamaz; v2-eval'i bloklar.
 - [ ] Kaynak-eksik eval seti (hedge-isabeti ölçmek için) — yeni.
-- [ ] Rakip baseline (Mecellem-Qwen3-4B, Llama-3.1-8B) bizim terazide, madde-verili modu.
+- [ ] Rakip baseline (Mecellem-Qwen3-4B, Llama-3.1-8B) bizim terazide, madde-verili modu. → **v2c_roadmap Tier C4'e bağlandı** (C3 base-rescore ile aynı ölçüm-oturumu, çıktı=PAPER_TARGET §4 Tablo 1; Mecellem=foundation-kıyası, instruct değil).
 - [ ] MCQ ekseni (hakem-bağımsız) — paper sağlamlaştırma. (cross-judge + ~30 yazar spot-check → aşağı "Paper öncesi" maddesine taşındı; cross-judge gpt-4o değil **cross-family** olacak.)
 - [ ] **outputs/eval/ klasör düzeni (SONRA).** Düz dizin göz yoruyor → `raw/` (bench_*_detail), `scored/` (gnd_*, abst_*), `summary/` (*_summary.json) alt-klasörlerine nestele. DİKKAT: skriptlerin `outputs/eval/` yollarını güncelle (gen_eval_grounded out-dir, groundedness/score_*/bench_scorecard okuma yolları). Dosya şeması sabitlenince tek seferde yap, v2'den önce.
 - [x] ~~Eksen yeniden-numaralandırma (GÜN SONU)~~ → GEREKSİZ (ADR-0011): boş A2 slotu **Correctness** ile doldu, A1/A2/A3/A4 sıralı, gap yok. Kaydırmaya gerek kalmadı.
