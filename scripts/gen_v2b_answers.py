@@ -55,6 +55,36 @@ ABSTAIN_TEMPLATES = [
     "yapabilmem için ilgili mevzuat metninin sağlanması gerekmektedir.",
 ]
 
+# abstain_trap dilimi (v2c A1) — yanlış-ama-makul TEK kaynak var → onu ADIYLA reddet (RAG-ıska'dan
+# FARKLI: burada bir kaynak VAR ama yanlış). {kanun}/{madde} pack'ten (wrong-neighbor) doldurulur.
+# Hepsi ABSTAIN_RE'yi geçer (gate uyumlu: "yer almamaktadır" / "bulunmamaktadır" / "kapsamamaktadır").
+ABSTAIN_TRAP_TEMPLATES = [
+    "Sağlanan {kanun} {madde} farklı bir hususu düzenlemektedir; sorulan konu bu kaynakta yer "
+    "almamaktadır. Doğru bir atıf için ilgili hükmün ayrıca temini gerekir.",
+    "Verilen {kanun} {madde} bu soruyu karşılayan bir hüküm içermemektedir; kaynakta bu konuya "
+    "ilişkin bir düzenleme bulunmamaktadır. İlgili maddenin ayrıca sağlanması gerekir.",
+    "Elimdeki {kanun} {madde} başka bir konuyu düzenlemekte olup sorulan hususu kapsamamaktadır. "
+    "Bu maddeye dayanarak cevap vermem yanıltıcı olur.",
+    "Sunulan {kanun} {madde} soruyla doğrudan ilgili değildir; aranan düzenleme bu kaynakta yer "
+    "almamaktadır. Güvenilir bir atıf için doğru hükmün temini gerekir.",
+    "{kanun} {madde} bu soruyu düzenleyen bir hüküm değildir; kaynakta ilgili konuya dair bir "
+    "içerik bulunmamaktadır. Doğru maddenin ayrıca sağlanması gerekmektedir.",
+]
+
+
+def build_cf_answer(row):
+    """counterfactual dilimi (v2c A2) — cf_quote'u alıntıla + gerçek madde no'suna atıf yap.
+    Model KAYNAĞA (bozulmuş olguya) uysun, parametrik ezbere değil. API'siz, deterministik."""
+    q = (row.get("cf_quote") or "").strip()
+    kanun = _norm_field(row.get("gold_kanun_adi"))
+    madde = _norm_field(row.get("gold_madde_no"))
+    return (f"Verilen kaynağa göre ##begin_quote## {q} ##end_quote## "
+            f"Bu düzenleme {kanun} {madde} hükmünde yer almaktadır.")
+
+
+def _norm_field(v):
+    return "" if v is None else str(v).strip()
+
 
 def gen_grounded(client, model, row, max_retries=8):
     """Teacher çağrısı + exponential backoff. 429/geçici hatada geri çekilir (ban yememe).
@@ -92,11 +122,24 @@ def main():
     p.add_argument("--limit", type=int, default=0, help="ilk N satır (smoke); 0=tamamı")
     p.add_argument("--workers", type=int, default=4,
                    help="eşzamanlı API isteği (Tier 1 TPM 200K → 4 güvenli ~160K; 6 tavana binip 429 yer; 1=sıralı)")
+    p.add_argument("--reuse-answers", default=None,
+                   help="v2c: grounded cevapları bu answers.jsonl'dan (v2b, scrub'lı) id ile AL → API'siz + "
+                        "grounding dağılımı birebir korunur (§1 regresyon). Eksik grounded id → API fallback.")
     a = p.parse_args()
 
     rows = [json.loads(l) for l in open(a.packed, encoding="utf-8") if l.strip()]
     if a.limit:
         rows = rows[:a.limit]
+
+    # v2c reuse-map: grounded cevabı v2b'den al (aynı id = aynı context, çünkü ana rng akışı korundu).
+    reuse = {}
+    if a.reuse_answers and os.path.exists(a.reuse_answers):
+        for l in open(a.reuse_answers, encoding="utf-8"):
+            if l.strip():
+                r = json.loads(l)
+                if r.get("slice") == "grounded" and r.get("answer"):
+                    reuse[r["id"]] = r["answer"]
+        print(f"[B2] reuse-map: {len(reuse)} grounded cevap ({a.reuse_answers})")
 
     done = set()
     if os.path.exists(a.out):                       # resume
@@ -104,12 +147,15 @@ def main():
             if l.strip():
                 done.add(json.loads(l)["id"])
     todo = [r for r in rows if r["id"] not in done]
-    n_grounded = sum(1 for r in todo if r["slice"] == "grounded")
-    print(f"[B2] toplam={len(rows)} tamamlanan={len(done)} kalan={len(todo)} "
-          f"(API çağrısı={n_grounded} grounded; abstain={len(todo)-n_grounded} şablon)")
+    # Sadece reuse-map'te OLMAYAN grounded satırlar API çağırır (cf/trap/abstain = şablon).
+    n_api = sum(1 for r in todo if r["slice"] == "grounded" and r["id"] not in reuse)
+    from collections import Counter as _C
+    slc_counts = _C(r["slice"] for r in todo)
+    print(f"[B2] toplam={len(rows)} tamamlanan={len(done)} kalan={len(todo)} | dilimler={dict(slc_counts)} "
+          f"| API çağrısı={n_api} (grounded−reuse); geri kalan şablon/reuse")
 
     client = None
-    if n_grounded:
+    if n_api:
         from openai import OpenAI
         key = os.environ.get("OPENAI_API_KEY")
         if not key:
@@ -124,17 +170,27 @@ def main():
     counter = {"ok": 0, "err": 0}
 
     def worker(row):
-        """Bir satırın cevabını üret (grounded=API+backoff, abstain=şablon). out dict veya None."""
-        if row["slice"] == "grounded":
-            try:
-                ans = gen_grounded(client, a.model, row)
-            except Exception as e:
-                with write_lock:
-                    counter["err"] += 1
-                    print(f"  id={row['id']} HATA: {type(e).__name__}: {str(e)[:120]} → atla "
-                          f"(resume tekrar dener)", flush=True)
-                return None
-        else:
+        """Bir satırın cevabını üret. grounded=reuse veya API+backoff; cf/abstain/trap=şablon."""
+        s = row["slice"]
+        if s == "grounded":
+            if row["id"] in reuse:                  # v2c: v2b cevabını aynen al (API'siz)
+                ans = reuse[row["id"]]
+            else:
+                try:
+                    ans = gen_grounded(client, a.model, row)
+                except Exception as e:
+                    with write_lock:
+                        counter["err"] += 1
+                        print(f"  id={row['id']} HATA: {type(e).__name__}: {str(e)[:120]} → atla "
+                              f"(resume tekrar dener)", flush=True)
+                    return None
+        elif s == "counterfactual":                 # v2c A2 — API'siz şablon
+            ans = build_cf_answer(row)
+        elif s == "abstain_trap":                   # v2c A1 — yanlış kaynağı adıyla reddet
+            ans = ABSTAIN_TRAP_TEMPLATES[row["id"] % len(ABSTAIN_TRAP_TEMPLATES)].format(
+                kanun=_norm_field(row.get("trap_kanun_adi")),
+                madde=_norm_field(row.get("trap_madde_no")))
+        else:                                       # abstain (RAG-ıska)
             ans = ABSTAIN_TEMPLATES[row["id"] % len(ABSTAIN_TEMPLATES)]
         return dict(row, answer=ans)
 
