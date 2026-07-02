@@ -149,7 +149,7 @@ hepsi bütçe/bellek/amaç gerekçesiyle **v2c kapsamı dışı** (gerekçeler g
 > Bu liste **tam icra sırası** — yukarıdan aşağı, karar kalmadan koşulur. `⛓️` = bağımlılık
 > (o adım biri BİTMEDEN başlamaz). Tier etiketleri gruplama; **gerçek sıra bu numaralar.**
 
-1. **C1-v2b register** (Tier C) — `score_register.py` v2b detail'i üstünde koş. **Sıfır-kod, bedava, hemen.** (§7·AÇ-KOŞ-1 Katman-1)
+1. ✅ **C1-v2b register** (Tier C) — KOŞULDU 2026-07-02. v2b M1: `register_mean=1.0` · `expert_frac=1.0` · `citizen_frac=0.0` (n=40, 40/40 expert_hits≥1 & citizen_hits=0). Uzman-register tam. Kaynak: `outputs/eval/reg_m1_v2b_summary.json`; kayıt: research_log "v2c icra — ADIM 1". base/v1 yarısı → ADIM 2 (⛓️ C3 rescore detail'i).
 2. **C3 + C4 + C1-base/v1** — TEK ölçüm oturumu: base/v1'i cevaplanan-only+eval-mirror+M2b(`--no-gold`) rescore (C3) · Mecellem-4B baseline→Tablo 1 (C4) · **C1-base/v1 register aynı oturumda** (`⛓️ C1'in base/v1 yarısı C3 rescore'un ürettiği detail'i bekler — §7 satır ~213`). M2b'yi n=40'a tamamla.
 3. **C2 position-shuffle teyit** — `gen_eval_grounded.py` gold-pozisyon randomize mi; değilse ekle. (G2'yi de test eder)
 4. **B1 GOLD-scrub** (Tier B) — `⛓️ A'nın gen_answers'ından ÖNCE bitmeli` (teacher-prompt'u değiştirir → scrub'sız cevap üretilmesin). Önce raporla → cümle bozmadan temizle.
