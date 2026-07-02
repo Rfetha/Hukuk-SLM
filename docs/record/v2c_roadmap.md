@@ -54,7 +54,7 @@ Her v2c koşusu bu 6 sayıyı yeniden ölçer; **biri anlamlı düşerse v2c red
 ## 2. Hedefler (v2b'nin bıraktığı 4 açık → G1–G4)
 | # | Açık | v2b sayısı | Hedef | Sınıf |
 |---|---|---|---|---|
-| **G1** | Yanlış-makul TEK-kaynakta abstention | M2 Rej\* **0.346** · param_leak 0.615 | Rej\* **≥0.786 (base)** | 🔴 birincil |
+| **G1** | Yanlış-makul TEK-kaynakta abstention | M2 Rej\* **0.346** · param_leak 0.615 | Rej\* **≥0.90** (base 0.786'yı NET geç, §6) | 🔴 birincil |
 | **G2** | Off-by-one yanlış-madde atfı | CMK 109→"110", İş K 55→"56"… | off-by-one vakalar ↓ | 🟡 ikincil |
 | **G3** | GOLD-jargon sızıntısı | hedef %5.7 · çıktı ~1/40 | ~%0 | 🟢 kozmetik |
 | **G4** | Register/altitude ekseni | hiç ölçülmedi | önce ÖLÇ, sonra hedefle | ⚪ açık eksen |
@@ -135,8 +135,40 @@ hepsi bütçe/bellek/amaç gerekçesiyle **v2c kapsamı dışı** (gerekçeler g
 3. **Tier A** (A1 TRAP-abstain + A2 counterfactual) → **tek v2c SFT koşusu** → 6-mod regresyon eval.
 4. Kapı geçerse Tier D (off-by-one) sonraki mini-tur; Tier E paper bütçesi kalırsa.
 
-## 6. Başarı kapısı (v2c)
-- **G1:** M2 Rej\* **≥0.786** · param_leak belirgin ↓.
-- **Regresyon kapısı (§1) 6 sayının hiçbiri düşmedi.**
-- **G3:** GOLD ~%0. **G4:** register ölçüldü (hedef ayrı turda).
+## 6. Başarı kapısı (v2c) — 🎯 REGRESYON DEĞİL, ÜSTÜNLÜK
+
+> **Hedef yükseltildi (2026-07-02, kullanıcı direktifi):** v2c'nin işi "base'in altına
+> düşmemek" DEĞİL, **base'i anlamlı-eksenlerde NET geçmek.** "Küçük fark yeterli değil"
+> — hem effect size büyüyecek hem n≥100 + rescore + κ ile gürültü olmadığı kanıtlanacak.
+> Aşağıdaki tablo base vs v2b vs **v2c-HEDEF**; v2c koşusu bitince son sütun gerçek sayıyla dolar.
+
+### 🎯 Tip A — EZİLEBİLİR eksenler (asıl savaş; NET fark ŞART)
+| Eksen | base | v2b | **v2c-HEDEF** | Not |
+|---|---|---|---|---|
+| **M2 yanlış-kaynak abstention** (G1) | 0.786 | 0.346 ❌ | **≥0.90** | şu an KAYBEDİYORUZ → net kazanca çevir (dramatik hikâye) |
+| **M1 grounding (gürültüde)** | 0.879 | 0.904 🟡 | **≥0.94** | +0.06 gerçek fark → n=100'de gürültü değil |
+| **A4 atıf formatı** | ~yok | 0.925 | **≥0.95** + base'in yapamadığını nicele | base yapısal yapamıyor → zaten ezici, ölç-göster |
+
+### ⚪ Tip B — TAVAN eksenleri (ezmek matematiksel imkânsız → BOZMADAN koru)
+| Eksen | base | v2b | v2c-HEDEF |
+|---|---|---|---|
+| M4 oracle grounding | 0.977 | 0.975 | ≥0.975 (base ceiling'i koru, "ezdik" DEME) |
+| M3 boş-kaynak abstention | 1.000 | 1.000 | 1.000 |
+| M2b RAG-ıska abstention | — | 0.96 | ≥0.96 |
+
+### 🔻 Tip C — ANTI-HEDEF (base'i geçmek İSTEMEYİZ)
+| Eksen | base | v2b | v2c-HEDEF |
+|---|---|---|---|
+| M5 KÖR (parametrik ezber) | 0.225 | 0.175 | ≤base (düşük İYİ = RAG'e dayanma kanıtı; "tasarım" diye çerçevele) |
+
+### İstatistik-gücü şartı (NET fark = iki şart, ikisi de zorunlu)
+1. **Effect size:** yukarıdaki Tip-A hedefleri (M2 ≥0.90, M1 ≥0.94).
+2. **Güç:** **n≥100** + **base'i aynı modda (cevaplanan-only + eval-mirror + M2b) RESCORE** + **cross-judge κ-vekili (gpt-4o-mini↔gpt-4o)**. Bunlar olmadan "ezdik" denemez — mevcut 0.879 vs 0.904 elmayla-elma bile değil.
+
+### Kapı özeti
+- **G1:** M2 Rej\* **≥0.90** (base 0.786'yı da net geç) · param_leak belirgin ↓.
+- **M1:** ≥0.94 (base'i +0.06 geç). **A4:** ≥0.95.
+- **Tavan eksenleri (M3/M4/M2b) BOZULMADI** (§1 regresyon kapısı hâlâ alt-sınır).
+- **G3:** GOLD ~%0. **G4:** register ölçüldü.
+- **Güç:** n≥100 + base-rescore + κ tamamlandı.
 - Bulgu → research_log · karar → v2c ADR.
