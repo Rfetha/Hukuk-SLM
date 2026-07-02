@@ -1,5 +1,28 @@
 # v2c ROADMAP — harman (v2b ampirik × dış danışman × Claude değerlendirmesi)
 
+---
+## 🟢 HANDOFF PROMPT — dönünce/taze agent BUNU OKU (sonra sil değil, güncelle)
+
+> **Proje:** HakHukuk / Hukuk-TR — Türkçe hukuk SLM (Gemma 4 12B QLoRA, Faz 1 SFT).
+> Eğitim = Modal A100 (`--detach` ŞART), eval = lokal RTX 5070 (`source ~/code/global_venv/bin/activate`).
+> Önce oku: `CLAUDE.md` · `docs/record/research_log.md` (kronoloji) · `docs/record/v2b_sonuclar.md` (v2b sonucu).
+>
+> **NEREDEYİZ:** v2b bitti, **6-mod canon eval'de TÜM KAPILAR geçti** (grounding 0.904/0.975 · abstention
+> M2b 0.96 / M3 1.000 · forgetting nötr). v1'e karşı net kazandı. **Bu doküman (v2c_roadmap.md) = v2c'nin
+> TEK OTORİTESİ** — tüm karar/gerekçe burada; başka yerde v2c detayı tekrarlama.
+>
+> **YAPILACAK (bu dosyanın §5 sırası):**
+> 1. **Tier C** (FT'siz, önce — eval'i adil yapar): C1 register ekseni ÖLÇ (base/v1/v2b) · C2 gold-pozisyon shuffle teyit · C3 base/v1'i M2b (`--no-gold`) + cevaplanan-only modda yeniden skorla + M2b'yi n=40'a tamamla.
+> 2. **Tier B** (veri hijyeni): B1 GOLD-scrub · B2 replay teyit · B3 core_hard kötü-eşleşme temizliği.
+> 3. **Tier A** (çekirdek, TEK v2c SFT): A1 TRAP-tipi abstain dilimi + A2 anti-leak counterfactual → Modal `--detach` eğitim → adapter çek → **6-mod regresyon eval**.
+> 4. Kapı geçerse Tier D (off-by-one) · Tier E (paper ablasyon kolları) bütçe kalırsa.
+>
+> **DEĞİŞMEZ KURAL:** §1 regresyon kapısındaki 6 sayı (M1 0.904 · M4 0.975 · M2b 0.96 · M3 1.000 · M5 0.175-nötr · A4 0.925) **DÜŞEMEZ** — biri anlamlı düşerse v2c reddedilir.
+> **⚠️ rsLoRA + ret-token loss-masking P0-BEDAVA DEĞİL** → Tier E ablasyon kolu (gerekçe §3-E). Önce VERİ kaldıracı (Tier A).
+> **BİTİRİRKEN:** bulgu → `research_log.md` · karar → yeni **v2c ADR** · bu roadmap'i ilerledikçe güncelle · Modal $30 kredi (kart ekli).
+
+---
+
 > **Bu doküman ne:** v2c FT turunun KARAR belgesi. Üç girdiyi birleştirir:
 > 1. [[v2b_sonuclar]] — ampirik gerçek (v2b tüm kapıları geçti; tek gerçek açık M2=0.346).
 > 2. [[v2c_input_dis_danisman]] — harici agent teknik önerileri (v2b'yi görmeden).
