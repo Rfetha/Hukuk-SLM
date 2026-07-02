@@ -110,8 +110,9 @@ M2b'yi n=40'a tamamla. (v2b_sonuclar açık işi.)
 (aynı harness/mod/n/hakem/seed), FT'den bağımsız, C3 ile tek ölçüm-oturumunda batch'le.
 - **Modeller:** `newmindai/Mecellem-Qwen3-4B-TR` (en yakın decoder rakip) + (bütçe/zaman kalırsa) `Mecellem-1.7B`, `Llama-3.1-8B-legal`.
 - **Yerel koşar** (4B → RTX 5070, Modal gerekmez).
-- ⚠️ **Çerçeve:** Mecellem = continual-pretrain, **instruct DEĞİL** → RAFT/RAG promptunu düzgün takip etmez → paper'da **"foundation karşılaştırması"** diye yaz, "instruct elmayla-elma" DEME.
-- ⚠️ **Önce teyit:** HF public mi + hangi checkpoint (PAPER_TARGET §9 açık kararı).
+- ✅ **HF TEYİT (2026-07-02):** `Mecellem-Qwen3-4B-TR` (Qwen3-4B) + `Mecellem-Qwen3-1.7B-TR` (Qwen3-1.7B) ikisi de **public/gated değil, Apache-2.0**. İndirilebilir, lisans-temiz.
+- ⚠️ **Çerçeve (teyitli):** CPT (~270.8B token), **instruction-tuned DEĞİL** → RAFT/RAG promptunu düzgün takip etmez → paper'da **"foundation karşılaştırması"** diye yaz, "instruct elmayla-elma" DEME.
+- ⚠️ **Llama-3.1-8B-legal newmindai altında YOK** → ayrı ara (opsiyonel/ikincil, Tablo 1'i bloklamaz).
 - **Bu, base-üstünlük kapısından AYRI eksen:** base-gate = katkı izolasyonu · C4 = rekabetçi konumlama (Tablo 1). Çıktı → `PAPER_TARGET.md §4`.
 
 ### 🟡 TIER D — G2 off-by-one *(ikincil, veri+format)*
