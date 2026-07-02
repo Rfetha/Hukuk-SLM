@@ -121,16 +121,154 @@ def extract_seed(rec, madde_idx):
     return soru, gold_text, meta
 
 
+# ============================================================ v2c yeni dilimler
+# İki dilim eklenir (v2c, roadmap §7 AÇ-KOŞ-2/3): counterfactual (anti-parametric-leak) ve
+# abstain_trap (yanlış-ama-makul TEK kaynak → gerekçeli red). İkisi de TEACHER-LLM'siz
+# (deterministik + ablasyon-temiz, §3-E). Ana rng akışını BOZMAMAK için dönüşüm kararı AYRI
+# crng ile verilir → dönüşmeyen grounded/abstain satırlar v2b ile birebir aynı kalır (reuse+regresyon).
+
+# --- A2 counterfactual: gold'daki somut olguyu sistematik boz → model KAYNAĞA uysun, ezbere değil.
+# NOT: Türk hukuk metni sayıları çoğunlukla KELİME yazar ("otuz gün", "yüzde yirmi") — digit
+# regex tek başına ~%0.3 tutar (ampirik 2026-07-02). Kelime-sayı desteği ŞART (grounded'ın ~%32'si).
+_NUM_WORDS = ["bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz", "on",
+              "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan", "yüz"]
+_NUM_SET = "|".join(_NUM_WORDS)
+_FACT_PATTERNS = [
+    (re.compile(r"\b(\d+)\s*(gün|ay|yıl|hafta|saat)\b"), "int"),
+    (re.compile(r"%\s*(\d+)"), "int"),
+    (re.compile(r"\b(\d[\d.]*)\s*(TL|lira)\b", re.IGNORECASE), "para"),
+    (re.compile(r"\b(on\s?sekiz|onsekiz|yirmi\s?bir|\d+)\s*yaş", re.IGNORECASE), "yas"),
+    (re.compile(r"\byüzde\s+(" + _NUM_SET + r")\b", re.IGNORECASE), "word"),
+    (re.compile(r"\b(" + _NUM_SET + r")\s+(gün|ay|yıl|hafta|saat)\b", re.IGNORECASE), "word"),
+]
+_YAS_MAP = {"on sekiz": "yirmi bir", "onsekiz": "yirmi bir", "yirmi bir": "on sekiz"}
+
+
+def _alt_int(n, crng):
+    """n'i akla-yatkın ama FARKLI bir tam sayıya çevir (deterministik, crng seed'li)."""
+    cands = [n * 2, n + 15, n + 30, max(1, n - 7), max(1, n // 2)]
+    cands = [c for c in cands if c != n and c > 0]
+    return crng.choice(cands) if cands else n + 1
+
+
+def _alt_word(w, crng):
+    """Kelime-sayıyı akla-yatkın ama FARKLI bir kelime-sayıya çevir (liste-içi kaydırma)."""
+    wl = w.lower()
+    if wl not in _NUM_WORDS:
+        return None
+    idx = _NUM_WORDS.index(wl)
+    offs = [2, 3, -2, 4, -3, 5]
+    crng.shuffle(offs)
+    for o in offs:
+        cand = _NUM_WORDS[(idx + o) % len(_NUM_WORDS)]
+        if cand != wl:
+            return cand
+    return None
+
+
+def make_counterfactual(gold_text, crng):
+    """gold_text'teki İLK somut olguyu boz. Dönüş: (cf_gold_text, cf_quote) veya (None, None).
+    cf_quote = değiştirilmiş değeri içeren cümle parçası (cf_gold_text'ten BİREBİR → gate ⊂ geçer)."""
+    for rx, kind in _FACT_PATTERNS:
+        m = rx.search(gold_text)
+        if not m:
+            continue
+        orig = m.group(0)
+        if kind == "yas":
+            val = m.group(1).lower()
+            key = "on sekiz" if "sekiz" in val else ("yirmi bir" if "bir" in val else None)
+            if key:
+                new = orig.replace(m.group(1), _YAS_MAP[key]) if not m.group(1).isdigit() \
+                    else orig.replace(m.group(1), str(_alt_int(int(m.group(1)), crng)))
+            else:
+                new = orig.replace(m.group(1), str(_alt_int(int(m.group(1)), crng)))
+        elif kind == "int":
+            n = int(m.group(1))
+            new = orig.replace(m.group(1), str(_alt_int(n, crng)), 1)
+        elif kind == "word":
+            nw = _alt_word(m.group(1), crng)
+            if not nw:
+                continue
+            new = orig.replace(m.group(1), nw, 1)
+        else:  # para (ondalık olabilir) → tam kısmı 2×
+            num = m.group(1)
+            try:
+                base = int(float(num.replace(".", "")))
+                new = orig.replace(num, str(base * 2), 1)
+            except ValueError:
+                continue
+        if new == orig:
+            continue
+        start, end = m.span()
+        cf_gold = gold_text[:start] + new + gold_text[end:]
+        # cf_quote: yeni değeri içeren cümleyi cf_gold'dan çıkar (nokta/satır sınırı), ≤200 char.
+        npos = start
+        left = max(cf_gold.rfind(". ", 0, npos), cf_gold.rfind("\n", 0, npos)) + 1
+        right = min([p for p in (cf_gold.find(". ", npos + len(new)),
+                                 cf_gold.find("\n", npos + len(new))) if p != -1] or [len(cf_gold)])
+        quote = cf_gold[left:right].strip()
+        if len(quote) > 200:
+            # yeni-değer merkezli 200'lük pencere
+            c = npos - left
+            s = max(0, c - 100)
+            quote = quote[s:s + 200].strip()
+        if new.split()[0] not in quote and new not in quote:
+            quote = new + " — " + quote           # değer kesinlikle quote'ta olsun (⊂ garanti)
+        return cf_gold, quote
+    return None, None
+
+
+# --- A1 abstain_trap: gold'u çıkar, aynı kanunun KONU-KOMŞUSU yanlış maddesini koy → gerekçeli red.
+def _tok(s):
+    return set(re.findall(r"[a-zçğıöşü]{4,}", (s or "").lower()))
+
+
+def pick_wrong_neighbor(gold_rec, gold_text, soru, pool_by_kanun, crng, K=20):
+    """Aynı kanun_no içinde 2≤|Δmadde|≤K, soruyla EN DÜŞÜK leksik örtüşen maddeyi seç (yanlış-ama-makul).
+    Dönüş: wrong_rec veya None (kanun tek-maddeli/yetersizse)."""
+    gk = _norm(gold_rec.get("kanun_no"))
+    gm = _norm(gold_rec.get("madde_no"))
+    go = raft_pack.madde_ord(gm)
+    cands = [r for r in pool_by_kanun.get(gk, [])
+             if r["madde_no"] != gm and r["text"] != gold_text]
+    if not cands:
+        return None
+    if go is not None:
+        near = [r for r in cands
+                if raft_pack.madde_ord(r["madde_no"]) is not None
+                and 2 <= abs(raft_pack.madde_ord(r["madde_no"]) - go) <= K]
+        pool = near or cands
+    else:
+        pool = cands
+    qtok = _tok(soru)
+    crng.shuffle(pool)                                   # eşit-örtüşmede deterministik çeşitlilik
+    pool.sort(key=lambda r: (len(qtok & _tok(r["text"][:400])),
+                             abs((raft_pack.madde_ord(r["madde_no"]) or 10**9) - (go or 0))))
+    return pool[0]
+
+
+def build_trap_context(wrong_rec, pool_recs, gk, n_far, prng):
+    """wrong madde (aynı kanun, yanlış) + n_far UZAK distractor (başka kanun), karıştır."""
+    others = [r for r in pool_recs if r["kanun_no"] != gk]
+    prng.shuffle(others)
+    chunks = [raft_pack.labeled_chunk(wrong_rec)] + \
+             [raft_pack.labeled_chunk(d) for d in others[:n_far]]
+    prng.shuffle(chunks)
+    return chunks
+
+
 # ---------------------------------------------------------------- pack (Adım 1)
 def cmd_pack(a):
-    os.makedirs(OUT_DIR, exist_ok=True)
+    os.makedirs(a.out_dir, exist_ok=True)
     seeds = [json.loads(l) for l in open(a.seeds, encoding="utf-8") if l.strip()]
     pool_recs, pool_by_kanun = raft_pack.load_madde_pool(a.madde_path)
     madde_idx = load_madde_index(a.madde_path)   # GERÇEK gold metni için JOIN tablosu
     rng = random.Random(a.seed)
 
-    out_path = os.path.join(OUT_DIR, "packed.jsonl")
-    n_grounded = n_abstain = n_skip = 0
+    out_path = os.path.join(a.out_dir, "packed.jsonl")
+    from collections import Counter
+    kinds = Counter()
+    n_skip = n_cf_miss = n_trap_miss = 0
     with open(out_path, "w", encoding="utf-8") as f:
         for i, rec in enumerate(seeds):
             soru, gold_text, meta = extract_seed(rec, madde_idx)
@@ -145,24 +283,50 @@ def cmd_pack(a):
                 gold_rec, gold_text, pool_recs, pool_by_kanun, a.distractors, prng,
                 include_gold=include_gold)
             slice_kind = "grounded" if gold_in else "abstain"
-            n_grounded += gold_in
-            n_abstain += (not gold_in)
-            f.write(json.dumps({
-                "id": i,
-                "soru": soru,
+            extra = {}                                  # dilime-özel alanlar
+
+            # v2c dönüşüm — AYRI crng (ana rng/prng akışı BOZULMAZ → v2b grounded/abstain reuse geçerli)
+            crng = random.Random(a.seed * 7919 + i)
+            if gold_in and a.cf_frac > 0 and crng.random() < a.cf_frac:
+                cf_gold, cf_quote = make_counterfactual(gold_text, crng)
+                if cf_gold:                             # gold chunk'ı cf_gold ile yeniden paketle
+                    chunks, _ = raft_pack.pack_context(
+                        gold_rec, cf_gold, pool_recs, pool_by_kanun, a.distractors,
+                        random.Random(a.seed + i), include_gold=True)
+                    slice_kind = "counterfactual"
+                    extra = {"cf_gold_text": cf_gold, "cf_quote": cf_quote}
+                else:
+                    n_cf_miss += 1                      # olgu bulunamadı → grounded kalır
+            elif (not gold_in) and a.trap_frac > 0 and crng.random() < a.trap_frac:
+                wrong = pick_wrong_neighbor(gold_rec, gold_text, soru, pool_by_kanun, crng, a.trap_k)
+                if wrong:
+                    chunks = build_trap_context(
+                        wrong, pool_recs, meta["kanun_no"], a.distractors - 1,
+                        random.Random(a.seed + i))
+                    slice_kind = "abstain_trap"
+                    extra = {"trap_kanun_adi": wrong["kanun_adi"], "trap_madde_no": wrong["madde_no"]}
+                else:
+                    n_trap_miss += 1                    # uygun komşu yok → abstain (RAG-ıska) kalır
+
+            kinds[slice_kind] += 1
+            row = {
+                "id": i, "soru": soru,
                 "sources_block": raft_pack.format_sources_block(chunks),
                 "slice": slice_kind,
-                "gold_kanun_adi": meta["kanun_adi"],
-                "gold_madde_no": meta["madde_no"],
-                "gold_kanun_no": meta["kanun_no"],
-                "gold_text": gold_text,
-                # teacher-LLM (B2) bu alanları doldurur: "answer"
-            }, ensure_ascii=False) + "\n")
-    print(f"[pack] {out_path}: grounded={n_grounded} abstain={n_abstain} skip={n_skip} "
-          f"(P={a.p}, k={a.distractors})")
-    print(f"[pack] sıradaki (B2): teacher-LLM her satıra 'answer' üret → answers.jsonl")
-    print(f"[pack]   grounded → CoT + ##begin_quote## [gold'dan birebir] + (KANUN, Madde X), uzman register")
-    print(f"[pack]   abstain  → 'Verilen kaynaklarda ... bulunmuyor' (uydurma YOK)")
+                "gold_kanun_adi": meta["kanun_adi"], "gold_madde_no": meta["madde_no"],
+                "gold_kanun_no": meta["kanun_no"], "gold_text": gold_text,
+                # teacher-LLM/şablon (B2) 'answer' alanını doldurur
+            }
+            row.update(extra)
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    print(f"[pack] {out_path}: {dict(kinds)} skip={n_skip} "
+          f"(P={a.p}, k={a.distractors}, cf_frac={a.cf_frac}, trap_frac={a.trap_frac}; "
+          f"cf_miss={n_cf_miss} trap_miss={n_trap_miss})")
+    print(f"[pack] sıradaki (B2): teacher-LLM/şablon her satıra 'answer' üret → answers.jsonl")
+    print(f"[pack]   grounded       → CoT + ##begin_quote## [gold'dan birebir] + (KANUN, Madde X)  [API]")
+    print(f"[pack]   counterfactual → şablon: cf_quote'u alıntıla + atıf (kaynağa uy, ezbere değil) [API'siz]")
+    print(f"[pack]   abstain        → 'Verilen kaynaklarda ... bulunmuyor' (RAG-ıska)               [şablon]")
+    print(f"[pack]   abstain_trap   → 'Sağlanan {{yanlış madde}} farklı hususu düzenler...' (red)    [şablon]")
 
 
 # ------------------------------------------------------------ assemble (Adım 3/4/5)
@@ -171,27 +335,31 @@ def _gate(row):
     ans = (row.get("answer") or "").strip()
     if not ans:
         return False, "boş cevap"
-    if row["slice"] == "grounded":
+    slc = row["slice"]
+    if slc in ("grounded", "counterfactual"):
+        # counterfactual: referans = cf_gold_text (bozulmuş gold) — gerçek gold'a bakılırsa
+        # "alıntı gold'da değil" ile HAKSIZ reddedilir (roadmap §7 AÇ-KOŞ-2.4).
+        ref = row.get("cf_gold_text") if slc == "counterfactual" else row.get("gold_text")
         m = QUOTE_RE.search(ans)
         if not m:
             return False, "verbatim-quote yok"
         quote = re.sub(r"\s+", " ", m.group(1)).strip()
         quote = quote.strip("\"“”„«»'‘’").strip()    # teacher metni tırnağa sarabilir → soyut
-        gold_norm = re.sub(r"\s+", " ", row.get("gold_text", ""))
-        if quote and quote[:60] not in gold_norm:   # alıntı gerçekten gold'da mı (⊂)
-            return False, "alıntı gold'da değil (uydurma quote)"
+        ref_norm = re.sub(r"\s+", " ", ref or "")
+        if quote and quote[:60] not in ref_norm:     # alıntı gerçekten kaynakta mı (⊂)
+            return False, "alıntı kaynakta değil (uydurma quote)"
         gold_ord = raft_pack.madde_ord(row.get("gold_madde_no"))
         if gold_ord is not None and str(gold_ord) not in ans:
             return False, "atıf madde no eşleşmiyor"
         return True, "ok"
-    else:  # abstain dilimi
+    else:  # abstain / abstain_trap dilimi
         if not ABSTAIN_RE.search(ans):
             return False, "abstention ifadesi yok (uydurmuş olabilir)"
         return True, "ok"
 
 
 def cmd_assemble(a):
-    os.makedirs(OUT_DIR, exist_ok=True)
+    os.makedirs(a.out_dir, exist_ok=True)
     rows = [json.loads(l) for l in open(a.answers, encoding="utf-8") if l.strip()]
     kept, rejected = [], []
     for r in rows:
@@ -237,7 +405,7 @@ def cmd_assemble(a):
     test, val, train = examples[:n_test], examples[n_test:n_test + n_val], examples[n_test + n_val:]
 
     for name, part in [("train", train), ("validation", val), ("test", test)]:
-        p = os.path.join(OUT_DIR, f"{name}.jsonl")
+        p = os.path.join(a.out_dir, f"{name}.jsonl")
         with open(p, "w", encoding="utf-8") as f:
             for ex in part:
                 f.write(json.dumps(ex, ensure_ascii=False) + "\n")
@@ -250,10 +418,10 @@ def cmd_assemble(a):
         "reject_reasons": dict(rej_reasons), "replay_added": n_replay,
         "split": {"train": len(train), "validation": len(val), "test": len(test)},
     }
-    json.dump(report, open(os.path.join(OUT_DIR, "assemble_report.json"), "w",
+    json.dump(report, open(os.path.join(a.out_dir, "assemble_report.json"), "w",
                            encoding="utf-8"), ensure_ascii=False, indent=2)
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    print(f"[assemble] → {OUT_DIR}/{{train,validation,test}}.jsonl  (+ assemble_report.json)")
+    print(f"[assemble] → {a.out_dir}/{{train,validation,test}}.jsonl  (+ assemble_report.json)")
     print("[assemble] NOT: faithfulness≥0.95 LLM-judge kapısı (B3) AYRI: groundedness hattı.")
 
 
@@ -264,13 +432,22 @@ def main():
     pp = sub.add_parser("pack", help="Adım 1 — RAFT context paketle (teacher-LLM girdisi)")
     pp.add_argument("--seeds", default=SEED_PATH)
     pp.add_argument("--madde-path", default=MADDE_PATH)
+    pp.add_argument("--out-dir", default=OUT_DIR, help="çıktı dizini (v2c: data/processed/sft_v2c)")
     pp.add_argument("--p", type=float, default=0.8, help="grounded oranı (gold context'te); (1-P)=abstention")
     pp.add_argument("--distractors", type=int, default=4, help="örnek başına distractor (k)")
     pp.add_argument("--seed", type=int, default=3407)
+    # v2c yeni dilimler (roadmap §7). Default 0 → v2b davranışı (geriye uyumlu). v2c: --cf-frac 0.10 --trap-frac 0.40
+    pp.add_argument("--cf-frac", type=float, default=0.0,
+                    help="grounded'ın counterfactual'a dönüşen oranı (A2 anti-parametric-leak, ~0.10)")
+    pp.add_argument("--trap-frac", type=float, default=0.0,
+                    help="abstain'in abstain_trap'e dönüşen oranı (A1 yanlış-kaynak red, ~0.40)")
+    pp.add_argument("--trap-k", type=int, default=20,
+                    help="abstain_trap yanlış-komşu madde arama penceresi (2≤|Δmadde|≤K)")
     pp.set_defaults(func=cmd_pack)
 
     ap2 = sub.add_parser("assemble", help="Adım 3/4/5 — kapı + replay + split")
     ap2.add_argument("--answers", required=True, help="B2 çıktısı (packed + 'answer' alanı)")
+    ap2.add_argument("--out-dir", default=OUT_DIR, help="çıktı dizini (v2c: data/processed/sft_v2c)")
     ap2.add_argument("--replay", default=None, help="genel TR instruction jsonl (chat-template)")
     ap2.add_argument("--replay-frac", type=float, default=0.03, help="replay oranı (§5.1-D: %1-5)")
     ap2.add_argument("--max-chunk-chars", type=int, default=900,
