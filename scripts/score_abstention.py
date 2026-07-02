@@ -74,6 +74,10 @@ def main():
     ap.add_argument("--label", required=True)
     ap.add_argument("--judge-model", default=os.environ.get("GND_JUDGE", "gpt-4o-mini"))
     ap.add_argument("--out-dir", default="outputs/eval")
+    ap.add_argument("--source-field", default="referans",
+                    help="hakeme verilecek KAYNAK alanı. Default 'referans' (gold madde, TRAP-oracle/M2). "
+                         "M2b (distractor-only, gold GÖSTERİLMEZ) için 'context_shown' geç → judge modelin "
+                         "GERÇEKTEN gördüğü bağlamı değerlendirir (yoksa gold'u görüp tuzağı geçersiz sayar).")
     a = ap.parse_args()
 
     key = os.environ.get("OPENAI_API_KEY", "").strip()
@@ -89,7 +93,7 @@ def main():
     for r in rows:
         if spent >= budget:
             print(f"[abst] BÜTÇE doldu (${spent:.3f}) — kalan atlandı"); break
-        d, c = judge(client, a.judge_model, r["soru"], r.get("referans", ""), r["cevap"])
+        d, c = judge(client, a.judge_model, r["soru"], r.get(a.source_field, ""), r["cevap"])
         spent += c
         valid = not d.get("source_answers")     # kaynak cevaplıyorsa tuzak geçersiz
         v = d.get("verdict")

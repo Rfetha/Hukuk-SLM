@@ -1,78 +1,47 @@
-# DEVİR NOTU — 2026-07-01 (v2b tam eğitim KOŞUYOR, dönünce = bitti mi? → eval)
+# DEVİR NOTU — 2026-07-02 (v2b eval BİTTİ + geçti · sıradaki = v2c reçetesi)
 
 ## TEK CÜMLE
-v2b tam eğitim Modal A100'de `--detach` ile **başlatıldı ve sağlıklı koşuyor** →
-sıradaki tek iş: **bitti mi teyit → adapter çek → 🔴 eval-mirror → D1 canon eval**.
+v2b tam eğitim + 6-mod canon eval bitti, **tüm KAPILAR geçti** (grounding korundu, abstention
+0.000→0.96 dirildi) → sıradaki iş: **v2c reçetesini yaz** (eval bulguları + dış danışman raporu sentezi).
 
-## ▶ KOŞAN İŞ (2026-07-01 23:40'ta başladı)
-- **App:** `ap-mjvVVy5ZycRX5q69zcM9Tu` · FunctionCall `fc-01KWFPKKQZK44G3CWWV45FH36V`
-- **State (başlangıç):** `ephemeral (detached)` · Tasks=1 · A100-40GB
-- **Config kilidi doğrulandı:** lr=1e-4, r=16/α=32, all-linear, warmup=0.05, --no-system, 3e-4 YASAK
-- **İlerleme (son görülen):** model yüklendi → tokenize bitti (17.323 train + 962 val) → Map/Filter → step'ler
-- **Beklenen:** ~994 step × ~15.75s ≈ 4-4.5h · ~$15-18 (Modal $30 kredi; kart kapı olarak eklendi 2026-07-01)
-- **⚠️ Modal kart dersi:** A100/H100 için hesaba ödeme yöntemi ŞART (kredi olsa bile). Kart eklendi.
+## ▶ v2b SONUÇ — TÜM KAPILAR GEÇTİ ✅ (detay: `docs/record/v2b_sonuclar.md`)
+| Mod | Ölçüm | v2b | base | v1 |
+|---|---|---|---|---|
+| M1 distractor | A1 (cevaplanan) | **0.904** | 0.879 | — |
+| M2 TRAP-oracle | Rej* | 0.346 | 0.786 | 0.000 |
+| **M2b distractor-only (adil A3)** | Rej* | **0.96** (n=30) | — | — |
+| M3 boş | Rej* | **1.000** | 1.000 | — |
+| M4 oracle | A1 | **0.975** | 0.977 | 0.960 |
+| M5 KÖR | A2 | 0.175 | 0.225 | 0.300 |
+- **v1'e karşı net kazandı:** grounding korundu+aştı, abstention **dirildi** (v1 0.000→v2b M2b 0.96), unutma yok (replay tuttu).
+- **İki methodology dersi:** (1) abstention'ı **eğitim moduyla ölç** (M2-oracle 0.346 = off-dist artefakt, M2b 0.96 gerçek); (2) A1'i **cevaplananlarda** oku (ham 0.737 çekinme yüzünden yanıltıcı).
+- **Kalan zayıflık = yalnız "yanlış-makul TEK kaynak" (M2 0.346)** = robustness, gate-fail DEĞİL.
 
-## ▶ DÖNÜNCE — HIZLI PLAN (kopyala-yapıştır)
+## ▶ SIRADAKİ: v2c REÇETESİ (iki girdi harmanlanacak)
+**Girdi A — eval bulguları (bu oturum):** `v2b_sonuclar.md` sonundaki "v2c tasarım notu".
+**Girdi B — dış danışman raporu:** `docs/record/v2c_input_dis_danisman.md` (commit'e KATILMADI, yerel).
 
-**Adım 0 — ortam:**
-```bash
-cd ~/code/Hukuk-SLM && source ~/code/global_venv/bin/activate
-```
+### Sentez — v2c için birleşik öncelikler
+**P0 (sıfır maliyet, önce bunlar):**
+- 🔴 **GOLD-scrub** — teacher hedeflerindeki `"GOLD metnidir"`/`"Verilen dökümana göre"` kalıpları regex temizle (%5.7→0). *(danışman P0 + eval bulgusu ortak)*
+- 🔴 **TRAP-tipi abstain dilimi EKLE** *(EVAL bulgusu — danışman kaçırdı, kritik)*: "konu-komşusu yanlış TEK madde → gerekçeli red" örnekleri. Mevcut abstain dilimi "gold yok" tipinde (M2b 0.96 çözdü); eksik olan "yanlış-makul kaynak var" (M2 0.346). `gen_v2b_answers.py`'a dilim tipi ekle.
+- 🔴 **Abstention loss-masking** — ret token'larına CE loss ×1.5-2.0 *(danışman P0)*. M2 0.346'yı ve param_leak %61.5'i hedefler.
+- 🟢 **rsLoRA** (`use_rslora=True`) — sıfır maliyet kararlılık *(danışman P0)*.
+- 🟢 **position-bias shuffle** — M1 gold yerini karıştır + judge'a "sıra önemsiz" *(danışman P0; not: raft_pack zaten shuffle ediyor, judge talimatı eklenebilir)*.
 
-**Adım 1 — bitti mi? (adapter = tek gerçek kanıt):**
-```bash
-modal volume ls hukuk-outputs /v2b | grep adapter_model    # adapter_model.safetensors VARSA → bitti ✅
-modal app list | grep ap-mjvVVy5ZycRX5q69zcM9Tu            # stopped + adapter var = başarı; task hâlâ varsa sürüyor
-modal app logs ap-mjvVVy5ZycRX5q69zcM9Tu 2>&1 | tr '\r' '\n' | grep -iE "train_loss|train_runtime|Removed|Error|Trace"  # final loss + hata + "Removed N" (N küçük olmalı, truncation fix)
-```
-- **Bittiyse →** Adım 2.
-- **App stopped ama adapter YOKSA (hata/yarıda öldü) →** logda Traceback oku; `train_sft.py` ara-checkpoint + oto-resume var → aynı komutu tekrar koş (kaldığı yerden devam):
-  ```bash
-  modal run --detach modal_train.py::spawn_v2b --run-name v2b --epochs 1
-  ```
+**P1 (Modal run, bütçe varsa):**
+- 🟡 **ORPO** (reference-free) — teacher-jargon/leak çıktısı = negatif (y_l), temiz = pozitif (y_w) *(danışman P0 ama biz FT-run gerektirdiği için P1)*. Anti-parametric-leak'e de yarar.
+- 🟡 **DoRA** — 2K örnekte bellek testi → kararlıysa ana eğitim *(danışman P1)*.
+- 🟡 hedge dozajı %19→%25 ablasyonu.
 
-**Adım 2 — adapter'ı çek:**
-```bash
-modal volume get hukuk-outputs /v2b ./outputs/v2b
-```
+**Regresyon KAPISI (v2c bunları DÜŞÜRMEMELİ):** M1 0.904 · M4 0.975 grounding · M2b 0.96 · M3 1.000 abstention.
 
-**Adım 3 — 🔴 D1 ÖNCESİ eval-mirror (ADR-0013) — ATLANIRSA EVAL HAKSIZ:**
-900-char chunk kırpmayı eval tarafına AYNALA (`gen_eval_grounded.py` / `raft_pack.py`),
-yoksa v2b'yi eğitildiğinden uzun context'le ölçeriz. `clip_sources_block` mantığı
-`build_sft_v2b.py`'de hazır — `raft_pack.labeled_chunk`'a `max_chars` paramı ekleyip
-`gen_eval_grounded` distractor modunda kullan.
-
-**Adım 4 — D1 canon eval (base / v1 / v2b — aynı M1/M3):**
-```bash
-# M1 (gold+4 distractor, A1): faith ≥0.879 KORU
-python scripts/gen_eval_grounded.py --label bench_m1_v2b --adapter outputs/v2b \
-  --data data/eval/core_hard.jsonl --distractors 4 --n 40
-python scripts/groundedness.py --details outputs/eval/bench_m1_v2b_detail.jsonl --label bench_m1_v2b --mode data
-# M3 (empty-context, A3): abstention =1.000 KORU
-python scripts/gen_eval_grounded.py --label bench_m3_v2b --adapter outputs/v2b \
-  --data data/eval/core_hard.jsonl --empty-context --n 40
-# KAPI (§6): A3≥0.741 · A1∧A2≥0.875 · A4≥0.9 · CORE-KÖR gerilemesin · +uzman-register/format
-```
-
-**Adım 5 — bulgu→research_log, karar→ADR (D3).**
-
-## ŞU AN NEREDEYİZ
-- **A-track ✅** — base baseline: M1 faithfulness **0.879**, M3 abstention **1.000**.
-- **B-track ✅** — `answers.jsonl` 19.305/19.305 (grounded 15.458 / abstain 3.847). assemble (kept 18.670):
-  train 17.323 / val 962 / test 962, slice = grounded 13.350 / abstain 3.455 / replay 518.
-- **Truncation FIX ✅** — `--max-chunk-chars 900`: >2048 %11.6→%0.03, quote context'te %100. max_seq_len=2048.
-- **Replay ✅** — `build_replay_tr.py` (AlicanKiraz0 MIT) → 600 örnek, assemble %3.
-- **C-track 🟢 KOŞUYOR** — tam v2b eğitim A100'de detach'te başlatıldı (yukarı bkz).
-
-## AÇIK İŞLER (bloklamaz)
-- 🔴 **eval-mirror (Adım 3)** — D1'i bloklar.
-- ⚪ **C2 ablasyon** — P [60/80/100] · replay [%1/5] · rank [8/16] (tam-run iyiyse).
-- ⚪ **Doc temizliği (2026-07-01)** — 26 bulgu denetlendi, düzeltmeler uygulanıyor (ADR-0010 yazılıyor,
-  bayat Qwen/vatandaş-dili/v0-sıradaki izleri SÜPERSED notuyla). Bitmişse research_log'a düş.
+**Açık (bloklamaz):** off-by-one atıf fix · core_hard kötü-eşleşme temizliği (≥3 vaka) · register ekseni ölç · base/v1'i M2b modunda yeniden skorla (elmayla-elma) · M2b n=40'a tamamla.
 
 ## DOSYALAR
-- Plan: `docs/V2_PLAN.md` (§5.1 reçete · §5.2 pipeline · §9 execution)
-- Kayıt: `docs/record/research_log.md`
-- ADR: 0008 (spawn) · 0010 (uzman-register reframe) · 0011 (canon eval) · 0012 (scope) · 0013 (5-mod matris)
-- Veri: `build_sft_v2b.py` · `gen_v2b_answers.py` · `build_replay_tr.py` · `raft_pack.py`
-- Eğitim: `modal_train.py::spawn_v2b` · `train_sft.py` (3e-4 kilidi)
+- v2b scorecard: `docs/record/v2b_sonuclar.md` (6-mod + KAPI + v2c tasarım notu)
+- Kayıt: `docs/record/research_log.md` (2026-07-02: D1 sonuç + methodology dersleri)
+- Danışman girdisi: `docs/record/v2c_input_dis_danisman.md` (yerel, commit'siz)
+- Eval kod: `gen_eval_grounded.py` (`--max-chunk-chars` mirror · `--no-gold` M2b) · `score_abstention.py` (`--source-field`)
+- Eğitim: `modal_train.py::spawn_v2b` · `train_sft.py`
+- ADR: 0010 (register) · 0011 (canon) · 0012 (scope) · 0013 (5-mod matris)

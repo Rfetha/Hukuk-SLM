@@ -54,6 +54,11 @@ SYSTEM_PROMPT_RAG = (
 import raft_pack
 SYSTEM_PROMPT_RAG_MULTI = raft_pack.SYSTEM_PROMPT_RAG_MULTI
 
+# EVAL-MIRROR (2026-07-02, ADR-0013): eğitimin 900-char chunk clip'ini eval tarafında AYNEN
+# kullan. Yoksa v2b, eğitildiğinden UZUN context'le ölçülür (haksız). clip_sources_block eğitimle
+# birebir aynı fonksiyon → dağılım garantili eşleşir. (build_sft_v2b saf stdlib, torch/unsloth yok.)
+from build_sft_v2b import clip_sources_block
+
 MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
 
 
@@ -75,8 +80,15 @@ def parse_args():
                    help="M4 RAG-modu: TEK gold madde metnini prompt'a koy (temiz Oracle, iyimser tavan)")
     p.add_argument("--distractors", type=int, default=0, metavar="N",
                    help="M1: gold + N hard-negative distractor (RAFT çok-kaynak). v2b grounding manşeti.")
+    p.add_argument("--max-chunk-chars", type=int, default=900, metavar="N",
+                   help="eval-mirror: her [KAYNAK] chunk'ını N char'a kırp — eğitim §5.1 truncation "
+                        "fix ile AYNI (900≈243 tok; 5 chunk 2048'e sığar). 0=kapalı. v2b'yi eğitildiği "
+                        "context uzunluğuyla ölçmek için ŞART (ADR-0013). Sadece --distractors modunda etkin.")
     p.add_argument("--empty-context", action="store_true",
                    help="M3 (E-set): hiç kaynak verme (boş bağlam) → doğru davranış=abstention")
+    p.add_argument("--no-gold", action="store_true",
+                   help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
+                        "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
     return p.parse_args()
 
 
@@ -194,13 +206,25 @@ def main():
                 sources_block = "(İlgili kaynak bulunamadı.)"
                 context_shown = ""
                 mode = "empty"
-            elif a.distractors > 0:                     # M1: gold + N distractor
+            elif a.distractors > 0:                     # M1: gold+distractor · M2(no-gold): distractor-only
                 rng = _rnd.Random(a.seed + i)           # örnek-başına deterministik
                 chunks, _ = raft_pack.pack_context(
-                    rec, src, pool_recs, pool_by_kanun, a.distractors, rng, include_gold=True)
+                    rec, src, pool_recs, pool_by_kanun, a.distractors, rng,
+                    include_gold=not a.no_gold)         # --no-gold → gold ÇIKAR (M2 abstain, training-matched)
                 sources_block = raft_pack.format_sources_block(chunks)
+                if a.max_chunk_chars > 0:               # EVAL-MIRROR: eğitim clip'i (§5.1, ADR-0013)
+                    # gold baş satırı = "{kanun_adi} {madde_no}" (labeled_chunk ile aynı _norm).
+                    # ref cevap ##begin_quote## taşımaz (core_hard sade) → gold da baştan kırpılır;
+                    # kritik olan context UZUNLUĞUNUN eğitimle eşleşmesi (v2b haksız uzun görmesin).
+                    gold_label = f"{rec.get('kanun_adi','')} {rec.get('madde_no','')}"
+                    ref_msgs = rec.get("messages") or []
+                    ref_answer = next(
+                        (m.get("content", "") for m in ref_msgs
+                         if m.get("role") in ("assistant", "model")), "")
+                    sources_block = clip_sources_block(
+                        sources_block, ref_answer, gold_label, a.max_chunk_chars)
                 context_shown = sources_block
-                mode = "distractor"
+                mode = "distractor_nogold" if a.no_gold else "distractor"
             elif a.with_source:                         # M4: tek gold
                 context_shown = labeled_src
                 mode = "oracle"
