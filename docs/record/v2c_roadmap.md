@@ -1,25 +1,27 @@
 # v2c ROADMAP — harman (v2b ampirik × dış danışman × Claude değerlendirmesi)
 
 ---
-## 🟢 HANDOFF PROMPT — dönünce/taze agent BUNU OKU (sonra sil değil, güncelle)
+## 🟢 DURUM — taze agent BUNU OKU (güncel tutulur, silinmez)
 
 > **Proje:** HakHukuk / Hukuk-TR — Türkçe hukuk SLM (Gemma 4 12B QLoRA, Faz 1 SFT).
 > Eğitim = Modal A100 (`--detach` ŞART), eval = lokal RTX 5070 (`source ~/code/global_venv/bin/activate`).
-> Önce oku: `CLAUDE.md` · `docs/record/research_log.md` (kronoloji) · `docs/record/v2b_sonuclar.md` (v2b sonucu).
+> Önce oku: `CLAUDE.md` · `docs/record/research_log.md` (kronoloji, OTORİTE) · `docs/record/v2b_sonuclar.md`.
 >
-> **NEREDEYİZ:** v2b bitti, **6-mod canon eval'de TÜM KAPILAR geçti** (grounding 0.904/0.975 · abstention
-> M2b 0.96 / M3 1.000 · forgetting nötr). v1'e karşı net kazandı. **Bu doküman (v2c_roadmap.md) = v2c'nin
-> TEK OTORİTESİ** — tüm karar/gerekçe burada; başka yerde v2c detayı tekrarlama.
+> **NEREDEYİZ (2026-07-03):** v2c eğitildi (Modal A100, adapter `outputs/v2c/`, config = v2b) + **6-mod eval TAM KAPANDI**.
+> **SONUÇ → v2c REDDEDİLDİ.** Ana hedef **M2 yanlış-kaynak red = 0.407** « §6 hedefi 0.90 (v2b 0.346'dan
+> sadece +0.06; base 0.704'ün bile altında). Ayrıca **M1 A1 = 0.832 < §1 kapı 0.904** (regresyon). Tier A SFT
+> veri-kolu (counterfactual + abstain_trap) yanlış-kaynak reddini **restore edemedi** →
+> **K3 NEGATİF BULGUSU:** §3-E hipotezi ("ucuz SFT counterfactual yeter") ÇÜRÜDÜ.
+> Tavan korundu (M4 0.977 · M2b 0.973 · M3 1.000 · register 1.0) + anti-hedef tuttu (M5 0.125 < base 0.225). Detay: §6.
 >
-> **YAPILACAK — §5 tek numaralı akış OTORİTE (aşağısı özet):**
-> 1. **C1-v2b register** (sıfır-kod, hemen). 2. **C3+C4+C1-base/v1** tek ölçüm oturumu (rescore + Mecellem Tablo 1 + M2b n=40).
-> 3. **C2** shuffle teyit. 4. **B1 GOLD-scrub** (`⛓️ A gen_answers'tan önce`). 5. **B2+B3** hijyen.
-> 6. **Tier A tek v2c SFT:** 4-parça yeni-kod → pack → gen_answers → assemble → Modal `--detach` → adapter → **6-mod eval (§6+§1 kapı)**.
-> 7. Kapı geçerse **Tier D** (off-by-one) · **Tier E** (paper ablasyon) bütçe kalırsa. **Ayrıntı/bağımlılık: §5.**
+> **TAM SKORKART (6/6 + register + M5):** M1 0.832@80% · M4 0.977 · M2 0.407 · M2b 0.973 · M3 1.000 · M5 0.125 · reg 1.0.
+> **SIRADAKİ = AÇIK (KARAR YOK):** fix seçenekleri literatür taramasıyla çerçevelendi → `docs/record/v2c_fix_deep_research.md`
+> (5 aile: ORPO/DPO · RAFT · R-Tuning · RAAT/CaRT · DTA/RPO). Dış görüş-2 (Gemini) alındı. **Yeni iterasyon adı/kararı
+> VERİLMEDİ** (kullanıcı kısıtı) — seçenekler v2c ADR'ında "potansiyel durumlar" olarak listeli. Herhangi bir yeni FT/pipeline
+> = Modal para-kapısı + kullanıcı onayı (sormadan başlama).
 >
-> **DEĞİŞMEZ KURAL:** §1 regresyon kapısındaki 6 sayı (M1 0.904 · M4 0.975 · M2b 0.96 · M3 1.000 · M5 0.175-nötr · A4 0.925) **DÜŞEMEZ** — biri anlamlı düşerse v2c reddedilir.
-> **⚠️ rsLoRA + ret-token loss-masking P0-BEDAVA DEĞİL** → Tier E ablasyon kolu (gerekçe §3-E). Önce VERİ kaldıracı (Tier A).
-> **BİTİRİRKEN:** bulgu → `research_log.md` · karar → yeni **v2c ADR** · bu roadmap'i ilerledikçe güncelle · Modal $30 kredi (kart ekli).
+> **DEĞİŞMEZ KURAL:** §1 regresyon kapısı 6 sayı (M1 0.904 · M4 0.975 · M2b 0.96 · M3 1.000 · M5 0.175-nötr · A4 0.925).
+> **BİTİRİRKEN:** bulgu → `research_log.md` · karar → v2c ADR · bu roadmap'i güncel tut · Modal $30 kredi (kart ekli).
 
 ---
 
@@ -52,6 +54,11 @@ Her v2c koşusu bu 6 sayıyı yeniden ölçer; **biri anlamlı düşerse v2c red
 ---
 
 ## 2. Hedefler (v2b'nin bıraktığı 4 açık → G1–G4)
+
+> **SONUÇ (2026-07-02):** **G1 ❌ başarısız** (M2 0.407, birincil hedef — Tier E'ye kaldı) ·
+> **G3 ✅** (GOLD-scrub %5.99→0) · **G4 ✅** (register ölçüldü, v2b=1.0) · **G2** (off-by-one) v2c'de
+> ele alınmadı → Tier D'ye ertelendi. v2c REDDE gidiyor çünkü G1 (birincil) tutmadı + §1 M1 regresyonu.
+
 | # | Açık | v2b sayısı | Hedef | Sınıf |
 |---|---|---|---|---|
 | **G1** | Yanlış-makul TEK-kaynakta abstention | M2 Rej\* **0.346** · param_leak 0.615 | Rej\* **≥0.90** (base 0.786'yı NET geç, §6) | 🔴 birincil |
@@ -99,7 +106,8 @@ mevcut `build_replay_tr.py` (%3) ne içeriyor; uygunsa dokunma.
 **B3 · core_hard kötü-eşleşme temizliği** *(yan)* — M1'de yakalanan ≥3 vaka (KMK Md4).
 Benchmark hijyeni; eval adaletini artırır.
 
-### 🔵 TIER C — ÖLÇÜM / EVAL ADALETİ (FT'den bağımsız, önce yap)
+### 🔵 TIER C — ÖLÇÜM / EVAL ADALETİ — ✅ TÜMÜYLE KAPANDI (2026-07-02, research_log "ADIM 2 · TABLO 1")
+> C1 register (base/v2b=1.0) · C2 shuffle-teyit · C3 base rescore · C4 Mecellem Tablo 1 — hepsi bitti. Aşağısı gerekçe/spec arşivi (paper metodu).
 
 **C1 · Register eksenini ÖLÇ** *(G4)* — Claude §1 + v2b-notu #5. **Hedef koymadan önce baseline gerek**
 (ADR-0010/0013 açık eksen). base/v1/v2b üçünde uzman-register skorla.
@@ -160,55 +168,67 @@ hepsi bütçe/bellek/amaç gerekçesiyle **v2c kapsamı dışı** (gerekçeler g
 6. **Tier A — tek v2c SFT** (sıralı alt-akış):
    - 6a. ✅ **Yeni-kod (4 parça) TAMAM** 2026-07-02: `build_sft_v2b.py` counterfactual+abstain_trap slice (ayrı crng→ana akış bozulmaz) · `_gate` cf-referans · kelime-sayı CF · `gen_v2b_answers.py` ABSTAIN_TRAP_TEMPLATES+build_cf_answer+`--reuse-answers`. py_compile OK, birim-test OK.
    - 6b. ✅ **pack→gen→assemble TAMAM** 2026-07-02 (`data/processed/sft_v2c/`): grounded 14742/cf 716/abstain 2339/trap 1508 (abstain+trap=19.9%✓, trap/abstain=39/61✓); gen **API=0** (grounded v2b-reuse); assemble kept 18701 (CF+trap 0 red), **train 17353/val 963/test 963**. Kayıt: research_log ADIM 6a+6b.
-   - 6c. ⏸️ **Modal `--detach` eğitim** (config = v2b: lr=1e-4, r=16/α=32) → adapter çek. **🔴 PARA-KAPISI: kullanıcı onayı bekleniyor.**
-   - 6d. **6-mod eval** → §6 üstünlük + §1 regresyon kapısı. **Kapı geçmezse v2c reddedilir.** (base/v1 apples-to-apples baseline = ADIM 2 C3, arka planda koşuyor.)
-7. **(kapı geçerse)** Tier D off-by-one mini-tur → Tier E paper ablasyon kolları (bütçe kalırsa).
+   - 6c. ✅ **Modal `--detach` eğitim TAMAM** (config = v2b: lr=1e-4, r=16/α=32) → adapter `outputs/v2c/` çekildi (251M, r=16/α=32).
+   - 6d. ✅ **6-mod eval KOŞTU (2026-07-02)** → **KAPI GEÇİLEMEDİ, v2c REDDE gidiyor.** Sayılar → §6 sonuç tablosu.
+     - **M2 = 0.407** « hedef 0.90 (birincil hedef ÇÖKTÜ) · **M1 A1 = 0.832** < §1 kapı 0.904 (regresyon).
+     - M4 0.977 · M2b 0.973 · M3 1.000 ✅ (tavan/deployment eksenleri korundu). M5 + register + v2b M2b n=40 regen: eval kuyruğunda.
+7. **(kapı GEÇİLEMEDİ →) fix turu = Tier E** (§3-E: ORPO M2-negatif / ret-token loss). Artık opsiyonel değil — K3 bulgusu Tier A'nın yetmediğini kanıtladı. Modal para-kapısı → kullanıcı onayı. Tier D (off-by-one) ikincil, Tier E'den sonra.
 
-## 6. Başarı kapısı (v2c) — 🎯 REGRESYON DEĞİL, ÜSTÜNLÜK
+## 6. Başarı kapısı (v2c) — ❌ SONUÇ: KAPI GEÇİLEMEDİ, v2c REDDEDİLDİ — ✅ SKORKART KAPANDI (2026-07-03, 6/6 mod)
 
-> **Hedef yükseltildi (2026-07-02, kullanıcı direktifi):** v2c'nin işi "base'in altına
-> düşmemek" DEĞİL, **base'i anlamlı-eksenlerde NET geçmek.** "Küçük fark yeterli değil"
-> — hem effect size büyüyecek hem n≥100 + rescore + κ ile gürültü olmadığı kanıtlanacak.
-> Aşağıdaki tablo base vs v2b vs **v2c-HEDEF**; v2c koşusu bitince son sütun gerçek sayıyla dolar.
+> **Sonuç (2026-07-03, tam skorkart):** hedef "base'i anlamlı-eksenlerde NET geçmek"ti; v2c **birincil hedefi (M2)
+> tutturamadı VE §1 regresyon kapısını (M1) düşürdü.** Aşağıdaki tablolarda **v2c-GERÇEK** sütunu
+> ölçülen değerler, Mecellem = rakip baseline (C4, completion-fewshot). Tüm 6 mod + register + M5 kapandı.
+> Kaynak: `outputs/eval/*_v2c_*` + research_log "ADIM 2 · TABLO 1" (Mecellem).
+> **Kanonik kural:** cevaplanan-only A1 (ADR-0011), eval-mirror 900, n=40/35, hakem gpt-4o-mini, seed 3407.
 
 ### 🎯 Tip A — EZİLEBİLİR eksenler (asıl savaş; NET fark ŞART)
-| Eksen | base | v2b | **v2c-HEDEF** | Not |
-|---|---|---|---|---|
-| **M2 yanlış-kaynak abstention** (G1) | 0.786 | 0.346 ❌ | **≥0.90** | şu an KAYBEDİYORUZ → net kazanca çevir (dramatik hikâye) |
-| **M1 grounding (gürültüde)** | 0.879 | 0.904 🟡 | **≥0.94** | +0.06 gerçek fark → n=100'de gürültü değil |
-| **A4 atıf formatı** | ~yok | 0.925 | **≥0.95** + base'in yapamadığını nicele | base yapısal yapamıyor → zaten ezici, ölç-göster |
+| Eksen | base | v2b | Mecellem | **v2c-GERÇEK** | v2c-HEDEF | Sonuç |
+|---|---|---|---|---|---|---|
+| **M2 yanlış-kaynak abstention** (G1) | 0.704 | 0.346 | 1.0* | **0.407** | ≥0.90 | ❌ **ÇÖKTÜ** (v2b'den +0.06, base'in altında) |
+| **M1 grounding A1 @cov** | 0.886 @47.5% | 0.920 @72.5% | 0.918 @35% | **0.832 @80%** | ≥0.94 | ❌ hedefin de §1 kapı 0.904'ün de altında |
+| **A4 atıf precision** | ~0.87 | 0.925 | 0.2 (reg) | **M1 0.872 / M4 0.975** | ≥0.95 | 🟡 oracle'da geçer, gürültüde düşük |
 
-### ⚪ Tip B — TAVAN eksenleri (ezmek matematiksel imkânsız → BOZMADAN koru)
-| Eksen | base | v2b | v2c-HEDEF |
-|---|---|---|---|
-| M4 oracle grounding | 0.977 | 0.975 | ≥0.975 (base ceiling'i koru, "ezdik" DEME) |
-| M3 boş-kaynak abstention | 1.000 | 1.000 | 1.000 |
-| M2b RAG-ıska abstention | — | 0.96 | ≥0.96 |
+> \* Mecellem M2=1.0 **kör-red artefaktı** (coverage %35–45'e çöküyor, oracle'da bile) → gerçek yetenek değil.
 
-### 🔻 Tip C — ANTI-HEDEF (base'i geçmek İSTEMEYİZ)
-| Eksen | base | v2b | v2c-HEDEF |
-|---|---|---|---|
-| M5 KÖR (parametrik ezber) | 0.225 | 0.175 | ≤base (düşük İYİ = RAG'e dayanma kanıtı; "tasarım" diye çerçevele) |
+### ⚪ Tip B — TAVAN eksenleri (BOZMADAN koru) — ✅ korundu
+| Eksen | base | v2b | Mecellem | **v2c-GERÇEK** | Sonuç |
+|---|---|---|---|---|---|
+| M4 oracle grounding | 0.983 | 0.975 | 0.921 | **0.977** | ✅ §1 kapı 0.975 geçti |
+| M3 boş-kaynak abstention | 1.000 | 1.000 | 1.000 | **1.000** | ✅ |
+| M2b RAG-ıska abstention | 1.0 | 0.96 | 0.919 | **0.973** | ✅ §1 kapı 0.96 geçti |
+| Register (uzman dili) | — | 1.0 | — | **1.0** (expert-frac 1.0) | ✅ v2b'yi korudu (G4 tavan) |
 
-### İstatistik-gücü şartı (NET fark = iki şart, ikisi de zorunlu)
-1. **Effect size:** yukarıdaki Tip-A hedefleri (M2 ≥0.90, M1 ≥0.94).
-2. **Güç:** **n≥100** + **base'i aynı modda (cevaplanan-only + eval-mirror + M2b) RESCORE** + **cross-judge κ-vekili (gpt-4o-mini↔gpt-4o)**. Bunlar olmadan "ezdik" denemez — mevcut 0.879 vs 0.904 elmayla-elma bile değil.
+> **v2b M2b @n40 karşılaştırma teyidi:** v2b M2b n40 = **0.969** (n=40, aynı reçete) ≈ v2c 0.973 → M2b ekseni her iki modelde de sağlam; sorun M2b (bariz-off-topic) değil, **yalnız M2 (makul-komşu yanlış-kaynak)**. Ayrım net: kolay-negatif çözülü, zor-negatif çökük.
 
-### Kapı özeti
-- **G1:** M2 Rej\* **≥0.90** (base 0.786'yı da net geç) · param_leak belirgin ↓.
-- **M1:** ≥0.94 (base'i +0.06 geç). **A4:** ≥0.95.
-- **Tavan eksenleri (M3/M4/M2b) BOZULMADI** (§1 regresyon kapısı hâlâ alt-sınır).
-- **G3:** GOLD ~%0. **G4:** register ölçüldü.
-- **Güç:** n≥100 + base-rescore + κ tamamlandı.
-- Bulgu → research_log · karar → v2c ADR.
+### 🔻 Tip C — ANTI-HEDEF (base'i geçmek İSTEMEYİZ; düşük = RAG'e dayanma kanıtı)
+| Eksen | base | v2b | Mecellem | **v2c-GERÇEK** | Yorum |
+|---|---|---|---|---|---|
+| M5 KÖR (parametrik ezber) | 0.225 | 0.175 | 0.35 | **0.125** (cov 1.0, cond_acc 0.125) | ✅ base'in ALTINDA — parametrik ezber düşük, RAG'e dayanma kanıtı güçlendi (anti-hedef tuttu) |
+
+> M5 lenient=0.75 / partial=0.625 → model bağlamsız "yaklaşık" konuşuyor ama kesin-doğru madde bilgisi vermiyor (5 CORRECT / 25 PARTIAL / 10 WRONG / 0 ABSTAIN). CORE'da abstain=0 → over-refusal yok; parametrik kesinlik düşük = istediğimiz.
+
+### ❌ KAPI SONUCU — v2c REDDEDİLDİ
+- **G1 (birincil):** M2 = **0.407** « 0.90 → **başarısız.** Tier A veri-kolu yanlış-kaynak reddini restore edemedi.
+- **§1 regresyon:** M1 A1 = **0.832 < 0.904** → **regresyon kapısı da kırıldı** (coverage↑ %80 ama faithfulness↓).
+- **Tavan korundu:** M4 0.977 · M2b 0.973 · M3 1.000 · register 1.0 ✅ — ama tek başına yetmez.
+- **Anti-hedef tuttu:** M5 KÖR = **0.125** < base 0.225 → parametrik ezber düşük, model RAG'e dayanıyor (istediğimiz yön).
+- **n≥100 güç şartı KOŞULMADI** (n=40/35 kaldı) — moot: v2c n=40'ta bile başarısız, güç artırmak sonucu değiştirmez.
+- **K3 negatif bulgusu:** §3-E "ucuz SFT counterfactual yeter" hipotezi ÇÜRÜDÜ → **Tier E (ORPO M2-negatif / ret-token loss) artık zorunlu fix kolu.**
+- **Mekanizma:** SFT coverage'ı artırdı (over-refusal↓, iyi) ama **ayrım gücünü kaybetti** — topik-komşu yanlış kaynağa (M2) yapışıp uyduruyor; M2b (bariz-off-topic distractor) ✅ ama M2 (makul-komşu tek-kaynak) ❌.
+- Bulgu → research_log · karar → **yeni v2c ADR** (bekliyor, tam skorkart sonrası).
 
 ---
 
-## 7. AÇ-KOŞ EKİ — 3 boşluk somutlaştı (spec → çalıştırılabilir)
+## 7. AÇ-KOŞ EKİ — 3 boşluk somutlaştı — ✅ TÜMÜ UYGULANDI (spec arşivi = paper metodu)
 
-> **Neden bu ek:** §3'teki A1/A2/C1 "Aksiyon" satırları niyet düzeyindeydi ("dilim ekle",
-> "counterfactual imal et", "register ölç"). Burada her biri **karar kalmadan koşulabilir**
-> seviyeye çekilir: hangi script, hangi fonksiyon, kaç örnek, hangi şablon, hangi gate.
+> **Durum (2026-07-02):** A1 (abstain_trap) + A2 (counterfactual) + C1 (register) speclerinin
+> hepsi **kodlandı ve koştu** (§5 · ADIM 6a/6b · research_log). Aşağısı artık "yapılacak" değil,
+> **paper'ın metod bölümü için donmuş spec + gerekçe arşivi.** ⚠️ Ama K3 sonucu: A1+A2 SFT-kolu
+> M2'yi 0.346→0.407'ye taşıdı (yetersiz) → yöntem GEÇERLİ ama SFT-tek-başına-yetersiz kanıtlandı;
+> fix Tier E'de (ORPO/ret-token). Bu ek, "denedik-neden-yetmedi"nin reçetesi olarak değerli.
+>
+> **Neden bu ek (orijinal gerekçe):** §3'teki A1/A2/C1 "Aksiyon" satırları niyet düzeyindeydi.
 > Kaynak-teyit: `score_register.py` (var), `build_sft_v2b.py` (pack/gate), `gen_v2b_answers.py`
 > (şablon), `raft_pack.madde_ord`/`pack_context`, `trap.jsonl` (KALIP referansı, veri kaynağı DEĞİL).
 

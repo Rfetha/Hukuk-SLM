@@ -35,6 +35,7 @@ Kararı değiştirirsek eskiyi SİLMEYİZ → "Süpersed" işaretler, yenisini e
 - [0011](0011-eval-metodoloji-canon.md) — CANON eval metodolojisi (4 eksen, mod-stratifiye, literatür-doğrulamalı)
 - [0012](0012-v2-strateji-on-kayit.md) — v2 strateji ön-kayıt (scope Product A; SFT=davranış, bilgi=RAG)
 - [0013](0013-eval-matrisi-v2-genisletme.md) — CANON eval v2 genişletme: 5 mod matrisi (distractor + E-set + register)
+- [0014](0014-v2c-red-karari-fix-yonu-acik.md) — v2c RED kararı (M2 0.407 + M1 regresyon) + K3 negatif bulgu; fix yönü AÇIK (potansiyel durumlar P1–P6, karar ertelendi)
 
 > İlk 7 ADR **geriye dönük** yazıldı (2026-06-08) — kararlar daha önce verildi, bağlam/alternatif/
 > sonuç anlatısı paper için sonradan yapısallaştırıldı. Bundan sonraki kararlar **anında** ADR'lenir
