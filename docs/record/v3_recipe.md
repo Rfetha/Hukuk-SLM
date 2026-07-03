@@ -27,12 +27,12 @@
 |---|---|---|
 | **Q1** | Yöntem + kapı | **ORPO** (Modal A100). Kapı: **M2 ≥0.704** (base'i NET geç) **+ M1 A1 ≥0.904** (regresyon yok) + tavan koru (M4/M2b/M3/register) + M5 base-altı. Üstünlük (M2 0.90) = ara-hedef/bonus, RED değil. **DTA = opsiyonel 2. aşama.** |
 | **Q2** | Checkpoint | **base = v2b adapter** (M1 kapısı zaten geçili). v2c'nin **verisi** ORPO-chosen'a taşınır, **ağırlığı** atılır (M1-regresyonunu sırtlamamak için). |
-| **Q3** | Near-miss sertlik | **Spektrum** (tüm örtüşme bandı, **eval M2-tipi yüksek-örtüşme AĞIRLIKLI**) + **geçerlilik kapısı.** "Kaynak yasal cevaplamıyorsa reddet" genel ilkesi, leksik sezgi değil. |
+| **Q3** | Near-miss sertlik | ~~**Spektrum** (soru-örtüşme MAX ağırlıklı)~~ → **⚠️ OVERRIDE (2026-07-03, ADIM 1 veri-doğrulamalı, kullanıcı onaylı):** soru-çıpası eval M2 (gold-çıpa) ile örtüşmedi (yalnız %6.6 kapsama = Bulgu-2 tekrarı). **EVAL-AYNASI** benimsendi: yanlış-komşu = gold-kaynağa MAX Jaccard (build_eval_sets:138 birebir) → ov_gold med 0.141≈eval 0.123, kapsama %66.3. Sertlik = ov_gold; geçerlilik lexical DEĞİL → judge (Q5 revize). Detay: research_log 2026-07-03 v3 ADIM 1. |
 | **Q4** | ORPO çifti | **rejected = v2b'nin gerçek fabrikasyonu** (zor-bağlamda örnekle; çekimser kaldığını atla → zor-negatif küratörü, ~$0). **chosen = muhakemeli-red şablonu** (yanlış-madde konusunu adlandırır, teacher'sız $0, kıyaslanabilir uzunluk → format/uzunluk-bias↓). |
 | **Q5** | Geçerlilik kapısı | **Çift-eksen deterministik:** sertlik = overlap(yanlış, **SORU**)↑ · geçerlilik = overlap(yanlış, **GOLD-CEVAP**) < τ (kazara-cevaplayanı ele, $0). + **judge-audit** → τ kalibre. ⚠️ **Geri bildirim-3 (overlap gürültülü):** τ = tek sayı DEĞİL → **gri-bant** [τ_lo, τ_hi]; bant-altı=otomatik geçer, bant-üstü=otomatik eler, **yalnız bant-içi judge'a** gider (funnel sağlığı + gürültü-emniyeti). |
 | **Q6** | Kompozisyon | **Pref-ağırlıklı:** abstain-çifti (ORPO) = MAX üretilebilir. Grounding = **hafif SFT-replay** (rejected'sız NLL, unutmama-boyutu). base=v2b zaten ground'ladığı için sinyali M2 açığına yoğunlaştır. |
 | **Q7** | Doğrulama | **Held-out zor-near-miss dev-set** (~80, eğitim+eval'den ayrık) → ORPO tuning. **İki-kademe eval:** karar kanon n=40/35 (skorkart-uyumlu); umutluysa teyit n≥100 + base/v2b re-eval. |
-| **Q8** | Bağlam yapısı | **Tek yanlış-kaynak AĞIRLIKLI** (eval M2 oracle yapısına eş) + az çok-kaynak (yanlış+uzak-distractor, deploy'a genelleme). |
+| **Q8** | Bağlam yapısı | **Tek yanlış-kaynak AĞIRLIKLI** (eval M2 oracle yapısına eş) + az çok-kaynak (yanlış+uzak-distractor, deploy'a genelleme). ✅ **ADIM 2 TEYİT (Bulgu-3):** eval M2 = ORACLE tek-kaynak framing (SYSTEM_PROMPT_RAG, "KAYNAK MADDE:"). abstain-çiftleri (prompt+chosen+rejected) ORACLE; grounding-replay RAG_MULTI. Karışık framing, her çift kendi sınav-moduna eşlenir. Detay: research_log 2026-07-04. |
 
 ---
 
@@ -83,3 +83,81 @@
 - Fix literatürü: [[v2c_fix_deep_research]] (ORPO 2403.07691 · DTA 2505.20871 · RAFT-uyarı · format-bias 2409.11704).
 - Kod dokunulacak: `scripts/build_sft_v2b.py` (pick_wrong_neighbor→hard, çift-eksen geçerlilik kapısı+gri-bant), `gen_v2b_answers.py` (muhakemeli-red şablon), `modal_train.py` (ORPO entrypoint + **`MaskedORPOTrainer` subclass** — per-satır `is_pref` OR-maskesi, ~15 satır), `scripts/build_eval_sets.py` (dev-set üretici). ORPO veri şeması: her satır `{prompt, chosen, rejected, is_pref}`; grounding satırı `is_pref=False` + placeholder rejected.
 - Değişmez: lisans-temiz veri · Modal --detach · para-kapısı · Mecellem sütunu her skorkartta.
+
+---
+
+# 🔖 HANDOFF (2026-07-04, detach-öncesi durum → dönünce ne yapılacak)
+
+> **Neden:** Modal o gece HEM lokal HEM kullanıcı `!` shell'inden erişilemedi (ağ). ADIM 2 harvest başlatılamadı. Tüm offline iş (ADIM 3/5/6) BİTTİ. Bu bölüm dönünce sıfır-bağlamla devam ettirir.
+
+## DURUM PANOSU
+| ADIM | Durum | Not |
+|---|---|---|
+| 1 zor-trap havuzu | ✅ | `data/processed/sft_v3/packed_v3.jsonl` (19284). **Eval-aynası** (Q3 override). |
+| 2 rejected harvest | ⏳ **KOD HAZIR, KOŞMADI** | Modal ağ engeli. `gen_v3_rejected.py` + oracle + pad-fix hazır. |
+| 3 chosen | ✅ | `chosen.jsonl` (19284, muhakemeli-red, oracle). |
+| 4 τ judge kalibrasyon | ⏭ opsiyonel | Net gerekir; provizyonel: hi_overlap DAHİL (paketlemede işaretli). |
+| 5 dev-set | ✅ | `dev.jsonl` (80, sızıntısız). |
+| 6 ORPO paketleme + trainer | ✅ **KOD HAZIR** | `build_orpo_v3.py` + `train_orpo.py` (MaskedORPOTrainer). rejected.jsonl bekliyor. |
+| 7 Modal smoke | 🚧 PARA-KAPISI | `spawn_v3 --smoke`. |
+| 8 ORPO tam eğitim | 🚧 PARA-KAPISI | `spawn_v3`. |
+| 9-11 eval/karar/belge | ⏳ | kanon 6-mod + kapı Q1 + ADR-0015. |
+
+## BU OTURUMDA VERİLEN KARARLAR (bağlayıcı)
+1. **Q3 OVERRIDE — eval-aynası:** zor-negatif = gold-kaynağa MAX Jaccard (eval build_eval_sets:138 birebir), SORU-örtüşme DEĞİL. Veri: soru-çıpası eval M2 ile %6.6 örtüşüyordu → eval-aynası %66.3 (özdeş dağılım). Geçerlilik lexical→judge.
+2. **Bulgu-3 — ORACLE framing:** abstain-çifti (prompt+chosen+rejected) = SYSTEM_PROMPT_RAG tek-kaynak "KAYNAK MADDE:" (eval M2). grounding-replay = RAG_MULTI (M1). v2b oracle'da fab≈0.79 (RAG_MULTI'de %15).
+3. **Modal harvest** (kullanıcı onaylı, para-kapısı açık): 1500 gerçek fab, A100 inference ~$2-4.
+4. **pad-fix:** batched üretim `pad_token=<pad>(0)` (eos DEĞİL) — mojibake fix.
+
+## DÖNÜNCE — TEK-NUMARALI RESUME (Modal ağ geri gelince)
+
+**R1. Harvest (ADIM 2) — Modal (senin `!` ile; my-shell ağsız):**
+```
+! source ~/code/global_venv/bin/activate && modal volume put hukuk-data data/processed/sft_v3/packed_v3.jsonl /sft_v3/packed_v3.jsonl
+! source ~/code/global_venv/bin/activate && modal run modal_train.py::spawn_harvest --target 1500
+# İzle: modal app logs hukuk-sft  → "harvest bitti" deyince:
+! source ~/code/global_venv/bin/activate && modal volume get hukuk-data /sft_v3/rejected.jsonl ./data/processed/sft_v3/rejected.jsonl
+```
+⚠️ rejected.jsonl gelince KALİTE-KONTROL: `abstained=False` fab oranı ~0.79 mı; baş-mojibake ~0 mı (pad-fix). Yaygın mojibake varsa `spawn_harvest --batch 1` ile tekrar.
+
+**R2. ORPO paketleme (ADIM 6a) — lokal $0:**
+```
+source ~/code/global_venv/bin/activate && python scripts/build_orpo_v3.py --rejected data/processed/sft_v3/rejected.jsonl
+# → data/processed/sft_v3/{train,validation}.jsonl + orpo_report.json (funnel'ı oku)
+```
+
+**R3. (opsiyonel ADIM 4) τ judge kalibrasyon** — hi_overlap fab'ları gpt-4o-mini'ye ver, kazara-cevaplayanı ele, build_orpo_v3'ü τ ile tekrar. (Net gerekir; atlanırsa hi_overlap dahil kalır.)
+
+**R4. Smoke (ADIM 7, PARA-KAPISI, ~$0.15) — kullanıcı onayı + `!`:**
+```
+! ...modal volume put hukuk-data data/processed/sft_v3/train.jsonl /sft_v3/train.jsonl
+! ...modal volume put hukuk-data data/processed/sft_v3/validation.jsonl /sft_v3/validation.jsonl
+! ...modal run modal_train.py::spawn_v3 --smoke
+```
+DENETLE (geri bildirim-7): loss düşüyor mu, OOM yok mu, NaN yok mu, `nll_loss` loglanıyor mu. **v2b-continuation + is_pref-list burada DOĞRULANIR** (offline test edilemedi).
+
+**R5. Tam ORPO (ADIM 8, PARA-KAPISI) — onay + `!`:**
+```
+! ...modal run modal_train.py::spawn_v3 --run-name v3 --epochs 1 --beta 0.1 --lr 1e-5
+# forget-vekili: nll_loss trendi (tırmanırsa M1-risk → beta↓ 0.05 veya replay↑). Bitince:
+! ...modal volume get hukuk-outputs /v3 ./outputs/v3
+```
+
+**R6. Eval (ADIM 9-10) — lokal:** kanon 6-mod (M1/M2/M2b/M3/M4/M5+register), Mecellem sütunu. **KAPI (Q1):** M2≥0.704 + M1 A1≥0.904 + tavan koru + M5 base-altı. Geçerse n≥100 teyit + base/v2b re-eval. **ADIM 2 boyunca eval M2'nin ORACLE olduğunu unutma** (mode="oracle").
+
+**R7. Belge (ADIM 11):** ADR-0015 (v3 kabul/red) + `v3_sonuclar.md` + research_log + Bulgu-2/3 logu.
+
+## ⚠️ MODAL ERİŞİM/LOGIN SORUNU (2026-07-04, çözülmeli)
+Harvest denemesinde HEM lokal Bash HEM kullanıcı `!` shell → **"Could not connect to the Modal server"** (upload+spawn exit 1). Token VAR (`~/.modal.toml`, 2 satır) → **auth değil, AĞ/oturum**. Genel internet de HTTP 000'du (o an tam egress kapalıydı). Dönünce sırayla:
+1. Ağ teyidi: `curl -sI https://api.modal.com` (200/301 gelmeli).
+2. Oturum teyidi: `source ~/code/global_venv/bin/activate && modal app list` (asılmadan liste gelmeli). Asılırsa → `modal token new` (tarayıcı auth) VEYA `modal setup`.
+3. Token yenile gerekirse: `modal token set --token-id <id> --token-secret <secret>` (modal.com/settings/tokens'tan).
+4. Sonra R1'deki upload/spawn komutları. ⚠️ **AI'nın (Claude) lokal Bash'inin dışa internet erişimi YOK** (sandbox) → Modal/HF/git-push AI tarafından koşulamaz; kullanıcı `!` ile veya kendi terminalinde koşar.
+
+## AÇIK RİSKLER (ADIM 7 smoke doğrular)
+- v2b-continuation (`PeftModel is_trainable`) Unsloth+ORPO'da çalışır mı → çalışmazsa `train_orpo.py --fresh-adapter` fallback (grounding'i kaybeder, M1 riski).
+- `is_pref` collator else-dalından list gelir mi (MaskedORPOTrainer buna dayanıyor) → gelmezse tokenize_row override gerekir.
+- pad-fix mojibake tam çözdü mü (lokal batch=8 doğrulaması yarım kaldı) → R1 kalite-kontrolde bak.
+
+## DOSYA HARİTASI (v3, yeni — v2b/v2c dokunulmadı)
+`scripts/build_sft_v3.py` (ADIM1) · `gen_v3_rejected.py` (ADIM2) · `gen_v3_chosen.py` (ADIM3) · `build_v3_devset.py` (ADIM5) · `build_orpo_v3.py` (ADIM6a) · `train_orpo.py` (ADIM6b) · `modal_train.py::{spawn_harvest,spawn_v3}` (ADIM6f/8). Veri: `data/processed/sft_v3/{packed_v3,chosen,dev}.jsonl` + gelecek `{rejected,train,validation}.jsonl`.

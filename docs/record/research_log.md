@@ -472,6 +472,56 @@ Otorite: `v2c_roadmap.md` §5 madde 2 (C4) + §7 C4. **ADIM 2 KAPANDI** — base
 
 ---
 
+## 2026-07-03 · v3 ADIM 1 — zor near-miss trap havuzu (`build_sft_v3.py`) + EVAL-AYNASI kararı
+
+**Ne yapıldı:** v3 ORPO pipeline ADIM 1 (v3_recipe §5.1). Yeni `scripts/build_sft_v3.py pack` → 19284 zor near-miss trap adayı (`data/processed/sft_v3/packed_v3.jsonl`). v2b/v2c dokunulmadı; raft_pack + build_sft_v2b yardımcıları import ile reuse.
+
+**🔴 KARAR — recipe Q3 override (veri-doğrulamalı, kullanıcı onaylı):** recipe Q3 sertliği **SORU-örtüşme MAX**'a çıpalıyordu. İlk kod bunu uyguladı; ölçtüm → eval M2 ile örtüşmüyor:
+- Bizim `ov_gold` = kardeş↔gold-kaynak Jaccard = eval M2 `_overlap` ile **AYNI metrik** (build_eval_sets.py:138).
+- Soru-çıpası pool: `ov_gold` med=0.047, eval-med(0.123) üstü kapsama **%6.6** → eğitim-negatifi eval'den KOLAY = **v2c Bulgu-2 hatasının başka eksende tekrarı.**
+- **Düzeltme:** `pick_hard_neighbor` → EVAL-AYNASI: aynı kanunun tüm kardeşleri içinden gold-kaynağa MAX Jaccard (eval:138 ile birebir). Pencere yok.
+
+**Sonuç (eval-aynası, n=19284):**
+| Dağılım | med | p90 | eval-med üstü kapsama |
+|---|---|---|---|
+| Eval M2 `_overlap` (n=35) | 0.123 | 0.253 | — |
+| v3 `ov_gold` (n=19284) | **0.141** | **0.277** | **%66.3** (önce %6.6) |
+
+Dağılımlar artık özdeş (v3 hafif daha zor). **Bulgu-2 hatası ölçülebilir eksende kapandı.**
+
+**Geçerlilik ekseni yeniden konumlandı:** ov_gold artık SERTLİK ekseni (yüksek=zor=istenen). "Yanlış madde soruyu gerçekten cevaplıyor mu?" (geçerlilik) lexical ile ölçülemez → **semantik judge**'a taşındı (ADIM 4). `judge_flag='hi_overlap'` (ov_gold>0.35, 1192 aday) = judge-önceliği (kazara-cevaplama şüphesi en yüksek). Gözle doğrulama: hi_overlap örnekleri (CMK 140 teknik-izleme vs CMK 135 iletişim-tespiti; TCK 197 sahte-para vs TCK 199 kıymetli-damga) yüksek-örtüşmeli ama farklı hüküm → çekimser hâlâ doğru → **yüksek lexical örtüşme ≠ gerçekten cevaplıyor**, judge'a taşıma kararı doğrulandı.
+
+**Kaynak:** `scripts/build_sft_v3.py` · `data/processed/sft_v3/packed_v3.jsonl` (seed 3407) · kıyas eval `data/eval/trap.jsonl`.
+**Paper eşleme:** Bulgu-2 (eğitim-eval sertlik uyumsuzluğu) = K3'ün iki-sebepli rafinasyonu; eval-aynası düzeltmesi = "hard-negative dağılımını eval ile eşle" metodoloji katkısı. Recipe Q3 çelişkisi v3_recipe.md'de bayraklandı → ADR-0015'te formalize edilecek.
+
+---
+
+## 2026-07-04 · v3 ADIM 2-6 — rejected harvest tasarımı + FRAMING keşfi + offline pipeline
+
+**🔴 Bulgu-3 (FRAMING, kritik — eval M2 = ORACLE):** rejected üretimi için v2b'yi zor trap'lerde koşturdum. İlk kurulum RAG_MULTI çok-kaynak framing → v2b **%85 çekindi** (fab 0.15). Eval M2 detayı (`outputs/eval/bench_m2_v2b_detail.jsonl` `mode="oracle"`) okununca sebep çıktı: **eval M2 = ORACLE tek-kaynak framing** (SYSTEM_PROMPT_RAG "çekimser kal" DEMEZ + "KAYNAK MADDE:" tek yanlış madde), RAG_MULTI ("ilgili yoksa reddet" der) DEĞİL. Oracle framing'e geçince v2b **fab=0.79-0.875** (eval M2 0.654 ile aynı yön). **Recipe Q8 zaten "eval M2 oracle yapısına eş" diyordu** — ADIM 1 implementasyonum yanlışlıkla RAG_MULTI kurmuştu.
+- **Sonuç:** v3 abstain-çiftleri (chosen+rejected+prompt) ORACLE framing kullanır (eval M2 hedefi). grounding-replay RAG_MULTI kalır (M1 sınavı RAG_MULTI). Karışık framing bilinçli — her çift kendi sınav-moduna eşlenir.
+- **Paper notu:** train/eval FRAMING uyumsuzluğu = v2b'nin zayıf M2'sinin (0.346) muhtemel ek sebebi (RAG_MULTI eğitildi, oracle test edildi). Bulgu-3, K3'ün üçüncü boyutu.
+
+**Bulgu-4 (v2b fab oranı ölçüldü, K3 funnel):** eval-aynası ORACLE zor-trap'te v2b fabrikasyon oranı ≈ **0.79** (n=24 batch smoke) / **0.875** (n=8 tekil). Yani v2b "makul-komşu yanlış madde + oracle framing"de çoğunlukla uyduruyor → ORPO rejected havuzu bol. Kaynak: `scripts/gen_v3_rejected.py`.
+
+**Hız duvarı + mojibake bug'ı (mühendislik):** lokal RTX 5070'te 12B-4bit greedy ~**30s/örnek**, **batching KIRMADI** (decode bandwidth-bound; FA2 bozuk→Xformers). 1500 fab lokal ≈ 10+ saat → **Modal A100'e taşındı** (kullanıcı onaylı, inference ~$2-4). Ek bug: **batched left-pad `pad_token=eos` baş-token mojibake** ("Eğer"→"트에ğer", batch=8'de %26). Fix: `pad_token_id=<pad>(0)` (Gemma pad≠eos). Kaynak/fix: `gen_v3_rejected.py::generate_batch`.
+
+**Modal erişim engeli (durum):** 2026-07-03/04 gecesi Modal HEM lokal Bash HEM kullanıcı `!` shell'inden erişilemedi ("Could not connect to the Modal server"; genel internet de HTTP 000). Harvest başlatılamadı → ağ geri gelince tekrar denenecek (handoff'ta komutlar). Kod hazır.
+
+**Offline pipeline kuruldu (ADIM 3/5/6, $0, lokal):**
+- **ADIM 3** `gen_v3_chosen.py` → `chosen.jsonl` (19284 muhakemeli-red, oracle-uyumlu, yanlış-madde konusunu adlandırır, gate_fail=0, med 31 kelime ≈ fabrikasyon uzunluğu).
+- **ADIM 5** `build_v3_devset.py` → `dev.jsonl` (80 held-out, ov_gold band [0.12,0.35]=eval M2 dağılımı, 239 eval-trap sızıntısı elendi, 9 kanun). dev id'leri eğitimden çıkarılır.
+- **ADIM 6a** `build_orpo_v3.py` → `train/validation.jsonl` (TRL conversational-preference {prompt,chosen,rejected,is_pref}; abstain-çifti is_pref=1 ORACLE + grounding-replay is_pref=0 RAG_MULTI placeholder-rejected; deterministik interleave). Smoke fixture ile uçtan uca test edildi.
+- **ADIM 6b** `train_orpo.py` `MaskedORPOTrainer(ORPOTrainer)` — TRL 0.24 kaynak-doğrulamalı: `get_batch_loss_metrics` override, OR-agregasyonu `torch.where(is_pref, losses, 0)` NaN-safe maskeli (`loss=policy_nll_loss−or_masked_mean`). base=v2b PeftModel is_trainable (continuation). Unsloth `PatchDPOTrainer()`.
+- **ADIM 6f** `modal_train.py::{harvest_rejected/spawn_harvest, train_orpo/spawn_v3}` entrypoint'leri.
+- **ADIM 6E format-denetimi (geri bildirim-7, offline GEÇTİ):** cache'li Gemma tokenizer ile paketlenmiş örnek decode → chat-template doğru, abstain=oracle (`KAYNAK MADDE:`), grounding=RAG_MULTI (`KAYNAKLAR:`), is_pref satırda korunuyor (1/0). ✅
+
+**Açık doğrulama (ADIM 7 Modal smoke YAPACAK):** (a) v2b-continuation (PeftModel is_trainable) Unsloth+ORPO'da çalışıyor mu; (b) is_pref collator else-dalından list olarak geliyor mu; (c) OOM/loss/NaN. Offline sadece syntax+tasarım doğru.
+
+**Kaynak:** `scripts/{gen_v3_rejected,gen_v3_chosen,build_v3_devset,build_orpo_v3,train_orpo}.py` · `modal_train.py` · `data/processed/sft_v3/{chosen,dev}.jsonl` · smoke fixture `rejected_{batchtest,oracle_smoke}.jsonl`. Detaylı resume planı: v3_recipe.md §HANDOFF.
+
+---
+
 ## Açık kararlar / sıradaki
 - [ ] 🎯 **HEDEF YÜKSELTİLDİ (2026-07-02, kullanıcı direktifi): v2c kapısı = REGRESYON değil ÜSTÜNLÜK.** "base'in altına düşme" yetmez → **base'i anlamlı-eksenlerde NET geç** ("küçük fark yeterli değil"). Ezilebilir eksen hedefleri: M2 yanlış-kaynak abstention **≥0.90** (base 0.786, v2b 0.346 → kayıptan net kazanca çevir), M1 grounding **≥0.94** (base 0.879), A4 **≥0.95**. Tavan eksenleri (M3/M4/M2b) BOZULMADAN korunur ("ezdik" denmez). M5 KÖR = anti-hedef (düşük İYİ). NET fark = effect size **+** n≥100 + base-rescore + κ-vekili (ikisi de şart). Detay/tablo: `v2c_roadmap.md §6`.
 - [ ] ✅ **v2c aç-koş EKİ yazıldı (2026-07-02):** roadmap'in 3 niyet-düzeyi boşluğu (register metriği · A2 counterfactual yöntemi · A1 TRAP-abstain dilim speci) çalıştırılabilir seviyeye çekildi → `v2c_roadmap.md §7`. Bulgular: (1) **register script ZATEN VAR** (`score_register.py` leksik-proxy, hakemsiz) — "hiç ölçülmedi" stale idi, gerçek gap = koşulmadı + kanonik LLM-judge rubriği TODO; (2) **A1 yanlış-komşu kaynağı `trap.jsonl`'dan ALINAMAZ** (eval sızıntısı) → madde havuzundan `madde_ord` komşusuyla üret; (3) **n≥100 karşılanmıyor** (core=40/trap=35) → `gen_eval_grounded.py --n 120`. Kalan yeni-kod: pack'e 2 slice üretici (`counterfactual`+`abstain_trap`) + `_gate` cf-referans + `ABSTAIN_TRAP_TEMPLATES`.
