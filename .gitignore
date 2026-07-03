@@ -105,3 +105,6 @@ unsloth_compiled_cache/
 
 # Claude Code yerel ayarlar/oturum
 .claude/
+
+# Geçici çalışma alanı (Claude scratchpad) — repoya girmez
+scratchpad/
