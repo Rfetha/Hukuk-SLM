@@ -34,6 +34,7 @@ image = (
         "HF_HUB_ENABLE_HF_TRANSFER": "1",   # gated Gemma (~24GB) hızlı indirme
         "HF_HOME": "/cache/hf",             # model cache → kalıcı volume (her koşuda yeniden indirme yok)
         "PYTHONUNBUFFERED": "1",            # loss canlı görünsün
+        "UNSLOTH_DISABLE_STATISTICS": "1",  # açılış telemetri çağrısı (HF stats) hang/timeout'unu önle
     })
     # Sadece eğitim script'i image'a; train_sft.py yerel import kullanmıyor.
     .add_local_dir("scripts", remote_path="/root/scripts")
@@ -117,6 +118,120 @@ def spawn_train(epochs: float = 1.0, run_name: str = "v1", data_path: str = "/da
           flush=True)
     print("[modal] Job Modal'da BAĞIMSIZ koşuyor; client/PC kapanması etkilemez.", flush=True)
     print(f"[modal] İzle: modal app logs <app-id> | Bitince: hukuk-outputs:/{run_name}", flush=True)
+
+
+# ── v3 ADIM 2 — REJECTED HARVEST (inference, EĞİTİM DEĞİL, ucuz) ──────────────
+# v2b modelini zor near-miss trap'lerde ORACLE framing'de (eval M2 birebir) koşturup GERÇEK
+# fabrikasyonları toplar (ORPO rejected). Lokal RTX 5070 ~20s/örnek çok yavaş → A100'de hızlı.
+# ÖN KOŞUL (yerelden bir kez):
+#   modal volume put hukuk-data data/processed/sft_v3/packed_v3.jsonl /sft_v3/packed_v3.jsonl
+#   (v2b adapter zaten hukuk-outputs:/v2b — eğitim çıktısı)
+@app.function(
+    image=image,
+    gpu="A100",
+    volumes={"/data": data_vol, "/outputs": out_vol, "/cache/hf": hf_cache},
+    secrets=[modal.Secret.from_name("huggingface-secret")],
+    timeout=3 * 60 * 60,
+)
+def harvest_rejected(target: int = 1500, batch: int = 16, max_new_tokens: int = 96,
+                     packed: str = "/data/sft_v3/packed_v3.jsonl",
+                     out: str = "/data/sft_v3/rejected.jsonl",
+                     adapter: str = "/outputs/v2b"):
+    import subprocess
+    import sys
+    import time
+
+    cmd = [
+        sys.executable, "/root/scripts/gen_v3_rejected.py",
+        "--packed", packed, "--out", out, "--adapter", adapter,
+        "--oracle", "--batch", str(batch), "--target", str(target),
+        "--max-new-tokens", str(max_new_tokens),
+    ]
+    print("[modal] harvest:", " ".join(cmd), flush=True)
+    proc = subprocess.Popen(cmd)
+    while proc.poll() is None:
+        time.sleep(300)                      # 5 dk: ara commit → resume/pull güvencesi
+        try:
+            data_vol.commit()
+            print("[modal] ara commit → rejected.jsonl kalıcı", flush=True)
+        except Exception as e:
+            print(f"[modal] ara commit atlandı: {e}", flush=True)
+    if proc.returncode != 0:
+        raise SystemExit(f"[modal] harvest HATA çıkış={proc.returncode}")
+    data_vol.commit()
+    hf_cache.commit()
+    print(f"[modal] harvest bitti → hukuk-data:{out}", flush=True)
+
+
+# ── v3 ADIM 8 — ORPO EĞİTİM (PARA-KAPISI; smoke ADIM 7 önce) ──────────────────
+# ÖN KOŞUL: build_orpo_v3.py çıktısı (train/validation.jsonl) Modal'da:
+#   modal volume put hukuk-data data/processed/sft_v3/train.jsonl /sft_v3/train.jsonl
+#   modal volume put hukuk-data data/processed/sft_v3/validation.jsonl /sft_v3/validation.jsonl
+@app.function(
+    image=image, gpu="A100",
+    volumes={"/data": data_vol, "/outputs": out_vol, "/cache/hf": hf_cache},
+    secrets=[modal.Secret.from_name("huggingface-secret")],
+    timeout=6 * 60 * 60,
+)
+def train_orpo(run_name: str = "v3", epochs: float = 1.0, max_steps: int = -1,
+               beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64):
+    import subprocess
+    import sys
+    import time
+    cmd = [
+        sys.executable, "/root/scripts/train_orpo.py",
+        "--data", "/data/sft_v3", "--adapter", "/outputs/v2b",
+        "--run-name", run_name, "--output-dir", f"/outputs/{run_name}",
+        "--epochs", str(epochs), "--beta", str(beta), "--lr", str(lr),
+        "--grad-accum", str(grad_accum),
+    ]
+    if max_steps and max_steps > 0:
+        cmd += ["--max-steps", str(max_steps)]
+    print("[modal] ORPO:", " ".join(cmd), flush=True)
+    proc = subprocess.Popen(cmd)
+    while proc.poll() is None:
+        time.sleep(900)
+        try:
+            out_vol.commit(); print("[modal] ara commit → v3 checkpoint kalıcı", flush=True)
+        except Exception as e:
+            print(f"[modal] ara commit atlandı: {e}", flush=True)
+    if proc.returncode != 0:
+        raise SystemExit(f"[modal] ORPO HATA çıkış={proc.returncode}")
+    out_vol.commit(); hf_cache.commit()
+    print(f"[modal] ORPO bitti → hukuk-outputs:/{run_name}", flush=True)
+
+
+@app.local_entrypoint()
+def spawn_v3(run_name: str = "v3", epochs: float = 1.0, smoke: bool = False,
+             beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64):
+    """v3 ORPO — FIRE-AND-FORGET. ÖNCE --smoke (ADIM 7 para-kapısı, ~50 step ~$0.15):
+      modal run modal_train.py::spawn_v3 --smoke
+      modal run modal_train.py::spawn_v3 --run-name v3 --epochs 1
+    Bitince: modal volume get hukuk-outputs /v3 ./outputs/v3
+    """
+    if smoke:
+        print("[modal] v3 ORPO SMOKE: 50 step (format+loss+OOM doğrulama, ~$0.15)", flush=True)
+        call = train_orpo.spawn(run_name=f"{run_name}-smoke", epochs=1.0, max_steps=50,
+                                beta=beta, lr=lr, grad_accum=grad_accum)
+    else:
+        call = train_orpo.spawn(run_name=run_name, epochs=epochs, beta=beta, lr=lr,
+                                grad_accum=grad_accum)
+    print(f"[modal] v3 SPAWNED ✓ FunctionCall={call.object_id} | run={run_name} "
+          f"beta={beta} lr={lr} grad_accum={grad_accum} smoke={smoke}", flush=True)
+    print("[modal] İzle: modal app logs hukuk-sft | forget-vekili: nll_loss trendi (tırmanırsa M1-risk)",
+          flush=True)
+
+
+@app.local_entrypoint()
+def spawn_harvest(target: int = 1500, batch: int = 16, max_new_tokens: int = 96):
+    """FIRE-AND-FORGET rejected harvest (inference). Bitince yerele çek:
+      modal volume get hukuk-data /sft_v3/rejected.jsonl ./data/processed/sft_v3/rejected.jsonl
+    """
+    call = harvest_rejected.spawn(target=target, batch=batch, max_new_tokens=max_new_tokens)
+    print(f"[modal] HARVEST SPAWNED ✓ FunctionCall={call.object_id} | target={target} batch={batch}",
+          flush=True)
+    print("[modal] Bağımsız koşuyor; client/PC kapanması etkilemez. İzle: modal app logs hukuk-sft",
+          flush=True)
 
 
 # v2b REÇETE varsayılanları (docs/V2_PLAN.md §5.1). v1'den farklar:
