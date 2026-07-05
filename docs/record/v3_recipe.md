@@ -82,6 +82,11 @@
 
 > Kural: **önce teşhis, sonra kaldıraç.** ADIM 9 eval'i sadece kapı değil TEŞHİS olarak oku (M2 mi M1 mi çöktü, hangi tuzak-ailesi). Sıra: **ucuz knob → ön-kayıtlı teknik (DTA) → mimari (sufficiency-classifier).** Her yeni tur = para-kapısı + onay.
 
+> **⚠️ TRAIN-DOKUNUR vs EVAL-DOKUNMAZ ayrımı (2026-07-05, kullanıcı-netleştirmesi).** Aşağıki kolların çoğu iki biçimde var:
+> - **eval-tarafı (SAFE):** yeni sınav dilimi (OOD held-out · aile-teşhis · çok-kaynak). Train'e DOKUNMAZ, v3'ün kendi kapısında (ADIM 9-10) ölçülür, **v4 GEREKMEZ.** Ayrı subagent inşa ediyor (yeni eval jsonl'ları, train read-only sızıntı-dışlama).
+> - **train-tarafı (FIX):** aileleri/çok-kaynağı EĞİTİM verisine ekle veya replay-doz değiştir → `train.jsonl` rebuild + **yeni ORPO turu (v4).** Yalnız eval-teşhis açık verirse. TODO.md "v3-kapı-sonrası veri borçları" bloğunda.
+> - **Köken:** bu kolların hiçbiri 2503.14023 survey'inden gelmedi (o sıfır katkı); kaynak = fix-lit + domen mantığı. Detay: research_log 2026-07-05.
+
 ### 0) Ucuz knob'lar (yeni tur YOK, dev-set'te ayarlanır)
 | Knob | Tetik | Not |
 |---|---|---|
