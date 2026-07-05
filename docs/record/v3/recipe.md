@@ -141,7 +141,7 @@
 | 6 ORPO paketleme + trainer | ✅ **KOŞTU** | `build_orpo_v3.py` → **train 1741 (1449 abstain + 292 grounding) / val 53**. `train_orpo.py` (MaskedORPOTrainer). |
 | 7 Modal smoke | ✅ **YEŞİL (4/4)** | v2b-continuation + is_pref maskesi + OOM/NaN-yok teyitli. |
 | 8 ORPO tam eğitim | ✅ **BİTTİ** | app `ap-6mWKR1039jy99a9xl4Gtcv`, 56/56 step 2 epoch, nll 7.65→2.96 (forget YOK), margin -0.31→~0 (M2 öğrenildi). ckpt-28 (1ep) + final (2ep) volume'de. |
-| 9 eval | 🔄 **KOŞUYOR** | lokal RTX 5070, generation faz (kanon 6-mod + trap_xkanun/trap_ood genelleme + Mecellem). Judge para-kapısı ayrı. |
+| 9 eval | 🔄 **GENERATION YARIDA** (PC kapatıldı) | v3-final 6/6 üretildi; v3-ckpt28 + genelleme + register + JUDGE kaldı. Tam resume planı: `NEXT_SESSION.md` §ADIM 9. Judge = para-kapısı (onay). |
 | 10-11 karar/belge | ⏳ | kapı Q1 (M2≥0.704 + M1 A1≥0.904) + ADR-0015. |
 
 ## BU OTURUMDA VERİLEN KARARLAR (bağlayıcı)
