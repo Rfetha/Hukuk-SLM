@@ -1,4 +1,11 @@
-# DEVİR NOTU — 2026-07-05 (v2c REDDEDİLDİ · v3 ORPO: harvest+paketleme KOŞTU · sırada ADIM 7 smoke)
+# DEVİR NOTU — 2026-07-05 (v3 ORPO: ADIM 8 tam eğitim KOŞUYOR · eval-dilimleri hazır · reorg beklemede)
+
+## ⏳ CANLI DURUM (compact-sonrası ÖNCE BUNU OKU)
+- **ADIM 8 tam ORPO KOŞUYOR** (Modal `ap-6mWKR1039jy99a9xl4Gtcv`, epochs=2, save-steps=28). Smoke YEŞİL geçti (4/4). Traje IDEAL: nll_loss düşüyor (forget YOK), margins/accuracy yükseliyor (M2 öğreniliyor). Bitince: `modal volume get hukuk-outputs /v3 ./outputs/v3` → **checkpoint-28 (~1ep) + final (~2ep) İKİSİ de eval edilecek** (ampirik 1-vs-2 epoch kıyası).
+- **BİTİNCE YAP:** (1) v3-sonuç entry'sini research_log'a işle. (2) **SONRA docs/record REORG** — onaylı prompt: `<scratchpad>/reorg_prompt.md` (recipe klasörleri dahil, subagent'a ver, auto-commit yok).
+- **Eval-dilimleri HAZIR (ADIM 9 için, train'e dokunmadı):** `data/eval/trap_xkanun.jsonl` (35, çapraz-kanun) + `trap_ood.jsonl` (35, held-out sentetik-soru, blok açıldı). ⚠️ trap_ood'da 2 SMK tuzağı ov~0.55 → ADIM 9'da kazara-cevaplama spot-check. temporal/çok-hop = defer (veri yok).
+- **Kapı-sonrası reçeteler:** `docs/record/kapi_sonrasi_receteler.md` (4 train-fix, v3-eval tetikler).
+- **ADIM 9 komutları:** M1 `gen_eval_grounded.py --label bench_m1 --adapter outputs/v3 --distractors 3 --max-chunk-chars 900` · M2 `... --distractors 3 --no-gold ...`. Kanon 6-mod + trap_xkanun/trap_ood genelleme + Mecellem sütunu. KAPI: M2≥0.704 + M1 A1≥0.904 + tavan koru + M5 base-altı.
 
 ## TEK CÜMLE
 v2c reddedildi (near-miss abstention düz SFT ile düzelmedi, K3 negatif bulgu) →
@@ -15,9 +22,7 @@ v2c reddedildi (near-miss abstention düz SFT ile düzelmedi, K3 negatif bulgu) 
 Tasarım KİLİTLİ (8 düğüm). Offline pipeline + **harvest (ADIM 2) + paketleme (ADIM 6a) KOŞTU.**
 - **Harvest:** `rejected.jsonl` n=1728, **1504 fab / fab_oranı 0.870**, mojibake %0.3 (pad-fix tuttu).
 - **Paketleme:** `train.jsonl` **1741** (1449 abstain + 292 grounding) / val 53 → Modal volume'de.
-- **Sıradaki tek iş = ADIM 7 Modal smoke (PARA-KAPISI, onay bekliyor):**
-  `modal run --detach modal_train.py::train_orpo --run-name v3-smoke --max-steps 50` (~$0.15).
-  Doğrular: v2b-continuation (`PeftModel is_trainable`) + is_pref collator-list + OOM/NaN/nll_loss.
+- **ADIM 7 smoke ✅ YEŞİL (4/4)** → **ADIM 8 tam eğitim KOŞUYOR** (yukarı CANLI DURUM). Sonraki insan-karar: ADIM 9 eval (lokal, para yok).
 
 ## ÇÖZÜLEN ENGELLER (2026-07-05)
 - Modal ağ engeli (2026-07-04 "Could not connect") KALKTI → harvest temiz koştu.
