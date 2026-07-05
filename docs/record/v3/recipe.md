@@ -1,8 +1,8 @@
 # v3 RECIPE — near-miss abstention fix (ORPO, grilling ürünü)
 
 > **Ne:** v2c RED'inden sonra, near-miss (topik-komşu yanlış-kaynak) abstention'ı düzeltmek için v3 reçetesi.
-> **Nasıl doğdu:** [[v2c_sonuclar]] + [[v2c_fix_deep_research]] (5 aile + Gemini) → **grilling oturumu** (2026-07-03, 8 düğüm).
-> **Otorite:** bu doküman v3'ün KARAR belgesi. Kronoloji [[research_log]] · red kararı ADR-0014 · sonuç → ADR-0015 (yazılacak).
+> **Nasıl doğdu:** [[v2c/sonuclar]] + [[v2c/fix_deep_research]] (5 aile + Gemini) → **grilling oturumu** (2026-07-03, 8 düğüm).
+> **Otorite:** bu doküman v3'ün KARAR belgesi. Kronoloji [[research_log/README]] · red kararı ADR-0014 · sonuç → ADR-0015 (yazılacak).
 > **Durum:** tasarım KİLİTLİ (8 düğüm) · hiperparametre + kod bekliyor · eğitim = Modal para-kapısı + kullanıcı onayı.
 
 ---
@@ -119,7 +119,7 @@
 
 ## Bağlam / kaynak
 - Red kararı + fix-havuzu: **ADR-0014** (P1–P6). v3 = P1(ORPO) birincil + P6(veri-kompozisyon) kaldıraç; P2(DTA) opsiyonel 2. aşama.
-- Fix literatürü: [[v2c_fix_deep_research]] (ORPO 2403.07691 · DTA 2505.20871 · RAFT-uyarı · format-bias 2409.11704).
+- Fix literatürü: [[v2c/fix_deep_research]] (ORPO 2403.07691 · DTA 2505.20871 · RAFT-uyarı · format-bias 2409.11704).
 - Kod dokunulacak: `scripts/build_sft_v2b.py` (pick_wrong_neighbor→hard, çift-eksen geçerlilik kapısı+gri-bant), `gen_v2b_answers.py` (muhakemeli-red şablon), `modal_train.py` (ORPO entrypoint + **`MaskedORPOTrainer` subclass** — per-satır `is_pref` OR-maskesi, ~15 satır), `scripts/build_eval_sets.py` (dev-set üretici). ORPO veri şeması: her satır `{prompt, chosen, rejected, is_pref}`; grounding satırı `is_pref=False` + placeholder rejected.
 - Değişmez: lisans-temiz veri · Modal --detach · para-kapısı · Mecellem sütunu her skorkartta.
 

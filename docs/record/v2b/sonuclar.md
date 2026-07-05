@@ -1,7 +1,7 @@
 # v2b — CANON Eval Sonuçları (5-mod matris, ADR-0013)
 
 > **Durum:** Parça parça dolduruluyor — her mod bittikçe eklenir/toparlanır.
-> Son güncelleme: 2026-07-02 · Otorite kronoloji: [`research_log.md`](research_log.md) (2026-07-02 girdisi).
+> Son güncelleme: 2026-07-02 · Otorite kronoloji: [`research_log`](../research_log/README.md) (2026-07-02 girdisi).
 
 ## Kurulum (tüm modlar ortak)
 - **Model:** Gemma 4 12B (`gemma-4-12B-it-qat-q4_0-unquantized`) + **v2b LoRA adapter** (`outputs/v2b`, r=16/α=32, 65.5M, train_loss=0.30, 4h19m Modal A100).

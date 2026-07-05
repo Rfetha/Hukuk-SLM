@@ -1,7 +1,7 @@
 # V2_PLAN — HakHukuk v2 yön + deney planı
 
 > **Bu dosya ne:** v2'nin **ileriye dönük execute planı** (ne yapacağız, neden, nasıl ölçeceğiz).
-> Kanıt/sayılar `docs/record/research_log.md`'de (kronoloji), kararlar `docs/adr/`'de. Bu dosya = *plan*.
+> Kanıt/sayılar `docs/record/research_log/README.md`'de (kronoloji), kararlar `docs/adr/`'de. Bu dosya = *plan*.
 > **Dayanak:** CANON pilot base vs v1 (2026-06-13, `outputs/BENCHMARK_REPORT.md`) + 3 /deep-research
 > (v2-teknik 24 kaynak · hukuk-veri 12 bulgu · FT-reçete 26 kaynak/21-doğru, 2026-06-14) + SaulLM okuması (`knowledge/summary_saullm.md`).
 > **SEÇİLEN YÖL (2026-06-14, kullanıcı kararı):** **PLAN A = SFT (davranış) + RAG (bilgi, sonra)**, CPT'siz. Yön = **direkt v2b SFT** (v2a prompt-only baseline'a indi). SFT bilgi GÖMMEZ — daha *akıllı* değil daha *disiplinli* model. Bilgi/doğruluk RAG'dan; frontier'ı *grounded+abstention+offline* dar ekseninde yener (genel yetenekte değil).
@@ -234,5 +234,5 @@ E. SONRASI (koşula bağlı)
 - **on-policy PPO/GRPO'nun forgetting-direnci var** (DPO miras almıyor) → abstention korumada teorik artı. Ama ağır → Modal A100.
 
 ## İlgili
-ADR-0011 (canon eval), ADR-0012 (scope A/B), ADR-0013 (eval v2 matrisi: 5 mod), ADR-0010 (reframe), `research_log.md` (pilot+araştırma girdileri), `outputs/BENCHMARK_REPORT.md`.
+ADR-0011 (canon eval), ADR-0012 (scope A/B), ADR-0013 (eval v2 matrisi: 5 mod), ADR-0010 (reframe), `research_log/README.md` (pilot+araştırma girdileri), `outputs/BENCHMARK_REPORT.md`.
 **Kaynak literatür:** Sufficient-Context (arXiv 2411.06037) · RAFT (2403.10131) · R-Tuning · US-Tuning · SEAT (2506.14387) · EAFT (2601.02151) · Gekhman (2405.05904) · Mix-CPT (2407.10804) · EntiGraph (2409.07431) · SaulLM (2403.03883 / 2407.19584) · DISC-LawLLM (2309.11325) · Mecellem (2601.16018) · Muhakim (HF newmindai/Muhakim).

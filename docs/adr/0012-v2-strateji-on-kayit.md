@@ -42,4 +42,4 @@ CANON pilot (base vs v1, ADR-0011) bu forku verecek **iki teşhisle:** CORE-KÖR
 - → Detaylı execute planı: **`docs/V2_PLAN.md`**.
 
 ## İlgili
-ADR-0011 (canon eval — forku veren pilot), ADR-0010 (reframe — bu fork onu test eder), `[[paper-target]]`, `docs/record/research_log.md` (2026-06-13 gece + pilot girdisi).
+ADR-0011 (canon eval — forku veren pilot), ADR-0010 (reframe — bu fork onu test eder), `[[paper-target]]`, `docs/record/research_log/README.md` (2026-06-13 gece + pilot girdisi).

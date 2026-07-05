@@ -1,7 +1,7 @@
 # v2c FIX — Deep Research (literatür temelli seçenek taraması)
 
 > ❄️ **DONDURULDU (2026-07-05).** Bu tarama v2c RED'i sonrası fix seçeneklerini topladı; kararı
-> **[[v3_recipe]]** (ORPO) verdi. Tarihsel referans — güncellenmez. Kronoloji: [[research_log]].
+> **[[v3/recipe]]** (ORPO) verdi. Tarihsel referans — güncellenmez. Kronoloji: [[research_log/README]].
 
 > **Amaç:** v2c'nin RED sebebi olan başarısızlığı (aşağıda "Teşhis") literatürle eşleştirip **fix seçeneklerini** kanıtlarıyla toplamak.
 > **Not (kısıt):** Bu doküman **karar vermez** — sadece seçenekleri ve kanıtı sunar. Yeni iterasyon (v2d/v3) adı/kararı v2c ADR sürecinde, dış görüşler (bu tarama + Gemini) alındıktan sonra ayrıca verilecek.

@@ -50,7 +50,7 @@ tüketici donanımı kısıtında + tek-model-iki-kitle mimarisinde** kazanırı
 
 ## 2. Hedef katkılar (öncelik sırasıyla)
 
-> ℹ️ **Numaralama notu (eklendi 2026-07-01):** buradaki **K1/K2/K3 = paper KATKI (contribution)** etiketleridir (K1=sistem, K2=verimlilik, K3=ampirik bulgu). `docs/record/research_log.md`'deki **K1/K3 = paper BÖLÜM/deney-tipi** etiketleridir (K1=ablasyon tablosu, K3=ayrışma/negatif bulgular). İki şema FARKLI eksenler — karıştırma. research_log'un "K3=negatif bulgu"su bu belgenin "K3=ampirik bulgu" katkısını **besler** (aynı v0/v1 kanıtı).
+> ℹ️ **Numaralama notu (eklendi 2026-07-01):** buradaki **K1/K2/K3 = paper KATKI (contribution)** etiketleridir (K1=sistem, K2=verimlilik, K3=ampirik bulgu). `docs/record/research_log/README.md`'deki **K1/K3 = paper BÖLÜM/deney-tipi** etiketleridir (K1=ablasyon tablosu, K3=ayrışma/negatif bulgular). İki şema FARKLI eksenler — karıştırma. research_log'un "K3=negatif bulgu"su bu belgenin "K3=ampirik bulgu" katkısını **besler** (aynı v0/v1 kanıtı).
 
 **(K1 — ANA) Uçtan uca erişilebilir hukuk asistanı sistemi.**
 encoder-free SLM → **uzman-register + grounding/abstention SFT** (⚠️ 2026-06-13/ADR-0010: "vatandaş-dilli SFT" değil — sade dil app-layer prompt) → TurboQuant'lı RAG → agentic akış, **tüketici
