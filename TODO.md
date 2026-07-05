@@ -16,6 +16,11 @@
 - [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim (Modal A100) + 6-mod canon eval, tüm kapılar geçti (`docs/record/v2b_sonuclar.md`).
 - [x] ~~v2c = near-miss abstention turu~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 « 0.90 + M1 regresyon; K3 negatif bulgu (ADR-0014, `docs/record/v2c_sonuclar.md`).
 - [ ] 🟢 **v3 = ORPO (aktif)** — near-miss abstention'ı preference ile düzelt. Pipeline ADIM 1-6 + harvest (fab 0.870) + paketleme (train 1741) KOŞTU. **Sıradaki: ADIM 7 Modal smoke** (para-kapısı) → tam run (`docs/record/v3_recipe.md`, `NEXT_SESSION.md`).
+- [ ] 🟡 **v3-KAPI-SONRASI VERİ BORÇLARI (train'e DOKUNUR → rebuild + yeni tur/v4; köken: bizim + fix-lit, PAPER-DEĞİL).** Yalnız v3 teşhisi gerektirirse uygulanır:
+  - **#2b negatif aile çeşitliliği (train-fix):** çapraz-kanun/temporal/çok-hop tuzaklarını EĞİTİM verisine ekle → `train.jsonl` rebuild + yeniden ORPO. **Tetik:** v3 bir ailede çöküyorsa (eval-teşhis #2a gösterir).
+  - **#3b çok-kaynak/deploy-gerçekçi bağlam (train-fix):** oracle tek-kaynak → retriever-benzeri çok-chunk train. **Tetik:** Faz-2 RAG'a yakın.
+  - **#4 grounding-replay dozu 0.20→0.35:** `build_orpo_v3 --replay-frac` ile rebuild. **Tetik:** v3 `nll_loss` (forget-vekili) tırmanırsa.
+  - ⚠️ Üçü de `train.jsonl`'ı değiştirir = yeni eğitim. **Eval-tarafı SAFE işler (#1 OOD · #2a aile-eval · #3a çok-kaynak-eval) train'e DOKUNMAZ** → v3 kapısında (ADIM 9-10) ölçülür, ayrı subagent inşa ediyor (yeni sınav kâğıdı, v4 GEREKMEZ). Köken tablosu: research_log 2026-07-05 + v3_recipe dallanma ağacı.
 - [ ] **Başarı kapısı:** A3≥0.741 + A1∧A2≥0.875 + A4 koru (`V2_PLAN §6`).
 - [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
 - [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.
