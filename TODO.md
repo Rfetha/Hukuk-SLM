@@ -29,6 +29,7 @@
 - [ ] **Register ekseni kanonik LLM-judge rubriği (ADR-0013)** — şu an leksik-proxy (`score_register.py`); paper için judge-rubrikli uzman-vs-vatandaş ölçümü (leksik önkoşul yukarıda: register/altitude ekseni). *(aynı restructure'da taşındı.)*
 - [ ] **Faz 1 kapanış + deploy** — kapı geçilince → merge (bf16) → llama.cpp Q4_0 → GGUF ~6.5GB. *(Provokatif: Product A ise "deliverable = base+RAG+prompt" olabilir — V2_PLAN §8.)*
 - [ ] _(SONRA)_ outputs/eval/ klasör düzeni (raw/scored/summary nestele) · _(Faz 2)_ Bedesten bulk kanun çekimi.
+- [ ] _(EVAL-HIZ, v4/gelecek turlar için)_ **`gen_eval_grounded.py` load-once batched runner.** Şu an tek-atışlık: her mod ayrı process → 12B her koşuda yeniden yüklenir (~2-3 dk × ~14 mod-koşu = ~20-30 dk boşa reload). Wrapper: modeli BİR kez yükle → mod/data listesi üzerinde döngüle (M1/M4/M2/M2b/M3/M5 + trap dilimleri). Kazanç ~20-30 dk/tur. ⚠️ Cache'li v2c/v2b protokol paritesini BOZMA (aynı flag/seed/eval-mirror 900, aynı detail çıktısı). v3 ADIM 9'da fark edildi (2026-07-05); şimdiki koşuyu bozmamak için ertelendi.
 
 > **Faz 1 TAMAMLANANLAR (özet; detay → `docs/record/research_log/README.md`):** ortam (Blackwell sm_120) · **CANON eval** (4 eksen A1/A2/A3/A4 mod-stratifiye, ADR-0011, /deep-research-doğrulamalı) · **v0 SFT (forum → battı, K3)** · grounded v1 verisi (21.458, faith 0.984) · **v1 SFT (Modal A100)** · **CANON PİLOT base vs v1 → scope=Product A** (ADR-0012; v1 net-negatif, abstention 0.74→0.00) · 12 ADR · dış-rapor denetimi (ADR-0009).
 
