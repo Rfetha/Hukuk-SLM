@@ -101,6 +101,8 @@ def parse_args():
     p.add_argument("--lora-alpha", type=int, default=32)
     p.add_argument("--seed", type=int, default=3407)
     p.add_argument("--max-steps", type=int, default=-1, help="smoke için sınırla")
+    p.add_argument("--save-steps", type=int, default=100,
+                   help="checkpoint aralığı; 2-epoch koşuda ~1-epoch ara-checkpoint için düşür (ör. 28)")
     p.add_argument("--fresh-adapter", action="store_true",
                    help="FALLBACK: v2b-continuation çalışmazsa base'e YENİ adapter (grounding'i kaybeder)")
     return p.parse_args()
@@ -149,7 +151,7 @@ def main():
         bf16=True,
         logging_steps=5,
         save_strategy="steps",
-        save_steps=100,
+        save_steps=args.save_steps,
         save_total_limit=3,
         eval_strategy="steps" if args.max_steps < 0 else "no",
         eval_steps=100,

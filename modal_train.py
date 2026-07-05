@@ -174,7 +174,8 @@ def harvest_rejected(target: int = 1500, batch: int = 16, max_new_tokens: int = 
     timeout=6 * 60 * 60,
 )
 def train_orpo(run_name: str = "v3", epochs: float = 1.0, max_steps: int = -1,
-               beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64):
+               beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64,
+               save_steps: int = 100):
     import subprocess
     import sys
     import time
@@ -183,7 +184,7 @@ def train_orpo(run_name: str = "v3", epochs: float = 1.0, max_steps: int = -1,
         "--data", "/data/sft_v3", "--adapter", "/outputs/v2b",
         "--run-name", run_name, "--output-dir", f"/outputs/{run_name}",
         "--epochs", str(epochs), "--beta", str(beta), "--lr", str(lr),
-        "--grad-accum", str(grad_accum),
+        "--grad-accum", str(grad_accum), "--save-steps", str(save_steps),
     ]
     if max_steps and max_steps > 0:
         cmd += ["--max-steps", str(max_steps)]
