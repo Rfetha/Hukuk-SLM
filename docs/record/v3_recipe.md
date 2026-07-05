@@ -78,6 +78,40 @@
 
 ---
 
+## v3-SONRASI DALLANMA AĞACI (eval hata-analizinden → kol)
+
+> Kural: **önce teşhis, sonra kaldıraç.** ADIM 9 eval'i sadece kapı değil TEŞHİS olarak oku (M2 mi M1 mi çöktü, hangi tuzak-ailesi). Sıra: **ucuz knob → ön-kayıtlı teknik (DTA) → mimari (sufficiency-classifier).** Her yeni tur = para-kapısı + onay.
+
+### 0) Ucuz knob'lar (yeni tur YOK, dev-set'te ayarlanır)
+| Knob | Tetik | Not |
+|---|---|---|
+| **ADIM 4 τ judge kalibrasyon** | *her halükarda ilk* | 108 hi_overlap "kazara-cevaplayan"ı ele → temiz kontrast. En ucuz (judge-only, GPU yok). |
+| beta sweep {0.05,0.1,0.25} | M2 zayıf→↑ / M1 düşer→↓ | OR-ceza gücü |
+| grounding-replay 0.20→0.35+ | M1 düşer | **M1-koruma knob'u (ilk çekilecek)** |
+| lr ↓ (1e-5→5e-6) | M1 düşer | over-write azalt |
+
+### 1) MISS-A · M2 gelmedi (near-miss red öğrenilmedi)
+- **Veri:** daha zor/çok rejected harvest (ov_gold band↑); chosen'da yanlış-madde konusunu daha keskin adlandır.
+- **Teknik → DTA** (Divide-Then-Align, ACL 2025, 2505.20871) — failure'ı isim-isim tarif eder (Abstain-F1 0→63). Ön-kayıtlı 2. aşama (ADR-0014 P2), v3 üstüne stack.
+- **Teknik → RAAT/CaRT** — gürültülü/yanlış bağlama adversarial contrastive.
+
+### 2) MISS-B · M1 düştü (grounding unutuldu — v2c'nin ölüm sebebi)
+- **Joint base-ORPO** (Q2-alternatifi): base'den birleşik SFT+pref → grounding+abstention eşzamanlı (ardışık-unutmayı önler).
+- **Referans-çıpası** (KL/DPO-style): policy'yi v2b'ye yakın tut.
+- **Ağırlık interpolasyonu** (WiSE-FT): v3 ⊕ v2b merge → grounding'i geri kurtar (eğitim-sonrası, bedava).
+
+### 3) MISS-C · ikisi de takıldı (paradoks direniyor → mimari sıçrama)
+- **Yeterlilik-sınıflandırıcı kapısı** (R-Tuning / Sufficient-Context): abstention'ı üretici ağırlıklardan çıkar → ucuz head "kaynak cevaplıyor mu?" → sonra üret. En sağlam, en büyük pivot; Faz-2 RAG'a doğal bağlanır.
+
+### 4) HIT ama daha ileri (M2 0.704→0.90+ / genelleme)
+- **DTA'yı 2. aşama stack** → M2'yi 0.90'a it.
+- **Genelleme:** n≥100 teyit + OOD unseen-statute + çok-kaynak/deploy-gerçekçi bağlam (eval-aynasına overfit değil kanıtı).
+- **Yeni negatif aileleri (veri):** çapraz-kanun karışabilirler (TCK/TMK aynı-no) · mülga/değişik madde (temporal) · çok-hop (madde→madde atıf). Tek aile (aynı-kanun kardeş) → çeşitlilik.
+- **Güven-kalibrasyonu:** ikili red yerine sözelleştirilmiş belirsizlik (hedge-with-confidence).
+- **Paper sertleştirme (model değil):** cross-**family** judge (Claude/Gemini) + κ · paired McNemar.
+
+---
+
 ## Bağlam / kaynak
 - Red kararı + fix-havuzu: **ADR-0014** (P1–P6). v3 = P1(ORPO) birincil + P6(veri-kompozisyon) kaldıraç; P2(DTA) opsiyonel 2. aşama.
 - Fix literatürü: [[v2c_fix_deep_research]] (ORPO 2403.07691 · DTA 2505.20871 · RAFT-uyarı · format-bias 2409.11704).
