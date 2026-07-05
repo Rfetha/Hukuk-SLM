@@ -2,7 +2,7 @@
 
 > **Tek cümle:** v2c RED'inden sonra near-miss (topik-komşu yanlış-kaynak) abstention'ı **tercih-optimizasyonu
 > (ORPO)** ile düzeltmeyi hedefleyen aktif tur; v2b'nin zor-trap'te %87 fabrikasyonu (fab=0.870) rejected havuzu
-> olarak toplandı, ORPO train/val paketlendi. **Sıradaki: ADIM 7 Modal smoke (para-kapısı, onay bekliyor).**
+> olarak toplandı, ORPO train/val paketlendi. Smoke YEŞİL → **ADIM 8 tam eğitim BİTTİ** (nll 7.65→2.96, forget-yok); **sıradaki ADIM 9 eval** (lokal, koşuyor) → kapı kararı.
 
 ## Dosyalar
 - [`recipe.md`](recipe.md) — v3'ün KARAR belgesi (grilling ürünü): ORPO reçetesi, ADIM 1-... pipeline,

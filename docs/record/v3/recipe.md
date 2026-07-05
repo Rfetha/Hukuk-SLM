@@ -125,10 +125,10 @@
 
 ---
 
-# 🔖 HANDOFF (GÜNCEL: 2026-07-05 — harvest+paketleme KOŞTU, sırada ADIM 7 smoke)
+# 🔖 HANDOFF (GÜNCEL: 2026-07-05 — ADIM 8 tam eğitim BİTTİ, ADIM 9 eval KOŞUYOR)
 
-> **Güncelleme (2026-07-05):** ADIM 2 harvest ve ADIM 6a paketleme KOŞTU (detay aşağı + research_log 2026-07-05). Modal ağ engeli KALKTI, Claude'un Bash'i artık dışa erişimli. **Sıradaki tek iş = ADIM 7 Modal smoke (para-kapısı, onay bekliyor).**
-> _(Tarihsel: 2026-07-04'te Modal HEM lokal HEM `!` shell'inden erişilemiyordu; o engel çözüldü.)_
+> **Canlı devir notu tek otoritede: [`NEXT_SESSION.md`](../../../NEXT_SESSION.md).** Aşağıki durum panosu = v3 turunun kalıcı ADIM kaydı (paper-sigortası); anlık "sıradaki iş" için NEXT_SESSION'a bak.
+> **Güncelleme (2026-07-05):** ADIM 7 smoke YEŞİL (4/4) → **ADIM 8 tam ORPO eğitim BİTTİ** (56/56 step, 2 epoch, nll 7.65→2.96 forget-YOK, margin M2-öğrenildi; ckpt-28 + final volume'de). **Sıradaki = ADIM 9 eval** (lokal, generation koşuyor). Detay: research_log `2026-07-05-v3-adim7-8-orpo-egitim-bitti.md`.
 
 ## DURUM PANOSU (2026-07-05)
 | ADIM | Durum | Not |
@@ -136,12 +136,13 @@
 | 1 zor-trap havuzu | ✅ | `data/processed/sft_v3/packed_v3.jsonl` (19284). **Eval-aynası** (Q3 override). |
 | 2 rejected harvest | ✅ **KOŞTU** | `rejected.jsonl` n=1728, **1504 fab / fab_oranı 0.870**, mojibake %0.3 temiz. Modal `--detach harvest_rejected`. |
 | 3 chosen | ✅ | `chosen.jsonl` (19284, muhakemeli-red, oracle). |
-| 4 τ judge kalibrasyon | ⏭ opsiyonel | Net gerekir; provizyonel: hi_overlap (108) DAHİL (paketlemede işaretli). |
+| 4 τ judge kalibrasyon | ⏭ ERTELENDİ | hi_overlap (108) PROVİZYONEL dahil (işaretli). Train-dokunur → v4/kapı-ıskası tetiği; reçete `receteler.md` Reçete 4. |
 | 5 dev-set | ✅ | `dev.jsonl` (80, sızıntısız). |
-| 6 ORPO paketleme + trainer | ✅ **KOŞTU** | `build_orpo_v3.py` → **train 1741 (1449 abstain + 292 grounding) / val 53**. train/val Modal volume'e yüklendi. `train_orpo.py` (MaskedORPOTrainer) offline-doğru, runtime ADIM 7'de. |
-| 7 Modal smoke | 🚧 **PARA-KAPISI (SIRADAKİ, onay bekliyor)** | `modal run --detach modal_train.py::train_orpo --run-name v3-smoke --max-steps 50`. |
-| 8 ORPO tam eğitim | 🚧 PARA-KAPISI | `modal run --detach modal_train.py::train_orpo --run-name v3 --epochs 1`. |
-| 9-11 eval/karar/belge | ⏳ | kanon 6-mod + kapı Q1 + ADR-0015. |
+| 6 ORPO paketleme + trainer | ✅ **KOŞTU** | `build_orpo_v3.py` → **train 1741 (1449 abstain + 292 grounding) / val 53**. `train_orpo.py` (MaskedORPOTrainer). |
+| 7 Modal smoke | ✅ **YEŞİL (4/4)** | v2b-continuation + is_pref maskesi + OOM/NaN-yok teyitli. |
+| 8 ORPO tam eğitim | ✅ **BİTTİ** | app `ap-6mWKR1039jy99a9xl4Gtcv`, 56/56 step 2 epoch, nll 7.65→2.96 (forget YOK), margin -0.31→~0 (M2 öğrenildi). ckpt-28 (1ep) + final (2ep) volume'de. |
+| 9 eval | 🔄 **KOŞUYOR** | lokal RTX 5070, generation faz (kanon 6-mod + trap_xkanun/trap_ood genelleme + Mecellem). Judge para-kapısı ayrı. |
+| 10-11 karar/belge | ⏳ | kapı Q1 (M2≥0.704 + M1 A1≥0.904) + ADR-0015. |
 
 ## BU OTURUMDA VERİLEN KARARLAR (bağlayıcı)
 1. **Q3 OVERRIDE — eval-aynası:** zor-negatif = gold-kaynağa MAX Jaccard (eval build_eval_sets:138 birebir), SORU-örtüşme DEĞİL. Veri: soru-çıpası eval M2 ile %6.6 örtüşüyordu → eval-aynası %66.3 (özdeş dağılım). Geçerlilik lexical→judge.
