@@ -8,19 +8,20 @@
 
 > **DURUM (2026-07-05):** v2c **REDDEDİLDİ** (K3 negatif, ADR-0014) → **aktif iş v3 = ORPO**.
 > v3 harvest (fab 0.870) + ORPO paketleme (train 1741) KOŞTU; veri Modal volume'de.
-> Sıradaki somut adım: **v3 ADIM 7 Modal smoke** (para-kapısı, onay bekliyor) → tam ORPO run (`NEXT_SESSION.md`).
+> Sıradaki somut adım: **v3 ADIM 9 eval** (ADIM 7 smoke YEŞİL + ADIM 8 tam eğitim BİTTİ; eval lokal koşuyor) → kapı kararı (`NEXT_SESSION.md`).
 
 - [x] ~~**2 deep-research'ü sentezle** (v2 teknikleri + hukuk-veri/eğitim)~~ → **TAMAMLANDI (2026-06-14):** 3 /deep-research sentezlendi, `docs/V2_PLAN.md` (§5.1 reçete kartı dahil) güncellendi.
 - [ ] ⚪ **(opsiyonel baseline) v2a = base + mühendislik promptu (SFT YOK)** → canon'dan geçir. *(2026-06-14 kararı: birincil değil; v2b'nin SFT katkısını izole eden "SFT'siz" referans — V2_PLAN §4 Adım 1.)*
 - [ ] **Önkoşul (v2-eval'den önce):** register/altitude ekseni + **E (kaynak-eksik) eval seti** + 🔴 D0 eval-mirror (900-char chunk aynala) (`V2_PLAN §7/§9-D0`).
 - [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim (Modal A100) + 6-mod canon eval, tüm kapılar geçti (`docs/record/v2b/sonuclar.md`).
 - [x] ~~v2c = near-miss abstention turu~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 « 0.90 + M1 regresyon; K3 negatif bulgu (ADR-0014, `docs/record/v2c/sonuclar.md`).
-- [ ] 🟢 **v3 = ORPO (aktif)** — near-miss abstention'ı preference ile düzelt. Pipeline ADIM 1-6 + harvest (fab 0.870) + paketleme (train 1741) KOŞTU. **Sıradaki: ADIM 7 Modal smoke** (para-kapısı) → tam run (`docs/record/v3/recipe.md`, `NEXT_SESSION.md`).
+- [ ] 🟢 **v3 = ORPO (aktif)** — near-miss abstention'ı preference ile düzelt. Pipeline ADIM 1-6 + harvest (fab 0.870) + paketleme (train 1741) + smoke YEŞİL + **ADIM 8 tam eğitim BİTTİ** (nll 7.65→2.96 forget-yok). **Sıradaki: ADIM 9 eval** (lokal, koşuyor) → kapı kararı (`docs/record/v3/recipe.md`, `NEXT_SESSION.md`).
 - [ ] 🟡 **v3-KAPI-SONRASI VERİ BORÇLARI (train'e DOKUNUR → rebuild + yeni tur/v4; köken: bizim + fix-lit, PAPER-DEĞİL).** Yalnız v3 teşhisi gerektirirse uygulanır:
   - **#2b negatif aile çeşitliliği (train-fix):** çapraz-kanun/temporal/çok-hop tuzaklarını EĞİTİM verisine ekle → `train.jsonl` rebuild + yeniden ORPO. **Tetik:** v3 bir ailede çöküyorsa (eval-teşhis #2a gösterir).
   - **#3b çok-kaynak/deploy-gerçekçi bağlam (train-fix):** oracle tek-kaynak → retriever-benzeri çok-chunk train. **Tetik:** Faz-2 RAG'a yakın.
-  - **#4 grounding-replay dozu 0.20→0.35:** `build_orpo_v3 --replay-frac` ile rebuild. **Tetik:** v3 `nll_loss` (forget-vekili) tırmanırsa.
-  - ⚠️ Üçü de `train.jsonl`'ı değiştirir = yeni eğitim. **Eval-tarafı SAFE işler (#1 OOD · #2a aile-eval · #3a çok-kaynak-eval) train'e DOKUNMAZ** → v3 kapısında (ADIM 9-10) ölçülür, ayrı subagent inşa ediyor (yeni sınav kâğıdı, v4 GEREKMEZ). Köken tablosu: research_log 2026-07-05 + v3_recipe dallanma ağacı.
+  - **#4 grounding-replay dozu 0.20→0.35:** `build_orpo_v3 --replay-frac` ile rebuild. **Tetik:** v3 `nll_loss` (forget-vekili) tırmanırsa. *(NOT: eğitimde forget YOK çıktı — nll 7.65→2.96 — bu tetik düşük olasılık.)*
+  - **ADIM 4 τ hi_overlap kalibrasyonu (ERTELENDİ):** 108 `hi_overlap` çifti train'e PROVİZYONEL dahil (`orpo_report.json` işaretli). judge τ ile "kazara-cevaplayan" tuzakları at → temiz kontrast → rebuild + yeniden ORPO. Reçete: `docs/record/v3/receteler.md` Reçete 4 (`judge_hi_overlap.py` + `--drop-hi-overlap-answers`, <$0.10). **Tetik:** v3 kapıyı ıskalarsa VEYA v4 turu açılırsa (temiz etiket).
+  - ⚠️ Dördü de `train.jsonl`'ı değiştirir = yeni eğitim. **Eval-tarafı SAFE işler (#1 OOD · #2a aile-eval · #3a çok-kaynak-eval) train'e DOKUNMAZ** → v3 kapısında (ADIM 9-10) ölçülür, ayrı subagent inşa ediyor (yeni sınav kâğıdı, v4 GEREKMEZ). Köken tablosu: research_log 2026-07-05 + v3_recipe dallanma ağacı.
 - [ ] **Başarı kapısı:** A3≥0.741 + A1∧A2≥0.875 + A4 koru (`V2_PLAN §6`).
 - [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
 - [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.

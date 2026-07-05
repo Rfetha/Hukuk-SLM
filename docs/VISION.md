@@ -135,4 +135,4 @@ Bu yol haritası birden fazla yayınlanabilir çıktı üretir:
 - [x] Vizyon ve isim: **HakHukuk**
 - [x] Faz sıralaması: LLM → RAG/Graph → Niş → Agent → Platform
 - [x] ~~Faz 1 veri seti envanteri ve baz model seçimi (E2B vs E4B vs Phi-3.5)~~ → **TAMAMLANDI:** base = Gemma 4 12B (ADR-0003); veri envanteri `VERI_PLANI.md`; v0/v1 koştu.
-- [ ] **Sonraki adım (2026-07-01):** **v2b SFT tam eğitimi** (Modal A100, `spawn_v2b --detach`) → canon eval. Detay: `NEXT_SESSION.md` + `docs/V2_PLAN.md §9`.
+- [x] ~~**Sonraki adım (2026-07-01):** v2b SFT tam eğitimi → canon eval~~ → **TAMAM:** v2b eğitildi + 6-mod canon geçti (2026-07-02); v2c near-miss turu RED (2026-07-03, ADR-0014); **aktif iş v3 = ORPO** (`docs/record/v3/recipe.md`). Güncel durum: `NEXT_SESSION.md`.

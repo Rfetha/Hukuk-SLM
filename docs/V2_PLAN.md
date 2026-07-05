@@ -220,7 +220,7 @@ E. SONRASI (koşula bağlı)
    E3 ⚪ Paper-grade: cross-family κ · McNemar · OOD · n=100/75 · rakip baseline
 ```
 
-**Kritik yol (kalan):** `C1 tam run (eğit) → D0 eval-mirror → D1→D2 (ölç)`. Sıradaki tek iş: **`modal run --detach modal_train.py::spawn_v2b --run-name v2b --epochs 1`** (devir notu `NEXT_SESSION.md`).
+**Kritik yol (kalan) — ⚠️ SÜPERSED (2026-07-02):** bu bölümün "C1 tam run → D0 → D1→D2" akışı v2b için yazıldı ve **TAMAMLANDI** (v2b eğitildi + 6-mod canon geçti). v2c near-miss turu RED (ADR-0014); **aktif iş v3 = ORPO** (`docs/record/v3/recipe.md`). Güncel durum: `NEXT_SESSION.md`. _(Aşağısı v2b planı olarak tarihsel korunuyor.)_
 
 ### Yol haritası ufku (OPSİYON — net karar DEĞİL)
 İki ayrı hat: **ağırlık** (pretrain→SFT→RLHF, modeli değiştirir) · **sistem** (RAG = çalışma-anı sarmalayıcı, ağırlığa dokunmaz, dik). Olası sıra:
