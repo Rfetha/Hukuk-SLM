@@ -6,7 +6,7 @@
 > toplama" değil "yazma" işi kalır).
 >
 > **Durum:** taslak v0 (2026-06-08). Açık kararlar sonda işaretli. İlgili:
-> `[[eval-accuracy-gate]]`, `docs/FAZ1_PLAN.md`, `docs/VISION.md`.
+> `[[eval-accuracy-gate]]`, `docs/_archive/FAZ1_PLAN.md` (arşiv), `docs/VISION.md`.
 
 ---
 

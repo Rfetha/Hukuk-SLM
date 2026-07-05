@@ -1,5 +1,9 @@
 # v2c ROADMAP — harman (v2b ampirik × dış danışman × Claude değerlendirmesi)
 
+> ❄️ **DONDURULDU (2026-07-05).** v2c iterasyonu kapandı → **REDDEDİLDİ** ([[v2c_sonuclar]], ADR-0014).
+> Aktif reçete artık **[[v3_recipe]]** (ORPO). Bu doküman v2c'nin tam planı olarak tarihsel referanstır;
+> güncellenmez. Kronoloji otoritesi: [[research_log]].
+
 ---
 ## 🟢 DURUM — taze agent BUNU OKU (güncel tutulur, silinmez)
 
@@ -27,8 +31,8 @@
 
 > **Bu doküman ne:** v2c FT turunun KARAR belgesi. Üç girdiyi birleştirir:
 > 1. [[v2b_sonuclar]] — ampirik gerçek (v2b tüm kapıları geçti; tek gerçek açık M2=0.346).
-> 2. [[v2c_input_dis_danisman]] — harici agent teknik önerileri (v2b'yi görmeden).
-> 3. [[v2c_input_claude_degerlendirme]] — önerileri v2b açıklarına bağlayan süzme + itirazlar.
+> 2. [[v2c_inputs_birlesik]] Bölüm A — harici agent teknik önerileri (v2b'yi görmeden). *(arşiv)*
+> 3. [[v2c_inputs_birlesik]] Bölüm B — önerileri v2b açıklarına bağlayan süzme + itirazlar. *(arşiv)*
 > **Harman kuralı:** v2c hedefi = (v2b kapı-durumu) ∩ (danışman ∩ Claude süzmesi).
 > **Tarih:** 2026-07-02 · Otorite kronoloji: [[research_log]] · Karar: yeni ADR (v2c) yazılacak.
 
