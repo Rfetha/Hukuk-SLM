@@ -35,7 +35,7 @@ profesyonel + vatandaş. Model **dolu+doğru** kalır; **vatandaş sadeleştirme
 - [x] Ortam: WSL2 + Blackwell sm_120 stack → `~/code/global_venv` (Py3.12, torch 2.10+cu128, unsloth 2026.6.1, bnb 0.49.2). env smoke yeşil, `requirements.lock.txt` kilitli.
 - [x] Veri: `data/processed/sft_v0/` (32.234 Q&A, OrionCAF 18K+Renicames 14K, doğru ama **jargonlu**, medyan 30 kelime) + `data/raw/mevzuat_maddeler.jsonl` (40.853 madde, grounding zemini).
 - [x] Base indir: `google/gemma-4-12B-it-qat-q4_0-unquantized` (24GB bf16) — **indirildi, tam.**
-- [x] **Otonom driver:** `scripts/run_phase1.sh` (smoke→train→base eval→v0 eval→rapor, `set -e`, `V0_EPOCHS` env, `PYTHONUNBUFFERED`). Runbook: `docs/RUNBOOK_FAZ1.md`.
+- [x] **Otonom driver:** `scripts/run_phase1.sh` (smoke→train→base eval→v0 eval→rapor, `set -e`, `V0_EPOCHS` env, `PYTHONUNBUFFERED`). Runbook: `docs/_archive/RUNBOOK_FAZ1.md` (arşiv).
 
 ## Kararlar (sabit)
 > 📒 **Gerekçeli karar kayıtları → `docs/adr/`** (neden/alternatif/sonuç; paper Methodology+Limitations kaynağı). Bu bölüm canlı *özet*; ADR = dondurulmuş anlatı. `[[adr-decision-log]]`

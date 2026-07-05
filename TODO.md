@@ -4,12 +4,18 @@
 > Bu dosya **ileriye dönük**: kalan görevler + Faz 2-5. Sabit eksen: `NEXT_SESSION.md`.
 > Detaylı plan: `docs/TEKNIK_PLAN.md` · Veri: `docs/VERI_PLANI.md` · Kararlar: `docs/adr/`.
 
-## Faz 1 — KALAN (aktif) · v2 planı = `docs/V2_PLAN.md`
+## Faz 1 — KALAN (aktif) · v2 planı = `docs/V2_PLAN.md` · **aktif iter = v3 ORPO (`docs/record/v3_recipe.md`)**
+
+> **DURUM (2026-07-04):** v2b tüm kapıları geçti → v2c near-miss abstention turu **REDDEDİLDİ**
+> (K3 negatif: düz SFT restore edemedi, ADR-0014) → **aktif iş v3 = ORPO** (preference).
+> Sıradaki somut adım: **v3 ADIM 7 Modal smoke** → tam ORPO run (`NEXT_SESSION.md`).
 
 - [x] ~~**2 deep-research'ü sentezle** (v2 teknikleri + hukuk-veri/eğitim)~~ → **TAMAMLANDI (2026-06-14):** 3 /deep-research sentezlendi, `docs/V2_PLAN.md` (§5.1 reçete kartı dahil) güncellendi.
 - [ ] ⚪ **(opsiyonel baseline) v2a = base + mühendislik promptu (SFT YOK)** → canon'dan geçir. *(2026-06-14 kararı: birincil değil; v2b'nin SFT katkısını izole eden "SFT'siz" referans — V2_PLAN §4 Adım 1.)*
 - [ ] **Önkoşul (v2-eval'den önce):** register/altitude ekseni + **E (kaynak-eksik) eval seti** + 🔴 D0 eval-mirror (900-char chunk aynala) (`V2_PLAN §7/§9-D0`).
-- [x] ~~Gerekirse~~ 🟢 **v2b = hafif RAFT-SFT SEÇİLDİ** — veri HAZIR (19.305 + replay + truncation-fix, Modal'da), smoke doğrulandı → **tam eğitim başlatılacak** (`modal run --detach ... spawn_v2b`, `NEXT_SESSION.md`). Ablasyon (C2): P/replay/rank (`V2_PLAN §5`).
+- [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim (Modal A100) + 6-mod canon eval, tüm kapılar geçti (`docs/record/v2b_sonuclar.md`).
+- [x] ~~v2c = near-miss abstention turu~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 « 0.90 + M1 regresyon; K3 negatif bulgu (ADR-0014, `docs/record/v2c_sonuclar.md`).
+- [ ] 🟢 **v3 = ORPO (aktif)** — near-miss abstention'ı preference ile düzelt. Offline pipeline kuruldu (ADIM 1-6). **Sıradaki: ADIM 7 Modal smoke** → tam run (`docs/record/v3_recipe.md`, `NEXT_SESSION.md`).
 - [ ] **Başarı kapısı:** A3≥0.741 + A1∧A2≥0.875 + A4 koru (`V2_PLAN §6`).
 - [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
 - [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.

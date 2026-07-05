@@ -1,27 +1,29 @@
-# DEVİR NOTU — 2026-07-02 (v2b eval BİTTİ+geçti · sıradaki = v2c)
+# DEVİR NOTU — 2026-07-04 (v2c REDDEDİLDİ · aktif iş = v3 ORPO)
 
 ## TEK CÜMLE
-v2b tam eğitim + 6-mod canon eval bitti, **tüm KAPILAR geçti** → sıradaki iş v2c;
-**tüm v2c kararları tek otoritede: [`docs/record/v2c_roadmap.md`](docs/record/v2c_roadmap.md)** (burada TEKRARLAMA).
+v2c reddedildi (near-miss abstention düz SFT ile düzelmedi, K3 negatif bulgu) →
+**aktif iş v3 = ORPO** (preference optimizasyonu); **tüm v3 kararları tek otoritede:
+[`docs/record/v3_recipe.md`](docs/record/v3_recipe.md)** (burada TEKRARLAMA).
 
-## v2b SONUÇ — TÜM KAPILAR GEÇTİ ✅ (detay: `docs/record/v2b_sonuclar.md`)
-| Mod | Ölçüm | v2b | base | v1 |
-|---|---|---|---|---|
-| M1 distractor | A1 (cevaplanan) | **0.904** | 0.879 | — |
-| M2b distractor-only (adil A3) | Rej* | **0.96** (n=30) | — | — |
-| M3 boş | Rej* | **1.000** | 1.000 | — |
-| M4 oracle | A1 | **0.975** | 0.977 | 0.960 |
-| M5 KÖR | A2 | 0.175 | 0.225 | 0.300 |
-| M2 TRAP-oracle (off-dist) | Rej* | 0.346 | 0.786 | 0.000 |
-- v1'e karşı net kazandı: grounding korundu+aştı, abstention **dirildi** (0.000→0.96), unutma yok (replay).
-- 2 methodology dersi: abstention'ı **eğitim moduyla ölç** (M2 0.346 artefakt, M2b 0.96 gerçek) · A1'i **cevaplananlarda** oku.
+## v2c SONUÇ — ❌ REDDEDİLDİ (detay: `docs/record/v2c_sonuclar.md`, ADR-0014)
+- Birincil hedef **M2 yanlış-kaynak red = 0.407** « §6 hedefi 0.90 (v2b 0.346'dan +0.06; base 0.704'ün bile altında).
+- Ek regresyon: **M1 A1 = 0.832 < kapı 0.904.**
+- **K3 negatif bulgu:** "ucuz SFT counterfactual near-miss reddini restore eder" hipotezi ÇÜRÜDÜ →
+  teslim düz SFT değil, **preference (ORPO)** olmalı.
 
-## SIRADAKİ: v2c → `docs/record/v2c_roadmap.md`
-Regresyon kapısı, G1–G4 açıklar, Tier A/B/C/D/E ve execution sırası **hepsi roadmap'te.**
-**İlk iş (roadmap §5):** Tier C (FT'siz eval adaleti: register ölç · shuffle teyit · base yeniden-skor) → Tier B (veri hijyeni) → Tier A (tek v2c SFT) → 6-mod regresyon eval.
+## SIRADAKİ: v3 → `docs/record/v3_recipe.md`
+Tasarım KİLİTLİ (8 düğüm, grilling ürünü). Offline pipeline kuruldu (ADIM 1-6): eval-aynası +
+ORACLE framing + `MaskedORPOTrainer`. **Sıradaki iş = ADIM 7 Modal smoke** (v2b-continuation +
+is_pref collator + OOM/NaN doğrulaması) → sonra tam ORPO run.
+
+## AÇIK ENGEL (2026-07-04)
+Modal erişimi gecesinde kesikti ("Could not connect to the Modal server"); harvest/eğitim
+başlatılamadı. Ağ gelince: komutlar v3_recipe.md §HANDOFF'ta. Kod hazır.
 
 ## DOSYALAR
-- **v2c OTORİTE:** `docs/record/v2c_roadmap.md` (v2c ADR bundan yazılacak)
-- v2b scorecard: `docs/record/v2b_sonuclar.md` · Kayıt: `docs/record/research_log.md` (2026-07-02)
-- Eval kod: `gen_eval_grounded.py` (`--max-chunk-chars` · `--no-gold`) · `score_abstention.py` (`--source-field`)
-- Eğitim: `modal_train.py::spawn_v2b` · `train_sft.py` · ADR: 0010–0013 (+ v2c ADR yazılacak)
+- **v3 OTORİTE:** `docs/record/v3_recipe.md` (v3 ADR-0015 bundan yazılacak)
+- v2c skorkart: `docs/record/v2c_sonuclar.md` · v2b: `docs/record/v2b_sonuclar.md` · Kayıt: `docs/record/research_log.md` (2026-07-04)
+- v3 kod: `scripts/{gen_v3_rejected,gen_v3_chosen,build_v3_devset,build_orpo_v3,train_orpo}.py` · `modal_train.py::{spawn_harvest,spawn_v3}`
+- Eğitim = Modal A100 (`--detach`) · eval = lokal RTX 5070 (`source ~/code/global_venv/bin/activate`) · ADR: 0010–0014 (+ 0015 yazılacak)
+
+> ❄️ v2c dondurulmuş planları: `docs/record/v2c_roadmap.md` + `v2c_fix_deep_research.md` (tarihsel, güncellenmez).
