@@ -86,7 +86,7 @@ profesyonel + vatandaş. Model **dolu+doğru** kalır; **vatandaş sadeleştirme
 - **Çıktı:** `data/processed/sft_v1/` (saf grounded, doğru+dolu+atıflı, her örnekte `kaynak_madde`).
 
 ### Adım 5 — v1 SFT (Modal A100) + iterasyon ✅ *TAMAMLANDI (2026-06-09)*
-> **DURUM (2026-07-01):** v1 SFT Modal A100'de koştu (1 epoch, 1207 step, ~3.5h ≈ $10). Canon pilot (ADR-0012) v1'i **eğitim hedefi olarak reddetti** (abstention 0.741→0.000, oracle'da bile base-altı) → aktif iş **v2b** (base'den taze QLoRA). Detay: `docs/record/research_log.md` 2026-06-09/13, `docs/V2_PLAN.md`.
+> **DURUM (2026-07-01):** v1 SFT Modal A100'de koştu (1 epoch, 1207 step, ~3.5h ≈ $10). Canon pilot (ADR-0012) v1'i **eğitim hedefi olarak reddetti** (abstention 0.741→0.000, oracle'da bile base-altı) → aktif iş **v2b** (base'den taze QLoRA). Detay: `docs/record/research_log/README.md` 2026-06-09/13, `docs/V2_PLAN.md`.
 - [x] **Kalite ön-kontrol:** `score_grounded_corpus.py` ile `sft_v1` örneklemi puanlandı (n=40, faithfulness 0.984). Grounded olduğu için temiz çıktı (ADR-0002).
 - [x] **Modal'a yükle:** `sft_v1` → `hukuk-data` volume.
 - [x] **modal_train.py → v1:** smoke + tam koşu (Modal A100, spawn/detach — ADR-0008).

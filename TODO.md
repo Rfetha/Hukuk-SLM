@@ -1,10 +1,10 @@
 # HakHukuk — TODO
 
-> **Milat 2026-06-13.** Geçmiş (tamamlanan işin anlatısı + sayılar) → `docs/record/research_log.md`.
+> **Milat 2026-06-13.** Geçmiş (tamamlanan işin anlatısı + sayılar) → `docs/record/research_log/README.md`.
 > Bu dosya **ileriye dönük**: kalan görevler + Faz 2-5. Sabit eksen: `NEXT_SESSION.md`.
 > Detaylı plan: `docs/TEKNIK_PLAN.md` · Veri: `docs/VERI_PLANI.md` · Kararlar: `docs/adr/`.
 
-## Faz 1 — KALAN (aktif) · v2 planı = `docs/V2_PLAN.md` · **aktif iter = v3 ORPO (`docs/record/v3_recipe.md`)**
+## Faz 1 — KALAN (aktif) · v2 planı = `docs/V2_PLAN.md` · **aktif iter = v3 ORPO (`docs/record/v3/recipe.md`)**
 
 > **DURUM (2026-07-05):** v2c **REDDEDİLDİ** (K3 negatif, ADR-0014) → **aktif iş v3 = ORPO**.
 > v3 harvest (fab 0.870) + ORPO paketleme (train 1741) KOŞTU; veri Modal volume'de.
@@ -13,9 +13,9 @@
 - [x] ~~**2 deep-research'ü sentezle** (v2 teknikleri + hukuk-veri/eğitim)~~ → **TAMAMLANDI (2026-06-14):** 3 /deep-research sentezlendi, `docs/V2_PLAN.md` (§5.1 reçete kartı dahil) güncellendi.
 - [ ] ⚪ **(opsiyonel baseline) v2a = base + mühendislik promptu (SFT YOK)** → canon'dan geçir. *(2026-06-14 kararı: birincil değil; v2b'nin SFT katkısını izole eden "SFT'siz" referans — V2_PLAN §4 Adım 1.)*
 - [ ] **Önkoşul (v2-eval'den önce):** register/altitude ekseni + **E (kaynak-eksik) eval seti** + 🔴 D0 eval-mirror (900-char chunk aynala) (`V2_PLAN §7/§9-D0`).
-- [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim (Modal A100) + 6-mod canon eval, tüm kapılar geçti (`docs/record/v2b_sonuclar.md`).
-- [x] ~~v2c = near-miss abstention turu~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 « 0.90 + M1 regresyon; K3 negatif bulgu (ADR-0014, `docs/record/v2c_sonuclar.md`).
-- [ ] 🟢 **v3 = ORPO (aktif)** — near-miss abstention'ı preference ile düzelt. Pipeline ADIM 1-6 + harvest (fab 0.870) + paketleme (train 1741) KOŞTU. **Sıradaki: ADIM 7 Modal smoke** (para-kapısı) → tam run (`docs/record/v3_recipe.md`, `NEXT_SESSION.md`).
+- [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim (Modal A100) + 6-mod canon eval, tüm kapılar geçti (`docs/record/v2b/sonuclar.md`).
+- [x] ~~v2c = near-miss abstention turu~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 « 0.90 + M1 regresyon; K3 negatif bulgu (ADR-0014, `docs/record/v2c/sonuclar.md`).
+- [ ] 🟢 **v3 = ORPO (aktif)** — near-miss abstention'ı preference ile düzelt. Pipeline ADIM 1-6 + harvest (fab 0.870) + paketleme (train 1741) KOŞTU. **Sıradaki: ADIM 7 Modal smoke** (para-kapısı) → tam run (`docs/record/v3/recipe.md`, `NEXT_SESSION.md`).
 - [ ] 🟡 **v3-KAPI-SONRASI VERİ BORÇLARI (train'e DOKUNUR → rebuild + yeni tur/v4; köken: bizim + fix-lit, PAPER-DEĞİL).** Yalnız v3 teşhisi gerektirirse uygulanır:
   - **#2b negatif aile çeşitliliği (train-fix):** çapraz-kanun/temporal/çok-hop tuzaklarını EĞİTİM verisine ekle → `train.jsonl` rebuild + yeniden ORPO. **Tetik:** v3 bir ailede çöküyorsa (eval-teşhis #2a gösterir).
   - **#3b çok-kaynak/deploy-gerçekçi bağlam (train-fix):** oracle tek-kaynak → retriever-benzeri çok-chunk train. **Tetik:** Faz-2 RAG'a yakın.
@@ -25,10 +25,12 @@
 - [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
 - [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.
 - [ ] **Paper öncesi sağlamlaştırma:** G1 cross-**family** judge (Claude/Gemini, κ) · paired McNemar · OOD unseen-statute dilimi · n=100/75 · A1/A2 operasyonel tanım.
+- [ ] **MCQ ekseni (hakem-bağımsız doğrulama)** — LLM-judge'a bağımlı olmayan çoktan-seçmeli eksen → paper sağlamlaştırma. *(research_log eski "Açık kararlar" bölümünden taşındı, 2026-07-05 record-restructure.)*
+- [ ] **Register ekseni kanonik LLM-judge rubriği (ADR-0013)** — şu an leksik-proxy (`score_register.py`); paper için judge-rubrikli uzman-vs-vatandaş ölçümü (leksik önkoşul yukarıda: register/altitude ekseni). *(aynı restructure'da taşındı.)*
 - [ ] **Faz 1 kapanış + deploy** — kapı geçilince → merge (bf16) → llama.cpp Q4_0 → GGUF ~6.5GB. *(Provokatif: Product A ise "deliverable = base+RAG+prompt" olabilir — V2_PLAN §8.)*
 - [ ] _(SONRA)_ outputs/eval/ klasör düzeni (raw/scored/summary nestele) · _(Faz 2)_ Bedesten bulk kanun çekimi.
 
-> **Faz 1 TAMAMLANANLAR (özet; detay → `docs/record/research_log.md`):** ortam (Blackwell sm_120) · **CANON eval** (4 eksen A1/A2/A3/A4 mod-stratifiye, ADR-0011, /deep-research-doğrulamalı) · **v0 SFT (forum → battı, K3)** · grounded v1 verisi (21.458, faith 0.984) · **v1 SFT (Modal A100)** · **CANON PİLOT base vs v1 → scope=Product A** (ADR-0012; v1 net-negatif, abstention 0.74→0.00) · 12 ADR · dış-rapor denetimi (ADR-0009).
+> **Faz 1 TAMAMLANANLAR (özet; detay → `docs/record/research_log/README.md`):** ortam (Blackwell sm_120) · **CANON eval** (4 eksen A1/A2/A3/A4 mod-stratifiye, ADR-0011, /deep-research-doğrulamalı) · **v0 SFT (forum → battı, K3)** · grounded v1 verisi (21.458, faith 0.984) · **v1 SFT (Modal A100)** · **CANON PİLOT base vs v1 → scope=Product A** (ADR-0012; v1 net-negatif, abstention 0.74→0.00) · 12 ADR · dış-rapor denetimi (ADR-0009).
 
 ## Faz 2: RAG + Knowledge Graph
 > **Not:** Uzun context (256K) KV-cache için **TurboQuant** (arXiv:2504.19874) — `knowledge/summary_turboquant.md`.

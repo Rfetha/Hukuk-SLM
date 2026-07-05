@@ -1,0 +1,5 @@
+### 2026-06-14 — v2 için 2 /deep-research → V2_PLAN.md zenginleştirildi
+**(1) v2-teknik** (24 kaynak): v2a=base+prompt+RAG+**Sufficient-Context selective-generation** (FT'siz +%2-10, ICLR25) güçlü destekli → ÖNCE bu. v2b=**RAFT** (context-grounding, param_leak fix) + **R-Tuning** boundary-refusal, cevaplanabilir dilimle DENGELİ (yalnız-belirsizlik known-acc'yi %52'ye çökertir). Light-touch: EAFT/düşük-rank/replay/KL. **Register loss'a GİRMEZ** (prompt). **DPO "daha az yıkıcı" ÇÜRÜDÜ** (forgetting-direnci on-policy PPO'ya özgü). v1 0.000-abstention = full-FT'nin bilinen mekaniği (SEAT/FLAME, "Confident Conflicts").
+**(2) hukuk-veri** (12 bulgu): **CPT bilgi gömer (SFT gömmez)** — SaulLM +%7 ama 54B/540B-token. Bütçe yolu = **EntiGraph sentetik-CPT** (RAG-lift'in >%80'i, RAG ile BİRLEŞİR) → v2c opsiyonel. Naive CPT genel-reasoning bozar → karışım şart. Türkçe çapa: **Mecellem 4-faz CPT**, **Muhakim 5-boyut reward** (eval scaffold). DISC-LawLLM = RAG-coupled syllogism deseni. SaulLM 3-turn sentetik = davranış-veri şablonu.
+**Sonuç:** V2_PLAN.md = 3-adım karar ağacı (v2a prompt → v2b RAFT-SFT → v2c sentetik-CPT). İlk somut iş: **v2a'yı koş.**
+

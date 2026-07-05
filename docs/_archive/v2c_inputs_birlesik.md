@@ -3,8 +3,8 @@
 > **ARŞİV (2026-07-05).** Bu dosya iki HAM GİRDİ dokümanının (`v2c_input_dis_danisman.md` +
 > `v2c_input_claude_degerlendirme.md`) birleştirilmiş hâlidir. İkisi de v2c reçetesine
 > harmanlandıktan sonra tüketildi; tek dosyada arşivlenerek `docs/record/` sadeleştirildi.
-> Kararın kendisi: [[v2c_roadmap]] (dondurulmuş) → v2c RED ([[v2c_sonuclar]], ADR-0014) → v3 ([[v3_recipe]]).
-> Kronoloji otoritesi: [[research_log]].
+> Kararın kendisi: [[v2c/roadmap]] (dondurulmuş) → v2c RED ([[v2c/sonuclar]], ADR-0014) → v3 ([[v3/recipe]]).
+> Kronoloji otoritesi: [[research_log/README]].
 
 ---
 ---
@@ -91,7 +91,7 @@ kapatmak; literatürdeki güncel teknikleri Modal ($30) + Gemma 4 12B QAT kısı
 # BÖLÜM B — Claude Değerlendirmesi (danışman raporu × v2b ampirik sonuç)
 
 > **Statü:** v2c reçetesi için HAM GİRDİ. Bu doküman Bölüm A'nın
-> önerilerini [[v2b_sonuclar]]'ın GERÇEK ölçümlerine bağlar. Danışman v2b sonuçlarını
+> önerilerini [[v2b/sonuclar]]'ın GERÇEK ölçümlerine bağlar. Danışman v2b sonuçlarını
 > GÖRMEDEN genel öneri verdi; buradaki iş önerileri v2b'nin açık kalan gerçek
 > yerlerine oturtmak + nerede ayrıldığını gerekçelemek.
 > **Tarih:** 2026-07-02 · **Yazar:** Claude (bu oturum)

@@ -1,15 +1,15 @@
 # v2c ROADMAP — harman (v2b ampirik × dış danışman × Claude değerlendirmesi)
 
-> ❄️ **DONDURULDU (2026-07-05).** v2c iterasyonu kapandı → **REDDEDİLDİ** ([[v2c_sonuclar]], ADR-0014).
-> Aktif reçete artık **[[v3_recipe]]** (ORPO). Bu doküman v2c'nin tam planı olarak tarihsel referanstır;
-> güncellenmez. Kronoloji otoritesi: [[research_log]].
+> ❄️ **DONDURULDU (2026-07-05).** v2c iterasyonu kapandı → **REDDEDİLDİ** ([[v2c/sonuclar]], ADR-0014).
+> Aktif reçete artık **[[v3/recipe]]** (ORPO). Bu doküman v2c'nin tam planı olarak tarihsel referanstır;
+> güncellenmez. Kronoloji otoritesi: [[research_log/README]].
 
 ---
 ## 🟢 DURUM — taze agent BUNU OKU (güncel tutulur, silinmez)
 
 > **Proje:** HakHukuk / Hukuk-TR — Türkçe hukuk SLM (Gemma 4 12B QLoRA, Faz 1 SFT).
 > Eğitim = Modal A100 (`--detach` ŞART), eval = lokal RTX 5070 (`source ~/code/global_venv/bin/activate`).
-> Önce oku: `CLAUDE.md` · `docs/record/research_log.md` (kronoloji, OTORİTE) · `docs/record/v2b_sonuclar.md`.
+> Önce oku: `CLAUDE.md` · `docs/record/research_log/README.md` (kronoloji, OTORİTE) · `docs/record/v2b/sonuclar.md`.
 >
 > **NEREDEYİZ (2026-07-03):** v2c eğitildi (Modal A100, adapter `outputs/v2c/`, config = v2b) + **6-mod eval TAM KAPANDI**.
 > **SONUÇ → v2c REDDEDİLDİ.** Ana hedef **M2 yanlış-kaynak red = 0.407** « §6 hedefi 0.90 (v2b 0.346'dan
@@ -19,22 +19,22 @@
 > Tavan korundu (M4 0.977 · M2b 0.973 · M3 1.000 · register 1.0) + anti-hedef tuttu (M5 0.125 < base 0.225). Detay: §6.
 >
 > **TAM SKORKART (6/6 + register + M5):** M1 0.832@80% · M4 0.977 · M2 0.407 · M2b 0.973 · M3 1.000 · M5 0.125 · reg 1.0.
-> **SIRADAKİ = AÇIK (KARAR YOK):** fix seçenekleri literatür taramasıyla çerçevelendi → `docs/record/v2c_fix_deep_research.md`
+> **SIRADAKİ = AÇIK (KARAR YOK):** fix seçenekleri literatür taramasıyla çerçevelendi → `docs/record/v2c/fix_deep_research.md`
 > (5 aile: ORPO/DPO · RAFT · R-Tuning · RAAT/CaRT · DTA/RPO). Dış görüş-2 (Gemini) alındı. **Yeni iterasyon adı/kararı
 > VERİLMEDİ** (kullanıcı kısıtı) — seçenekler v2c ADR'ında "potansiyel durumlar" olarak listeli. Herhangi bir yeni FT/pipeline
 > = Modal para-kapısı + kullanıcı onayı (sormadan başlama).
 >
 > **DEĞİŞMEZ KURAL:** §1 regresyon kapısı 6 sayı (M1 0.904 · M4 0.975 · M2b 0.96 · M3 1.000 · M5 0.175-nötr · A4 0.925).
-> **BİTİRİRKEN:** bulgu → `research_log.md` · karar → v2c ADR · bu roadmap'i güncel tut · Modal $30 kredi (kart ekli).
+> **BİTİRİRKEN:** bulgu → `research_log/README.md` · karar → v2c ADR · bu roadmap'i güncel tut · Modal $30 kredi (kart ekli).
 
 ---
 
 > **Bu doküman ne:** v2c FT turunun KARAR belgesi. Üç girdiyi birleştirir:
-> 1. [[v2b_sonuclar]] — ampirik gerçek (v2b tüm kapıları geçti; tek gerçek açık M2=0.346).
+> 1. [[v2b/sonuclar]] — ampirik gerçek (v2b tüm kapıları geçti; tek gerçek açık M2=0.346).
 > 2. [[v2c_inputs_birlesik]] Bölüm A — harici agent teknik önerileri (v2b'yi görmeden). *(arşiv)*
 > 3. [[v2c_inputs_birlesik]] Bölüm B — önerileri v2b açıklarına bağlayan süzme + itirazlar. *(arşiv)*
 > **Harman kuralı:** v2c hedefi = (v2b kapı-durumu) ∩ (danışman ∩ Claude süzmesi).
-> **Tarih:** 2026-07-02 · Otorite kronoloji: [[research_log]] · Karar: yeni ADR (v2c) yazılacak.
+> **Tarih:** 2026-07-02 · Otorite kronoloji: [[research_log/README]] · Karar: yeni ADR (v2c) yazılacak.
 
 ---
 

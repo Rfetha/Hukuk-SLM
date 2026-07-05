@@ -2,7 +2,7 @@
 
 > **Karar:** v2c **REDDEDİLDİ** (2026-07-03). Birincil hedef M2 (yanlış-kaynak red) tutmadı **VE** §1 regresyon
 > kapısı M1 kırıldı. Bu doküman = ölçülen tam skorkart + RED gerekçesi + **K3 negatif bulgusu** + mekanizma.
-> Otorite kronoloji: [[research_log]] · Karar defteri: v2c ADR · Skorkart: [[v2c_roadmap]] §6 · Fix seçenekleri: [[v2c_fix_deep_research]].
+> Otorite kronoloji: [[research_log/README]] · Karar defteri: v2c ADR · Skorkart: [[v2c/roadmap]] §6 · Fix seçenekleri: [[v2c/fix_deep_research]].
 
 ## Kurulum (tüm modlar ortak)
 - **Model:** Gemma 4 12B + QLoRA adapter `outputs/v2c/` (config = v2b: r=16, α=32, lr=1e-4, batch=1, grad_accum=16, 1 epoch, replay %3). Eğitim = Modal A100.
@@ -107,13 +107,13 @@
 
 **Kanıt:** v2c'nin Tier A veri-kolu M2'yi yalnız 0.346→0.407'ye taşıdı (base 0.704'ün altında kaldı), üstelik M1 grounding'i 0.920→0.832'ye düşürdü.
 
-**Mekanizma — "Grounding-Abstention paradoksu" (literatürce doğrulandı, [[v2c_fix_deep_research]]):**
+**Mekanizma — "Grounding-Abstention paradoksu" (literatürce doğrulandı, [[v2c/fix_deep_research]]):**
 - SFT modeli sürekli **cevap üretmeye** koşulladı → coverage arttı (over-refusal↓, iyi yön) ama **ayrım gücü** köreldi.
 - Hukuk terminolojisi yüksek semantik örtüşme içerir: yanlış ve doğru belge aynı aktörleri/kavramları paylaşır.
 - Test anında belgenin **konusal yakınlığı (topical adjacency)** latent-space'te ilgili başlıkları yüksek-aktivasyonla tetikliyor; model "yasal olarak gerçekten karşılıyor mu?" diye sorgulamak yerine yakınlığı yeşil-ışık sayıp üretiyor.
 - **Bariz-alakasız** belge (M2b) bu döngüyü tetiklemiyor → reddedilebiliyor ✅. **Makul-komşu-ama-yanlış** belge (M2) dikkat mekanizmasını yanıltıyor → fabrikasyon ❌.
 
-**Sonuç:** near-miss discrimination'ı SFT tek başına çözemez → tercih-optimizasyonu / loss-masking / knowledge-boundary hizalaması gerekiyor (fix aileleri: [[v2c_fix_deep_research]]).
+**Sonuç:** near-miss discrimination'ı SFT tek başına çözemez → tercih-optimizasyonu / loss-masking / knowledge-boundary hizalaması gerekiyor (fix aileleri: [[v2c/fix_deep_research]]).
 
 ---
 

@@ -42,4 +42,4 @@ yoksa neden kanunla FT ettik?" itirazıyla **correctness** eksenini ayrı ölçm
 - Pilot koşu: base/v0/v1 → kalibrasyon + v1'i gömme; sonra base-vs-final aynı cetvelle.
 
 ## İlgili
-`[[adr-decision-log]]`, ADR-0001 (groundedness), ADR-0002 (kalite kapısı), `docs/record/research_log.md` (2026-06-13 akşam canon girdisi), `knowledge/summary_eval_benchmark_literature.md`
+`[[adr-decision-log]]`, ADR-0001 (groundedness), ADR-0002 (kalite kapısı), `docs/record/research_log/README.md` (2026-06-13 akşam canon girdisi), `knowledge/summary_eval_benchmark_literature.md`
