@@ -86,21 +86,22 @@
 
 ---
 
-# 🔖 HANDOFF (2026-07-04, detach-öncesi durum → dönünce ne yapılacak)
+# 🔖 HANDOFF (GÜNCEL: 2026-07-05 — harvest+paketleme KOŞTU, sırada ADIM 7 smoke)
 
-> **Neden:** Modal o gece HEM lokal HEM kullanıcı `!` shell'inden erişilemedi (ağ). ADIM 2 harvest başlatılamadı. Tüm offline iş (ADIM 3/5/6) BİTTİ. Bu bölüm dönünce sıfır-bağlamla devam ettirir.
+> **Güncelleme (2026-07-05):** ADIM 2 harvest ve ADIM 6a paketleme KOŞTU (detay aşağı + research_log 2026-07-05). Modal ağ engeli KALKTI, Claude'un Bash'i artık dışa erişimli. **Sıradaki tek iş = ADIM 7 Modal smoke (para-kapısı, onay bekliyor).**
+> _(Tarihsel: 2026-07-04'te Modal HEM lokal HEM `!` shell'inden erişilemiyordu; o engel çözüldü.)_
 
-## DURUM PANOSU
+## DURUM PANOSU (2026-07-05)
 | ADIM | Durum | Not |
 |---|---|---|
 | 1 zor-trap havuzu | ✅ | `data/processed/sft_v3/packed_v3.jsonl` (19284). **Eval-aynası** (Q3 override). |
-| 2 rejected harvest | ⏳ **KOD HAZIR, KOŞMADI** | Modal ağ engeli. `gen_v3_rejected.py` + oracle + pad-fix hazır. |
+| 2 rejected harvest | ✅ **KOŞTU** | `rejected.jsonl` n=1728, **1504 fab / fab_oranı 0.870**, mojibake %0.3 temiz. Modal `--detach harvest_rejected`. |
 | 3 chosen | ✅ | `chosen.jsonl` (19284, muhakemeli-red, oracle). |
-| 4 τ judge kalibrasyon | ⏭ opsiyonel | Net gerekir; provizyonel: hi_overlap DAHİL (paketlemede işaretli). |
+| 4 τ judge kalibrasyon | ⏭ opsiyonel | Net gerekir; provizyonel: hi_overlap (108) DAHİL (paketlemede işaretli). |
 | 5 dev-set | ✅ | `dev.jsonl` (80, sızıntısız). |
-| 6 ORPO paketleme + trainer | ✅ **KOD HAZIR** | `build_orpo_v3.py` + `train_orpo.py` (MaskedORPOTrainer). rejected.jsonl bekliyor. |
-| 7 Modal smoke | 🚧 PARA-KAPISI | `spawn_v3 --smoke`. |
-| 8 ORPO tam eğitim | 🚧 PARA-KAPISI | `spawn_v3`. |
+| 6 ORPO paketleme + trainer | ✅ **KOŞTU** | `build_orpo_v3.py` → **train 1741 (1449 abstain + 292 grounding) / val 53**. train/val Modal volume'e yüklendi. `train_orpo.py` (MaskedORPOTrainer) offline-doğru, runtime ADIM 7'de. |
+| 7 Modal smoke | 🚧 **PARA-KAPISI (SIRADAKİ, onay bekliyor)** | `modal run --detach modal_train.py::train_orpo --run-name v3-smoke --max-steps 50`. |
+| 8 ORPO tam eğitim | 🚧 PARA-KAPISI | `modal run --detach modal_train.py::train_orpo --run-name v3 --epochs 1`. |
 | 9-11 eval/karar/belge | ⏳ | kanon 6-mod + kapı Q1 + ADR-0015. |
 
 ## BU OTURUMDA VERİLEN KARARLAR (bağlayıcı)
@@ -109,55 +110,52 @@
 3. **Modal harvest** (kullanıcı onaylı, para-kapısı açık): 1500 gerçek fab, A100 inference ~$2-4.
 4. **pad-fix:** batched üretim `pad_token=<pad>(0)` (eos DEĞİL) — mojibake fix.
 
-## DÖNÜNCE — TEK-NUMARALI RESUME (Modal ağ geri gelince)
+## ⚠️ MODAL DETACH KALIBI (2026-07-05 keşfi — sade `.spawn()` İPTAL OLUR)
+`modal run modal_train.py::spawn_harvest` (sade `.spawn()`, `--detach`SİZ) → ephemeral app local-entrypoint bitince STOP → spawn'lanan iş **iptal** (dashboard kırmızı bar). **DOĞRU: `modal run --detach modal_train.py::<function>`** (doğrudan fonksiyon + detached). Aşağıki R-komutları bu kalıba göre. _(Not: Claude'un Bash'i artık dışa erişimli → `!` şart değil, doğrudan koşulabilir.)_
 
-**R1. Harvest (ADIM 2) — Modal (senin `!` ile; my-shell ağsız):**
-```
-! source ~/code/global_venv/bin/activate && modal volume put hukuk-data data/processed/sft_v3/packed_v3.jsonl /sft_v3/packed_v3.jsonl
-! source ~/code/global_venv/bin/activate && modal run modal_train.py::spawn_harvest --target 1500
-# İzle: modal app logs hukuk-sft  → "harvest bitti" deyince:
-! source ~/code/global_venv/bin/activate && modal volume get hukuk-data /sft_v3/rejected.jsonl ./data/processed/sft_v3/rejected.jsonl
-```
-⚠️ rejected.jsonl gelince KALİTE-KONTROL: `abstained=False` fab oranı ~0.79 mı; baş-mojibake ~0 mı (pad-fix). Yaygın mojibake varsa `spawn_harvest --batch 1` ile tekrar.
+## RESUME — TEK-NUMARALI (R1-R2 KOŞTU; sıradaki R4)
 
-**R2. ORPO paketleme (ADIM 6a) — lokal $0:**
+**R1. Harvest (ADIM 2) — ✅ KOŞTU:**
 ```
-source ~/code/global_venv/bin/activate && python scripts/build_orpo_v3.py --rejected data/processed/sft_v3/rejected.jsonl
-# → data/processed/sft_v3/{train,validation}.jsonl + orpo_report.json (funnel'ı oku)
+modal volume put hukuk-data data/processed/sft_v3/packed_v3.jsonl /sft_v3/packed_v3.jsonl
+modal run --detach modal_train.py::harvest_rejected --target 1500
+modal volume get hukuk-data /sft_v3/rejected.jsonl ./data/processed/sft_v3/rejected.jsonl
 ```
+Sonuç: n=1728, 1504 fab (fab_oranı **0.870**), baş-mojibake %0.3 (pad-fix tuttu). ✅ KALİTE-KONTROL geçti.
 
-**R3. (opsiyonel ADIM 4) τ judge kalibrasyon** — hi_overlap fab'ları gpt-4o-mini'ye ver, kazara-cevaplayanı ele, build_orpo_v3'ü τ ile tekrar. (Net gerekir; atlanırsa hi_overlap dahil kalır.)
-
-**R4. Smoke (ADIM 7, PARA-KAPISI, ~$0.15) — kullanıcı onayı + `!`:**
+**R2. ORPO paketleme (ADIM 6a) — ✅ KOŞTU:**
 ```
-! ...modal volume put hukuk-data data/processed/sft_v3/train.jsonl /sft_v3/train.jsonl
-! ...modal volume put hukuk-data data/processed/sft_v3/validation.jsonl /sft_v3/validation.jsonl
-! ...modal run modal_train.py::spawn_v3 --smoke
+HF_HUB_OFFLINE=1 python scripts/build_orpo_v3.py --rejected data/processed/sft_v3/rejected.jsonl
+```
+→ train 1741 (1449 abstain + 292 grounding) / val 53. `orpo_report.json` funnel loglandı.
+
+**R3. (opsiyonel ADIM 4) τ judge kalibrasyon** — hi_overlap (108) fab'ları gpt-4o-mini'ye ver, kazara-cevaplayanı ele, build_orpo_v3'ü τ ile tekrar. (Net gerekir; atlanırsa hi_overlap dahil kalır.)
+
+**R4. Smoke (ADIM 7, PARA-KAPISI, ~$0.15, SIRADAKİ) — kullanıcı onayı:**
+```
+# train/validation.jsonl ZATEN volume'de (R2 sonrası yüklendi). Doğrudan:
+modal run --detach modal_train.py::train_orpo --run-name v3-smoke --max-steps 50
 ```
 DENETLE (geri bildirim-7): loss düşüyor mu, OOM yok mu, NaN yok mu, `nll_loss` loglanıyor mu. **v2b-continuation + is_pref-list burada DOĞRULANIR** (offline test edilemedi).
 
-**R5. Tam ORPO (ADIM 8, PARA-KAPISI) — onay + `!`:**
+**R5. Tam ORPO (ADIM 8, PARA-KAPISI) — onay:**
 ```
-! ...modal run modal_train.py::spawn_v3 --run-name v3 --epochs 1 --beta 0.1 --lr 1e-5
+modal run --detach modal_train.py::train_orpo --run-name v3 --epochs 1 --beta 0.1 --lr 1e-5
 # forget-vekili: nll_loss trendi (tırmanırsa M1-risk → beta↓ 0.05 veya replay↑). Bitince:
-! ...modal volume get hukuk-outputs /v3 ./outputs/v3
+modal volume get hukuk-outputs /v3 ./outputs/v3
 ```
 
 **R6. Eval (ADIM 9-10) — lokal:** kanon 6-mod (M1/M2/M2b/M3/M4/M5+register), Mecellem sütunu. **KAPI (Q1):** M2≥0.704 + M1 A1≥0.904 + tavan koru + M5 base-altı. Geçerse n≥100 teyit + base/v2b re-eval. **ADIM 2 boyunca eval M2'nin ORACLE olduğunu unutma** (mode="oracle").
 
 **R7. Belge (ADIM 11):** ADR-0015 (v3 kabul/red) + `v3_sonuclar.md` + research_log + Bulgu-2/3 logu.
 
-## ⚠️ MODAL ERİŞİM/LOGIN SORUNU (2026-07-04, çözülmeli)
-Harvest denemesinde HEM lokal Bash HEM kullanıcı `!` shell → **"Could not connect to the Modal server"** (upload+spawn exit 1). Token VAR (`~/.modal.toml`, 2 satır) → **auth değil, AĞ/oturum**. Genel internet de HTTP 000'du (o an tam egress kapalıydı). Dönünce sırayla:
-1. Ağ teyidi: `curl -sI https://api.modal.com` (200/301 gelmeli).
-2. Oturum teyidi: `source ~/code/global_venv/bin/activate && modal app list` (asılmadan liste gelmeli). Asılırsa → `modal token new` (tarayıcı auth) VEYA `modal setup`.
-3. Token yenile gerekirse: `modal token set --token-id <id> --token-secret <secret>` (modal.com/settings/tokens'tan).
-4. Sonra R1'deki upload/spawn komutları. ⚠️ **AI'nın (Claude) lokal Bash'inin dışa internet erişimi YOK** (sandbox) → Modal/HF/git-push AI tarafından koşulamaz; kullanıcı `!` ile veya kendi terminalinde koşar.
+## ✅ MODAL ERİŞİM (2026-07-04 engeli → 2026-07-05 ÇÖZÜLDÜ)
+2026-07-04'te HEM lokal Bash HEM `!` shell → "Could not connect to the Modal server" (ağ/oturum, auth değil). **2026-07-05: engel kalktı** — `curl -sI https://api.modal.com` 200, `modal app list` çalışıyor, harvest temiz koştu. Ayrıca **Claude'un Bash'inin dışa erişimi AÇILDI** (Modal/HF/git doğrudan koşulabiliyor; `!` şart değil). Tekrar kesilirse: (1) `curl -sI https://api.modal.com`, (2) `modal app list` asılırsa `modal token new`, (3) gerekirse `modal token set --token-id <id> --token-secret <secret>`.
 
 ## AÇIK RİSKLER (ADIM 7 smoke doğrular)
 - v2b-continuation (`PeftModel is_trainable`) Unsloth+ORPO'da çalışır mı → çalışmazsa `train_orpo.py --fresh-adapter` fallback (grounding'i kaybeder, M1 riski).
 - `is_pref` collator else-dalından list gelir mi (MaskedORPOTrainer buna dayanıyor) → gelmezse tokenize_row override gerekir.
-- pad-fix mojibake tam çözdü mü (lokal batch=8 doğrulaması yarım kaldı) → R1 kalite-kontrolde bak.
+- ~~pad-fix mojibake tam çözdü mü~~ → ✅ ÇÖZÜLDÜ: harvest'te %0.3 (5 satır temizlendi), pad=`<pad>` tuttu.
 
 ## DOSYA HARİTASI (v3, yeni — v2b/v2c dokunulmadı)
-`scripts/build_sft_v3.py` (ADIM1) · `gen_v3_rejected.py` (ADIM2) · `gen_v3_chosen.py` (ADIM3) · `build_v3_devset.py` (ADIM5) · `build_orpo_v3.py` (ADIM6a) · `train_orpo.py` (ADIM6b) · `modal_train.py::{spawn_harvest,spawn_v3}` (ADIM6f/8). Veri: `data/processed/sft_v3/{packed_v3,chosen,dev}.jsonl` + gelecek `{rejected,train,validation}.jsonl`.
+`scripts/build_sft_v3.py` (ADIM1) · `gen_v3_rejected.py` (ADIM2) · `gen_v3_chosen.py` (ADIM3) · `build_v3_devset.py` (ADIM5) · `build_orpo_v3.py` (ADIM6a) · `train_orpo.py` (ADIM6b) · `modal_train.py::{harvest_rejected,train_orpo}` (doğrudan `--detach` çağrılır; `spawn_*` sarmalayıcıları İPTAL tuzağı yüzünden kullanılmıyor). Veri: `data/processed/sft_v3/{packed_v3,chosen,dev,rejected,train,validation}.jsonl` (hepsi ✅) + `orpo_report.json`.
