@@ -12,6 +12,7 @@
 | **v2b/** | Tur özeti: hafif RAFT-SFT, ✅ tüm kapılar geçti (tek açık M2 near-miss) | [`v2b/`](v2b/README.md) |
 | **v2c/** | Tur özeti: near-miss abstention denemesi, ❌ REDDEDİLDİ (K3 negatif — Grounding-Abstention paradoksu) | [`v2c/`](v2c/README.md) |
 | **v3/** | Tur özeti: near-miss fix ORPO ile, ⚠️ KISMİ/kapandı (K3 onarıldı, M2 base-altı + M2b regresyon; ADR-0015) | [`v3/`](v3/README.md) |
+| **v4/** | Tur özeti: answerability-dedektörü (kapsamlı ORPO), 🟡 TASARIM DRAFT (deep-research revizyonu bekliyor) | [`v4/`](v4/README.md) |
 
 ## Kesişen (cross-cutting) dosyalar
 
