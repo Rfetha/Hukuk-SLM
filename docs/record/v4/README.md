@@ -13,7 +13,8 @@ iç-takası olmaz → mükemmele yakın ayrım her kulvarı birden kazandırır;
 Tam tez: [[../research_log/2026-07-06-v4-tasarim-tezi-answerability]] (#33).
 
 ## Dosyalar
-- [`recipe.md`](recipe.md) — v4 tasarım taslağı: hedef, kaldıraçlar (judge-önceliklendirmesi), zemin çatalı, kapı, açık sorular (deep-research'e).
+- [`recipe.md`](recipe.md) — v4 tasarım taslağı: hedef, kaldıraçlar (judge-önceliklendirmesi), zemin çatalı, kapı, açık sorular.
+- [`deep_research_brief.md`](deep_research_brief.md) — **`/deep-research`'e verilecek hazır brief** (bağlam + kısıt + 6 soru + çıktı-formatı). ⏳ tetikleme kullanıcıda.
 - Kaldıraç kaynakları: [[../v3/receteler]] (4 reçete + §v4 mimari notları) — v4 recipe bunları sentezler.
 
 ## Kabul edilen aksiyomlar (kilit)

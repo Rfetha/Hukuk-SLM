@@ -56,4 +56,5 @@ M4/M1/M3/register ≥v3 (regresyonsuz) **+** M5 ≤0.10 (anti-hedef korunmuş). 
 6. **Plato kırma:** DPO/ORPO'nun RAG-refusal ~%87 platosunu aşan teknikler (Cor-RAIT, DTA, iteratif hard-negative) — bizim kısıta (12GB, ref-free) uygun olanı?
 
 ## 7. SIRADAKİ ADIM
-Bu draft → **deep-research'e sok** (§6 soruları) → dönüşle grilling → recipe KİLİTLE → ADIM-plan → para-kapısı onayı → koş.
+Bu draft → **deep-research'e sok** → dönüşle grilling → recipe KİLİTLE → ADIM-plan → para-kapısı onayı → koş.
+**Deep-research brief HAZIR (kopyala/tetikle):** [`deep_research_brief.md`](deep_research_brief.md) — §6 soruları + proje-bağlamı + kısıtlar + çıktı-formatı tek self-contained prompt. Tetikleme kullanıcıda.
