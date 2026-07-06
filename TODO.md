@@ -20,7 +20,7 @@
   - ⚠️ **v2b-SFT ile düzeltme YASAK** (K3). Yöntem = yine ORPO (ref-free); base-joint-ORPO yalnız v2b-continuation tavanı kanıtlanırsa. Reçete: `docs/record/v3/receteler.md` (§Reçete 1-4 + §v4 MİMARİ NOTLARI).
   - _(düşük öncelik, tetik gerçekleşmedi)_ #4 replay 0.20→0.35 (forget YOK çıktı) · #3b çok-kaynak train (Faz-2 RAG yakını).
 - [ ] **Başarı kapısı (v4):** M2 ≥ base 0.704 (grounding-korumalı) **+ M2b regresyon kapalı (≥0.9)** + M1/M4/register tavan korunmuş + M5 base-altı. (ADR-0011 canon + ADR-0015.)
-- [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
+- [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) ✅ KOŞULDU (SCORECARD'da) · 🔴 **`Llama-3.1-8B-Instruct` EKSİK — ileri için not (2026-07-06 kararı: sonra koşulacak).** Paper için Mecellem'den önemli olabilir: erişilebilir + instruction-tuned = "gerçek hazır-asistan rakip" (Mecellem ham base, asistan değil). 8B RTX 5070'e sığar → generation lokal/bedava; sadece judge para-kapısı (~<$1). Aynı 6-mod canon set/mod/n/seed/hakem. Paperlarından sayı ALMA.
 - [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.
 - [ ] **Paper öncesi sağlamlaştırma:** G1 cross-**family** judge (Claude/Gemini, κ) · paired McNemar · OOD unseen-statute dilimi · n=100/75 · A1/A2 operasyonel tanım.
 - [ ] **MCQ ekseni (hakem-bağımsız doğrulama)** — LLM-judge'a bağımlı olmayan çoktan-seçmeli eksen → paper sağlamlaştırma. *(research_log eski "Açık kararlar" bölümünden taşındı, 2026-07-05 record-restructure.)*

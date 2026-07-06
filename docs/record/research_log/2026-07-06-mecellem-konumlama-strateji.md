@@ -12,20 +12,24 @@
 ölçüldü — çünkü asistan değil. Aynı set/mod/n(40/35)/seed(3407)/hakem(gpt-4o-mini).
 ⚠️ **Birebir kıyas değil:** bizimkiler Gemma-4-12B QLoRA-SFT asistan; Mecellem prompt'lanmış 4B foundation base.
 
-## Kafa-kafaya tablo (cache'li judge; v3 = proxy/beklemede)
-| Eksen | base | v2b | v2c ❌ | Mecellem¹ | v3 |
+## Kafa-kafaya tablo (TAM judge — v3 dahil KESİNLEŞTİ 2026-07-06 akşam)
+> **GÜNCELLEME:** v3 hücreleri artık proxy değil, gerçek gpt-4o-mini judge (14 koşu, ADIM 9 kapandı).
+> Kaynak: [[2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) + [[../SCORECARD]]. Aşağıdaki proxy notu tarihsel (tuttu mu → tuttu).
+
+| Eksen | base | v2b | v2c ❌ | Mecellem¹ | **v3 (judge)** |
 |---|---|---|---|---|---|
-| **M4 oracle grounding** (sadık kullanım) | 0.978 | 0.968 | 0.974 | **0.783** ↓ | ⏳ |
-| **Register uzman_frac** | 1.0 | 1.0 | 1.0 | **0.2** ↓↓ | 0.975 / ck28 1.0 |
-| M2b RAG-miss reddi | 1.0 | 0.96 | 0.973 | 0.919 | ⏳ |
-| M3 boş-bağlam reddi | 1.0 | 1.0 | 1.0 | 1.0 | ⏳ |
-| M1 grounding faithfulness | 0.662 | 0.737 | 0.681 | 0.713 | ⏳ |
-| **M2 yanlış-kaynak reddi** | 0.704 | 0.346 | 0.407 | **1.0*** | **~0.55 proxy** |
-| **M5 kör/parametrik doğruluk** | 0.225 | 0.175 | 0.125 | **0.35** | ⏳ |
+| **M4 oracle grounding** (sadık kullanım) | 0.978 | 0.968 | 0.974 | **0.783** ↓ | **1.000** 🏆 |
+| **Register uzman_frac** | 1.0 | 1.0 | 1.0 | **0.2** ↓↓ | **0.975** |
+| M2b RAG-miss reddi | 1.0 | 0.96 | 0.973 | 0.919 | **0.529** ⬇️ regresyon |
+| M3 boş-bağlam reddi | 1.0 | 1.0 | 1.0 | 1.0 | **1.000** |
+| M1 grounding faithfulness | 0.662 | 0.737 | 0.681 | 0.713 | **0.881** 🏆 |
+| **M2 yanlış-kaynak reddi** | 0.704 | 0.346 | 0.407 | **1.0*** | **0.593** (base-altı, v2c'yi +0.19 geçti) |
+| **M5 kör/parametrik doğruluk** | 0.225 | 0.175 | 0.125 | **0.35** | **0.075** (en düşük = en az ezber) |
 
 ¹ yukarıdaki spesifik. \* Mecellem M2=1.0 few-shot red-taklidi + aşırı-reddetme (aşağı bak).
-v3 M2 proxy = aynı red-örüntü dedektörü 4 modelde: base 0.571 / v2b 0.229 / v2c 0.314 / v3 0.429 →
-lineer kalibrasyon (3 baseline fit) → v3 judge **≈ 0.54–0.56** (mutlak değil; judge invalid-trap düzeltmez + semantik reddi eksik sayar → gerçek biraz yüksek gelebilir).
+**Proxy doğrulaması (tarihsel):** v3 M2 proxy ~0.55 demişti → gerçek judge **0.593** (proxy taban tuttu; judge semantik-red + invalid-trap paydası nedeniyle biraz üstte çıktı, beklendiği gibi). M2b'yi proxy öngörmedi (yeni eksen değil ama regresyon judge'da ortaya çıktı — teşhis #32).
+
+**Kesinleşen konumlama:** v3 deploy-anlamlı eksenlerde (M4 1.0, M1 0.881, register 0.975) **hem base'i hem Mecellem'i geçti**; kaybı yalnız red eksenlerinde (M2 base-altı, M2b regresyon). Mecellem'in tek üstünlüğü M5 (0.35 vs 0.075) = parametrik ezber = RAG-varken alakasız (B3/B5).
 
 ## Bulgular / çerçeve
 
