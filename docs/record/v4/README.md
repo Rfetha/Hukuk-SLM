@@ -1,11 +1,11 @@
-# v4 turu — answerability-dedektörü (kapsamlı ORPO) · 🟡 TASARIM (DRAFT)
+# v4 turu — answerability-dedektörü (DTA-uyarlı ORPO) · 🟡 TASARIM (DRAFT-v2, deep-research işlendi)
 
 > **Tek cümle:** v3'ün KISMİ sonucundan sonra (M2b regresyon + M2 base-altı + OOD zayıf), v4 =
 > **tek answerability-discrimination becerisini keskinleştiren kapsamlı tur.** Amaç: her CANON kulvarında
 > **lider veya berabere-tavan** (mutlak-1.0 değil), grounding dörtlüsü (M4/M1/M3/M5) **regresyonsuz.**
 
-> **⚠️ DURUM: TASARIM DRAFT.** Bu klasör v4'ün grilling-öncesi taslağıdır. **Sonraki adım = tasarımı
-> deep-research'e sokup revize etmek** (kullanıcı direktifi 2026-07-06). Kilitli değil.
+> **⚠️ DURUM: DRAFT-v2 (deep-research İŞLENDİ).** Bulgular [[../research_log/2026-07-06-v4-deep-research-bulgular]] (#34)
+> recipe'e işlendi (DTA dört-kadran çekirdek, yapı>volüm, zemin-A kesin). **Sonraki adım = grilling → kilit.** Kilitli değil.
 
 ## Tez (neden bu tur)
 9 kulvar = 1 zor beceri (answerability: "bağlam soruyu cevaplıyor mu?") + 1 dik beceri (register). Tek becerinin
