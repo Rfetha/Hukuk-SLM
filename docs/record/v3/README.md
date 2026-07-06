@@ -10,6 +10,7 @@
 - research_log **entry #32** (`../research_log/2026-07-06-v3-eval-sonuc-kapi-karari.md`) — tam judge skorkartı + M2b teşhisi + proxy→judge dersi.
 
 ## Dosyalar
+- [`sonuclar.md`](sonuclar.md) — **v3 tam skorkart + kapı gerekçesi + M2b teşhis + proxy→judge dersi** (v2b/v2c paraleli).
 - [`recipe.md`](recipe.md) — v3'ün 8-düğüm KARAR/execution belgesi (✅ tarihsel; ADR-0015 bundan yazıldı).
 - [`receteler.md`](receteler.md) — **v4 girdileri:** train'e-DOKUNAN 4 iş (#2b negatif-aile [v3 M2b teşhisiyle TETİKLENDİ] · #3b çok-kaynak · #4 replay · ADIM 4 τ-judge) + §v4 MİMARİ NOTLARI.
 
