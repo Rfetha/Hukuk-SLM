@@ -11,12 +11,13 @@
 | **research_log/** | Kronolojik deney günlüğü — her anlamlı deney/bulgu/karar ayrı dated dosya (birebir içerik) | [`research_log/`](research_log/README.md) |
 | **v2b/** | Tur özeti: hafif RAFT-SFT, ✅ tüm kapılar geçti (tek açık M2 near-miss) | [`v2b/`](v2b/README.md) |
 | **v2c/** | Tur özeti: near-miss abstention denemesi, ❌ REDDEDİLDİ (K3 negatif — Grounding-Abstention paradoksu) | [`v2c/`](v2c/README.md) |
-| **v3/** | Tur özeti: near-miss fix ORPO ile, 🟢 aktif (harvest+paketleme koştu, Modal smoke bekliyor) | [`v3/`](v3/README.md) |
+| **v3/** | Tur özeti: near-miss fix ORPO ile, ⚠️ KISMİ/kapandı (K3 onarıldı, M2 base-altı + M2b regresyon; ADR-0015) | [`v3/`](v3/README.md) |
 
 ## Kesişen (cross-cutting) dosyalar
 
 | Dosya | Ne için | Link |
 |---|---|---|
+| **ANA SKORKART** | **Tüm turlar × tüm eksenler tek tablo** (base/v2b/v2c/v3/Mecellem + genelleme) — paper-hazır konsolidasyon | [`SCORECARD.md`](SCORECARD.md) |
 | Künye + çerçeve | Model/ana-metrik/eğitim-yeri + eval modları (KÖR / madde-verili-oracle) tanımları | [`research_log/00-kunye-ve-cerceve.md`](research_log/00-kunye-ve-cerceve.md) |
 | Paper eşlemesi | Her bulgunun paper'ın hangi bölümüne (K1 ablasyon / K3 negatif / methodology) yaradığı | [`research_log/99-paper-esleme.md`](research_log/99-paper-esleme.md) |
 

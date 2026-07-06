@@ -8,8 +8,7 @@ v3 (v2b-adaptöründen DEVAM eden ORPO turu) **K3'ü büyük ölçüde onardı a
 M2 near-miss reddi base'i geçmedi + M2b'de yeni regresyon çıktı → **sıradaki iş v4 (yönü NET, reçete+onay bekliyor).**
 
 ## ✅ v3 SONUÇ (ADIM 9 tam judge — kapandı)
-- **Otorite:** ADR-0015 (`docs/adr/0015-v3-orpo-kapi-karari-kismi-v4-yonu-net.md`) + research_log **entry #32**
-  (`2026-07-06-v3-eval-sonuc-kapi-karari.md`). Judge: gpt-4o-mini, 14 koşu, 0 hata, ~$0.08.
+- **Otorite:** ADR-0015 + research_log **#32** + tur skorkartı `docs/record/v3/sonuclar.md`. **Birleşik tablo (tüm turlar): `docs/record/SCORECARD.md`.** Judge: gpt-4o-mini, 14 koşu, 0 hata, ~$0.08.
 - **Skorkart (v3-final = 2 epoch):**
 
   | Eksen | base | v2b | v2c ❌ | **v3** | verdikt |
