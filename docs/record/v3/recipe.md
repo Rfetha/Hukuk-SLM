@@ -1,5 +1,9 @@
 # v3 RECIPE — near-miss abstention fix (ORPO, grilling ürünü)
 
+> ## ✅ v3 KAPANDI (2026-07-06) — bu belge artık TARİHSEL execution-kaydı, canlı otorite DEĞİL.
+> Sonuç = **KISMİ / teslim değil**: **ADR-0015** + research_log **#32** (`2026-07-06-v3-eval-sonuc-kapi-karari.md`).
+> Bu reçete v3'ü DOĞRU şekilde üretti (8-düğüm tasarım tuttu); v4 yönü ADR-0015 + `receteler.md`'de. Sıradaki iş → `NEXT_SESSION.md`.
+
 > **Ne:** v2c RED'inden sonra, near-miss (topik-komşu yanlış-kaynak) abstention'ı düzeltmek için v3 reçetesi.
 > **Nasıl doğdu:** [[v2c/sonuclar]] + [[v2c/fix_deep_research]] (5 aile + Gemini) → **grilling oturumu** (2026-07-03, 8 düğüm).
 > **Otorite:** bu doküman v3'ün KARAR belgesi. Kronoloji [[research_log/README]] · red kararı ADR-0014 · sonuç → ADR-0015 (yazılacak).
