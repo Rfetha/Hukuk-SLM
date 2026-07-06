@@ -70,6 +70,8 @@ M2b ≥0.90 **+** M2 ≥0.704 (base-üstü) **+** xkanun ≥0.90 **+** ood ≥0.
 Harvest (v2b 12B, Modal A100 ~1-2h) ~$5-15 · chosen (gpt-4o-mini ~8K) ~$3-5 · judge (eval+gri-bant) ~$1-2 · ORPO tam tur (Modal A100) ~$5-10 → **toplam ~$15-40.** Kesin sayı için önce **smoke (throughput kalibre).** **Hepsi onay-gerektirir** (Modal + judge para-kapısı).
 
 ## 8. ADIM PLANI (kilitli tasarım → koşum)
+> **📋 TAM EXECUTION PLANI (taze-agent devralabilir, TDD + tam kod + komutlar):** [`../../superpowers/plans/2026-07-06-v4-execution.md`](../../superpowers/plans/2026-07-06-v4-execution.md) — 9 task, birim testler, para-kapıları işaretli. ⚠️ Düzeltme: harvest = **lokal RTX 5070 ($0)**, Modal yalnız ORPO.
+
 - **ADIM 1 — kod:** `build_sft_v4.py` (2-kadran packer: replay=gold-present, trap=hard-neighbor + çapraz-kanun + ✗✓-aşı dilimi; `--gold-absent-frac` knob) + `gen_v4_chosen.py` (tek-şablon: grounding-alıntı / abstain-uyuşmazlık) + `build_orpo_v4.py` (rejected iki-taraflı filtre + doğru-cevap-rejected) + `judge_gray_band.py` (τ, gri-bant).
 - **ADIM 2 — smoke (PARA-KAPISI):** küçük harvest + throughput/bütçe kalibre + 4/4 yeşil.
 - **ADIM 3 — harvest ~8K (PARA-KAPISI):** rejected üretimi (Modal A100) + gri-bant judge + iki-taraflı filtre.
