@@ -1,5 +1,12 @@
 # V2_PLAN — HakHukuk v2 yön + deney planı
 
+> ## ⛔ SUPERSEDED / TARİHSEL (2026-07-06) — CANLI PLAN DEĞİL
+> Bu doküman v2-çağının **ön-kayıt (pre-registration) planıdır**; execute EDİLDİ ve KAPANDI:
+> **v2b** kabul (`docs/record/v2b/sonuclar.md`) · **v2c** RED (ADR-0014) · **v3** KISMİ/kapandı (ADR-0015, research_log #32).
+> Paper için değeri = *ön-kayıt kanıtı* (kapıyı önceden ilan ettik). **Canlı otorite artık:** kapı/eksen = ADR-0011 (canon)
+> + ADR-0015 (v4 hedef) · aktif iş = `NEXT_SESSION.md` + `TODO.md` (v4) · v3 reçete = `docs/record/v3/`.
+> Aşağıdaki §-numaraları tarihsel referans olarak korunur (donmuş linkler kırılmasın diye taşınmadı).
+
 > **Bu dosya ne:** v2'nin **ileriye dönük execute planı** (ne yapacağız, neden, nasıl ölçeceğiz).
 > Kanıt/sayılar `docs/record/research_log/README.md`'de (kronoloji), kararlar `docs/adr/`'de. Bu dosya = *plan*.
 > **Dayanak:** CANON pilot base vs v1 (2026-06-13, `outputs/BENCHMARK_REPORT.md`) + 3 /deep-research

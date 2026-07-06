@@ -1,14 +1,19 @@
-# v3 turu — near-miss abstention fix, ORPO (🟢 AKTİF)
+# v3 turu — near-miss abstention fix, ORPO (✅ KAPANDI = KISMİ)
 
 > **Tek cümle:** v2c RED'inden sonra near-miss (topik-komşu yanlış-kaynak) abstention'ı **tercih-optimizasyonu
-> (ORPO)** ile düzeltmeyi hedefleyen aktif tur; v2b'nin zor-trap'te %87 fabrikasyonu (fab=0.870) rejected havuzu
-> olarak toplandı, ORPO train/val paketlendi. Smoke YEŞİL → **ADIM 8 tam eğitim BİTTİ** (nll 7.65→2.96, forget-yok); **sıradaki ADIM 9 eval** (lokal, koşuyor) → kapı kararı.
+> (ORPO, v2b-adaptöründen DEVAM)** ile düzeltme turu. **Sonuç KISMİ / teslim değil:** K3'ü büyük ölçüde onardı
+> (M2 0.35→0.59, M1 0.74→**0.88**) ama base-M2'yi geçmedi (0.593<0.704) + **M2b regresyon** (0.96→0.53,
+> forced-source-selection bias). → v4 (negatif-aile çeşitliliği) gerekli.
+
+## Sonuç otoritesi
+- **ADR-0015** (`../../adr/0015-v3-orpo-kapi-karari-kismi-v4-yonu-net.md`) — kapı kararı + v4 yönü NET.
+- research_log **entry #32** (`../research_log/2026-07-06-v3-eval-sonuc-kapi-karari.md`) — tam judge skorkartı + M2b teşhisi + proxy→judge dersi.
 
 ## Dosyalar
-- [`recipe.md`](recipe.md) — v3'ün KARAR belgesi (grilling ürünü): ORPO reçetesi, ADIM 1-... pipeline,
-  dallanma ağacı, HANDOFF/resume planı. v3 otoritesi (ADR-0015 bundan yazılacak).
-- [`receteler.md`](receteler.md) — kapı-sonrası train'e-DOKUNAN 4 iş (henüz çalıştırılmaz; v3 kapı-eval'i
-  ADIM 9 sonucuna göre tetiklenir): #2b negatif-aile · #3b çok-kaynak · #4 replay 0.20→0.35 · ADIM 4 τ-judge.
+- [`recipe.md`](recipe.md) — v3'ün 8-düğüm KARAR/execution belgesi (✅ tarihsel; ADR-0015 bundan yazıldı).
+- [`receteler.md`](receteler.md) — **v4 girdileri:** train'e-DOKUNAN 4 iş (#2b negatif-aile [v3 M2b teşhisiyle TETİKLENDİ] · #3b çok-kaynak · #4 replay · ADIM 4 τ-judge) + §v4 MİMARİ NOTLARI.
 
-> Kronoloji otoritesi: [`../research_log/README.md`](../research_log/README.md) (2026-07-03→07-05 girdileri) · `NEXT_SESSION.md`.
-> Önceki tur: [`../v2c/`](../v2c/) (RED, ADR-0014).
+## Tur kronolojisi (research_log)
+2026-07-03→07-06 girdileri: #25 (near-miss trap) · #26-27 (rejected harvest + ORPO hazır) · #28-29 (genelleme/OOD dilimleri) · #30 (eğitim bitti) · #31 (Mecellem konumlama) · **#32 (SONUÇ + kapı)**.
+
+> Önceki tur: [`../v2c/`](../v2c/) (RED, ADR-0014) · Aktif iş: `NEXT_SESSION.md` (v4).

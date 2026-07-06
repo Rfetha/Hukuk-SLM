@@ -4,25 +4,22 @@
 > Bu dosya **ileriye dönük**: kalan görevler + Faz 2-5. Sabit eksen: `NEXT_SESSION.md`.
 > Detaylı plan: `docs/TEKNIK_PLAN.md` · Veri: `docs/VERI_PLANI.md` · Kararlar: `docs/adr/`.
 
-## Faz 1 — KALAN (aktif) · v2 planı = `docs/V2_PLAN.md` · **aktif iter = v3 ORPO (`docs/record/v3/recipe.md`)**
+## Faz 1 — KALAN (aktif) · **aktif iter = v4 ORPO (yönü NET, reçete+onay bekliyor)**
 
-> **DURUM (2026-07-05):** v2c **REDDEDİLDİ** (K3 negatif, ADR-0014) → **aktif iş v3 = ORPO**.
-> v3 harvest (fab 0.870) + ORPO paketleme (train 1741) KOŞTU; veri Modal volume'de.
-> Sıradaki somut adım: **v3 ADIM 9 eval** (ADIM 7 smoke YEŞİL + ADIM 8 tam eğitim BİTTİ; eval lokal koşuyor) → kapı kararı (`NEXT_SESSION.md`).
+> **DURUM (2026-07-06):** v3 (ORPO, v2b-devamı) **KAPANDI = KISMİ / teslim değil** (ADR-0015, research_log #32).
+> K3'ü onardı (M2 0.35→0.59, M1 0.74→**0.88**) ama base-M2'yi geçmedi (0.593<0.704) + **M2b regresyon** (0.96→0.53,
+> forced-source-selection bias). → **sıradaki iş v4** (aşağıda). Kapı tanımı artık ADR-0011 (canon) + ADR-0015 (v4 hedef).
 
-- [x] ~~**2 deep-research'ü sentezle** (v2 teknikleri + hukuk-veri/eğitim)~~ → **TAMAMLANDI (2026-06-14):** 3 /deep-research sentezlendi, `docs/V2_PLAN.md` (§5.1 reçete kartı dahil) güncellendi.
-- [ ] ⚪ **(opsiyonel baseline) v2a = base + mühendislik promptu (SFT YOK)** → canon'dan geçir. *(2026-06-14 kararı: birincil değil; v2b'nin SFT katkısını izole eden "SFT'siz" referans — V2_PLAN §4 Adım 1.)*
-- [ ] **Önkoşul (v2-eval'den önce):** register/altitude ekseni + **E (kaynak-eksik) eval seti** + 🔴 D0 eval-mirror (900-char chunk aynala) (`V2_PLAN §7/§9-D0`).
-- [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim (Modal A100) + 6-mod canon eval, tüm kapılar geçti (`docs/record/v2b/sonuclar.md`).
-- [x] ~~v2c = near-miss abstention turu~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 « 0.90 + M1 regresyon; K3 negatif bulgu (ADR-0014, `docs/record/v2c/sonuclar.md`).
-- [ ] 🟢 **v3 = ORPO (aktif)** — near-miss abstention'ı preference ile düzelt. Pipeline ADIM 1-6 + harvest (fab 0.870) + paketleme (train 1741) + smoke YEŞİL + **ADIM 8 tam eğitim BİTTİ** (nll 7.65→2.96 forget-yok). **Sıradaki: ADIM 9 eval** (lokal, koşuyor) → kapı kararı (`docs/record/v3/recipe.md`, `NEXT_SESSION.md`).
-- [ ] 🟡 **v3-KAPI-SONRASI VERİ BORÇLARI (train'e DOKUNUR → rebuild + yeni tur/v4; köken: bizim + fix-lit, PAPER-DEĞİL).** Yalnız v3 teşhisi gerektirirse uygulanır:
-  - **#2b negatif aile çeşitliliği (train-fix):** çapraz-kanun/temporal/çok-hop tuzaklarını EĞİTİM verisine ekle → `train.jsonl` rebuild + yeniden ORPO. **Tetik:** v3 bir ailede çöküyorsa (eval-teşhis #2a gösterir).
-  - **#3b çok-kaynak/deploy-gerçekçi bağlam (train-fix):** oracle tek-kaynak → retriever-benzeri çok-chunk train. **Tetik:** Faz-2 RAG'a yakın.
-  - **#4 grounding-replay dozu 0.20→0.35:** `build_orpo_v3 --replay-frac` ile rebuild. **Tetik:** v3 `nll_loss` (forget-vekili) tırmanırsa. *(NOT: eğitimde forget YOK çıktı — nll 7.65→2.96 — bu tetik düşük olasılık.)*
-  - **ADIM 4 τ hi_overlap kalibrasyonu (ERTELENDİ):** 108 `hi_overlap` çifti train'e PROVİZYONEL dahil (`orpo_report.json` işaretli). judge τ ile "kazara-cevaplayan" tuzakları at → temiz kontrast → rebuild + yeniden ORPO. Reçete: `docs/record/v3/receteler.md` Reçete 4 (`judge_hi_overlap.py` + `--drop-hi-overlap-answers`, <$0.10). **Tetik:** v3 kapıyı ıskalarsa VEYA v4 turu açılırsa (temiz etiket).
-  - ⚠️ Dördü de `train.jsonl`'ı değiştirir = yeni eğitim. **Eval-tarafı SAFE işler (#1 OOD · #2a aile-eval · #3a çok-kaynak-eval) train'e DOKUNMAZ** → v3 kapısında (ADIM 9-10) ölçülür, ayrı subagent inşa ediyor (yeni sınav kâğıdı, v4 GEREKMEZ). Köken tablosu: research_log 2026-07-05 + v3_recipe dallanma ağacı.
-- [ ] **Başarı kapısı:** A3≥0.741 + A1∧A2≥0.875 + A4 koru (`V2_PLAN §6`).
+- [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim + 6-mod canon, tüm kapılar geçti (`docs/record/v2b/sonuclar.md`).
+- [x] ~~v2c = near-miss abstention (düz SFT)~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 + M1 regresyon; K3 negatif bulgu (ADR-0014).
+- [x] ~~v3 = ORPO (near-miss preference fix)~~ → **KISMİ, KAPANDI (2026-07-06):** M2 0.593 (K3 onarıldı, base-altı) + M1 0.881 (arttı) ama M2b 0.529 regresyon. Teslim değil. Sonuç: ADR-0015 + research_log #32.
+- [ ] 🟢 **v4 = ORPO negatif-aile çeşitliliği (AKTİF — reçete + PARA-KAPISI + onay bekliyor).** Teşhis-güdümlü (v3 M2b forced-selection):
+  - **#2b (birincil):** ORPO rejected setine **multi-distractor-no-gold (M2b-tipi)** + **OOD held-out** hard-negatifleri ekle → `train.jsonl` rebuild + yeniden ORPO. "Cevap hiçbirinde yok→reddet" becerisini eğit. Motor = OOD-odaklı hard-negative mining.
+  - **M2 base-üstü (ikincil):** near-miss negatif yoğunluğu/kalitesi (veri-kompozisyon kaldıracı).
+  - **ADIM 4 τ hi_overlap temiz-etiket:** 108 `hi_overlap` çifti judge τ ile "kazara-cevaplayan" tuzaklardan temizle (`receteler.md` Reçete 4, <$0.10). v4 açılınca uygula.
+  - ⚠️ **v2b-SFT ile düzeltme YASAK** (K3). Yöntem = yine ORPO (ref-free); base-joint-ORPO yalnız v2b-continuation tavanı kanıtlanırsa. Reçete: `docs/record/v3/receteler.md` (§Reçete 1-4 + §v4 MİMARİ NOTLARI).
+  - _(düşük öncelik, tetik gerçekleşmedi)_ #4 replay 0.20→0.35 (forget YOK çıktı) · #3b çok-kaynak train (Faz-2 RAG yakını).
+- [ ] **Başarı kapısı (v4):** M2 ≥ base 0.704 (grounding-korumalı) **+ M2b regresyon kapalı (≥0.9)** + M1/M4/register tavan korunmuş + M5 base-altı. (ADR-0011 canon + ADR-0015.)
 - [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) + `Llama-3.1-8B-Instruct` → aynı set/hakem. Paperlarından sayı ALMA.
 - [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.
 - [ ] **Paper öncesi sağlamlaştırma:** G1 cross-**family** judge (Claude/Gemini, κ) · paired McNemar · OOD unseen-statute dilimi · n=100/75 · A1/A2 operasyonel tanım.
