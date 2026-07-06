@@ -1,6 +1,6 @@
-# v4 RECIPE — answerability-dedektörü (DTA-uyarlı ORPO) · DRAFT-v2 (deep-research revize edildi; grilling'e hazır)
+# v4 RECIPE — answerability-dedektörü (DTA-uyarlı ORPO) · 🔒 KİLİTLİ (grilling tamam 2026-07-06)
 
-> **Durum:** DRAFT-v2 (2026-07-06). **Deep-research revizyonu İŞLENDİ** (bulgular [[../research_log/2026-07-06-v4-deep-research-bulgular]] #34). Sıradaki = grilling → kilit.
+> **Durum:** ✅ **KİLİTLİ** (2026-07-06). Deep-research (#34) işlendi + grilling tamamlandı (5 açık-uç çözüldü, 2 karar onaylandı). Sıradaki = ADIM-plan koşumu (para-kapısı onayı).
 > **Tez:** [[../research_log/2026-07-06-v4-tasarim-tezi-answerability]] (#33) · **kaldıraç kaynağı:** [[../v3/receteler]] + #34.
 > **Neden gerek:** v3 KISMİ (ADR-0015) — M2b regresyon 0.53 + M2 base-altı 0.593 + OOD zayıf 0.483.
 > **⭐ Literatür çıpası:** M2b = **Sufficient-Context** "RAG-suppresses-abstention" (Claude 84→52) + **RefusalBench** (frontier multi-doc <%50) = bilinen-genel mod; **DTA (ACL 2025) = belgelenmiş çözüm** (dört-kadran, ✘✘→IDK).
@@ -45,21 +45,37 @@ Her CANON kulvarında **lider VEYA berabere-tavan** (mutlak-1.0 DEĞİL), ground
 M2b ≥0.90 (regresyon kapalı) **+** M2 ≥0.704 (base-üstü) **+** xkanun ≥0.90 **+** ood ≥0.75 **+**
 M4/M1/M3/register ≥v3 (regresyonsuz) **+** M5 ≤0.10 (anti-hedef korunmuş). → ADR-0016.
 
-## 5. MALİYET / PARA-KAPILARI
-- Harvest (rejected üretimi, ~6-8K) = Modal A100 GPU · chosen üretimi = gpt-4o-mini (~$2-4) · ORPO tam tur = Modal A100 · full judge = gpt-4o-mini (~$1). **Hepsi onay-gerektirir.** v3'ten belirgin büyük (veri 4×).
-- Kod-değişikliği: build_sft_v3 xkanun-üretici (~40 sat) + build_orpo_v3 RAFT-bağlam (~25) + gen_v3_chosen şablon (~20) + judge_hi_overlap (~60 yeni). 
+## 5. GRILLING KİLİTLİ KARARLAR (2026-07-06)
 
-## 6. AÇIK SORULAR — ✅ DEEP-RESEARCH CEVAPLADI (#34)
-6 sorunun hepsi cevaplandı (özet [[../research_log/2026-07-06-v4-deep-research-bulgular]]):
-1. Ölçek → **yapı>volüm** (~8-10K ama kadran+marj-kontrollü; ham-volüm tek başına çalışmaz).
-2. gold-absent → **sweep 0.3-0.5** (sabit-% yok; sıfır=abstention çöker).
-3. OOD → **held-out-val + ERA-evidence** (salt çeşitlilik ezberler).
-4. Zemin → **(A) continuation** (SFT-terimi-eşliği şart; ORPO ref-free verir).
-5. Chosen → **CoT-red + yeterlilik-yapısı + doğru-cevap-rejected** (DTA).
-6. Plato → **DTA dört-kadran (ORPO-uyarlı) çekirdek** + CRaFT-τ + opsiyonel RAAT-online.
+**KARAR-1: Tez-güdümlü 2-kadran (retrieval-merkezli) + ✗✓-aşı dilimi** (tam 4-kadran DTA DEĞİL).
+- Kural: **retrieval-KB ✓ → cevapla · retrieval-KB ✗ → REDDET** (parametrik ne olursa). Tam parametrik-KB probing (δ/N) ATLANDI — tezimiz ✗✓'de ezberden-cevabı reddediyor (M5 düşük-kalsın). 
+- **✗✓-aşı dilimi (küçük):** "ünlü/aşina kanun sorusu + kaynak-yok → chosen=reddet" → ezber-sızıntısına aşı.
+- **Kadran-etiketleme ≈ BEDAVA:** retrieval-KB kurguyla biliniyor (replay=gold-present ✓ / trap=hard-neighbor ✗); judge SADECE gri-bant (hi_overlap) için (<$1).
 
-**Grilling'e KALAN açık uçlar:** (a) kadran etiketleme maliyeti (retrieval-KB judge = gpt-4o-mini × kaç örnek?); (b) parametrik-KB eşiği δ ve N-örnek sayısı; (c) marj-kontrolü ORPO'da nasıl operasyonelleşir (reward-proxy yok — sürrogat?); (d) 8-10K harvest'in Modal-GPU bütçesi; (e) ERA-evidence chosen'a nasıl gömülür.
+**KARAR-2: ~8K çift, gold-absent (✘/abstain) oranı SWEEP 0.3 / 0.4 / 0.5.**
+- DTA-10K'ya yakın ama grounding-tacı (M1/M4) için DTA'nın 0.7'sinden düşük. Sıfır YASAK (abstention çöker). En iyi oranı 3-değerli sweep seçer (küçük dev-set'te).
 
-## 7. SIRADAKİ ADIM
-Recipe DRAFT-v2 hazır (deep-research işlendi) → **grilling** (§6 kalan açık uçlar + kaldıraç parametreleri) → recipe KİLİTLE → ADIM-plan → para-kapısı onayı → koş.
-Deep-research brief (tarihsel, koştu): [`deep_research_brief.md`](deep_research_brief.md).
+**KARAR-3 (marj-kontrolü, ref-free surrogat):** RM yok → marjı **iki-taraflı rejected-filtresiyle** kur:
+degenerate rejected (boş/mojibake/tekrar) AT · near-correct rejected (gri-bant τ) AT · "emin-ama-yanlış" fabrikasyon TUT. ⚠️ µ±2σ'yı birebir kopyalamaz (kabul edilen yaklaşım).
+
+**KARAR-4 (chosen = TEK şablon, C+D+E birleşti):**
+- Grounding chosen: `[ilgili cümle birebir alıntı] → [cevap]` (RAFT-CoT).
+- Abstain chosen: `Sağlanan kaynak [X]'i düzenliyor; soru [Y] hakkında, buna dair hüküm YOK → yanıtlayamam.` (kanıt = var/eksik uyuşmazlığı; forced-selection'ı öldürür + ERA-evidence gömer).
+- gold-absent çiftlerde **doğru-cevap = REJECTED** (DTA: şanslı-tahmini cezalandır).
+
+## 6. KAPI (v4 başarı) — değişmedi
+M2b ≥0.90 **+** M2 ≥0.704 (base-üstü) **+** xkanun ≥0.90 **+** ood ≥0.75 **+** M4/M1/M3/register ≥v3 (regresyonsuz) **+** M5 ≤0.10 → ADR-0016.
+
+## 7. MALİYET / PARA-KAPILARI (grilling tahmini)
+Harvest (v2b 12B, Modal A100 ~1-2h) ~$5-15 · chosen (gpt-4o-mini ~8K) ~$3-5 · judge (eval+gri-bant) ~$1-2 · ORPO tam tur (Modal A100) ~$5-10 → **toplam ~$15-40.** Kesin sayı için önce **smoke (throughput kalibre).** **Hepsi onay-gerektirir** (Modal + judge para-kapısı).
+
+## 8. ADIM PLANI (kilitli tasarım → koşum)
+- **ADIM 1 — kod:** `build_sft_v4.py` (2-kadran packer: replay=gold-present, trap=hard-neighbor + çapraz-kanun + ✗✓-aşı dilimi; `--gold-absent-frac` knob) + `gen_v4_chosen.py` (tek-şablon: grounding-alıntı / abstain-uyuşmazlık) + `build_orpo_v4.py` (rejected iki-taraflı filtre + doğru-cevap-rejected) + `judge_gray_band.py` (τ, gri-bant).
+- **ADIM 2 — smoke (PARA-KAPISI):** küçük harvest + throughput/bütçe kalibre + 4/4 yeşil.
+- **ADIM 3 — harvest ~8K (PARA-KAPISI):** rejected üretimi (Modal A100) + gri-bant judge + iki-taraflı filtre.
+- **ADIM 4 — chosen üretimi:** tek-şablon (gpt-4o-mini) + doğru-cevap-rejected paketleme.
+- **ADIM 5 — ORPO sweep (PARA-KAPISI):** gold-absent 0.3/0.4/0.5 → 3 tur (veya dev-set'le seç, 1 tam tur) · v2b-continuation.
+- **ADIM 6 — eval (kanon 6-mod + genelleme + held-out OOD):** lokal generation → judge (PARA-KAPISI) → kapı (§6) → ADR-0016.
+
+## İlgili
+Deep-research bulguları [[../research_log/2026-07-06-v4-deep-research-bulgular]] (#34) · brief (tarihsel) [`deep_research_brief.md`](deep_research_brief.md) · tez [[../research_log/2026-07-06-v4-tasarim-tezi-answerability]] (#33) · v3 kaldıraç-kökeni [[../v3/receteler]].
