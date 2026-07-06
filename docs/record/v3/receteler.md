@@ -153,3 +153,23 @@ Kod: ~1 yeni script (~60 satır) + build_orpo_v3'e ~5 satır.
 2. **Reçete 3 (replay 0.35)** — sıfır-kod, forgetting varsa hızlı düzeltir.
 3. **Reçete 2 (RAFT)** — Faz-2 hazırlığı, bağlam-eşleşmesi.
 4. **Reçete 1 (xkanun negatif)** — en pahalı (yeni harvest), aile-ötesi genelleme gerçekten çökerse.
+
+---
+
+## v4 MİMARİ NOTLARI (2026-07-06 tartışması — benchmark beklerken; judge-teşhisi tetikler)
+> Bağlam: v3 proxy OOD-abstention'da zayıf (held-out ~0.39 « xkanun ~0.79). "İlke değil kalıp öğrenildi"
+> = kapsama+kalibrasyon problemi, optimizasyon-gücü değil (2ep≈1ep kanıtı). Kök nedenler + araçlar:
+
+- **OOD-odaklı hard-negative mining = Reçete 1/#2b'nin MOTORU.** Novel-soru tuzaklarını *sistematik* üret
+  (held-out kanun/konu dağılımından grounded-sentetik), eğitim `train.jsonl`'a negatif-aile olarak ekle.
+  Amaç: ORPO kontrast dağılımını genişlet → v2b'nin "her zaman cevapla" priorü novel-soruda da kırılsın.
+- **⚠️ v2b'yi SFT ile "düzeltme" YOK (K3 tuzağı).** OOD zayıflığı kısmen v2b priorinin sızması ama çözüm
+  v2b-SFT DEĞİL — SFT'nin abstention'ı bozduğu kanıtlı (v2b→v2c 0.70→0.35). Doğru araç **preference (ORPO)
+  kontrastını genişletmek** = yukarıdaki hard-negative mining. Abstention hep preference-katmanının işi.
+- **Mimari alternatif — base-joint-ORPO (recipe Q2-alt):** v2b-continuation yerine base'den grounding+abstention'ı
+  BİRLİKTE ORPO'la. Daha büyük salınım (grounding'i sıfırdan taşıman gerekir). **Tetik:** yalnız
+  v2b-continuation'ın *açıkça tavan* olduğu kanıtlanırsa (ORPO priorü hiç kıramıyorsa). Şu an kanıt yok.
+- **Uzun-vade (Faz-2):** OOD-abstention'ın kalıcı çözümü kısmen RAG-time retrieval-confidence gating →
+  abstention ağırlıktan çıkarım-katmanına taşınır (tezle uyumlu). v4'te ağırlığa aşırı yüklenme.
+- **Sıralama disiplini:** judge BİTMEDEN v4 verisi inşa etme → per-aile teşhis (#2a) hangi ailenin çöktüğünü
+  söyler → #2b'yi O aileye hedefle (kör üretim = yanlış aileye veri). Konumlama analizi: research_log #31.

@@ -43,6 +43,7 @@
 | 28 | 2026-07-05 | [v3 genelleme eval-dilimleri + 🔴 OOD-bloklu](2026-07-05-v3-genelleme-eval-dilimleri.md) | çapraz-kanun DRAFT; eval kanun-kapsamı = train kanun-kapsamı sınırı |
 | 29 | 2026-07-05 | [v3 OOD BLOĞU AÇILDI](2026-07-05-v3-ood-blogu-acildi.md) | held-out 7-kanun grounded-sentetik OOD (35); temporal/çok-hop defer |
 | 30 | 2026-07-05 | [v3 ADIM 7 smoke + ADIM 8 ORPO eğitim BİTTİ ⭐](2026-07-05-v3-adim7-8-orpo-egitim-bitti.md) | 56/56 step 2ep; nll 7.65→2.96 (forget YOK) + margin -0.31→~0 (M2 öğrenildi); ckpt-28+final volume'de; ADIM 9'a hazır |
+| 31 | 2026-07-06 | [Mecellem konumlama + strateji (benchmark beklerken)](2026-07-06-mecellem-konumlama-strateji.md) | rakip = CPT foundation base (M4 0.78/reg 0.2/M5 0.35); biz grounding+register makinesi; M2=1.0 patoloji, hedef 0.8-0.9 korunmuş-grounding; CPT'yi geçme→RAG ile alakasızlaştır (paper Tablo 1 + Tartışma) |
 
 > **Not (2026-07-05 restructure):** eski tek-dosya `research_log.md` bu klasöre bölündü (içerik birebir).
 > Dosya-dibindeki "Açık kararlar / sıradaki" TODO bölümü tarihsel kayıttan çıkarıldı → canlı maddeler

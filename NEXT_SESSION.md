@@ -5,6 +5,17 @@
 - **Adapter'lar LOKALDE ÇEKİLDİ:** `outputs/v3/adapter_model.safetensors` (final=2ep) + `outputs/v3/checkpoint-28/` (1ep), her ikisi 262 MB, teyitli. (Modal volume'de de duruyor.)
 - **docs/record REORG ✅ BİTTİ + COMMIT+PUSH** (`e837e6a`): research_log.md → `research_log/` (30 dated entry + index), v2b/v2c/v3 klasörleri, pointer'lar güncel, kırık-link=0. Sil-listesi (9 ölü TODO) ONAYLANDI.
 
+## 🟢 GÜNCELLEME 2026-07-06 — GENERATION NEREDEYSE BİTTİ + ÖN-SKORKART ÇIKTI
+- **m1_v3ck28 aslında TAM (40/40)** — eski "yarım 29/40" notu bayat, düzeltildi.
+- **Kalan 7 generation koştu:** m2_v3ck28 ✅ + genelleme dilimleri (xkanun/ood × v3/base/v2b). Son koşu `bench_ood_v2b` (yazılıyordu ~13/35); bittiyse 7/7. Kontrol: `wc -l outputs/eval/bench_ood_v2b_detail.jsonl` (=35 ise tam).
+- **ÖN-SKORKART (bedava red-proxy → kalibre ~judge; HÜKÜM DEĞİL):**
+  - M2 canon v3 ~0.55 (2ep) ≈ v3ck28 ~0.52 (1ep) → v2c 0.41'i geçti, **base 0.704'ü ıskalayabilir**.
+  - Genelleme: xkanun v3 ~0.79 (base ~0.95, v2b ~0.49) · ood v3 ~0.39 (base ~0.82) → **v3 > başarısız-SFT kesin; v3 > base HAYIR; OOD zayıf**.
+  - Örüntü: v3 yapısal tuzağı (xkanun) genelliyor ama **novel-OOD'de zayıf** = ilke değil kalıp → v4 için #2b (OOD hard-negative mining) sinyali.
+- **SIRADAKİ = JUDGE (PARA-KAPISI, ~<$1, ONAY GEREKİR):** groundedness(M1/M4) + abstention(M2/M2b/M3 + xkanun/ood) + correctness(M5). Judge sonrası ~ işaretleri sabit sayıya döner → kapı kararı (Q1) → ADR-0015.
+- **YENİ DOKÜMANLAR:** konumlama+strateji `research_log/2026-07-06-mecellem-konumlama-strateji.md` (#31) · v4 mimari notları `docs/record/v3/receteler.md §v4 MİMARİ NOTLARI` (OOD hard-neg mining / v2b-SFT-YASAK-K3 / base-joint-ORPO alt / Faz-2 RAG-confidence).
+- **v3 = v2b-continuation TEYİTLİ** (`train_orpo.py:132` PeftModel is_trainable, düşük lr). Grounding v2b'den, abstention ORPO'dan.
+
 ## 🔴 ADIM 9 EVAL — GENERATION YARIDA KALDI (PC kapatıldı; RESUME planı)
 **Yöntem:** lokal RTX 5070 generation (para $0) → sonra GPT-judge (para-kapısı, ONAY GEREKİR). `gen_eval_grounded.py` tek-atışlık (her mod 12B reload). venv: `source ~/code/global_venv/bin/activate`.
 
