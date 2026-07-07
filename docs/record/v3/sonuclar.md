@@ -72,5 +72,28 @@ Generation sonrası bedava red-proxy (keyword) ön-skorkart çıkardık; judge s
 
 **Ders:** judge ≥ ham-proxy her yerde — (1) semantik red (keyword'süz) proxy'de görünmez, judge sayar; (2) invalid-trap paydası (judge `red/geçerli`, proxy ham N); (3) lineer kalibrasyon slice-family'ye özel, taşınmaz. **Ham proxy güvenilir taban; kalibre sabiti değil.**
 
+---
+
+## 📂 Ham çıktı dosyaları — v3'ün gerçek cevapları (`outputs/eval/`)
+
+Skorların **kaynağı**: her mod için v3'ün ürettiği ham cevaplar. Dosya şeması (`_detail.jsonl`):
+`id · soru · referans · context_shown · mode · cevap · kanun_adi · madde_no · kanun_no`.
+Skor özetleri ayrıca `*_summary.json`, judge-etiketli per-item ise `abst_bench_*_v3*.jsonl` / `gnd_bench_*_v3*.jsonl`'de.
+
+| Dosya | n | Mod / ne gösterir | v3 skoru |
+|---|---|---|---|
+| `bench_m1_v3_detail.jsonl` | 40 | **M1 grounding** — distractor'lı, doğru cevap kaynakta; sadık aktarım + atıf | 0.881 ✅ |
+| `bench_m2_v3_detail.jsonl` | 35 | **M2 yanlış-kaynak red** (birincil hedef) — near-miss kaynağı reddetmeli | 0.593 ❌ base-altı |
+| `bench_m2b_v3_detail.jsonl` | 40 | **M2b multi-distractor, doğrusu YOK** — reddetmeli; **16/34 FABRICATE** (kök teşhis burada) | 0.529 ❌ regresyon |
+| `bench_m3_v3_detail.jsonl` | 40 | **M3 boş-bağlam red** — hiç kaynak yoksa temiz red | 1.000 ✅ |
+| `bench_m4_v3_detail.jsonl` | 40 | **M4 oracle** — tek doğru kaynak verili; kusursuz aktarım | 1.000 ✅ |
+| `bench_m5_v3_detail.jsonl` | 40 | **M5 kör/parametrik** (anti-hedef, düşük=iyi) — kaynaksız ezberden cevaplamamalı | 0.075 ✅ |
+| `bench_xkanun_v3_detail.jsonl` | 35 | **Genelleme: çapraz-kanun** yapısal tuzak (held-out kolay-red) | 0.656 |
+| `bench_ood_v3_detail.jsonl` | 35 | **Genelleme: OOD** novel soru (held-out, en zor/kırılgan) | 0.483 |
+| `bench_m1_v3ck28_detail.jsonl` | 40 | M1, **1-epoch checkpoint (ck28)** — final-vs-1epoch kıyası (M1 0.899) | (ck28) |
+| `bench_m2_v3ck28_detail.jsonl` | 35 | M2, **1-epoch checkpoint (ck28)** — final-vs-1epoch kıyası (M2 0.519) | (ck28) |
+
+> `ck28` = checkpoint-28 (1 epoch); etiketsiz = final (2 epoch, checkpoint-56). Final tercih edildi (M2 0.519→0.593). Somut örnek cevaplar için dosyaları `cevap` alanından oku; M2b'deki *"İlgili kaynak KAYNAK 3'tür… elenmiştir"* örüntüsü fabrikasyon bulgusunun kanıtıdır.
+
 ## İlgili
 - [[../../adr/0015-v3-orpo-kapi-karari-kismi-v4-yonu-net]] · [[../research_log/2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) · [[../research_log/2026-07-05-v3-adim7-8-orpo-egitim-bitti]] (#30, eğitim) · [[../SCORECARD]] (birleşik) · [[receteler]] (v4) · önceki: [[../v2c/sonuclar]] (RED).
