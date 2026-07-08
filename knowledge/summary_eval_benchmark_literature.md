@@ -55,3 +55,23 @@ ayırt edemiyor. Tavan yapmayan, ayırt edici eksenler + zor/dengeli set + abste
 | Boyut | n≈40 CORE-HARD + ~35 TRAP + cross-judge + ~30 yazar spot-check | RAGBench, RAGTruth |
 | Contamination | RAG modda sorun değil; KÖR modda limitation işaretle | RGB |
 | İleride | span-level halüsinasyon taksonomisi | RAGTruth |
+
+## TR hukuk benchmark manzarası + dış-benchmark konumlama (2026-07-08)
+
+> Kaynak: dış-benchmark tarama oturumu (web-search + HF kartları). Karar: **ADR-0016**. Anlatı: research_log #35.
+
+**Üretken TR hukuki grounding/abstention/citation + register ölçen tanınmış benchmark YOK** → bu boşluk katkımız. Mevcut TR setleri başka eksende:
+
+| Set | Tip | Bize |
+|---|---|---|
+| TR-MMLU / TurkishMMLU / MMLU-Pro-TR | genel MC (hukuk alt-kategorili) | on-language sanity — ⚠️ alibayram sürümü **CC BY-NC + copyright poison**, kullanma |
+| Cetvel / TurkBench / TARA / TrGLUE | genel Türkçe LLM | genel-yetenek regresyon kontrolü |
+| HukukBERT | encoder Legal Cloze | üretken değil |
+| LEXam | 340 sınav, İngilizce+Almanca | TR değil |
+| Mecellem (NewMind) | retrieval/embedding + CPT decoder | rakip değil; Mecellem-4B=baseline (koşulu), Mursit=Faz-2 retriever |
+
+**Dış İngilizce benchmark (BigLaw-Bench / LegalBench) = off-axis → cite-only.** İngilizce + US/UK common-law; TR medeni-hukuk üretken modelinde düşük skor yorumlanamaz (model mi kötü, sınav mı yanlış — ayrılamaz). Frontier kıyası **kendi canon setinde** yapılır (frontier + Mecellem-4B + Llama-8B baseline + cross-family judge — ADR-0011/TODO).
+
+**Muhakim (newmindai reward model, 5 eksen)** = cite-only, judge olarak koşulmaz (EuroHPC-Legal kirliliği + cross-family judge zaten var). ADR-0016 §3.
+
+**Piyasa boşluğu (2026-07):** open-weight + TR-hukuk + instruction-tuned + edge-deploy bir hazır asistan YOK. En yakın open-weight hukuk = Mecellem-4B (CPT base, asistan değil); genel TR-instruct (Cosmos Turkish-Llama-8B, WiroAI-9B, Trendyol) hukuk-uzmanı değil.
