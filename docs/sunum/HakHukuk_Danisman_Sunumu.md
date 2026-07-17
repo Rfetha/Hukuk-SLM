@@ -244,6 +244,12 @@ lehimize kaydırır. Çözüm üç katman:
 v0→v3 = tezin **ince-ayar kolu**. Her tur bir öncekinin **ölçülmüş zaafını** hedefledi. Bu, "paritenin
 ne kadarı FT?" sorusunun *bizim taraf* kanıtıdır. **(Çöpe gitmiyor — ADR-0017.)**
 
+> **📎 Her turun tam reçetesi (yöntem + hiperparametre + veri kompozisyonu + kanıt dosyası) →
+> [Ek C](#ek-c--proof-of-concept-tur-reçeteleri-kanıt-referanslı).** Bu ek, hocaya ve TÜBİTAK
+> değerlendiricisine gösterilen **kabiliyet kanıtıdır**: veri mühendisliği → QLoRA-SFT → RAFT →
+> tercih optimizasyonu (ORPO) → **özel trainer (MaskedORPOTrainer)** → eval-aynası hard-negative
+> mining → literatür-çıpalı v4 tasarımı (DTA/ACL-2025).
+
 ### 5.1 Anlatı (ne denedik, ne oldu, ne öğrendik)
 
 | Tur | Yöntem | Sonuç | Öğrenilen ders (kanıt) |
@@ -442,6 +448,62 @@ Türkçe NLP venue (yedek).
 - **Register** — dil kaydı; "uzman (hukukçu) dili" vs "vatandaş sadeleştirmesi".
 - **CPT** — Continued Pre-Training; talimat-ayarından önceki ham alan-adaptasyonu (Mecellem böyle).
 - **TurboQuant** — KV-cache'i 2.5–3.5 bit'e sıkıştıran, eğitim gerektirmeyen, ağırlığa dokunmayan yöntem.
+
+---
+
+## Ek C — Proof-of-Concept: Tur Reçeteleri (kanıt-referanslı)
+
+> **Amaç:** Bu ek, "ne yaptım / neyi gösterebiliyorum" sorusunun **kanıtlı** cevabıdır. Her tur =
+> ayrı bir metodolojik yetenek; her satırın **repo-içi kanıt dosyası** var (uydurma yok). Bu, bir
+> tez danışmanına ve TÜBİTAK/HPC başvurusu değerlendiricisine **teknik olgunluk sinyalidir.**
+
+### C.0 Genel FT protokolü (tüm turlarda sabit)
+
+| Alan | Değer |
+| :--- | :--- |
+| **Base** | Gemma 4 12B (`gemma-4-12B-it-qat-q4_0-unquantized`, Apache-2.0) |
+| **Yöntem** | QLoRA — 4-bit NF4 + LoRA (`r=16`, `α=32`, `target=all-linear`, dropout 0.05), gradient_checkpointing |
+| **Adaptör boyutu** | ~65.5M eğitilebilir param (12B'nin ~%0.5'i) |
+| **Eğitim yeri** | Modal serverless A100 (`--detach` = fire-and-forget, ADR-0008 dersi) |
+| **Eval** | yerel RTX 5070 ($0) · seed **3407** · eval-mirror 900-char · hakem gpt-4o-mini · n=40/35 |
+| **Değişmez kurallar** | lisans-temiz veri · sabit seed · loglu koşu · Modal para-kapısı · her skorkartta Mecellem sütunu |
+
+### C.1 Tur-tur reçete + gösterilen kabiliyet
+
+| Tur | Yöntem + hiperparametre / veri | Gösterilen kabiliyet | Sonuç (kanıt) | Kanıt dosyası |
+| :--- | :--- | :--- | :--- | :--- |
+| **v0** | Forum-QA SFT (ham forum verisi) | Baseline SFT pipeline + **başarısızlığı teşhis** | ❌ Battı: "7 Kasım 1982" **154×** tekrar; legal_acc 0.362→**0.124** | research_log #02 · `2026-06-07-v0-forum-basarisiz.md` |
+| **v1** | Grounded SFT · **21.458** grounded Q&A (faithfulness kapısı **0.984**) · Modal A100, 1 epoch/1207 step, ~3.5h/~$10 | **Grounded sentetik veri üretimi + kalite kapısı** (gerçek madde→LLM üret→doğrula) | ❌ Net-negatif: abstention **0.786→0.000** (tuzakların %100'ünde uydurdu, param_leak=1.0) → *SFT üslubu öğretir, abstention'ı söker* (K3) | research_log #03/#04/#07 · `outputs/v1/` |
+| **v2b** | **RAFT-SFT** (distractor'a dayanıklı) · base'den taze QLoRA · **19.305** cevap + **replay 600** · chunk-clip 900-char · train_loss **0.30**, 4h19m A100 | **RAFT** + replay ile katastrofik-unutma kontrolü + verbatim-quote formatı + uzman-register | ✅ **Tüm kapılar geçti:** M1 **0.904** · M4 0.975 · M2b **0.96** · M3 1.0 · M5 nötr · register 1.0. Tek açık: M2 0.346 | `docs/record/v2b/sonuclar.md` · `outputs/v2b/` |
+| **v2c** | Near-miss reddi **düz SFT** ile · counterfactual + abstain_trap slice · sft_v2c train **17.353** (API=$0) | Hipotez testi: "abstention'ı SFT ile öğretebilir miyim?" → **kontrollü çürütme** | ❌ **RED:** M2 0.407 + M1 regresyon → **Grounding-Abstention paradoksu** (abstention = *tercih* işi, SFT işi değil) | research_log #24 · **ADR-0014** |
+| **v3** | **ORPO** (v2b-continuation) · **MaskedORPOTrainer** (per-satır `is_pref` OR-maskesi, karışık-hedef: NLL-replay + tercih tek loss'ta, NaN-safe `torch.where`) · **eval-aynası** hard-negative (gold'a MAX Jaccard) · rejected = v2b'nin **gerçek fabrikasyonu** (harvest 1728 → 1504 fab, fab-oranı **0.870**) · chosen = muhakemeli-red · train **1741** (1449 abstain + 292 grounding)/val 53 · `beta=0.1`, `lr=1e-5`, 2 epoch/56 step, nll **7.65→2.96** (forget YOK) | **Tercih optimizasyonu (ORPO) + özel TRL trainer yazımı** (kaynak-okuma ile mixed-objective türetme, NaN/batch-varyans emniyeti) + **hard-negative mining** (eğitim-sertliğini eval'e eşleme) | ⚠️ **KISMİ:** paradoksu onardı (M1 0.662→**0.881**, M5 0.225→**0.075** ezber-sıfır) ama M2 0.593 (base-altı) + **M2b 1.0→0.529 regresyon** ("abstention bir ailedir" negatif bulgusu) | `docs/record/v3/recipe.md` · research_log #30/#32 · **ADR-0015** |
+| **v4** 🔒 | **DTA-uyarlı ORPO** (Divide-Then-Align, ACL 2025) · tez-güdümlü **2-kadran** (retrieval-KB ✓→cevapla / ✗→reddet) + **✗✓-aşı dilimi** · ~**8K** çift · gold-absent oranı **SWEEP 0.3/0.4/0.5** (sıfır YASAK) · tek-şablon chosen (grounding-alıntı / abstain-uyuşmazlık) · gold-absent çiftte **doğru-cevap=REJECTED** (şanslı-tahmini cezala) · v2b-continuation · marj = iki-taraflı rejected-filtre | **Literatür-çıpalı tasarım** (DTA + Sufficient-Context + RefusalBench + ERA + CRaFT + RAAT sentezi) + ön-kayıtlı çok-kapılı hedef | 🎯 **Hedef (koşullu):** M2b≥0.90 · M2≥0.704 · xkanun≥0.90 · ood≥0.75 · M4/M1/M3/register≥v3 · M5≤0.10. Maliyet ~$15-40 | `docs/record/v4/recipe.md` · research_log #33/#34 |
+
+### C.2 Reçetelerin anlattığı metodolojik yay (hocaya mesaj)
+
+Bu altı tur rastgele denemeler değil, **teşhis-güdümlü bir dizi** — her tur bir öncekinin *ölçülmüş*
+zaafını hedefler ve bir sonraki tekniği *gerektiği kanıtlandığı için* getirir:
+
+1. **v0→v1:** ham veri işe yaramaz → **grounded sentetik veri + kalite kapısı** (veri mühendisliği).
+2. **v1→v2b:** düz SFT abstention'ı söküyor → **RAFT + replay** (unutmayı kontrol et).
+3. **v2b→v2c:** "SFT ile abstention" hipotezini **kontrollü çürüt** (paradoks kanıtı, negatif bulgu).
+4. **v2c→v3:** SFT yetmiyor → **ORPO tercih optimizasyonu + özel trainer** (mixed-objective, kaynak
+   kodu okuyarak türetildi; NaN/batch emniyeti mühendisliği).
+5. **v3→v4:** "abstention tek beceri değil bir aile" bulgusu → **DTA (ACL 2025) literatür-çıpası** ile
+   çok-kadranlı yeniden-kurgu.
+
+**Kanıtlanan yetkinlikler:** QLoRA/PEFT · RAFT · ORPO/DPO ailesi · **TRL kaynak-seviyesi özelleştirme** ·
+grounded sentetik veri üretimi + EDA-doğrulama · hard-negative mining · LLM-as-judge + cross-judge κ ·
+ön-kayıtlı hipotez testi + **negatif bulgu disiplini** · maliyet-bilinçli bulut eğitim (Modal, para-kapısı).
+Hepsi sabit-seed + loglu + repodan yeniden-üretilebilir → **HPC ölçeğine taşınmaya hazır bir pipeline.**
+
+### C.3 HPC başvurusu için ölçek-gerekçesi (TÜBİTAK/MareNostrum5)
+
+Mevcut pipeline **tek-GPU'da** (12B QLoRA) çalışır — bu, HPC'nin **gereksiz** değil, **yükseltici**
+olduğunu gösterir (bkz. §3.4). HPC geldiğinde açılan Katman-2 kolları: (a) **base boyut-eğrisi**
+(E4B/12B/26B aynı QAT hattında → erişilebilirlik-Pareto'yu doldur); (b) **n=100/75 → daha büyük**
+TOST örneklemi; (c) v4 **gold-absent sweep**'i tek turda paralel; (d) çok-base **replikasyon**
+(dış-geçerlilik sınırını kapatma kolu). Sübvansiyon **maliyet iddiasından izole** raporlanır.
 
 ---
 
