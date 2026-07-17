@@ -4,40 +4,54 @@
 > Bu dosya **ileriye dönük**: kalan görevler + Faz 2-5. Sabit eksen: `NEXT_SESSION.md`.
 > Detaylı plan: `docs/TEKNIK_PLAN.md` · Veri: `docs/VERI_PLANI.md` · Kararlar: `docs/adr/`.
 
-## Faz 1 — KALAN (aktif) · **aktif iter = v4 ORPO (yönü NET, reçete+onay bekliyor)**
+## Faz 1 — KALAN (aktif) · **aktif iş = KAPI 1 (rakip baseline, BİZİM canon terazide) · v4 artık KOŞULLU**
 
+> **⚠️ TEZ YENİDEN ÇERÇEVELENDİ (2026-07-17) — otorite: `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md` + ADR-0017…0020.**
+> Proje içeri-dönük ("FT base'i geçiyor mu?") olmaktan çıkıp **dışarı-dönük** oldu: *dar bir domainde (TR hukuku)
+> SLM+harness, kapalı ticari modellerin dağıtım sınıfına **maliyet-normalize paritede** ne kadar yaklaşır — ve bunun
+> ne kadarı FT, ne kadarı harness?* → **Aktif iş = KAPI 1:** rakip baseline'ı (Gemini 3 Flash · Claude Sonnet ·
+> GPT-5-mini) **kendi 6-mod CANON terazimizde çıplak ölç.** v4 artık zorunlu Faz-1-kapanışı DEĞİL, **Kapı 1∧2'ye bağlı koşullu.**
+>
 > **DURUM (2026-07-06):** v3 (ORPO, v2b-devamı) **KAPANDI = KISMİ / teslim değil** (ADR-0015, research_log #32).
 > K3'ü onardı (M2 0.35→0.59, M1 0.74→**0.88**) ama base-M2'yi geçmedi (0.593<0.704) + **M2b regresyon** (0.96→0.53,
-> forced-source-selection bias). → **sıradaki iş v4** (aşağıda). Kapı tanımı artık ADR-0011 (canon) + ADR-0015 (v4 hedef).
+> forced-source-selection bias). v0→v3 = tezin **proof-of-concept / FT kolu** (çöpe gitmiyor, ADR-0017). Kapı tanımı: ADR-0011 (canon) + ADR-0015 (v4 hedef).
 
 - [x] ~~v2b = hafif RAFT-SFT~~ → **TAMAM (2026-07-02):** tam eğitim + 6-mod canon, tüm kapılar geçti (`docs/record/v2b/sonuclar.md`).
 - [x] ~~v2c = near-miss abstention (düz SFT)~~ → **REDDEDİLDİ (2026-07-03):** M2 0.407 + M1 regresyon; K3 negatif bulgu (ADR-0014).
 - [x] ~~v3 = ORPO (near-miss preference fix)~~ → **KISMİ, KAPANDI (2026-07-06):** M2 0.593 (K3 onarıldı, base-altı) + M1 0.881 (arttı) ama M2b 0.529 regresyon. Teslim değil. Sonuç: ADR-0015 + research_log #32.
-- [ ] 🟢 **v4 = ORPO negatif-aile çeşitliliği (AKTİF — reçete + PARA-KAPISI + onay bekliyor).** Teşhis-güdümlü (v3 M2b forced-selection):
+- [ ] 🟢 **KAPI 1 = rakip baseline, BİZİM canon terazide (AKTİF — v4 ÖNCESİ, tezin ana iddiasının zemini).** Gemini 3 Flash · Claude Sonnet · GPT-5-mini'yi 6-mod CANON'da **çıplak** ölç (aynı set/mod/n/seed/hakem). Tavan referansı (rakip değil, tek çizgi): Gemini 3.5 Pro · Claude Opus. Rakip inference = **OpenRouter** (yeni para-kapısı), tarihli snapshot pin zorunlu (ADR-0020). **Ön-adım — regex kalibrasyonu:** `rejection_exact` (`score_abstention.py`) Gemma çıktısına göre yazıldı; rakip red kalıplarını ("cevap veremem" vb.) eksik sayar → skoru bizim lehimize kaydırır, ÖLÇÜMDEN ÖNCE kalibre et. **Kapı çıktısı:** maks(rakip M2) ≥0.90 → parite açığı kapalı, v4 gereksiz olabilir; ≤0.80 → açık gerçek, v4 devreye girer (ADR-0017, spec §8).
+- [ ] ⚪ **v4 = ORPO negatif-aile çeşitliliği (KOŞULLU — Kapı 1∧2'ye bağlı; reçete kilitli, PARA-KAPISI + onay bekliyor).** Teşhis-güdümlü (v3 M2b forced-selection):
   - **#2b (birincil):** ORPO rejected setine **multi-distractor-no-gold (M2b-tipi)** + **OOD held-out** hard-negatifleri ekle → `train.jsonl` rebuild + yeniden ORPO. "Cevap hiçbirinde yok→reddet" becerisini eğit. Motor = OOD-odaklı hard-negative mining.
   - **M2 base-üstü (ikincil):** near-miss negatif yoğunluğu/kalitesi (veri-kompozisyon kaldıracı).
   - **ADIM 4 τ hi_overlap temiz-etiket:** 108 `hi_overlap` çifti judge τ ile "kazara-cevaplayan" tuzaklardan temizle (`receteler.md` Reçete 4, <$0.10). v4 açılınca uygula.
   - ⚠️ **v2b-SFT ile düzeltme YASAK** (K3). Yöntem = yine ORPO (ref-free); base-joint-ORPO yalnız v2b-continuation tavanı kanıtlanırsa. Reçete: `docs/record/v3/receteler.md` (§Reçete 1-4 + §v4 MİMARİ NOTLARI).
   - _(düşük öncelik, tetik gerçekleşmedi)_ #4 replay 0.20→0.35 (forget YOK çıktı) · #3b çok-kaynak train (Faz-2 RAG yakını).
 - [ ] **Başarı kapısı (v4):** M2 ≥ base 0.704 (grounding-korumalı) **+ M2b regresyon kapalı (≥0.9)** + M1/M4/register tavan korunmuş + M5 base-altı. (ADR-0011 canon + ADR-0015.)
-- [ ] **Rakip baseline — BİZİM canon terazide** — `Mecellem-Qwen3-4B` (⚠️ continual-pretrain) ✅ KOŞULDU (SCORECARD'da) · 🔴 **`Llama-3.1-8B-Instruct` EKSİK — ileri için not (2026-07-06 kararı: sonra koşulacak).** Paper için Mecellem'den önemli olabilir: erişilebilir + instruction-tuned = "gerçek hazır-asistan rakip" (Mecellem ham base, asistan değil). 8B RTX 5070'e sığar → generation lokal/bedava; sadece judge para-kapısı (~<$1). Aynı 6-mod canon set/mod/n/seed/hakem. Paperlarından sayı ALMA.
+- [x] ~~**Rakip seti netleştir**~~ → **KARAR (ADR-0020, 2026-07-17):** Rakipler = kapalı ticari dağıtım-sınıfı (Gemini 3 Flash · Sonnet · GPT-5-mini); tavan referansı = Gemini 3.5 Pro · Claude Opus (rakip değil). **Llama-3.1-8B ve Nemotron ÇIKTI** (rakip = kapalı lab; açık-model-yerelde sorusunu Gemma base C/E hücreleri + Mecellem karşılıyor). **Mecellem** = açık referans / ilgili çalışma, **cite-only, yeni koşu YOK** (ADR-0016 korunur; CPT base ≠ asistan, "geçtim" iddiası kurulmaz). Aktif ölçüm işi = KAPI 1 (yukarıda).
 - [x] ~~**ADR-0010** — reframe resmileştir~~ → **YAZILDI (2026-07-01):** `docs/adr/0010-reframe-birincil-register-uzman.md` (Yürürlükte, karar 2026-06-13); `VISION.md §1` güncellendi.
 - [ ] **Paper öncesi sağlamlaştırma:** G1 cross-**family** judge (Claude/Gemini, κ) · paired McNemar · OOD unseen-statute dilimi · n=100/75 · A1/A2 operasyonel tanım.
-- [ ] **MCQ ekseni (hakem-bağımsız doğrulama)** — LLM-judge'a bağımlı olmayan çoktan-seçmeli eksen → paper sağlamlaştırma. *(research_log eski "Açık kararlar" bölümünden taşındı, 2026-07-05 record-restructure.)*
+- [ ] **MCQ ekseni (hakem-bağımsız doğrulama)** — LLM-judge'a bağımlı olmayan çoktan-seçmeli eksen → paper sağlamlaştırma. *(research_log eski "Açık kararlar" bölümünden taşındı, 2026-07-05 record-restructure.)* ⚠️ **`alibayram/turkish_mmlu` law-MCQ KULLANMA** — CC BY-NC (ticari yasak) + copyright poison beyanı → lisans-temiz kendi law-MCQ setini kur (ADR-0016).
 - [ ] **Register ekseni kanonik LLM-judge rubriği (ADR-0013)** — şu an leksik-proxy (`score_register.py`); paper için judge-rubrikli uzman-vs-vatandaş ölçümü (leksik önkoşul yukarıda: register/altitude ekseni). *(aynı restructure'da taşındı.)*
 - [ ] **Faz 1 kapanış + deploy** — kapı geçilince → merge (bf16) → llama.cpp Q4_0 → GGUF ~6.5GB. *(Provokatif: Product A ise "deliverable = base+RAG+prompt" olabilir — V2_PLAN §8.)*
 - [ ] _(SONRA)_ outputs/eval/ klasör düzeni (raw/scored/summary nestele) · _(Faz 2)_ Bedesten bulk kanun çekimi.
+- [ ] 🟡 **Compute grant başvurusu (TÜBİTAK ULAKBİM → MareNostrum5)** — AKTİF (tez rampası, ADR-0017/0019). ⚠️ **HPC = yükselteç, bağımlılık DEĞİL:** tez Katman 0'da (12B QLoRA = tek GPU, HPC'siz) tek başına ayakta durur; HPC gelirse boyut-eğrisi/replikasyon (Katman 2) açılır. **Sübvansiyon maliyet iddiasından izole** — GPU-saat piyasa fiyatından raporlanır (bedava compute'u "0 maliyet" saymayız). MN5 ulusal çağrı: TR PI uygun (egeist kurumsal email), rolling son tarih 31 Ara 2026; zayıf nokta = HPC track-record + ölçek-gerekçe. Detay: research_log #35. Bütçe kilidi: alamazsak tez bozulmaz.
+- [x] ~~_(YAN-İŞ 2026-07-08)_ Dış-benchmark kapsam kararı~~ → **KAPANDI (ADR-0016):** BigLaw/LegalBench = off-axis cite-only; frontier kıyası kendi canon setinde; Muhakim = cite-only (judge değil). Bkz. research_log #35.
 - [ ] _(EVAL-HIZ, v4/gelecek turlar için)_ **`gen_eval_grounded.py` load-once batched runner.** Şu an tek-atışlık: her mod ayrı process → 12B her koşuda yeniden yüklenir (~2-3 dk × ~14 mod-koşu = ~20-30 dk boşa reload). Wrapper: modeli BİR kez yükle → mod/data listesi üzerinde döngüle (M1/M4/M2/M2b/M3/M5 + trap dilimleri). Kazanç ~20-30 dk/tur. ⚠️ Cache'li v2c/v2b protokol paritesini BOZMA (aynı flag/seed/eval-mirror 900, aynı detail çıktısı). v3 ADIM 9'da fark edildi (2026-07-05); şimdiki koşuyu bozmamak için ertelendi.
 
 > **Faz 1 TAMAMLANANLAR (özet; detay → `docs/record/research_log/README.md`):** ortam (Blackwell sm_120) · **CANON eval** (4 eksen A1/A2/A3/A4 mod-stratifiye, ADR-0011, /deep-research-doğrulamalı) · **v0 SFT (forum → battı, K3)** · grounded v1 verisi (21.458, faith 0.984) · **v1 SFT (Modal A100)** · **CANON PİLOT base vs v1 → scope=Product A** (ADR-0012; v1 net-negatif, abstention 0.74→0.00) · 12 ADR · dış-rapor denetimi (ADR-0009).
 
 ## Faz 2: RAG + Knowledge Graph
+> **⚠️ Faz-sırası istisnası (ADR-0019):** Bu fazın **harness dilimi TEZE DAHİL** — parite iddiası harness'sız kurulamaz
+> (adil kıyas = "rakip + aynı harness", ana ablasyon = "base + harness"). **Adalet kuralı:** harness tüm öznelere birebir
+> aynı uygulanır. Graph-RAG **kesin future-work — tezden HARİÇ** (parite iddiasına sıfır katkı, takvimin yarısını yer).
 > **Not:** Uzun context (256K) KV-cache için **TurboQuant** (arXiv:2504.19874) — `knowledge/summary_turboquant.md`.
+- [ ] ✅ **[TEZE DAHİL]** Hibrit retriever (BM25 + TR embedding) prototipi
+- [ ] ✅ **[TEZE DAHİL]** Bedesten API atıf-doğrulayıcı (deterministik) — atıflı halüsinasyonu yakalar
+- [ ] ✅ **[TEZE DAHİL]** Red kapısı (refusal-gate) — harness katmanı
 - [ ] Hukuk metni yapı çıkarımı (kanun/madde/fıkra/atıf parser)
-- [ ] Graph DB seçimi (Neo4j vs Memgraph vs FalkorDB)
 - [ ] Embedding modeli (TR-MTEB lideri)
-- [ ] Hybrid retrieval prototipi
-- [ ] Vanilla RAG vs Graph-RAG karşılaştırma deneyi
+- [ ] ❌ **[TEZDEN HARİÇ — future-work]** Graph DB seçimi (Neo4j vs Memgraph vs FalkorDB)
+- [ ] ❌ **[TEZDEN HARİÇ — future-work]** Vanilla RAG vs Graph-RAG karşılaştırma deneyi (eski "Katkı 3")
 
 ## Faz 3: Model Serving + Agentic Workflow + App
 > Agent altyapısı olmadan niş özellikler inşa edilemez — önce foundation kurulur. Spec: `docs/superpowers/specs/2026-06-07-hakhukuk-web-app-design.md`
