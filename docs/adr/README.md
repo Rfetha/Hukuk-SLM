@@ -36,6 +36,14 @@ Kararı değiştirirsek eskiyi SİLMEYİZ → "Süpersed" işaretler, yenisini e
 - [0012](0012-v2-strateji-on-kayit.md) — v2 strateji ön-kayıt (scope Product A; SFT=davranış, bilgi=RAG)
 - [0013](0013-eval-matrisi-v2-genisletme.md) — CANON eval v2 genişletme: 5 mod matrisi (distractor + E-set + register)
 - [0014](0014-v2c-red-karari-fix-yonu-acik.md) — v2c RED kararı (M2 0.407 + M1 regresyon) + K3 negatif bulgu; fix yönü AÇIK (potansiyel durumlar P1–P6, karar ertelendi)
+- [0015](0015-v3-orpo-kapi-karari-kismi-v4-yonu-net.md) — v3 ORPO kapı kararı (KISMİ: M1↑ ama M2 base-altı + M2b regresyon); v4 yönü net
+- [0016](0016-dis-benchmark-kapsami-rakip-konumlama.md) — Dış-benchmark kapsamı + rakip konumlama (BigLaw/LegalBench & Muhakim = cite-only)
+- **[0017](0017-tez-cercevesi-maliyet-normalize-parite.md) — ⭐ TEZ ÇERÇEVESİ: maliyet-normalize parite + base model (Gemma 4 12B QAT) SABİT (2026-07-17)**
+- [0018](0018-8gb-soft-gate-maliyet-egrisi.md) — 8 GB = soft gate (sert kısıt değil); erişilebilirlik = maliyet-performans eğrisi
+- [0019](0019-faz-sirasi-istisnasi-harness-teze-dahil.md) — Faz sırası istisnası: harness dilimi (retriever+doğrulayıcı+kapı) teze dahil, graph-RAG hariç
+- [0020](0020-rakip-seti-tavan-referansi.md) — Rakip seti: dağıtım-sınıfı kapalı modeller (Flash/Sonnet/5-mini) + tavan referansı (ADR-0016 revize)
+
+> **⭐ Tez çerçevesi 2026-07-17'de değişti** — otorite belge `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md`. ADR-0017 çekirdek karar; 0018-0020 onu tamamlar. Önceki ADR'ler (özellikle 0006 "benchmark yan iş", 0016 rakip listesi) bu ışıkta okunur.
 
 > İlk 7 ADR **geriye dönük** yazıldı (2026-06-08) — kararlar daha önce verildi, bağlam/alternatif/
 > sonuç anlatısı paper için sonradan yapısallaştırıldı. Bundan sonraki kararlar **anında** ADR'lenir

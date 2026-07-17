@@ -1,7 +1,14 @@
 # ADR 0006 — Akademik hedef: sistem paper'ı (benchmark yan iş)
 
-- **Durum:** Yürürlükte (2026-06-08)
-- **Geriye dönük kayıt.** Otoriter doküman: `docs/PAPER_TARGET.md`.
+- **Durum:** Kısmen genişletildi/yeniden-çerçevelendi → **ADR-0017 (2026-07-17)**. (Orijinal: Yürürlükte 2026-06-08.)
+- **Geriye dönük kayıt.** Otoriter doküman: `docs/PAPER_TARGET.md` (KISMEN SÜPERSED bannerı).
+
+> **⚠️ TEZ ÇERÇEVESİ DEĞİŞTİ (2026-07-17, ADR-0017).** Bu ADR'nin iki çekirdek çıkarımı geçerliliğini
+> KORUR: (a) "benchmark = headline değil" — yeni çerçevede de benchmark **birincil katkı değil, parite
+> iddiasının ölçüm altyapısı**; (b) "rakibin benchmark'ında geçmek anlamsız → kendi terazimizde ölç" —
+> aynen geçerli (ADR-0016/0020). DEĞİŞEN: ana iddia artık "sistem paper'ı + doğru-VE-anlaşılır tek model"
+> değil, **maliyet-normalize parite** (dışarı-dönük, frontier dağıtım-sınıfına karşı). "Anlaşılırlık"
+> ekseni app-layer'a taşındı (ADR-0010); ana eksen kalite×maliyet Pareto. Otorite: spec 2026-07-17 + ADR-0017.
 
 ## Bağlam
 Proje uzun vadede akademik yayın hedefliyor. Soru: yayın bir **benchmark paper'ı** mı yoksa

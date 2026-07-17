@@ -132,7 +132,7 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 
 - **[İŞ]** Base: **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0), NF4 ile yükle (QLoRA).
 - **[İŞ]** Fine-tune → adapter merge → Q4_0 quantize (llama.cpp) → GGUF deploy (~6.5GB, 8GB VRAM hedef).
-- **Not:** Gemma 4 12B encoder-free unified mimari — ayrı vision/audio encoder yok. `target_modules="all-linear"` kullanılır; text-only SFT multimodal yeteneği bozmaz. Model kartı teyitli: OCR (Türkçe dahil çok dilli), el yazısı tanıma, document/PDF parsing native destekli. Belge görseli kullanımında `visual_tokens=560-1120` (küçük metin okuma için yüksek budget şart).
+- **Not:** Gemma 4 12B encoder-free unified mimari — ayrı vision/audio encoder yok. `target_modules="all-linear"` kullanılır; text-only SFT multimodal yeteneği bozmaz. ⚠️ **OCR/multimodal = Faz 3 opsiyonu, ölçülmedi (2026-07-17):** model kartı native OCR/PDF/ses diyor ama repoda görselli test yok; 12B OmniDocBench 1.5 = 0.164 (ailenin en zayıfı) + Türkçe'de dedicated motorlar üstün (OCRTurk arXiv:2602.03693). → Faz 3'te **ayrık OCR-preprocessor** (native değil). `visual_tokens=560-1120` yalnız native-deneme.
 - **[İŞ]** System prompt hazırla (her eğitim örneğine eklenir):
   ```
   Sen HakHukuk'sun. Türk hukuku hakkında sade, anlaşılır Türkçe bilgi verirsin.
@@ -189,7 +189,7 @@ Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → S
 | S10 | İnsan eval | **Faz 1'de yok.** Muhakim + göz testi yeterli. İnsan feedback = Faz 4 RL altyapısına (no-code UI → DPO/RLHF) |
 | S11 | Faz 1 bitti kriteri | ⚠️ **SÜPERSED (ADR-0001/0011/0012).** ~~Muhakim'de +%15 baseline üstü + göz testinde 10/8 vatandaş sorusu.~~ → **Güncel kapı:** A3 rejection ≥0.741 · A1∧A2 ≥0.875 · A4 paren ≥0.9 · CORE-KÖR gerilemesin (canon eval, V2_PLAN §6). Muhakim ikincil/yanlı; insan-κ descope. |
 | S12 | Lisans/yayın | **Private repo** + proprietary. Model kartı + ağırlıklar HF'te public (isteğe bağlı). Ticari hak sahipte |
-| S13 | Baz model değişikliği (2026-06-07) | **Qwen3.5-4B → Gemma 4 12B** (`gemma-4-12B-it-qat-q4_0-unquantized`). Gerekçe: 256K context, multimodal (gelecek fazlar), QAT → Q4_0 GGUF deploy kalitesi, Apache 2.0 |
+| S13 | Baz model değişikliği (2026-06-07) | **Qwen3.5-4B → Gemma 4 12B** (`gemma-4-12B-it-qat-q4_0-unquantized`). Gerekçe (ADR-0003): 12B reasoning/TR üstünlüğü, **QAT → Q4_0 GGUF deploy kalitesi**, Apache-2.0, Mecellem'den niş ayrışması. ⚠️ **DÜZELTME (2026-07-17):** buradaki "multimodal (gelecek fazlar)" ADR-0003'ün gerekçe listesinde YOK — gerekçe-kayması; multimodal ADR'de yalnız *reddedilen alternatifi gerekçelendirirken* geçer, seçim nedeni değil (ADR-0017 base'i sabitlerken teyit etti). |
 | S14 | Deploy pipeline | FT (NF4 QLoRA) → merge (bf16) → Q4_0 quantize (llama.cpp) → GGUF ~6.5GB → 8GB VRAM end-user |
 | S15 | TurboQuant | KV-cache quantization (arXiv:2504.19874). **Faz 1'de yok.** Faz 2-3 API serving'de değerlendirilecek; 256K context + 4.5× sıkıştırma. Bkz. `knowledge/summary_turboquant.md` |
 | — | In-house ilkesi | 3. parti araç/repo **referans alınıp RE edilir**, runtime'da bağımlılık yok |
