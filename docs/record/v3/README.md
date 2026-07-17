@@ -14,6 +14,9 @@
 - [`recipe.md`](recipe.md) — v3'ün 8-düğüm KARAR/execution belgesi (✅ tarihsel; ADR-0015 bundan yazıldı).
 - [`receteler.md`](receteler.md) — **v4 girdileri:** train'e-DOKUNAN 4 iş (#2b negatif-aile [v3 M2b teşhisiyle TETİKLENDİ] · #3b çok-kaynak · #4 replay · ADIM 4 τ-judge) + §v4 MİMARİ NOTLARI.
 
+## Ham çıktı (v3'ün gerçek cevapları)
+`outputs/eval/bench_*_v3*_detail.jsonl` (10 dosya, `cevap` alanı = ham yanıt). **Ne hangisi + n + skor tablosu:** [`sonuclar.md` §📂 Ham çıktı dosyaları](sonuclar.md#-ham-çıktı-dosyaları--v3ün-gerçek-cevapları-outputseval). Skor özetleri `*_summary.json`, judge-etiketli per-item `abst_bench_*` / `gnd_bench_*`.
+
 ## Tur kronolojisi (research_log)
 2026-07-03→07-06 girdileri: #25 (near-miss trap) · #26-27 (rejected harvest + ORPO hazır) · #28-29 (genelleme/OOD dilimleri) · #30 (eğitim bitti) · #31 (Mecellem konumlama) · **#32 (SONUÇ + kapı)**.
 

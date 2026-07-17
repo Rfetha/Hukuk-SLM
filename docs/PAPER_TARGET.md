@@ -1,6 +1,16 @@
 # PAPER TARGET — Akademik Hedef Tasarımı
 
-> **Amaç:** Bu doküman, projenin akademik yayın hedefini tek yerde sabitler. Bundan
+> **⚠️ KISMEN SÜPERSED — TEZ YENİDEN ÇERÇEVELENDİ (2026-07-17).** Bu belge **içeri-dönük** çerçeveyi
+> (sistem paper'ı; ana iddia = "doğru VE anlaşılır tek model"; benchmark = yan iş) yansıtır. Yeni tez
+> çerçevesi **dışarı-dönük**: *dar bir domainde (TR hukuku) SLM+harness, kapalı ticari modellerin
+> dağıtım sınıfına **maliyet-normalize paritede** ne kadar yaklaşır — ve bunun ne kadarı FT, ne kadarı
+> harness?* Ana iddia artık **maliyet-normalize parite** (eşdeğerlik/TOST), benchmark = **birincil katkı
+> değil, ölçüm altyapısı.** Otorite belge: **`docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md`**
+> + **ADR-0017…0020.** Bu doküman **iz olarak** korunur (v0/v1/K3 kanıtı + eval protokolü hâlâ geçerli);
+> "ana iddia" / "rakip tablosu" / "benchmark headline değil" ifadeleri yeni spec ışığında okunur.
+> **Süregelen geçerli kısımlar:** §3 adil-kıyas (eşit dağıtım ayak izi), §5 eval protokolü (canon), §6 eldeki kanıt, §8 venue.
+>
+> **Amaç (orijinal):** Bu doküman, projenin akademik yayın hedefini tek yerde sabitler. Bundan
 > sonraki eval/veri/sistem kararları **bu hedefe hizmet edecek** şekilde alınır
 > (baseline'lar, insan-κ, sabit seed, ablasyon baştan tutulur → sonunda "veri
 > toplama" değil "yazma" işi kalır).

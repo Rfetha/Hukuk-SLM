@@ -1,7 +1,9 @@
 # ADR 0003 — Base model: Gemma 4 12B (Qwen3.5-4B'i süpersed eder)
 
-- **Durum:** Yürürlükte (2026-06-07)
+- **Durum:** Yürürlükte (2026-06-07) · **TEYİT + SABİTLENDİ (2026-07-17, ADR-0017).**
 - **Geriye dönük kayıt.**
+
+> ⚠️ **GEREKÇE NETLEŞTİRMESİ (2026-07-17):** Aşağıdaki gerekçe listesinde **multimodal/OCR YOKTUR** ve olmamalıdır — o yalnız "Değerlendirilen alternatifler"de *reddedilen* encoder-ekli yığını gerekçelendirirken geçer, bir **seçim nedeni değildir.** `TEKNIK_PLAN.md` S13 ve eski `VISION.md` bunu gerekçeye kaydırmıştı (gerekçe-kayması) → düzeltildi. ADR-0017 base'i tez için sabitlerken asıl gerekçeyi **QAT→Q4_0 zinciri** olarak teyit etti.
 
 ## Bağlam
 Çekirdek ürün kısıtı: **erişilebilirlik** — son kullanıcı ~8GB VRAM tüketici GPU'sunda çalıştırabilmeli

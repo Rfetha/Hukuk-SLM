@@ -3,6 +3,8 @@
 > **Misyon:** Adalete erişimi demokratikleştirmek. Vatandaşın yanında duran, hukuk dilini sadeleştiren, belge üreten ve kendi dosyasını anlamasına yardım eden açık bir yapay zeka asistanı.
 >
 > **Çerçeve (2026-05-29):** Repo şimdilik **private + proprietary** (ticari haklar sahibinde). Model kartı + ağırlıklar ileride HF'te yayınlanabilir (opsiyonel); akademik makale kapısı kapalı değil — bu yüzden tekrarlanabilirlik (sabit seed, loglu koşu, temiz ablation) baştan yerinde. Erişilebilirlik (consumer-grade donanımda çalışabilme) temel kısıt olduğundan model SLM-sınıfı tutulur — **seçilen baz: Gemma 4 12B** (`gemma-4-12B-it-qat-q4_0-unquantized`, QLoRA → Q4_0 GGUF ~6.5GB, Apache 2.0; güncellendi 2026-06-07).
+>
+> **⚠️ TEZ ÇERÇEVESİ (2026-07-17, otorite: `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md` + ADR-0017):** Tezin **birincil katkısı** artık tek başına benchmark değil → **maliyet-normalize parite + iş bölümü**: *dar bir domainde SLM+harness, kapalı ticari modellerin dağıtım sınıfına (Gemini 3 Flash / Claude Sonnet / GPT-5-mini) maliyet-normalize paritede ne kadar yaklaşır, ve bunun ne kadarını FT ne kadarını harness sağlar?* 6-mod CANON benchmark bu iddianın **altyapısı** (eşdeğerlik testi için gereken ölçüm zemini), tek başına ana katkı değil. v0→v3 = proof-of-concept / FT kolu.
 
 ---
 
@@ -32,7 +34,7 @@ flowchart LR
 
 **Hedef:** Türk hukuk diline ve akıl yürütmesine adapte olmuş, ölçülebilir bir baz model.
 
-- **Baz model:** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0) — QLoRA SFT → Q4_0 GGUF (~6.5GB) deploy; 8GB VRAM end-user hedef korunur. Encoder-free unified mimari — text-only SFT multimodal yeteneği bozmaz, gelecek fazlara hazır. (Kıyas adayları: Qwen3.5-4B, Gemma 4 E4B.)
+- **Baz model:** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0) — QLoRA SFT → Q4_0 GGUF (~6.5GB) deploy; consumer-GPU end-user hedefi (≤8 GB = **soft gate**, ADR-0018). Base **KESİN** (ADR-0017): Qwen geçişi + çok-base kolu ikisi de reddedildi; asıl gerekçe **QAT→Q4_0 zinciri** (maliyet iddiasının dayanağı). Encoder-free unified mimari — text-only SFT multimodal yeteneği bozmaz. ⚠️ **NOT:** multimodal/OCR base-seçim gerekçesi *değil*, Faz 3 opsiyonu (bkz. Faz 3 notu + CLAUDE.md OCR düzeltmesi). (Aile içi boyut eğrisi adayı: Gemma 4 E4B.)
 - **Veri seti hazırlığı:** Otoriter/güncel plan **`docs/VERI_PLANI.md`**'de. Özet:
   - `OrionCAF/turkish_law_qa_dataset` + `Renicames/turkish-law-chatbot` (EDA-doğrulanmış, ~32K → `data/processed/sft_v0/`)
   - Mevzuat.gov.tr / Bedesten API açık kanun metinleri (grounding zemini)
@@ -77,9 +79,9 @@ flowchart LR
 - Dilekçe şablon sistemi (Arabuluculuk, Hakem Heyeti, itiraz)
 - **Post-SFT RL altyapısı:** no-code UI ile hukukçu/kullanıcı feedback → DPO/RLHF döngüsü
 
-**Multimodal Input (native Gemma 4 12B — model kartı teyitli):**
-- Belge fotoğrafı / OCR: mahkeme kararı, sözleşme, tebligat → hukuki yorum (`visual_tokens=560-1120`)
-- Sesli soru: yazamayan/okuyamayan vatandaşlar sesle sorar, model anlar
+**Multimodal Input (Faz 3 opsiyonu — ⚠️ ölçülmedi, base gerekçesi DEĞİL):**
+- Belge fotoğrafı → hukuki yorum. ⚠️ **Doğru mimari native OCR değil, ayrık OCR-preprocessor:** Gemma 12B OmniDocBench 1.5 = 0.164 (ailenin en zayıfı) + Türkçe'de dedicated motorlar VLM'leri yeniyor (`ğ/ş/İ` kırılmaları RAG'i bozar; OCRTurk arXiv:2602.03693). PaddleOCR/DotsOCR gibi ayrık motor → temiz metin → model. `visual_tokens=560-1120` yalnız native-deneme senaryosunda.
+- Sesli soru: native ses girişi (model kartı) — Faz 3'te değerlendirilir, henüz test edilmedi.
 
 Örnek agent akışı:
 
