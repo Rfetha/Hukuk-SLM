@@ -56,6 +56,8 @@ Commit'ler: `14d22e3` (spec) + `863070e` (revizyon). **Durum: kullanıcı ONAY A
    - Yeni ADR'ler: tez-çerçevesi · base-sabit+limitations · faz-sırası-istisnası · rakip-seti
    - Sunum (`docs/sunum/`): Faz 3 OCR vaatlerini gerçekle hizala (OmniDocBench 0.164, OCRTurk)
 **2. Kapı 1 koşumu** (doküman sonrası): OpenRouter kur → rakipleri mevcut CANON'da çıplak ölç → M2/ood. ~$5. **⚠️ REGEX KALİBRASYONU ZORUNLU ÖN-ADIM** (spec §6.1: `rejection_exact` Gemma'ya göre yazılı, rakip reddini eksik sayar → bizim lehimize kayar → hiçbir sayı öncesinde raporlanmaz).
+   - **Hangi sayı nereye (netleştirme — 2026-07-18):** KAPI 1 = YALNIZ rakipleri ölç (Gemini 3 Flash · Claude Sonnet · GPT-5-mini). Bizim taraf ZATEN ölçülü (`SCORECARD.md` = base·v2b·v2c·v3) — yeniden koşulmaz. **v1/v0 aday DEĞİL** (eski protokol / çökmüş = negatif bulgu). **v4 kapıdan SONRA** gelir (KAPI 3), aynı batch'te değil. **gpt-4o-mini = HAKEM** (yarışmacı değil, her turda kalır).
+   - **Sunum kartını doldur (`docs/sunum/` sf14 "Tam Karşılaştırma"):** rakip sütunları (Gemini/Sonnet/GPT-5-mini) hazır & boş ("KAPI 1 — ölçülecek"). Sayı gelince → `scratchpad/gen_deck.js` sf14 bloğu: `COLS[]` rakip girdilerine `vi` ver + `rows[].[3]`'e rakip skorlarını ekle → `node gen_deck.js` → LibreOffice ile PDF. Kart zaten `heat()` ile otomatik renklendirir.
 
 ## 🚦 STANDING KURALLAR (değişmedi)
 - **Para-kapıları (onaysız KOŞMA):** Modal eğitim · GPT-judge scoring · **YENİ: OpenRouter rakip inference.**
