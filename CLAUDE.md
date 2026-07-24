@@ -18,7 +18,12 @@ The Gemma 4 12B line (v0→v3) was **retired**, not deleted — artifacts live u
 
 **Design essentials** (details in `TASARIM.md`): 3 branches (`τ_grounding` · `τ_abstention` · `τ_register`, the last gated on a pre-measurement) → simultaneous k-way TIES/DARE → **7-cell lattice**, singletons mandatory · baselines = mixed SFT + sequential SFT · **two separate matrices** (inner ablation runs **harness OFF**, else the rejection gate masks model-level differences; outer parity matrix runs × {harness on/off}) · **DEV/TEST split** — new CANON-protocol items become DEV for merge/hyperparameter selection, the frozen `eval/canon/` (40+35) is TEST and is seen **once** · four-layer judge defense with family exclusion · two size points (~4B primary, mostly **local at $0**; ~8-9B contrast, winning config only).
 
-**The authoritative running narrative is `docs/record/research_log/README.md` (chronological) + `docs/adr/` (decisions).** Read those for *what actually happened*; `TASARIM.md` is *what we will do*. Note `docs/V2_PLAN.md` and the v4 recipe are SUPERSEDED (12B-era, historical). The 2026-07-17 spec is **partially superseded** by ADR-0027 — its parity framing, cost accounting and judge design live on; its base decision, graph scope and corpus answer were updated.
+**Three record documents, three different jobs** — don't confuse them:
+- `TASARIM.md` — *what we will do.* Decisions, rejected alternatives, gates, open questions.
+- `docs/record/gemma4-12b-kronoloji.md` — *what happened and what the numbers were.* The 12B line's full chronology with every measurement preserved verbatim. Source material for the paper's **Results**.
+- `docs/adr/gemma4-12b-dersler.md` — *what we learned.* Base-agnostic lessons + the 26 ADRs' decisions. Source material for **Methodology** and **Limitations**.
+
+New findings go to `docs/record/research_log/` (numbering continues at **#39**); new decisions get a new ADR (**0027** onward). Note `docs/V2_PLAN.md` and the v4 recipe are SUPERSEDED (12B-era, historical). The 2026-07-17 spec is **partially superseded** by ADR-0027 — its parity framing, cost accounting and judge design live on; its base decision, graph scope and corpus answer were updated.
 
 ## Documents (read these before doing anything)
 

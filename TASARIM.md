@@ -2,7 +2,7 @@
 
 > **Statü:** YÜRÜRLÜKTE — bu hattın otorite tasarım belgesi
 > **Tarih:** 2026-07-24
-> **Kaynak:** `referans-design-doc.md` (kullanıcı taslağı) + repo kaydı (ADR-0001…0026, `docs/record/research_log/` 38 girdi)
+> **Kaynak:** `referans-design-doc.md` (kullanıcı taslağı) + repo kaydı (26 ADR + 38 `research_log` girdisi — ikisi de 2026-07-24'te birleştirildi: [`docs/adr/gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md) · [`docs/record/gemma4-12b-kronoloji.md`](docs/record/gemma4-12b-kronoloji.md))
 > **Yöntem:** HITL hedef keskinleştirme — her karar tek tek tartışılıp kilitlendi.
 >
 > ⚠️ **`referans-design-doc.md` temiz kalır, değiştirilmez.** O belge taslağın kendisi; bu belge onun
@@ -23,9 +23,18 @@ Bu, **ne inşa edeceğimizin ve neyi ölçeceğimizin** belgesidir. Üç şeyi b
    bölümleri buradan yazılır; bu yüzden eleme gerekçeleri kararların kendisi kadar önemli.
 3. **Açık uçlar** — henüz kararlaşmamış, ama işaretli (§13)
 
-**Diğer belgelerle ilişki:** Kronolojik anlatı `docs/record/research_log/README.md`'de, kararların
-donmuş gerekçeleri `docs/adr/`'de kalır — **ikisi de bu belge tarafından yeniden yazılmaz.**
-Eski hattın (Gemma 4 12B) artefaktları `old-version-gemma4-12b/` altında; taşındı, silinmedi.
+**Diğer belgelerle ilişki:**
+
+| belge | ne tutar |
+| :--- | :--- |
+| **bu belge** | *ne yapacağız* — kararlar, elenenler, açık uçlar |
+| [`docs/record/gemma4-12b-kronoloji.md`](docs/record/gemma4-12b-kronoloji.md) | *ne oldu ve kaç çıktı* — 12B hattının tam kronolojisi, **sayılar birebir** |
+| [`docs/adr/gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md) | *bundan ne öğrendik* — base-bağımsız dersler + 26 ADR'nin karar kaydı |
+| [`docs/record/research_log/`](docs/record/research_log/) | yeni hattın canlı günlüğü (#39'dan devam) |
+| `old-version-gemma4-12b/` | emekli hattın artefaktları — taşındı, silinmedi |
+
+**Bu belge onları yeniden yazmaz.** Yeni hattın her anlamlı bulgusu `research_log/`'a, her büyük
+kararı yeni bir ADR'ye gider.
 
 ---
 
@@ -378,7 +387,7 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 >
 > ⚠️ **İsimlendirme:** kapılar **Kapı 0–4** diye anılır. `K1`/`K3` kısaltmaları repo'da **paper
 > katkı haritası** için ayrılmıştır (K1 = ablasyon, K3 = ayrışma/negatif bulgular —
-> `research_log/99-paper-esleme.md`); karıştırılmaz.
+> `docs/record/gemma4-12b-kronoloji.md` §Paper eşlemesi); karıştırılmaz.
 
 | kapı | ne zaman | ölçülen | karar |
 | :--- | :--- | :--- | :--- |

@@ -11,7 +11,7 @@
 ## Tez (neden bu tur)
 9 kulvar = 1 zor beceri (answerability: "bağlam soruyu cevaplıyor mu?") + 1 dik beceri (register). Tek becerinin
 iç-takası olmaz → mükemmele yakın ayrım her kulvarı birden kazandırır; frontier = kusur-artefaktı.
-Tam tez: [[../research_log/2026-07-06-v4-tasarim-tezi-answerability]] (#33).
+Tam tez: [kronoloji #33](../../../docs/record/gemma4-12b-kronoloji.md) (#33).
 
 ## Dosyalar
 - [`recipe.md`](recipe.md) — v4 tasarım taslağı: hedef, kaldıraçlar (judge-önceliklendirmesi), zemin çatalı, kapı, açık sorular.

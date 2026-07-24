@@ -42,7 +42,7 @@
 > - Rename kararı: bu tur **v1** olacak, zemin **v0.2b** (eski v2b). §3 ifadeleri güncellenecek.
 
 > **Durum:** ✅ **KİLİTLİ** (2026-07-06). Deep-research (#34) işlendi + grilling tamamlandı (5 açık-uç çözüldü, 2 karar onaylandı). Sıradaki = ADIM-plan koşumu (para-kapısı onayı).
-> **Tez:** [[../research_log/2026-07-06-v4-tasarim-tezi-answerability]] (#33) · **kaldıraç kaynağı:** [[../v3/receteler]] + #34.
+> **Tez:** [kronoloji #33](../../../docs/record/gemma4-12b-kronoloji.md) (#33) · **kaldıraç kaynağı:** [[../v3/receteler]] + #34.
 > **Neden gerek:** v3 KISMİ (ADR-0015) — M2b regresyon 0.53 + M2 base-altı 0.593 + OOD zayıf 0.483.
 > **⭐ Literatür çıpası:** M2b = **Sufficient-Context** "RAG-suppresses-abstention" (Claude 84→52) + **RefusalBench** (frontier multi-doc <%50) = bilinen-genel mod; **DTA (ACL 2025) = belgelenmiş çözüm** (dört-kadran, ✘✘→IDK).
 
@@ -131,4 +131,4 @@ Harvest (v2b 12B, Modal A100 ~1-2h) ~$5-15 · chosen (gpt-4o-mini ~8K) ~$3-5 · 
 - **ADIM 6 — eval (kanon 6-mod + genelleme + held-out OOD):** lokal generation → judge (PARA-KAPISI) → kapı (§6) → ADR-0016.
 
 ## İlgili
-Deep-research bulguları [[../research_log/2026-07-06-v4-deep-research-bulgular]] (#34) · brief (tarihsel) [`deep_research_brief.md`](deep_research_brief.md) · tez [[../research_log/2026-07-06-v4-tasarim-tezi-answerability]] (#33) · v3 kaldıraç-kökeni [[../v3/receteler]].
+Deep-research bulguları [kronoloji #34](../../../docs/record/gemma4-12b-kronoloji.md) (#34) · brief (tarihsel) [`deep_research_brief.md`](deep_research_brief.md) · tez [kronoloji #33](../../../docs/record/gemma4-12b-kronoloji.md) (#33) · v3 kaldıraç-kökeni [[../v3/receteler]].

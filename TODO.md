@@ -4,6 +4,21 @@
 > Sıra kapılara bağlı — bir kapı kararı gelmeden ona bağlı iş başlamaz.
 > Tamamlananlar `docs/record/research_log/`'a girdi olarak taşınır, buradan silinir.
 
+> ### 📍 Bu belge **harita**, yürütme planı değil
+>
+> Aktif iş → **[`sprint1.md`](sprint1.md)**: ilk FT koşusunun (`τ_grounding`) checkpoint zinciri,
+> komutlarıyla ve her adımda 12B hattından gelen *"burada şu patlar"* uyarılarıyla.
+> Buradaki maddeler **ne yapılacağını**, sprint belgesi **hangi sırayla ve neye dikkat ederek**
+> yapılacağını söyler.
+>
+> | sprint | kapsam | TODO bölümleri |
+> | :--- | :--- | :--- |
+> | **[1](sprint1.md)** ← *aktif* | base kapısı → base baseline → `τ_grounding` eğitimi → ölçüm | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
+> | 2 | `rejected` hasat · `τ_abstention` · `τ_register` (Kapı 0'a bağlı) · tabanlar · DEV havuzu | §1 · §2 |
+> | 3 | merge + 7 hücreli kafes + iç iddia kararı | §3 |
+> | 4 | harness (retriever · graf · doğrulayıcı · kapı) — §5 ile paralel yürüyebilir | §4 |
+> | 5 | dış parite matrisi + kapılar + eşdeğerlik | §5 · §6 |
+
 ---
 
 ## 0 — Base doğrulama kapısı 🔒 *her şeyin önünde*

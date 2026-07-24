@@ -7,7 +7,7 @@
 
 ## Sonuç otoritesi
 - **ADR-0015** ([gemma4-12b-dersler.md#adr-0015](../../../docs/adr/gemma4-12b-dersler.md#adr-0015)) — kapı kararı + v4 yönü NET.
-- research_log **entry #32** (`../research_log/2026-07-06-v3-eval-sonuc-kapi-karari.md`) — tam judge skorkartı + M2b teşhisi + proxy→judge dersi.
+- research_log **entry #32** ([kronoloji #32](../../../docs/record/gemma4-12b-kronoloji.md)) — tam judge skorkartı + M2b teşhisi + proxy→judge dersi.
 
 ## Dosyalar
 - [`sonuclar.md`](sonuclar.md) — **v3 tam skorkart + kapı gerekçesi + M2b teşhis + proxy→judge dersi** (v2b/v2c paraleli).
