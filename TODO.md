@@ -11,13 +11,43 @@
 > Buradaki maddeler **ne yapılacağını**, sprint belgesi **hangi sırayla ve neye dikkat ederek**
 > yapılacağını söyler.
 >
-> | sprint | kapsam | TODO bölümleri |
-> | :--- | :--- | :--- |
-> | **[1](sprint1.md)** ← *aktif* | base kapısı → base baseline → `τ_grounding` eğitimi → ölçüm | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
-> | 2 | `rejected` hasat · `τ_abstention` · `τ_register` (Kapı 0'a bağlı) · tabanlar · DEV havuzu | §1 · §2 |
-> | 3 | merge + 7 hücreli kafes + iç iddia kararı | §3 |
-> | 4 | harness (retriever · graf · doğrulayıcı · kapı) — §5 ile paralel yürüyebilir | §4 |
-> | 5 | dış parite matrisi + kapılar + eşdeğerlik | §5 · §6 |
+> | sprint | kapsam | koşan FT | TODO bölümleri |
+> | :--- | :--- | :--- | :--- |
+> | **[1](sprint1.md)** ← *aktif* | **Faz A** hazırlık (base kapısı · base baseline + Kapı 0 · veri) → **Faz B** ilk FT | **FT-1** | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
+> | 2 | `rejected` hasat · kalan kollar · tabanlar · DEV havuzu · regex kalibrasyonu | **FT-2 … FT-6** | §1 · §2 |
+> | 3 | merge + 7 hücreli kafes → **🎯 hedef model doğuyor** + iç iddia kararı | — *(merge bedava)* | §3 |
+> | 4 | harness (retriever · graf · doğrulayıcı · kapı) + Kapı 3 — **2-3 ile paralel yürüyebilir** | — *(eğitim yok)* | §4 · §6 |
+> | 5 | dış parite matrisi + Kapı 1/2 + eşdeğerlik + başabaş N\* + kapanış ölçümleri (eval≠dağıtım · gerçek VRAM) — **tez burada biter** | — *(rakipler API)* | §5 · §6 |
+>
+> ### FT sıralaması — hangi koşu nerede
+>
+> **TEK boyut noktası (ADR-0028).** Tüm ızgara tek base üzerinde koşar. Daha büyük bir modelin
+> ince-ayarı **koşullu bir opsiyon**, planlanmış adım değil — ancak proje **ürüne dönüşürse**,
+> **destek/kaynak gelirse** ya da **makale büyürse** gündeme gelir. Takvimde yeri yok.
+>
+> | # | ne | sprint | önkoşulu |
+> | :--- | :--- | :---: | :--- |
+> | **FT-1** | `τ_grounding` (RAFT-SFT) | **1** | Faz A'nın tamamı |
+> | **FT-2** | `τ_abstention` (ORPO) | 2 | `rejected` yeniden hasat *(çıkarım koşusu, FT değil)* |
+> | **FT-3** | `τ_register` (SFT) | 2 | ⚠️ **koşullu** — Kapı 0 izin verirse |
+> | **FT-4** | Taban A: tek-aşamalı **karışık** SFT | 2 | — |
+> | **FT-5** | Taban B: **ardışık** SFT, aşama 1 | 2 | — |
+> | **FT-6** | Taban B: **ardışık** SFT, aşama 2 | 2 | FT-5 |
+>
+> **Toplam 6 koşu** — Kapı 0 `τ_register`'ı düşürürse **5** (FT-3 düşer). Hepsi **tek base'de.**
+> Sprint 3-4-5'te **hiç eğitim yok**: merge bir ağırlık işlemi (bedel yalnız eval'de), harness
+> deterministik, rakipler API. **Bütün eğitim yükü Sprint 1-2'de.**
+>
+> ⚠️ **Tek noktanın bedeli — üçü de limitations'a yazılır (ADR-0028):**
+> (a) **dış geçerlilik açığı kapanmıyor** — *"bulgular bu base'e mi özgü?"* cevapsız kalır;
+> (b) **kapasite sorusu ölçülemez** — *"çatışan beceriler kapasiteyle azalıyor mu?"*;
+> (c) **ADR-0018'in eğri şartı karşılanmıyor** — tek işaretli nokta var, ölçülmüş eğri yok.
+> *Aynı-aile kuralı iptal değil ertelendi:* opsiyon kullanılacağı gün aile ve boyut birlikte
+> değişmemeli, yoksa fark hiçbirine atfedilemez (ADR-0027'de hazır reçete olarak duruyor).
+>
+> **Hedef model Sprint 3'ün sonunda doğar** (kazanan merge konfigürasyonu). Sprint 4-5 o modeli
+> inşa etmez, **hakkındaki iddiayı kanıtlar.** Kaba takvim: seri ~9-13 hafta, Sprint 4 paralelken
+> **~7-10 hafta** — en oynak kalem Sprint 1'deki Unsloth/sm_120 ortam borcu.
 
 ---
 
@@ -43,6 +73,36 @@ Hiçbir eğitim koşusu bu altı madde geçmeden başlamaz (`TASARIM.md` §8).
 - [ ] `$/sorgu` + latency + throughput + GPU-saat enstrümantasyonu — bugün yalnız `judge_cost_usd` var (*not verme* maliyeti, *servis* maliyeti değil)
 
 ## 2 — Kollar
+
+### FT hedefleri — ön-kayıt 🔒
+
+> **Veriyi görmeden yazıldı.** Sonradan yazılırsa çıkan sonuç rasyonalize edilir.
+> Sağdaki 12B sayıları **kalibrasyon çıpası**, hedef değil.
+
+**Toplam FT bütçesi: 6 koşu** — 3 kol + karışık taban + ardışık tabanın 2 aşaması, hepsi
+**tek boyut noktasında** (ADR-0028). Kapı 0 `τ_register`'ı düşürürse **5**.
+**Merge'in eğitim maliyeti sıfır** — 7 hücrenin tamamı bu koşulardan türer.
+`rejected` hasadı eğitim değil, tek çıkarım koşusu.
+
+| kol | ne katacak | riski | 12B kanıtı |
+| :--- | :--- | :--- | :--- |
+| **`τ_grounding`** (RAFT-SFT) | **M1 ↑↑** gürültüde kaynağa sadakat + coverage · **M2b ↑** (%20 abstain dilimi tam bu şekli öğretiyor) · M4/M3 korunur | **M2 ↓↓** — near-miss tek-kaynak şekli veride **hiç yok** | M1 0.879→**0.904** (cov %47,5→**%72,5**) · M2b **0.96** · M2 0.786→**0.346** |
+| **`τ_abstention`** (ORPO) | **M2 ↑↑** near-miss ayrımı — tek gerçek hedefi | **M2b ↓↓** *forced-source-selection*: "en ilgilisini SEÇ" refleksi, doğrusu olmayan yerde en yakın distractor'ı seçtiriyor | v3: M2 0.346→**0.593** · M1 0.737→**0.881** · **M2b 0.96→0.529** |
+| **`τ_register`** (SFT) | register ↑ — yalnız base zayıfsa | **abstention ↓↓** — bu setin *cevapları* v1'de reddi **0.000**'a indirmişti | Kapı 0 bu kolu tamamen düşürebilir |
+
+⚠️ **`τ_abstention` için dürüst belirsizlik:** 12B'deki v3 **ham base'den değil, v2b'nin üstünden**
+devam etti; M1'i yükseltmesi orada v2b'nin grounding'inin taşınmasından geliyordu. **Bağımsız bir
+task-vector olarak o etki olmayabilir.** Ölçülecek.
+
+**Merge beklentisi (asıl iddia):** `τg + τa` hücresi paranın olduğu yer. Merge çatışmayı çözerse
+M1 **yüksek** ∧ M2 **yüksek** ∧ M2b **korunmuş** — 12B'de **hiçbir tur** bu üçünü aynı anda
+tutturamadı. Çözemezse biri diğerini bastırır ve ardışık SFT'den farkı çıkmaz.
+`+ τr` ağırlıkla register getirir, abstention'ı aşağı çekme riski taşır.
+
+**Ne öğretmiyorlar (üçü de):** hukuk **bilgisi** — SFT bilgi gömmez. 12B kanıtı: M4 oracle 0.975 vs
+M5 kör 0.175 = **%80 uçurum.** Güncellik kütüphanede, ağırlıkta değil.
+
+---
 
 - [ ] **Kapı 0:** yeni base'in register-proxy'sini ölç → `τ_register` kolu gerekli mi? (12B'de 1.000'e oturmuştu)
 - [ ] `τ_abstention` için `rejected` havuzunu **yeni base ile yeniden hasat et** (`gen_v3_rejected.py` — tek çıkarım koşusu, eğitim değil)
@@ -83,7 +143,6 @@ Hiçbir eğitim koşusu bu altı madde geçmeden başlamaz (`TASARIM.md` §8).
 
 - [ ] **Kapı 3:** hibrit kavram katmanı — yalnız getirme ölçümü (recall@k + MRR, kavram kenarı açık/kapalı). Geçmezse "katkı yok" negatif bulgusu
 - [ ] LightRAG/GraphML interop iddiasını **doğrula** (EDA kuralı) — kol açılırsa ilk adım
-- [ ] **Kapı 4:** karşıtlık noktası (~8-9B) — yalnız kazanan konfigürasyon
 - [ ] Eval ≠ dağıtım hizalaması: en az bir kez aynı CANON'da kuantize vs bf16
 - [ ] Gerçek donanımda VRAM/ayak izi ölçümü (bugünkü sabit kalemler **tahmin**)
 
