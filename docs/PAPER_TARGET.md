@@ -97,16 +97,22 @@ kapısı abstention'ı sağlar ve model-düzeyi fark maskelenir). Detay: `TASARI
 > task-arithmetic literatürüne domain-spesifik negatif kanıt. Ve matrisler ayrı olduğu için (§6)
 > Y3'ün düşmesi Y1/Y2'yi düşürmez.
 
-**(Y3 — DESTEK) Dağıtım eğrisi: erişilebilirlik = ağırlık değil, kullanım bağlamında ağırlık + KV.**
-Ölçülmüş sonuç: 8 GB kapısında **12B, 9B'den daha erişilebilir** (bağlam tavanı 176K vs 91K).
-Hedef config: saf Q4_0 + `-fa` + KV q8_0 → 6.97 GB / ~250K bağlam (ADR-0023). KV-bit × bağlam ×
-VRAM × kalite eğrisi — TR hukuk için kimsede yok.
+**(Y4 — DESTEK) Dağıtım profili: erişilebilirlik = ağırlık değil, kullanım bağlamında ağırlık + KV.**
+⚠️ **DARALTILDI (2026-07-24, ADR-0028).** Tez **tek boyut noktasında** tamamlanıyor → **model-boyut
+eğrisi YOK.** Ayakta kalan iki şey: (a) **ilke** — erişilebilirlik ağırlıkla değil *gerçek kullanım
+bağlamında ağırlık + KV* ile ölçülür; (b) **KV-bit × bağlam × VRAM × kalite eğrisi**, ki bu tek
+boyutta ölçülebilir ve TR hukuk için kimsede yok.
+Boyut ekseni → **limitations + koşullu gelecek çalışma.**
 
-**(Y4 — DESTEK) Ampirik bulgular (eski K3, aynen geçerli).** SFT abstention'ı çökertiyor
+> *Not: eski metindeki "12B, 9B'den daha erişilebilir (176K vs 91K)" ölçümü **emekli 12B hattına**
+> aittir — tarihsel bulgu, yeni hattın katkısı değil. Kaynak:
+> [`docs/adr/gemma4-12b-dersler.md#adr-0021`](adr/gemma4-12b-dersler.md#adr-0021).*
+
+**(Y5 — DESTEK) Ampirik bulgular (eski K3, aynen geçerli).** SFT abstention'ı çökertiyor
 (v1: TRAP 0.741→0.000, Cor-RAIT UNDER-refusal'ın ters yönü); plainness ağırlığa gömülünce
 doğruluk düşüyor (v0); mevcut hukuk reward modeli sadeliğe kör. v0→v3 = tezin **proof-of-concept**'i.
 
-**(Y5 — ALTYAPI) 6-mod CANON benchmark.** Artık *katkı* değil, Y1/Y2'nin **ölçüm zemini.**
+**(Y6 — ALTYAPI) 6-mod CANON benchmark.** Artık *katkı* değil, Y1/Y2'nin **ölçüm zemini.**
 Üretken TR hukuk grounding benchmark'ı yok → yine de yayınlanabilir bir yan çıktı.
 
 ---

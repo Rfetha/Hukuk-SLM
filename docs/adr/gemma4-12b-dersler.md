@@ -281,8 +281,8 @@ kod-olarak-altyapı. *H100* → QLoRA compute-bound değil. *L4* → aynı $/epo
 
 **Sonuç.** ~11 sn/step, 1 epoch ≈ 5.5 saat ≈ ~$11.5. Image kritik detayı: bkz. A4.9.
 
-**Yeni hatta:** ilke aynı; ama ~4B birincil nokta **yerelde** koşabildiği için Modal yalnız
-karşıtlık noktası (~8-9B) için gerekiyor.
+**Yeni hatta:** ilke aynı; ama tek boyut noktası ~4B olduğu için koşuların çoğu **yerelde, $0**
+(ADR-0028). Modal artık zorunlu değil — CP3 smoke'unun `s/it` ölçümü karar verir.
 
 <a id="adr-0005"></a>
 ### ADR-0005 — Veri stratejisi · 🟢 taşınıyor

@@ -18,11 +18,11 @@
 > ⚠️ **SÜPERSED (2026-06-14, V2_PLAN.md) → güncel plan:** aktif iş artık **v2b SFT** (base'den taze QLoRA), bu bölümdeki v0→v1 execute akışı tamamlandı/tarihsel. Güncel yön: `docs/V2_PLAN.md §9` + `NEXT_SESSION.md`.
 
 **Hedef:** Türk hukuk diline adapte, **~~vatandaş diliyle~~ uzman-register ile** konuşan, ölçülebilir fine-tuned SLM. Kalite barı yüksek — üzerine kurulacak ekosistem (RAG, agent, UI) buna dayanacak.
-**Baz model — ⚠️ YENİDEN YAZILDI (2026-07-24, ADR-0027):** base bir **PARAMETRE** (ADR-0026), gömülü karar değil. Çalışma varsayımı **~4B sınıfı instruct model**, 6 maddelik doğrulama kapısına bağlı; **iki boyut noktası** (birincil ~4B yerelde $0 + karşıtlık ~8-9B). Kuantizasyon **Q4_K_M** (ADR-0023'ün saf-Q4_0'ı QAT'e özgüydü, taşınmaz). ~~Gemma 4 12B~~ süperseded, silinmedi. Detay: `TASARIM.md` §8.
+**Baz model — ⚠️ YENİDEN YAZILDI (2026-07-24, ADR-0027):** base bir **PARAMETRE** (ADR-0026), gömülü karar değil. Çalışma varsayımı **~4B sınıfı instruct model**, 6 maddelik doğrulama kapısına bağlı; **TEK boyut noktası** (ADR-0028; tüm ızgara tek base'de, çoğu yerelde $0 — ikinci boyut tez sonrası ayrı geçiş). Kuantizasyon **Q4_K_M** (ADR-0023'ün saf-Q4_0'ı QAT'e özgüydü, taşınmaz). ~~Gemma 4 12B~~ süperseded, silinmedi. Detay: `TASARIM.md` §8.
 
 **⚠️ Adım akışı DEĞİŞTİ (ADR-0027).** Eski akış tek bir modeli ardışık turlarla (v0→v1→v2b→v3) iyileştiriyordu. Yeni akış **paralel kollar + task-vector merge**:
 
-Ortam → Base doğrulama kapısı → **3 kol ayrı ayrı, HAM BASE'den** (`τ_grounding` · `τ_abstention` · `τ_register`) → **eşzamanlı k-yollu TIES/DARE** → **7 hücreli kafes** eval'i (harness KAPALI) → tabanlarla kıyas (karışık SFT + ardışık SFT) → kazanan konfigürasyon → harness → **dış parite matrisi** (A/B/C/D/E) → karşıtlık noktası.
+Ortam → Base doğrulama kapısı → **3 kol ayrı ayrı, HAM BASE'den** (`τ_grounding` · `τ_abstention` · `τ_register`) → **eşzamanlı k-yollu TIES/DARE** → **7 hücreli kafes** eval'i (harness KAPALI) → tabanlarla kıyas (karışık SFT + ardışık SFT) → kazanan konfigürasyon → harness → **dış parite matrisi** (A/B/C/D/E). *(Tez burada biter — ADR-0028: tek boyut noktası; ikinci boyut tez sonrası, aynı reçeteyle.)*
 
 > Kolların **ham base'den** eğitilmesi geçerlilik şartı: task-vector tanımı (τ = θ_ft − θ_base) ortak base ister. Bir kolu diğerinin üstüne eğitmek ardışık SFT üretir — ölçmek istediğimiz şeyin kendisini yok eder.
 

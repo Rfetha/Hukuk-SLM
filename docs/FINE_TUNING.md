@@ -28,7 +28,6 @@
 | 2–3B (Phi-3.5-mini vb.) | ~5–6 GB | Rahat, hızlı iterasyon. |
 | **~4B instruct (ADR-0027 çalışma varsayımı)** | ~8–10 GB | ✅ **Birincil nokta.** Üç kolun tamamı + tabanlar **yerelde, $0** koşar. |
 | ~~Gemma 4 12B QAT-unquantized~~ (emekli hat) | ~11–12 GB | batch=1 + grad-ckpt zorunlu; sıkışıktı → **her koşu Modal'a gitmek zorundaydı.** |
-| **~8-9B (karşıtlık noktası)** | sığmaz | Modal; yalnız **kazanan** merge konfigürasyonu tekrarlanır. |
 | 7B (Mistral, Llama-3-8B vb.) | ~14–18 GB | **Sığmaz.** Colab/Kaggle/RunPod'a kaçar. |
 
 > **ℹ️ 8 GB nereden geliyor?** 8 GB rakamı **ürün erişilebilirlik hedefi** (model son-kullanıcının ~8 GB tüketici GPU'sunda koşmalı) — bizim eğitim rig'imiz değil. Eğitimi 12 GB'de yapıp 4-bit'i 8 GB'a sığacak şekilde ölçeriz.
@@ -87,7 +86,7 @@ ortak bir `θ_base` şart koşar. Bir kolu diğerinin üstüne eğitmek task-vec
 - Birleşim **tam ağırlık uzayında**, kuantizasyon **en son** (4-bit tabana doğrudan merge çifte
   kuantizasyon hatası üretir — bkz. §4.2 mantığı).
 - **Host RAM'de ve akış hâlinde (tensör tensör)** koşar, GPU'ya girmez. Tam materyalizasyon
-  (base + 3 kol bf16) onlarca GB'a çıkar ve karşıtlık noktasında host RAM'i zorlar.
+  (base + 3 kol bf16) onlarca GB'a çıkar ve host RAM'i zorlar.
 - **Merge'in eğitim maliyeti sıfır** — bedel yalnız eval'de. Tarama bu yüzden gerçekçi;
   ama tarama **DEV'de** yapılır, dondurulmuş CANON'da değil.
 

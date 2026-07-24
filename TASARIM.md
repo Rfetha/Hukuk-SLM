@@ -93,7 +93,7 @@ her iki yerde işaretle.* Tespit edilenler:
 | 5 | §6 ÖSYM/TRLawBench doğruluğu **ana** eksen | CANON ana, dış sınav **ikincil dilim** | Kapalı-kitap doğruluk = parametrik ezber = repo'nun M5 **anti-hedefi**; "güncellik kütüphanede" ilkesiyle çelişir |
 | 6 | Rakipler **çıplak** koşuluyor | **Adalet kuralı:** harness herkese birebir | `D > A` iddiası değersizdir; asıl rakip *rakip + aynı harness* |
 | 7 | §9 LightRAG çekirdek servis | **Deterministik yapısal graf** çekirdek; LightRAG kapılı Katman-1 kolu | Mevzuatın yapısı zaten açık; LLM ile tahmin etmek dominated. Halüsinatif kenar hukukta mülga hükmü yürürlükteymiş gibi ilişkilendirebilir ve ucuza doğrulanamaz. ADR-0022 ile hizalı |
-| 8 | §8 dört donanım tier'ı (4B/9B/14B/32B) | **İki boyut noktası** | Her nokta ~5 eğitim koşusu; 4 tier tez bütçesini boyut eğrisine harcar. ADR-0018 "eğri" diyor, eğri için 2 nokta yeter |
+| 8 | §8 dört donanım tier'ı (4B/9B/14B/32B) | **Tek boyut noktası** (ADR-0028) | Her nokta ~5 eğitim koşusu; boyut ekseni tezin iddiası değil. Tez tek base'de tam; ikinci boyut tez sonrası, aynı reçeteyle |
 | 9 | §3 veri: içtihat + dilekçe taramaları | İkisi de **plandan çıkar** (§10) | İçtihat korpusu yok (Bedesten'de var, TR IP + EDA gerekiyor); dilekçe = PII + lisans duvarı |
 | 10 | §1/§10 OCR + STT + Tauri + Docker uçtan uca | **Ürün katmanı, ölçüm dışı** | İddia model+harness iddiası; OCR gürültüsü groundedness skoruna karışır, ayrıştırılamaz |
 | 11 | §3 base = Qwen3.5-4B-Instruct | **Çalışma varsayımı**, sert doğrulama kapısına bağlı (§8) | ADR-0026: base bir parametre, gömülü karar değil |
@@ -204,8 +204,8 @@ ekstra bir hücre olarak durabilir (maliyeti yalnız eval).
   doğru söylüyor: 4-bit tabana doğrudan merge çifte kuantizasyon hatası üretir.)
 - **Host RAM'de koşar, GPU VRAM'e girmez.** Ve **akış hâlinde (tensör tensör)** yapılır: base
   tensörü + her kolun karşılık gelen ΔW'si yüklenir, TIES uygulanır, yazılır, bellek boşaltılır.
-  Tam materyalizasyon (base + 3 kol aynı anda bf16'da) 4B'de onlarca GB'a çıkar ve karşıtlık
-  noktasında host RAM'i de zorlar; akış hâlinde tepe bellek birkaç tensörle sınırlı kalır.
+  Tam materyalizasyon (base + 3 kol aynı anda bf16'da) 4B'de bile onlarca GB'a çıkar; akış
+  hâlinde tepe bellek birkaç tensörle sınırlı kalır.
 
 ### 4.3 Kafes — 7 hücre
 
@@ -351,10 +351,12 @@ asistan değil; kategori farkı olduğu için "geçtim" iddiası kurulmaz.
 
 ### 6.3 Eğitim koşusu bütçesi
 
-| nokta | koşu | nerede |
+| ne | koşu | nerede |
 | :--- | ---: | :--- |
-| **Birincil (~4B)** | 6 — 3 kol + taban A (1) + taban B (2) | çoğu **yerelde, $0** (RTX 5070) |
-| **Karşıtlık (~8-9B)** | 4 — 3 kol + taban A; yalnız **kazanan** merge konfigürasyonu | Modal |
+| 3 kol (`τg` · `τa` · `τr`) | 3 | çoğu **yerelde, $0** (RTX 5070) |
+| Taban A — tek-aşamalı karışık SFT | 1 | ↑ |
+| Taban B — ardışık SFT (2 aşama) | 2 | ↑ |
+| **TOPLAM** | **6** *(Kapı 0 `τr`'yi düşürürse 5)* | |
 
 Kapı 0 `τ_register`'ı düşürürse sayılar **5 ve 3**'e iner ve kafes 7 hücreden **3**'e (τg · τa · τg+τa)
 küçülür — anlatı merdiveni de iki basamağa iner. Bu bir kayıp değil: çatışan çift zaten o ikisi.
@@ -395,7 +397,8 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 | **Kapı 1 — rakip boşluğu** | rakip baseline sonrası | **en iyi** rakibin M2 + ood dilimi | Rakipler çözmüşse "abstention'da yetişiyoruz" hikâyesi ölür → tez **maliyet + mahremiyet** eksenine yaslanır. *Neden en iyi rakip: soru "boşluk var mı"; herhangi biri çözüyorsa problem çözülebilirdir. Kendimize karşı en sert istatistik bu.* |
 | **Kapı 2 — iş bölümü** | harness ablasyonu sonrası | **D** vs **E** | `D ≈ E` → *"bu domainde scaffolding ince-ayarı ikame ediyor"* — **kötü haber değil, yayımlanabilir bulgu.** `D > E` → iş bölümü doğrulandı |
 | **Kapı 3 — hibrit kol** | getirme ölçümü sonrası | recall@k + MRR (± kavram kenarı) | İyileştirmiyorsa kol kapanır, negatif bulgu raporlanır |
-| **Kapı 4 — karşıtlık noktası** | birincil ızgara sonrası | kazanan merge konfigürasyonu | Yalnız kazanan büyük boyutta tekrarlanır |
+
+*(Eski Kapı 4 — karşıtlık noktası — **kaldırıldı**, ADR-0028: tez tek boyut noktasında tamamlanıyor.)*
 
 12B hattının referans değerleri (kıyas için, **12B protokolü, tarihsel**):
 base M2 = 0.704 · v3 M2 = 0.593 · base ood = 0.889 · v3 ood = 0.483.
@@ -420,11 +423,28 @@ base M2 = 0.704 · v3 M2 = 0.593 · base ood = 0.889 · v3 ood = 0.483.
 | 5 | **Kuantizasyon** | QAT checkpoint'i yoksa **Q4_K_M** doğru varsayılan; `--pure` Q4_0 yalnız QAT için kalibreydi (ADR-0023, ADR-0026 ile parametreleştirildi) |
 | 6 | **Lisans** | Saf Apache-2.0 mı, üstüne ek kullanım politikası var mı — attribution ve limitations'a yazılır |
 
-**İki boyut noktası:**
-- **Birincil ~4B** — tam ızgara (7 merge hücresi + 2 taban), çoğu yerelde $0.
-- **Karşıtlık ~8-9B** — yalnız kazanan konfigürasyon. Eğri için ikinci nokta; ADR-0018'in
-  "tek nokta değil eğri" şartını asgari düzeyde karşılar ve 12B hattının kapatamadığı
-  **dış-geçerlilik açığına** (bulgular tek modele mi özgü?) kısmi cevap verir.
+**TEK boyut noktası (ADR-0028).** Tüm ızgara — 3 kol + 2 taban + 7 hücreli kafes + harness + dış
+parite matrisi — **tek base** üzerinde koşar. ~4B sınıfı olması pratik bir kazanç: koşuların çoğu
+**yerelde, $0** (12B hattında her koşu Modal'a gitmek zorundaydı).
+
+**İkinci boyut = koşullu opsiyon, planlanmış adım değil.** Daha büyük bir modelin ince-ayarı ancak
+**dışsal bir tetikle** gündeme gelir: proje **ürüne dönüşürse** · **destek/kaynak gelirse** ·
+**makale büyürse**. Takvimde yeri yok, kimse beklemiyor; hiçbiri gerçekleşmezse **tez eksik kalmaz**
+(Y1 parite ve Y2 iş bölümü tek noktada tam ölçülür). Reçetenin taşınabilir olması zaten tasarımın
+özelliği — base bir parametre (ADR-0026), gömülü default yok, doğrulama kapısı her base için aynı.
+**Opsiyon açık, maliyeti bugün ödenmiyor.**
+
+> ⚠️ **Bunun bedeli üç kalem, üçü de limitations'a yazılır** (ADR-0028):
+> **(a) Dış geçerlilik açığı kapanmıyor** — *"bulgular bu base'e mi özgü?"* cevapsız kalır;
+> 12B hattının kalıcı sınırı aynen miras alınıyor. **(b) Kapasite sorusu ölçülemez** —
+> *"çatışan beceriler kapasite arttıkça daha az mı çekişiyor?"* merge iddiasının en ilginç ikinci
+> sorusuydu; tek noktada sorulamaz, bulgu **tek boyuta ait** olarak raporlanır.
+> **(c) ADR-0018'in "eğri" şartı karşılanmıyor** — soft-gate çerçevesi ilke olarak ayakta ama
+> ölçülmüş eğri yerine **tek işaretli nokta** var.
+>
+> **Aynı-aile kuralı iptal değil, ertelendi:** ikinci geçiş yapıldığı gün aile *ve* boyut birlikte
+> değişirse fark hiçbirine atfedilemez (ADR-0017'nin çok-base kolunu eleme gerekçesi). ADR-0027'nin
+> bu kuralı **hazır reçete** olarak kayıtta duruyor.
 
 ---
 
@@ -495,7 +515,7 @@ eşleşmesini bozar → doğru mimari **ayrık OCR preprocessor**, native VLM OC
 | LightRAG çekirdek harness | Deterministik yapısal graf | Mevzuatın yapısı zaten açık → LLM ile tahmin dominated. Halüsinatif kenar mülga hükmü yürürlükteymiş gibi ilişkilendirir ve **ucuza doğrulanamaz** (doğrulama = deterministik kurma emeği) |
 | Neo4j sunucusu | Gömülü NetworkX/GraphML | Ayak izinin ölçüldüğü tezde konteyner saf yük; ~40K düğüm gömülü kütüphane için önemsiz |
 | Retriever dondurulmuş + doğrulayıcı canlı | İkisi de dondurulmuş (eval'de) | Mülga olmuş maddeye atıf haksız reddedilir; hata zamanla büyür |
-| Dört donanım tier'ı | İki boyut noktası | Eğri için 2 nokta yeter; 4 tier çekirdek çalışmayı aç bırakır |
+| Dört donanım tier'ı | **Tek** boyut noktası (ADR-0028) | Boyut ekseni iddianın taşıyıcısı değil; 4 tier çekirdek çalışmayı aç bırakır. İkinci boyut tez sonrası gelecek çalışma |
 | Rakipleri çıplak koşmak | Adalet kuralı | `D > A` iddiası değersiz |
 | λ/density'yi CANON'a bakarak seçmek | DEV/TEST ayrımı | Dondurulmuş test setini seçim için harcamak = optimistik sayı |
 | Hiperparametreleri sabitleyip taramamak | DEV'de tarama | "Merge çalışmıyor" ile "bu λ yanlış" ayrılamaz hale gelirdi; merge bedava olduğu için en büyük fırsat harcanırdı |
@@ -517,7 +537,9 @@ eşleşmesini bozar → doğru mimari **ayrık OCR preprocessor**, native VLM OC
 | **Hakem = LLM** | İnsan-κ descoped (annotator yok) | §3.3 dört katman + hakemsiz omurga |
 | **Eval ≠ dağıtım** | CANON bf16/NF4'te, dağıtım artefaktı kuantize → "dağıtım sınıfında parite" iddiasında delik | En az bir kez aynı CANON'da hizalama koşusu (kuantize vs bf16) |
 | **VRAM tahminleri ölçülmedi** | Sığdırma merdiveninin sabit kalemleri tahmin | Gerçek donanım + gerçek GGUF ile ölçüm — **açık borç** |
-| **Dış geçerlilik** | Bulgular tek base'e mi özgü? | Karşıtlık noktası **kısmi** cevap verir; tam replikasyon kapsam dışı → dürüst limitations |
+| **Dış geçerlilik** — bulgular tek base'e mi özgü? | Genellenebilirlik kanıtlanmıyor | ⚠️ **KAPATILMAYAN SINIR** (ADR-0028). Tez tek boyut noktasında tamamlanıyor → ne aile ne boyut ekseninde replikasyon var. 12B hattının kalıcı sınırı miras alındı. **Dürüst limitations maddesi + gelecek çalışma** (aynı reçete, daha büyük model) |
+| **Kapasite ekseni ölçülmüyor** *(yeni, ADR-0028)* | *"Çatışan beceriler kapasiteyle azalıyor mu?"* sorulamaz — merge iddiasının en ilginç ikinci sorusu | Bulgu **tek boyuta ait** olarak raporlanır; genelleme iddia edilmez |
+| **ADR-0018'in eğri şartı karşılanmıyor** *(yeni)* | Erişilebilirlik tek noktada raporlanır | Soft-gate çerçevesi ilke olarak ayakta; ölçülmüş eğri yerine tek işaretli nokta — limitations'ta yazılır |
 
 ---
 
