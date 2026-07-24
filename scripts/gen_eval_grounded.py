@@ -98,6 +98,16 @@ def parse_args():
     p.add_argument("--server-model", default="local",
                    help="--server-url ile gönderilecek model adı (llama-server'da önemsiz, "
                         "OpenRouter'da rakip model id'si)")
+    # ── Düşünce kanalı (2026-07-24, CP0 / Qwen3.5) ──────────────────────────────
+    # Düşünen modeller `add_generation_prompt` ile `<think>` açar. Bütçe içinde
+    # `</think>` kapanmazsa llama-server ürettiğin HER ŞEYİ `reasoning_content`e koyar
+    # ve `message.content` BOŞ döner: HTTP 200, geçerli JSON, hata yok — ve red-regex
+    # o boş stringlerden sayı üretir. Qwen3.5-4B'de ölçüldü: varsayılan modda 1024
+    # token'da bile content='' (research_log #39).
+    #   none = bayrak GÖNDERİLMEZ (düşünmeyen modeller; 12B hattının davranışı)
+    #   off  = enable_thinking=false  |  on = enable_thinking=true
+    p.add_argument("--thinking", choices=("none", "off", "on"), default="none",
+                   help="chat_template_kwargs.enable_thinking (yalnız HTTP taşıyıcı)")
     p.add_argument("--no-gold", action="store_true",
                    help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
                         "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
@@ -235,20 +245,31 @@ def build_messages(soru, source=None, sources_block=None):
     return [{"role": "system", "content": sys}, {"role": "user", "content": user}]
 
 
-def generate_http(client, model_name, soru, max_new_tokens, source=None, sources_block=None):
+def generate_http(client, model_name, soru, max_new_tokens, source=None, sources_block=None,
+                  thinking="none"):
     """llama-server / OpenRouter üzerinden üretim (ADR-0025).
 
     Rakiplerle BİREBİR aynı kod yolu → adalet kuralı (spec §5.2) yapısal garanti.
     Deterministik: temperature=0, seed sabit.
+
+    Dönen: (cevap, finish_reason, reasoning_len) — son ikisi SESSİZ-BOZULMA kapısı için.
     """
+    extra = {}
+    if thinking != "none":
+        extra["chat_template_kwargs"] = {"enable_thinking": thinking == "on"}
     r = client.chat.completions.create(
         model=model_name,
         messages=build_messages(soru, source, sources_block),
         max_tokens=max_new_tokens,
         temperature=0.0,
         seed=3407,
+        extra_body=extra or None,
     )
-    return (r.choices[0].message.content or "").strip()
+    ch = r.choices[0]
+    msg = ch.message
+    # reasoning_content OpenAI şemasında yok; llama-server/OpenRouter ekliyor.
+    reasoning = getattr(msg, "reasoning_content", None) or ""
+    return (msg.content or "").strip(), ch.finish_reason, len(reasoning)
 
 
 def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
@@ -301,7 +322,12 @@ def main():
     http_client = None
     if a.server_url:
         from openai import OpenAI
-        http_client = OpenAI(base_url=a.server_url, api_key=os.environ.get("OPENAI_API_KEY", "none"))
+        # Timeout'ta oto-retry+backoff (llm_client ile aynı gerekçe): tek asılı istek koca
+        # üretim koşusunu kırmasın. Ortamla ezilebilir (LLM_MAX_RETRIES / LLM_TIMEOUT_S).
+        http_client = OpenAI(
+            base_url=a.server_url, api_key=os.environ.get("OPENAI_API_KEY", "none"),
+            max_retries=int(os.environ.get("LLM_MAX_RETRIES", "8")),
+            timeout=float(os.environ.get("LLM_TIMEOUT_S", "120")))
         model, tokenizer = None, None
         print(f"[gen-eval] HTTP taşıyıcı: {a.server_url} (model={a.server_model})")
     else:
@@ -312,6 +338,7 @@ def main():
         model, tokenizer = build_model(a)
 
     import random as _rnd
+    n_truncated = 0
     detail = os.path.join(a.out_dir, f"{a.label}_detail.jsonl")
     with open(detail, "w", encoding="utf-8") as f:
         for i, (rec, soru, src) in enumerate(sample):
@@ -350,14 +377,29 @@ def main():
 
             src_arg = labeled_src if (a.with_source and not a.distractors and not a.empty_context) else None
             if http_client is not None:               # ADR-0025 HTTP taşıyıcı
-                cevap = generate_http(
+                cevap, finish_reason, reasoning_len = generate_http(
                     http_client, a.server_model, soru, a.max_new_tokens,
-                    source=src_arg, sources_block=sources_block)
+                    source=src_arg, sources_block=sources_block, thinking=a.thinking)
             else:
                 gen_fn = generate_completion if a.completion_fewshot else generate
                 cevap = gen_fn(
                     model, tokenizer, soru, a.max_new_tokens,
                     source=src_arg, sources_block=sources_block)
+                finish_reason, reasoning_len = None, 0
+
+            # 🚨 SESSİZ-BOZULMA KAPISI (research_log #39): boş cevap = hata değil, sessiz çöp.
+            # Düşünen model bütçe içinde </think> kapatmazsa content='' gelir, HTTP 200 döner,
+            # ve score_abstention.py o boş stringten SAYI ÜRETİR. Erken patla (ADR-0026 ruhu).
+            if not cevap:
+                raise SystemExit(
+                    f"[gen-eval] 🚫 BOŞ cevap — örnek {i} ({mode}), finish_reason={finish_reason!r}, "
+                    f"reasoning_content={reasoning_len} kar.\n"
+                    + ("  → Model düşünce kanalını KAPATMADI. Bu bir düşünen model: "
+                       "`--thinking off` ver (ve/veya --max-new-tokens büyüt).\n"
+                       if reasoning_len else
+                       "  → reasoning_content da boş; sunucu/şablon tarafına bak (diag_chat_template.sh).\n")
+                    + "  Boş cevaplar üzerinde ÜRETİLEN HER SAYI GEÇERSİZDİR — koşu durduruldu.")
+
             out = {
                 "id": i,
                 "soru": soru,
@@ -365,14 +407,26 @@ def main():
                 "context_shown": context_shown,        # modele GERÇEKTEN gösterilen bağlam (abstention için)
                 "mode": mode,
                 "cevap": cevap,
+                "finish_reason": finish_reason,        # 'length' = kesilmiş cevap (kalite uyarısı)
+                "reasoning_len": reasoning_len,        # >0 = düşünce kanalı kullanıldı
                 "kanun_adi": rec.get("kanun_adi"),
                 "madde_no": rec.get("madde_no"),
                 "kanun_no": rec.get("kanun_no"),
             }
             f.write(json.dumps(out, ensure_ascii=False) + "\n")
+            if finish_reason == "length":
+                n_truncated += 1
             print(f"  [{i+1}/{len(sample)}] ({mode}) {rec.get('kanun_adi')} {rec.get('madde_no')} "
-                  f"→ {len(cevap)} kar")
+                  f"→ {len(cevap)} kar"
+                  + (f"  ⚠️ KESİK ({finish_reason})" if finish_reason == "length" else ""))
 
+    if n_truncated:
+        pct = 100.0 * n_truncated / max(1, len(sample))
+        print(f"[gen-eval] ⚠️ {n_truncated}/{len(sample)} (%{pct:.1f}) cevap max_new_tokens'a ÇARPTI "
+              f"(finish_reason='length') — yarım cevaplar hakeme yarım gidiyor. "
+              f"--max-new-tokens büyüt ya da sebebini kayda geç.")
+    print(f"[gen-eval] taşıyıcı={'http' if http_client else 'yerel'} | thinking={a.thinking} "
+          f"| max_new_tokens={a.max_new_tokens} | seed={a.seed}")
     print(f"[gen-eval] detay → {detail}")
     print(f"[gen-eval] sıradaki: python scripts/groundedness.py "
           f"--details {detail} --label {a.label} --mode data")

@@ -1,0 +1,4 @@
+  "n_answered": 61,
+  "A1_faithfulness_macro_answered": 0.9729,
+  "cit_precision_micro_answered": 1.0,
+  "wrong_ref_rate_macro_answered": 0.0,

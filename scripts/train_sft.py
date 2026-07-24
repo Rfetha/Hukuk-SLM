@@ -72,13 +72,30 @@ def parse_args():
                    help="system prompt ekleme (ablation; v2b ZORUNLU — veri system'i zaten taşır)")
     p.add_argument("--allow-high-lr", action="store_true",
                    help="lr≥3e-4 kilidini aç (NORMALDE KULLANMA — v1 abstention çöküşü rejimi, §5.1-C)")
+    # ⚠️ ADR-0031: BİRİNCİL precision = bf16 taban (donuk) + bf16 LoRA — QLoRA DEĞİL.
+    # Merge iddiasının aleti (TIES/DARE ΔW üzerinde eleman-bazlı budama) NF4 kuantizasyon
+    # gürültüsünden arınır. Bayrak yoksa 12B hattının QLoRA'sı (load_in_4bit=True) korunur —
+    # bf16 ortam sorunu (causal-conv1d/OOM) smoke'u bloke ederse ADR-0031 QLoRA fallback'ini yetkiler.
+    p.add_argument("--bf16-base", action="store_true",
+                   help="ADR-0031: bf16 donuk taban + bf16 LoRA (QLoRA değil). Bayrak yoksa NF4 4-bit taban.")
     p.add_argument("--wandb", action="store_true", help="W&B'ye logla")
     p.add_argument("--max-steps", type=int, default=-1, help="smoke test için sınırla")
     return p.parse_args()
 
 
+def _decode_marker(s: str) -> str:
+    r"""Turn işareti CLI'dan literal '\n' (iki karakter) olarak gelebilir; render edilmiş
+    şablonda ise GERÇEK newline var. Kaçış dizilerini çöz ki sessiz-bozulma assert'i doğru
+    kıyaslasın. İşaretler saf ASCII kontrol token'ı (`<|im_start|>user\n`) → unicode_escape güvenli.
+    Zaten gerçek newline gelirse de aynı sonuca iner (idempotent)."""
+    import codecs
+    return codecs.decode(s, "unicode_escape")
+
+
 def main():
     args = parse_args()
+    args.user_part = _decode_marker(args.user_part)
+    args.assistant_part = _decode_marker(args.assistant_part)
     out = args.output_dir or f"outputs/{args.run_name}"
 
     # 🚫 GÜVENLİK KİLİDİ (v2b reçete §5.1-C): 3e-4 re-warming = v1 abstention çöküşü rejimi
@@ -91,11 +108,15 @@ def main():
     os.environ["WANDB_PROJECT"] = "hakhukuk-sft"
     report_to = "wandb" if args.wandb else "none"
 
-    # --- Model + tokenizer (NF4 4-bit) ---
+    # --- Model + tokenizer ---
+    # ADR-0031: --bf16-base → donuk bf16 taban (QLoRA değil); yoksa NF4 4-bit (12B hattı).
+    load_in_4bit = not args.bf16_base
+    print(f"[train] precision = {'bf16 taban + LoRA (ADR-0031 birincil)' if args.bf16_base else 'QLoRA NF4 4-bit (fallback)'}")
     model, tokenizer = FastModel.from_pretrained(
         model_name=args.model,
         max_seq_length=args.max_seq_len,
-        load_in_4bit=True,           # QLoRA → NF4
+        load_in_4bit=load_in_4bit,
+        dtype=torch.bfloat16 if args.bf16_base else None,
         full_finetuning=False,
     )
 

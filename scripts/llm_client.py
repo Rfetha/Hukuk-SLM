@@ -88,8 +88,19 @@ def price(model):
     return PRICE[m]
 
 
+# ⚠️ Timeout/retry dayanıklılığı (2026-07-25): tek bir API timeout'u koca bir CANON koşusunu
+# (480 çağrı) kırıyordu — "m5 got cut by timeout" (Gemini skorlaması). OpenAI SDK'sı
+# APITimeoutError / APIConnectionError / 408 / 409 / 429 / 5xx üzerinde ÜSTEL GERİ-ÇEKİLMEYLE
+# otomatik retry yapar; varsayılan max_retries=2 yetmiyordu. Bunu yükseltmek "wait + oto-retry"yi
+# bedavaya getirir. timeout: tek istek bu kadar saniyede asılı kalırsa retry'a düşer (600s asılı
+# kalıp koşuyu boğmasın). Ortamla ezilebilir: LLM_MAX_RETRIES / LLM_TIMEOUT_S.
+_MAX_RETRIES = int(os.environ.get("LLM_MAX_RETRIES", "8"))
+_TIMEOUT_S = float(os.environ.get("LLM_TIMEOUT_S", "120"))
+
+
 def make_client():
-    """(client, gateway) döndürür. OpenRouter varsa onu, yoksa doğrudan OpenAI'ı kullanır."""
+    """(client, gateway) döndürür. OpenRouter varsa onu, yoksa doğrudan OpenAI'ı kullanır.
+    Client, timeout'larda otomatik retry+backoff yapacak şekilde kurulur (üstteki not)."""
     from openai import OpenAI
     want = (os.environ.get("LLM_GATEWAY") or "").strip().lower()
     or_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
@@ -99,10 +110,11 @@ def make_client():
     if gateway == "openrouter":
         if not or_key:
             raise SystemExit("[llm] OPENROUTER_API_KEY yok (.env yükle)")
-        return OpenAI(api_key=or_key, base_url=OPENROUTER_BASE), "openrouter"
+        return OpenAI(api_key=or_key, base_url=OPENROUTER_BASE,
+                      max_retries=_MAX_RETRIES, timeout=_TIMEOUT_S), "openrouter"
     if not oa_key:
         raise SystemExit("[llm] OPENAI_API_KEY yok (.env yükle)")
-    return OpenAI(api_key=oa_key), "openai"
+    return OpenAI(api_key=oa_key, max_retries=_MAX_RETRIES, timeout=_TIMEOUT_S), "openai"
 
 
 def request_kwargs(model, seed=3407):
