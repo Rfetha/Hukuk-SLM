@@ -42,10 +42,30 @@ from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E4
 # G2 — exact-match rejection (Rej): deterministik red-ifadesi tespiti (RGB Rej, hakemsiz).
 # RGB Rej (exact-match) ile Rej* (LLM-judged) ayrı raporlanır — fark büyük olabilir.
 import re as _re
+# ⚠️ KALİBRE EDİLDİ 2026-07-24 (research_log #39, TASARIM §3.4 zorunlu ön-adımı).
+#
+# Bulunan hata SESSİZ ve BÜYÜKTÜ: eski kalıp `bulunma(?:maktadır|z)` Türkçe'nin ŞİMDİKİ ZAMAN
+# olumsuzunu (`bulunmuyor`) kapsamıyordu. Qwen3.5-4B base'inin baskın red cümlesi tam olarak
+# *"Verilen kaynaklarda bu konuyu düzenleyen madde BULUNMUYOR"* — 456 cevapta 194 kez.
+# Sonuç: **M3 (boş bağlam) %0 red ölçülüyordu; gerçek değer %100.** M2b %66 → %94.
+# Diğer fiillerde `-yor` çekimi zaten vardı (düzenlemiyor, yer almıyor, içermiyor);
+# yalnız `bulunmak` ve `kapsamak` eksik kalmıştı.
+#
+# İkinci düzeltme — HUKUK DEYİMİ dışlaması: "kanunda hüküm BULUNMAZSA", "müdafi hazır
+# BULUNMAZSA" kanunun kendi koşul dili, red değil. `(?!sa)` bakışı bunları eler.
+#
+# Doğrulama (elle spot-check, §3.4): 15/15 ileri yön doğru · 2/2 geri yön doğru.
+# ⚠️ Bu kalibrasyon BU BASE'in dağarcığına göre yapıldı. Rakip aileler eklendiğinde
+# §3.4 gereği HER AİLE için tekrarlanır — kalibre edilmemiş regex skorları kaydırır.
 REJECT_RE = _re.compile(
-    r"düzenle(?:m[ie]yor|nmemiş|nmemekte)|yer al(?:m[ıi]yor|mamakta)|"
-    r"bulunma(?:maktadır|z)|kapsama(?:maktadır|z)|içerme(?:mektedir|z|miyor)|"
-    r"belirtilme(?:miş|mekte)|değinilme(?:miş|mekte)|bilgi (?:yok|bulunmamakta)|"
+    r"düzenle(?:m[ie]yor|nmemiş|nmemekte|nmiş değil)|"
+    r"yer al(?:m[ıi]yor|mamakta|maz\b(?!sa))|"
+    r"bulun(?:muyor|muyordu|mamaktadır|maz\b(?!sa)|mamış)|"
+    r"kapsa(?:m[ıi]yor|mamaktadır|maz\b(?!sa))|"
+    r"içer(?:m[ei]yor|memektedir|mez\b(?!se))|"
+    r"belirtilme(?:miş|mekte|di)|değinilme(?:miş|mekte|di)|"
+    r"geçme(?:mektedir|miyor)|"
+    r"bilgi (?:yok|bulunmamakta|bulunmuyor)|"
     r"mevcut değil|söz konusu değil|bir avukata danış|ilgili maddeye danış", _re.I)
 
 

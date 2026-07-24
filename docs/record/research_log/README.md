@@ -39,7 +39,7 @@ Yeni hattın protokolü ve tasarımı: [`TASARIM.md`](../../../TASARIM.md) · ka
 
 | # | Tarih | Başlık | Kanca |
 |---|---|---|---|
-| — | — | *(ilk girdi bekleniyor)* | — |
+| **[39](2026-07-24-cp0-base-dogrulama-kapisi.md)** | 2026-07-24 | **Faz A: base kapısı (Qwen3.5-4B) + CP2 çıpaları** | 6/6 kapı · **dört sessiz-bozulma** (düşünce-modu · güç-durumu · red-regex `bulunmuyor` · teacher-jargon) · Kapı 0: `τ_register` düşer · base kör-red deseni %42.5 coverage |
 
 ⚠️ **Eski sayılar yeni tabloya karışmaz.** 12B protokolü (bf16/NF4, farklı base) ayrı satırda
 raporlanır; **dersler taşınır, rakamlar taşınmaz.**

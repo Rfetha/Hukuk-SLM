@@ -64,6 +64,26 @@ uçtan uca doğrular; sonraki iki kol aynı raydan geçer.
 
 **TODO:** §0 (tamamı) · **GPU:** yok · **Çıkış:** `TASARIM.md` §8'in **6 kapı maddesi** yeşil
 
+> ### ✅ GERÇEKLEŞEN (2026-07-24, #39) — **6/6 kapı yeşil**
+>
+> **Base seçildi:** `Qwen/Qwen3.5-4B` (sha `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`), **saf Apache-2.0**
+> — kararlar **ADR-0030** (base + düşünce modu) · **ADR-0031** (precision) · **ADR-0032** (hakem paneli).
+> ⚠️ **İsim düzeltmesi:** HF'de `Qwen/Qwen3.5-4B-Instruct` **yoktur** — instruct varyantının adı düz
+> `Qwen/Qwen3.5-4B`. Belgelerde "-Instruct" geçen her yer yanlıştır.
+>
+> **GGUF üretildi:** `models/gguf/q35-4b-q4_k_m.gguf` (2.59 GiB, Q4_K_M, **PURE=0** — QAT yok).
+>
+> ⚠️ **Düşünce-modu bulgusu (ADR-0030).** Qwen3.5 **düşünen bir model**: varsayılan modda `</think>`
+> kapanmıyor, `content` **BOŞ** dönüyor (HTTP **200**, sıfır hata — regex omurgası bu boş çıktılar
+> üzerinde de sayı üretir). Model **yalnız düşünce modu KAPALI iken** düzgün duruyor (`finish_reason=stop`).
+> → `gen_eval_grounded.py`'ye **`--thinking off`** + boş cevapta **erken patlama kapısı** eklendi.
+>
+> **Turn işaretleri:** `--user-part='<|im_start|>user\n'` · `--assistant-part='<|im_start|>assistant\n'`.
+>
+> **Kuantizasyon merdiveni + VRAM×bağlam matrisi** ölçüldü (`outputs/eval/vram_stack.json`):
+> Q4_K_M ctx4096 = **3.09 GiB** · ctx131072 = **5.76 GiB** · f16 **sığmıyor**.
+> **Performans:** 134 t/s decode (şarjda) — pilde **7.9** t/s (güç-durumu tuzağı kayda geçti).
+
 Tablo 8 satır ama **kapı 6 madde** — 1 ve 5 destek adımı, kendi başlarına kapı değil.
 `🔒` sütunu satırın §8'deki karşılığını verir.
 
@@ -100,6 +120,16 @@ Tablo 8 satır ama **kapı 6 madde** — 1 ve 5 destek adımı, kendi başların
 **⚠️ Bu sprintin en oynak kalemi 7. madde.** Blackwell/sm_120 wheel derdi bir günde de çözülebilir,
 bir haftayı da yiyebilir. Takvim belirsizliği buradan geliyor. Modal'a kaçmak borcu **ertelemek**
 demek — kapatmak değil.
+
+> ### ✅ GERÇEKLEŞEN (CP0.7, #39) — çekirdek engel **bir günde** çözüldü
+>
+> Çekirdek engel bir **LD_LIBRARY_PATH** sorunuydu (`libnvJitLink.so.13`) — `global_venv/bin/activate`'e
+> kalıcı bir satır eklendi, **NF4 forward doğrulandı**. Sprint'in en oynak kalemi bir haftayı yemedi.
+> **Açık kalanlar Faz B'yi bekletir, Faz A'yı değil:** (a) `causal-conv1d` derlenmiyordu → **CUDA 13.0
+> toolkit** kuruldu (`setup_cuda_toolkit.sh` sürüm-parametreli yapıldı), derleme sürüyor; (b) `all-linear`
+> **görüntü kulesine** LoRA takıyordu (Qwen3.5 bir **VLM**) → metin-kulesi modül listesi çıkarıldı
+> (`q_proj,k_proj,v_proj,o_proj,in_proj_qkv,in_proj_z,in_proj_a,in_proj_b,gate_proj,up_proj,down_proj`),
+> **29.9M eğitilebilir param**, görüntü kulesi temiz.
 
 ## CP1 — DEV havuzu 🔒
 
@@ -196,12 +226,22 @@ python scripts/score_register.py --details outputs/eval/m1_base_detail.jsonl --l
 **Kapı 0:** register-proxy yüksekse `τ_register` **düşer** → kol 3→2, kafes 7→3 hücre, **FT bütçesi
 6'dan 5'e iner** (FT-3 düşer). Düşükse kol gerekçeli olur.
 
+> ### ✅ Kapı 0 KARARI VERİLDİ (#39) — **`τ_register` DÜŞÜYOR**
+>
+> Register proxy **0.96-0.98** (RAG modlarında) → yüksek, base zaten güçlü. Sonuç: **kol 3→2**,
+> **kafes 7→3 hücre** (`τg · τa · τg+τa`), **FT bütçesi 6→5 koşu** (FT-3 / `τ_register` düşer).
+
 ### Hakem erişimi — bu sprintte tek aile yeter, kod çok-aileye hazır
 
 CP2'nin çıktısı **iç kıyas**: çıpalar CP6'da `τ_grounding` ile *aynı hakemle* karşılaştırılacak.
 Aynı hakem her iki tarafta kullanıldığı sürece **tek aile — bugünkü `OPENAI_API_KEY` — yeterli.**
 Üç aileli panel sayıların **rapor edildiği** yerde gerekir → **Sprint 3** (iç iddia kararı) ve
 **Sprint 5** (parite). Sprint 1'de çok-aile için para harcanmaz.
+
+> ⚠️ **GERÇEKLEŞEN (#39):** `.env`'e `OPENROUTER_API_KEY` de eklendi (CP7 önizlemesi için, aşağıda) —
+> ama **CP2 yine OpenAI-direct'e PİNLENDİ** (`LLM_GATEWAY=openai`, hakem gpt-4o-mini): iç kıyasın iki
+> tarafı (base çıpaları ↔ CP6 `τ_grounding`) **tek servis yığınında** tutulsun diye. Anahtar durur,
+> gateway CP2 için OpenAI'da sabit.
 
 Kod tarafı şimdiden hazır (ADR-0029): `scripts/llm_client.py` **tek erişim kapısı**, hakem
 scriptleri oradan geçiyor. `.env`'e `OPENROUTER_API_KEY` eklendiği an kapı kendiliğinden
@@ -235,6 +275,26 @@ CP0 biter bitmez üç aileyi yaz; harcama Sprint 3'e kalsın.
 > **12B çıpaları (kalibrasyon, hedef değil):** M1 0.879 · M3 1.000 · M4 0.977-0.983 · M2 0.704 ·
 > M5 0.225 · register 1.0
 
+> ### ✅ GERÇEKLEŞEN — **YENİ BASE ÇIPALARI** (Qwen3.5-4B · DEV · gpt-4o-mini · seed 3407, #39)
+>
+> 6-mod base çıpaları DEV havuzunda üretildi (**470 cevap**), hakemle skorlandı (`judge_gateway=openai`):
+>
+> | mod | metrik | değer |
+> | :--- | :--- | ---: |
+> | **M1** distractor | faithfulness_macro · cit_precision · coverage(cevaplanan) | **0.8385** · 0.9775 · **%56** |
+> | **M4** oracle | faithfulness_macro · cit_precision | **0.981** · 1.0 *(tavan)* |
+> | **M2** near-miss | regex-Rej · LLM-red | 0.500 · **0.633** |
+> | **M2b** çok-kaynak ıska | Rej | **0.938** |
+> | **M3** boş bağlam | Rej | **1.000** |
+> | **M5** kör *(anti-hedef)* | red | **%62.5** |
+> | **register** (deterministik proxy) | RAG modlarında | **0.96-0.98** |
+>
+> ⚠️ **Regex kalibrasyonu YAPILDI — kendi base'imizde (#39).** Eski regex, base'in **baskın red kalıbı**
+> olan `bulunmuyor`u görmüyordu → kalibrasyonsuz **M3 0.000** (gerçek 1.000) ve **M2b 0.662** (gerçek 0.938)
+> çıkacaktı. `score_abstention.py` kalibre edildi, **15/15 ileri + 2/2 geri** yön elle doğrulandı. Bu, TASARIM
+> §3.4'ün "hiçbir abstention sayısı kalibrasyonsuz raporlanmaz" kuralının **bizim base'imizde** de ısırdığının
+> kanıtı (rakip aileleri için kalibrasyon hâlâ açık — CP7'de ilk rakip).
+
 ## CP3 — Veri hazırlığı
 
 **TODO:** §2 (`τ_grounding` verisi) · **GPU:** yok
@@ -249,7 +309,8 @@ CP0 biter bitmez üç aileyi yaz; harcama Sprint 3'e kalsın.
 
 İki şey **yeni tokenizer'a göre yeniden doğrulanmalı:**
 
-- [ ] **Token bütçesi** — yeni tokenizer Türkçe'yi farklı verimlilikte kodlar → kırpma oranı değişir:
+- [x] **Token bütçesi** ✅ — **GERÇEKLEŞEN (#39): etkilenen %0.06** (eşik %1'in çok altında),
+      `max_seq_len=2048` **korundu**. Yeni tokenizer Türkçe'yi farklı verimlilikte kodlar → kırpma oranı değişir:
 
 ```bash
 python scripts/measure_token_budget.py --data data/train/raft/train.jsonl \
@@ -262,7 +323,7 @@ python scripts/measure_token_budget.py --data data/train/raft/train.jsonl \
   yani hasarın grounded'da mı abstain'de mi olduğu görünür.
 
 - [ ] **Chat template render'ı** eğitim tarafında CP0'ınkiyle aynı mı.
-- [ ] **20 satırlık smoke pack** → gözle bak: gold gerçekten context'te mi, distractor'lar makul mü.
+- [x] **20 satırlık smoke pack** ✅ **GERÇEKLEŞEN (#39): gözle doğrulandı** — gold context'te, distractor'lar makul.
 
 > ### ⚠️ 12B'den — burada üç ayrı sessiz bozukluk çıktı
 >
@@ -278,21 +339,26 @@ python scripts/measure_token_budget.py --data data/train/raft/train.jsonl \
 >
 > **Teacher jargonu sızar (#16).** Eğitim hedeflerinin **%5,99'u (1157/19305)** teacher'ın iç
 > etiketini ("GOLD") cevabına taşımıştı — öğrenci o etiketi context'te hiç görmediği hâlde ezberledi.
-> → Teacher, **öğrencinin gördüğü etiket uzayında** promptlanmalı. *(Mevcut set scrub'lı.)*
+> → Teacher, **öğrencinin gördüğü etiket uzayında** promptlanmalı.
+> ⚠️ **DÜZELTME (2026-07-24, #39):** `raft/` scrub'lı **DEĞİLDİ** (yalnız `grounded_qa` scrub'lıydı —
+> eski not sadece onun için doğruydu). Yeni base hazırlığında **%7.51 sızıntı** bulundu
+> (GOLD/DISTRACTOR, **1301/17323**, öğrenci girdisinde 0) — #16'nın birebir tekrarı.
+> `scripts/scrub_teacher_jargon.py` yazıldı → temiz set **`data/train/raft_scrubbed/`** üretildi
+> (orijinal ellenmedi, alıntı blokları korundu).
 >
 > **Topik-skew (#14).** Seed dosyası kanuna göre **sıralı**ydı; yarıda kesilen üretim "rastgele
 > örnek" değil **sistematik kapsama deliği** verdi (bir kanun tamamen sıfırdı).
 
 ---
 
-### ✅ FAZ A çıkış ölçütü
+### ✅ FAZ A çıkış ölçütü — **TAMAM (2026-07-24, #39)**
 
-- [ ] CP0 — `TASARIM.md` §8'in **6 kapı maddesi** yeşil, model duruyor, turn işaretleri elde
-- [ ] CP1 — DEV havuzu üretildi, **TEST ile kesişim = 0** doğrulandı
-- [ ] CP2 — 6-mod base çıpaları **DEV'de** kayıtlı, **Kapı 0 kararı verildi**
-- [ ] Hakem panelinin **üç ailesi yazıldı** (base ailesine göre aile-dışlama) — harcama Sprint 3'te
-- [ ] CP3 — token bütçesi ölçüldü (**etkilenen ≤%1**), smoke pack gözle doğrulandı
-- [ ] `research_log/` girdisi **#39** yazıldı (Faz A bulguları + base çıpaları)
+- [x] CP0 — §8'in **6 kapı maddesi 6/6 yeşil** · model duruyor (`finish_reason=stop`, `--thinking off`, ADR-0030) · turn işaretleri elde (`<|im_start|>user\n` / `<|im_start|>assistant\n`) · GGUF `q35-4b-q4_k_m.gguf` 2.59 GiB
+- [x] CP1 — DEV havuzu (`data/eval/dev/`, 80 core_hard + 70 trap) üretildi, **TEST ile kesişim = 0** doğrulandı
+- [x] CP2 — 6-mod base çıpaları **DEV'de** kayıtlı (470 cevap, gpt-4o-mini, seed 3407), **Kapı 0 kararı VERİLDİ: `τ_register` düşüyor** (register 0.96-0.98)
+- [x] Hakem panelinin **üç ailesi yazıldı** — **ADR-0032**: OpenAI · Anthropic · Google (Qwen özneden **ayrık**, aile-dışlama) — harcama Sprint 3'te
+- [x] CP3 — token bütçesi ölçüldü (**etkilenen %0.06 ≤ %1**), smoke pack gözle doğrulandı, `raft_scrubbed/` üretildi (%7.51 sızıntı temizlendi)
+- [x] `research_log/` girdisi **#39** yazıldı (`docs/record/research_log/2026-07-24-cp0-base-dogrulama-kapisi.md` — Faz A bulguları + base çıpaları)
 
 ---
 
@@ -391,6 +457,45 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 1. **Hat çalışıyor mu?** veri → eğitim → GGUF → eval, yeni base'de uçtan uca.
 2. **`τ_grounding` ne satın aldı?** M1 ve coverage'da base'e göre delta.
 3. **Yan hasar ne kadar?** M2/M2b/M3 düştü mü — grounding kolu tek başına abstention'ı bozuyor mu.
+
+---
+
+## CP7 — erken rakip önizlemesi (Gemini 3.1 Flash-Lite)
+
+**TODO:** — (Sprint 5'ten öne çekilen bir dilim) · **GPU:** yok (rakip API) · **Kayıt:** `docs/record/sprint1/`
+
+**Amaç:** Sprint 5 dış parite matrisinden **BİR DİLİMİ** öne çekmek — *"nerede duruyoruz"* erken
+sinyali. Base çıpaları (CP2) çıktığına göre, tek komutla bir rakibin aynı çıpalarını almak bedava sayılır.
+
+> ### ⚠️ Bu Sprint 5'in parite İDDİASI DEĞİL — bir önizleme
+>
+> Kazanan konfigürasyon **yok** (hedef model Sprint 3'te doğar), **adalet kuralı** (harness rakibe de
+> verilir) burada **UYGULANMAZ** — çünkü **harness zaten KAPALI**: bu bir model-düzeyi kıyas, tam olarak
+> CP2/CP6'nın koşulu (aynı harness/mod/n/seed). Parite iddiası harness × {açık/kapalı} matrisiyle Sprint 5'te kurulur.
+
+**Rakip:** `google/gemini-3.1-flash-lite` (OpenRouter, **tarihli snapshot** — TASARIM §3.5 pinleme).
+
+> ⚠️ **NOT:** daha yeni lite'lar var (`google/gemini-3.5-flash-lite`, `google/gemini-3.6-flash`,
+> 2026-07-21). Kullanıcı açıkça **3.1-flash-lite** seçti; pin revize edilebilir (benchmark tek komut).
+
+**Kurulum:** rakip aynı 6-mod CANON'u **DEV havuzunda**, aynı **seed/n**, `--thinking off` eşdeğeri
+(Gemini için kendi düşünce ayarı — **doğrula**), **OpenRouter** üzerinden koşar. Hakem **gpt-4o-mini
+(OpenAI)** → **aile-dışlama SAĞLANIR** (Google özneyi OpenAI hakem notlar, ADR-0032).
+
+> ### ⚠️ ZORUNLU ÖN-ADIM (TASARIM §3.4) — kalibrasyonsuz hiçbir abstention sayısı raporlanmaz
+>
+> Red-tespit regex'i **Gemini'nin ÇIKTISINDA** kalibre edilMEDEN hiçbir abstention sayısı raporlanmaz.
+> Kendi base'imizde `bulunmuyor` tuzağı çıktı (#39) — Gemini'nin **red dağarcığı farklı** olacak.
+> **~30 çıktı elle spot-check.**
+
+> ### ⚠️ Sağlayıcı pinleme (ADR-0029)
+>
+> OpenRouter **aynı model kimliğini farklı upstream'de** koşabilir; `judge_providers` / `gen_providers`
+> **tek eleman** olmalı — yoksa sayı tek bir servis yığınına ait değildir.
+
+> ⚠️ **Fiyat:** parite maliyeti **birincil-kaynak LİSTE fiyatıyla** (kapıya ödenen tutarla değil).
+
+**Kayıt:** `docs/record/sprint1/` altında — metrik + n + hakem + **rakip snapshot** + seed + çıktı dosyası.
 
 ---
 

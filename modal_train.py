@@ -49,6 +49,11 @@ image = (
         "PYTHONUNBUFFERED": "1",            # loss canlı görünsün
         "UNSLOTH_DISABLE_STATISTICS": "1",  # açılış telemetri çağrısı hang/timeout'unu önle
     })
+    # ⚠️ Qwen3.5 HİBRİT linear-attention: causal-conv1d + flash-linear-attention YOKSA transformers
+    # torch reference fallback'e düşer (özyineli durumu her timestep materyalize eder) → A100-40GB'de
+    # ~38 s/it (ölçüldü, #39 smoke) = tam koşu ~10 sa. fla saf Triton (derleme yok) → fast path'i açar.
+    # --no-deps: fla'nın torch/transformers üst-sürüm istemesini engelle (pinli env korunur; einops eklendi).
+    .pip_install("einops", "flash-linear-attention", extra_options="--no-deps")
     .add_local_dir("scripts", remote_path="/root/scripts")
 )
 
@@ -171,7 +176,8 @@ def spawn_sft(model: str = "", data: str = "", run_name: str = "r1",
               user_part: str = "", assistant_part: str = "",
               epochs: float = 1.0, smoke: bool = False,
               lr: float = 0.0, lora_r: int = 0, lora_alpha: int = 0,
-              warmup_ratio: float = 0.0, no_system: bool = False):
+              warmup_ratio: float = 0.0, no_system: bool = False,
+              bf16_base: bool = False, target_modules: str = ""):
     """QLoRA SFT — fire-and-forget. Önce --smoke (para-kapısı), sonra tam koşu.
 
     --user-part / --assistant-part: base'in chat şablonundaki turn işaretleri.
@@ -192,6 +198,10 @@ def spawn_sft(model: str = "", data: str = "", run_name: str = "r1",
         extra += ["--lora-alpha", str(lora_alpha)]
     if warmup_ratio:
         extra += ["--warmup-ratio", str(warmup_ratio)]
+    if bf16_base:            # ⚠️ ADR-0031 birincil: bf16 donuk taban + LoRA (QLoRA değil)
+        extra += ["--bf16-base"]
+    if target_modules:       # ⚠️ Qwen3.5 VLM: all-linear görüntü kulesine takar (#39) → metin kulesi listesi
+        extra += ["--target-modules", *target_modules.split()]
 
     parts = dict(user_part=user_part, assistant_part=assistant_part)
     if smoke:
