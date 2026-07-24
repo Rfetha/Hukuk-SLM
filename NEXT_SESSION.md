@@ -1,4 +1,55 @@
-# DEVİR NOTU — 2026-07-23 · doküman hizalaması YAPILDI · base ölçümle teyit · sıradaki = KAPI 1
+# DEVİR NOTU — 2026-07-24 · e2e altyapısı kuruluyor · E4B geçiş kararı ölçüme bağlı
+
+> ## 🔴 CANLI DURUM (2026-07-24, oturum sonu)
+>
+> **Nerede kaldık:** `llama.cpp` CUDA build'i koşuyor (~%76, CUDA objesi 141/186).
+> Bitince script **otomatik** GGUF üretimine geçiyor. Komut idempotent:
+> ```
+> bash scripts/setup_llamacpp.sh all      # klon + CUDA build + 12B/E4B GGUF
+> ```
+> Log: son çalıştırmanın çıktısı; kontrol: `ls ~/code/llama.cpp/build-cuda/bin/llama-server`
+>
+> **Neden bu iş:** E4B'yi 4-bit koşturabilen **tek yol llama.cpp** çıktı (Unsloth `gemma4`'ü
+> tanımıyor, transformers+bitsandbytes ağırlık dönüşümünde patlıyor, bf16 12 GB'a sığmıyor).
+> Bu ADR-0025'e dönüştü ve stratejik olarak da doğru: **adalet kuralı artık yapısal garanti**
+> (bizim model + rakipler aynı `OpenAI()` istemcisinden; `llama-server` ve OpenRouter ikisi de uyumlu).
+>
+> **Kalan zincir:** build → GGUF → `llama-server` + duman testi → **B1 regex kalibrasyonu (ZORUNLU)**
+> → CANON 6-mod generation (E4B + 12B, $0) → hakem skorlama (~$0.20, **onaylı**) → **e2e sonucu**
+>
+> **e2e sonucu ne yapacak:**
+> - E4B kullanılabilir → **FAZ C**: `_archive_12b/` emekliliği (ADR-0024) + rename (eskiler `v0.x`,
+>   yeni hat `v1`) + yeni hat kurulumu + doküman finali + geçiş ADR'si
+> - E4B belirgin kötü → ADR-0018 soft-gate'i yeniden değerlendir (dürüst taban 12 GB mı?), 12B kalır
+>
+> **Görev listesi task sisteminde** (A2–A4, B1–B5, C1+C2, C3+C4+C5, D1–D4). Faz D = revizyon
+> sonrası büyük işler: harness kurulumu (tezin en büyük eksiği) · rakip baseline · KV-bit eğrisi ·
+> v1 reçetesi.
+>
+> ### Bugünün kritik teknik bulguları (tekrar keşfetme)
+> - `transformers < 5.x` **`gemma4`'ü hiç tanımıyor** → tüm eval'ler 5.x'e bağlı, lockfile hayati
+> - Gemma 4 `tokenizer_config.json`'da `extra_special_tokens` **liste**, transformers 4.x dict
+>   bekliyor → `AttributeError`. Yama `setup_llamacpp.sh` içinde otomatik.
+> - transformers 5.x: `apply_chat_template(return_tensors='pt')` artık `BatchEncoding` döndürüyor
+>   → `return_dict=True` + `**enc` şart
+> - nvcc: pip paketi **yalnız ptxas** içeriyor · sistemde CUDA yok · Linux için hazır llama.cpp
+>   CUDA binary'si yok · NVIDIA Vulkan ICD'si yok → NVIDIA redistributable tarball'ları
+>   (`scripts/setup_cuda_toolkit.sh`, sudo'suz) + **`lib/` → `lib64/` symlink'i şart**
+> - **Scratchpad oturum-kapsamlı ve TEMİZLENİYOR** — 22 GiB build+GGUF bu yüzden kaybedildi.
+>   Kalıcı konumlar: `~/code/llama.cpp` · `~/code/llamacpp_venv` · `~/code/cuda-12.9` · `models/gguf/`
+> - **`global_venv`'e dış araç kurma** — 6 paket bozulmuştu (torch/transformers/hf-hub/numpy/
+>   protobuf/torchvision), lockfile'dan onarıldı. Dış bağımlılıklar İZOLE venv'e.
+>
+> ### Ölçülmüş sayılar (projeksiyon değil)
+> - 12B Q4_0 `--pure` = **6.26 GiB** · varsayılan (+`token_embd` Q6_K) = 6.50 GiB · f16 = 22.20 GiB
+> - E4B: decoder 4.56B + **PLE 2.90B** + vision 169M + audio 309M = **7.94B** (bf16 14.79 GiB)
+> - Çalışırken VRAM (12B, Q4_0+`-fa`+KV q8_0): 32K→7.17 · **128K→7.55** · 256K→8.05 GB
+> - ⚠️ **8 GB kartın 8 GB'ı kullanıcıya ait değil** — masaüstü+tarayıcı 0.5-1.5 GB → 12B pratikte
+>   sığmıyor (KV'ye 0.03 GB kalıyor), **E4B@128K 5.82 GB** her senaryoda sığıyor. E4B kolunun sebebi bu.
+
+---
+
+# (önceki) DEVİR NOTU — 2026-07-23 · doküman hizalaması YAPILDI · base ölçümle teyit
 
 > ## 🆕 2026-07-23 OTURUMU — ne oldu
 > Kullanıcı projeyi arşivleyip (`vOLD-archived`) **sıfırdan başlamayı** sorguladı. Üç sebep vardı:
