@@ -23,12 +23,18 @@
 
 ```
 ┌─ FAZ A — HAZIRLIK ────────────────┐   ┌─ FAZ B — İLK FT ──────────────┐
-│ CP0 base kapısı    (GPU yok)      │   │ CP3 smoke      (~$0.15)       │
-│ CP1 base baseline  (çıkarım)      │──►│ CP4 tam eğitim (asıl koşu)    │
-│ CP2 veri hazırlığı (CPU)          │   │ CP5 ölçüm      (hakem)        │
+│ CP0 base kapısı    (GPU yok)      │   │ CP4 smoke      (~$0.15)       │
+│ CP1 DEV havuzu     (CPU)          │──►│ CP5 tam eğitim (asıl koşu)    │
+│ CP2 base baseline  (çıkarım)      │   │ CP6 ölçüm      (hakem)        │
+│ CP3 veri hazırlığı (CPU)          │   │                               │
 └───────────────────────────────────┘   └───────────────────────────────┘
-   6/6 yeşil + Kapı 0 kararı              sprint biter: 3 soru cevaplı
+   6 kapı yeşil · DEV ayrık · Kapı 0      sprint biter: 3 soru cevaplı
 ```
+
+> **CP1 neden burada?** Kapı 0 bir **seçim** kararı (`τ_register` eğitilsin mi) ve CP2'nin
+> sayılarından veriliyor. O sayılar dondurulmuş TEST setinde üretilirse **test üzerinde seçim**
+> yapmış oluruz — `TASARIM.md` §3.2 `data/eval/canon/`'u *"nihai raporda bir kez görülür"* diye
+> bağlamıştı. DEV havuzu bu yüzden ilk FT'den önce, Faz A'da üretilir.
 
 ---
 
@@ -56,18 +62,25 @@ uçtan uca doğrular; sonraki iki kol aynı raydan geçer.
 
 ## CP0 — Base doğrulama kapısı 🔒
 
-**TODO:** §0 (tamamı) · **GPU:** yok · **Çıkış:** 6/6 yeşil
+**TODO:** §0 (tamamı) · **GPU:** yok · **Çıkış:** `TASARIM.md` §8'in **6 kapı maddesi** yeşil
 
-| # | iş | doğrulama |
-| :-- | :--- | :--- |
-| 1 | Aday base'i indir | — |
-| 2 | **llama.cpp mimari desteği** | model yükleniyor mu, `--list-devices` |
-| 3 | GGUF üret | `bash scripts/setup_llamacpp.sh <repo> <etiket>` · **`PURE=0`** (QAT yok) |
-| 4 | **Şablon render'ını GÖZLE oku** | `bash scripts/diag_chat_template.sh <gguf>` → `/apply-template` |
-| 5 | **Model DURUYOR mu** | `bash scripts/smoke_llamacpp.sh <gguf>` → `finish_reason=stop` |
-| 6 | **Turn işaretlerini çıkar** | 4. adımın render'ından `user_part` / `assistant_part` |
-| 7 | Unsloth + sm_120 ortamı | `requirements.lock.txt` yeniden kur |
-| 8 | Lisansı kaydet | attribution + limitations satırı |
+Tablo 8 satır ama **kapı 6 madde** — 1 ve 5 destek adımı, kendi başlarına kapı değil.
+`🔒` sütunu satırın §8'deki karşılığını verir.
+
+| # | 🔒 §8 | iş | doğrulama |
+| :-- | :--: | :--- | :--- |
+| 1 | — | Aday base'i indir | destek adımı |
+| 2 | **1** | **llama.cpp mimari desteği** | model yükleniyor mu, `--list-devices` |
+| 3 | **5** | GGUF üret (kuantizasyon) | `bash scripts/setup_llamacpp.sh <repo> <etiket>` · **`PURE=0`** (QAT yok) |
+| 4 | **2** | **Şablon render'ını GÖZLE oku** | `bash scripts/diag_chat_template.sh <gguf>` → `/apply-template` |
+| 5 | — | **Model DURUYOR mu** | 4'ün saha teyidi: `bash scripts/smoke_llamacpp.sh <gguf>` → `finish_reason=stop` |
+| 6 | **3** | **Turn işaretlerini çıkar** | 4. adımın render'ından `user_part` / `assistant_part` |
+| 7 | **4** | Unsloth + sm_120 ortamı | `requirements.lock.txt` yeniden kur |
+| 8 | **6** | Lisansı kaydet | attribution + limitations satırı |
+
+> **7. madde CP2'yi bloke ETMİYOR.** Eval yolu llama.cpp/GGUF üzerinden koşuyor (ADR-0025) —
+> `transformers`/Unsloth gerektirmez. Yani sm_120 borcu açıkken bile CP1-CP2-CP3 yürüyebilir;
+> borç yalnız **Faz B'yi** (eğitim) bekletir. Sprintin en oynak kalemini kritik yoldan çıkarır.
 
 > ### ⚠️ 12B'den — **buradaki iki madde bir CANON koşusunu sessizce çöpe çevirir**
 >
@@ -88,29 +101,123 @@ uçtan uca doğrular; sonraki iki kol aynı raydan geçer.
 bir haftayı da yiyebilir. Takvim belirsizliği buradan geliyor. Modal'a kaçmak borcu **ertelemek**
 demek — kapatmak değil.
 
-## CP1 — Base baseline + Kapı 0
+## CP1 — DEV havuzu 🔒
 
-**TODO:** §2 "Kapı 0" · §1 (regex kalibrasyonunun ilk yarısı) · **GPU:** çıkarım, yerel
+**TODO:** §1 "DEV havuzu üret" · **GPU:** yok
 
-Yeni base'i **çıplak** olarak 6-mod CANON'da koş. Tek koşu, üç çıktı:
+`data/eval/canon/` (40+35) **TEST**'tir: dondurulmuş, nihai raporda **bir kez** görülür
+(`TASARIM.md` §3.2). Seçim kararlarının hepsi — Kapı 0, merge süpürmesi, hiperparametre —
+**DEV** üzerinde alınır.
+
+```bash
+python scripts/build_eval_sets.py --core-n 80 --trap-n 70 --seed 20260724 \
+  --out-dir data/eval/dev \
+  --exclude data/eval/canon/core_hard.jsonl data/eval/canon/trap.jsonl
+```
+
+**Kabul ölçütü: TEST ile kesişim = 0.**
+
+```bash
+python - <<'PY'
+import json
+def qs(p):
+    return {next(x['content'] for x in json.loads(l)['messages'] if x['role']=='user')
+            for l in open(p, encoding='utf-8') if l.strip()}
+dev  = qs('data/eval/dev/core_hard.jsonl')  | qs('data/eval/dev/trap.jsonl')
+test = qs('data/eval/canon/core_hard.jsonl') | qs('data/eval/canon/trap.jsonl')
+print(f"DEV={len(dev)} TEST={len(test)} KESİŞİM={len(dev & test)}")   # KESİŞİM 0 OLMALI
+PY
+```
+
+> ### ⚠️ `--exclude` olmadan DEV üretmek İŞE YARAMAZ
+>
+> CORE-HARD seçimi **karmaşıklığa göre sıralı ve seed'den bağımsız** — farklı `--seed` **aynı**
+> maddeleri verir, büyük `--core-n` ise TEST'in **üst kümesini**. Yani `--exclude`'suz "DEV"
+> üretmek TEST'i ikinci bir isimle kopyalamaktır ve **hata vermez.** Bayrak bunun için eklendi;
+> kesişim denetimi de bu yüzden kabul ölçütü.
+>
+> **n = 80+70 geçici.** Hedef n güç analizine bağlı (`TODO` §1, açık soru). Üretim deterministik
+> ve bedava — sayı netleşince komutu yeniden koş.
+
+## CP2 — Base baseline + Kapı 0
+
+**TODO:** §2 "Kapı 0" · §1 (regex kalibrasyonunun ilk yarısı) · **GPU:** çıkarım (llama.cpp, yerel)
+
+Yeni base'i **çıplak** olarak 6-mod CANON protokolünde, **DEV havuzunda** koş. Üç çıktı:
 
 1. **Çıpalar** — `τ_grounding`'in yeneceği/koruyacağı sayılar (M1 · M3 · M4)
 2. **Kapı 0 kararı** — register-proxy → `τ_register` kolu gerekli mi?
 3. **Hattın doğrulaması** — eval yolu yeni base'de uçtan uca çalışıyor mu
 
+**Önce sunucuyu aç** (ADR-0025: eval llama.cpp/GGUF üzerinden; `transformers` yolu gerekmez):
+
 ```bash
-python scripts/gen_eval_grounded.py --label bench_m1_base  --distractors 4 --max-chunk-chars 900 --n 40
-python scripts/gen_eval_grounded.py --label bench_m4_base  --with-source --n 40
-python scripts/gen_eval_grounded.py --label bench_m2_base  --data data/eval/canon/trap.jsonl --with-source --n 35
-python scripts/gen_eval_grounded.py --label bench_m2b_base --distractors 4 --no-gold --n 40
-python scripts/gen_eval_grounded.py --label bench_m3_base  --empty-context --n 40
-python scripts/gen_eval_grounded.py --label bench_m5_base  --n 40          # kör
-python scripts/rescore_answered.py ...                                      # A1 = cevaplanan-only
-python scripts/score_register.py --details outputs/eval/bench_m1_base_detail.jsonl
+$HOME/code/llama.cpp/build-cuda/bin/llama-server -m <CP0'ın GGUF'u> \
+  --port 8080 --ctx-size 4096 --cache-type-k q8_0 --cache-type-v q8_0 &
+export LLAMA_SERVER_URL=http://127.0.0.1:8080
+export DEV=data/eval/dev
+```
+
+**1) Altı modun cevaplarını üret** — `--data` her modda AÇIKÇA verilir:
+
+```bash
+python scripts/gen_eval_grounded.py --label m1_base  --data $DEV/core_hard.jsonl --distractors 4 --max-chunk-chars 900 --n 80
+python scripts/gen_eval_grounded.py --label m4_base  --data $DEV/core_hard.jsonl --with-source --n 80
+python scripts/gen_eval_grounded.py --label m2_base  --data $DEV/trap.jsonl      --with-source --n 70
+python scripts/gen_eval_grounded.py --label m2b_base --data $DEV/core_hard.jsonl --distractors 4 --no-gold --n 80
+python scripts/gen_eval_grounded.py --label m3_base  --data $DEV/core_hard.jsonl --empty-context --n 80
+python scripts/gen_eval_grounded.py --label m5_base  --data $DEV/core_hard.jsonl --n 80        # kör
+```
+
+> ⚠️ **`--data`'yı ASLA düşürme.** Script'in default'u `data/train/grounded_qa/test.jsonl`
+> (1022 satır) — CANON değil, eğitim setinin komşusu. Hata vermez, tablo dolar, sayı yanlış sete
+> aittir. `--n` havuz boyutuyla aynı olduğu için çıktı **doğru görünür.**
+
+**2) Skorla** — M1/M4 groundedness hakemi, M2/M2b/M3 abstention hakemi, M5 anti-hedef:
+
+```bash
+for M in m1 m4 m5; do
+  python scripts/groundedness.py --details outputs/eval/${M}_base_detail.jsonl --label ${M}_base --mode data
+done
+for M in m2 m2b m3; do
+  python scripts/score_abstention.py --details outputs/eval/${M}_base_detail.jsonl --label ${M}_base \
+    $( [ $M = m2b ] && echo --source-field context_shown )     # M2b: gold GÖSTERİLMEDİ
+done
+```
+
+**3) A1 = cevaplanan-only + register:**
+
+```bash
+python scripts/rescore_answered.py --gnd outputs/eval/gnd_m1_base.jsonl \
+  --bench outputs/eval/m1_base_detail.jsonl --label m1_base
+python scripts/score_register.py --details outputs/eval/m1_base_detail.jsonl --label m1_base
 ```
 
 **Kapı 0:** register-proxy yüksekse `τ_register` **düşer** → kol 3→2, kafes 7→3 hücre, **FT bütçesi
 6'dan 5'e iner** (FT-3 düşer). Düşükse kol gerekçeli olur.
+
+### Hakem erişimi — bu sprintte tek aile yeter, kod çok-aileye hazır
+
+CP2'nin çıktısı **iç kıyas**: çıpalar CP6'da `τ_grounding` ile *aynı hakemle* karşılaştırılacak.
+Aynı hakem her iki tarafta kullanıldığı sürece **tek aile — bugünkü `OPENAI_API_KEY` — yeterli.**
+Üç aileli panel sayıların **rapor edildiği** yerde gerekir → **Sprint 3** (iç iddia kararı) ve
+**Sprint 5** (parite). Sprint 1'de çok-aile için para harcanmaz.
+
+Kod tarafı şimdiden hazır (ADR-0029): `scripts/llm_client.py` **tek erişim kapısı**, hakem
+scriptleri oradan geçiyor. `.env`'e `OPENROUTER_API_KEY` eklendiği an kapı kendiliğinden
+OpenRouter'a döner — **script değişikliği yok**, anahtar yokken `OPENAI_API_KEY` yolu aynen çalışır.
+
+**Faz A'da yine de bir karar var:** panelin üç ailesi **base ailesi belli olunca** seçilebilir —
+aile-dışlama (bir özneyi kendi ailesinin hakemi notlamaz) doğrudan CP0'ın çıktısına bağlı.
+CP0 biter bitmez üç aileyi yaz; harcama Sprint 3'e kalsın.
+
+> ### ⚠️ Anahtar takıldığı gün üç doğrulama — üçü de varsayılamaz
+>
+> | ne | neden |
+> | :--- | :--- |
+> | **JSON modu her ailede çalışıyor mu** | hakem scriptleri katı JSON bekliyor; OpenAI dışı ailelerde `response_format` yok sayılabilir. `loads_tolerant` yedeği var ama **çalıştığını gör** |
+> | **Sağlayıcı pinlenmiş mi** | özet JSON'daki `judge_providers` **tek eleman** olmalı. Birden fazlaysa aynı model kimliği farklı servis yığınında (farklı kuantizasyon) koşmuş → sayılar kıyaslanamaz, ve **hata vermez** |
+> | **Fiyat kaydı var mı** | `llm_client.PRICE`'a **birincil-kaynak liste fiyatı** girilir, kapıya ödenen tutar değil. Ödediğini parite fiyatı sanmak rakibi pahalı gösterir — kalibre edilmemiş red regex'iyle aynı hata sınıfı (ADR-0029) |
 
 > ### ⚠️ 12B'den
 >
@@ -128,7 +235,7 @@ python scripts/score_register.py --details outputs/eval/bench_m1_base_detail.jso
 > **12B çıpaları (kalibrasyon, hedef değil):** M1 0.879 · M3 1.000 · M4 0.977-0.983 · M2 0.704 ·
 > M5 0.225 · register 1.0
 
-## CP2 — Veri hazırlığı
+## CP3 — Veri hazırlığı
 
 **TODO:** §2 (`τ_grounding` verisi) · **GPU:** yok
 
@@ -142,8 +249,18 @@ python scripts/score_register.py --details outputs/eval/bench_m1_base_detail.jso
 
 İki şey **yeni tokenizer'a göre yeniden doğrulanmalı:**
 
-- [ ] **Token bütçesi** — `max_seq_len` içine kaç örnek sığıyor? Yeni tokenizer Türkçe'yi farklı
-      verimlilikte kodlar → kırpma oranı değişir. Ölç, `--max-chunk-chars`'ı gerekirse ayarla.
+- [ ] **Token bütçesi** — yeni tokenizer Türkçe'yi farklı verimlilikte kodlar → kırpma oranı değişir:
+
+```bash
+python scripts/measure_token_budget.py --data data/train/raft/train.jsonl \
+  --model <CP0'ın base'i> --max-seq-len 2048 --out outputs/eval/token_budget_base.json
+```
+
+  Script iki sayıyı ayrı verir: **DÜŞEN** (istem sınırı doldurmuş, cevaba yer kalmamış → tüm
+  label −100) ve **KESİK** (cevap ortasında kesilmiş → yarım cevap öğretimi). **Etkilenen >%1 ise
+  koşma** — `--max-chunk-chars`'ı kıs ya da `max_seq_len`'i büyüt. Dilim kırılımı da basılır,
+  yani hasarın grounded'da mı abstain'de mi olduğu görünür.
+
 - [ ] **Chat template render'ı** eğitim tarafında CP0'ınkiyle aynı mı.
 - [ ] **20 satırlık smoke pack** → gözle bak: gold gerçekten context'te mi, distractor'lar makul mü.
 
@@ -170,16 +287,18 @@ python scripts/score_register.py --details outputs/eval/bench_m1_base_detail.jso
 
 ### ✅ FAZ A çıkış ölçütü
 
-- [ ] CP0 **6/6 yeşil** — base doğrulandı, model duruyor, turn işaretleri elde
-- [ ] CP1 tamamlandı — 6-mod base çıpaları kayıtlı, **Kapı 0 kararı verildi**
-- [ ] CP2 tamamlandı — token bütçesi ölçüldü, smoke pack gözle doğrulandı
+- [ ] CP0 — `TASARIM.md` §8'in **6 kapı maddesi** yeşil, model duruyor, turn işaretleri elde
+- [ ] CP1 — DEV havuzu üretildi, **TEST ile kesişim = 0** doğrulandı
+- [ ] CP2 — 6-mod base çıpaları **DEV'de** kayıtlı, **Kapı 0 kararı verildi**
+- [ ] Hakem panelinin **üç ailesi yazıldı** (base ailesine göre aile-dışlama) — harcama Sprint 3'te
+- [ ] CP3 — token bütçesi ölçüldü (**etkilenen ≤%1**), smoke pack gözle doğrulandı
 - [ ] `research_log/` girdisi **#39** yazıldı (Faz A bulguları + base çıpaları)
 
 ---
 
 # FAZ B — İLK FINE-TUNE (FT-1)
 
-## CP3 — SMOKE (para-kapısı: ~$0.15)
+## CP4 — SMOKE (para-kapısı: ~$0.15)
 
 **TODO:** §2 · **GPU:** Modal ve/veya yerel
 
@@ -206,9 +325,9 @@ gereken işin içinde.
 > **`spawn()` kullan, `remote()` değil** — `remote()` client'a bağlı bekler; WSL/PC kapanınca
 > SIGTERM → Modal'a cancel → **job ölür.** Bu ders **4 koşu yakarak** öğrenildi.
 
-## CP4 — FT-1: `τ_grounding` tam eğitim
+## CP5 — FT-1: `τ_grounding` tam eğitim
 
-**TODO:** §2 "τ_grounding eğit" · **GPU:** CP3'ün `s/it` sonucuna göre yerel ya da Modal
+**TODO:** §2 "τ_grounding eğit" · **GPU:** CP4'ün `s/it` sonucuna göre yerel ya da Modal
 
 ```bash
 --lr 1e-4 --rank 16 --alpha 32 --target-modules <all-linear> \
@@ -226,19 +345,19 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 >
 > **12B referansı:** v2b = 1.083 step · 4 sa 19 dk (12,72 s/it, A100-40GB) · train_loss 0.30 ·
 > adapter 65.5M param / 262 MB · 0 örnek düşürüldü.
-> **~4B projeksiyonu:** A100'de ~4-5 s/it → ~1,5 saat. Yerel: **ölçülmemiş**, CP3 söyleyecek.
+> **~4B projeksiyonu:** A100'de ~4-5 s/it → ~1,5 saat. Yerel: **ölçülmemiş**, CP4 söyleyecek.
 
-## CP5 — Ölçüm
+## CP6 — Ölçüm
 
 **TODO:** §3 (kafesin ilk hücresi: `τg` tekili) · **GPU:** çıkarım + hakem
 
-`τ_grounding`'i CP1'in **aynı** 6 modunda koş — **harness KAPALI**, aynı seed/n/hakem.
+`τ_grounding`'i CP2'nin **aynı** 6 modunda koş — **harness KAPALI**, aynı seed/n/hakem.
 
 | ne | nasıl |
 | :--- | :--- |
-| 6-mod CANON | CP1'in komutları + `--adapter outputs/tg` |
+| 6-mod CANON | CP2'nin komutları + `--adapter outputs/tg` |
 | A1 | **cevaplanan-only** + coverage yan yana |
-| Kıyas | CP1 çıpaları — **elmayla elma**, aynı harness/mod/n/seed/hakem |
+| Kıyas | CP2 çıpaları — **elmayla elma**, aynı harness/mod/n/seed/hakem |
 | Kayıt | `research_log/` girdisi **#40**, aynı gün |
 
 ### Ön-kayıtlı beklenti
@@ -280,10 +399,10 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 | iş | nerede | neden burada değil |
 | :--- | :--- | :--- |
 | `rejected` hasadı + `τ_abstention` | Sprint 2 | çalışan çıkarım hattı ister — Faz A onu kuruyor |
-| `τ_register` | Sprint 2 | kararı Kapı 0 veriyor (CP1) |
+| `τ_register` | Sprint 2 | kararı Kapı 0 veriyor (CP2) |
 | Tabanlar (karışık · ardışık SFT) | Sprint 2 | kollar bitmeden kıyas anlamsız |
 | Merge + 7 hücreli kafes | Sprint 3 | en az 2 kol gerekiyor |
-| DEV havuzu + regex kalibrasyonu | Sprint 2-3 | rakip ölçümünden önce |
+| Regex kalibrasyonu (rakip aileleri) | Sprint 2-3 | çok-aile erişimi ister (ADR-0029) — *DEV havuzu Faz A'ya alındı, CP1* |
 | Harness | Sprint 4 | iç ablasyondan bağımsız, **paralel yürüyebilir** |
 | Dış parite matrisi | Sprint 5 | kazanan konfigürasyon belli olduktan sonra |
 

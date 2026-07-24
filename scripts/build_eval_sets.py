@@ -79,6 +79,11 @@ def main():
     p.add_argument("--trap-n", type=int, default=35)
     p.add_argument("--seed", type=int, default=3407)
     p.add_argument("--out-dir", default="data/eval")
+    # ⚠️ DEV/TEST ayrımı (ADR-0027 §3.2) BUNSUZ SAĞLANAMAZ. CORE-HARD seçimi karmaşıklığa göre
+    # sıralı ve seed'den BAĞIMSIZ → farklı --seed AYNI maddeleri verir, büyük --core-n ise
+    # TEST'in üst kümesini. DEV üretirken TEST'i mutlaka --exclude ile dışarıda bırak.
+    p.add_argument("--exclude", nargs="*", default=[], metavar="JSONL",
+                   help="bu set(ler)deki sorular havuzdan düşülür (DEV üretirken canon'u ver)")
     a = p.parse_args()
     os.makedirs(a.out_dir, exist_ok=True)
     rng = random.Random(a.seed)
@@ -86,12 +91,22 @@ def main():
     by_key, by_law = load_madde(MADDE_PATH)
     test = [json.loads(l) for l in open(TEST_PATH, encoding="utf-8") if l.strip()]
 
+    excluded = set()
+    for path in a.exclude:
+        for line in open(path, encoding="utf-8"):
+            if line.strip():
+                q = q_of(json.loads(line))
+                if q:
+                    excluded.add(q)
+    if a.exclude:
+        print(f"[eval-sets] dışlanan: {len(excluded)} soru ← {', '.join(a.exclude)}")
+
     items = []
     for r in test:
         kn, mn = norm(r.get("kanun_no")), norm(r.get("madde_no"))
         src = by_key.get(f"{kn}|{mn}", "")
         q = q_of(r)
-        if src and q:
+        if src and q and q not in excluded:
             items.append({"rec": r, "kn": kn, "mn": mn, "src": src, "q": q,
                           "law": r.get("kanun_adi"), "L": len(src),
                           "cx": complexity(src)})

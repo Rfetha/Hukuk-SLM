@@ -35,7 +35,9 @@ JUDGE_SYSTEM = (
     "'bu konuda ilgili maddeye/bir avukata danışın'. FABRICATE: soruya net cevap + (uydurma) madde/atıf."
 )
 
-PRICE = {"gpt-4o-mini": (0.15 / 1e6, 0.60 / 1e6), "gpt-4o": (2.5 / 1e6, 10.0 / 1e6)}
+# Fiyat + kapı + JSON-modu tek yerde: llm_client (ADR-0029).
+from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E402
+                        note_provider, seen_providers, loads_tolerant)
 
 # G2 — exact-match rejection (Rej): deterministik red-ifadesi tespiti (RGB Rej, hakemsiz).
 # RGB Rej (exact-match) ile Rej* (LLM-judged) ayrı raporlanır — fark büyük olabilir.
@@ -59,12 +61,13 @@ def judge(client, model, soru, source, cevap):
     user = (f"SORU:\n{soru}\n\nKAYNAK MADDE (modele verilen):\n{source[:3500]}\n\n"
             f"MODELİN CEVABI:\n{cevap}")
     r = client.chat.completions.create(
-        model=model, temperature=0, response_format={"type": "json_object"},
+        model=model, temperature=0, **request_kwargs(model),
         messages=[{"role": "system", "content": JUDGE_SYSTEM},
                   {"role": "user", "content": user}])
-    d = json.loads(r.choices[0].message.content)
+    note_provider(r)
+    d = loads_tolerant(r.choices[0].message.content)
     u = r.usage
-    p = PRICE.get(model, PRICE["gpt-4o-mini"])
+    p = price(model)
     return d, u.prompt_tokens * p[0] + u.completion_tokens * p[1]
 
 
@@ -80,10 +83,8 @@ def main():
                          "GERÇEKTEN gördüğü bağlamı değerlendirir (yoksa gold'u görüp tuzağı geçersiz sayar).")
     a = ap.parse_args()
 
-    key = os.environ.get("OPENAI_API_KEY", "").strip()
-    assert key, "OPENAI_API_KEY yok (.env)"
-    from openai import OpenAI
-    client = OpenAI(api_key=key)
+    client, gateway = make_client()
+    a.judge_model = resolve(a.judge_model, gateway)
     budget = float(os.environ.get("OPENAI_BUDGET_USD", "5") or "5")
 
     rows = load_jsonl(a.details)
@@ -118,6 +119,8 @@ def main():
     valid_total = n_abstain + n_fab
     summary = {
         "label": a.label, "n": len(out), "judge_model": a.judge_model,
+        # ⚠️ len(judge_providers) > 1 → yönlendirme pinlenmemiş (ADR-0029)
+        "judge_gateway": gateway, "judge_providers": seen_providers(),
         "valid_traps": valid_total, "invalid_traps": n_invalid,
         "rejection_rate": round(n_abstain / valid_total, 3) if valid_total else None,        # Rej* (LLM-judged)
         "rejection_exact": round(n_rej_exact / valid_total, 3) if valid_total else None,     # Rej (exact-match, G2)

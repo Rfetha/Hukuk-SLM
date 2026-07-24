@@ -36,6 +36,7 @@ taşıyor → `gemma4-12b-dersler.md#adr-0011` gibi.
 | :-- | :--: | :--- |
 | **[0027](0027-tasarim-kilitleri-paralel-kol-merge.md)** | 🟢 | ⭐⭐ **Tasarım kilitleri:** paralel kol + task-vector merge · iki matris (iç ablasyon harness-kapalı / dış parite) · DEV/TEST ayrımı · dört katmanlı hakem savunması · kapılı hibrit graf kolu. *(“iki boyut noktası” maddesi → **0028 ile süperseded**)* |
 | **[0028](0028-tek-boyut-noktasi.md)** | 🟢 | ⭐ **Tek boyut noktası:** tez tek base'de tamamlanır (FT 10→6, sprint 6→5). İkinci boyut = tez sonrası, aynı reçeteyle. Bedeli — dış geçerlilik açığı kapanmıyor · kapasite ekseni ölçülemiyor · ADR-0018'in eğri şartı karşılanmıyor — **limitations'a yazılır** |
+| **[0029](0029-model-erisim-kapisi.md)** | 🟢 | **Tek model erişim kapısı** (`scripts/llm_client.py`) — hakem paneli + rakipler tek yerden, geriye dönük uyumlu. Çok-aile **Sprint 2-3'te** gerekli, Sprint 1'de değil. İki kilit: parite fiyatı **birincil-kaynak liste fiyatıdır** (kapı marjı değil) · sağlayıcı yönlendirmesi pinlenir ve koşuya kaydedilir |
 
 **Otorite tasarım belgesi:** [`TASARIM.md`](../../TASARIM.md) (repo kökü) — ne inşa edeceğimiz ve
 neyi ölçeceğimiz. ADR-0027 onun kararlarını donmuş anlatı olarak kaydeder.

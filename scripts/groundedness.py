@@ -41,10 +41,11 @@ import json
 import os
 import statistics
 
-PRICE = {  # USD / 1M token (in, out) — bütçe tahmini
-    "gpt-4o-mini": (0.15 / 1e6, 0.60 / 1e6),
-    "gpt-4o": (2.50 / 1e6, 10.0 / 1e6),
-}
+# Fiyat + kapı + JSON-modu tek yerde: llm_client (ADR-0029). Script başına kopya fiyat YOK —
+# maliyet-normalize parite iddiası (ADR-0017) tek ve denetlenebilir bir tabloya dayanmalı.
+from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E402
+                        note_provider, seen_providers, loads_tolerant)
+
 MAX_SOURCE_CHARS = 3500
 
 # --- Aşama 1: atomik iddia çıkarımı (sıkı granülerlik → count kayması azalır) ---
@@ -116,15 +117,16 @@ def load_jsonl(p):
 
 
 def _price(model):
-    return PRICE.get(model, PRICE["gpt-4o-mini"])
+    return price(model)
 
 
 def extract_claims(client, model, cevap):
     r = client.chat.completions.create(
-        model=model, temperature=0, response_format={"type": "json_object"},
+        model=model, temperature=0, **request_kwargs(model),
         messages=[{"role": "system", "content": EXTRACT_SYSTEM},
                   {"role": "user", "content": f"CEVAP:\n{cevap}"}])
-    d = json.loads(r.choices[0].message.content)
+    note_provider(r)
+    d = loads_tolerant(r.choices[0].message.content)
     u = r.usage
     return [c for c in (d.get("claims") or []) if c and c.strip()], u.prompt_tokens, u.completion_tokens
 
@@ -135,10 +137,11 @@ def verify_claims(client, model, soru, source, gold, cevap, claims):
             f"GOLD ATIF: {gold or '(bilinmiyor)'}\n\n"
             f"CEVAP (tam):\n{cevap}\n\nİDDİA LİSTESİ:\n{claims_txt}")
     r = client.chat.completions.create(
-        model=model, temperature=0, response_format={"type": "json_object"},
+        model=model, temperature=0, **request_kwargs(model),
         messages=[{"role": "system", "content": VERIFY_SYSTEM},
                   {"role": "user", "content": user}])
-    d = json.loads(r.choices[0].message.content)
+    note_provider(r)
+    d = loads_tolerant(r.choices[0].message.content)
     u = r.usage
     return d, u.prompt_tokens, u.completion_tokens
 
@@ -192,11 +195,8 @@ def main():
     if a.n and a.n >= 0:
         rows = rows[:a.n]
 
-    key = os.environ.get("OPENAI_API_KEY", "").strip()
-    if not key:
-        raise SystemExit("[gnd] OPENAI_API_KEY yok (.env yükle)")
-    from openai import OpenAI
-    client = OpenAI(api_key=key)
+    client, gateway = make_client()
+    a.judge_model = resolve(a.judge_model, gateway)
     budget = float(os.environ.get("OPENAI_BUDGET_USD", "5") or "5")
 
     os.makedirs(a.out_dir, exist_ok=True)
@@ -258,6 +258,9 @@ def main():
     tot_claims, tot_cit = s("n_claims"), s("n_citations")
     summary = {
         "label": a.label, "n": len(out), "mode": a.mode, "judge_model": a.judge_model,
+        # ⚠️ len(judge_providers) > 1 → yönlendirme pinlenmemiş, sayı tek bir servis
+        # yığınına ait değil (ADR-0029). Koşuyu tekrarla, LLM_PROVIDER_ORDER ile pinle.
+        "judge_gateway": gateway, "judge_providers": seen_providers(),
         "runs": a.runs, "total_claims": tot_claims,
         # mikro (claim-havuzu) — headline
         "faithfulness_micro": round(s("n_supported") / tot_claims, 4) if tot_claims else None,
