@@ -1,9 +1,20 @@
 # Tez Çerçevesi — Maliyet-Normalize Parite (TASARIM)
 
-> **Durum:** TASLAK — kullanıcı incelemesi bekliyor
-> **Tarih:** 2026-07-17
+> **Durum:** YÜRÜRLÜKTE — otorite belge
+> **Tarih:** 2026-07-17 · **Revizyon: 2026-07-23** (ADR-0021/0022/0023)
 > **Kapsam:** Projenin Master tezi çıktısına göre yeniden çerçevelenmesi
-> **Sonraki adım:** Onaylanırsa → `VISION.md` revizyonu + ADR'ler + `CLAUDE.md` güncellemesi bu spec'ten türetilir
+> **Sonraki adım:** `VISION.md` + `PAPER_TARGET.md` + `TEKNIK_PLAN.md` + `CLAUDE.md` revizyonu bu spec'ten türetilir
+>
+> ### 2026-07-23 revizyon özeti (bu spec'te ne değişti)
+> | § | Değişiklik | Otorite |
+> | :--- | :--- | :--- |
+> | §3.1 | Base teyidi **ölçümle** güçlendi (8 GB'da 176K vs 91K bağlam tavanı); "18× KV" iddiam çürütüldü (gerçek 2.5–3.7×) | ADR-0021 |
+> | §3.3 | ⚠️ "Darboğaz KV-cache" tezi **yanlış çıktı** (KV = ağırlığın %18'i); TurboQuant = bağlam tavanı kaldıracı | ADR-0021/0023 |
+> | §5 | Harness 3 → **4 bileşen** (yapısal graf eklendi); harness **GPU'ya girmez** | ADR-0022/0023 |
+> | §5.3 | ⚠️ "Graph-RAG tez dışı" **daraltıldı**: (a) yapısal içeride, (b) çok-ajanlı dışarıda | ADR-0022 |
+> | §7.4 | VRAM ölçümü kısmen kapandı (`kv_cache_compare.py`) | ADR-0023 |
+> | §11 | 2 yeni risk: **eval ≠ dağıtım**, VRAM tahminleri ölçülmedi | ADR-0023 |
+> | §12 | Yeni açık soru: **zamansal eksen** (mülga/değişik) CANON'a girsin mi | ADR-0022 |
 
 ---
 
@@ -89,7 +100,22 @@ savunulur, "gelecek çalışma" bölümü uzar.
 
 ## 3. Base model kararı
 
-### 3.1 Karar: **Gemma 4 12B birincil kalır** *(teyit: 2026-07-17)*
+### 3.1 Karar: **Gemma 4 12B birincil kalır** *(teyit: 2026-07-17 · **ölçümle yeniden teyit: 2026-07-23, ADR-0021**)*
+
+> ⚠️ **2026-07-23 güncellemesi.** Karar sunk-cost sıfırlanarak yeniden açıldı ve **değişmedi** —
+> ama gerekçeler ölçüldü, biri de düzeltildi. Sayı kaynağı: `scripts/kv_cache_compare.py`.
+>
+> **Eklenen (en güçlü ikinci kalem): 8 GB'da bağlam tavanı.** Aynı kartta kullanıcının
+> yapıştırabileceği en uzun metin **176.128 tok (Gemma) vs 90.982 tok (Qwen3.5 9B)** — ~1.9×,
+> kabaca 110 bin vs 57 bin kelime. Bandı biz değil kullanıcı seçer → kuyruğa tasarlanır.
+> Asimetri: Gemma'da hata bedeli ~1 GB boşuna ağırlık; Qwen'de 128K'da 9.22 GB → ürün çalışmıyor.
+>
+> **Düzeltilen:** aşağıdaki §3.3'ün "darboğaz KV-cache" tezi bu base için **yanlış** (128K'da
+> KV = ağırlığın %18'i). Ayrıca ilk sözlü "18× KV avantajı" iddiası **çürütüldü** — o Qwen**3**'ün
+> hibrit-öncesi mimarisiydi; Qwen3.5 24/32 katmanı Gated DeltaNet'e çevirmiş, gerçek fark **2.5–3.7×**.
+>
+> **Qwen'in dürüstçe kabul edilen üstünlükleri:** saf Apache-2.0 (bizde Apache-2.0 **+ Prohibited
+> Use Policy**) ve <64K bağlamda daha hafif oluş. İkisi de kararı çevirmedi.
 
 `google/gemma-4-12B-it-qat-q4_0-unquantized` (Apache-2.0). Gerekçeler:
 
@@ -116,7 +142,18 @@ Kanıt çizgisi: M1 (distractor-altında sadakat) 0.662 (base) → 0.737 (v2b) �
 **Ölçülebilir hipotez (Katman 1):** *RAFT'ın katkısı oracle-context'te küçük, gürültülü retrieval
 altında büyük.* Bu, `E ≈ D` tehdidine karşı en güçlü savunma. Çıkmazsa paper-değerinde negatif bulgu.
 
-### 3.3 VRAM darboğazı: base değil, KV-cache
+### 3.3 VRAM darboğazı: base değil, KV-cache — ⚠️ **DÜZELTİLDİ (2026-07-23)**
+
+> **Bu bölümün tezi bu base için yanlış çıktı.** 128K bağlamda KV = **1.16 GB**, Q4_0 ağırlık
+> ≈ **6.5 GB** → KV, ağırlığın yalnız **%18'i**. Darboğaz **ağırlık**. Sebep mimari: 48 katmanın
+> 40'ı `sliding_attention` (win=1024, bağlamla büyümüyor), büyüyen 8 `full_attention` katmanı
+> 1 KV head × 512 dim, ve `attention_k_eq_v=True` cache'i bir daha yarıya indiriyor.
+>
+> **TurboQuant'ın rolü değişti:** bellek-darboğazı çözücü değil, **bağlam tavanı kaldıracı**
+> (8 GB'da bf16 → 64.755 tok; q8_0 → 149.990; q4_0 → 320.461; ~3 bit → 434.108). Ayrıca
+> **llama.cpp'de yok** → bugünkü kaldıraç `--cache-type-k/-v q8_0`; TurboQuant sonraya (ADR-0023).
+> "Base değiştirmenin verdiğinden fazlasını bedavaya verir" argümanı da gereksizleşti: base kıyası
+> KV üzerinden değil, **8 GB'da bağlam tavanı** üzerinden kazanıldı (§3.1).
 
 Düşük-spec derdinin doğru kolu base değiştirmek değil. Asıl darboğaz uzun RAG bağlamının
 KV-cache'i, ve kayıtlı çözümü var: `knowledge/summary_turboquant.md` — KV-cache'i 2.5–3.5 bit'e
@@ -187,15 +224,21 @@ Her özne × {harness yok, harness var} × 6-mod CANON:
 
 ## 5. Harness mimarisi
 
-Üç bağımsız bileşen; her biri ayrı test edilebilir, ayrı ablasyon edilebilir.
+> ⚠️ **GÜNCELLENDİ (2026-07-23, ADR-0022):** bileşen sayısı 3 → **4**. Yapısal/deterministik graf
+> eklendi; §5.3'ün eski "graph-RAG tez dışı" ifadesi daraltıldı (aşağı bkz.).
+> ⚠️ **VRAM kısıtı (ADR-0023):** harness **GPU'ya girmez** — embedder CPU'da, graf + vektör indeksi
+> CPU RAM/disk'te. 8 GB'da embedder'ı GPU'ya koymak yığını açtırmıyor; bu bir tasarım kısıtı.
+
+Dört bağımsız bileşen; her biri ayrı test edilebilir, ayrı ablasyon edilebilir.
 
 | # | Bileşen | Arayüz | Not |
 | :--- | :--- | :--- | :--- |
-| 1 | **Retriever** | `soru → top-k madde` | Hibrit (BM25 + TR embedding). `raft_pack.py`'nin bugün *simüle* ettiği şeyin gerçeği. Kayıtlı borç: `raft_pack.py:13` *"Gerçek RAG retriever kurulunca (Adım 0) dağılımı onunla kalibre et."* |
-| 2 | **Atıf doğrulayıcı** | `cevap → her atıf için {VAR, YOK, METİN_UYUŞMUYOR}` | Kanun+madde atıflarını çıkar, **Bedesten API**'ye karşı doğrula. Kontrat: `docs/BEDESTEN_API.md`, probe: `scripts/bedesten_probe.py`. |
+| 1 | **Retriever** | `soru → top-k madde` | Hibrit (BM25 + TR embedding). `raft_pack.py`'nin bugün *simüle* ettiği şeyin gerçeği. Kayıtlı borç: `raft_pack.py:13` *"Gerçek RAG retriever kurulunca (Adım 0) dağılımı onunla kalibre et."* **CPU'da koşar** (ADR-0023). |
+| 1b | **Yapısal graf** *(YENİ, ADR-0022)* | `madde → {hiyerarşi, atıf-komşuları, sürüm-zinciri}` | Deterministik: kanun→madde→fıkra hiyerarşisi + atıf ağı + **mülga/değişik zamansal zincirleri**. Getirmede 1-2 hop genişletme. LLM yok → marjinal ~0 maliyet. Ön-çalışma: SAT-Graph RAG (Work/Expression), Citation Grounding. |
+| 2 | **Atıf doğrulayıcı** | `cevap → her atıf için {VAR, YOK, METİN_UYUŞMUYOR}` | Kanun+madde atıflarını çıkar, **Bedesten API**'ye karşı doğrula. Kontrat: `docs/BEDESTEN_API.md`, probe: `scripts/bedesten_probe.py`. **Zamansal boyut adayı:** *"atıf yapılan tarihte yürürlükte miydi?"* (Citation Grounding'in 3. ekseni — bizde henüz yok). |
 | 3 | **Red kapısı** | `doğrulama düşerse → cevabı redde çevir` | Modelin sahip olmadığı abstention'ı harness'ın **satın aldığı** yer. |
 
-### 5.1 Kritik özellik: 2 ve 3 **deterministik**
+### 5.1 Kritik özellik: 1b, 2 ve 3 **deterministik**
 
 LLM çağırmıyorlar. Sonuçları:
 
@@ -209,10 +252,25 @@ LLM çağırmıyorlar. Sonuçları:
 **Harness tüm öznelere birebir aynı uygulanır.** Aynı retriever, aynı doğrulayıcı, aynı kapı,
 aynı eşikler. Harness'ı sadece kendi modelimize verirsek tez ölür.
 
-### 5.3 Kapsam sınırı
+### 5.3 Kapsam sınırı — **REVİZE (2026-07-23, ADR-0022)**
 
-**Graph-RAG tez dışı** (future work). Parite iddiasına sıfır katkı yapıyor, takvimin yarısını yiyor,
-ve iki ayrı hikâye (abstention + graph) birbirini seyreltir. Sunumdaki "Katkı 3" tez sonrasına atılır.
+> ⚠️ Eski ifade: *"Graph-RAG tez dışı (future work). Parite iddiasına sıfır katkı yapıyor…"*
+> Bu **fazla genişti** — "graph-RAG" adı altında iki farklı iş var ve ayrılmaları gerekiyordu.
+
+- ✅ **(a) Yapısal / deterministik graf → TEZE DAHİL** (§5 tablo, bileşen 1b). Korpusun kendi
+  yapısından çıkar (hiyerarşi + atıf ağı + zamansal zincirler), indekslemede **LLM yok**,
+  marjinal maliyet ~0, determinizmi (§5.1) korur. Zaten bileşen 2'nin (atıf doğrulayıcı) ihtiyaç
+  duyduğu yapı — onu getirmede de kullanmak.
+- ❌ **(b) Çok-ajanlı / LLM-indeksli GraphRAG → KESİN DIŞARIDA.** Sorgu başına ~3× çıkarım →
+  **doğrudan maliyet-normalize parite metriğinden düşer**; üstelik adalet kuralı (§5.2) gereği
+  rakiplere de aynı harness verileceği için maliyet iki taraflı katlanır. Referans: LegalGraphRAG
+  (%6.3–19.1 kazanç raporluyor, **maliyet/gecikme yükünü hiç raporlamıyor**).
+- ❌ **OCR / belge ingestion → harness dışı.** Faz 3 app katmanı; harness metin *alır*. Ölçüme
+  sokulursa groundedness skorları OCR gürültüsüyle karışır (ayrıştırılamaz).
+- ❌ **Faz 3** (agents, app, serving) — kapsam dışı (değişmedi).
+
+Eski "Katkı 3" (vanilla-vs-graph-RAG karşılaştırması) tez sonrasına atılır; ama **(a) sayesinde
+ucuz bir ablasyon açılıyor:** *yapı-farkındalıklı getirme işe yarıyor mu?* (vektör vs vektör+graf).
 
 ---
 
@@ -290,11 +348,18 @@ Maliyet tek sayı değil **eğri** olarak kurulur:
 Jürinin aklında kalacak türden somut bir sayı; "sıfır maliyet" gibi tartışmaya açık bir ifadeden
 çok daha savunulabilir. Bir hukuk bürosu senaryosuyla somutlaştırılır (günde X sorgu → Y ayda başabaş).
 
-### 7.4 Ölçülecekler (şu an repoda **hiçbiri yok**)
+### 7.4 Ölçülecekler *(2026-07-23: VRAM kısmen kapandı)*
 
 `$/sorgu`, latency, throughput, VRAM, GPU-saat. Mevcut tek maliyet ölçümü `judge_cost_usd` —
 yani *not verme* maliyeti, *servis* maliyeti değil (`eval.py:210`, `groundedness.py:273`,
 `score_correctness.py:181`, `score_abstention.py:126`).
+
+**Durum güncellemesi:**
+- ✅ **VRAM / bellek modeli** → `scripts/kv_cache_compare.py` (ağırlık + KV + runtime, retriever
+  yerleşimine göre; sığdırma merdiveni + bağlam tavanı). ADR-0023 hedef config: **6.97 GB sabit,
+  ~250K bağlam.** ⚠️ İçindeki CUDA-bağlamı ve compute-buffer kalemleri hâlâ **tahmin** — gerçek
+  RTX 5070 + gerçek GGUF ölçümü açık borç.
+- ❌ `$/sorgu`, latency, throughput, GPU-saat → hâlâ yok.
 
 ### 7.5 Pareto sunumu
 
@@ -449,7 +514,9 @@ yerine çelişkiyi her iki yerde işaretle."* Tespit edilenler:
 | **Oracle-context gerçek RAG değil** | Mevcut M1/M4 iyimser tavan | Harness ile gerçek retriever gelince kapanır — zaten sunumda işaretli sınır |
 | **Hakem = LLM** | İnsan-κ descoped | §6 dört katmanlı savunma + hakemsiz omurga |
 | **Mecellem kıyası birebir değil** | Farklı çıkarım protokolü | İlgili çalışmaya indirildi, cite-only (ADR-0016) |
-| **Kapsam şişmesi** | Üç ayrı tez (abstention + graph-RAG + parite) | Graph-RAG **kesin dışarıda** (§5.3); katmanlar (§2) |
+| **Kapsam şişmesi** | Üç ayrı tez (abstention + graph-RAG + parite) | **(b) çok-ajanlı GraphRAG kesin dışarıda** (§5.3, ADR-0022); (a) yapısal graf dahil ama deterministik + ~0 marjinal maliyet → kapsamı şişirmiyor; katmanlar (§2) |
+| **Eval ≠ dağıtım** *(yeni, 2026-07-23)* | CANON bf16/NF4'te koşuyor, dağıtım artefaktı Q4_0+KV q8_0 (ADR-0023) → "dağıtım sınıfında parite" iddiasında delik | En az bir kez aynı CANON'da hizalama koşusu (Q4_0+q8_0 vs bf16); zaten KV-bit × kalite eğrisinin ilk noktası |
+| **VRAM tahminleri ölçülmedi** *(yeni)* | Sığdırma merdiveninin sabit kalemleri (CUDA ctx 0.40 GB, compute buffer 0.45/0.30 GB) tahmin; 0.3 GB sapma bağlamı yarıya indirir | Gerçek RTX 5070 + gerçek GGUF ile ölçüm (açık borç); hiçbir sayı öncesinde iddia edilmez |
 | **Dış geçerlilik** — bulgular Gemma'ya özgü mü? | Genellenebilirlik kanıtlanmıyor | **Kapatılmayan sınır** (§3.3 kararı: çok-base kolu kapsam dışı). Dürüst limitations maddesi + gelecek çalışma. |
 
 ---
@@ -459,6 +526,13 @@ yerine çelişkiyi her iki yerde işaretle."* Tespit edilenler:
 1. **Retriever korpusu:** canlı Bedesten API mi, dondurulmuş snapshot mı? *Tekrarlanabilirlik dondurulmuş
    snapshot ister; güncellik canlı API ister.* Muhtemel cevap: **eval için dondurulmuş** (tekrarlanabilirlik),
    **doğrulayıcı için canlı** (Faz 2 vaadi). Kararlaştırılmalı. ⚠️ Bedesten **Türk IP** gerektiriyor.
+   *(2026-07-23 notu: yapısal graf (ADR-0022) da aynı snapshot'tan türetilir — graf ve retriever
+   korpusu ayrışamaz, tek karar.)*
+1b. **Zamansal eksen (YENİ, 2026-07-23):** Citation Grounding'in 3. bileşeni — *"atıf yapılan tarihte
+   yürürlükte miydi?"* — bizde **hiç yok** (ne CANON'da ne v4 reçetesinde). TR mevzuatında
+   `mülga`/`değişik` zincirleri var, Bedesten veriyi sunuyor, yapısal graf zaten taşıyacak.
+   **Soru:** CANON'a yeni bir red kulvarı olarak eklensin mi, yoksa yalnız doğrulayıcı boyutu mu
+   kalsın? Rakiplerin beceremediği eksen → tez değeri yüksek, ama eval matrisini büyütür.
 2. **TR embedding modeli:** hangisi? Lisansı? EDA-verify kuralı burada da geçerli.
 3. **Red kapısı eşiği:** tüm atıflar doğrulanmalı mı, çoğunluk mu yeterli? Ablasyon konusu olabilir.
 4. **Hakem paneli üçüncü ailesi:** GPT + Gemini + Claude özneyse, hakem panelinde hangi 3 aile?

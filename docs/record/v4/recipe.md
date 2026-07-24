@@ -1,5 +1,46 @@
 # v4 RECIPE — answerability-dedektörü (DTA-uyarlı ORPO) · 🔒 KİLİTLİ (grilling tamam 2026-07-06)
 
+> ## ⚠️ HARNESS-SONRASI REVİZYON GEREKLİ (2026-07-23) — gövde sağlam, 3 nokta açık
+>
+> **Mekanizma değişmiyor** (DTA-uyarlı answerability dedektörü, ORPO v2b-continuation, gold-absent
+> sweep, tek-şablon chosen, sıfır-gold-absent yasağı). Değişen: **hedef tanımı, kapı referansı ve
+> negatif üretim yöntemi.** Otorite: ADR-0022 (yapısal graf teze girdi) · `knowledge/summary_citation_grounding.md`.
+>
+> ### R1 — Kapı yanlış baseline'a ön-kayıtlı (EN CİDDİ)
+> §1 hedef tablosu ve §4/§6 kapısı **çıplak** dünyada ölçülmüş mutlak sayılara yaslı
+> (M2b ≥0.90, M2 ≥0.704, xkanun ≥0.90, ood ≥0.75). Harness (retriever + **yapısal graf** +
+> atıf-doğrulayıcı + red kapısı) devreye girince bu eşikler anlamını yitiriyor:
+> - **M2b'nin test dağılımı değişiyor** — graf 1-2 hop atıf genişletmesi yapınca "ıskalanan
+>   kaynakların" bir kısmı zaten kurtarılıyor.
+> - **M2'nin bir dilimi artık FT'nin işi değil** — atıf-doğrulayıcı *"kaynak X gerçekten Y'yi
+>   düzenliyor mu"*yu **deterministik** kontrol ediyor.
+>
+> → Yeni kapı = **harness-only'ye (hücre E) göre MARJ** (D vs E), mutlak eşik değil.
+> v4'ün rolü daralıyor: *"harness'a ortogonal ikinci savunma katmanı"* (spec §5) — semantik
+> answerability + atıfsız halüsinasyon. **Eşikler KAPI 2 ölçümünden sonra yeniden yazılacak;
+> ön-kayıt disiplini gereği veriden ÖNCE.**
+>
+> ### R2 — Negatif üretimi daha ucuza yapılabilir
+> ADIM 3 rejected'ları **modelden hasat** ediyor (Modal A100, ~$5-15 = turun en pahalı adımı) +
+> iki-taraflı filtre. **Citation Grounding (arXiv 2606.00898)** doğrulanmış atıfları **algoritmik
+> olarak bozuyor** (4 hedefli strateji): model hasadı yok, insan anotasyonu yok, marj daha
+> kontrollü. Fine-tune edilmiş Qwen2.5-7B doğru/bozuk atıfı %98.5 ayırıyor → yöntem çalışıyor.
+> → **§2-A/E ve ADIM 3 revize** (hasat + algoritmik bozma melezi; hasat yalnız gri-bant için).
+> *Yan fayda: bu makale v4'ün yönünü bağımsız olarak doğruluyor.*
+>
+> ### R3 — Zamansal eksen eksik
+> Citation Grounding atıf halüsinasyonunu **üçe** ayırıyor: *var mı / bağlama uygun mu /
+> **o tarihte yürürlükte miydi***. Bizde **üçüncüsü yok** — ne CANON'da ne bu reçetede.
+> TR mevzuatında `mülga`/`değişik` zincirleri var, Bedesten veriyi sunuyor, yapısal graf (ADR-0022)
+> zaten taşıyacak. → **Yeni negatif ailesi adayı:** "yürürlükten kalkmış maddeye dayanarak cevapla"
+> → chosen = zamansal red. Rakiplerin beceremediği eksen (spec §12 açık soru 1b).
+>
+> ### Ayrıca
+> - **Eval ≠ dağıtım:** CANON bf16/NF4'te koşuyor, dağıtım artefaktı Q4_0 + KV q8_0 (ADR-0023).
+>   v4 eval'i en az bir kez dağıtım artefaktıyla hizalanmalı.
+> - **v4 artık KOŞULLU** (KAPI 1 ∧ KAPI 2) — zorunlu Faz-1 kapanışı değil (ADR-0017).
+> - Rename kararı: bu tur **v1** olacak, zemin **v0.2b** (eski v2b). §3 ifadeleri güncellenecek.
+
 > **Durum:** ✅ **KİLİTLİ** (2026-07-06). Deep-research (#34) işlendi + grilling tamamlandı (5 açık-uç çözüldü, 2 karar onaylandı). Sıradaki = ADIM-plan koşumu (para-kapısı onayı).
 > **Tez:** [[../research_log/2026-07-06-v4-tasarim-tezi-answerability]] (#33) · **kaldıraç kaynağı:** [[../v3/receteler]] + #34.
 > **Neden gerek:** v3 KISMİ (ADR-0015) — M2b regresyon 0.53 + M2 base-altı 0.593 + OOD zayıf 0.483.
@@ -7,10 +48,12 @@
 
 ---
 
-## 1. HEDEF (kabul edilmiş)
+## 1. HEDEF (kabul edilmiş) — ⚠️ **çıplak-dünya hedefi; harness sonrası yeniden yazılacak (R1)**
 Her CANON kulvarında **lider VEYA berabere-tavan** (mutlak-1.0 DEĞİL), grounding dörtlüsü regresyonsuz.
 
-**Kulvar-hedef tablosu (SCORECARD gap → v4 hedef):**
+**Kulvar-hedef tablosu (SCORECARD gap → v4 hedef).** ⚠️ Aşağıdaki sütunlar **harness'sız** ölçüldü;
+harness devreye girince referans **hücre E (base+harness)** olacak ve eşikler *marj* cinsinden
+yeniden yazılacak (KAPI 2 sonrası, veriden önce):
 
 | Kulvar | v3 | Şu an lider | v4 hedef | Aksiyon-kaldıracı |
 |---|---|---|---|---|
@@ -41,9 +84,12 @@ Her CANON kulvarında **lider VEYA berabere-tavan** (mutlak-1.0 DEĞİL), ground
 - **(A) v2b-continuation ORPO.** ✅ **KARAR: BU.** Kanıt: grounding'in hayatta kalması için preference'a **SFT-terimi eşlik etmeli** (DTA: aux-SFT çıkınca answer çöküyor); **ORPO bunu doğuştan + ref-free veriyor** (12GB kısıtına ideal). LoRA regularizer (full-FT over-refusal+forgetting yapar, LoRA hafifletir). v3 zaten prior'ın kırılabildiğini gösterdi (M1↑).
 - **(B) base-joint-ORPO** — ELENDI (şimdilik). Continuation-vs-joint tavan farkına dair doğrudan kanıt yok; (A) kanıtlı ve ucuz. Yalnız v4 duvara toslarsa yeniden değerlendir.
 
-## 4. KAPI (v4 başarı)
+## 4. KAPI (v4 başarı) — ⚠️ **çıplak referans; R1 ile değişecek**
 M2b ≥0.90 (regresyon kapalı) **+** M2 ≥0.704 (base-üstü) **+** xkanun ≥0.90 **+** ood ≥0.75 **+**
 M4/M1/M3/register ≥v3 (regresyonsuz) **+** M5 ≤0.10 (anti-hedef korunmuş). → ADR-0016.
+
+> ⚠️ Bu eşikler **harness'sız** dünyaya ait. Harness sonrası kapı = **D vs E marjı** (v4+harness
+> vs base+harness). Yeni eşikler KAPI 2 ölçümünden sonra, **veriden önce** yazılır (R1).
 
 ## 5. GRILLING KİLİTLİ KARARLAR (2026-07-06)
 
@@ -63,7 +109,7 @@ degenerate rejected (boş/mojibake/tekrar) AT · near-correct rejected (gri-bant
 - Abstain chosen: `Sağlanan kaynak [X]'i düzenliyor; soru [Y] hakkında, buna dair hüküm YOK → yanıtlayamam.` (kanıt = var/eksik uyuşmazlığı; forced-selection'ı öldürür + ERA-evidence gömer).
 - gold-absent çiftlerde **doğru-cevap = REJECTED** (DTA: şanslı-tahmini cezalandır).
 
-## 6. KAPI (v4 başarı) — değişmedi
+## 6. KAPI (v4 başarı) — ⚠️ **§4 ile aynı; R1 uyarısı burada da geçerli**
 M2b ≥0.90 **+** M2 ≥0.704 (base-üstü) **+** xkanun ≥0.90 **+** ood ≥0.75 **+** M4/M1/M3/register ≥v3 (regresyonsuz) **+** M5 ≤0.10 → ADR-0016.
 
 ## 7. MALİYET / PARA-KAPILARI (grilling tahmini)
@@ -75,6 +121,11 @@ Harvest (v2b 12B, Modal A100 ~1-2h) ~$5-15 · chosen (gpt-4o-mini ~8K) ~$3-5 · 
 - **ADIM 1 — kod:** `build_sft_v4.py` (2-kadran packer: replay=gold-present, trap=hard-neighbor + çapraz-kanun + ✗✓-aşı dilimi; `--gold-absent-frac` knob) + `gen_v4_chosen.py` (tek-şablon: grounding-alıntı / abstain-uyuşmazlık) + `build_orpo_v4.py` (rejected iki-taraflı filtre + doğru-cevap-rejected) + `judge_gray_band.py` (τ, gri-bant).
 - **ADIM 2 — smoke (PARA-KAPISI):** küçük harvest + throughput/bütçe kalibre + 4/4 yeşil.
 - **ADIM 3 — harvest ~8K (PARA-KAPISI):** rejected üretimi (Modal A100) + gri-bant judge + iki-taraflı filtre.
+  ⚠️ **R2 revizyonu:** rejected'ların büyük kısmı **algoritmik bozmayla** üretilebilir (Citation
+  Grounding, 4 strateji — model hasadı yok, insan yok, marj kontrollü). Hasat yalnız gri-bant/
+  fabrikasyon dilimi için tutulur → bu adımın maliyeti ~$5-15'ten belirgin düşer.
+  ⚠️ **R3:** negatif ailesine **zamansal** dilim eklenir (mülga/değişik maddeye dayanarak cevaplama
+  → chosen = zamansal red). Kaynak: Bedesten sürüm zincirleri + yapısal graf (ADR-0022).
 - **ADIM 4 — chosen üretimi:** tek-şablon (gpt-4o-mini) + doğru-cevap-rejected paketleme.
 - **ADIM 5 — ORPO sweep (PARA-KAPISI):** gold-absent 0.3/0.4/0.5 → 3 tur (veya dev-set'le seç, 1 tam tur) · v2b-continuation.
 - **ADIM 6 — eval (kanon 6-mod + genelleme + held-out OOD):** lokal generation → judge (PARA-KAPISI) → kapı (§6) → ADR-0016.

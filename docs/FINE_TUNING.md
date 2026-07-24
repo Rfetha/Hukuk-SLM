@@ -207,6 +207,29 @@ model.save_pretrained_merged("gemma4-hakhukuk-merged", tokenizer)  # bf16
 # Sonuç: ~6.5GB GGUF → 8GB VRAM end-user hedef ✓
 ```
 
+> ⚠️ **DAĞITIM CONFIG'İ SOMUTLAŞTI (2026-07-23, ADR-0023).** Yukarıdaki hat doğru ama eksik —
+> naif kurulum 8 GB'a **sığmıyor** (8.41 GB). Sığdırma merdiveni:
+>
+> | konfigürasyon | sabit | bağlam |
+> | :--- | ---: | ---: |
+> | naif (Q6_K embd · bf16 KV · embedder GPU'da) | 8.41 GB | **SIĞMIYOR** |
+> | + retriever/graf CPU'ya (harness = 0 VRAM) | 7.35 GB | 64.755 tok |
+> | + saf Q4_0 (token_embd dahil) | 7.12 GB | 95.475 tok |
+> | + flash-attention | 6.97 GB | 115.136 tok |
+> | **+ KV q8_0 ← HEDEF** | **6.97 GB** | **250.752 tok** |
+>
+> ```bash
+> llama-server -m gemma4-12b-q4_0.gguf -ngl 99 -fa on \
+>              --cache-type-k q8_0 --cache-type-v q8_0 -c 262144
+> ```
+>
+> **Kritik:** `token_embd`'i **Q6_K'ya yükseltme** (llama.cpp varsayılanı öyle) — QAT checkpoint'i
+> tam olarak **Q4_0 için** kalibre edildi; yükseltmek QAT'in optimize ettiği noktadan sapmak olur.
+> Hem 0.23 GB kazanç hem ilkesel doğru. Doğrulandı: llama.cpp `LLM_ARCH_GEMMA4` + `llama_kv_cache_iswa`
+> destekliyor. Sayı kaynağı: `scripts/kv_cache_compare.py`.
+> ⚠️ **Açık borç:** ağırlık 6.27 GB **projeksiyon** (GGUF henüz üretilmedi); CUDA bağlamı 0.40 GB +
+> compute buffer 0.45/0.30 GB **tahmin** → gerçek RTX 5070 ölçümü bekliyor.
+
 ### 5.2 Bulut koşusu (A100 40GB)
 
 - `per_device_train_batch_size=8`

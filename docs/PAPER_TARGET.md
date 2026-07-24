@@ -20,32 +20,40 @@
 
 ---
 
-## 0. ODAK: bu bir SİSTEM paper'ı (benchmark yan iş)
+## 0. ODAK — ⚠️ **YENİDEN YAZILDI (2026-07-23)**
 
-Asıl katkı = **uçtan uca, tüketici donanımında çalışan, doğru + anlaşılır Türkçe
-vatandaş hukuk asistanı SİSTEMİ.** Boru hattı:
+> **Eski odak (2026-06-08, iz olarak korunur):** *"bu bir SİSTEM paper'ı"* — asıl katkı uçtan uca
+> vatandaş hukuk asistanı sistemi; benchmark yan iş; boru hattı SLM→RAG→agentic→app→deploy.
+> **Neden düştü:** "sistem kurduk" bir *inşa* iddiası, ölçülebilir bir *bilimsel* iddia değil;
+> ayrıca agentic + app katmanları tez kapsamı dışına çıktı (ADR-0019).
 
-```
-Gemma-4-12B (encoder-free, unified)
-   → law-domain SLM (QLoRA SFT — hukuki doğruluk/groundedness, sade DEĞİL)
-      → RAG (TurboQuant'lı KV-cache + quantize vektör store)
-         → Agentic katman (çok-adımlı: getir→hesapla→taslak→doğrula)
-            → APP katmanı: prompt config → profesyonel (tam) / vatandaş (sadeleştir)
-               → deploy: Q4_0 GGUF ~6.5GB / 8GB tüketici GPU
-```
+**Yeni odak = ölçülebilir tek soru:**
 
-Benchmark (§ eski K1) **headline değil** — sistemi ölçmek için *gerekli ama yan*
-bir araç. İyi çıkarsa ayrı (LREC) yayınlanabilir; çıkmazsa sistemin değerlendirme
-bölümü olarak kalır. **Tek güçlü hikâye = sistem.**
+> Dar bir domainde (TR hukuku), **SLM + harness** birleşimi kapalı ticari modellerin **dağıtım
+> sınıfına maliyet-normalize paritede** ne kadar yaklaşır — ve bunun **ne kadarını fine-tuning,
+> ne kadarını harness** sağlar?
 
-## 1. Tek cümle tez (the claim)
+İki eksenli ölçüm: **kalite × maliyet** (Pareto). Cümle: *"bu maliyetle, buraya kadar."*
+Benchmark artık **birincil katkı değil, ölçüm altyapısı** — parite bir *eşdeğerlik* iddiasıdır
+(D ≈ B), fark iddiası değil.
 
-> **Tüketici donanımında (8GB GPU) çalışan, hukuki olarak DOĞRU ve gerçek mevzuata
-> DAYALI bir Türkçe hukuk asistanı; encoder-free bir SLM'i hukuki doğruluk/groundedness
-> için fine-tune edip, TurboQuant'lı verimli RAG ile gerçek kanuna zeminleyip, agentic
-> bir akışla uçtan uca bir sisteme dönüştürerek inşa edilebilir — ve aynı doğru model,
-> APP katmanında prompt ile hem profesyonele (tam derinlik) hem vatandaşa (sadeleştirilmiş)
-> hizmet eder.**
+Kapsam (ADR-0019 + ADR-0022): **model + harness** (retriever · yapısal graf · atıf-doğrulayıcı ·
+red kapısı). Agentic, app, OCR/ingestion, çok-ajanlı GraphRAG → **tez dışı**.
+
+## 1. Tek cümle tez (the claim) — ⚠️ **YENİDEN YAZILDI (2026-07-23)**
+
+> **Dar bir hukuk domaininde, tüketici donanımında çalışan açık-ağırlıklı bir SLM, deterministik
+> bir harness ile birleştirildiğinde kapalı ticari modellerin dağıtım sınıfına maliyet-normalize
+> paritede yaklaşır; ve bu yaklaşmanın kaynağı ayrıştırılabilir — ne kadarı ince-ayardan,
+> ne kadarı harness'tan geliyor.**
+
+Ayrıştırma tezin çekirdeği: **hücre E (base + harness) vs D (FT + harness)** ana ablasyon,
+**D vs B** (rakip + aynı harness) adil kıyas. *"D > A"* (harness'ı sadece kendine verme) değersiz.
+
+> **Eski iddia (iz):** *"tüketici donanımında doğru + grounded asistan inşa edilebilir; aynı model
+> app katmanında hem profesyonele hem vatandaşa hizmet eder."* Bu cümlenin **tüketici donanımı**
+> ve **groundedness** ayakları yeni iddiada yaşıyor; **"iki kitle tek model"** ise ürün özelliği
+> olarak kaldı, tez iddiası olmaktan çıktı (ADR-0010: birincil register = uzman).
 
 ⚠️ **Kritik tasarım kararı (2026-06-08):** erişilebilirlik (sade dil) modele GÖMÜLMEZ —
 **inference/app katmanında** çözülür. Gerekçe (v0 kanıtı): plainness'i ağırlığa fine-tune
@@ -58,7 +66,40 @@ tüketici donanımı kısıtında + tek-model-iki-kitle mimarisinde** kazanırı
 
 ---
 
-## 2. Hedef katkılar (öncelik sırasıyla)
+## 2. Hedef katkılar — ⚠️ **YENİDEN ÖNCELİKLENDİ (2026-07-23)**
+
+**Yeni katkı sırası (yürürlükte):**
+
+**(Y1 — ANA) Maliyet-normalize parite ölçümü.** Açık-ağırlıklı SLM + harness'ın, kapalı ticari
+dağıtım-sınıfı modellere (Gemini 3 Flash · Claude Sonnet · GPT-5-mini) karşı **kalite × maliyet**
+düzleminde nerede durduğu. Eşdeğerlik iddiası (D ≈ B), üstünlük değil. Adalet kuralı: harness
+tüm öznelere birebir aynı uygulanır.
+
+**(Y2 — ANA) İş bölümü ayrıştırması: ne kadarı FT, ne kadarı harness?** Ana ablasyon
+**E (base+harness) vs D (FT+harness)**. Bu, literatürde nadiren ayrıştırılan bir soru;
+`E ≈ D` çıkarsa **negatif bulgu olarak yayımlanır** (spec §11).
+
+**(Y3 — DESTEK) Dağıtım eğrisi: erişilebilirlik = ağırlık değil, kullanım bağlamında ağırlık + KV.**
+Ölçülmüş sonuç: 8 GB kapısında **12B, 9B'den daha erişilebilir** (bağlam tavanı 176K vs 91K).
+Hedef config: saf Q4_0 + `-fa` + KV q8_0 → 6.97 GB / ~250K bağlam (ADR-0023). KV-bit × bağlam ×
+VRAM × kalite eğrisi — TR hukuk için kimsede yok.
+
+**(Y4 — DESTEK) Ampirik bulgular (eski K3, aynen geçerli).** SFT abstention'ı çökertiyor
+(v1: TRAP 0.741→0.000, Cor-RAIT UNDER-refusal'ın ters yönü); plainness ağırlığa gömülünce
+doğruluk düşüyor (v0); mevcut hukuk reward modeli sadeliğe kör. v0→v3 = tezin **proof-of-concept**'i.
+
+**(Y5 — ALTYAPI) 6-mod CANON benchmark.** Artık *katkı* değil, Y1/Y2'nin **ölçüm zemini.**
+Üretken TR hukuk grounding benchmark'ı yok → yine de yayınlanabilir bir yan çıktı.
+
+---
+
+> ### Eski katkı listesi (iz olarak korunur — 2026-06-08)
+> **K1 (ANA) uçtan uca sistem** → **düştü**: agentic + app tez dışı (ADR-0019); "sistem kurduk"
+> ölçülebilir iddia değil. Grounding/abstention SFT ayağı **Y4'te** yaşıyor.
+> **K2 (DESTEK) TurboQuant'lı RAG + Q4 deploy** → **Y3'e dönüştü**, ama TurboQuant llama.cpp'de
+> **yok**; bugünkü kaldıraç `--cache-type-k/-v q8_0` (ADR-0023). TurboQuant future-work.
+> **K3 (DESTEK) ampirik bulgu** → **Y4**, değişmedi.
+> **(YAN İŞ) çift-eksenli değerlendirme** → **Y5**, "headline değil" hükmü aynen geçerli.
 
 > ℹ️ **Numaralama notu (eklendi 2026-07-01):** buradaki **K1/K2/K3 = paper KATKI (contribution)** etiketleridir (K1=sistem, K2=verimlilik, K3=ampirik bulgu). `docs/record/research_log/README.md`'deki **K1/K3 = paper BÖLÜM/deney-tipi** etiketleridir (K1=ablasyon tablosu, K3=ayrışma/negatif bulgular). İki şema FARKLI eksenler — karıştırma. research_log'un "K3=negatif bulgu"su bu belgenin "K3=ampirik bulgu" katkısını **besler** (aynı v0/v1 kanıtı).
 

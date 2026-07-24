@@ -176,8 +176,17 @@ güvenli olmalı — harness yoksa atıfsız uydurmayı hiçbir şey durdurmaz.
 - **Bedesten API atıf-doğrulayıcı** (deterministik) — modelin verdiği atfı canlı mevzuata karşı
   doğrular; atıflı halüsinasyonu yakalar.
 - **Red kapısı** (refusal-gate) — güven eşiği altında cevabı bloke eder.
-- ❌ **Graph-RAG = kesin future-work, tezden HARİÇ** (parite iddiasına sıfır katkı, takvimin yarısını
-  yer, iki hikâyeyi seyreltir).
+- ✅ **Yapısal graf (YENİ, 2026-07-23 · ADR-0022)** — hiyerarşi + atıf ağı + **mülga/değişik zamansal
+  zincirleri**; getirmede 1-2 hop genişletme. **Deterministik, indekslemede LLM yok → marjinal ~0
+  maliyet.** Zaten atıf-doğrulayıcının ihtiyaç duyduğu yapı.
+- ❌ **Çok-ajanlı / LLM-indeksli GraphRAG = future-work, tezden HARİÇ** — sorgu başına ~3× çıkarım;
+  adalet kuralı gereği rakiplere de verileceği için maliyet iki taraflı katlanır → **parite iddiasını
+  kendi metriğinden zayıflatır.** (LegalGraphRAG %6.3-19.1 kazanç raporluyor ama maliyet/gecikme
+  yükünü hiç raporlamıyor.)
+- ❌ **OCR/ingestion harness'a dahil değil** — Faz 3 app katmanı. Ölçüme sokulursa groundedness
+  skorları OCR gürültüsüyle karışır.
+- ⚠️ **Harness GPU'ya girmez** (ADR-0023): embedder CPU'da, graf + indeks CPU RAM/disk'te —
+  8 GB'da yığının açılma şartı.
 
 ### 3.4 Maliyet ekseni ve HPC
 
@@ -344,11 +353,13 @@ Faz 1               Faz 2                 Faz 3                 Faz 4           
 LLM + FT      →     Harness (RAG)    →    Serving + Agentic  →  Niş Uzmanlık →  Vatandaş
 SFT/ORPO           retriever+atıf+kapı    API + Workflow        Kira/İş/Tük.    Platformu
 (← ŞU AN + Kapı 1)  ↑ dilim teze dahil                                         (Web+e-Devlet)
-                    ✗ graph-RAG = future-work
+                    ✓ yapısal graf dahil
+                    ✗ çok-ajanlı GraphRAG = future-work
 ```
 
-- **Faz 2 — harness (teze dahil dilim):** hibrit retriever + Bedesten atıf-doğrulayıcı + red-kapısı.
-  Graph-RAG (Neo4j/Memgraph) **tezden hariç, future-work.**
+- **Faz 2 — harness (teze dahil dilim):** hibrit retriever + **yapısal/deterministik graf** +
+  Bedesten atıf-doğrulayıcı + red-kapısı. ⚠️ **Çok-ajanlı GraphRAG** (Neo4j/Memgraph üzerine LLM
+  ajanları) **tezden hariç, future-work** (ADR-0022 — yapısal graf içeride, çok-ajanlı dışarıda).
 - **Faz 3 — Serving + Agentic + App:** vLLM/GGUF → FastAPI; LangGraph agent; TÜFE/RAG/Bedesten araç
   entegrasyonu; dilekçe şablonları.
   - **⚠️ OCR düzeltmesi (2026-07-17):** Gemma'nın "native multimodal"i base-seçim gerekçesi **değil**
@@ -382,7 +393,7 @@ Kullanıcı: "Ev sahibim kirayı %100 artırmak istiyor"
 3. **Katkı — ampirik bulgu:** Küçük modeli "dürüst" davranmaya eğitmenin ablasyon serisi;
    **negatif bulgular birinci sınıf:** "SFT abstention'ı söker", "grounding-abstention paradoksu",
    "abstention bir davranış ailesidir".
-4. **Future-work:** graph-RAG mimari karşılaştırması; çok-base replikasyon (dış geçerlilik).
+4. **Future-work:** çok-ajanlı GraphRAG mimari karşılaştırması (yapısal graf teze girdi, ADR-0022); çok-base replikasyon (dış geçerlilik); TurboQuant (llama.cpp'de yok).
 
 **Neden negatif bulgular değerli:** Alan "SFT ile her şey düzelir" varsayımıyla dolu. Biz bunun
 grounding-abstention ödünleşiminde **neden çöktüğünü** kontrollü ablasyonla gösteriyoruz — çok-kriterli
@@ -422,7 +433,7 @@ Türkçe NLP venue (yedek).
 | **Ana iddia** | Maliyet-normalize parite (D≈B eşdeğerlik/TOST) + FT-vs-harness ayrıştırma (E=base+harness) |
 | **Baz model** | Gemma 4 12B (`gemma-4-12B-it-qat-q4_0-unquantized`, Apache-2.0) — SABİT, QAT gerekçesi |
 | **İnce-ayar** | QLoRA (NF4 4-bit + LoRA `r=16`, `α=32`, `all-linear`, dropout 0.05) |
-| **Harness** | hibrit retriever (BM25+TR-embed) + Bedesten atıf-doğrulayıcı + red-kapısı (graph-RAG hariç) |
+| **Harness** | hibrit retriever (BM25+TR-embed) + **yapısal graf** (hiyerarşi/atıf/zamansal) + Bedesten atıf-doğrulayıcı + red-kapısı · *çok-ajanlı GraphRAG hariç* (ADR-0022) · **GPU'ya girmez** (ADR-0023) |
 | **Rakipler** | Gemini 3 Flash · Claude Sonnet · GPT-5-mini (dağıtım sınıfı) · tavan ref: 3.5 Pro / Opus |
 | **Ana metrik** | groundedness = FactScore (iddia böl→doğrula) + ALCE (atıf prec/recall, wrong_ref) |
 | **Hakem** | cross-family panel + aile-dışlama + hakemsiz omurga (regex + Bedesten) |
