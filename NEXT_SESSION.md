@@ -1,4 +1,41 @@
-# DEVİR NOTU — 2026-07-17 · TEZ YENİDEN ÇERÇEVELENDİ → spec yazıldı, doküman hizalaması GO bekliyor
+# DEVİR NOTU — 2026-07-23 · doküman hizalaması YAPILDI · base ölçümle teyit · sıradaki = KAPI 1
+
+> ## 🆕 2026-07-23 OTURUMU — ne oldu
+> Kullanıcı projeyi arşivleyip (`vOLD-archived`) **sıfırdan başlamayı** sorguladı. Üç sebep vardı:
+> sonuçlar ikna etmiyor · base şüphesi · tez değişti kod eski. **Sonuç: arşivleme YAPILMADI** —
+> base ayağı ölçümle düştü, diğer ikisi doküman revizyonuyla karşılandı.
+>
+> **Kararlar (yeni ADR'ler):**
+> - **ADR-0021** Base = Gemma 4 12B **teyit**, ama gerekçe değişti. Sunk-cost sıfırlanarak yeniden
+>   soruldu. Gerçek gerekçe: resmî **QAT Q4_0** + **8 GB'da bağlam tavanı 176K vs 91K (1.9×)**.
+>   ⚠️ Kendi "18× KV avantajı" iddiam **çürütüldü** (Qwen3.5 hibrit DeltaNet'e geçmiş → 2.5-3.7×).
+>   ⚠️ "Multimodal/encoder-free" gerekçesi **ağırlıkla çürütüldü** (audio = 1 tensör/2.46M → encoder
+>   yok, algılama decoder'da → `all-linear` LoRA tam oraya dokunuyor). Lisans: Apache-2.0 **+
+>   Prohibited Use Policy** (saf değil).
+> - **ADR-0022** Graf: **(a) yapısal/deterministik İÇERİDE** (hiyerarşi + atıf + mülga/değişik
+>   zamansal zincirleri, ~0 marjinal maliyet) · **(b) çok-ajanlı GraphRAG DIŞARIDA** (~3× çıkarım →
+>   parite iddiasını kendi metriğinden bozar). ADR-0019'un blanket yasağını daraltır.
+> - **ADR-0023** Dağıtım config: **saf Q4_0** (token_embd Q6_K'ya yükseltilmez — QAT Q4_0 için
+>   kalibre) + `-fa` + **KV q8_0** → **6.97 GB sabit / ~250K bağlam**. Harness **GPU'ya girmez**.
+>   TurboQuant llama.cpp'de **yok** → önce `--cache-type-k/-v`, TurboQuant sonra.
+> - **ADR-0018 karar-3 gerekçesi düzeltildi:** darboğaz KV değil **ağırlık** (KV = ağırlığın %18'i).
+>
+> **Yapılan işler:** `scripts/kv_cache_compare.py` (tüm sayıların kaynağı) · research_log #37 ·
+> `knowledge/summary_citation_grounding.md` · spec + VISION + PAPER_TARGET + TEKNIK_PLAN +
+> FINE_TUNING + CLAUDE.md + sunum revizyonu · `outputs/` temizliği (4.5G→2.5G) · v4 reçetesine
+> R1/R2/R3 revizyon notları.
+>
+> **Açık ölçüm borçları:** ① Q4_0 GGUF üretilmedi (ağırlık 6.27 GB projeksiyon) ② CUDA ctx +
+> compute buffer **tahmin** → gerçek RTX 5070 ölçümü ③ KV q8_0'ın CANON kalitesine bedeli ④ **eval
+> ≠ dağıtım** (CANON bf16'da, dağıtım Q4_0+q8_0) ⑤ multimodal probe hiç koşulmadı ⑥ zamansal eksen
+> CANON'da yok.
+>
+> **Bekleyen karar:** sürüm rename (v4→**v1**, eskiler **v0.x**) — onaylandı, henüz uygulanmadı
+> (1.531 doküman geçişi + ~120 gitignored artefakt + 5 dizin; yedek→kuru-koşum→uygula→doğrula).
+
+---
+
+# (önceki devir notu) 2026-07-17 · TEZ YENİDEN ÇERÇEVELENDİ
 
 > **Bu dosya = sabit eksen / canlı devir notu.** Yalnız GÜNCEL durum + sıradaki somut adım.
 > Geçmiş anlatı → `docs/record/research_log/README.md` · Kararlar → `docs/adr/` · Görevler → `TODO.md`.

@@ -18,13 +18,14 @@
 > ⚠️ **SÜPERSED (2026-06-14, V2_PLAN.md) → güncel plan:** aktif iş artık **v2b SFT** (base'den taze QLoRA), bu bölümdeki v0→v1 execute akışı tamamlandı/tarihsel. Güncel yön: `docs/V2_PLAN.md §9` + `NEXT_SESSION.md`.
 
 **Hedef:** Türk hukuk diline adapte, **~~vatandaş diliyle~~ uzman-register ile** konuşan, ölçülebilir fine-tuned SLM. Kalite barı yüksek — üzerine kurulacak ekosistem (RAG, agent, UI) buna dayanacak.
-**Baz model (güncellendi 2026-06-07):** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0) — multimodal, 256K context. Deploy pipeline: QLoRA SFT → merge → Q4_0 GGUF (~6.5GB, 8GB VRAM end-user).
+**Baz model (güncellendi 2026-06-07 · gerekçe ölçüldü 2026-07-23):** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0 **+ Prohibited Use Policy** — ADR-0021) — 256K context. Deploy pipeline: QLoRA SFT → merge → Q4_0 GGUF (~6.5GB, 8GB VRAM end-user). ⚠️ **"multimodal" bir base-seçim gerekçesi DEĞİL** (ADR-0003 + ADR-0021: ağırlıkta encoder yok — audio 1 tensör/2.46M —, algılama decoder'da, ölçülmemiş). **Gerçek gerekçe:** resmî QAT Q4_0 zinciri + 8 GB'da bağlam tavanı (176K vs Qwen3.5 9B'nin 91K'sı). **Hedef dağıtım config (ADR-0023):** saf Q4_0 (token_embd Q6_K'ya yükseltilmez) + `-fa` + KV q8_0 → 6.97 GB sabit / ~250K bağlam.
 
 Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → Sadeleştirme → Base hazırlığı → v0 baseline → Grounded üretim → SFT iterasyonları → Eval → Ablation → Yayın.
 → Detay **Bölüm 2**.
 
 ## Faz 2 — Güncel Bilgi: RAG + Knowledge Graph
-> **TurboQuant notu:** 256K context uzun kanun/içtihat metinleri için KV-cache kritik — TurboQuant (3-4 bit, eğitimsiz, online) Faz 2 RAG serving'de değerlendirilir. Bkz. `knowledge/summary_turboquant.md`.
+> ⚠️ **TEZ KAPSAMI (ADR-0019 + ADR-0022):** retriever + **yapısal/deterministik graf** + Bedesten atıf-doğrulayıcı + red kapısı **teze dahil**; çok-ajanlı/LLM-indeksli GraphRAG **tez dışı** (~3× çıkarım → maliyet iddiasını bozar). Harness **GPU'ya girmez** (embedder CPU, graf+indeks CPU RAM/disk — ADR-0023).
+> **TurboQuant notu:** ⚠️ **DÜZELTİLDİ (2026-07-23):** darboğaz KV değil **ağırlık** (128K'da KV = ağırlığın %18'i). TurboQuant = **bağlam tavanı kaldıracı**, darboğaz çözücü değil — ve llama.cpp'de **yok**; bugünkü kaldıraç `--cache-type-k/-v q8_0` (8 GB'da 64.755 → 149.990 tok). TurboQuant future-work. Bkz. `knowledge/summary_turboquant.md`, ADR-0018/0023.
 
 1. Hukuk metni yapı çıkarımı (kanun→madde→fıkra→atıf parser)
 2. Bedesten API ile bulk kanun çekimi (taze) + içtihat (yargi-mcp RE)

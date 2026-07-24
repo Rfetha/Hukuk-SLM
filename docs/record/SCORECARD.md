@@ -6,6 +6,17 @@
 > **Güncelleme kuralı:** yeni tur judge'landığında bu tablo + ilgili `vN/sonuclar.md` birlikte güncellenir.
 > **Otorite:** kapı kararları `docs/adr/` · tur detayları `docs/record/vN/sonuclar.md` · kronoloji `research_log/`.
 
+> ⚠️ **PROTOKOL DELİĞİ (2026-07-23, ADR-0023): ölçtüğümüz ≠ dağıttığımız.** Aşağıdaki tüm hücreler
+> **bf16/NF4** üzerinde ölçüldü; hedef dağıtım artefaktı ise **saf Q4_0 + KV q8_0**. Tez "dağıtım
+> sınıfında parite" iddia ettiği için bu bir açık delik — en az bir kez aynı CANON'da hizalama
+> koşusu gerekiyor (Q4_0+q8_0 vs bf16). Kapanana kadar tablodaki sayılar *"dağıtılan modelin
+> skoru"* diye okunamaz.
+>
+> ⚠️ **Harness öncesi tablo.** Tüm sütunlar **çıplak** (harness'sız). Harness (retriever + yapısal
+> graf + atıf-doğrulayıcı + red kapısı) devreye girince özellikle **M2/M2b'nin test dağılımı
+> değişecek** — graf atıf genişletmesi ıskalanan kaynakların bir kısmını kurtarır, doğrulayıcı
+> yanlış-kaynağı deterministik yakalar. Yeni kapılar *marj* cinsinden yazılacak (v4 recipe R1).
+
 ## Protokol (tüm hücreler ortak, aksi belirtilmedikçe)
 Gemma 4 12B + QLoRA · eval-mirror 900-char · seed 3407 · hakem gpt-4o-mini · A1=cevaplanan-only macro (ADR-0011) ·
 n: core_hard 40 (M1/M4/M5/M2b), trap 35 (M2 + genelleme), E-set 40 (M3).

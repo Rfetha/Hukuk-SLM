@@ -34,7 +34,7 @@ flowchart LR
 
 **Hedef:** Türk hukuk diline ve akıl yürütmesine adapte olmuş, ölçülebilir bir baz model.
 
-- **Baz model:** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0) — QLoRA SFT → Q4_0 GGUF (~6.5GB) deploy; consumer-GPU end-user hedefi (≤8 GB = **soft gate**, ADR-0018). Base **KESİN** (ADR-0017): Qwen geçişi + çok-base kolu ikisi de reddedildi; asıl gerekçe **QAT→Q4_0 zinciri** (maliyet iddiasının dayanağı). Encoder-free unified mimari — text-only SFT multimodal yeteneği bozmaz. ⚠️ **NOT:** multimodal/OCR base-seçim gerekçesi *değil*, Faz 3 opsiyonu (bkz. Faz 3 notu + CLAUDE.md OCR düzeltmesi). (Aile içi boyut eğrisi adayı: Gemma 4 E4B.)
+- **Baz model:** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0) — QLoRA SFT → Q4_0 GGUF (~6.5GB) deploy; consumer-GPU end-user hedefi (≤8 GB = **soft gate**, ADR-0018). Base **KESİN** (ADR-0017): Qwen geçişi + çok-base kolu ikisi de reddedildi; asıl gerekçe **QAT→Q4_0 zinciri** (maliyet iddiasının dayanağı). ⚠️ **GEREKÇE ÖLÇÜLDÜ (2026-07-23, ADR-0021):** base kararı sunk-cost sıfırlanarak yeniden açıldı ve **değişmedi**, ama gerekçe artık ölçüme dayanıyor: (1) resmî QAT Q4_0 checkpoint (Qwen'de yok), (2) **8 GB'da bağlam tavanı 176.128 vs 90.982 token (1.9×)** — bandı kullanıcı seçer, kuyruğa tasarlanır. Karşı-kanıt dürüstçe: Qwen3.5 saf Apache-2.0 (bizde Apache-2.0 **+ Prohibited Use Policy**) ve <64K'da daha hafif. ⚠️ **"Text-only SFT multimodal yeteneği bozmaz" iddiası ÇÜRÜTÜLDÜ:** ağırlıklardan sayıldı — audio = **1 tensör/2.46M**, vision = 49.9M, decoder = 11.91B → korunacak encoder YOK, algılamanın tamamı decoder'da → `all-linear` LoRA tam oraya dokunuyor. Google ne multimodal benchmark ne fine-tuning etkisi yayınlıyor → **ölçülene kadar vaat edilmez.** multimodal/OCR base-seçim gerekçesi *değil*, Faz 3 opsiyonu. **Dağıtım config (ADR-0023):** saf Q4_0 + `-fa` + KV q8_0 → 6.97 GB / ~250K bağlam. (Aile içi boyut eğrisi adayı: Gemma 4 E4B.)
 - **Veri seti hazırlığı:** Otoriter/güncel plan **`docs/VERI_PLANI.md`**'de. Özet:
   - `OrionCAF/turkish_law_qa_dataset` + `Renicames/turkish-law-chatbot` (EDA-doğrulanmış, ~32K → `data/processed/sft_v0/`)
   - Mevzuat.gov.tr / Bedesten API açık kanun metinleri (grounding zemini)
@@ -49,7 +49,12 @@ flowchart LR
 
 ### Faz 2 — RAG + Knowledge Graph
 
-> **Serving notu:** 256K context kullanımında KV-cache baskısı için **TurboQuant** (KV-cache quantization, 4.5×, eğitimsiz) değerlendirilir — bkz. `knowledge/summary_turboquant.md`.
+> ⚠️ **TEZ KAPSAMI (ADR-0019 + ADR-0022, 2026-07-23):** Bu fazın bir **dilimi teze dahil**, geri kalanı ürün yol haritası.
+> ✅ **Teze giren:** hibrit retriever · **yapısal/deterministik graf** (hiyerarşi + atıf ağı + mülga/değişik zamansal zincirleri) · Bedesten atıf-doğrulayıcı · red kapısı.
+> ❌ **Tez dışı (ürün/future work):** çok-ajanlı veya LLM-indeksli GraphRAG (sorgu başına ~3× çıkarım → maliyet-normalize parite iddiasını kendi metriğinden zayıflatır); aşağıdaki "vanilla vs graph-RAG vs hybrid" akademik katkısı tez sonrasına atıldı.
+> ⚠️ **Harness GPU'ya girmez** (ADR-0023): embedder CPU'da, graf + vektör indeksi CPU RAM/disk'te — 8 GB'da yığının açılma şartı.
+
+> **Serving notu:** 256K context kullanımında KV-cache baskısı. ⚠️ **DÜZELTİLDİ (2026-07-23):** darboğaz sanılanın aksine KV değil **ağırlık** (128K'da KV = ağırlığın %18'i). **TurboQuant** = bellek-darboğazı çözücü değil, **bağlam tavanı kaldıracı** — ve llama.cpp'de **yok**; bugünkü kaldıraç `--cache-type-k/-v q8_0` (8 GB'da 64.755 → 149.990 token). TurboQuant future-work. Bkz. `knowledge/summary_turboquant.md`, ADR-0023.
 
 **Hedef:** "Yeni yasa çıktı, ne yapacağız?" sorusunun mimari cevabı.
 
@@ -62,7 +67,7 @@ flowchart LR
   2. Yapı çıkarımı (madde, fıkra, atıf) → Graph
   3. Embedding katmanı (semantik arama)
   4. Hybrid retrieval: graph traversal + vektör benzerliği
-- **Akademik katkı:** Hukuk metinleri için graph-RAG mimarisi karşılaştırması (vanilla RAG vs graph-RAG vs hybrid).
+- **Akademik katkı:** ⚠️ **TEZ SONRASINA ATILDI (ADR-0022).** "vanilla vs graph-RAG vs hybrid" karşılaştırması ürün yol haritasında kalır. Teze giren **ucuz ablasyon** ise şu: *yapı-farkındalıklı getirme işe yarıyor mu?* (vektör vs vektör+**yapısal** graf) — deterministik, marjinal ~0 maliyet. Ön-çalışma: SAT-Graph RAG (Work/Expression ontolojisi), Citation Grounding (`knowledge/summary_citation_grounding.md`).
 
 ### Faz 3 — Model Serving + Agentic Workflow + App
 
@@ -121,14 +126,27 @@ Kullanıcı: [ses] "Ev sahibim kirayı %100 artırmak istiyor"
 
 ---
 
-## 3. Tez ve Makale Eksenleri
+## 3. Tez ve Makale Eksenleri — ⚠️ **YENİDEN YAZILDI (2026-07-23)**
 
-Bu yol haritası birden fazla yayınlanabilir çıktı üretir:
+**Ana tez (yürürlükte, ADR-0017):**
 
-1. **Ana tez:** "Erişilebilir SLM'ler ile Türk Hukukunda Vatandaş Odaklı Yapay Zeka Asistanı"
-2. **Yan makale 1:** Türk hukuku için açık benchmark seti (Faz 1 çıktısı)
-3. **Yan makale 2:** Hukuk metinleri için Graph-RAG mimarisi (Faz 2 çıktısı)
-4. **Yan makale 3:** Niş hukuk agent'ları için workflow değerlendirmesi (Faz 3-4)
+> Dar bir domainde (TR hukuku), **SLM + harness** kapalı ticari modellerin dağıtım sınıfına
+> **maliyet-normalize paritede** ne kadar yaklaşır — ve bunun **ne kadarı fine-tuning, ne kadarı
+> harness**?
+
+Birincil katkı = **parite ölçümü + iş bölümü ayrıştırması** (ana ablasyon: base+harness vs FT+harness).
+Benchmark **birincil katkı değil, ölçüm altyapısı.** Detay: `docs/PAPER_TARGET.md` §0-2,
+otorite: `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md`.
+
+Yan çıktılar:
+1. **Yan makale 1:** Türk hukuku için açık grounding/abstention benchmark seti (6-mod CANON) — TR'de üretken karşılığı yok.
+2. **Yan makale 2:** ⚠️ *Graph-RAG mimarisi* → **tez sonrasına atıldı** (ADR-0022); yapısal grafın kendisi teze girdi, karşılaştırma çalışması ürün fazında.
+3. **Yan makale 3:** Niş hukuk agent'ları için workflow değerlendirmesi (Faz 3-4) — kapsam dışı, değişmedi.
+
+> **Eski ana tez başlığı (iz):** *"Erişilebilir SLM'ler ile Türk Hukukunda Vatandaş Odaklı Yapay
+> Zeka Asistanı."* **Vatandaş odağı** ADR-0010 ile app-layer'a taşındı (birincil register = uzman);
+> **erişilebilirlik** ise yeni tezde ölçülen bir eksene dönüştü (maliyet + dağıtım ayak izi),
+> başlıktaki sıfat olmaktan çıktı.
 
 ---
 
