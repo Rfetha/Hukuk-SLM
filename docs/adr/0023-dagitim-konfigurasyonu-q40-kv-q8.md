@@ -27,6 +27,28 @@ Yığın: **model + KV-cache + harness (retriever + yapısal graf, ADR-0022 (a))
 Sabit bütçe kalemleri (basamak 4): Q4_0 ağırlık 6.27 GB + CUDA bağlamı 0.40 GB +
 compute buffer (fa'lı) 0.30 GB.
 
+> ✅ **AĞIRLIK ÖLÇÜLDÜ (2026-07-24) — projeksiyon değil artık.** GGUF hattı koştu
+> (llama.cpp `0cea362`, CPU build):
+>
+> | dosya | **gerçek** | projeksiyon | sapma |
+> | :--- | ---: | ---: | ---: |
+> | `g4-12b-f16.gguf` | **22.20 GiB** | 22.28 | −0.4% |
+> | `g4-12b-q4_0-pure.gguf` | **6.26 GiB** | 6.27 | **−0.2%** |
+> | `g4-12b-q4_0-default.gguf` | **6.50 GiB** | 6.50 | **0%** |
+>
+> → **`--pure` farkı 0.24 GiB, ölçüldü.** Kararın 2. maddesi (token_embd Q6_K'ya yükseltilmez)
+> hem sayıyla hem ilkeyle (QAT tam Q4_0 için kalibre) doğrulandı. Merdivendeki 6.27 GB satırı
+> **6.26 GB** olarak okunmalı; tablo pratikte değişmiyor.
+>
+> ⚠️ **Dönüştürme engeli ve çözümü (kayda değer):** `convert_hf_to_gguf.py` Gemma 4'ün
+> `tokenizer_config.json`'ındaki `extra_special_tokens` alanı **liste** (`['<|video|>']`) olduğu
+> için düşüyor — transformers **dict** bekliyor (`AttributeError: 'list' object has no attribute
+> 'keys'`). Çözüm: snapshot'ı symlink'lerle kopyalayıp `tokenizer_config.json`'da alanı dict'e
+> çevirmek (`{'video_token': '<|video|>'}`). Aynı sorun E4B'de de çıkabilir.
+>
+> Kalan borç: CUDA bağlamı 0.40 + compute buffer 0.30 hâlâ **tahmin** (CUDA build + `llama-server`
+> gerektirir).
+
 ## Karar
 
 **Hedef dağıtım konfigürasyonu = basamak 4:**

@@ -159,6 +159,9 @@ print()
 N_PARAM = 11_959_730_224  # safetensors başlığından sayıldı
 Q4_0_BPW = 4.5            # llama.cpp Q4_0: 32 ağırlık/blok + fp16 ölçek = 4.5 bit/ağırlık
 
+# ✅ ÖLÇÜLDÜ 2026-07-24 (llama.cpp 0cea362): saf Q4_0 = 6.26 GiB · varsayılan (+token_embd Q6_K)
+# = 6.50 GiB · f16 = 22.20 GiB. Aşağıdaki formül bunları ±0.4% içinde veriyor → formül korunuyor
+# (E4B/E2B'ye de uygulanabilsin diye), ama artık doğrulanmış durumda.
 w_q40 = N_PARAM * Q4_0_BPW / 8 / 2**30
 # token_embd (262144×3840, tie edilmiş) llama.cpp'de sık sık Q6_K tutulur → fark:
 embd_extra = 262144 * 3840 * (6.5 - 4.5) / 8 / 2**30
