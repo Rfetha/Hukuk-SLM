@@ -1,0 +1,352 @@
+[
+  {
+    "id": 0,
+    "soru": "Baroların ve Adalet Bakanlığı'nın işlerini kim denetliyor?",
+    "cevap": "Baro genel kurulu, baronun mali işlerini denetlemek üzere kendi üyeleri arasından en çok üç asıl ve üç yedek denetçi seçer.\n\n**Dayanak:** Avukatlık Kanunu Madde",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Kaynak metin yalnızca baroların mali işlerini denetleyen denetçileri düzenliyor, ancak Adalet Bakanlığı'nın denetimi hakkında bilgi vermiyor."
+  },
+  {
+    "id": 1,
+    "soru": "Sürücü belgemin sağlık durumum nedeniyle alınırsa, tekrar nasıl geri alabilirim?",
+    "cevap": "Verilen kaynak metinde, sürücü belgesinin sağlık durumu nedeniyle alınması veya tekrar nasıl geri alınacağına dair bir bilgi bulunmamaktadır.\n\n**Dayanak:** Kara",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 2,
+    "soru": "Hastaneye kaldırıldım, cezamdan indirim yapılır mı?",
+    "cevap": "Verilen kaynak metinde, hastaneye kaldırılma durumunda ceza indirimine ilişkin herhangi bir hüküm bulunmamaktadır.\n\n**Dayanak:** Ceza ve Güvenlik Tedbirlerinin ",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta hastaneye kaldırılma durumunda ceza indirimine ilişkin bilgi yok."
+  },
+  {
+    "id": 3,
+    "soru": "Birisi, koruma yöntemlerini aşarak bir eseri izinsiz kullanırsa ne olur?",
+    "cevap": "Fikir ve Sanat Eserleri Kanunu Madde 81 uyarınca; bandrol yükümlülüğüne aykırı ya da bandrolsüz olarak bir eseri çoğaltıp satışa arz eden, satan, dağıtan veya t",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Model, kaynak metinde yer alan cezai yaptırımları doğru bir şekilde aktarmış ancak sorunun özünü tam olarak yanıtlamamıştır."
+  },
+  {
+    "id": 4,
+    "soru": "Hız sınırını biraz aşarsam ne olur?",
+    "cevap": "Hız sınırını aşmak gibi trafik suçlarından dolayı ceza uygulandığında, sürücüye yönetmelikte belirlenen ceza puanları verilir. Trafik suçunun işlendiği tarihten",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Model, kaynak metinde yer alan bilgileri kullanarak soruya yanıt vermiş ancak dayanak olarak belirtilen madde kaynakta yok."
+  },
+  {
+    "id": 5,
+    "soru": "Baro başkanı, avukat adaylarının niteliklerini nasıl kontrol ediyor?",
+    "cevap": "Verilen kaynak metinde baro başkanının avukat adaylarının niteliklerini nasıl kontrol ettiğine dair bir bilgi bulunmamaktadır.\n\n**Dayanak:** Avukatlık Kanunu Ma",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "verilen kaynakta bu bilgi yok"
+  },
+  {
+    "id": 6,
+    "soru": "Duraklamanın yasak olduğu yerleri nereden anlayabilirim?",
+    "cevap": "Duraklamanın yasak olduğu yerleri, Karayolları Trafik Kanunu Madde 59'un ilgili kısmında yer alan \"Duraklamanın yasak olduğu yerler:\" başlığı altındaki açıklama",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Kaynak metinde duraklamanın yasak olduğu yerler belirtilmemiştir."
+  },
+  {
+    "id": 7,
+    "soru": "Cezaevinde kalan birinin ne tür yiyecekler alacağına nasıl karar veriliyor?",
+    "cevap": "Kaynak metinde, cezaevinde kalan birinin ne tür yiyecekler alacağına nasıl karar verildiğine dair bir bilgi bulunmamaktadır.\n\n**Dayanak:** Ceza ve Güvenlik Tedb",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta cezaevinde kalan bireylerin yiyecek alımına dair bilgi yok."
+  },
+  {
+    "id": 8,
+    "soru": "Türkiye’ye geldiğimde, başka bir ülkede zulme uğradığım için burada kalabilir mi",
+    "cevap": "Yabancıların ve Uluslararası Koruma Kanunu Madde 63 uyarınca; mülteci veya şartlı mülteci olarak nitelendirilemeseniz dahi, menşe ülkenize veya ikamet ülkenize ",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Model, kaynak metinde belirtilen ikincil koruma statüsünü doğru bir şekilde açıklamaktadır."
+  },
+  {
+    "id": 9,
+    "soru": "Yabancı birisi Türkiye'de nasıl daha iyi uyum sağlayabilir?",
+    "cevap": "Verilen kaynak metinde, yabancı birinin Türkiye'de nasıl daha iyi uyum sağlayabileceğine dair bir bilgi bulunmamaktadır.\n\n**Dayanak:** Yabancılar ve Uluslararas",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 10,
+    "soru": "Araç tescil belgesi ve plakası olmadan yola çıkabilir miyim?",
+    "cevap": "Verilen kaynak metinde araç tescil belgesi veya plaka bulunmaması durumuna ilişkin bir düzenleme yer almamaktadır.\n\n**Dayanak:** Karayolları Trafik Kanunu Madde",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "verilen kaynakta bu bilgi yok"
+  },
+  {
+    "id": 11,
+    "soru": "Coğrafi işaret nedir ve neden önemlidir?",
+    "cevap": "Verilen kaynak metne göre coğrafi işaretin tanımı ve önemi şu şekildedir:\n\nCoğrafi işaret; doğal ve beşerî unsurların bir araya gelmesi sonucu oluşan gıda, tarı",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Model, kaynak metinden yola çıkarak coğrafi işaretin tanımını vermiş ancak önemine dair bilgi eklemiştir."
+  },
+  {
+    "id": 12,
+    "soru": "Vakıf üniversiteleri ya da okul aile birlikleri, daha önceki dönemlerde sağlanan",
+    "cevap": "Hayır, yararlanamazlar.\n\nSosyal Sigortalar ve Genel Sağlık Sigortası Kanunu Madde 2 uyarınca; bu madde hükümleri, 21/2/2005 tarihli ve 5335 sayılı Bazı Kanun ve",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Model, kaynak metinde yer almayan bir bilgi ile kesin bir cevap vermiştir."
+  },
+  {
+    "id": 13,
+    "soru": "Avukatın meslek kurallarına uymaması durumunda ne olur?",
+    "cevap": "Verilen kaynak metinde, avukatların meslek kurallarına uymaması durumunda uygulanacak bir yaptırım veya sonuç hakkında bilgi bulunmamaktadır.\n\n**Dayanak:** Avuk",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta avukatların meslek kurallarına uymaması durumunda uygulanacak bir yaptırım veya sonuç hakkında bilgi yok."
+  },
+  {
+    "id": 14,
+    "soru": "Patent hakkım sona ererse ne olur?",
+    "cevap": "Verilen kaynak metinde patent hakları hakkında bilgi bulunmamaktadır. Kaynak sadece marka haklarının sona ermesine ilişkin düzenlemeler içermektedir.",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta patent haklarıyla ilgili bilgi yoktur."
+  },
+  {
+    "id": 15,
+    "soru": "Cezaevinde yatan birisi mazeret izni alabilir mi?",
+    "cevap": "Verilen kaynak metne göre, cezaevinde yatan birinin mazeret izni alıp alamayacağına dair bir bilgi bulunmamaktadır.\n\n**Dayanak:** Ceza ve Güvenlik Tedbirlerinin",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 16,
+    "soru": "Stajyer avukatlar staj sırasında ne gibi şeyler yapmak zorundadır?",
+    "cevap": "Stajyer avukatlar, bir yıllık staj süresinin ilk altı ayını mahkemelerde, kalan altı ayını ise en az beş yıl kıdemi olan ve staj yaptığı baroya kayıtlı bir avuk",
+    "valid_trap": false,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta stajyer avukatların staj sırasında yapması gerekenler hakkında yeterli bilgi yok."
+  },
+  {
+    "id": 17,
+    "soru": "Cezaevinde hangi davranışlar kınama cezası aldırır?",
+    "cevap": "Verilen kaynak metne göre, kınama cezasına ilişkin bir bilgi bulunmamaktadır. Kaynak sadece \"Bazı etkinliklere katılmaktan alıkoyma\" cezasını ve bu cezayı gerek",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta kınama cezasına dair bilgi yoktur."
+  },
+  {
+    "id": 18,
+    "soru": "Bir yazarın daha yayımlanmamış eserinin borca karşılık teminat olarak kullanılab",
+    "cevap": "Hayır, kullanılamaz. Kanun metnine göre, rehin hakkının konusu olabilecek unsurlar arasında \"alenileşmiş bir eserin müsveddesi\" veya \"yayımlanmış bir eserin çoğ",
+    "valid_trap": false,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 19,
+    "soru": "Birlik Genel Kurulu toplantısına katılmak zorunlu mu, yoksa katılmak istemezsem ",
+    "cevap": "Verilen kaynak metinde, birlik başkanının genel kurul toplantısına katılımı veya katılmaması durumunda oluşacak sonuçlar hakkında herhangi bir bilgi bulunmamakt",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": true,
+    "reason": "Verilen kaynakta bu konuya dair bilgi yok."
+  },
+  {
+    "id": 20,
+    "soru": "Sınır dışı edilme kararı alındıysa, Türkiye'den çıkmak için ne kadar süre verili",
+    "cevap": "Verilen kaynak metinde, sınır dışı edilme kararı alınan yabancılara Türkiye'den çıkmaları için ne kadar süre verildiğine dair bir bilgi bulunmamaktadır.\n\n**Daya",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta sınır dışı edilme kararı alınan yabancılara Türkiye'den çıkmaları için süre verilmesine dair bilgi yok."
+  },
+  {
+    "id": 21,
+    "soru": "Bir veri tabanının içeriğini başka bir yere kopyalamak istediğimde izin almam ge",
+    "cevap": "Verilen kaynak metinde, veri tabanının içeriğini başka bir yere kopyalamak için izin alınıp alınmayacağına dair bir hüküm bulunmamaktadır.\n\n**Dayanak:** Fikir v",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": true,
+    "reason": "Verilen kaynakta bu konuda bilgi yok ve model, kendi bilgisiyle bir atıfta bulunmuştur."
+  },
+  {
+    "id": 22,
+    "soru": "Bir ürünün ambalajında coğrafi işaretin yanlış kullanılması durumunda ne yapmalı",
+    "cevap": "Geleneksel ürün adı tescilinde belirtilen özellikleri taşımayan bir ürünün ambalajında, tescilli ürün adı veya amblemi içeren yanıltıcı açıklamaların bulunması ",
+    "valid_trap": false,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta, coğrafi işaretin yanlış kullanımıyla ilgili spesifik bir çözüm önerisi yok."
+  },
+  {
+    "id": 23,
+    "soru": "Birden fazla kişiyle birlikte bir eser yaptık ama biri buna izin vermiyor, ne ya",
+    "cevap": "Fikir ve Sanat Eserleri Kanunu Madde 18 uyarınca, mali hakları kullanma yetkisi münhasıran eser sahibine aittir. Bu hakların kullanımı, eser sahibi ile yapılaca",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu konuda özel bir prosedür veya çözüm önerisi yok."
+  },
+  {
+    "id": 24,
+    "soru": "Eğer başka bir ülkede marka başvurusu yaptıysam, Türkiye'de bu markayı tescil et",
+    "cevap": "Verilen kaynak metne göre sorunuzun cevabı şu şekildedir:\n\nKaynak metin sadece **tasarım** veya **faydalı model** tescili ile ilgili rüçhan hakkını düzenlemekte",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta marka tescili ile ilgili bilgi yok."
+  },
+  {
+    "id": 25,
+    "soru": "Emekli olmak için hangi şartları sağlamam gerekiyor?",
+    "cevap": "Verilen kaynak metinde emekli olmak için gereken şartlar (yaş, prim günü veya sigortalılık süresi gibi) yer almamaktadır. Kaynak metni, yaşlılık aylığına hak ka",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta emekli olmak için gereken şartlar yok."
+  },
+  {
+    "id": 26,
+    "soru": "Türkiye’de üniversitede okuyan bir yabancı öğrenci çalışabilir mi?",
+    "cevap": "Verilen kaynak metinde, yabancı öğrencilerin çalışma durumuna ilişkin herhangi bir bilgi bulunmamaktadır.",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "verilen kaynakta bu bilgi yok"
+  },
+  {
+    "id": 27,
+    "soru": "Benim elimde bir kitabın kopyası var, bu kopyayı ipotek ettirebilir miyim?",
+    "cevap": "Hayır, elinizdeki kitabın kopyasını ipotek ettiremezsiniz.\n\nFikir ve Sanat Eserleri Kanunu Madde 61 uyarınca; eser sahibinin veya mirasçılarından birinin mülkiy",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Model, kaynak metinde belirtilen bilgiyi kullanarak net bir cevap vermiştir, ancak kaynakta ipotek ile ilgili özel bir bilgi yoktur."
+  },
+  {
+    "id": 28,
+    "soru": "Evde çalışan birini sigortalı yaptırmam gerekiyor mu?",
+    "cevap": "0thought\nVerilen kaynak metinde, evde çalışan birinin sigortalı yapılması gerektiğine dair bir düzenleme bulunmamaktadır.\n\n**Dayanak:** Sosyal Sigortalar ve Gen",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta evde çalışan birinin sigortalı yapılması gerektiğine dair bir bilgi yok."
+  },
+  {
+    "id": 29,
+    "soru": "Geri gönderme merkezleri nedir ve kimler orada tutulur?",
+    "cevap": "Verilen kaynak metinde \"geri gönderme merkezleri\" ifadesi geçmemektedir. Kaynakta sadece \"kabul ve barınma merkezleri\" hakkında bilgi verilmiştir.\n\nKabul ve bar",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta geri gönderme merkezleri hakkında bilgi yoktur."
+  },
+  {
+    "id": 30,
+    "soru": "Sosyal sigorta nedir, kime denir?",
+    "cevap": "Verilen kaynak metinde \"sosyal sigorta\"nın tanımı veya kime denildiği hakkında bir bilgi bulunmamaktadır.\n\n**Dayanak:** Sosyal Sigortalar ve Genel Sağlık Sigort",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta sosyal sigorta ile ilgili bilgi yok."
+  },
+  {
+    "id": 31,
+    "soru": "Eğer ben bir marka sahibi isem, daha önce başvurmuş birinin açtığı davada kendi ",
+    "cevap": "Verilen kaynak metne göre bu sorunun cevabı bulunmamaktadır. Kaynak metin, sadece sınai mülkiyet hakkının birden çok kişiye ait olması durumunda ortak temsilci ",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 32,
+    "soru": "İşverenin, çalıştırdığı sigortalılarla ilgili belgeleri ne kadar süreyle saklama",
+    "cevap": "Verilen kaynak metinde, işverenin çalıştırdığı sigortalılarla ilgili belgeleri ne kadar süreyle saklaması gerektiğine dair bir bilgi bulunmamaktadır.\n\n**Dayanak",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 33,
+    "soru": "Kadın mahkumlar nerede cezaevinde kalıyorlar?",
+    "cevap": "Verilen kaynak metinde kadın mahkumların nerede kalacağına dair spesifik bir bilgi bulunmamaktadır. Kaynak metni sadece yüksek güvenlikli kapalı ceza infaz kuru",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta kadın mahkumların nerede kalacağına dair bilgi yok."
+  },
+  {
+    "id": 34,
+    "soru": "Elektrikli skuter kullanırken yanımda birini taşıyabilir miyim?",
+    "cevap": "Verilen kaynak metinde elektrikli skuter kullanırken yanınızda birini taşıyıp taşıyamayacağınızla ilgili bir bilgi bulunmamaktadır.\n\n**Dayanak:** Karayolları Tr",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  }
+]

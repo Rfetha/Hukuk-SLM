@@ -23,7 +23,7 @@
 - **Clip yöntemi = simüle edilen retriever kalitesi:** first-900 clip = 🔴 aptal retriever (hep baştan kes, ilgili fıkra ortada/sondaysa kaçırır → model haklı çekinir ama modeli olduğundan kötü gösterir). **answer-anchored pencere** (aynı 900, gold penceresini core_hard referans cevabına lexical-anchor'la ortala) = 🟢 akıllı/semantik retriever → modelin gerçek grounding yeteneğini ölçer. → **D1 iyi-retriever koşusu answer-anchored ile yapılacak; M3/empty-context zaten kötü-retriever/abstention ekseni.**
 - **M1 çekinme teşhisi (30 flush, lexical proxy):** 6 abstain'in dağılımı → **3 HAKLI** (core_hard kötü soru↔madde eşleşmesi; ör. KMK Md4 "ortak yerler" ama soru "pay iptali"), **2 OVER-REFUSAL** (cevap kırpılmışta VAR, yine reddetti — TKHK Md47), **1 CLIP-KURBANI** (CMK 142, first-900 aptal-retriever'ın kaçırdığı; answer-anchored çözer). → clip baskın değil; asıl sinyaller over-refusal + benchmark kötü-eşleşme.
 - **Açık iş (benchmark):** core_hard'ta gevşek/yanlış soru↔madde eşleşmeleri var (en az 3/6 abstain vakası) → core_hard pairing denetimi ayrı temizlik işi.
-#### D1 canon eval — 6-mod matris SONUÇ (n=40/35/30, gpt-4o-mini hakem; detay [`v2b/sonuclar.md`](../v2b/sonuclar.md))
+#### D1 canon eval — 6-mod matris SONUÇ (n=40/35/30, gpt-4o-mini hakem; detay [`v2b/sonuclar.md`](../../../old-version-gemma4-12b/record/v2b/sonuclar.md))
 | Mod | Eksen | v2b | base | v1 |
 |---|---|---|---|---|
 | M1 gold+distractor | A1 (cevaplanan) | **0.904** | 0.879 | — |

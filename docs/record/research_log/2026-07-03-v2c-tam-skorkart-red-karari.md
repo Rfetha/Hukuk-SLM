@@ -1,6 +1,6 @@
 ## 2026-07-03 — v2c TAM SKORKART (6/6 mod) + ❌ RED kararı + K3 negatif bulgu
 
-**Ne:** v2c (Gemma 4 12B QLoRA, config=v2b, adapter `outputs/v2c/`) 6-mod kanon eval TAM kapandı (M5 + register + v2b-M2b-n40 son parçalar bugün koştu). **Sonuç: v2c REDDEDİLDİ.** Detay tablo/gerekçe: [[v2c/sonuclar]] · skorkart [[v2c/roadmap]] §6.
+**Ne:** v2c (Gemma 4 12B QLoRA, config=v2b, adapter `outputs/v2c/`) 6-mod kanon eval TAM kapandı (M5 + register + v2b-M2b-n40 son parçalar bugün koştu). **Sonuç: v2c REDDEDİLDİ.** Detay tablo/gerekçe: [v2c/sonuclar](../../../old-version-gemma4-12b/record/v2c/sonuclar.md) · skorkart [v2c/roadmap](../../../old-version-gemma4-12b/record/v2c/roadmap.md) §6.
 
 **Tam skorkart (kanonik: cevaplanan-only A1 ADR-0011, eval-mirror 900, n=40/35, hakem gpt-4o-mini, seed 3407):**
 
@@ -21,7 +21,7 @@
 
 **🔴 K3 NEGATİF BULGU (paper-değerli):** §3-E hipotezi "M2 reddi ucuz SFT counterfactual + abstain_trap ile öğretilir" **ÇÜRÜDÜ.** Tier A veri-kolu M2'yi yalnız 0.346→0.407'ye taşıdı, üstelik M1'i 0.920→0.832 düşürdü. **Mekanizma = "Grounding-Abstention paradoksu":** SFT modeli cevap-üretmeye koşulladı → coverage↑ (47.5→80%, over-refusal↓ iyi) ama near-miss **ayrım gücü** köreldi. Hukukta yüksek semantik örtüşme → konusal-komşu yanlış kaynak (M2) latent-space'i yüksek-aktive edip fabrikasyona sürüklüyor (27 tuzağın 16'sı); bariz-off-topic (M2b) tetiklemediği için reddediliyor. → **near-miss discrimination SFT-tek-başına çözülemez.**
 
-**Fix seçenekleri çerçevelendi (KARAR YOK):** literatür deep-research → [[v2c/fix_deep_research]] (5 aile: ORPO/DPO hard-negative · RAFT/loss-mask · R-Tuning/Suff-Context · RAAT/CaRT contrastive · DTA/RPO knowledge-boundary). Dış görüş-2 (Gemini) alındı, aynı dosyaya işlendi. En güçlü eşleşme: **DTA (Divide-Then-Align, ACL 2025)** failure'ı isim-isim tarif ediyor (Abstain-F1 0→63 + Acc 42→64); **RAFT'ın no-golden kolu abstain öğretmiyor** (bizim sorunu besleyebilir). **Yeni iterasyon adı/kararı VERİLMEDİ** (kullanıcı kısıtı) → seçenekler v2c ADR'ında "potansiyel durumlar". Herhangi yeni FT = Modal para-kapısı + kullanıcı onayı.
+**Fix seçenekleri çerçevelendi (KARAR YOK):** literatür deep-research → [v2c/fix_deep_research](../../../old-version-gemma4-12b/record/v2c/fix_deep_research.md) (5 aile: ORPO/DPO hard-negative · RAFT/loss-mask · R-Tuning/Suff-Context · RAAT/CaRT contrastive · DTA/RPO knowledge-boundary). Dış görüş-2 (Gemini) alındı, aynı dosyaya işlendi. En güçlü eşleşme: **DTA (Divide-Then-Align, ACL 2025)** failure'ı isim-isim tarif ediyor (Abstain-F1 0→63 + Acc 42→64); **RAFT'ın no-golden kolu abstain öğretmiyor** (bizim sorunu besleyebilir). **Yeni iterasyon adı/kararı VERİLMEDİ** (kullanıcı kısıtı) → seçenekler v2c ADR'ında "potansiyel durumlar". Herhangi yeni FT = Modal para-kapısı + kullanıcı onayı.
 
 **Paper eşleme:** K3 negatif-sonuç bölümü (Grounding-Abstention paradoksu, TR hukuk vakası) + Mecellem differansiyel-avantaj (CPT-only, abstention mekanizması yok) + 6-mod kanon metodoloji (near-miss vs off-topic ayrımını ölçen benchmark).
 

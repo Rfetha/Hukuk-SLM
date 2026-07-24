@@ -1,5 +1,5 @@
 ## v2c icra — ADIM 6a+6b: Tier A yeni-kod + v2c eğitim verisi İNŞA EDİLDİ (2026-07-02)
-Otorite: [`v2c/roadmap.md`](../v2c/roadmap.md) §5 madde 6a-6b · §7 AÇ-KOŞ-2/3. `v2c` branch. **Modal eğitimi (6c) = para-kapısı → kullanıcı onayı bekleniyor.**
+Otorite: [`v2c/roadmap.md`](../../../old-version-gemma4-12b/record/v2c/roadmap.md) §5 madde 6a-6b · §7 AÇ-KOŞ-2/3. `v2c` branch. **Modal eğitimi (6c) = para-kapısı → kullanıcı onayı bekleniyor.**
 
 **Yeni-kod (4 parça, hepsi çalışır+test-edildi):**
 - `build_sft_v2b.py pack`: 2 yeni slice üretici — `counterfactual` (A2) + `abstain_trap` (A1). Dönüşüm kararı **AYRI `crng`** ile (ana P-roll/distractor rng akışı BOZULMAZ) → dönüşmeyen grounded/abstain satırlar v2b ile **byte-identik** → reuse geçerli + §1 regresyon güvenli. `--cf-frac/--trap-frac/--trap-k/--out-dir` args.

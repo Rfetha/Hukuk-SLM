@@ -1,0 +1,282 @@
+[
+  {
+    "id": 0,
+    "soru": "Tedbir kararı en fazla ne kadar süreyle verilebilir?",
+    "cevap": "Tedbir kararı en fazla altı ay süreyle verilebilir. (AİLENİN KORUNMASI VE KADINA KARŞI ŞİDDETİN ÖNLENMESİNE DAİR KANUN, MADDE 8)",
+    "verdict": "CORRECT",
+    "reason": "Tedbir kararı en fazla altı ay süreyle verilebilir."
+  },
+  {
+    "id": 1,
+    "soru": "İptal davasını açmak için ne zaman başvurmalıyım?",
+    "cevap": "İptal davasını, mirasbırakanın ölümünden itibaren bir yıl içinde açmalısınız. (TÜRK MEDENİ KANUNU, Madde 558)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, iptal davasının açılma süresiyle ilgili doğru bilgi vermemektedir."
+  },
+  {
+    "id": 2,
+    "soru": "Çocuk mağdurun ifadesi nasıl alınır?",
+    "cevap": "Çocuk mağdurun ifadesi, Cumhuriyet savcısı veya hâkim tarafından alınır. (CEZA MUHAKEMESİ KANUNU, Madde 160)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, çocuk mağdurun ifadesinin nasıl alınacağına dair gerekli detayları içermemekte ve yanlış bir madde numarası vermektedir."
+  },
+  {
+    "id": 3,
+    "soru": "Karara uymadığım için paylarım iptal edilirse, ne yapmalıyım?",
+    "cevap": "Karara uymadığınız için paylarınız iptal edilirse, bu durumdan doğan zararlarınızı tazmin etmeniz gerekecektir. (TÜRK MEDENİ KANUNU, Madde 644)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, verilen gerçek madde ile çelişiyor ve konuya ilişkin doğru bir hukuki sonuç sunmuyor."
+  },
+  {
+    "id": 4,
+    "soru": "Şiddet uygulayan kişi alkol kullanıyorsa ne olacak?",
+    "cevap": "Alkol veya uyuşturucu madde etkisi altında şiddet uygulayan kişi hakkında, ayrıca bu maddeler uyarınca cezaya hükmolunur. (AİLENİN KORUNMASI VE KADINA KARŞI ŞİD",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, alkol etkisi altındaki şiddet uygulayıcı için ek tedbirleri belirtmemekte, sadece ceza yönünü ele almaktadır."
+  },
+  {
+    "id": 5,
+    "soru": "Tedavi amaçlı denemelerin ceza sorumluluğundan muaf olabilmesi için ne gereklidi",
+    "cevap": "Tedavi amaçlı denemelerin ceza sorumluluğundan muaf olabilmesi için, bu denemelerin bilimsel bir temele dayanması ve gerekli izinlerin alınmış olması gereklidir",
+    "verdict": "PARTIAL",
+    "reason": "Gerekli izinlerin alınması doğru ancak tedavi amaçlı denemelerin ceza sorumluluğundan muaf olabilmesi için daha fazla şartın da sağlanması gerektiği belirtilmemiştir."
+  },
+  {
+    "id": 6,
+    "soru": "Kat mülkiyeti ne zaman kurulabilir?",
+    "cevap": "Kat mülkiyeti, kat irtifakı kurulduktan sonra, kat irtifakı sahibinin kat mülkiyetine geçiş talebi üzerine kurulabilir. (KAT MÜLKİYETİ KANUNU, Madde 52)",
+    "verdict": "CORRECT",
+    "reason": "Kat mülkiyeti, kat irtifakının kurulmasından sonra, kat irtifakı sahibinin talebi üzerine kurulabilir."
+  },
+  {
+    "id": 7,
+    "soru": "Eğer işletme sahibi başka bir yere ait su hattını kullanıyorsa, bu bir hak mıdır",
+    "cevap": "Evet, işletme sahibi, işletmenin devamı için gerekli olan su hattını kullanma hakkına sahiptir. (TÜRK MEDENİ KANUNU, Madde 759)",
+    "verdict": "PARTIAL",
+    "reason": "İşletme sahibinin su hattını kullanma hakkı, aksine bir düzenleme yoksa geçerlidir ancak irtifak hakkı kurulması gerektiği belirtilmemiştir."
+  },
+  {
+    "id": 8,
+    "soru": "Ödediğim para cezası taksitle ödenebilir mi?",
+    "cevap": "Evet, ödenmesi gereken ceza, taksitler hâlinde ödenir. (TÜRK CEZA KANUNU, Madde 52)",
+    "verdict": "PARTIAL",
+    "reason": "Taksitli ödeme yalnızca belirli koşullar altında ve Cumhuriyet savcısının kararıyla mümkündür."
+  },
+  {
+    "id": 9,
+    "soru": "Adlî kontrol süresi ceza olarak sayılabilir mi?",
+    "cevap": "Evet, adlî kontrol süresi ceza olarak sayılır. (TÜRK CEZA KANUNU, Madde 63)",
+    "verdict": "WRONG",
+    "reason": "Adlî kontrol altında geçen süre, şahsî hürriyeti sınırlama sebebi sayılarak cezadan mahsup edilemez."
+  },
+  {
+    "id": 10,
+    "soru": "El konulan taşınmazın başka birinin zilyetliğinde olması durumunda ne olur?",
+    "cevap": "El konulan taşınmazın zilyetliğinde bulunan kişi, bu taşınmazın mülkiyetini veya zilyetliğini ispat ederse, taşınmazın geri verilmesi için gerekli işlemleri yap",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, el konulan taşınmazın zilyetliğinde bulunan kişinin haklarını ve geri verme sürecini yanlış bir şekilde ifade etmektedir."
+  },
+  {
+    "id": 11,
+    "soru": "Hâkim ve tarafların isimleri tutanakta yer alıyor mu?",
+    "cevap": "Evet, tutanakta hâkim ve tarafların isimleri yer alır. (HUKUK MUHAKEMELERİ KANUNU, MADDE 155)",
+    "verdict": "CORRECT",
+    "reason": "Tutanakta hâkim ve tarafların isimleri yer alır."
+  },
+  {
+    "id": 12,
+    "soru": "Kat irtifakına geçiş kararı alındı ama ben uymadım, ne olur?",
+    "cevap": "Kat irtifakına geçiş kararına uymayan kat maliki, kat irtifakı kurulmuş sayılır. (KAT MÜLKİYETİ KANUNU, Madde 14)",
+    "verdict": "CORRECT",
+    "reason": "Modelin cevabı, kat irtifakına geçiş kararı alındığında kat malikinin durumu hakkında doğru bilgi vermektedir."
+  },
+  {
+    "id": 13,
+    "soru": "Şiddet uygulayan kişiye hangi tür raporlar hazırlanıyor?",
+    "cevap": "Şiddet uygulayan kişiye ilişkin olarak, koruma tedbirlerine ilişkin raporlar hazırlanır. (AİLENİN KORUNMASI VE KADINA KARŞI ŞİDDETİN ÖNLENMESİNE DAİR KANUN, MAD",
+    "verdict": "PARTIAL",
+    "reason": "Modelin cevabı, şiddet uygulayan kişiye yönelik raporların türlerini tam olarak açıklamamaktadır."
+  },
+  {
+    "id": 14,
+    "soru": "Mirasbırakanın saklı pay kurallarını etkisiz kılmak amacıyla yaptığı kazandırmal",
+    "cevap": "Mirasbırakanın saklı pay kurallarını etkisiz kılmak amacıyla yaptığı kazandırmalar tenkis edilebilir. (TÜRK MEDENİ KANUNU, Madde 562)",
+    "verdict": "CORRECT",
+    "reason": "Modelin cevabı, gerçek maddeye uygun olarak saklı pay kurallarını etkisiz kılmak amacıyla yapılan kazandırmaların tenkise tabi olduğunu belirtmektedir."
+  },
+  {
+    "id": 15,
+    "soru": "Sözleşme değişikliği için notere gitmem şart mı?",
+    "cevap": "Evet, sözleşmenin değiştirilmesi için noter huzurunda düzenleme yapılması gerekmektedir. (TÜRK BORÇLAR KANUNU, MADDE 20)",
+    "verdict": "PARTIAL",
+    "reason": "Noter şartı her durumda geçerli değildir, yazılı şekil yeterli olabilir."
+  },
+  {
+    "id": 16,
+    "soru": "Röntgen muayenehanelerinde çalışıyorsam yarım günlük izin alabilir miyim?",
+    "cevap": "Evet, röntgen muayenehanelerinde çalışanlar, yarım günlük izin alabilirler. (İŞ KANUNU, Madde 63)",
+    "verdict": "CORRECT",
+    "reason": "Röntgen muayenehanelerinde çalışanların yarım günlük izin alabileceği belirtilmiştir."
+  },
+  {
+    "id": 17,
+    "soru": "Cayma hakkım için hangi belgeleri göndermem gerekiyor?",
+    "cevap": "Cayma hakkınızı kullanmak için, sözleşmenin kurulduğu tarihten itibaren on dört gün içinde yazılı olarak bildirimde bulunmanız gerekmektedir. (TÜKETİCİNİN KORUN",
+    "verdict": "PARTIAL",
+    "reason": "Cayma hakkının kullanılması için yazılı bildirim yeterli, ancak hangi belgelerin gerektiği belirtilmemiştir."
+  },
+  {
+    "id": 18,
+    "soru": "Duruşma dışında yapılan işlemler tutanağa nasıl geçiyor?",
+    "cevap": "Duruşma dışında yapılan işlemler, duruşma tutanağına geçirilerek duruşmada okunur. (CEZA MUHAKEMESİ KANUNU, Madde 218)",
+    "verdict": "PARTIAL",
+    "reason": "Duruşma dışında yapılan işlemlerin özeti tutanağa geçer, ancak duruşmada okunması gerektiği belirtilmemiştir."
+  },
+  {
+    "id": 19,
+    "soru": "Cayma hakkımı kullanmak için hangi süre içinde işlem yapmam gerekiyor?",
+    "cevap": "Cayma hakkınızı kullanmak için on dört gün içinde işlem yapmanız gerekmektedir. (TÜKETİCİNİN KORUNMASI HAKKINDA KANUN, MADDE 43)",
+    "verdict": "CORRECT",
+    "reason": "Cayma hakkının kullanılması için on dört gün içinde işlem yapılması gerektiği doğru bir şekilde belirtilmiştir."
+  },
+  {
+    "id": 20,
+    "soru": "Eğer ben borçlunun borcunu ödersem, hemen alacaklı olur muyum?",
+    "cevap": "Evet, borçlunun borcunu ödediğinizde, alacaklı sıfatını kazanarak alacaklı olursunuz. (TÜRK BORÇLAR KANUNU, MADDE 199)",
+    "verdict": "WRONG",
+    "reason": "Borçlunun borcunu ödemek alacaklı olmayı sağlamaz, yalnızca belirli şartlar altında halefiyet söz konusu olabilir."
+  },
+  {
+    "id": 21,
+    "soru": "Avukatlık ücreti nasıl belirleniyor?",
+    "cevap": "Avukatlık ücreti, Adalet Bakanlığı tarafından çıkarılan tarifeye göre belirlenir. (HUKUK MUHAKEMELERİ KANUNU, MADDE 325)",
+    "verdict": "PARTIAL",
+    "reason": "Avukatlık ücreti, tarifeye göre belirlenir ancak modelin cevabı, tazminat davalarındaki özel durumu ve asgari ücret tarifesini belirtmemektedir."
+  },
+  {
+    "id": 22,
+    "soru": "İşten kendi isteğiyle ayrıldığımda kıdem tazminatı alabilir miyim?",
+    "cevap": "Hayır, işten kendi isteğinizle ayrıldığınızda kıdem tazminatı alamazsınız. (İŞ KANUNU, Madde 112)",
+    "verdict": "WRONG",
+    "reason": "İşten kendi isteğiyle ayrılan işçilerin kıdem tazminatı alabileceği durumlar belirtilmemiştir."
+  },
+  {
+    "id": 23,
+    "soru": "Yazılı sözleşmeyi sözlü olarak değiştirebilir miyim?",
+    "cevap": "Hayır, yazılı şekle tabi sözleşmelerin içeriği sözlü olarak değiştirilemez. (TÜRK BORÇLAR KANUNU, MADDE 12)",
+    "verdict": "CORRECT",
+    "reason": "Yazılı sözleşmelerin değiştirilmesinde yazılı şekle uyulması gerektiği doğru bir şekilde belirtilmiştir."
+  },
+  {
+    "id": 24,
+    "soru": "Bir eşyanın intifa hakkı sona ererse ne olur?",
+    "cevap": "İntifa hakkı sona erdiğinde, eşya malike geçer. (TÜRK MEDENİ KANUNU, Madde 801)",
+    "verdict": "PARTIAL",
+    "reason": "İntifa hakkının sona ermesiyle eşyanın malike geçmesi doğru, ancak geri verme yükümlülüğü ve değer ödemesi gibi detaylar eksik."
+  },
+  {
+    "id": 25,
+    "soru": "Kiralanan bir taşınmazda kaynaklar kesilirse ne olur?",
+    "cevap": "Kiraya veren, kiralananda bulunan kaynakların kesilmesini önlemekle yükümlüdür. (TÜRK BORÇLAR KANUNU, MADDE 360)",
+    "verdict": "PARTIAL",
+    "reason": "Modelin cevabı, kiraya verenin yükümlülüğünü belirtse de, kaynakların kesilmesi durumunda kiracının eski duruma getirme talep etme hakkını içermemektedir."
+  },
+  {
+    "id": 26,
+    "soru": "Haksız şartların denetlenmesi nasıl yapılır?",
+    "cevap": "Haksız şartların denetlenmesi, Bakanlık tarafından hazırlanacak bir yönetmelikle düzenlenir. (TÜKETİCİNİN KORUNMASI HAKKINDA KANUN, MADDE 5)",
+    "verdict": "CORRECT",
+    "reason": "Modelin cevabı, haksız şartların denetlenmesine ilişkin gerçek madde içeriğiyle uyumludur."
+  },
+  {
+    "id": 27,
+    "soru": "Bir sözleşmeyi imzalarken imzamı el yazısıyla mı atmam gerekiyor?",
+    "cevap": "Evet, sözleşmenin geçerli olması için imzanın el yazısıyla atılması gerekmektedir. (TÜRK BORÇLAR KANUNU, MADDE 14)",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, el yazısıyla imza atmanın gerekliliğini belirtse de, güvenli elektronik imzanın da geçerli olduğunu belirtmemiştir."
+  },
+  {
+    "id": 28,
+    "soru": "Eski kütük sayfası ne ile bağlantı sağlanır?",
+    "cevap": "Eski kütük sayfası, yeni kütük sayfası ile bağlantılı olarak saklanır. (TÜRK MEDENİ KANUNU, Madde 39)",
+    "verdict": "WRONG",
+    "reason": "Eski kütük sayfasının bağlantısı, yeni kütük sayfası ile değil, anagayrimenkulün kapanan eski kütük sayfası ile sağlanır."
+  },
+  {
+    "id": 29,
+    "soru": "Kirayı yatırmayan kişi hakkında ne olur?",
+    "cevap": "Kirayı yatırmayan kişi hakkında, kiraya veren, icra mahkemesinden tahliye talebinde bulunabilir. (İCRA VE İFLAS KANUNU, Madde 269)",
+    "verdict": "PARTIAL",
+    "reason": "Kirayı yatırmayan kişi hakkında icra mahkemesinden tahliye talep edilebileceği doğru, ancak kirayı yatırmaması durumunda uygulanacak diğer hukuki sonuçlar belirtilmemiştir."
+  },
+  {
+    "id": 30,
+    "soru": "Borçlunun ev eşyaları haczedilebilir mi?",
+    "cevap": "Evet, borçlunun ev eşyaları haczedilebilir, ancak bu eşyalar borçlunun yaşamını sürdürebilmesi için gerekli olanlar hariçtir. (İCRA VE İFLAS KANUNU, Madde 82)",
+    "verdict": "PARTIAL",
+    "reason": "Borçlunun ev eşyaları haczedilemez, ancak yaşamını sürdürebilmesi için gerekli olanlar hariçtir, bu şart belirtilmemiş."
+  },
+  {
+    "id": 31,
+    "soru": "Sözleşmedeki belirsiz hüküm ne olur?",
+    "cevap": "Belirsiz hüküm, sözleşmenin kurulmasından sonra tarafların iradesine göre belirlenir. (TÜRK BORÇLAR KANUNU, MADDE 2)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, belirsiz hükümlerin nasıl belirleneceği konusunda yanlış bir bilgi vermektedir ve gerçek madde ile çelişmektedir."
+  },
+  {
+    "id": 32,
+    "soru": "Tarım ve orman işlerinin tanımında neler var?",
+    "cevap": "Tarım ve orman işleri, tarım ve orman işleri ile ilgili işler ve bu işlerin yürütülmesi için gerekli olan her türlü hizmeti kapsar. (İŞ KANUNU, Madde 110)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek madde içeriğini tam olarak yansıtmamakta ve yanlış bir madde numarası vermektedir."
+  },
+  {
+    "id": 33,
+    "soru": "Korunan kişinin bilgileri nasıl korunur?",
+    "cevap": "Korunan kişinin kimliği, adresi ve diğer kişisel bilgileri gizli tutulur. (CEZA MUHAKEMESİ KANUNU, Madde 140)",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, korunan kişinin bilgileriyle ilgili gizlilik ilkesini belirtse de, ilgili kanun maddesinin detaylarını tam olarak yansıtmamaktadır."
+  },
+  {
+    "id": 34,
+    "soru": "Borçlu, itirazını kanıtlamak için ne tür belgeler sunabilir?",
+    "cevap": "150. maddeye göre, borçlu itirazını kanıtlamak için gerekli belgeleri sunabilir. (İCRA VE İFLAS KANUNU, Madde 150)",
+    "verdict": "WRONG",
+    "reason": "Model cevap, itirazı kanıtlamak için belgelerin neler olduğunu belirtmemekte ve yanlış madde numarası vermektedir."
+  },
+  {
+    "id": 35,
+    "soru": "İflas davaları adli tatilde işlenebilir mi?",
+    "cevap": "Evet, iflas davaları adli tatilde işlenebilir. (HUKUK MUHAKEMELERİ KANUNU, MADDE 103)",
+    "verdict": "CORRECT",
+    "reason": "İflas davaları adli tatilde işlenebilir, bu durum gerçek madde ile uyumludur."
+  },
+  {
+    "id": 36,
+    "soru": "İşverenin verdiği diğer izinler yıllık izne ekleniyor mu?",
+    "cevap": "Evet, işverenin verdiği diğer izinler yıllık ücretli izin süresine eklenir. (İŞ KANUNU, Madde 55)",
+    "verdict": "CORRECT",
+    "reason": "Modelin cevabı, gerçek maddeye göre işverenin verdiği diğer izinlerin yıllık izne ekleneceğini doğru bir şekilde ifade etmektedir."
+  },
+  {
+    "id": 37,
+    "soru": "Dava zamanaşımı süresi nasıl belirlenir?",
+    "cevap": "Dava zamanaşımı süresi, kanunda belirtilen süreye göre belirlenir. (TÜRK BORÇLAR KANUNU, MADDE 150)",
+    "verdict": "WRONG",
+    "reason": "Model cevap, dava zamanaşımı süresinin belirlenmesinde Türk Borçlar Kanunu'na atıfta bulunarak yanlış bir bilgi vermektedir; doğru bilgi ceza kanununa dayanmalıdır."
+  },
+  {
+    "id": 38,
+    "soru": "Konkordato komiserinin eğitimi hakkında ne gerekir?",
+    "cevap": "Konkordato komiserinin eğitimi, Adalet Bakanlığı tarafından hazırlanacak yönetmelikle düzenlenir. (İCRA VE İFLAS KANUNU, Madde 309)",
+    "verdict": "CORRECT",
+    "reason": "Modelin cevabı, gerçek maddeye uygun olarak konkordato komiserinin eğitiminin Adalet Bakanlığı tarafından düzenleneceğini belirtmektedir."
+  },
+  {
+    "id": 39,
+    "soru": "Seçenek tedbir yerine getirilmezse ne olur?",
+    "cevap": "Seçenek tedbir yerine getirilmezse, hâkim başka bir tedbir kararı verebilir. (CEZA MUHAKEMESİ KANUNU, Madde 110)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek madde ile çelişiyor; seçenek tedbir yerine getirilmezse infaz hâkimliği hapis cezasının infazına karar verir."
+  }
+]

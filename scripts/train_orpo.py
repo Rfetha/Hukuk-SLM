@@ -84,9 +84,12 @@ class MaskedORPOTrainer(ORPOTrainer):
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", default="google/gemma-4-12B-it-qat-q4_0-unquantized")
-    p.add_argument("--adapter", default="outputs/v2b", help="DEVAM edilecek v2b adapter (grounding taşır)")
-    p.add_argument("--data", default="data/processed/sft_v3", help="train.jsonl + validation.jsonl")
+    # ⚠️ Default YOK (bilerek) — yanlış base'e sessizce düşmek koşuyu çöpe çevirir.
+    p.add_argument("--model", required=True, help="HF repo id veya yerel yol")
+    p.add_argument("--adapter", default=None,
+                   help="DEVAM edilecek adapter (önceki turun kazanımı taşınır). "
+                        "Yoksa --fresh-adapter ile base'e taze adapter.")
+    p.add_argument("--data", required=True, help="train.jsonl + validation.jsonl içeren dizin")
     p.add_argument("--run-name", default="v3")
     p.add_argument("--output-dir", default=None)
     p.add_argument("--beta", type=float, default=0.1, help="ORPO OR ceza ağırlığı (recipe λ; {0.05,0.1,0.25})")
@@ -103,8 +106,12 @@ def parse_args():
     p.add_argument("--max-steps", type=int, default=-1, help="smoke için sınırla")
     p.add_argument("--save-steps", type=int, default=100,
                    help="checkpoint aralığı; 2-epoch koşuda ~1-epoch ara-checkpoint için düşür (ör. 28)")
+    p.add_argument("--target-modules", nargs="+",
+                   default=["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj"],
+                   help="LoRA katmanları (--fresh-adapter yolunda kullanılır). Mimariye göre değişir.")
     p.add_argument("--fresh-adapter", action="store_true",
-                   help="FALLBACK: v2b-continuation çalışmazsa base'e YENİ adapter (grounding'i kaybeder)")
+                   help="continuation yerine base'e YENİ adapter (önceki turun kazanımını kaybeder)")
     return p.parse_args()
 
 
@@ -117,20 +124,19 @@ def main():
         load_in_4bit=True, full_finetuning=False,
     )
 
-    if args.fresh_adapter:
-        # Fallback: base'e yeni adapter (grounding taşınmaz — sadece continuation başarısızsa).
+    if args.fresh_adapter or not args.adapter:
+        # Base'e yeni adapter — önceki turun kazanımı (grounding) TAŞINMAZ.
         model = FastModel.get_peft_model(
             model, r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=0.0,
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                            "gate_proj", "up_proj", "down_proj"],
+            target_modules=args.target_modules,
             bias="none", use_gradient_checkpointing="unsloth", random_state=args.seed,
         )
-        print("[orpo] ⚠️ FRESH adapter (base'den) — grounding taşınmadı", flush=True)
+        print("[orpo] ⚠️ FRESH adapter (base'den) — önceki turun kazanımı taşınmadı", flush=True)
     else:
-        # v2b-CONTINUATION: v2b LoRA'sını trainable yükle (grounding taşınır, recipe Q2).
+        # CONTINUATION: önceki turun LoRA'sını trainable yükle (kazanım taşınır).
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, args.adapter, is_trainable=True)
-        print(f"[orpo] v2b-continuation: {args.adapter} (is_trainable) — grounding taşındı", flush=True)
+        print(f"[orpo] continuation: {args.adapter} (is_trainable) — kazanım taşındı", flush=True)
 
     data_files = {"train": os.path.join(args.data, "train.jsonl"),
                   "validation": os.path.join(args.data, "validation.jsonl")}

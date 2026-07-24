@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 """
-HakHukuk — QLoRA SFT eğitim script'i (Faz 1, Adım 3/5).
+HakHukuk — QLoRA SFT eğitim script'i. **Base-agnostik.**
 
-Gemma 4 12B + Unsloth QLoRA (NF4 4-bit) → vatandaş-dilli hukuk SLM.
-v0 (32K jargon) ve v1 (sade + grounded) için aynı script, --data ile değişir.
+Unsloth QLoRA (NF4 4-bit) → Türk hukuku SLM. Tüm turlar aynı script; `--data` ile değişir.
 
-Plan: docs/FAZ1_PLAN.md Adım 3. Hiperparametreler TEKNIK_PLAN.md Adım 7.
-Ortam: ~/code/global_venv (Blackwell sm_120, torch 2.10+cu128, unsloth 2026.6.1).
+⚠️ Base bir PARAMETRE, gömülü karar değil: `--model`, `--user-part`, `--assistant-part`
+ve `--target-modules` zorunlu/ayarlanabilir. `--user-part`/`--assistant-part` render'a karşı
+assert edilir (bkz aşağıdaki "SESSİZ-BOZULMA KAPISI").
 
 Kullanım:
-  python scripts/train_sft.py --run-name v0 \
-      --data data/processed/sft_v0 --epochs 2
+  python scripts/train_sft.py --model <hf-repo> --run-name r1 \
+      --data data/train/<set> --epochs 1 \
+      --user-part '<|turn>user\n' --assistant-part '<|turn>model\n'
 
-Not: 12GB VRAM → batch=1 + gradient_checkpointing ZORUNLU.
+Not: dar VRAM → batch=1 + gradient_checkpointing ZORUNLU.
 """
 import argparse
 import os
@@ -35,18 +36,21 @@ SYSTEM_PROMPT = (
     "Bu yanıt hukuki tavsiye değil, bilgilendirme amaçlıdır."
 )
 
-# Gemma 4 turn işaretleri — responses-only maskeleme için (sadece model cevabından loss).
-# DİKKAT: Gemma 4 template'i `<|turn>user\n` / `<|turn>model\n` kullanır
-# (eski Gemma'nın `<start_of_turn>...` değil). Tokenizer render'ı ile doğrulandı 2026-06-07.
-GEMMA_USER_PART = "<|turn>user\n"
-GEMMA_ASSISTANT_PART = "<|turn>model\n"
-
-
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", default="google/gemma-4-12B-it-qat-q4_0-unquantized")
-    p.add_argument("--data", default="data/processed/sft_v0",
-                   help="train.jsonl + validation.jsonl içeren dizin")
+    # ⚠️ Default YOK (bilerek): yanlış base'e sessizce düşmek saatlerce süren bir koşuyu
+    # çöpe çevirir. Base bir PARAMETRE, gömülü karar değil.
+    p.add_argument("--model", required=True, help="HF repo id veya yerel yol")
+    # ⚠️ Responses-only maskeleme sınırları — BASE'E GÖRE DEĞİŞİR ve yanlışsa SESSİZ BOZULUR:
+    # maske hiç tutmaz, loss user/system tokenlarından da akar, eğitim gürültüye döner.
+    # Bu yüzden default yok + aşağıda render'a karşı assert ediliyor.
+    # (Örn. Gemma 4: `<|turn>user\n` / `<|turn>model\n` — eski Gemma'nın `<start_of_turn>`i DEĞİL.)
+    p.add_argument("--user-part", required=True,
+                   help=r"chat şablonundaki kullanıcı turu başlangıcı, ör. '<|turn>user\n'")
+    p.add_argument("--assistant-part", required=True,
+                   help=r"asistan turu başlangıcı, ör. '<|turn>model\n'")
+    p.add_argument("--data", required=True,
+                   help="train.jsonl + validation.jsonl içeren dizin (ör. data/train/raft)")
     p.add_argument("--run-name", default="v0")
     p.add_argument("--output-dir", default=None, help="varsayılan: outputs/<run-name>")
     p.add_argument("--max-seq-len", type=int, default=2048)
@@ -57,6 +61,10 @@ def parse_args():
     p.add_argument("--lora-r", type=int, default=16)
     p.add_argument("--lora-alpha", type=int, default=32)
     p.add_argument("--lora-dropout", type=float, default=0.05)
+    p.add_argument("--target-modules", nargs="+",
+                   default=["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj"],
+                   help="LoRA takılacak lineer katmanlar (all-linear). Mimariye göre değişir.")
     p.add_argument("--warmup-ratio", type=float, default=0.03,
                    help="warmup oranı (v2b reçete §5.1-C: %3-5; sweep'lenebilir)")
     p.add_argument("--seed", type=int, default=3407)
@@ -97,9 +105,9 @@ def main():
         r=args.lora_r,
         lora_alpha=args.lora_alpha,
         lora_dropout=args.lora_dropout,
-        # all-linear: Gemma'nın tüm lineer projeksiyonları
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                        "gate_proj", "up_proj", "down_proj"],
+        # ⚠️ Mimariye bağlı: bu isimler base'in lineer projeksiyonlarıyla eşleşmeli.
+        # Farklı mimaride (MoE, linear-attention) tutmaz → "0 LoRA takıldı" veya exception.
+        target_modules=args.target_modules,
         bias="none",
         use_gradient_checkpointing="unsloth",  # 12GB için zorunlu
         random_state=args.seed,
@@ -119,6 +127,21 @@ def main():
                   "validation": os.path.join(args.data, "validation.jsonl")}
     ds = load_dataset("json", data_files=data_files)
     ds = ds.map(to_text, remove_columns=[c for c in ds["train"].column_names])
+
+    # 🚨 SESSİZ-BOZULMA KAPISI: maske sınırları render'da GERÇEKTEN var mı?
+    # Yoksa train_on_responses_only hiçbir şeyi maskelemez, loss tüm diziden akar ve
+    # eğitim sessizce bozulur — hata da vermez. Yeni base'de İLK kırılan yer burasıdır.
+    sample = ds["train"][0]["text"]
+    for name, part in (("--user-part", args.user_part),
+                       ("--assistant-part", args.assistant_part)):
+        if part not in sample:
+            raise SystemExit(
+                f"[train] 🚫 {name}={part!r} render edilmiş şablonda BULUNAMADI.\n"
+                f"  Bu base'in chat şablonu farklı turn işareti kullanıyor demektir.\n"
+                f"  Maskeleme sessizce çalışmaz → eğitim çöpe gider. Render örneği (ilk 300 char):\n"
+                f"  {sample[:300]!r}")
+    print(f"[train] ✓ maske sınırları render'da doğrulandı "
+          f"({args.user_part!r} / {args.assistant_part!r})")
 
     # --- Trainer ---
     trainer = SFTTrainer(
@@ -155,8 +178,8 @@ def main():
     # Sadece model cevabından loss (user/system tokenları maskelenir).
     trainer = train_on_responses_only(
         trainer,
-        instruction_part=GEMMA_USER_PART,
-        response_part=GEMMA_ASSISTANT_PART,
+        instruction_part=args.user_part,
+        response_part=args.assistant_part,
     )
 
     # Otomatik resume: out'ta checkpoint varsa kaldığı yerden, yoksa baştan (idempotent).

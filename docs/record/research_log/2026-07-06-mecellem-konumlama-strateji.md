@@ -14,7 +14,7 @@
 
 ## Kafa-kafaya tablo (TAM judge — v3 dahil KESİNLEŞTİ 2026-07-06 akşam)
 > **GÜNCELLEME:** v3 hücreleri artık proxy değil, gerçek gpt-4o-mini judge (14 koşu, ADIM 9 kapandı).
-> Kaynak: [[2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) + [[../SCORECARD]]. Aşağıdaki proxy notu tarihsel (tuttu mu → tuttu).
+> Kaynak: [[2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) + [SCORECARD](../../../old-version-gemma4-12b/record/SCORECARD.md). Aşağıdaki proxy notu tarihsel (tuttu mu → tuttu).
 
 | Eksen | base | v2b | v2c ❌ | Mecellem¹ | **v3 (judge)** |
 |---|---|---|---|---|---|

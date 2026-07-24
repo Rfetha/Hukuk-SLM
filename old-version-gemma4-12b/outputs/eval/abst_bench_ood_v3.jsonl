@@ -1,0 +1,352 @@
+[
+  {
+    "id": 0,
+    "soru": "Baroların ve Adalet Bakanlığı'nın işlerini kim denetliyor?",
+    "cevap": "Baroların mali işlerini denetlemek üzere baro genel kurulu, kendi üyeleri arasından en çok üç asıl ve üç yedek denetçi seçer. (Avukatlık Kanunu Madde 108)",
+    "valid_trap": false,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Verilen kaynak sadece baroların mali işlerini denetleyen denetçileri düzenliyor, Adalet Bakanlığı'nın denetimi hakkında bilgi vermiyor."
+  },
+  {
+    "id": 1,
+    "soru": "Sürücü belgemin sağlık durumum nedeniyle alınırsa, tekrar nasıl geri alabilirim?",
+    "cevap": "Sürücü belgenizin sağlık durumunuz nedeniyle geri alınması halinde, yeniden alabilmeniz için gerekli şartların belirlenmesi ve usullere ilişkin düzenlemeler, il",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta sürücü belgesinin geri alınması ve yeniden alınmasıyla ilgili bilgi yok."
+  },
+  {
+    "id": 2,
+    "soru": "Hastaneye kaldırıldım, cezamdan indirim yapılır mı?",
+    "cevap": "Ceza ve Güvenlik Tedbirlerinin İnfazı Hakkında Kanun'un 101. maddesi, cezanın infazı sırasında mahkemeden veya infaz hâkimliğinden alınması gereken kararların d",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta hastaneye kaldırılma durumunda ceza indirimine ilişkin bir bilgi yok."
+  },
+  {
+    "id": 3,
+    "soru": "Birisi, koruma yöntemlerini aşarak bir eseri izinsiz kullanırsa ne olur?",
+    "cevap": "İlgili kanun hükmü, Fikir ve Sanat Eserleri Kanunu'nun 81. maddesidir. Bu madde, koruma yöntemlerini aşarak bir eserin izinsiz kullanımına ilişkin yaptırımları ",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Model, kaynak metinde yer alan bilgiyi kullanarak soruya net bir cevap vermiştir."
+  },
+  {
+    "id": 4,
+    "soru": "Hız sınırını biraz aşarsam ne olur?",
+    "cevap": "Hız sınırını aşmanız durumunda, Karayolları Trafik Kanunu'nun 118. maddesi uyarınca, işlenen suç nedeniyle sürücü belgeniz geri alınabilir. Ayrıca, geri alma sü",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde hız sınırını aşmanın sonuçları belirtilmemiştir, ancak model bu konuda iddialı bir cevap vermiştir."
+  },
+  {
+    "id": 5,
+    "soru": "Baro başkanı, avukat adaylarının niteliklerini nasıl kontrol ediyor?",
+    "cevap": "İlgili düzenleme elimdeki kaynakta bulunmamaktadır; sunulan metin soruyla doğrudan ilgili değildir. Doğru bir atıf yapabilmem için ilgili mevzuat hükmünün sağla",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "verilen kaynakta bu bilgi yok"
+  },
+  {
+    "id": 6,
+    "soru": "Duraklamanın yasak olduğu yerleri nereden anlayabilirim?",
+    "cevap": "Duraklamanın yasak olduğu yerleri öğrenmek için Karayolları Trafik Kanunu'nun 59. maddesine başvurulması gerekmektedir. Bu madde, yerleşim birimleri dışındaki k",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde duraklamanın yasak olduğu yerler belirtilmemiştir, ancak model kendi bilgisiyle bir madde atfında bulunmuştur."
+  },
+  {
+    "id": 7,
+    "soru": "Cezaevinde kalan birinin ne tür yiyecekler alacağına nasıl karar veriliyor?",
+    "cevap": "Cezaevinde kalan birinin yiyecek ve içecek alımına ilişkin düzenlemeler, Ceza ve Güvenlik Tedbirlerinin İnfazı Hakkında Kanun'un 65. maddesinde belirtilmiştir. ",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metin yalnızca çocukların yiyecek ve içeceklerine dair bilgi verirken, cezaevindeki hükümlülerin yiyecek alımına dair düzenlemeleri belirtmemektedir."
+  },
+  {
+    "id": 8,
+    "soru": "Türkiye’ye geldiğimde, başka bir ülkede zulme uğradığım için burada kalabilir mi",
+    "cevap": "Evet, Türkiye'ye geldiğinizde, başka bir ülkede zulme uğradığınız için burada kalmanız mümkündür. Ancak bu durum, yalnızca belirli şartlar altında geçerlidir. İ",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Model, kaynak metinde belirtilen şartları doğru bir şekilde yansıtsa da, 'burada kalmanız mümkündür' ifadesi yanıltıcı bir kesinlik taşımaktadır."
+  },
+  {
+    "id": 9,
+    "soru": "Yabancı birisi Türkiye'de nasıl daha iyi uyum sağlayabilir?",
+    "cevap": "Yabancı bir kişinin Türkiye'de daha iyi uyum sağlaması için, gönüllü olarak geri dönmek isteyenlere ayni ve nakdi destek sağlanması mümkündür (Yabancılar ve Ulu",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Verilen kaynakta uyum sağlama ile ilgili bilgi yok, ancak model bu konuda iddialı bir cevap vermiştir."
+  },
+  {
+    "id": 10,
+    "soru": "Araç tescil belgesi ve plakası olmadan yola çıkabilir miyim?",
+    "cevap": "Hayır, araç tescil belgesi ve plakası olmadan yola çıkamazsınız. Türk Ceza Kanunu'na göre, tescil belgesi ve plakası olmayan araçların trafiğe çıkması yasaktır;",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde araç tescil belgesi ve plakası ile ilgili doğrudan bir bilgi yoktur, ancak model Türk Ceza Kanunu'na atıfta bulunarak yanlış bir bilgi vermiştir."
+  },
+  {
+    "id": 11,
+    "soru": "Coğrafi işaret nedir ve neden önemlidir?",
+    "cevap": "Coğrafi işaret, belirli bir ürünün menşei ile ilgili coğrafi kökenin, o ürünün kalitesine veya itibarına katkıda bulunması durumunda verilen koruma türüdür. Bu ",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metin coğrafi işaretin tanımını yapmamakta, model ise detaylı bir tanım ve atıf sunmaktadır."
+  },
+  {
+    "id": 12,
+    "soru": "Vakıf üniversiteleri ya da okul aile birlikleri, daha önceki dönemlerde sağlanan",
+    "cevap": "Hayır, vakıf üniversiteleri ya da okul aile birlikleri, daha önceki dönemlerde sağlanan prim teşviklerinden yararlanamazlar. Bu durum, 5335 sayılı Kanun'un 30. ",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde vakıf üniversiteleri veya okul aile birliklerinin prim teşviklerinden yararlanıp yararlanamayacağına dair bir bilgi bulunmamaktadır."
+  },
+  {
+    "id": 13,
+    "soru": "Avukatın meslek kurallarına uymaması durumunda ne olur?",
+    "cevap": "Avukatların meslek kurallarına uymaması durumunda, bu durumun sonuçları Türk Ceza Kanunu'nda düzenlenmiştir. Ancak ilgili kanun metni elimde bulunmadığından mad",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "verilen kaynakta bu bilgi yok"
+  },
+  {
+    "id": 14,
+    "soru": "Patent hakkım sona ererse ne olur?",
+    "cevap": "Patent hakkının sona ermesiyle ilgili bir düzenleme elimdeki kaynakta bulunmamaktadır; sunulan metin yalnızca marka hakkının sona ermesiyle ilgilidir. Güvenilir",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta patent hakkının sona ermesiyle ilgili bilgi yoktur."
+  },
+  {
+    "id": 15,
+    "soru": "Cezaevinde yatan birisi mazeret izni alabilir mi?",
+    "cevap": "Cezaevinde yatan bir kişinin mazeret izni alıp alamayacağına dair bilgi, elimdeki kaynakta yer almamaktadır. İlgili düzenleme için ayrıca bir hüküm temin edilme",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "verilen kaynakta bu bilgi yok"
+  },
+  {
+    "id": 16,
+    "soru": "Stajyer avukatlar staj sırasında ne gibi şeyler yapmak zorundadır?",
+    "cevap": "Stajyer avukatlar, staj süreleri boyunca mahkemelerde ve en az beş yıl kıdemi olan bir avukat yanında çalışmak zorundadırlar. Bu düzenleme, Avukatlık Kanunu'nun",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Model, kaynak metinde belirtilen bilgiyi doğru bir şekilde aktarmış ancak Avukatlık Kanunu'nun 15. maddesine atıfta bulunarak ek bilgi vermiştir."
+  },
+  {
+    "id": 17,
+    "soru": "Cezaevinde hangi davranışlar kınama cezası aldırır?",
+    "cevap": "Cezaevinde kınama cezası aldıracak davranışlar hakkında bilgi bulunmamaktadır; ilgili düzenleme elimdeki metinde yer almamaktadır. Güvenilir bir atıf için ilgil",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta kınama cezası ile ilgili bilgi yok."
+  },
+  {
+    "id": 18,
+    "soru": "Bir yazarın daha yayımlanmamış eserinin borca karşılık teminat olarak kullanılab",
+    "cevap": "Hayır, bir yazarın daha yayımlanmamış eserinin borca karşılık teminat olarak kullanılması mümkün değildir. İlgili düzenleme, yalnızca alenileşmiş eserler ve bun",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metin, yayımlanmamış eserlerin teminat olarak kullanılıp kullanılamayacağına dair net bir bilgi sunmamaktadır."
+  },
+  {
+    "id": 19,
+    "soru": "Birlik Genel Kurulu toplantısına katılmak zorunlu mu, yoksa katılmak istemezsem ",
+    "cevap": "Birlik başkanı, birlik genel kurulu toplantısına katılmak zorundadır; bu durum, Türk Avukatlık Kanunu'nun 122. maddesinde belirtilmiştir. Katılmamak, görevini y",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde genel kurul toplantısına katılım zorunluluğu hakkında bilgi yoktur."
+  },
+  {
+    "id": 20,
+    "soru": "Sınır dışı edilme kararı alındıysa, Türkiye'den çıkmak için ne kadar süre verili",
+    "cevap": "İlgili düzenleme, Yabancılar ve Uluslararası Koruma Kanunu'nun 9. maddesinde yer almaktadır. Ancak, sorunuzda belirtilen konu bu maddede düzenlenmemiştir; madde",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta sınır dışı edilme kararı sonrası Türkiye'den çıkış süresi hakkında bilgi yok."
+  },
+  {
+    "id": 21,
+    "soru": "Bir veri tabanının içeriğini başka bir yere kopyalamak istediğimde izin almam ge",
+    "cevap": "Evet, izin almanız gerekmektedir. Fikir ve sanat eserlerinin korunması amacıyla oluşturulan veri tabanlarının içeriğini kopyalamak, ilgili mevzuat çerçevesinde ",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde izin alma gerekliliği belirtilmemiştir, ancak model bu konuda kesin bir cevap vermiştir."
+  },
+  {
+    "id": 22,
+    "soru": "Bir ürünün ambalajında coğrafi işaretin yanlış kullanılması durumunda ne yapmalı",
+    "cevap": "Geleneksel ürün adı hakkına tecavüz durumunda, bu durumu tespit eden kişi, tecavüzü tescil ettirene noter vasıtasıyla bildirmeli ve gerekli davayı açmalıdır. Eğ",
+    "valid_trap": false,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Model, kaynak metinde yer alan bilgileri kullanarak soruya net bir cevap vermiş, ancak kaynakta belirtilmeyen 'Sınai Mülkiyet Kanunu Madde 54' ifadesini eklemiştir."
+  },
+  {
+    "id": 23,
+    "soru": "Birden fazla kişiyle birlikte bir eser yaptık ama biri buna izin vermiyor, ne ya",
+    "cevap": "Bu durumda, eser üzerindeki mali hakların kullanımına ilişkin düzenlemeleri dikkate alarak hareket etmelisiniz. Türk hukukuna göre, eser sahibinin mali hakları ",
+    "valid_trap": false,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu durumun hukuki sonuçları hakkında bilgi yok."
+  },
+  {
+    "id": 24,
+    "soru": "Eğer başka bir ülkede marka başvurusu yaptıysam, Türkiye'de bu markayı tescil et",
+    "cevap": "İlgili düzenleme elimdeki metinde bulunmamaktadır; sunulan madde soruyla doğrudan ilgili değildir. Doğru bilgi için ilgili mevzuat hükmünün sağlanması gerekir.",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 25,
+    "soru": "Emekli olmak için hangi şartları sağlamam gerekiyor?",
+    "cevap": "Emekli olmak için gerekli şartlar, Sosyal Sigortalar ve Genel Sağlık Sigortası Kanunu'nun 30. maddesinde düzenlenmiştir. Bu maddeye göre, yaşlılık aylığına hak ",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Verilen kaynak metinde emeklilik şartları açıkça belirtilmemiştir, ancak model bu bilgiyi kendi ezberinden ekleyerek cevap vermiştir."
+  },
+  {
+    "id": 26,
+    "soru": "Türkiye’de üniversitede okuyan bir yabancı öğrenci çalışabilir mi?",
+    "cevap": "İlgili düzenleme elimdeki metinde bulunmamaktadır; sunulan kaynak bu soruyu karşılayan bir hüküm içermemektedir. Doğru bir atıf yapabilmem için ilgili mevzuat h",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta bu bilgi yok."
+  },
+  {
+    "id": 27,
+    "soru": "Benim elimde bir kitabın kopyası var, bu kopyayı ipotek ettirebilir miyim?",
+    "cevap": "Hayır, elinizdeki kitabın kopyasını ipotek ettiremezsiniz. Fikir ve Sanat Eserleri Kanunu'nun 61. maddesi, eser sahibinin veya mirasçılarının mülkiyetinde bulun",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde ipotek edilemeyecek eserler belirtilmiş ancak Fikir ve Sanat Eserleri Kanunu'nun 61. maddesi kaynakta yer almıyor."
+  },
+  {
+    "id": 28,
+    "soru": "Evde çalışan birini sigortalı yaptırmam gerekiyor mu?",
+    "cevap": "8) (Değişik: 17/4/2008-5754/7 md.) (3) numaralı alt bent kapsamında iflas veya tasfiye durumu ile münfesih duruma düşen şirketlerin ortaklarından. 4 üncü madden",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": false,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta evde çalışan birinin sigortalı olup olmamasıyla ilgili bilgi yok."
+  },
+  {
+    "id": 29,
+    "soru": "Geri gönderme merkezleri nedir ve kimler orada tutulur?",
+    "cevap": "İlgili düzenleme elimdeki metinde bulunmamaktadır; sunulan madde soruyla doğrudan ilgili değildir. Doğru bilgi için ilgili mevzuat hükmünün sağlanması gerekir.",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta geri gönderme merkezleri hakkında bilgi yoktur."
+  },
+  {
+    "id": 30,
+    "soru": "Sosyal sigorta nedir, kime denir?",
+    "cevap": "Sosyal sigorta, iş kazası, meslek hastalığı, hastalık, doğum ve ölüm gibi durumlar için sigortalıların haklarını koruyan bir sistemdir. Bu bağlamda, sosyal sigo",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Verilen kaynak metinde sosyal sigorta tanımı ve kapsamı hakkında bilgi yoktur."
+  },
+  {
+    "id": 31,
+    "soru": "Eğer ben bir marka sahibi isem, daha önce başvurmuş birinin açtığı davada kendi ",
+    "cevap": "Evet, marka sahibi olarak kendi markanızı savunabilirsiniz. Sınai mülkiyet hakkının birden çok kişiye ait olması durumunda, hak sahipleri arasında ortak temsilc",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Verilen kaynakta, marka sahibinin kendi markasını savunup savunamayacağına dair bilgi yoktur."
+  },
+  {
+    "id": 32,
+    "soru": "İşverenin, çalıştırdığı sigortalılarla ilgili belgeleri ne kadar süreyle saklama",
+    "cevap": "İlgili düzenleme, Türk Sosyal Güvenlik sisteminde işverenin yükümlülüklerini belirleyen Sosyal Sigortalar ve Genel Sağlık Sigortası Kanunu'nda yer almaktadır. A",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Verilen kaynakta işverenin belgeleri ne kadar süreyle saklaması gerektiğine dair bilgi yok."
+  },
+  {
+    "id": 33,
+    "soru": "Kadın mahkumlar nerede cezaevinde kalıyorlar?",
+    "cevap": "Kadın mahkumlar, yüksek güvenlikli kapalı ceza infaz kurumlarında kalmaktadırlar. Bu kurumlar, iç ve dış güvenlik görevlilerine sahip, firara karşı çeşitli enge",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
+    "reject_exact": false,
+    "used_parametric": true,
+    "reason": "Kaynak metinde kadın mahkumların nerede kaldığına dair spesifik bir bilgi bulunmamaktadır."
+  },
+  {
+    "id": 34,
+    "soru": "Elektrikli skuter kullanırken yanımda birini taşıyabilir miyim?",
+    "cevap": "İlgili düzenleme elimdeki metinde bulunmamaktadır; sunulan cevabın doğruluğunu garanti edemem. Güvenilir bir bilgi için ilgili mevzuat hükmünün sağlanması gerek",
+    "valid_trap": true,
+    "verdict": "ABSTAIN",
+    "reject_exact": true,
+    "used_parametric": false,
+    "reason": "Bu madde elektrikli skuter kullanımıyla ilgili bir düzenleme içermiyor."
+  }
+]

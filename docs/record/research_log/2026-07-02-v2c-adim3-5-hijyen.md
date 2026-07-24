@@ -1,5 +1,5 @@
 ## v2c icra — ADIM 3-5: C2 (position-bias) + B1 (GOLD-scrub) + B2/B3 (hijyen) (2026-07-02)
-Otorite: [`v2c/roadmap.md`](../v2c/roadmap.md) §5 madde 3-5. Hepsi GPU'suz kod/veri incelemesi — ADIM 2 GPU batch'i (C3+C4+C1-base/v1) arka planda koşarken paralel yapıldı. `v2c` branch'inde.
+Otorite: [`v2c/roadmap.md`](../../../old-version-gemma4-12b/record/v2c/roadmap.md) §5 madde 3-5. Hepsi GPU'suz kod/veri incelemesi — ADIM 2 GPU batch'i (C3+C4+C1-base/v1) arka planda koşarken paralel yapıldı. `v2c` branch'inde.
 
 **ADIM 3 — C2 position-bias shuffle (G2 de test eder): sıfır-kod, ZATEN VAR.**
 - `raft_pack.pack_context` satır 125 `rng.shuffle(chunks)` → gold, distractor'lar arasında randomize. rng per-örnek deterministik (`gen_eval_grounded` satır 210 `Random(seed+i)`) → tekrar-üretilebilir ama pozisyon sabit değil.

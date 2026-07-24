@@ -7,7 +7,7 @@ Dev-set ile ORPO tuning (beta/lr) → karar eval'i (kanon 6-mod) KİRLENMEZ.
 Seçim: packed_v3.jsonl'dan yüksek-ov_gold (zor, eval M2 dağılımıyla örtüşük) trap'ler; eval
 trap.jsonl'daki sorularla ÇAKIŞMAYANLAR. Çıktı dev id'leri ADIM 6 paketlemede eğitimden ÇIKARILIR.
 
-Çıktı: data/processed/sft_v3/dev.jsonl (id, soru, trap_text, trap/gold alanları, ov_gold, expected=abstain).
+Çıktı: data/train/orpo_abstain/dev.jsonl (id, soru, trap_text, trap/gold alanları, ov_gold, expected=abstain).
 
 Kullanım: python scripts/build_v3_devset.py --n 80
 """
@@ -19,9 +19,9 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-PACKED = "data/processed/sft_v3/packed_v3.jsonl"
-EVAL_TRAP = "data/eval/trap.jsonl"
-OUT = "data/processed/sft_v3/dev.jsonl"
+PACKED = "data/_ham_ve_ara/orpo_packed.jsonl"
+EVAL_TRAP = "data/eval/canon/trap.jsonl"
+OUT = "data/train/orpo_abstain/dev.jsonl"
 
 
 def norm_soru(s):

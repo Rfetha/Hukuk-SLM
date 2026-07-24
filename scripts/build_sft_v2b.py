@@ -5,13 +5,13 @@
 
   pack      Adım 1 → soru↔gold tohumundan RAFT context paketle, P-dilimine ata.
             Çıktı = teacher-LLM GİRDİSİ (cevaplar henüz YOK).
-            data/processed/sft_v2b/packed.jsonl
+            data/_ham_ve_ara/raft_packed.jsonl
 
   (— ARADA: B2 teacher-LLM packed.jsonl'a cevap üretir → answers.jsonl —)
 
   assemble  Adım 3/4/5 → cevapları al, DETERMİNİSTİK kapılardan geçir (verbatim⊂gold,
             atıf eşleşme, abstention-ifadesi), replay karıştır, split + chat-template yaz.
-            data/processed/sft_v2b/{train,validation,test}.jsonl
+            data/train/raft/{train,validation,test}.jsonl
 
 Hedge mekanizması = context-yeterliliği (V2_PLAN §5.2): P dilimi gold'u context'e koyar
 (grounded), (1-P) dilimi gold'u ÇIKARIR (abstention). Base-prob YOK; tek knob = P.
@@ -21,9 +21,9 @@ hattı). Buradaki kapılar DETERMİNİSTİK (string/regex) — ucuz ön-eleme.
 
 Kullanım:
   python scripts/build_sft_v2b.py pack --p 0.8 --distractors 4 --seed 3407
-  # (B2 cevap üretir → data/processed/sft_v2b/answers.jsonl)
-  python scripts/build_sft_v2b.py assemble --answers data/processed/sft_v2b/answers.jsonl \
-         --replay data/processed/replay_tr.jsonl --replay-frac 0.03
+  # (B2 cevap üretir → data/_ham_ve_ara/raft_answers.jsonl)
+  python scripts/build_sft_v2b.py assemble --answers data/_ham_ve_ara/raft_answers.jsonl \
+         --replay data/train/replay_tr.jsonl --replay-frac 0.03
 """
 import argparse
 import json
@@ -33,9 +33,9 @@ import re
 
 import raft_pack
 
-SEED_PATH = "data/processed/sft_v1/train.jsonl"   # soru↔gold tohumu (v1 CEVAPLARI kullanılmaz)
-MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
-OUT_DIR = "data/processed/sft_v2b"
+SEED_PATH = "data/train/grounded_qa/train.jsonl"   # soru↔gold tohumu (v1 CEVAPLARI kullanılmaz)
+MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
+OUT_DIR = "data/train/raft"
 
 ABSTAIN_RE = re.compile(
     r"düzenle(?:m[ie]yor|nmemiş|nmemekte)|yer al(?:m[ıi]yor|mamakta)|bulunma(?:maktadır|z|yor)|"
@@ -432,7 +432,7 @@ def main():
     pp = sub.add_parser("pack", help="Adım 1 — RAFT context paketle (teacher-LLM girdisi)")
     pp.add_argument("--seeds", default=SEED_PATH)
     pp.add_argument("--madde-path", default=MADDE_PATH)
-    pp.add_argument("--out-dir", default=OUT_DIR, help="çıktı dizini (v2c: data/processed/sft_v2c)")
+    pp.add_argument("--out-dir", default=OUT_DIR, help="çıktı dizini (v2c: data/train/<yeni-set>)")
     pp.add_argument("--p", type=float, default=0.8, help="grounded oranı (gold context'te); (1-P)=abstention")
     pp.add_argument("--distractors", type=int, default=4, help="örnek başına distractor (k)")
     pp.add_argument("--seed", type=int, default=3407)
@@ -447,7 +447,7 @@ def main():
 
     ap2 = sub.add_parser("assemble", help="Adım 3/4/5 — kapı + replay + split")
     ap2.add_argument("--answers", required=True, help="B2 çıktısı (packed + 'answer' alanı)")
-    ap2.add_argument("--out-dir", default=OUT_DIR, help="çıktı dizini (v2c: data/processed/sft_v2c)")
+    ap2.add_argument("--out-dir", default=OUT_DIR, help="çıktı dizini (v2c: data/train/<yeni-set>)")
     ap2.add_argument("--replay", default=None, help="genel TR instruction jsonl (chat-template)")
     ap2.add_argument("--replay-frac", type=float, default=0.03, help="replay oranı (§5.1-D: %1-5)")
     ap2.add_argument("--max-chunk-chars", type=int, default=900,

@@ -1,0 +1,247 @@
+[
+  {
+    "id": 0,
+    "soru": "Birine teklif yaptım, ama düşündüğünü söyledi. Ne zaman kabul edecek?",
+    "cevap": "Teklif, önerenin kendisine ulaştığı andan itibaren geçerlidir. (TÜRK BORÇLAR KANUNU, MADDE 5)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, teklifin kabulü ile ilgili süre ve bağlayıcılık konularını göz ardı etmektedir."
+  },
+  {
+    "id": 1,
+    "soru": "Başkalarının ormanına girebilir miyim?",
+    "cevap": "Evet, başkalarının ormanına girerek sürüklenen veya düşen şeyleri arayıp alabilirsiniz. (TÜRK MEDENİ KANUNU, Madde 752)",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, ormana girme konusunda genel bir izin vermekte ancak avlanma ve balık tutma gibi özel durumları belirtmemektedir."
+  },
+  {
+    "id": 2,
+    "soru": "Pilot uygulama ne zaman başlayacak?",
+    "cevap": "Pilot uygulama, bu Kanunun yürürlüğe girmesinden itibaren altı ay içinde başlayacaktır. (AİLENİN KORUNMASI VE KADINA KARŞI ŞİDDETİN ÖNLENMESİNE DAİR KANUN, MADD",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek maddeyle çelişiyor ve pilot uygulamanın başlangıç süresini yanlış belirtiyor."
+  },
+  {
+    "id": 3,
+    "soru": "Ardiyeci malları geri vermekte hangi durumlarda zorunlu değildir?",
+    "cevap": "Ardiyeci, saklatanın belirlenen süreyi dikkate alarak yapmış olduğu masrafları ödemesi durumunda malları geri vermekle yükümlüdür. (TÜRK BORÇLAR KANUNU, MADDE 5",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, ardiyecinin geri verme yükümlülüğünü yanlış bir şekilde masrafların ödenmesine bağlamaktadır."
+  },
+  {
+    "id": 4,
+    "soru": "Borçluya icra emri ne zaman tebliğ edilir?",
+    "cevap": "Borçluya icra emri, taşınırın teslimine dair ilam icra dairesine verildiğinde tebliğ edilir. (İCRA VE İFLAS KANUNU, Madde 24)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, icra emrinin tebliğ edilme koşulunu yanlış ifade etmektedir."
+  },
+  {
+    "id": 5,
+    "soru": "Hafta olarak belirlenmiş bir sürenin nasıl dolduğunu öğrenebilir miyim?",
+    "cevap": "Hafta olarak belirlenmiş bir sürenin dolduğu gün, sürenin başladığı güne en yakın hafta sonu olarak kabul edilir. (TÜRK BORÇLAR KANUNU, MADDE 91)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, hafta olarak belirlenmiş sürenin dolma tarihini yanlış tanımlamaktadır."
+  },
+  {
+    "id": 6,
+    "soru": "Cinsiyetimi değiştirmek istiyorum, ne yapmalıyım?",
+    "cevap": "Cinsiyet değişikliği için mahkemeye başvurmanız gerekmektedir. (TÜRK MEDENİ KANUNU, Madde 409)",
+    "verdict": "PARTIAL",
+    "reason": "Cinsiyet değişikliği için mahkemeye başvurulması gerektiği doğru, ancak yaş, medeni durum ve sağlık raporu gibi şartlar belirtilmemiştir."
+  },
+  {
+    "id": 7,
+    "soru": "Deneme süresi içinde iş sözleşmesini feshedebilir miyim?",
+    "cevap": "Evet, deneme süresi içinde iş sözleşmesini feshedebilirsiniz. (TÜRK BORÇLAR KANUNU, MADDE 432)",
+    "verdict": "CORRECT",
+    "reason": "Deneme süresi içinde iş sözleşmesini tazminatsız feshetme hakkı doğrudur."
+  },
+  {
+    "id": 8,
+    "soru": "Bir kaynak arazinin parçası mı sayılır?",
+    "cevap": "Evet, üst hakkı sona erince yapılar arazinin bütünleyici parçası olur. (TÜRK MEDENİ KANUNU, Madde 828)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, kaynakların arazinin bütünleyici parçası olduğu konusunu yanlış bir şekilde yapıların durumu ile ilişkilendiriyor."
+  },
+  {
+    "id": 9,
+    "soru": "Teklifim kabul edilmedi, geri alma yapabilir miyim?",
+    "cevap": "Evet, teklifiniz kabul edilmediyse, geri alma açıklaması yapabilirsiniz. (TÜRK BORÇLAR KANUNU, MADDE 254)",
+    "verdict": "CORRECT",
+    "reason": "Teklifin kabul edilmemesi durumunda geri alma açıklaması yapılabileceği doğru bir hukuki sonuçtur."
+  },
+  {
+    "id": 10,
+    "soru": "Cevap dilekçemi ne zaman vermeliyim?",
+    "cevap": "Cevap dilekçesi, dava dilekçesinin tebliğinden itibaren iki hafta içinde verilmelidir. (HUKUK MUHAKEMELERİ KANUNU, MADDE 126)",
+    "verdict": "PARTIAL",
+    "reason": "Cevap dilekçesinin verilmesi için iki haftalık süre doğru ancak eksiklik durumunda bir haftalık ek süre verileceği belirtilmemiş."
+  },
+  {
+    "id": 11,
+    "soru": "Kesin mühlet kararı için kimler duruşmaya davet edilir?",
+    "cevap": "Mahkeme, borçlu ve varsa konkordato talep eden alacaklı ve alacaklılar kurulunu duruşmaya davet eder; diğer alacaklıları ise gerekli görürse davet eder. (İCRA V",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, alacaklılar kurulunu duruşmaya davet ettiğini belirtmiş ancak kesin mühlet kararı için sadece borçlu ve konkordato talep eden alacaklının davet edilmesi gerektiğini tam olarak ifade etmemiştir."
+  },
+  {
+    "id": 12,
+    "soru": "Gizli bilgilerin açıklanması durumu nasıl değerlendiriliyor?",
+    "cevap": "Yasaklanan bilgilerin açıklanması, casusluk amacıyla temin edilmesi durumunda sekiz yıldan oniki yıla kadar hapis cezası ile cezalandırılır. (TÜRK CEZA KANUNU, ",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek maddeyle çelişiyor ve ceza süresi yanlış belirtilmiş."
+  },
+  {
+    "id": 13,
+    "soru": "Zabıt kâtibine beyan vermek yeterli mi?",
+    "cevap": "Evet, zabıt kâtibine beyanda bulunmak temyiz istemi için yeterlidir. (CEZA MUHAKEMESİ KANUNU, Madde 291)",
+    "verdict": "CORRECT",
+    "reason": "Zabıt kâtibine beyan vermek, istinaf isteminin yapılması için yeterlidir."
+  },
+  {
+    "id": 14,
+    "soru": "Hangi durumlarda Hazine işverene ödeme yapar?",
+    "cevap": "Hazine, 4734 sayılı Kanunun 62 nci maddesinin birinci fıkrasının (e) bendi kapsamında alt işverenler tarafından çalıştırılan işçilerin kıdem tazminatlarını öder",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek maddeyle çelişiyor ve Hazine'nin ödeme yapma koşullarını yanlış bir şekilde tanımlıyor."
+  },
+  {
+    "id": 15,
+    "soru": "Eğer davet edildiğim günde mahkemeye gitmezsem ne olur?",
+    "cevap": "Davet edildiğiniz günde mahkemeye gitmezseniz, mahkemece belirlenen süre içinde belgeyi ibraz etmediğiniz takdirde, diğer tarafın beyanı kabul edilebilir. (HUKU",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, davet edilme durumunu belirtse de, inkâr edilen belgedeki yazı veya imzayı ikrar etme sonucunu tam olarak ifade etmemektedir."
+  },
+  {
+    "id": 16,
+    "soru": "Tahkim yargılaması nedir?",
+    "cevap": "Tahkim yargılaması, tarafların uyuşmazlıklarını mahkeme dışında çözmek için başvurdukları bir yöntemdir. (HUKUK MUHAKEMELERİ KANUNU, MADDE 413)",
+    "verdict": "CORRECT",
+    "reason": "Modelin cevabı, tahkim yargılamasının mahkeme dışında uyuşmazlık çözme yöntemi olduğunu doğru bir şekilde ifade etmektedir."
+  },
+  {
+    "id": 17,
+    "soru": "İcra müdürü ne tür bir araştırma yapar?",
+    "cevap": "İcra müdürü, malın mülkiyetinin devri için icra mahkemesine gönderilen dosyalarda en geç on gün içinde dosya üzerinden inceleme yapar. (İCRA VE İFLAS KANUNU, Ma",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, icra müdürünün araştırma yapma yetkisini yanlış bir şekilde tanımlamaktadır."
+  },
+  {
+    "id": 18,
+    "soru": "Eşler arasında hangi durumlarda tanık dinlenebilir?",
+    "cevap": "Eşler arasında, senede bağlı her çeşit iddiaya karşı ileri sürülen ve senedin hüküm ve kuvvetini ortadan kaldıracak veya azaltacak nitelikte bulunan hukuki işle",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek maddeyle çelişiyor ve eşler arasındaki tanık dinlenebilirlik durumlarını yanlış ifade ediyor."
+  },
+  {
+    "id": 19,
+    "soru": "Şiddet uygulayan kişiye hangi tür raporlar hazırlanıyor?",
+    "cevap": "Şiddet uygulayan kişiye ilişkin olarak, koruyucu ve önleyici tedbir kararlarının uygulanmasına ilişkin raporlar hazırlanır. (AİLENİN KORUNMASI VE KADINA KARŞI Ş",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, şiddet uygulayan kişiye yönelik raporların türlerini tam olarak belirtmemiştir."
+  },
+  {
+    "id": 20,
+    "soru": "Cumhurbaşkanlığı seçim sonuçları ne zaman ilan edildi?",
+    "cevap": "Cumhurbaşkanlığı seçim sonuçları, 24/1/2013 tarihinde ilan edildi. (CEZA MUHAKEMESİ KANUNU Geçici Madde 1)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek maddeyle ilgili değil ve yanlış bir tarih vermektedir."
+  },
+  {
+    "id": 21,
+    "soru": "İpotekli taşınmazda başka bir şerh varsa, ipoteği kaldırabilir miyim?",
+    "cevap": "Evet, ipotekli taşınmazda başka bir şerh varsa, ipoteğin kaldırılması için bu şerhin terkin edilmesi gerekmektedir. (TÜRK MEDENİ KANUNU, Madde 868)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, ipoteğin kaldırılması için başka bir şerhin terkin edilmesi gerektiğini belirtirken, gerçek maddeye göre ipoteğin kaldırılması için alacak sona ermiş olmalıdır."
+  },
+  {
+    "id": 22,
+    "soru": "Borçlarımı tek seferde ödersem ne olur?",
+    "cevap": "Borçlarınızı tek seferde ödemeniz durumunda, satıcı peşinatın ödenmeyen kısmı üzerinde istem hakkını kaybeder. (TÜRK BORÇLAR KANUNU, MADDE 256)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, gerçek maddeyle çelişiyor ve yanlış bir hukuki sonuç çıkarıyor."
+  },
+  {
+    "id": 23,
+    "soru": "Hangi tarihte Türkiye Büyük Millet Meclisi ve Cumhurbaşkanlığı seçimleri yapıldı",
+    "cevap": "Türkiye Büyük Millet Meclisi ve Cumhurbaşkanlığı seçimleri 16/8/2018 tarihinde yapıldı. (HUKUK MUHAKEMELERİ KANUNU, Geçici Madde 1)",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, seçim tarihini yanlış vermektedir."
+  },
+  {
+    "id": 24,
+    "soru": "Bir kişi için kamuya açık bir hizmeti engellemek suç mu?",
+    "cevap": "Evet, kamuya açık bir hizmetin engellenmesi durumunda, cebir veya tehdit kullanılarak bu hizmetin engellenmesi suçtur ve bir yıldan üç yıla kadar hapis cezası i",
+    "verdict": "PARTIAL",
+    "reason": "Cevap, kamuya açık hizmetin engellenmesini suç olarak tanımlasa da, nefret temelli ayrımcılık şartını belirtmemiştir."
+  },
+  {
+    "id": 25,
+    "soru": "Sözleşmenin yazılı bir örneğini talep edebilir miyim?",
+    "cevap": "Evet, tüketicinin talebi üzerine satıcı veya sağlayıcı, sözleşmenin yazılı bir örneğini on dört gün içinde tüketiciye göndermekle yükümlüdür. (TÜKETİCİNİN KORUN",
+    "verdict": "PARTIAL",
+    "reason": "Tüketici, sözleşmenin yazılı bir örneğini talep edebilir ancak bu talebin on dört gün içinde yerine getirilmesi gerektiği ifadesi yanlıştır; sözleşme ilişkisinin devam ettiği süre içinde herhangi bir ücret ödemeksizin talep edilebilir."
+  },
+  {
+    "id": 26,
+    "soru": "Taksitle satışta ilave bedel nedir?",
+    "cevap": "İlave bedel, alıcının ödemesi gereken toplam satış bedelinin ödenmesinden sonra satıcının alıcıya devretmeyi üstlendiği bedeldir. (TÜRK BORÇLAR KANUNU, MADDE 26",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, ilave bedelin tanımını yanlış yapmaktadır ve gerçek maddeyle çelişmektedir."
+  },
+  {
+    "id": 27,
+    "soru": "Mahkeme duruşmayı başka bir yere alabilir mi?",
+    "cevap": "Evet, mahkeme duruşmayı başka bir yere alabilir. (CEZA MUHAKEMESİ KANUNU, Madde 27)",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, duruşmanın başka bir yere alınabileceğini belirtse de, bu durumun hangi şartlar altında gerçekleşeceğini açıklamamaktadır."
+  },
+  {
+    "id": 28,
+    "soru": "Tanık bir şeyi hatırlamıyorsa ne olacak?",
+    "cevap": "Tanık, hatırlamadığı hususlar hakkında açıklama yapabilir. (CEZA MUHAKEMESİ KANUNU, Madde 210)",
+    "verdict": "PARTIAL",
+    "reason": "Tanığın hatırlamadığı hususlar hakkında açıklama yapabileceği belirtilmiş, ancak hatırlamasına yardım edilmesi gerektiği kısmı eksik."
+  },
+  {
+    "id": 29,
+    "soru": "Tatil günlerinde çalışırsam ne olacak?",
+    "cevap": "Tatil günlerinde çalışan işçilere, çalıştıkları her gün için bir günlük ücreti ayrıca ödenir. (İŞ KANUNU, Madde 49)",
+    "verdict": "PARTIAL",
+    "reason": "Cevap, tatil günlerinde çalışmanın ücretini doğru ifade etse de, tatil günlerinde çalışmamanın da ücretini belirtmemektedir."
+  },
+  {
+    "id": 30,
+    "soru": "Vasinin yetkilerini kötüye kullanması durumunda ne yapılır?",
+    "cevap": "Vasinin yetkilerini kötüye kullanması durumunda, vesayet makamı vasiyi re'sen görevden almakla yükümlüdür. (TÜRK MEDENİ KANUNU, Madde 484)",
+    "verdict": "PARTIAL",
+    "reason": "Vesayet makamının vasiyi görevden alması gerektiği doğru, ancak re'sen görevden alma yükümlülüğü eksik bir ifade."
+  },
+  {
+    "id": 31,
+    "soru": "İpotek nasıl kuruluyor?",
+    "cevap": "İpotek, taşınmazların aynı malike veya borçtan müteselsilen sorumlu olan maliklere ait olmalarına bağlı olarak birden çok taşınmazın aynı borç için rehnedilmesi",
+    "verdict": "PARTIAL",
+    "reason": "Modelin cevabı ipoteğin kurulma şekline dair eksik bilgi veriyor."
+  },
+  {
+    "id": 32,
+    "soru": "Geçici Madde 13 neyi düzenliyor?",
+    "cevap": "Geçici Madde 13, 6352 sayılı Kanunun 42. maddesinin ikinci fıkrasının yürürlüğe girdiği tarihten itibaren altı ay süreyle uygulanmayacağını düzenlemektedir. (İC",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, Geçici Madde 13'ün içeriğiyle çelişiyor ve yanlış bir düzenlemeyi ifade ediyor."
+  },
+  {
+    "id": 33,
+    "soru": "Defter tutulduktan sonra ne zaman inceleyebilirim?",
+    "cevap": "Defter tutulduktan sonra, mirasçılar bir ay içinde defterin incelemesini isteyebilirler. (TÜRK MEDENİ KANUNU, Madde 619)",
+    "verdict": "PARTIAL",
+    "reason": "Cevap, inceleme süresini belirtmiş ancak defterin tutulması sona erdikten sonra en az bir aylık süre içinde incelenebileceği koşulunu atlamıştır."
+  },
+  {
+    "id": 34,
+    "soru": "Asli müdahale davası ile asıl yargılama nasıl yürütülür?",
+    "cevap": "Asli müdahale davası ile asıl yargılama, mecburi dava arkadaşlığına ilişkin hükümler uyarınca birlikte yürütülür. (HUKUK MUHAKEMELERİ KANUNU, MADDE 59)",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, asli müdahale davasının birlikte yürütüleceğini belirtse de, mecburi dava arkadaşlığına ilişkin hükümler ifadesi eksik bir açıklama sunmaktadır."
+  }
+]

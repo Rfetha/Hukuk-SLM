@@ -1,0 +1,26 @@
+{
+  "label": "bench_core_v1_blind",
+  "n": 40,
+  "judge_model": "gpt-4o-mini",
+  "ref_mode": "detail",
+  "no_ref_skipped": 0,
+  "correct_rate": 0.3,
+  "correct_rate_ci95": [
+    0.175,
+    0.45
+  ],
+  "lenient_rate": 0.675,
+  "partial_rate": 0.375,
+  "wrong_rate": 0.325,
+  "abstain_rate": 0.0,
+  "coverage": 1.0,
+  "conditional_acc": 0.3,
+  "counts": {
+    "CORRECT": 12,
+    "PARTIAL": 15,
+    "WRONG": 13,
+    "ABSTAIN": 0
+  },
+  "judge_cost_usd": 0.0071,
+  "note": "A2 correctness (yer-gerçeği=gerçek madde). A1'den AYRI eksen, ortalanmaz. payda=tüm soru; CORE'da abstain=over-refusal. coverage+conditional_acc yan-rapor (selective-pred). correct_rate_ci95=bootstrap %95."
+}

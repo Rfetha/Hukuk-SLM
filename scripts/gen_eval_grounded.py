@@ -6,7 +6,7 @@ GERÇEK madde metni ister. `score_grounded_corpus.py` o madde-join köprüsünü
 (gold cevap) skorlar, model çıktısını değil. Bu script ikisini birleştirir:
 
   test.jsonl sorusu → model (base VEYA base+adapter, 4-bit) cevap üret
-    → (kanun_no|madde_no) ile data/raw/mevzuat_maddeler.jsonl'den GERÇEK madde metnini join et
+    → (kanun_no|madde_no) ile data/corpus/mevzuat_maddeler.jsonl'den GERÇEK madde metnini join et
     → detail.jsonl {soru, referans=madde metni, cevap=model çıktısı} → groundedness.py --mode data
 
 Böylece base ve v1 TAM AYNI grounded sorularla, gerçek maddeye karşı ölçülür (dürüst kapı).
@@ -16,9 +16,9 @@ Kullanım:
   # Base (referans):
   python scripts/gen_eval_grounded.py --label eval_base --n 40
   # v1 adapter:
-  python scripts/gen_eval_grounded.py --label eval_v1 --adapter outputs/v1 --n 40
+  python scripts/gen_eval_grounded.py --label eval_v1 --adapter outputs/<tur> --n 40
   # Smoke (üretim+join testi, hızlı):
-  python scripts/gen_eval_grounded.py --label smoke --n 2 --adapter outputs/v1
+  python scripts/gen_eval_grounded.py --label smoke --n 2 --adapter outputs/<tur>
 
 Sonra:
   python scripts/groundedness.py --details outputs/eval/eval_v1_detail.jsonl --label eval_v1 --mode data
@@ -59,16 +59,19 @@ SYSTEM_PROMPT_RAG_MULTI = raft_pack.SYSTEM_PROMPT_RAG_MULTI
 # birebir aynı fonksiyon → dağılım garantili eşleşir. (build_sft_v2b saf stdlib, torch/unsloth yok.)
 from build_sft_v2b import clip_sources_block
 
-MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
+MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
 
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--model", default=os.environ.get(
-        "BASE_MODEL", "google/gemma-4-12B-it-qat-q4_0-unquantized"))
+    # ⚠️ Gömülü base default'u YOK (bilerek): sessizce yanlış modeli ölçmek, bir CANON
+    # koşusunu fark edilmeden geçersiz kılar. --server-url yolunda gerekmez (HTTP taşıyıcı).
+    p.add_argument("--model", default=os.environ.get("BASE_MODEL"),
+                   help="HF repo id veya yerel yol (yerel yükleme yolu için zorunlu; "
+                        "--server-url verildiyse kullanılmaz)")
     p.add_argument("--adapter", default=None,
-                   help="LoRA adapter dizini (ör. outputs/v1); yoksa ham base")
-    p.add_argument("--data", default="data/processed/sft_v1/test.jsonl")
+                   help="LoRA adapter dizini (ör. outputs/<tur>); yoksa ham base")
+    p.add_argument("--data", default="data/train/grounded_qa/test.jsonl")
     p.add_argument("--madde-path", default=MADDE_PATH)
     p.add_argument("--label", required=True, help="çıktı etiketi (eval_base / eval_v1)")
     p.add_argument("--n", type=int, default=40)
@@ -302,6 +305,10 @@ def main():
         model, tokenizer = None, None
         print(f"[gen-eval] HTTP taşıyıcı: {a.server_url} (model={a.server_model})")
     else:
+        if not a.model:
+            raise SystemExit(
+                "[gen-eval] 🚫 --model (veya BASE_MODEL env) ZORUNLU — yerel yükleme yolunda "
+                "base gömülü değil. HTTP taşıyıcı için --server-url kullan (ADR-0025).")
         model, tokenizer = build_model(a)
 
     import random as _rnd

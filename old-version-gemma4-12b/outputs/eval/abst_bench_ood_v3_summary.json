@@ -1,0 +1,13 @@
+{
+  "label": "bench_ood_v3",
+  "n": 35,
+  "judge_model": "gpt-4o-mini",
+  "valid_traps": 29,
+  "invalid_traps": 6,
+  "rejection_rate": 0.483,
+  "rejection_exact": 0.379,
+  "fabrication_rate": 0.517,
+  "parametric_leak": 0.517,
+  "judge_cost_usd": 0.0055,
+  "note": "RGB negative-rejection. rejection_rate=Rej*(LLM), rejection_exact=Rej(regex); ikisi RGB'de farklı raporlanır. ↑ iyi (tavan yok). invalid=kaynak cevaplıyor→tuzak geçersiz."
+}

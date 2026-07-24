@@ -19,9 +19,9 @@ dev.jsonl id'leri eğitimden ÇIKARILIR (sızıntı yok). ADIM 4 judge τ'sü RA
 hi_overlap fabrikasyonlar da DAHİL (provizyonel geçerlilik; işaretli).
 
 Kullanım (rejected.jsonl geldikten sonra):
-  python scripts/build_orpo_v3.py --rejected data/processed/sft_v3/rejected.jsonl
+  python scripts/build_orpo_v3.py --rejected data/_ham_ve_ara/orpo_rejected.jsonl
   # SMOKE (fixture ile):
-  python scripts/build_orpo_v3.py --rejected data/processed/sft_v3/rejected_batchtest.jsonl --out-dir /tmp/orpo_smoke
+  python scripts/build_orpo_v3.py --rejected data/_ham_ve_ara/orpo_rejected.jsonl --out-dir /tmp/orpo_smoke
 """
 import argparse
 import json
@@ -45,11 +45,11 @@ PLACEHOLDER_REJECTED = ("Bu soru hakkında kesin bir değerlendirme yapmak için
                         "dikkatli bir inceleme gerekmektedir.")
 
 DEFAULTS = dict(
-    packed="data/processed/sft_v3/packed_v3.jsonl",
-    chosen="data/processed/sft_v3/chosen.jsonl",
-    dev="data/processed/sft_v3/dev.jsonl",
-    v2b_train="data/processed/sft_v2b/train.jsonl",
-    out_dir="data/processed/sft_v3",
+    packed="data/_ham_ve_ara/orpo_packed.jsonl",
+    chosen="data/_ham_ve_ara/orpo_chosen.jsonl",
+    dev="data/train/orpo_abstain/dev.jsonl",
+    v2b_train="data/train/raft/train.jsonl",
+    out_dir="data/train/orpo_abstain",
 )
 
 

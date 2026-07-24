@@ -8,8 +8,8 @@ Her satır için chosen = "Sağlanan {kanun} {madde}, {konu} düzenlemektedir; s
 maddede yer almamaktadır ..." → yanlış maddeyi ADIYLA + KONUSUYLA reddeder (muhakemeli),
 uydurmadan çekimser kalır. ABSTAIN_RE + REJECT_RE'yi GEÇER (gate uyumlu). Uzman register.
 
-Girdi: data/processed/sft_v3/packed_v3.jsonl (trap_text/trap_kanun_adi/trap_madde_no/soru).
-Çıktı: data/processed/sft_v3/chosen.jsonl  (id + "chosen" alanı; ADIM 6 paketleme id ile join).
+Girdi: data/_ham_ve_ara/orpo_packed.jsonl (trap_text/trap_kanun_adi/trap_madde_no/soru).
+Çıktı: data/_ham_ve_ara/orpo_chosen.jsonl  (id + "chosen" alanı; ADIM 6 paketleme id ile join).
 
 Kullanım:
   python scripts/gen_v3_chosen.py
@@ -25,8 +25,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_sft_v2b import ABSTAIN_RE
 from score_abstention import REJECT_RE
 
-PACKED = "data/processed/sft_v3/packed_v3.jsonl"
-OUT = "data/processed/sft_v3/chosen.jsonl"
+PACKED = "data/_ham_ve_ara/orpo_packed.jsonl"
+OUT = "data/_ham_ve_ara/orpo_chosen.jsonl"
 
 # Muhakemeli-red şablonları — {kanun} {madde} {konu} doldurulur. Hepsi ABSTAIN_RE+REJECT_RE geçer.
 # Kıyaslanabilir uzunluk: fabrikasyonlar ~50-90 token → şablonlar 2 cümle ~45-70 token.

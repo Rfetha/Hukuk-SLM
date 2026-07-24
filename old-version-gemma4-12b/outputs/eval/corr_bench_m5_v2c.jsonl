@@ -1,0 +1,282 @@
+[
+  {
+    "id": 0,
+    "soru": "Tedbir kararı en fazla ne kadar süreyle verilebilir?",
+    "cevap": "Tedbir kararları, Hukuk Muhakemeleri Kanunu'na (HMK) göre en fazla **6 ay** süreyle verilebilir. Bu süre, mahkeme tarafından gerekli görülmesi halinde uzatılabi",
+    "verdict": "PARTIAL",
+    "reason": "Tedbir kararının süresi 6 ay olarak doğru belirtilmiş, ancak uzatma koşulları eksik ifade edilmiştir."
+  },
+  {
+    "id": 1,
+    "soru": "İptal davasını açmak için ne zaman başvurmalıyım?",
+    "cevap": "İptal davası açma süresi, iptali talep edilen işlemin türüne göre değişiklik gösterir. Genel olarak, idari işlemlere karşı iptal davası açma süresi, işlemin teb",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, iptal davası açma süresini yanlış belirtmekte ve tahkimle ilgili özel durumu göz ardı etmektedir."
+  },
+  {
+    "id": 2,
+    "soru": "Çocuk mağdurun ifadesi nasıl alınır?",
+    "cevap": "Çocuk mağdurun ifadesi, Türk Ceza Muhakemesi Kanunu (CMK) çerçevesinde özel düzenlemelere tabidir. Çocukların psikolojik durumunu korumak amacıyla, ifade alma s",
+    "verdict": "PARTIAL",
+    "reason": "İfade alma sürecinde bazı önemli detaylar eksik, özellikle özel ortamda uzmanlar aracılığıyla alınması gerektiği belirtilmemiş."
+  },
+  {
+    "id": 3,
+    "soru": "Karara uymadığım için paylarım iptal edilirse, ne yapmalıyım?",
+    "cevap": "Karara uymadığınız için paylarınızın iptal edilmesi durumunda, bu kararın hukuka uygunluğunu sorgulamak için **İcra ve İflas Kanunu (İİK)** çerçevesinde itiraz ",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, ortak yerlerin iptali ile ilgili hukuki durumu yanlış anlamış ve İcra ve İflas Kanunu'na atıfta bulunarak yanlış bir yönlendirme yapmıştır."
+  },
+  {
+    "id": 4,
+    "soru": "Şiddet uygulayan kişi alkol kullanıyorsa ne olacak?",
+    "cevap": "Şiddet uygulayan kişinin alkol kullanması, Türk Ceza Kanunu (TCK) kapsamında ceza sorumluluğunu etkileyebilir.\n\n1. **Alkolün Etkisi ve Ceza Sorumluluğu:** TCK M",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, alkolün ceza sorumluluğunu etkilemeyeceğini doğru belirtse de, şiddet uygulayan kişinin alkol kullanmasının sonuçlarıyla ilgili önleyici tedbirleri atlamıştır."
+  },
+  {
+    "id": 5,
+    "soru": "Tedavi amaçlı denemelerin ceza sorumluluğundan muaf olabilmesi için ne gereklidi",
+    "cevap": "Tedavi amaçlı denemelerin ceza sorumluluğundan muaf olabilmesi için, **Türk Ceza Kanunu (TCK) Madde 23** uyarınca belirli şartların sağlanması gerekmektedir. Bu",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, tedavi amaçlı denemelerin ceza sorumluluğundan muaf olabilmesi için gereken şartların bazılarını belirtmiş ancak tam olarak belirtilen tüm koşulları içermemektedir."
+  },
+  {
+    "id": 6,
+    "soru": "Kat mülkiyeti ne zaman kurulabilir?",
+    "cevap": "Kat mülkiyeti, 634 sayılı Kat Mülkiyeti Kanunu'na göre, bir binanın veya bir kısmının tapu siciline kaydedilmesiyle kurulur. Kat mülkiyetinin kurulabilmesi için",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, kat mülkiyetinin kurulabilmesi için gerekli belgelerin hazırlanması ve onaylanması gerektiğini belirtse de, bu belgelerin tam olarak ne olduğu ve tapu memurunun rolü gibi önemli detayları içermemektedir."
+  },
+  {
+    "id": 7,
+    "soru": "Eğer işletme sahibi başka bir yere ait su hattını kullanıyorsa, bu bir hak mıdır",
+    "cevap": "Türk hukukuna göre, bir işletme sahibinin başka bir yere ait su hattını kullanması, **hukuka aykırı bir durumdur** ve bu bir hak olarak kabul edilemez.\n\n**Türk ",
+    "verdict": "CORRECT",
+    "reason": "Modelin cevabı, gerçek maddeye uygun olarak başka bir yere ait su hattının izinsiz kullanımının hukuka aykırı olduğunu belirtmektedir."
+  },
+  {
+    "id": 8,
+    "soru": "Ödediğim para cezası taksitle ödenebilir mi?",
+    "cevap": "Türk hukukunda, ödenmesi gereken para cezaları (örneğin trafik cezası, vergi cezası vb.) genellikle taksitli olarak ödenemez. Ancak, bazı özel durumlarda ve bel",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, genel para cezalarının taksitli ödenemeyeceğini belirtse de, belirli şartlar altında taksit imkânının var olduğunu eksik ifade etmiştir."
+  },
+  {
+    "id": 9,
+    "soru": "Adlî kontrol süresi ceza olarak sayılabilir mi?",
+    "cevap": "Adlî kontrol süresi, ceza olarak sayılmaz. Adlî kontrol, bir kişinin tutuklanmadan önce serbest bırakılması ve belirli şartlara tabi tutulmasıdır; bu nedenle ce",
+    "verdict": "CORRECT",
+    "reason": "Adlî kontrol altında geçen süre, şahsî hürriyeti sınırlama sebebi sayılarak cezadan mahsup edilemez."
+  },
+  {
+    "id": 10,
+    "soru": "El konulan taşınmazın başka birinin zilyetliğinde olması durumunda ne olur?",
+    "cevap": "El konulan taşınmazın başka birinin zilyetliğinde olması durumunda, Türk Ceza Kanunu (TCK) ve İcra ve İflas Kanunu (İİK) çerçevesinde hukuki süreçler işler.\n\n1.",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, el koyma işleminin zilyetliğin hukuki durumunu etkileyebileceğini belirtse de, gerçek maddeye göre el koyma işleminin yapılabileceğini açıkça ifade etmemektedir."
+  },
+  {
+    "id": 11,
+    "soru": "Hâkim ve tarafların isimleri tutanakta yer alıyor mu?",
+    "cevap": "Evet, hâkim ve tarafların isimleri tutanakta yer alır. Tutanak, duruşmanın resmi bir kaydı olduğu için, katılan tarafların ve hâkimin kimlik bilgilerinin belirt",
+    "verdict": "CORRECT",
+    "reason": "Tutanakta hâkim ve tarafların isimlerinin yer alması gerektiği belirtilmiştir."
+  },
+  {
+    "id": 12,
+    "soru": "Kat irtifakına geçiş kararı alındı ama ben uymadım, ne olur?",
+    "cevap": "Kat irtifakına geçiş kararına uymamanız durumunda, Kat Mülkiyeti Kanunu'na göre çeşitli sonuçlarla karşılaşabilirsiniz.\n\n1. **İdari ve hukuki yaptırımlar:** Kat",
+    "verdict": "PARTIAL",
+    "reason": "Cevap, kat irtifakına geçişin sonuçlarını belirtse de, hangi özel yaptırımların uygulanacağına dair daha fazla detay verilmemiştir."
+  },
+  {
+    "id": 13,
+    "soru": "Şiddet uygulayan kişiye hangi tür raporlar hazırlanıyor?",
+    "cevap": "Şiddet uygulayan kişiye yönelik olarak çeşitli raporlar hazırlanmaktadır. Bu raporlar, hem mağdurun durumunu tespit etmek hem de failin sorumluluğunu belirlemek",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, şiddet uygulayan kişiye yönelik raporların türlerini belirtmiş ancak şiddet önleme ve izleme merkezlerinin hazırladığı raporların detaylarını ve kapsamını tam olarak yansıtmamaktadır."
+  },
+  {
+    "id": 14,
+    "soru": "Mirasbırakanın saklı pay kurallarını etkisiz kılmak amacıyla yaptığı kazandırmal",
+    "cevap": "Mirasbırakanın saklı pay kurallarını etkisiz kılmak amacıyla yaptığı kazandırmalar, Türk Medeni Kanunu'na göre **geçersiz** sayılmaktadır.\n\n**İlgili kanun ve ma",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, kazandırmaların geçersiz olduğunu belirtse de, geçersizliğin koşullarını tam olarak açıklamamaktadır."
+  },
+  {
+    "id": 15,
+    "soru": "Sözleşme değişikliği için notere gitmem şart mı?",
+    "cevap": "Sözleşme değişikliği için notere gitme zorunluluğu, sözleşmenin türüne ve içeriğine bağlıdır.\n\n1. **Noter Onayı Gereken Durumlar:**\n- Taşınmaz satış, kiralama v",
+    "verdict": "PARTIAL",
+    "reason": "Sözleşme değişikliği için notere gitme zorunluluğu, sözleşmenin türüne bağlıdır ancak bu durumun belirtilmesi eksik kalmıştır."
+  },
+  {
+    "id": 16,
+    "soru": "Röntgen muayenehanelerinde çalışıyorsam yarım günlük izin alabilir miyim?",
+    "cevap": "Röntgen muayenehanelerinde çalışanlar, İş Kanunu'na tabi oldukları için izin hakları bu kanun çerçevesinde düzenlenmiştir. Yarım günlük izin alabilmeniz, iş yer",
+    "verdict": "PARTIAL",
+    "reason": "Yarım günlük izin almanın röntgen muayenehanelerinde mümkün olduğunu belirtmemiştir."
+  },
+  {
+    "id": 17,
+    "soru": "Cayma hakkım için hangi belgeleri göndermem gerekiyor?",
+    "cevap": "Cayma hakkınızı kullanabilmek için genellikle aşağıdaki belgeleri göndermeniz gerekmektedir:\n\n1. **Cayma talebi dilekçesi:** Cayma hakkınızı kullanmak istediğin",
+    "verdict": "PARTIAL",
+    "reason": "Cayma hakkının kullanılması için gerekli belgeler belirtilmiş ancak cayma bildiriminin süresi ve şartları tam olarak vurgulanmamış."
+  },
+  {
+    "id": 18,
+    "soru": "Duruşma dışında yapılan işlemler tutanağa nasıl geçiyor?",
+    "cevap": "Duruşma dışında yapılan işlemler, **Hukuk Muhakemeleri Kanunu (HMK)** çerçevesinde tutanağa geçirilmektedir. \n\nHMK'nın 150. maddesi, duruşma dışındaki işlemleri",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, duruşma dışındaki işlemlerin tutanağa geçirilmesi gerektiğini belirtse de, hangi hususların mutlak olarak tutanağa yazılacağına dair detayları eksik bırakmıştır."
+  },
+  {
+    "id": 19,
+    "soru": "Cayma hakkımı kullanmak için hangi süre içinde işlem yapmam gerekiyor?",
+    "cevap": "Cayma hakkınızı kullanabilmek için, sözleşmenin imzalanmasından veya malın teslim alınmasından itibaren **14 gün** içinde işlem yapmanız gerekmektedir. Bu süre,",
+    "verdict": "CORRECT",
+    "reason": "Cayma hakkının kullanılması için 14 gün içinde işlem yapılması gerektiği doğru bir şekilde belirtilmiştir."
+  },
+  {
+    "id": 20,
+    "soru": "Eğer ben borçlunun borcunu ödersem, hemen alacaklı olur muyum?",
+    "cevap": "Hayır, borçlunun borcunu ödediğinizde doğrudan alacaklı olmazsınız. Alacaklı olabilmeniz için, borçlunun size olan borcunu ödemesi veya sizinle aranızda bir ala",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, alacaklı olabilmek için borçlunun size olan bir borcunun varlığı gerektiğini belirtirken, gerçek maddeye göre alacaklıya ifada bulunan üçüncü kişinin alacaklı haklarına halef olabileceğini göz ardı etmiştir."
+  },
+  {
+    "id": 21,
+    "soru": "Avukatlık ücreti nasıl belirleniyor?",
+    "cevap": "Avukatlık ücretleri, **Avukatlık Kanunu** ve **Türkiye Barolar Birliği** tarafından belirlenen tarifeye göre düzenlenmektedir.\n\n### 1. Avukatlık Kanunu'na Göre ",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, avukatlık ücretinin belirlenmesinde asgari ücret tarifesini doğru belirtse de, tazminat davalarındaki ücretin hesaplanma şekli ve mahkeme kararlarıyla ilgili detayları içermemektedir."
+  },
+  {
+    "id": 22,
+    "soru": "İşten kendi isteğiyle ayrıldığımda kıdem tazminatı alabilir miyim?",
+    "cevap": "İşten kendi isteğinizle ayrıldığınızda, kural olarak kıdem tazminatı alamazsınız. Ancak, belirli koşullar altında bu tazminatı talep etme hakkınız doğabilir.\n\n*",
+    "verdict": "PARTIAL",
+    "reason": "Kendi isteğiyle ayrıldığında kıdem tazminatı almanın mümkün olduğu durumlar belirtilmemiştir."
+  },
+  {
+    "id": 23,
+    "soru": "Yazılı sözleşmeyi sözlü olarak değiştirebilir miyim?",
+    "cevap": "Türk Borçlar Kanunu'na göre, yazılı bir sözleşmenin sözlü olarak değiştirilmesi mümkün değildir. Sözleşmenin geçerli olabilmesi için değişikliklerin de yazılı o",
+    "verdict": "CORRECT",
+    "reason": "Yazılı sözleşmenin değiştirilmesi için yazılı şekle uyulması gerektiği doğru bir şekilde belirtilmiştir."
+  },
+  {
+    "id": 24,
+    "soru": "Bir eşyanın intifa hakkı sona ererse ne olur?",
+    "cevap": "Bir eşyanın intifa hakkı sona erdiğinde, bu hakka sahip olan kişi artık o eşyayı kullanma, gelir elde etme veya faydalanma yetkisini kaybeder. Bu durum, Türk Me",
+    "verdict": "PARTIAL",
+    "reason": "Model, intifa hakkının sona ermesiyle ilgili bazı sonuçları doğru belirtmiş ancak borçların durumu hakkında eksik bilgi vermiştir."
+  },
+  {
+    "id": 25,
+    "soru": "Kiralanan bir taşınmazda kaynaklar kesilirse ne olur?",
+    "cevap": "Kiralanan bir taşınmazda kaynakların (su, elektrik, doğal gaz vb.) kesilmesi durumunda, kiracı ve kiralayan arasındaki ilişkiler Türk Borçlar Kanunu (TBK) çerçe",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, kaynakların kesilmesi durumunda kiracının haklarını ve kiralayanın yükümlülüklerini belirtse de, eski duruma getirilmesi talebini ve özel hâlleri yeterince vurgulamamıştır."
+  },
+  {
+    "id": 26,
+    "soru": "Haksız şartların denetlenmesi nasıl yapılır?",
+    "cevap": "Haksız şartların denetlenmesi, Türk Borçlar Kanunu'nun (TBK) 23. maddesi çerçevesinde yürütülmektedir. Bu madde, sözleşmelerde tüketicinin aleyhine olan ve huku",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, haksız şartların denetlenmesi sürecini genel hatlarıyla açıklasa da, Türk Borçlar Kanunu'nun 23. maddesinin içeriğine tam olarak atıfta bulunmamaktadır."
+  },
+  {
+    "id": 27,
+    "soru": "Bir sözleşmeyi imzalarken imzamı el yazısıyla mı atmam gerekiyor?",
+    "cevap": "Türk hukukunda sözleşmelerin geçerliliği için imzanın el yazısıyla atılması zorunlu değildir; ancak imzanın, sözleşmenin taraflarından birinin kimliğini ve rıza",
+    "verdict": "WRONG",
+    "reason": "İmzanın el yazısıyla atılması zorunludur, bu nedenle modelin cevabı yanlıştır."
+  },
+  {
+    "id": 28,
+    "soru": "Eski kütük sayfası ne ile bağlantı sağlanır?",
+    "cevap": "Eski kütük sayfaları, **Nüfus Hizmetleri Kanunu** ve **Nüfus Hizmetleri Yönetmeliği** çerçevesinde, nüfus kayıtlarının düzenlenmesi ve korunması ile bağlantılıd",
+    "verdict": "WRONG",
+    "reason": "Eski kütük sayfası, kat mülkiyeti ile ilgili bir kavramdır ve nüfus kayıtlarıyla bağlantılı değildir."
+  },
+  {
+    "id": 29,
+    "soru": "Kirayı yatırmayan kişi hakkında ne olur?",
+    "cevap": "Kirayı yatırmayan kiracı hakkında Türk Borçlar Kanunu (TBK) çerçevesinde çeşitli hukuki sonuçlar doğar. İşte temel süreçler:\n\n1. **İhtarname Gönderilmesi:** Kir",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, kirayı yatırmayan kiracı hakkında genel bir süreç sunmakta ancak icra dairesinin kiracıya kira bedelini yatırmasını emretmesi ve ihtara rağmen ödenmemesi durumunda 356. madde hükmünün uygulanması gibi önemli detayları içermemektedir."
+  },
+  {
+    "id": 30,
+    "soru": "Borçlunun ev eşyaları haczedilebilir mi?",
+    "cevap": "Evet, borçlunun ev eşyaları haczedilebilir. İcra ve İflas Kanunu'na göre, borçlunun ev eşyaları, borçların tahsiline yönelik olarak haczedilebilir. Ancak, borçl",
+    "verdict": "WRONG",
+    "reason": "Borçlunun ev eşyaları haczedilemez, yalnızca yaşamını sürdürebilmesi için gerekli olan temel eşyalar haczedilemez."
+  },
+  {
+    "id": 31,
+    "soru": "Sözleşmedeki belirsiz hüküm ne olur?",
+    "cevap": "Türk Borçlar Kanunu'na göre, sözleşmedeki belirsiz hükümler, tarafların iradesini net bir şekilde ortaya koymadığı için geçersiz sayılabilir. Bu durum, sözleşme",
+    "verdict": "PARTIAL",
+    "reason": "Belirsiz hükümler geçersiz sayılabilir, ancak haksız şartlar ve tüketici lehine yorumlama gibi unsurlar belirtilmemiştir."
+  },
+  {
+    "id": 32,
+    "soru": "Tarım ve orman işlerinin tanımında neler var?",
+    "cevap": "Tarım ve orman işleri, Türk hukukunda **Tarım ve Orman Bakanlığı** tarafından yürütülen faaliyetleri kapsar. Bu işlerin tanımı, **Tarım ve Orman Bakanlığı Teşki",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, tarım ve orman işlerinin tanımını genel hatlarıyla vermekte ancak gerçek maddeye göre detayları ve kapsamı tam olarak yansıtmamaktadır."
+  },
+  {
+    "id": 33,
+    "soru": "Korunan kişinin bilgileri nasıl korunur?",
+    "cevap": "Korunan kişinin bilgileri, Türk Ceza Kanunu (TCK) ve Kişisel Verilerin Korunması Kanunu (KVKK) çerçevesinde korunur. \n\n1. **TCK Madde 123** (Kişisel verilerin h",
+    "verdict": "PARTIAL",
+    "reason": "Model cevap, korunan kişinin bilgilerini koruma yöntemlerini genel olarak ele alırken, gerçek maddeye özgü gizlilik ve tebligat süreçlerini yeterince vurgulamamıştır."
+  },
+  {
+    "id": 34,
+    "soru": "Borçlu, itirazını kanıtlamak için ne tür belgeler sunabilir?",
+    "cevap": "0001-0002\n```json\n{\n  \"zaman_damgasi\": \"2024-05-23T10:00:00Z\",\n  \"zorluk_seviyesi\": 2,\n  \"kategori\": \"Hukuk\",\n  \"alt_kategori\": \"İcra ve İflas Hukuku\",\n  \"anaht",
+    "verdict": "PARTIAL",
+    "reason": "Model, itirazı desteklemek için belgelerin çeşitlerini belirtmiş ancak hangi belgelerin özellikle sunulması gerektiği konusunda eksik bilgi vermiştir."
+  },
+  {
+    "id": 35,
+    "soru": "İflas davaları adli tatilde işlenebilir mi?",
+    "cevap": "İflas davaları, adli tatil süresince işlenemez. Bu durum, Hukuk Muhakemeleri Kanunu'nun (HMK) 301. maddesinde düzenlenmiştir.\n\n**İlgili kanun ve madde:**\n- **Hu",
+    "verdict": "WRONG",
+    "reason": "İflas davaları adli tatilde işlenebilir, modelin cevabı yanlıştır."
+  },
+  {
+    "id": 36,
+    "soru": "İşverenin verdiği diğer izinler yıllık izne ekleniyor mu?",
+    "cevap": "İşverenin verdiği diğer izinler (örneğin hastalık, evlilik, doğum gibi) yıllık izne eklenmez. Yıllık izin, işçinin yıllık çalışma süresine bağlı olarak hak kaza",
+    "verdict": "WRONG",
+    "reason": "İşverenin verdiği diğer izinler yıllık izne eklenir, bu nedenle modelin cevabı yanlıştır."
+  },
+  {
+    "id": 37,
+    "soru": "Dava zamanaşımı süresi nasıl belirlenir?",
+    "cevap": "Türk hukukunda dava zamanaşımı süresi, genel olarak **Türk Medeni Kanunu (TMK)** ve **Hukuk Muhakemeleri Kanunu (HMK)** hükümlerine göre belirlenir.\n\n1. **Genel",
+    "verdict": "WRONG",
+    "reason": "Modelin cevabı, ceza hukuku bağlamında dava zamanaşımı sürelerini ele almadığı için yanlış bilgi vermektedir."
+  },
+  {
+    "id": 38,
+    "soru": "Konkordato komiserinin eğitimi hakkında ne gerekir?",
+    "cevap": "Konkordato komiserinin eğitimi, Türk Ticaret Kanunu (TTK) ve ilgili yönetmeliklerle düzenlenmiştir. Bu süreçte, komiserin hem hukuki hem de mali konularda yeter",
+    "verdict": "PARTIAL",
+    "reason": "Model, komiserin eğitimi hakkında genel bilgiler vermiş ancak Adalet Bakanlığı tarafından belirlenen yönetmeliklerin varlığını ve eğitimden muaf tutulacakları belirtmemiştir."
+  },
+  {
+    "id": 39,
+    "soru": "Seçenek tedbir yerine getirilmezse ne olur?",
+    "cevap": "Seçenek tedbirinin yerine getirilmemesi durumunda, Türk Ceza Kanunu (TCK) ve ilgili mevzuat çerçevesinde çeşitli hukuki sonuçlar doğabilir.\n\n1. **İcra ve İcra T",
+    "verdict": "WRONG",
+    "reason": "Model cevap, seçenek tedbirin yerine getirilmemesi durumunda uygulanacak hukuki sonuçları yanlış bir şekilde açıklamaktadır; gerçek maddeye göre infaz hâkimliği kısa süreli hapis cezasının infazına karar verir."
+  }
+]

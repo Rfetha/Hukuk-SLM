@@ -14,9 +14,9 @@ SÜZME:
   (b) token ≤ --max-tok  — max_seq_len=2048 altında TRUNCATION YOK (yarım-kesik çıktı öğretmesin).
   (c) dedup (user metni) — tekrar örnek bias yapmasın.
 
-ÇIKTI: data/processed/replay_tr.jsonl  (chat-template `messages`: [system, user, assistant]).
+ÇIKTI: data/train/replay_tr.jsonl  (chat-template `messages`: [system, user, assistant]).
   Replay örneği KENDİ (genel) system promptunu taşır → model "verilen system'e uy" davranışını korur.
-  Sonra: build_sft_v2b.py assemble --replay data/processed/replay_tr.jsonl --replay-frac 0.03
+  Sonra: build_sft_v2b.py assemble --replay data/train/replay_tr.jsonl --replay-frac 0.03
 
 Kullanım:
   python scripts/build_replay_tr.py --n 600 --max-tok 1500
@@ -31,8 +31,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 DATASET = "AlicanKiraz0/Turkish-SFT-Dataset-v1.0"
-OUT = "data/processed/replay_tr.jsonl"
-TOKENIZER_DIR = "outputs/v1"   # lokal Gemma tokenizer (adapter ile kaydedilmiş)
+OUT = "data/train/replay_tr.jsonl"
+# ⚠️ Token sayımı base'in tokenizer'ına bağlı (--max-tok bütçesi). Eskiden bir LoRA adaptör
+# dizininden okunuyordu (outputs/v1) — o adaptör emekli olunca kırıldı. Artık parametre.
 
 # Hukuk sızıntısı — saf-genel tutmak için ele. ("madde/dava" genel metinde de geçer; replay
 # için temkinli davranıp hepsini düşürmek ucuz, havuz yine de yeterli.)
@@ -48,6 +49,8 @@ def main():
                    help="örnek başına token tavanı (max_seq_len=2048 altı; truncation önler)")
     p.add_argument("--seed", type=int, default=3407)
     p.add_argument("--out", default=OUT)
+    p.add_argument("--tokenizer", required=True,
+                   help="token sayımı için tokenizer (base HF repo id veya yerel yol)")
     p.add_argument("--keep-system", action="store_true", default=True,
                    help="genel system promptunu koru (replay 'system'e uy' davranışını korusun)")
     a = p.parse_args()
@@ -55,7 +58,7 @@ def main():
     from datasets import load_dataset
     from transformers import AutoTokenizer
 
-    tok = AutoTokenizer.from_pretrained(TOKENIZER_DIR)
+    tok = AutoTokenizer.from_pretrained(a.tokenizer)
     d = load_dataset(DATASET)["train"]
     print(f"[replay] kaynak={DATASET} n={len(d)} (MIT)")
 
