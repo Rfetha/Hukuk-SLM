@@ -135,6 +135,15 @@ savunmada yakalanır.
 Bu tek iş iki ihtiyacı karşılıyor: seçim seti doğuyor **ve** eşdeğerlik testinin ihtiyaç duyduğu
 n büyümesi geliyor (mevcut 40/35 fark testi için bile sınırda).
 
+**DEV, TEST'ten önce üretilir** — Kapı 0 (`τ_register` kolu açılsın mı) bir *seçim* kararıdır ve
+base baseline'ının sayılarından verilir; o sayılar TEST'te üretilirse ilk sprintte test üzerinde
+seçim yapılmış olur. Sıra: DEV havuzu → base baseline → ilk FT (`sprint1.md` CP1-CP2).
+
+> ⚠️ **Ayrım `--exclude` olmadan sağlanmaz.** `build_eval_sets.py`'nin CORE-HARD seçimi
+> karmaşıklığa göre sıralı ve **seed'den bağımsızdır**: farklı `--seed` *aynı* maddeleri, büyük
+> `--core-n` ise TEST'in **üst kümesini** verir. Yani bayraksız üretilen "DEV" TEST'in ikinci bir
+> isimle kopyasıdır — ve **hata vermez.** Üretimden sonra soru-kesişimi **0** doğrulanır.
+
 ### 3.3 Hakem — dört katmanlı savunma
 
 1. **Omurga hakemsiz.** Abstention `score_abstention.py`'nin deterministik regex'iyle, atıf doğrulama
@@ -274,6 +283,11 @@ retriever, aynı eval. *(Interop iddiası bağlanmadan önce doğrulanır — re
 
 **Harness tüm öznelere birebir aynı uygulanır.** Aynı retriever, aynı doğrulayıcı, aynı kapı,
 aynı eşikler. Harness'ı sadece kendi modelimize verirsek tez ölür.
+
+Kural **uygulanabilir**, çünkü dört bileşenin dördü de girdi/çıktı seviyesinde çalışır — hiçbiri
+modelin içine girmez (ağırlığa, logit'e, decode döngüsüne dokunmaz). Kapalı API rakiplerine de
+aynen bağlanır: aynı bağlam verilir, çıktı aynı doğrulayıcıdan ve aynı kapıdan geçer. Erişim
+tek kapıdan olur (`scripts/llm_client.py`, ADR-0029) — "rakibi elle koştum" diye bir yol yok.
 
 ### 5.3 Korpus dondurma
 
@@ -564,7 +578,14 @@ eşleşmesini bozar → doğru mimari **ayrık OCR preprocessor**, native VLM OC
 
 - **Parite** — eşdeğerlik (D ≈ B), üstünlük değil
 - **Maliyet bandı** — "frontier" yerine kullanılır
-- **Harness** — retriever + yapısal graf + atıf doğrulayıcı + red kapısı
+- **Harness** — retriever + yapısal graf + atıf doğrulayıcı + red kapısı.
+  ⚠️ **Makalede bu kelime KULLANILMAZ** — "maliyet bandı ↔ frontier" kuralıyla aynı sınıfta.
+  LLM yazınında *harness* öncelikle **ölçüm** düzeneğini çağrıştırır (`lm-evaluation-harness`);
+  bizim ayrıca gerçek bir ölçüm hattımız var (CANON scriptleri + hakem), dolayısıyla
+  *"harness açık/kapalı"* hakemin açılıp kapanması gibi okunabilir — oysa kastedilen
+  **servis edilen sistemin** açık/kapalı olması. Makale sözcüğü: **sistem** (çıplak *model* ↔
+  servis edilen *sistem*), gerekirse "deterministik çıkarım-zamanı katmanı".
+  Repo içinde çalışma sözcüğü olarak kalır — 92 yerde geçiyor ve donmuş kayıtlar yeniden yazılmaz.
 - **Task-vector (τ)** — `θ_finetuned − θ_base`; ortak base şartı
 - **Kafes** — 7 merge alt-kümesi (§4.3); "merdiven" onun içinden geçen anlatı yolu
 - **Kapı** — önceden yazılmış eşikli karar noktası (§7)

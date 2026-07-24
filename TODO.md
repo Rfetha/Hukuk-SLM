@@ -13,8 +13,8 @@
 >
 > | sprint | kapsam | koşan FT | TODO bölümleri |
 > | :--- | :--- | :--- | :--- |
-> | **[1](sprint1.md)** ← *aktif* | **Faz A** hazırlık (base kapısı · base baseline + Kapı 0 · veri) → **Faz B** ilk FT | **FT-1** | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
-> | 2 | `rejected` hasat · kalan kollar · tabanlar · DEV havuzu · regex kalibrasyonu | **FT-2 … FT-6** | §1 · §2 |
+> | **[1](sprint1.md)** ← *aktif* | **Faz A** hazırlık (base kapısı · **DEV havuzu** · base baseline + Kapı 0 · veri) → **Faz B** ilk FT | **FT-1** | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
+> | 2 | `rejected` hasat · kalan kollar · tabanlar · regex kalibrasyonu | **FT-2 … FT-6** | §1 · §2 |
 > | 3 | merge + 7 hücreli kafes → **🎯 hedef model doğuyor** + iç iddia kararı | — *(merge bedava)* | §3 |
 > | 4 | harness (retriever · graf · doğrulayıcı · kapı) + Kapı 3 — **2-3 ile paralel yürüyebilir** | — *(eğitim yok)* | §4 · §6 |
 > | 5 | dış parite matrisi + Kapı 1/2 + eşdeğerlik + başabaş N\* + kapanış ölçümleri (eval≠dağıtım · gerçek VRAM) — **tez burada biter** | — *(rakipler API)* | §5 · §6 |
@@ -65,7 +65,25 @@ Hiçbir eğitim koşusu bu altı madde geçmeden başlamaz (`TASARIM.md` §8).
 
 ## 1 — Ölçüm zemini
 
-- [ ] **DEV havuzu üret** — CANON protokolünde yeni öğeler. `eval/canon/` (40+35) **TEST**, dokunulmaz, nihai raporda bir kez görülür
+> ### 🔌 Çok-model erişimi ne zaman gerekli (ADR-0029)
+>
+> Erişim **tek kapıdan**: `scripts/llm_client.py`. Kod **hazır ve geriye dönük uyumlu** —
+> `OPENROUTER_API_KEY` yoksa bugünkü `OPENAI_API_KEY` yolu aynen çalışır, anahtar eklendiği an
+> kapı OpenRouter'a döner (script değişikliği yok).
+>
+> | ne zaman | ne gerekir | neden o zaman |
+> | :--- | :--- | :--- |
+> | **Sprint 1** | tek aile (mevcut `OPENAI_API_KEY`) | CP1↔CP5 **iç kıyas**; aynı hakem iki tarafta olduğu sürece aile sayısı fark etmez. **Ama panelin üç ailesi burada seçilir** — aile-dışlama base ailesine bağlı, o da CP0'ın çıktısı |
+> | **Sprint 2-3** | çok-aile · rakip erişimi | **regex kalibrasyonu** her rakip ailesinde koşar (aşağıdaki madde) + iç iddia kararı üç aileli panelle raporlanır |
+> | **Sprint 5** | çok-aile · maliyet muhasebesi | dış parite matrisi; rakipler API'den |
+>
+> ⚠️ İki muhasebe tuzağı, ikisi de sessiz ve ikisi de **bizim lehimize** kayar:
+> **(a) fiyat** — parite matematiği birincil-kaynak liste fiyatıyla yapılır, kapıya ödenen tutarla
+> değil; **(b) sağlayıcı yönlendirme** — aynı model kimliği farklı upstream yığında koşabilir,
+> `judge_providers` tek eleman değilse sayı tek bir servis yığınına ait değildir.
+
+- [ ] **DEV havuzu üret** — **Sprint 1 / CP1'e alındı** (Kapı 0 bir *seçim* kararı; TEST'te verilemez). `eval/canon/` (40+35) **TEST**, dokunulmaz, nihai raporda bir kez görülür.
+      ⚠️ `build_eval_sets.py --exclude` **zorunlu**: CORE-HARD seçimi karmaşıklığa göre sıralı ve **seed'den bağımsız** → `--exclude`'suz "DEV" TEST'in kopyası/üst kümesi olur ve hata vermez. Kabul ölçütü: **kesişim = 0**
 - [ ] DEV hedef n'ini belirle — eşdeğerlik için güç analizi (açık soru)
 - [ ] **Regex kalibrasyonu** — red-tespit regex'ini her rakip ailesinde ölç, model-agnostik hale getir, ~30 çıktı elle spot-check. ⚠️ **Bu yapılmadan hiçbir sayı raporlanmaz** (kalibre edilmemiş regex skorları bizim lehimize kaydırır)
 - [ ] Hakem panelinin üç ailesini seç (aile-dışlama ile birlikte çözülmeli)
