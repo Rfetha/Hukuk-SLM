@@ -6,8 +6,8 @@
     sonuç + (KANUN, Madde X), UZMAN register. (maliyetli)
   · abstain dilim  → ŞABLON (API yok, bedava): uzman-register çekinme ifadesi, çeşitli.
 
-Çıktı: data/processed/sft_v2b/answers.jsonl (packed satırları + "answer" alanı).
-Sonra: python scripts/build_sft_v2b.py assemble --answers data/processed/sft_v2b/answers.jsonl
+Çıktı: data/_ham_ve_ara/raft_answers.jsonl (packed satırları + "answer" alanı).
+Sonra: python scripts/build_sft_v2b.py assemble --answers data/_ham_ve_ara/raft_answers.jsonl
 
 Dirençli: çıktı varsa tamamlanan id'leri atlar (resume). --limit ile smoke.
 Maliyet: yalnız grounded dilim API çağırır; ~15K çağrı (gpt-4o-mini). --limit ile önce dene.
@@ -25,8 +25,8 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-PACKED = "data/processed/sft_v2b/packed.jsonl"
-OUT = "data/processed/sft_v2b/answers.jsonl"
+PACKED = "data/_ham_ve_ara/raft_packed.jsonl"
+OUT = "data/_ham_ve_ara/raft_answers.jsonl"
 
 TEACHER_SYSTEM = (
     "Sen uzman bir Türk hukuku eğitmenisin. Sana bir SORU, NUMARALI kaynaklar (biri doğru = "

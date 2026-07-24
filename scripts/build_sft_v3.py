@@ -30,8 +30,8 @@ Bu ADIM cevap ÜRETMEZ. Çıktı = zor-near-miss TRAP bağlamları + ov_gold/ov_
 
 Kullanım:
   python scripts/build_sft_v3.py pack \
-      --seeds data/processed/sft_v1/train.jsonl \
-      --out-dir data/processed/sft_v3 --seed 3407
+      --seeds data/train/grounded_qa/train.jsonl \
+      --out-dir data/train/orpo_abstain --seed 3407
 """
 import argparse
 import collections
@@ -48,9 +48,9 @@ from build_sft_v2b import (
     _norm, _tok, extract_seed, load_madde_index,
 )
 
-SEED_PATH = "data/processed/sft_v1/train.jsonl"
-MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
-OUT_DIR = "data/processed/sft_v3"
+SEED_PATH = "data/train/grounded_qa/train.jsonl"
+MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
+OUT_DIR = "data/train/orpo_abstain"
 
 
 def jaccard(a_toks, b_toks):

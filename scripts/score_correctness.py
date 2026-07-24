@@ -21,14 +21,14 @@ ayrıca raporlanır ki over-refusal gizlenmesin. correct_rate'e bootstrap %95 GA
 Referans:
   --ref-mode detail (varsayılan): detail'deki "referans" (CORE'da gerçek doğru madde).
   --ref-mode gold (TRAP-A2, Q7): gerçek gold maddeyi join et (verilen tuzak madde DEĞİL).
-    Gerekir: --eval-set data/eval/trap.jsonl (gold_madde_no) + --madde-path (gold metin).
+    Gerekir: --eval-set data/eval/canon/trap.jsonl (gold_madde_no) + --madde-path (gold metin).
 
 Girdi: gen_eval_grounded çıktısı (outputs/eval/{label}_detail.jsonl)
 Çıktı: outputs/eval/corr_{label}.jsonl + corr_{label}_summary.json
 Kullanım:
   python scripts/score_correctness.py --details outputs/eval/bench_core_v1_detail.jsonl --label bench_core_v1
   python scripts/score_correctness.py --details outputs/eval/bench_trap_v1_detail.jsonl --label bench_trap_v1 \
-      --ref-mode gold --eval-set data/eval/trap.jsonl
+      --ref-mode gold --eval-set data/eval/canon/trap.jsonl
 """
 import argparse
 import json
@@ -121,8 +121,8 @@ def main():
     ap.add_argument("--judge-model", default=os.environ.get("GND_JUDGE", "gpt-4o-mini"))
     ap.add_argument("--ref-mode", choices=["detail", "gold"], default="detail",
                     help="detail=detail'deki referans (CORE); gold=gerçek gold madde (TRAP-A2)")
-    ap.add_argument("--eval-set", default=None, help="ref-mode=gold için kaynak (data/eval/trap.jsonl)")
-    ap.add_argument("--madde-path", default="data/raw/mevzuat_maddeler.jsonl")
+    ap.add_argument("--eval-set", default=None, help="ref-mode=gold için kaynak (data/eval/canon/trap.jsonl)")
+    ap.add_argument("--madde-path", default="data/corpus/mevzuat_maddeler.jsonl")
     ap.add_argument("--out-dir", default="outputs/eval")
     a = ap.parse_args()
 

@@ -1,0 +1,4057 @@
+{
+  "_meta": {
+    "purpose": "v1 grounded kaynaklarinda HEDEFLI audit listesi (kor tarama degil). v1 verisi inince: bu maddelerden uretilen Q&A ciftlerinin atifi tutmus mu, yoksa ince/mulga maddeye uydurmus mu kontrol et.",
+    "source": "data/raw/mevzuat_maddeler.jsonl uzerinde gercek usable()+ALLOWED_LAWS",
+    "core_total": 2759,
+    "suspect_total": 404,
+    "reason_legend": {
+      "short": "<300 krk govde - ince kaynak, model uydurabilir",
+      "mulga_body": "govdede mulga/yururlukten kaldirildi - head-only filtreden kacti; DIKKAT cogu kismen-mulga/atif (HMK m.38 gibi) = GERCEK hukum, eleme degil INCELE"
+    },
+    "filter_decision": "Filtreye DOKUNULMADI. mulga head-only kasitli dogru (yanlis-pozitif riski). Bkz ADR-0009."
+  },
+  "suspects": [
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 449",
+      "len": 310,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Bu Kanunun uygulanmasıyla ilgili yönetmelikler, Adalet Bakanlığı tarafından Kanunun yürürlüğe girdiği tarihten itibaren altı ay içinde çıkarılır. Yeni yönet"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 151",
+      "len": 322,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Başkasının taşınır veya taşınmaz malını kısmen veya tamamen yıkan, tahrip eden, yok eden, bozan, kullanılamaz hale getiren veya kirleten kişi, mağdurun şika"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 1027",
+      "len": 342,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "İlgililerin yazılı rızaları olmadıkça, tapu memuru, tapu sicilindeki yanlışlığı ancak mahkeme kararıyla düzeltebilir. Düzeltme, eski tescilin terkini ve yeni bi"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 368",
+      "len": 385,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– Noter Kanununun 69 ve 71 inci maddeleri ve icarı akar nizamnamesiyle buna müzeyyel kanunun mecur tahliyesine ve 49 uncu madde ile kabul edilen hususlardan gay"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 345",
+      "len": 400,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– Bu kanunda yazılı suçlar, hükmi bir şahsın idare veya muamelelerini ifa sırasında işlenmiş ise ceza o hükmi şahsın müdürlerinden, mümessil ve vekillerinden, t"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 79",
+      "len": 424,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "Genel kurul toplantısının açılışından sonra, toplantıyı yönetmek üzere, bir başkan ve yeteri kadar başkan vekili ile yazman seçilir. Genel kurul toplantısında y"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 94",
+      "len": 424,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "Dernekler, gerekli görülen yerlerde genel kurul kararıyla şube açabilirler. Bu amaçla dernek yönetim kurulunca yetki verilen en az üç kişilik kurucular kurulu, "
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 291",
+      "len": 425,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Temyiz istemi, hükmün gerekçesiyle birlikte tebliğ edildiği tarihten itibaren iki hafta içinde hükmü veren mahkemeye bir dilekçe verilmesi veya zabıt kâti"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 111",
+      "len": 446,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "Vakıfların, vakıf senedindeki hükümleri yerine getirip getirmedikleri, vakıf mallarını amaca uygun biçimde yönetip yönetmedikleri ve vakıf gelirlerini amaca uyg"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 27",
+      "len": 481,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– Taşınmaz, üçüncü bir şahıs tarafından davadan sonra ve hükümden evvel tapuya tescil edilmiş bir akte müsteniden işgal edilmekte ise alacaklı borçlunun o şahsa"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 238",
+      "len": 482,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Katılma, kamu davasının açılmasından sonra mahkemeye dilekçe verilmesi veya katılma istemini içeren sözlü başvurunun duruşma tutanağına geçirilmesi sureti"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 14",
+      "len": 506,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/10 md.) Bu kanunun uygulama şekli (…) 12 , icra ve iflas daireleri ile icra mahkeme lerinde tutulacak defterlerle dosyaların ve diğer "
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 103",
+      "len": 521,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Cumhuriyet savcısı, şüphelinin adlî kontrol altına alınarak serbest bırakılmasını sulh ceza hâkiminden isteyebilir. Hakkında tutuklama kararı verilmiş şüp"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 188",
+      "len": 596,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Duruşmada, hükme katılacak hâkimler ve Cumhuriyet savcısı ile zabıt kâtibinin ve Kanunun zorunlu müdafiliği kabul ettiği hâllerde müdafiin hazır bulunması"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 257",
+      "len": 646,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Kanunda ayrıca suç olarak tanımlanan haller dışında, görevinin gereklerine aykırı hareket etmek suretiyle, kişilerin mağduriyetine veya kamunun zararına ned"
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Madde 18",
+      "len": 671,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– Kat malikleri, gerek bağımsız bölümlerini, gerek eklentileri ve ortak yerleri kullanırken doğruluk kaidelerine uymak, özellikle birbirini rahatsız etmemek, bi"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 143",
+      "len": 683,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Kovuşturmaya yer olmadığına ilişkin kararı sonradan kaldırılarak, hakkında kamu davası açılan ve mahkûm edilenlerle, yargılamanın aleyhte yenilenmesiyle b"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 304",
+      "len": 719,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Türkiye Cumhuriyeti Devletine karşı savaş açması veya hasmane hareketlerde bulunması için yabancı devlet yetkililerini tahrik eden veya bu amaca yönelik ola"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 84",
+      "len": 740,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Başkasını intihara azmettiren, teşvik eden, başkasının intihar kararını kuvvetlendiren ya da başkasının intiharına herhangi bir şekilde yardım eden kişi, ik"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 107",
+      "len": 779,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Davanın açıldığı tarihte alacağın miktarını yahut değerini tam ve kesin olarak belirleyebilmesinin kendisinden beklenemeyeceği veya bunun imkânsız olduğu "
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 210",
+      "len": 780,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik birinci fıkra: 28/2/2018-7101/7 md.) İflâs dairesi; müflisin mağazalarını, eşya depolarını, fabrikalarını, imalathanelerini ve üretime yönelik sair y"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 132",
+      "len": 789,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Kişiler arasındaki haberleşmenin gizliliğini ihlal eden kimse, bir yıldan üç yıla kadar hapis cezası ile cezalandırılır. Bu gizlilik ihlali haberleşme içeri"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 144",
+      "len": 790,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– Alacağı tamamen ödenmiş olan alacaklıya ait senet icra dairesince borçluya verilir. Alacağının yalnız bir kısmı ödenmiş olan alacaklı, senedini geri alabilir."
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 257",
+      "len": 802,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– Rehinle temin edilmemiş ve vadesi gelmiş bir para borcunun alacaklısı, borçlunun yedinde veya üçüncü şahısta olan taşınır ve taşınmaz mallarını ve alacaklariy"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 206",
+      "len": 804,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Sanığın sorguya çekilmesinden sonra delillerin ortaya konulmasına başlanır. (Ek cümleler: 25/5/2005 - 5353/29 md.) Ancak, sanığın tebligata rağmen mazeret"
+    },
+    {
+      "kanun_adi": "İŞ KANUNU",
+      "kanun_no": "4857",
+      "madde_no": "Madde 39",
+      "len": 806,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "İş sözleşmesi ile çalışan ve bu Kanunun kapsamında olan veya olmayan her türlü işçinin ekonomik ve sosyal durumlarının düzenlenmesi için Çalışma ve Sosyal Güven"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 92",
+      "len": 841,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/51 md.) Bir taşınmazın haczi hasılat ve menfaatlerine de şamildir. Haciz taşınmaz kendilerine rehnedilmiş olan alacaklıların haklarına"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 292",
+      "len": 926,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Tutukevinden, ceza infaz kurumundan veya gözetimi altında bulunduğu görevlilerin elinden kaçan tutuklu veya hükümlü hakkında altı aydan bir yıla kadar hapis"
+    },
+    {
+      "kanun_adi": "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+      "kanun_no": "6502",
+      "madde_no": "GEÇİCİ MADDE 1",
+      "len": 959,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Bu Kanunun yürürlüğe girdiği tarihten önce açılmış olan davalar açıldıkları mahkemelerde görülmeye devam eder. (2) Bu Kanunun yürürlüğe girdiği tarihten önc"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 227",
+      "len": 982,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 6/6/1985-3222/28 md.) 8 inci maddenin bir ve ikinci fıkraları ve 9,11,16 ve 359 uncu maddelerin icra dairelerine ait hükümleri iflas idaresi hakkınd"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 45",
+      "len": 984,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– Rehinle temin edilmiş bir alacağın borçlusu iflasa tabi şahıslardan olsa bile alacaklı yalnız rehinin paraya çevrilmesi yoliyle takip yapabilir. Ancak rehinin"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 153",
+      "len": 1026,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– İpotekle temin edilmiş ve vadesi gelmiş bir alacağın borçlusu icra dairesine müracaatla alacaklısının gaip ve yerleşim yerinin meçhul bulunduğunu veya borcu a"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 73",
+      "len": 1111,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Soruşturulması ve kovuşturulması şikayete bağlı olan suç hakkında yetkili kimse altı ay içinde şikayette bulunmadığı takdirde soruşturma ve kovuşturma yapıl"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 67",
+      "len": 1162,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/37 md.) (Değişik birinci fıkra: 17/7/2003-4949/15 md.) Takip talebine itiraz edilen alacaklı, itirazın tebliği tarihinden itibaren bir"
+    },
+    {
+      "kanun_adi": "İŞ KANUNU",
+      "kanun_no": "4857",
+      "madde_no": "Madde 63",
+      "len": 1181,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "Genel bakımdan çalışma süresi haftada en çok kırkbeş saattir. Aksi kararlaştırılmamışsa bu süre, işyerlerinde haftanın çalışılan günlerine eşit ölçüde bölünerek"
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Madde 12",
+      "len": 1207,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 14/11/2007-5711/5 md.) Kat mülkiyetinin kurulması için, anagayrimenkulün kat mülkiyetine çevrilmesi hususunda o gayrimenkulün maliki veya bütün payd"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "GEÇİCİ MADDE 2",
+      "len": 1231,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 4/7/2012-6353/53 md.) Kiracının Türk Ticaret Kanununda tacir olarak sayılan kişiler ile özel hukuk ve kamu hukuku tüzel kişileri olduğu işyeri kiral"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 273",
+      "len": 1253,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) İstinaf istemi, hükmün gerekçesiyle birlikte tebliğ edildiği tarihten itibaren iki hafta içinde hükmü veren mahkemeye bir dilekçe verilmesi veya zabıt kât"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 38",
+      "len": 1261,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Hâkimin reddi sebebini bilen tarafın, ret talebini en geç ilk duruşmada ileri sürmesi gerekir. Taraf, ret sebebini davaya bakıldığı sırada öğrenmiş ise en g"
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Madde 14",
+      "len": 1304,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik birinci fıkra: 23/6/2009-5912/3 md.) Henüz yapı yapılmamış veya yapısı tamamlanmamış bir arsa üzerinde kat irtifakının kurulması ve tapu siciline tes"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 24",
+      "len": 1321,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/14 md.) Bir taşınırın teslimine dair olan ilam icra dairesine verilince icra memuru bir icra emri tebliği suretiyle borçluya yedi gün "
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 13",
+      "len": 1397,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Aşağıdaki suçların, vatandaş veya yabancı tarafından, yabancı ülkede işlenmesi halinde, Türk kanunları uygulanır: a) İkinci Kitap, Birinci Kısım altında yer"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 119",
+      "len": 1406,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) (Değişik : 25/5/2005 – 5353/15 md.) Hâkim kararı üzerine veya gecikmesinde sakınca bulunan hâllerde Cumhuriyet savcısının, Cumhuriyet savcısına ulaşılamad"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 62",
+      "len": 1529,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/33 md.) İtiraz etmek istiyen borçlu, itirazını, ödeme emrinin tebliği tarihinden itibaren yedi gün içinde dilekçe ile veya sözlü olara"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 280",
+      "len": 1620,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/115 md.) (Değişik birinci fıkra: 17/7/2003-4949/66 md.) Malvarlığı borçlarına yetmeyen bir borçlunun, alacaklılarına zarar verme kastı"
+    },
+    {
+      "kanun_adi": "İŞ KANUNU",
+      "kanun_no": "4857",
+      "madde_no": "Madde 69",
+      "len": 1668,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "Çalışma hayatında \"gece\" en geç saat 20.00'de başlayarak en erken saat 06.00'ya kadar geçen ve her halde en fazla onbir saat süren dönemdir. Bazı işlerin niteli"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 436",
+      "len": 1825,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "Koruma amacıyla özgürlüğün kısıtlanması, aşağıdaki kurallar saklı kalmak üzere, Hukuk Usulü Muhakemeleri Kanununa tâbidir: 1. Karar verilirken ilgilinin bunun s"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 227",
+      "len": 1926,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(1) Çocuğu fuhşa teşvik eden, bunun yolunu kolaylaştıran, bu maksatla tedarik eden veya barındıran ya da çocuğun fuhşuna aracılık eden kişi, dört yıldan on yıla"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 64",
+      "len": 1973,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) (Değişik: 3/11/2016-6754/43 md.) Bilirkişiler, bölge adliye mahkemelerinin yargı çevreleri esas alınmak suretiyle bilirkişilik bölge kurulu tarafından haz"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 128",
+      "len": 2202,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– İcra memuru satışa başlamazdan evvel taşınmaz üzerindeki tapu sicilline mukayyet veya resmi senede müstenit olan mükellefiyetlerin hepsinin bir listesini yapa"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 94",
+      "len": 2229,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/52 md.) Bir intıfa hakkı veya taksim edilmemiş bir miras veya bir şirket yahut iştirak halinde tasarruf edilen bir mal hissesi haczedi"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 236",
+      "len": 2509,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Mağdurun tanık olarak dinlenmesi halinde, yemin hariç, tanıklığa ilişkin hükümler uygulanır. (2) İşlenen suçun etkisiyle psikolojisi bozulmuş çocuk veya m"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 286",
+      "len": 2642,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "(Değişik: 28/2/2018-7101/14 md.) Borçlu, konkordato talebine aşağıdaki belgeleri ekler. a) Borçlunun borçlarını hangi oranda veya vadede ödeyeceğini, bu kapsamd"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 139",
+      "len": 2655,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) (Değişik: 21/2/2014–6526/13 md.) Soruşturma konusu suçun işlendiği hususunda somut delillere dayanan kuvvetli şüphe sebeplerinin bulunması ve başka surett"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 206",
+      "len": 2838,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 3/7/1940-3890/1 md.) (Değişik birinci fıkra: 28/2/2018-7101/5 md.) Alacakları rehinli olan alacaklıların satış tutarı üzerinde rüçhan hakları vardır"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 88",
+      "len": 3000,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 2/7/2012-6352/17 md.) Haczolunan paraları, banknotları, hamiline ait senetleri, poliçeler ve sair cirosu kabil senetler ile altın, gümüş ve diğer kı"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 140",
+      "len": 3003,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Aşağıdaki suçların işlendiği hususunda somut delillere dayanan kuvvetli şüphe sebepleri bulunması ve başka suretle delil elde edilememesi hâlinde, şüpheli"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 109",
+      "len": 3460,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) (Değişik: 2/7/2012-6352/98 md.) Bir suç sebebiyle yürütülen soruşturmada, 100 üncü maddede belirtilen tutuklama sebeplerinin varlığı halinde, şüphelinin t"
+    },
+    {
+      "kanun_adi": "İŞ KANUNU",
+      "kanun_no": "4857",
+      "madde_no": "Madde 2",
+      "len": 4318,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "Bir iş sözleşmesine dayanarak çalışan gerçek kişiye işçi, işçi çalıştıran gerçek veya tüzel kişiye yahut tüzel kişiliği olmayan kurum ve kuruluşlara işveren, iş"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 128",
+      "len": 4429,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) Soruşturma veya kovuşturma konusu suçun işlendiğine ve bu suçlardan elde edildiğine dair somut delillere dayanan kuvvetli şüphe sebebi bulunan hallerde, ş"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 135",
+      "len": 4930,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (1) (Değişik: 21/2/2014–6526/12 md.) Bir suç dolayısıyla yapılan soruşturma ve kovuşturmada, suç işlendiğine ilişkin somut delillere dayanan kuvvetli şüphe se"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 134",
+      "len": 5935,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/63 md.) İcra dairesi tarafından taşınmaz kendisine ihale edilen alıcı o taşınmazın mülkiyetini iktisap etmiş olur. (Ek cümle: 17/7/200"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 253",
+      "len": 8392,
+      "reasons": [
+        "mulga_body"
+      ],
+      "text_head": "– (Değişik: 6/12/2006-5560/24 md.) (1) Aşağıdaki suçlarda, şüpheli ile mağdur veya suçtan zarar gören gerçek veya özel hukuk tüzel kişisinin uzlaştırılması giri"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 194",
+      "len": 250,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Taraflar, dayandıkları vakıaları, ispata elverişli şekilde somutlaştırmalıdırlar. (2) Tarafların, dayandıkları delilleri ve hangi delilin hangi vakıanın isp"
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Madde 7",
+      "len": 250,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Kat mülkiyetine veya kat irtifakına tabi olan gayrimenkulde ortaklığın giderilmesi istenemez. Bağımsız bölümler, bağımsız bir gayrimenkul gibi dava ve takip k"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 201",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Senede bağlı her çeşit iddiaya karşı ileri sürülen ve senedin hüküm ve kuvvetini ortadan kaldıracak veya azaltacak nitelikte bulunan hukuki işlemler ikibinb"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 180",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacaklı hiçbir zarara uğramamış olsa bile, kararlaştırılan cezanın ifası gerekir. Alacaklının uğradığı zarar kararlaştırılan ceza tutarını aşıyorsa alacaklı, b"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 303",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kiraya veren, kiralananın kullanımıyla ilgili olmak üzere, kendisi veya üçüncü kişi tarafından yapılan yan giderlere katlanmakla yükümlüdür. IV. Kiraya verenin "
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 227",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Müzakerede ancak karara ve hükme katılacak hâkimler bulunur. (2) Mahkeme başkanı, hâkim ve savcı yardımcıları ile mahkemesinde staj yapmakta olan avukat a"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 28",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Karşı koyamayacağı veya kurtulamayacağı cebir ve şiddet veya muhakkak ve ağır bir korkutma veya tehdit sonucu suç işleyen kimseye ceza verilmez. Bu gibi hal"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 139",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Kişisel verilerin kaydedilmesi, verileri hukuka aykırı olarak verme veya ele geçirme ve verileri yok etmeme hariç, bu bölümde yer alan suçların soruşturulma"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 193",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) İçeriğinde zehir bulunan ve üretilmesi, bulundurulması veya satılması izne bağlı olan maddeyi izinsiz olarak üreten, bulunduran, satan veya nakleden kişi, i"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 191",
+      "len": 251,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Temsil yetkisinin kaldırılmasına veya sınırlanmasına ilişkin karar, koşullar değiştiğinde eşlerden birinin istemi üzerine hâkim tarafından değiştirilebilir. İlk"
+    },
+    {
+      "kanun_adi": "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+      "kanun_no": "6502",
+      "madde_no": "GEÇİCİ MADDE 2",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(Ek:22/7/2020-7251/60 md.) (1) Bu Kanunun dava şartı olarak arabuluculuğa ilişkin hükümleri, bu hükümlerin yürürlüğe girdiği tarih itibarıyla ilk derece mahkeme"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 267",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Mahkeme, bilirkişi olarak, yalnızca bir kişiyi görevlendirebilir. Ancak, gerekçesi açıkça gösterilmek suretiyle, tek sayıda, birden fazla kişiden oluşacak b"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 340",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Adli yardımdan yararlanan kişi için mahkemenin talebi üzerine baro tarafından görevlendirilen avukatın ücreti, yargılama gideri olarak Hazineden ödenir. SEK"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 569",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Birden çok kişi, haklarını korumak üzere, hukuki durumu çekişmeli veya belirsiz olan şeyi, bir güvenilirkişiye bırakırlarsa, bu kişi, saklatanların tamamının rı"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 111",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Şüpheli veya sanığın istemi üzerine, Cumhuriyet savcısının görüşünü aldıktan sonra hâkim veya mahkeme 110 uncu maddenin ikinci fıkrasına göre beş gün için"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 195",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Suç, yalnız veya birlikte adlî para cezasını veya müsadereyi gerektirmekte ise; sanık gelmese bile duruşma yapılabilir. Bu gibi hâllerde sanığa gönderilec"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 189",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Uyuşturucu veya uyarıcı madde imal ve ticareti suçlarının bir tüzel kişinin faaliyeti çerçevesinde işlenmesi halinde, tüzel kişi hakkında bunlara özgü güven"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 843",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taşınmaz yükü tescilin terkini veya yüklü taşınmazın tamamen yok olmasıyla sona erer. Feragat, yükten kurtarma ve diğer sona erme sebepleri, yüklü taşınmaz mali"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 935",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Senedi çıkaran aracı kurum, alacaklıların ve borçlunun temsilcisi olsa bile, senetlerin çıkarılması sırasında kendisine ayrıca yetki verilmiş olmadıkça, borcun "
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 130",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (Başlığı ile Birlikte Değişik:24/11/2021-7343/24 md.) İhale alıcısı, ihalenin feshi talep edilmiş olsa dahi artırma sonuç tutanağının ilanından itibaren yedi "
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Geçici Madde 14",
+      "len": 252,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "15/3/2018 7141 362/a 18/5/2018 KHK/698 14, 317, 318, 330 24/6/2018 tarihinde birlikte yapılan Türkiye Büyük Millet Meclisi ve Cumhurbaşkanlığı seçimleri sonucun"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 88",
+      "len": 253,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Hâkim tarafından belirlenen kesin süre içinde teminat gösterilmezse, dava usulden reddedilir. (2) Müdahale talebinde bulunan kişi, kesin süre içinde istenen"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 562",
+      "len": 253,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Saklatan, sözleşmenin ifasının zorunlu kıldığı bütün masrafları ödemekle yükümlüdür. Saklatan, kendi kusurundan ileri gelmediğini ispat etmedikçe, saklayanın sa"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 62",
+      "len": 253,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(Değişik: 4/11/2004-5253/38 md.) Dernekler, 60 ıncı maddenin son fıkrası gereğince yapılan yazılı bildirimi izleyen altı ay içinde ilk genel kurul toplantıların"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 165",
+      "len": 253,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Eşlerden biri akıl hastası olup da bu yüzden ortak hayat diğer eş için çekilmez hâle gelirse, hastalığın geçmesine olanak bulunmadığı resmî sağlık kurulu raporu"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 520",
+      "len": 253,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasbırakan, atadığı mirasçının kendisinden önce ölmesi veya mirası reddetmesi hâlinde onun yerine geçmek üzere bir veya birden çok kişiyi yedek mirasçı olarak"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 188",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tarafların veya vekillerinin mahkeme önünde ikrar ettikleri vakıalar, çekişmeli olmaktan çıkar ve ispatı gerekmez. (2) Maddi bir hatadan kaynaklanmadıkça ik"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 254",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Dinleme sırasında öncelikle tanıktan adı, soyadı, doğum tarihi, mesleği, adresi, taraflarla akrabalığının veya başka bir yakınlığının bulunup bulunmadığı, t"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 376",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Davanın taraflarından birisinin alacaklıları veya aleyhine hüküm verilen tarafın yerine geçenler, borçluları veya yerine geçmiş oldukları kimselerin araları"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 419",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Taraflarca aksi kararlaştırılmamışsa, tahkim yargılamasında görevi kabul eden hakem, haklı bir neden olmaksızın görevini yerine getirmekten kaçındığı takdir"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 307",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kiracı, kiralananın kullanımını etkileyen ayıpların varlığı hâlinde, bu ayıpların kiraya veren tarafından öğrenilmesinden ayıbın giderilmesine kadar geçen süre "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 361",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kiraya veren, kira süresi içinde yapılması zorunlu olan esaslı onarımları, kiracı tarafından bildirilir bildirilmez, gideri kendisine ait olmak üzere yapmakla y"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 391",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ödünç alana, sözleşmede kararlaştırılan para yerine, kıymetli evrak veya ticari mallar verilirse, borcun tutarı, bunların teslim zamanı ve yerindeki borsa ya da"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 108",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Bir şeyi yapması veya yapmaması ya da kendisinin yapmasına müsaade etmesi için bir kişiye karşı cebir kullanılması halinde, kasten yaralama suçundan verilec"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 355",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ana ve baba, çocuk mallarının gelirlerini öncelikle çocuğun bakımı, yetiştirilmesi ve eğitimi için; hakkaniyete uyduğu ölçüde de aile ihtiyaçlarını karşılamak ü"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 638",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Miras sebebiyle istihkak davasının kabulü hâlinde, tereke veya terekeye dahil mal, davacıya zilyetliğe ilişkin hükümler uyarınca verilir. Miras sebebiyle istihk"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 841",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Aksine hüküm yoksa, kamu hukukuna ilişkin taşınmaz yükünün tapu kütüğüne tescili gerekli değildir. Kanunun alacaklıya yalnızca taşınmaz yükünün kurulmasını iste"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 938",
+      "len": 254,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Rehinli taşınmazlar yerine elde edilen paralar, ilk kur'a çekiminde belli olacak senetlerin ödenmesinde kullanılır. ÜÇÜNCÜ BÖLÜM TAŞINIR REHNİ BİRİNCİ AYIRIM TE"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 561",
+      "len": 255,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Saklama sözleşmesi, saklayanın, saklatanın kendisine bıraktığı bir taşınırı güvenli bir yerde koruma altına almayı üstlendiği sözleşmedir. Açıkça öngörüldüğü ve"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 33",
+      "len": 255,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Duruşmada verilecek kararlar, Cumhuriyet savcısı, duruşmada hazır bulunan müdafi, vekil ve diğer ilgililer dinlendikten; duruşma dışındaki kararlar, Cumhu"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 175",
+      "len": 255,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) İddianamenin kabulüyle, kamu davası açılmış olur ve kovuşturma evresi başlar. (2) Mahkeme, iddianamenin kabulünden sonra duruşma gününü belirler ve duruşm"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 176",
+      "len": 255,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) İnşaat veya yıkım faaliyeti sırasında, insan hayatı veya beden bütünlüğü açısından gerekli olan tedbirleri almayan kişi, üç aydan bir yıla kadar hapis veya "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 235",
+      "len": 255,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mal rejiminin sona erdiği sırada mevcut olan edinilmiş mallar, tasfiye anındaki değerleriyle hesaba katılırlar. Edinilmiş mallara hesapta eklenecek olanların de"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 350",
+      "len": 255,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Velâyetin kaldırılması hâlinde ana ve babanın çocuklarının bakım ve eğitim giderlerini karşılama yükümlülükleri devam eder. Ana ve baba ile çocuğun ödeme gücü y"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 547",
+      "len": 255,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Miras sözleşmesi gereğince sağlararası edimleri isteme hakkı bulunan taraf, bu edimlerin sözleşmeye uygun olarak yerine getirilmemesi veya güvenceye bağlanmamas"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 168",
+      "len": 256,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Diğerlerine rücu hakkına sahip olan borçlulardan her biri, ifa ettiği miktar oranında alacaklının haklarına halef olur. Alacaklı diğerlerinin zararına olarak bo"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 11",
+      "len": 256,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Mahkeme, bakmakta olduğu birden çok dava arasında bağlantı görürse, bu bağlantı 8 inci maddede gösterilen türden olmasa bile, birlikte bakmak ve hükme bağ"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 728",
+      "len": 256,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Başkasının arazisi üzerinde kalıcı olması amaçlanmaksızın yapılan kulübe, büfe, çardak, baraka ve benzeri hafif yapılar, bunların malikine aittir. Bu tür yapıla"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 49",
+      "len": 256,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/23 md.) Rehin karşılığı yapılan ödünç verme işlerinde Medeni Kanun ile Türkiye Cumhuriyeti Ziraat Bankası ve Türkiye Emlak Kredi Banka"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 361",
+      "len": 256,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– İcra dairelerince borçludan fazla para tahsil olunarak alacaklıya verildiği yahut yanlışlıkla bir tarafa para tediye olunduğu hesap neticesinde anlaşılırsa ve"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 550",
+      "len": 257,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Temsil yetkisinin verildiği ticaret siciline tescil edilmemiş olsa bile, sona erdiği tescil edilir. Temsil yetkisinin sona erdiği ticaret siciline tescil ve ila"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 194",
+      "len": 257,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Sağlık için tehlike oluşturabilecek maddeleri çocuklara, akıl hastalarına veya uçucu madde kullananlara veren veya tüketimine sunan kişi, altı aydan bir yıl"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 205",
+      "len": 257,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Gerçek bir resmi belgeyi bozan, yok eden veya gizleyen kişi, iki yıldan beş yıla kadar hapis cezası ile cezalandırılır. Suçun kamu görevlisi tarafından işle"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 717",
+      "len": 257,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taşınmaz mülkiyeti, terkin veya taşınmazın tamamen yok olmasıyla sona erer. Kamulaştırma hâlinde mülkiyetin ne zaman sona ereceği özel kanunla belirlenir İKİNCİ"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 881",
+      "len": 257,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Hâlen mevcut olan veya henüz doğmamış olmakla beraber doğması kesin veya olası bulunan herhangi bir alacak, ipotekle güvence altına alınabilir. İpoteğe konu ola"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 31",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Hâkim, uyuşmazlığın aydınlatılmasının zorunlu kıldığı durumlarda, maddi veya hukuki açıdan belirsiz yahut çelişkili gördüğü hususlar hakkında, taraflara açı"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 187",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) İspatın konusunu tarafların üzerinde anlaşamadıkları ve uyuşmazlığın çözümünde etkili olabilecek çekişmeli vakıalar oluşturur ve bu vakıaların ispatı için d"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 235",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Yemin edecek kimse, mahkemeye gelemeyecek kadar hasta veya engelli ise hâkim, bulunduğu yerde o kimseye yemin ettirir. Bu sırada isterlerse taraf vekilleri "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 175",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taraflardan biri, koşulun gerçekleşmesine dürüstlük kurallarına aykırı olarak engel olursa, koşul gerçekleşmiş sayılır. Taraflardan biri, koşulun gerçekleşmesin"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 340",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Konut ve çatılı işyeri kiralarında sözleşmenin kurulması ya da sürdürülmesi, kiracının yararı olmaksızın, kiralananın kullanımıyla doğrudan ilişkisi olmayan bir"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 402",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İşveren, fazla çalışma için işçiye normal çalışma ücretini en az yüzde elli fazlasıyla ödemekle yükümlüdür. İşveren, işçinin rızasıyla fazla çalışma ücreti yeri"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 544",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Komisyoncu, kendisinin doğrudan doğruya alıcı veya satıcı olabildiği durumlarda, sözleşmenin diğer tarafını göstermeksizin vekâletin yerine getirildiğini vekâle"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 146",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Hırsızlık suçunun, malın geçici bir süre kullanılıp zilyedine iade edilmek üzere işlenmesi halinde, şikayet üzerine, verilecek ceza yarı oranına kadar indir"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 183",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) İlgili kanunlarla belirlenen yükümlülüklere aykırı olarak, başka bir kimsenin sağlığının zarar görmesine elverişli bir şekilde gürültüye neden olan kişi, ik"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 141",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Evlenme töreni, evlendirme dairesinde evlendirme memurunun ve ayırt etme gücüne sahip ergin iki tanığın önünde açık olarak yapılır. Ancak, tören evleneceklerin "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 311",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Aşağıdaki hâllerde ana ve babadan birinin rızası aranmaz: l. Kim olduğu veya uzun süreden beri nerede oturduğu bilinmiyorsa veya ayırt etme gücünden sürekli ola"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 514",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasbırakan, tasarruf özgürlüğünün sınırları içinde, malvarlığının tamamında veya bir kısmında vasiyetname ya da miras sözleşmesiyle tasarrufta bulunabilir. Mi"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 760",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Özel mülkiyete tâbi arazide bulunan kaynak, kuyu veya derelerden komşuların ve diğer kişilerin su içme, su alma veya hayvan sulama ya da benzer yollarla yararla"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 904",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İrat senetlerindeki alacak miktarı, tarım arazisinde arazinin gelir değerinin, diğer taşınmazlarda taşınmazın gelir değeri ile bina ve arsa değerleri ortalaması"
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Madde 60",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (Ek: 10/6/1985-3227/1 md.) Ana taşınmaz mal ile bağımsız bölümlerin ve müstakil yapıların tapu kütüklerinin beyanlar hanesine, bağımsız bölüm veya yapı üzerin"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 81",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Zor kullanma hususunda bütün zabıta memurları icra memurunun yazılı müracaatı üzerine kendisine muavenet ve emirlerini ifa etmekle mükelleftirler. Köylerde ha"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 222",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(Değişik: 17/7/2003-3939/53 md.) Alacaklılar toplanması mümkün olmazsa veya karar nisabı oluşmazsa durum tespit olunur. Bu hâlde daire, ikinci alacaklılar topla"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Geçici Madde 8",
+      "len": 258,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "6/3/2007 6217 353, 354 14/4/2011 6103 23, 24, 26, 27, 28, 29, 31, 31/a, 91, 92, 97, 136, 144, 144/a, 153, 153/a,179/a, 206, 257, 288 1/7/2012 6352 1, 8, 13/a, 1"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 6",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Genel yetkili mahkeme, davalı gerçek veya tüzel kişinin davanın açıldığı tarihteki yerleşim yeri mahkemesidir. (2) Yerleşim yeri, 22/11/2001 tarihli ve 4721"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 280",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Bilirkişi, raporunu, varsa kendisine incelenmek üzere teslim edilen şeylerle birlikte bir dizi pusulasına bağlı olarak mahkemeye verir; verildiği tarih rapo"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 185",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacağın devri kanun veya mahkeme kararı gereğince gerçekleşmişse, bu devir özel bir şekle ve önceki alacaklının rızasını açıklamasına gerek olmaksızın, üçüncü "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 282",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mal değişim sözleşmesi, taraflardan birinin diğer tarafa bir veya birden çok şeyin zilyetlik ve mülkiyetini, diğer tarafın da karşı edim olarak başka bir veya b"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 306",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Hüküm, sanık lehine bozulmuşsa ve bu hususların temyiz isteminde bulunmamış olan diğer sanıklara da uygulanması olanağı varsa, bu sanıklar da temyiz istem"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 212",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Sahte resmi veya özel belgenin bir başka suçun işlenmesi sırasında kullanılması halinde, hem sahtecilik hem de ilgili suçtan dolayı ayrı ayrı cezaya hükmolu"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 169",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Boşanma veya ayrılık davası açılınca hâkim, davanın devamı süresince gerekli olan, özellikle eşlerin barınmasına, geçimine, eşlerin mallarının yönetimine ve çoc"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 345",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Çocuk ile ana veya baba arasında ya da ana ve babanın menfaatine olarak çocuk ile üçüncü kişi arasında yapılacak bir hukukî işlemle çocuğun borç altına girebilm"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 83",
+      "len": 259,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "/b – (Ek: 18/2/1965-538/47 md.) Hayvan hacizlerinde, anaları tarafından beslenme ve bakılmaya muhtaç olan yavrular analarından ayrı haczedilemiyecekleri gibi bu"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 328",
+      "len": 260,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Karşılıklı hakaret hâllerinde taraflardan biri veya her ikisi hakkında ceza verilmesine yer olmadığı kararının verilmesi; bunlardan birinin veya her ikisi"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 10",
+      "len": 260,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Yabancı ülkede Türkiye namına memuriyet veya görev üstlenmiş olup da bundan dolayı bir suç işleyen kimse, bu fiile ilişkin olarak yabancı ülkede hakkında ma"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 14",
+      "len": 260,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) 11 ve 12 nci maddelerde belirtilen hallerde, soruşturma konusu suçun yer aldığı kanun maddesinde hapis cezası ile adli para cezasından birinin uygulanması s"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 17",
+      "len": 260,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kan hısımlığının derecesi, hısımları birbirine bağlayan doğum sayısıyla belli olur. Biri diğerinden gelen kişiler arasında üstsoy-altsoy hısımlığı; biri diğerin"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 718",
+      "len": 260,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Arazi üzerindeki mülkiyet, kullanılmasında yarar olduğu ölçüde, üstündeki hava ve altındaki arz katmanlarını kapsar. Bu mülkiyetin kapsamına, yasal sınırlamalar"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 797",
+      "len": 260,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İntifa hakkı, gerçek kişilerde hak sahibinin ölümü; tüzel kişilerde kararlaştırılan sürenin dolması, süre kararlaştırılmamışsa kişiliğin ortadan kalkmasıyla son"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 47",
+      "len": 260,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Para cezasiyle diğer hukuku amme borçlarının takibi hakkındaki kanunlar hükmü mahfuzdur. Şukadar ki, Devletin bir akitten veya haksız bir fiilden doğan alacak"
+    },
+    {
+      "kanun_adi": "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+      "kanun_no": "6502",
+      "madde_no": "MADDE 82",
+      "len": 261,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Reklam Kurulu, Reklam Konseyi, Tüketici Konseyi ve tüketici hakem heyetlerinin faaliyetlerine ilişkin masraflar, Bakanlığın tüketicinin korunması amacına yö"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 588",
+      "len": 261,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacaklıya, kefilin borcu için güvence veren kefile kefil, kefil ile birlikte, adi kefil gibi sorumludur. Rücua kefil, kefilin borçludan rücu alacağı için güven"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 96",
+      "len": 261,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Soruşturma ve kovuşturması şikâyete bağlı olan suç hakkında 90 ıncı maddenin üçüncü fıkrasına göre şikâyetten önce şüpheli yakalanmış olursa şikâyete yetk"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 352",
+      "len": 261,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ana ve baba, velâyetleri devam ettiği sürece çocuğun mallarını yönetme hakkına sahip ve bununla yükümlüdürler; kural olarak hesap ve güvence vermezler. Ana ve b"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 870",
+      "len": 261,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Rehnin sağladığı güvence, tescilde belirtilen rehin derecesi ile sınırlıdır. Taşınmaz rehni, sırada kendisinden önce gelecek olanın miktarının tescilde belirtil"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 635",
+      "len": 262,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ortaklık sıfatının sona erdiği tarihte, ortaklığın malvarlığı, borçlarını karşılamaya yetmezse, çıkan veya çıkarılan ortak, payına düşen borç tutarını, zarara k"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 13",
+      "len": 262,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Yaşının küçüklüğü yüzünden veya akıl hastalığı, akıl zayıflığı, sarhoşluk ya da bunlara benzer sebeplerden biriyle akla uygun biçimde davranma yeteneğinden yoks"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 484",
+      "len": 262,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ayırt etme gücüne sahip olan vesayet altındaki kişi veya her ilgili, vasinin görevden alınmasını isteyebilir. Görevden alınmayı gerektiren sebebin varlığını baş"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 533",
+      "len": 262,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasbırakan, arzularını resmî memura bildirir. Bunun üzerine memur, vasiyetnameyi yazar veya yazdırır ve okuması için mirasbırakana verir. Vasiyetname, mirasbı"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 98",
+      "len": 262,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Çalınmış ve zayi edilmiş şeyler hakkında Kanunu Medeninin 902,903 ve 904 üncü maddeleri hükmü mahfuzdur. İcra dairesi tarafından pazarlık suretiyle yapılan sa"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 83",
+      "len": 263,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Vekil ile takip edilen davada, vekilin azli hâlinde vekâlet veren, davayı takip etmez ve iki hafta içinde bir başka vekil de görevlendirmez ise tarafın yokl"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 603",
+      "len": 263,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kefaletin şekline, kefil olma ehliyetine ve eşin rızasına ilişkin hükümler, gerçek kişilerce, kişisel güvence verilmesine ilişkin olarak başka ad altında yapıla"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 278",
+      "len": 263,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (Değişik: 15/8/2016-KHK-674/14 md.; Aynen kabul: 10/11/2016-6758/14 md.) (1) Dava dosyası, bölge adliye mahkemesine geldiğinde işbölümüne göre görevli ceza da"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 195",
+      "len": 263,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Bulaşıcı hastalıklardan birine yakalanmış veya bu hastalıklardan ölmüş kimsenin bulunduğu yerin karantina altına alınmasına dair yetkili makamlarca alınan t"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 430",
+      "len": 263,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Temsil kayyımı, kendisine kayyım atanacak kimsenin yerleşim yeri vesayet makamı tarafından atanır. Yönetim kayyımı, malvarlığının büyük bölümünün yönetildiği ve"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 543",
+      "len": 263,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasbırakan, yok etmek suretiyle de vasiyetnameden dönebilir. Kaza sonucunda veya üçüncü kişinin kusuruyla yok olan ve içeriğinin aynen ve tamamen belirlenmesi"
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Geçici Madde 1",
+      "len": 263,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Kat irtifakına konu olan arsa üzerinde, bu Kanunun yürürlüğünden önce süresi içinde bitirilmemiş olan yapılara ilişkin kat irtifakları tapu kütüğünden silinme"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 60",
+      "len": 264,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bir kişinin sorumluluğu, birden çok sebebe dayandırılabiliyorsa hâkim, zarar gören aksini istemiş olmadıkça veya kanunda aksi öngörülmedikçe, zarar görene en iy"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 530",
+      "len": 264,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İşsahibi, kendi menfaatine yapılmamış olsa bile, işgörmeden doğan faydaları edinme hakkına sahiptir; ancak zenginleştiği ölçüde, işgörenin masraflarını ödemek v"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 545",
+      "len": 264,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vekâlet verenin vekâleti geri aldığı haberi komisyoncuya ulaştığı anda, komisyoncunun işlemi kendisiyle yapma hakkı düşer. Ancak, bu haber kendisine ulaşmadan ö"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 93",
+      "len": 264,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– İcra dairesi mahsullerin toplanması için lazım gelen tedbirleri alır. Borçlunun geçineceği yoksa kendisinin ve ailesinin geçinmeleri için kafi miktar mahsulde"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 283",
+      "len": 265,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Bilirkişiye, sarf etmiş olduğu emek ve mesaiyle orantılı bir ücret ile inceleme, ulaşım, konaklama ve diğer giderleri ödenir. Bu konuda, Adalet Bakanlığınca"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 165",
+      "len": 265,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Gerektiğinde veya Cumhuriyet savcısının talebi halinde, diğer kolluk birimleri de adlî kolluk görevini yerine getirmekle yükümlüdür. Bu durumda, kolluk gö"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 274",
+      "len": 265,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bir eşin kişisel malı veya ortaklık malıyla bir başka mal kesimine giren malvarlığı değerinin edinilmesi, iyileştirilmesi veya korunmasına katkıda bulunulmuşsa,"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 879",
+      "len": 265,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Muaccel olan sigorta tazminatı, malike ancak bütün rehinli alacaklıların rızasıyla ödenebilir. Sigorta tazminatı taşınmazın eski hâle getirilmesi için harcanaca"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 317",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Kanun yollarına başvurma hakkındaki genel hükümler, yargılamanın yenilenmesi istemi hakkında da uygulanır. (2) Yargılamanın yenilenmesi istemi, bunun yasa"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 200",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Paralarla kıymetli damgaların üretiminde kullanılan alet veya malzemeyi izinsiz olarak üreten, ülkeye sokan, satan, devreden, satın alan, kabul eden veya mu"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 76",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bütün üyelerin bir araya gelmeksizin yazılı katılımıyla alınan kararlar ile dernek üyelerinin tamamının kanunda yazılı çağrı usulüne uymaksızın bir araya gelere"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 489",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Görevi sona eren vasi, yönetimle ilgili son raporu ve kesin hesabı vesayet makamına vermekle yükümlü olduğu gibi; malvarlığını vesayet altındaki kişiye, mirasçı"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 549",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Miras sözleşmesi veya vasiyetnameyle yapılan ölüme bağlı kazandırmalar, mirasbırakanın tasarruf edebileceği kısmın sonradan daralması yüzünden hükümsüz olmaz; s"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 778",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taşınır mülkiyeti, malik tarafından terk edilmedikçe veya başkası tarafından kazanılmadıkça yalnız zilyetliğin kaybıyla sona ermez. İKİNCİ KISIM SINIRLI AYNÎ HA"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 943",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taşınır rehni, alacaklının zilyet olmaktan çıkması ve onu zilyet olan üçüncü kişiden geri alamaz hâle gelmesiyle son bulur. Taşınır, alacaklının rızasıyla fiile"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 108",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Haczi muvakkat olan alacaklı satış talebinde bulunamaz ve hakkında 106 ncı maddedeki müddetler cerayan etmez. (Ek: 6/6/1985-3222/12 md.) Muvakkaten veya ihtiy"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 230",
+      "len": 266,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– İdare, alacak ve istihkak iddialarının kaydı için tayin olunan müddet bittikten sonra iddiaları tahkik ve tetkik eder. Müflisi bulundurmak mümkünse her iddia "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 37",
+      "len": 267,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kişisel durum sicili, Devletçe atanan memurlar tarafından tutulur. Sicil kayıtlarını tutmak ve örnek vermek bu memurların görevidir. Yabancı memleketlerdeki Tür"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 325",
+      "len": 267,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Olağanüstü hâller mevcutsa, çocuğun menfaatine uygun düştüğü ölçüde çocuk ile kişisel ilişki kurulmasını isteme hakkı diğer kişilere, özellikle hısımlarına da t"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 626",
+      "len": 267,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Defteri inceleme süresi bittikten sonra her mirasçı, mahkemece bir ay içinde beyanda bulunmaya çağrılır. Koşullar gerektirdiği takdirde sulh mahkemesi, tereke m"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 712",
+      "len": 267,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Geçerli bir hukukî sebep olmaksızın tapu kütüğüne malik olarak yazılan kişi, taşınmaz üzerindeki zilyetliğini davasız ve aralıksız olarak on yıl süreyle ve iyin"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 26",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Hâkim, tarafların talep sonuçlarıyla bağlıdır; ondan fazlasına veya başka bir şeye karar veremez. Duruma göre, talep sonucundan daha azına karar verebilir. "
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 387",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Çekişmesiz yargı işlerinde verilen kararlara karşı hukuki yararı bulunan ilgililer, özel kanuni düzenlemeler saklı kalmak kaydıyla, kararın öğrenilmesinden "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 12",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Sözleşmelerin geçerliliği, kanunda aksi öngörülmedikçe, hiçbir şekle bağlı değildir. Kanunda sözleşmeler için öngörülen şekil, kural olarak geçerlilik şeklidir."
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 186",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Borçlu, alacağın devredildiği, devreden veya devralan tarafından kendisine bildirilmemişse, önceki alacaklıya; alacak birkaç kez devredilmişse, son devralan y"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 192",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacaklı, alacağını borcu ifaya yönelik olarak devretmekle birlikte borca mahsup edilecek miktarı belirlememişse devralan, ancak borçludan aldığı veya gereken ö"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 158",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Evlenmenin butlanına karar verilirse, evlenirken iyiniyetli bulunan eş bu evlenme ile kazanmış olduğu kişisel durumunu korur. Eşler arasındaki mal rejiminin tas"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 433",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Yerleştirme veya alıkoymaya karar verme yetkisi, ilgilinin yerleşim yeri veya gecikmesinde sakınca bulunan hâllerde bulunduğu yer vesayet makamına aittir. Yerle"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 486",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Gecikmesinde tehlike bulunan hâllerde vesayet makamı, vasiye geçici olarak işten el çektirip bir kayyım atayabileceği gibi; gerekirse muhtemel zararı göz önünde"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 974",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Zilyet, bir sınırlı aynî hak veya bir kişisel hakkın kurulmasını ya da kullanılmasını sağlamak için şeyi başkasına teslim ederse, bunların ikisi de zilyet olur."
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Madde 4",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "14/4/1983 3227 Sekizinci Bölüm, 57, 58, 59, 60, 61, 62, 63, 64, 65 25/6/1985 KHK/431 42 13/2/1991 3770 42 11/2/1992 5378 42 7/7/2005 5627 42 2/5/2007 5711 3, 4,"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 243",
+      "len": 268,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– İflas idaresi tarafından artırma ile satılacak taşınır ve taşınmaz malların ihalesi 115 ve 129 uncu maddelerin 185 inci maddeye muhalif olmıyan hükümlerine gö"
+    },
+    {
+      "kanun_adi": "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+      "kanun_no": "6502",
+      "madde_no": "MADDE 27",
+      "len": 269,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tüketici, vadesi gelmemiş bir veya birden çok taksit ödemesinde bulunabilir veya kredi borcunun tamamını erken ödeyebilir. Bu hâllerde kredi veren, erken öd"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 123",
+      "len": 269,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Sırf huzur ve sükûnunu bozmak maksadıyla bir kimseye ısrarla; telefon edilmesi, gürültü yapılması ya da aynı maksatla hukuka aykırı başka bir davranışta bul"
+    },
+    {
+      "kanun_adi": "İŞ KANUNU",
+      "kanun_no": "4857",
+      "madde_no": "Madde 113",
+      "len": 269,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bu Kanunun 4 üncü maddesinin birinci fıkrasının (b) ve (ı) bentlerinde sayılan işyerlerinde çalışan işçiler hakkında 32, 35, 37, 38 inci madde hükümleri uygulan"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 394",
+      "len": 269,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Malikin ölümünden sonra aile yurdunun devam edebilmesi, taşınmazın mirasçılara yurt olarak geçmesine ilişkin bir ölüme bağlı tasarrufun yapılmış olmasına bağlıd"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 327",
+      "len": 270,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Hakkında beraat veya ceza verilmesine yer olmadığına karar verilen kişi, sadece kendi kusurundan ileri gelen giderleri ödemeye mahkûm edilir. (2) Bu kişin"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 215",
+      "len": 270,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) İşlenmiş olan bir suçu veya işlemiş olduğu suçtan dolayı bir kişiyi alenen öven kimse, bu nedenle kamu düzeni açısından açık ve yakın bir tehlikenin ortaya "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 1007",
+      "len": 270,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Tapu sicilinin tutulmasından doğan bütün zararlardan Devlet sorumludur. Devlet, zararın doğmasında kusuru bulunan görevlilere rücu eder. Devletin sorumluluğuna "
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 287",
+      "len": 271,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Devlet, ödediği tazminat nedeniyle, sorumlu bilirkişiye, ödeme tarihinden itibaren bir yıl içinde rücu eder . Hükme esas alınan bilirkişi raporu kasten gerç"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 172",
+      "len": 271,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Borcun konusunu oluşturan şey, koşulun gerçekleşmesinden önce kendisine verilen alacaklı, koşul gerçekleşirse, koşulun gerçekleşmesine kadar elde ettiği yararla"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 356",
+      "len": 271,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ölen kiracının ortakları veya bu ortakların aynı meslek ve sanatı yürüten mirasçıları ve ölen kiracı ile birlikte aynı konutta oturanlar, sözleşmeye ve kanun hü"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 370",
+      "len": 271,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kiracının iflası hâlinde sözleşme, iflasın açıldığı anda, kendiliğinden sona erer. Ancak, kiraya veren, işlemekte olan kira ve tutanağa geçirilen eşya için yete"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 508",
+      "len": 271,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vekil, vekâlet verenin istemi üzerine yürüttüğü işin hesabını vermek ve vekâletle ilişkili olarak aldıklarını vekâlet verene vermekle yükümlüdür. Vekil, vekâlet"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 48",
+      "len": 271,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Tanık, kendisini veya 45 inci maddenin birinci fıkrasında gösterilen kişileri ceza kovuşturmasına uğratabilecek nitelikte olan sorulara cevap vermekten çe"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 240",
+      "len": 271,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Katılma davayı durdurmaz. (2) Tarihi belirlenmiş olan duruşma ve yargılama usulüne ilişkin diğer işlemler vaktin darlığından dolayı katılan kimse çağrılam"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 365",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kiracı, kiralananın bakımını gereği gibi sağlamakla yükümlüdür. Kiracı, yerel âdete uygun olarak küçük onarımları yapmak, bozulan veya kullanılmayla yok olan dü"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 72",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Derneğin zorunlu organları, genel kurul, yönetim kurulu ve denetim kuruludur. Dernekler zorunlu organları dışında başka organlar da oluşturabilirler. Ancak, bu "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 267",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Eşlerden her biri, yasal sınırlar içerisinde kendi kişisel mallarını yönetme ve bunlar üzerinde tasarrufta bulunma hakkına sahiptir. Kişisel mallara giren gelir"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 364",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Herkes, yardım etmediği takdirde yoksulluğa düşecek olan üstsoyu ve altsoyu ile kardeşlerine nafaka vermekle yükümlüdür. Kardeşlerin nafaka yükümlülükleri, refa"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 445",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vesayet altındaki kişi küçük ise, vasi onun bakımı ve eğitimi için gereken önlemleri almakla yükümlüdür. Vesayet dairelerinin yetkilerine ilişkin hükümler saklı"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 671",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Geri vermekle yükümlü olan mirasçı, dilerse aldığını aynen geri verir; dilerse payından fazla olsa bile değerini miras payına mahsup ettirir. Mirasbırakanın bu "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 764",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Başkasına devredilen bir malın mülkiyetinin saklı tutulması kaydı, ancak resmî şekilde yapılacak sözleşmenin devralanın yerleşim yeri noterliğinde özel siciline"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 789",
+      "len": 272,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Tarla yolu, yaya veya araba geçidi gibi geçit hakları ile hayvan otlatma, hayvan sulama, tarlalara veya arklara su alma hakları ve benzeri hakların kapsamını be"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 213",
+      "len": 273,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Aralarında çelişki bulunması halinde; sanığın, hâkim veya mahkeme huzurunda yaptığı açıklamalar ile Cumhuriyet savcısı tarafından alınan veya müdafiinin h"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 198",
+      "len": 273,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Devlet tarafından ihraç edilip de hamiline yazılı bonolar, hisse senetleri, tahviller ve kuponlar, yetkili kurumlar tarafından çıkarılmış olup da kanunen te"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 231",
+      "len": 273,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Artık değer, eklenmeden ve denkleştirmeden elde edilen miktarlar da dahil olmak üzere her eşin edinilmiş mallarının toplam değerinden bu mallara ilişkin borçlar"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 383",
+      "len": 273,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ortaklık mallarının paylaşılması veya ayrılan ortağın payının hesaplanması, ortaklık mallarının paylaşma veya ayrılma zamanındaki değerine ve durumuna göre yapı"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 823",
+      "len": 273,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Oturma hakkı, bir binadan veya onun bir bölümünden konut olarak yararlanma yetkisi verir. Oturma hakkı, başkasına devredilemez ve mirasçılara geçmez. Kanunda ak"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 199",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Uyuşmazlık konusu vakıaları ispata elverişli yazılı veya basılı metin, senet, çizim, plan, kroki, fotoğraf, film, görüntü veya ses kaydı gibi veriler ile el"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 223",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Yabancı dilde yazılmış belgeye dayanan taraf, tercümesini de mahkemeye sunmak zorundadır. (2) Mahkeme kendiliğinden veya diğer tarafın talebi üzerine, belge"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 145",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) (Değişik: 29/6/2005 – 5377/16 md.) Hırsızlık suçunun konusunu oluşturan malın değerinin azlığı nedeniyle, verilecek cezada indirim yapılabileceği gibi, suçu"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 171",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Taksirle; a) Yangına, b) Bina çökmesine, toprak kaymasına, çığ düşmesine, sel veya taşkına, Neden olan kişi, fiilin başkalarının hayatı, sağlığı veya malvar"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 177",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Gözetimi altında bulunan hayvanı başkalarının hayatı veya sağlığı bakımından tehlikeli olabilecek şekilde serbest bırakan veya bunların kontrol altına alınm"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 216",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Eşlerden her biri, diğerinden her zaman mallarının envanterinin resmî senetle yapılmasını isteyebilir. Bu envanter, malların getirilmesinden başlayarak bir yıl "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 583",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasın açıldığı anda henüz var olmayan bir kimseye artmirasçı veya art vasiyet alacaklısı olarak, tereke veya tereke malı bırakılabilir. Mirasbırakan tarafında"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 107",
+      "len": 274,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Her alacaklı mensup olduğu derece namına satış talebinde bulunabilir. 100 üncü maddenin son fıkrası mucibince hacizleri evvelki dereceden artacak bedeller içi"
+    },
+    {
+      "kanun_adi": "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+      "kanun_no": "6502",
+      "madde_no": "MADDE 72",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tüketici hakem heyetlerinin kurulması, çalışma usul ve esasları, raportörlerin nitelikleri ile bilirkişilik müessesesine ilişkin usul ve esaslar ile diğer h"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 97",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Eski hâle getirme, dilekçeyle talep edilir. Dilekçede, talebin dayandığı sebepler ile bunların delil veya emareleri gösterilir. Süresinde yapılamayan işlemi"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 234",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Okuma ve yazma bilen sağır veya dilsizler, yemin hakkındaki beyanlarını yazıp imzalayarak yemin ederler. (2) Okuma ve yazma bilmeyen sağır veya dilsizler, i"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 49",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kusurlu ve hukuka aykırı bir fiille başkasına zarar veren, bu zararı gidermekle yükümlüdür. Zarar verici fiili yasaklayan bir hukuk kuralı bulunmasa bile, ahlak"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 536",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Komisyoncu, vekâlet verenin izni olmaksızın malı veresiye satar veya malı teslim almadan bedelini öderse, bundan doğan zarara katlanmak zorundadır. Ancak, vekâl"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 632",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ortaklığa, yeni bir ortak alınması, bütün ortakların rızasına bağlıdır. Ortaklardan biri tek taraflı olarak bir üçüncü kişiyi ortaklıktaki payına ortak eder vey"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 264",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Kabul edilebilir bir başvuruda kanun yolunun veya merciin belirlenmesinde yanılma, başvuranın haklarını ortadan kaldırmaz. (2) Bu hâlde başvurunun yapıldı"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 89",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Derneğin amacı, kanuna veya ahlâka aykırı hâle gelirse; Cumhuriyet savcısının veya bir ilgilinin istemi üzerine mahkeme, derneğin feshine karar verir. Mahkeme, "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 581",
+      "len": 275,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vasiyet alacaklısı olabilmek için mirasbırakanın ölümü anında mirasa ehil olarak sağ olmak şarttır. Vasiyet alacaklısı mirasbırakandan önce ölmüş ise, tasarruft"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 8",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Memur, işçi, öğrenci, asker gibi, bir yerde geçici olarak oturanlara karşı açılacak alacak veya taşınır mal davaları için, orada bulunmaları uzunca bir süre"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 59",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Maddi hukuka göre, bir hakkın birden fazla kimse tarafından birlikte kullanılması veya birden fazla kimseye karşı birlikte ileri sürülmesi ve tamamı hakkınd"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 354",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Bölge adliye mahkemesi hukuk dairesince inceleme, davanın özelliğine göre heyetçe veya görevlendirilecek bir üye tarafından yapılır. (2) İnceleme sırasında "
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 269",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) İtiraz, kararın yerine getirilmesinin geri bırakılması sonucunu doğurmaz. (2) Ancak, kararına itiraz edilen makam veya kararı inceleyecek merci, geri bıra"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 124",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Erkek veya kadın onyedi yaşını doldurmadıkça evlenemez. Ancak, hâkim olağanüstü durumlarda ve pek önemli bir sebeple onaltı yaşını doldurmuş olan erkek veya kad"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 170",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Boşanma sebebi ispatlanmış olursa, hâkim boşanmaya veya ayrılığa karar verir. Dava yalnız ayrılığa ilişkinse, boşanmaya karar verilemez. Dava boşanmaya ilişkins"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 944",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacağın ödenmesi suretiyle veya başka bir sebeple rehin hakkı sona erince alacaklı, rehinli taşınırı hak sahibine geri vermekle yükümlüdür. Alacaklı, alacağını"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 324",
+      "len": 276,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Borçlu işlerine devam edebilir. Ancak mühletin devamınca alacaklıların kanuni menfaatlerine dokunacak yahut alacaklılardan bir kısmını diğerlerinin zararına o"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 81",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Vekilin azli veya istifasının, mahkeme ve karşı taraf bakımından hüküm ifade edebilmesi için, bu konudaki beyanın dilekçeyle bildirilmesi veya tutanağa geçi"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 142",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Ön inceleme duruşması tamamlandıktan sonra, hâkim tahkikata başlamadan önce, hak düşürücü süreler ile zamanaşımı hakkındaki itiraz ve def’ileri inceleyerek "
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 338",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Adli yardımdan yararlanan kişinin mali durumu hakkında kasten veya ağır kusuru sonucu yanlış bilgi verdiği ortaya çıkar veya sonradan mali durumunun yeteri "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 109",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacaklı, tevdi edilen şeyi kabul ettiğini açıklamış veya tevdi bir rehnin ortadan kaldırılması sonucunu doğurmuş olmadıkça borçlu, tevdi edilen şeyi geri alabi"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 162",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Birden çok borçludan her biri, alacaklıya karşı borcun tamamından sorumlu olmayı kabul ettiğini bildirirse, müteselsil borçluluk doğar. Böyle bir bildirim yoksa"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 287",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Fiil ehliyeti bulunmayan kişi ayırt etme gücüne sahipse, bağışlamayı kabul edebilir. Ancak, bağışlananın yasal temsilcisi bu kişinin bağışlamayı kabulünü yasakl"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 538",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Komisyoncu, vekâlet verenin yararı için yaptığı bütün giderleri ve ödediği paraları faiziyle birlikte isteyebilir. Komisyoncu, ardiye ve taşıma bedellerini vekâ"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 144",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Hırsızlık suçunun; a) Paydaş veya elbirliği ile malik olunan mal üzerinde, b) Bir hukuki ilişkiye dayanan alacağı tahsil amacıyla, İşlenmesi halinde, şikaye"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 328",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ana ve babanın bakım borcu, çocuğun ergin olmasına kadar devam eder. Çocuk ergin olduğu halde eğitimi devam ediyorsa, ana ve baba durum ve koşullara göre kendil"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 431",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vasinin atanması usulüne ilişkin kurallar, kayyım ve yasal danışmanın atanmasında da uygulanır. Kayyım veya yasal danışman atanmasına ilişkin karar, ancak vesay"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 5",
+      "len": 277,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (Değişik: 6/6/1985-3222/1 md.) İcra ve İflas Dairesi görevlilerinin kusurlarından doğan tazminat davaları, ancak idare aleyhine açılabilir. Devletin, zararın "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 225",
+      "len": 278,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ağır kusurlu olan satıcı, satılandaki ayıbın kendisine süresinde bildirilmemiş olduğunu ileri sürerek sorumluluktan kısmen de olsa kurtulamaz. Satıcılığı meslek"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 175",
+      "len": 278,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Akıl hastası üzerindeki bakım ve gözetim yükümlülüğünü, başkalarının hayatı, sağlığı veya malvarlığı bakımından tehlikeli olabilecek şekilde ihmal eden kişi"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 59",
+      "len": 278,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Dernekler, kuruluş bildirimini, dernek tüzüğünü ve gerekli belgeleri yerleşim yerinin bulunduğu yerin en büyük mülkî amirine verdikleri anda tüzel kişilik kazan"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 412",
+      "len": 278,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vesayet makamının izni olmadıkça vesayet altındaki kişi yerleşim yerini değiştiremez. Yerleşim yerinin değişmesi hâlinde yetki, yeni vesayet dairelerine geçer. "
+    },
+    {
+      "kanun_adi": "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+      "kanun_no": "6502",
+      "madde_no": "MADDE 71",
+      "len": 279,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tüketici hakem heyeti başkan ve üyelerine, raportör olarak görevlendirilen diğer kamu personeline ödenecek huzur hakkı ve huzur ücreti ile bilirkişi ücreti "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 178",
+      "len": 279,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Cayma parası kararlaştırılmışsa, taraflardan her biri sözleşmeden caymaya yetkili sayılır; bu durumda parayı vermiş olan cayarsa verdiğini bırakır; almış olan c"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 309",
+      "len": 279,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "/l- (Ek: 17/7/2003-4949/84 md.) Niteliğine aykırı düşmedikçe 285 ilâ 308/g maddeleri malvarlığının terki suretiyle konkordatoda da uygulanır. [112] V. SERMAYE Ş"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 32",
+      "len": 280,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Saikte yanılma, esaslı yanılma sayılmaz. Yanılanın, yanıldığı saiki sözleşmenin temeli sayması ve bunun da iş ilişkilerinde geçerli dürüstlük kurallarına uygun "
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 126",
+      "len": 280,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Hakaret suçunun işlenmesinde mağdurun ismi açıkça belirtilmemiş veya isnat üstü kapalı geçiştirilmiş olsa bile, eğer niteliğinde ve mağdurun şahsına yönelik"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 91",
+      "len": 280,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(Değişik: 2/1/2003-4778/34 md.) Dernekler, tüzüklerinde gösterilen amaçları gerçekleştirmek üzere uluslararası faaliyette ve işbirliğinde bulunabilirler, yurt d"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 806",
+      "len": 280,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Sözleşmede aksine hüküm yoksa veya durum ve koşullardan hak sahibince şahsen kullanılması gerektiği anlaşılmıyorsa, intifa hakkının kullanılması başkasına devre"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 910",
+      "len": 280,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İpotekli borç senedinin veya irat senedinin düzenlenmesiyle birlikte dayanağı olan borç ilişkisi yenileme yoluyla sona erer. Bunun aksine yapılan sözleşme, sade"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 317",
+      "len": 280,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Fevkalade hallerde hususile devamlı iktisadi buhranlarda Cumhurbaşkanı 318 den 329 uncuya kadar olan maddeler hükümlerinin muayyen bir müddet için bu hallerde"
+    },
+    {
+      "kanun_adi": "TÜKETİCİNİN KORUNMASI HAKKINDA KANUN",
+      "kanun_no": "6502",
+      "madde_no": "MADDE 46",
+      "len": 281,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Sözleşme öncesi bilgilendirme, sözleşmenin zorunlu içeriği, tüketici ile satıcının hak ve yükümlülükleri, cayma hakkı ve sözleşmeden dönme ile diğer uygulam"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 289",
+      "len": 281,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Keşif, davaya bakan mahkemece icra edilir. Keşif konusu, mahkemenin yargı çevresi dışında ise inceleme istinabe suretiyle yapılır. (2) Keşif konusu, büyükşe"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 150",
+      "len": 281,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ömür boyunca gelir ve benzeri dönemsel edimlerde, alacağın tamamı için zamanaşımı, ifa edilmemiş ilk dönemsel edimin muaccel olduğu günde işlemeye başlar. Alaca"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 103",
+      "len": 281,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mahkemenin verdiği karar, tebliğ tarihinden başlayarak bir ay içinde, başvuran veya Vakıflar Genel Müdürlüğü tarafından temyiz edilebilir. Vakıflar Genel Müdürl"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 576",
+      "len": 281,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Miras, malvarlığının tamamı için mirasbırakanın yerleşim yerinde açılır. Mirasbırakanın tasarruflarının iptali veya tenkisi, mirasın paylaştırılması ve miras se"
+    },
+    {
+      "kanun_adi": "KAT MÜLKİYETİ KANUNU",
+      "kanun_no": "634",
+      "madde_no": "Madde 56",
+      "len": 281,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Bu kanunun belediyelere yüklediği görevler, belediye olmıyan, yerlerde o yerin bağlı bulunduğu ilçe veya il merkezleri belediyelerince, 6785 sayılı İmar Kanun"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 284",
+      "len": 281,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (Değişik: 18/2/1965-538/119 md.) İptal davası hakkı, batıl tasarrufun vukuu tarihinden itibaren beş sene geçmekle düşer. ONİKİNCİ BAP Konkordato ile Sermaye Ş"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 294",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bağışlayan, bağışlamadan doğan zarardan bu zarara ağır kusuruyla sebep olmadıkça, bağışlanana karşı sorumlu değildir. Bağışlayan, bağışlanılan şey veya alacak h"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 360",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kiraya veren, birlikte kiralanmış taşınır şeyler varsa bunlar da içinde olmak üzere, kiralananı, sözleşmenin amacına uygun biçimde kullanılmaya ve işletilmeye e"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 558",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Havale ödeyicisi, havale alıcısının istemesine karşın ifadan kaçınır veya havale konusunu ifa etmeyeceğini önceden açıklarsa havale alıcısı, durumu gecikmeksizi"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "MADDE 140",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "/A- (Ek: 20/11/2017-KHK-696/95 md.; Aynen kabul: 1/2/2018-7079/90 md.) (1) Bu Kanunun 135 ila 140 ıncı maddelerinde düzenlenen koruma tedbirlerinin uygulanmasın"
+    },
+    {
+      "kanun_adi": "İŞ KANUNU",
+      "kanun_no": "4857",
+      "madde_no": "Madde 90",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İş arayanların elverişli oldukları işlere yerleştirilmeleri ve çeşitli işler için uygun işçiler bulunmasına aracılık görevi, Türkiye İş Kurumu ve bu hususta izi"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 20",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bir yerleşim yerinin değiştirilmesi yenisinin edinilmesine bağlıdır. Önceki yerleşim yeri belli olmayan veya yabancı ülkedeki yerleşim yerini bıraktığı hâlde Tü"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 320",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Küçüklerin evlât edinilmesine ilişkin aracılık faaliyetleri, ancak Cumhurbaşkanınca yetki verilen kurum ve kuruluşlarca yapılır. Aracılık faaliyetlerinin yürütü"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Geçici Madde 4",
+      "len": 282,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(Ek: 17/7/2003-4949/105 md.) Adalet Bakanlığı veya Adalet Teşkilâtını Güçlendirme Vakfınca mahcuz malların muhafazası için depo ve garajlar açılıncaya kadar, öz"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 296",
+      "len": 283,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Toplu mahkemelerde hüküm hakkındaki müzakereyi mahkeme başkanı idare eder. Müzakere yapıldıktan sonra, başkan, müzakereye katılan en kıdemsiz üyeden başlaya"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 554",
+      "len": 283,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vasiyeti yerine getirme görevlisinin görevi, ölümü veya atanmasını geçersiz kılan bir sebebin varlığı hâlinde kendiliğinden sona erer. Vasiyeti yerine getirme g"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 684",
+      "len": 283,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bir şeye malik olan kimse, o şeyin bütünleyici parçalarına da malik olur. Bütünleyici parça, yerel âdetlere göre asıl şeyin temel unsuru olan ve o şey yok edilm"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 216",
+      "len": 283,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Kendisine ayrıca müsaade edilmiyen müflis tasfiyenin devamı müddetince iflas idaresinin emri altında bulunmakla mükelleftir ve icabında zabıta kuvvetleriyle g"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 155",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tutanak, hâkim ve zabıt kâtibi tarafından derhâl imzalanır. (2) Tutanağa imza atamayacak durumda olan kimsenin parmak izi alınır, bunun hangi parmağa ait ol"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 207",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Senetteki çıkıntı, kazıntı veya silinti ayrıca onanmamışsa, inkâr hâlinde göz önünde tutulmaz. Bu tür çıkıntı, kazıntı veya silinti mahkemece senedin geçerl"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 143",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Takas, ancak borçlunun takas iradesini alacaklıya bildirmesiyle gerçekleşir. Bu durumda her iki borç, takas edilebilecekleri anda daha az olan borç tutarınca so"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 533",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Komisyoncu, yaptığı iş hakkında vekâlet vereni bilgilendirmek ve özellikle talimatının yerine getirildiğini kendisine hemen bildirmekle yükümlüdür. Vekâlet vere"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 370",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ana ve baba veya büyük ana ve baba ile birlikte yaşayan ve emeklerini ya da gelirlerini aileye özgüleyen ergin altsoylar, buna karşılık uygun bir bedel isteyebi"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 461",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ayırt etme gücüne sahip olan vesayet altındaki kişi ve her ilgili, vasinin eylem ve işlemlerine karşı vesayet makamına şikâyette bulunabilir. Vesayet makamının "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 631",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasın Devlete geçmesi hâlinde sulh mahkemesi, re'sen yukarıdaki usuller uyarınca terekenin resmî defterini düzenler. Devlet, deftere yazılan borçlardan sadece"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 701",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kanun veya kanunda öngörülen sözleşmeler uyarınca oluşan topluluk dolayısıyla mallara birlikte malik olanların mülkiyeti, elbirliği mülkiyetidir. Elbirliği mülk"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 922",
+      "len": 284,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İpotekli borç senedi veya irat senedi metninde yazılı olanlar tapu kütüğündeki tescile uymazsa veya tapu kütüğünde tescil yoksa, kütük esas alınır. Bununla birl"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 45",
+      "len": 285,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Temsilci, yetkisinin sona ermiş olduğunu bilmediği sürece, temsil olunan veya halefleri, temsilcinin yapmış olduğu hukuki işlemlerin sonuçlarıyla bağlıdırlar. B"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 101",
+      "len": 285,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Birden çok borcu bulunan borçlu, ödeme gününde bu borçlardan hangisini ödemek istediğini alacaklıya bildirebilir. Borçlu bildirimde bulunmazsa, yapılan ödeme, k"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 217",
+      "len": 286,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Hâkim, kararını ancak duruşmaya getirilmiş ve huzurunda tartışılmış delillere dayandırabilir. Bu deliller hâkimin vicdanî kanaatiyle serbestçe takdir edil"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 203",
+      "len": 286,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Kanun veya yetkili makamların emri uyarınca bir şeyin saklanmasını veya varlığının aynen korunmasını sağlamak için konulan mührü kaldıran veya konuluş amacı"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 338",
+      "len": 286,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Eşler, ergin olmayan üvey çocuklarına da özen ve ilgi göstermekle yükümlüdürler. Kendi çocuğu üzerinde velâyeti kullanan eşe diğer eş uygun bir şekilde yardımcı"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 472",
+      "len": 286,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Diğer kısıtlılar üzerindeki vesayet, yetkili vesayet makamının kararıyla sona erer. Vesayeti gerektiren sebebin ortadan kalkması üzerine vesayet makamı vesayeti"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 11",
+      "len": 286,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Tetkik vazifesini gören hakimler ve icra ve iflas memur ve müstahdemleri, dairelerince takip edilmekte olan bir alacak veya satılmakta bulunan bir şey hakkınd"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 13",
+      "len": 287,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kanunda yazılı şekilde yapılması öngörülen bir sözleşmenin değiştirilmesinde de yazılı şekle uyulması zorunludur. Ancak, sözleşme metniyle çelişmeyen tamamlayıc"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 378",
+      "len": 287,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Aksine anlaşma veya yerel âdet yoksa, belirsiz bir süre için yapılan sözleşmeyi, taraflardan her biri, dilediği zaman feshedebilir. Ancak, fesih dürüstlük kural"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 93",
+      "len": 287,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Yakalanan veya tutuklanarak bir yerden diğer bir yere nakledilen kişilere, kaçacaklarına ya da kendisi veya başkalarının hayat ve beden bütünlükleri bakım"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 137",
+      "len": 287,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Yukarıdaki maddelerde tanımlanan suçların; a) Kamu görevlisi tarafından ve görevinin verdiği yetki kötüye kullanılmak suretiyle, b) Belli bir meslek ve sana"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 831",
+      "len": 287,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Üst hakkı sahibi, bu haktan doğan yetkilerinin sınırını ağır şekilde aşar veya sözleşmeden doğan yükümlülüklerine önemli ölçüde aykırı davranırsa; malik, üst ha"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 836",
+      "len": 287,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Üst hakkı, bağımsız bir hak olarak en çok yüz yıl için kurulabilir. Üst hakkı, süresinin dörtte üçü dolduktan sonra, kurulması için öngörülen şekle uyularak her"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 76",
+      "len": 287,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (Değişik: 24/5/1962-51/ 1md.) Mal beyanında bulunmıyan borçlu, alacaklının talebi üzerine beyanda bulununcaya kadar icra mahkemesi hakimi tarafından bir defay"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 53",
+      "len": 288,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ölüm hâlinde uğranılan zararlar özellikle şunlardır: 1. Cenaze giderleri. 2. Ölüm hemen gerçekleşmemişse tedavi giderleri ile çalışma gücünün azalmasından ya da"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 42",
+      "len": 288,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kişisel durumdaki değişiklikler, özellikle evlilik dışı bir çocuğun tanınması veya hâkimin babalığa karar vermesi, soybağının düzeltilmesi, evlât edinme ya da b"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 410",
+      "len": 288,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kısıtlama kararı, kesinleşince hemen kısıtlının yerleşim yeri ile nüfusa kayıtlı olduğu yerde ilân olunur. Kısıtlama, iyiniyetli üçüncü kişileri ilândan önce et"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 420",
+      "len": 288,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vesayet işleri zorunlu kıldığı takdirde vesayet makamı, vasinin atanmasından önce de re'sen gerekli önlemleri alır; özellikle, kısıtlanması istenen kişinin fiil"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 378",
+      "len": 289,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Yargılamanın iadesi talebini içeren dilekçe, kararı veren mahkemece incelenir. (2) Mahkeme , dayanılan sebebin niteliğine göre yargılamanın iadesi talebinde"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 91",
+      "len": 289,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Borcun ifası için bir ayın başlangıcı veya sonu belirlenmişse, bundan ayın birinci ve sonuncu günü; ayın ortası belirlenmişse, bundan da ayın onbeşinci günü anl"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 49",
+      "len": 289,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Mahkeme başkanı veya hâkim veya Cumhuriyet savcısı tarafından gerekli görüldüğünde 45, 46 ve 48 inci maddelerde gösterilen hâllerde tanık, tanıklıktan çek"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 97",
+      "len": 289,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Yakalama işlemi bir tutanağa bağlanır. Bu tutanağa yakalananın, hangi suç nedeniyle, hangi koşullarda, hangi yer ve zamanda yakalandığı, yakalamayı kimler"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 234",
+      "len": 289,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Özel hâller gerektirdiği takdirde hesaplanan değer, uygun bir miktarda artırılabilir. Özellikle sağ kalan eşin geçim koşulları, tarımsal işletmenin alım değeri,"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 269",
+      "len": 289,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "/a – (Ek: 18/2/1965-538/110 md.; Değişik: 17/7/2003-4949/65 md.) Borçlu itiraz etmez, ihtar müddeti içinde kira borcunu da ödemezse ihtar müddetinin bitim tarih"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 262",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tarafların, tanığın sözünü kesmeleri, söz veya hareketle onu övmeleri veya tahkir etmeleri yasaktır. Buna aykırı davranan taraf veya vekili, hâkimin uyarısı"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 10",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Geri alma açıklaması, diğer tarafa öneriden önce veya aynı anda ulaşmış ya da daha sonra ulaşmakla birlikte diğer tarafça öneriden önce öğrenilmiş olursa, öneri"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 257",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alıcı, satıcının taksitle satıştan doğan alacağı ile kendisinin satıcıdan olan alacağını takas etme hakkından önceden feragat edemez. Alacağın devredilmesi duru"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 110",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Yukarıdaki maddede tanımlanan suçu işleyen kişi, bu suç nedeniyle soruşturmaya başlanmadan önce mağdurun şahsına zararı dokunmaksızın, onu kendiliğinden güv"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 341",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Resmen çekilmiş olan yabancı devlet bayrağını veya diğer egemenlik alametlerini alenen tahkir eden kimseye üç aydan bir yıla kadar hapis cezası verilir. (2)"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 35",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İlândan sonuç alınamazsa, mahkeme gaipliğe karar verir ve ölüme bağlı haklar, aynen gaibin ölümü ispatlanmış gibi kullanılır. Gaiplik kararı ölüm tehlikesinin g"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 208",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Eşler, her zaman yeni bir mal rejimi sözleşmesiyle önceki veya başka bir mal rejimini kabul edebilirler. Mal ayrılığına geçişi gerektiren sebebin ortadan kalkma"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 351",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Durumun değişmesi hâlinde, çocuğun korunmasına ilişkin önlemlerin yeni koşullara uydurulması gerekir. Velâyetin kaldırılmasını gerektiren sebep ortadan kalkmışs"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 358",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ölüme bağlı tasarruf yoluyla çocuğun saklı payı ana ve babanın yönetimi dışında bırakılabilir. Mirasbırakan yönetimi bir üçüncü kişiye bırakmışsa, tasarrufunda "
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 796",
+      "len": 290,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İntifa hakkı, konusunun tamamen yok olması ve taşınmazlarda tescilin terkini; yasal intifa hakkı, sebebinin ortadan kalkması ile sona erer. Sürenin dolması veya"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 25",
+      "len": 291,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Kanunda öngörülen istisnalar dışında, hâkim, iki taraftan birinin söylemediği şeyi veya vakıaları kendiliğinden dikkate alamaz ve onları hatırlatabilecek da"
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 195",
+      "len": 291,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tarafların ellerinde bulunmayan ve incelenmesine karar verilen delillerin getirtilmesi için, mahkemece ilgili resmî makam ve mercilerle üçüncü kişilere bu h"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 24",
+      "len": 291,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Genel işlem koşullarının bulunduğu bir sözleşmede veya ayrı bir sözleşmede yer alan ve düzenleyene tek yanlı olarak karşı taraf aleyhine genel işlem koşulları i"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 424",
+      "len": 291,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Yıllık ücretli izinler, kural olarak aralıksız biçimde verilir; ancak tarafların anlaşmasıyla ikiye bölünerek de kullanılabilir. İşveren, yıllık ücretli izin ta"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 205",
+      "len": 291,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Bir kimse, duruşma sırasında bir suç işlerse, mahkeme olayı tespit eder ve bu hususta düzenleyeceği tutanağı yetkili makama gönderir; gerek görürse failin"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 17",
+      "len": 292,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kanunda şekle bağlanmamış bir sözleşmenin taraflarca belirli bir şekilde yapılması kararlaştırılmışsa, belirlenen şekilde yapılmayan sözleşme tarafları bağlamaz"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 54",
+      "len": 292,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Tanıklar, tanıklıktan önce ayrı ayrı yemin ederler. Gerektiğinde veya bir kimsenin tanık sıfatıyla dinlenilmesinin uygun olup olmadığında tereddüt varsa y"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 301",
+      "len": 292,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Çocuk ile baba arasındaki soybağının mahkemece belirlenmesini ana ve çocuk isteyebilirler. Dava babaya, baba ölmüşse mirasçılarına karşı açılır. Babalık davası,"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 876",
+      "len": 292,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacaklı, rehinli taşınmazın korunması için zorunlu masraf yapmışsa ve özellikle malikin borçlu olduğu sigorta primlerini ödemişse, bundan doğan alacakları tesc"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 329",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taraflardan her biri, bir taşınmaza veya taşınır bir yapıya ilişkin kira sözleşmesini yerel âdette belirlenen kira döneminin sonu için veya böyle bir âdetin bul"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 463",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İşçi, işe zamanında başlamak, işi kararlaştırılan zamanda bitirmek ve çalışmanın sonucunu işverene teslim etmekle yükümlüdür. İş, işçinin kusuruyla ayıplı olara"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 612",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ölünceye kadar bakma sözleşmesi, mirasçı atanmasını içermese bile, miras sözleşmesi şeklinde yapılmadıkça geçerli olmaz. Sözleşme, Devletçe tanınmış bir bakım k"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 142",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Evlendirme memuru, evleneceklerden her birine birbiriyle evlenmek isteyip istemediklerini sorar. Evlenme, tarafların olumlu sözlü cevaplarını verdikleri anda ol"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 161",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Eşlerden biri zina ederse, diğer eş boşanma davası açabilir. Davaya hakkı olan eşin boşanma sebebini öğrenmesinden başlayarak altı ay ve her hâlde zina eylemini"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 719",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taşınmazın sınırları, tapu plânları ve arz üzerindeki sınır işaretleriyle belirlenir. Tapu plânları ile arz üzerindeki işaretler birbirini tutmazsa, asıl olan p"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 790",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İrtifak hakkının kullanılması için gerekli tesislerin bakımı, yararlanan taşınmaz malikine aittir. Tesisler yüklü taşınmazın malikine de yararlı ise, bunların b"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 321",
+      "len": 293,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– İcra mahkemesi, mühlet kararını vermezden evvel veya verirken defter tutulmasını emreder ve alacaklıların haklarını korumak maksadiyle diğer bütün tedbirleri "
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 126",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Davalı, cevap dilekçesini, davanın açılmış olduğu mahkemeye verir. (2) Cevap dilekçesine davacı sayısı kadar örnek eklenir. (3) Cevap dilekçesi, havale edil"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 292",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bağışlayan, bağışlananın kendisinden önce ölmesi durumunda, bağışlama konusunun kendisine dönmesi koşulunu koyabilir. Bağışlama konusu, taşınmaza veya taşınmaz "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 359",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kira sözleşmesi, araç ve gereçleri, hayvanları, devredilen eşyayı veya stoklanmış malları da içeriyorsa taraflar, bunların değerlerini birlikte takdir ederek ik"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 501",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Bir veya birkaç kişi, yayımcının belirlediği plana göre bir eser meydana getirmeyi üstlenirlerse, sadece sözleşmeyle kararlaştırılan ücrete hak kazanırlar. Bu d"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 210",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mal ortaklığını kabul etmiş eşlerden birine karşı icra takibinde bulunan alacaklı, haczin uygulanmasında zarara uğrarsa, hâkimden mal ayrılığına karar verilmesi"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 414",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Haklı sebepler engel olmadıkça, vesayet makamı, vesayet altına alınacak kişinin öncelikle eşini veya yakın hısımlarından birini, vasilik koşullarına sahip olmal"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 488",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İlgililer, vesayet makamının kararlarına karşı, tebliğ gününden başlayarak on gün içinde denetim makamına itiraz edebilirler. Denetim makamı, gerektiğinde duruş"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 528",
+      "len": 294,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasbırakan, bir mirasçısı ile karşılıksız veya bir karşılık sağlanarak mirastan feragat sözleşmesi yapabilir. Feragat eden, mirasçılık sıfatını kaybeder. Bir "
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 50",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Zarar gören, zararını ve zarar verenin kusurunu ispat yükü altındadır. Uğranılan zararın miktarı tam olarak ispat edilemiyorsa hâkim, olayların olağan akışını v"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 151",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Süreler hesaplanırken zamanaşımının başladığı gün sayılmaz ve zamanaşımı ancak sürenin son günü de hak kullanılmaksızın geçince gerçekleşmiş olur. Zamanaşımı sü"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 250",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Beğenme koşuluyla satışta alıcı, satılanı kabul etmekte veya hiçbir sebep göstermeksizin geri vermekte serbesttir. Satılan, alıcının zilyetliğine geçmiş olsa bi"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 555",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Havale, havale edenin, kendi hesabına, para, kıymetli evrak ya da diğer bir mislî eşyayı havale alıcısına vermek üzere havale ödeyicisini; bunları kendi adına k"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 82",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Hiçbir dernek üyesi, dernek ile kendisi, eşi, üstsoyu ve altsoyu arasındaki bir hukukî işlem veya uyuşmazlık konusunda alınması gereken kararlarda oy kullanamaz"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 505",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(Değişik birinci fıkra: 4/5/2007-5650/1 md.) Mirasçı olarak altsoyu, ana ve babası veya eşi bulunan miras bırakan, mirasının saklı paylar dışında kalan kısmında"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 848",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Taşınmaz yükü, alacaklıya yükümlüye karşı hiçbir kişisel alacak hakkı sağlamaz; sadece alacağını yüklü taşınmazın değerinden elde etme yetkisi verir. Her edim, "
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 150",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "/g – (Ek: 18/2/1965-538/72 md.; Değişik 9/11/1988-3494/24 md.) Satılması istenen rehin hakkında 92 nci maddenin üçüncü fıkrası ve 93, 96, 97, 97/a, 98 ve 99 unc"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 201",
+      "len": 295,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Müflisin borçlusu iflasın açılmasından evvel alacaklısının aciz halinde bulunduğunu bilerek masanın zararına kendisine veya üçüncü bir şahsa takas suretiyle b"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 248",
+      "len": 296,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Her eş, diğer eşte bulunan mallarını geri alır. Paylaşmalı mal ayrılığı rejimi sona erdiğinde, üstün yararı olduğunu ispat eden eş, diğer önlemler yanında, eşin"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 597",
+      "len": 296,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Mirasta hak sahibi olanların her birine gideri terekeye ait olmak üzere, vasiyetnamenin kendilerine ilişkin kısımlarının onaylı bir örneği hâkim tarafından tebl"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 833",
+      "len": 296,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Üst hakkı sahibinin yükümlülüklerine aykırı davranması hâlinde sözleşmede malik lehine saklı tutulan, üst hakkını süresinden önce sona erdirme veya devrini iste"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 198",
+      "len": 296,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– Mevzuu para olmıyan alacak ona muadil bir kıymette para alacağına çevrilir. Şu kadar ki iflas idaresi taahhüdün aynen ifasına deruhte edebilir. Bu takdirde al"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 77",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Haklı bir sebep olmaksızın, bir başkasının malvarlığından veya emeğinden zenginleşen, bu zenginleşmeyi geri vermekle yükümlüdür. Bu yükümlülük, özellikle zengin"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 107",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Alacaklının temerrüde düşmesi durumunda borçlu, hasar ve giderleri alacaklıya ait olmak üzere, teslim edeceği şeyi tevdi ederek borcundan kurtulabilir. Tevdi ye"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 503",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Kendisine bir işin görülmesi önerilen kişi, bu işi görme konusunda resmî sıfata sahipse veya işin yapılması mesleğinin gereği ise ya da bu gibi işleri kabul ede"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 266",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Görevi gereği olarak elinde bulundurduğu araç ve gereçleri bir suçun işlenmesi sırasında kullanan kamu görevlisi hakkında, ilgili suçun tanımında kamu görev"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 382",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ortaklardan birinin ölümü hâlinde onun ortaklığa dahil olmayan mirasçıları, ancak ölen ortağa düşen payın karşılığının kendilerine ödenmesini isteyebilirler. Öl"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 785",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Lehine irtifak kurulan taşınmaz için bu hakkın sağladığı hiç bir yarar kalmamışsa, yüklü taşınmazın maliki bu hakkın terkinini isteyebilir. Yüküne oranla çok az"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 907",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İrat senedinin borçlusu yüklü taşınmazın malikidir. Yüklü taşınmazı edinen kimse irat senedinin borçlusu olur ve eski malik başka bir işleme gerek kalmaksızın b"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 947",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Rehin, taşınırı eklentileriyle birlikte kapsar. Aksi kararlaştırılmış olmadıkça alacaklı, rehinli taşınırın doğal ürünlerini, bütünleyici parçası olmaktan çıkın"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 161",
+      "len": 297,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– İflas talebinde bulunan alacaklı isterse, mahkeme borçluya ait malların bir defterinin tutulmasına karar verebilir. Bu defter iflas dairesi tarafından tutulur"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 119",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Temerrüde düşen borçlu, beklenmedik hâl sebebiyle doğacak zarardan sorumludur. Borçlu, temerrüde düşmekte kusuru olmadığını veya borcunu zamanında ifa etmiş ols"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 239",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Aksine anlaşma olmadıkça, sözleşmeden doğan önalım, alım ve geri alım hakları devredilemez, ancak miras yoluyla geçer. Bu hakların devredilebileceği sözleşmeyle"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 390",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Ödünç alan, ödünç sözleşmesinin kurulmasından sonra ödeme güçsüzlüğüne düşerse ödünç veren, ödünç konusunun tesliminden kaçınabilir. Ödünç veren, ödünç alanın s"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 397",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "İşçi, üstlendiği işin görülmesi sırasında üçüncü kişiden işveren için aldığı şeyleri ve özellikle paraları derhâl ona teslim etmek ve bunlar hakkında hesap verm"
+    },
+    {
+      "kanun_adi": "CEZA MUHAKEMESİ KANUNU",
+      "kanun_no": "5271",
+      "madde_no": "Madde 315",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "– (1) Kanunun aynı maddesinde yer almış sınır içinde olmak üzere cezanın değiştirilmesi amacıyla yargılamanın yenilenmesi kabul edilemez. (2) Hatanın giderilebi"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 246",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Bu bölümde yer alan suçların işlenmesi suretiyle yararına haksız menfaat sağlanan tüzel kişiler hakkında bunlara özgü güvenlik tedbirlerine hükmolunur. DÖRD"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 172",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Süre bitince ayrılık durumu kendiliğinden sona erer. Ortak hayat yeniden kurulmamışsa, eşlerden her biri boşanma davası açabilir. Boşanmanın sonuçları düzenleni"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 299",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Davacı, tanıyanın baba olmadığını ispatla yükümlüdür. Ana veya çocuk tarafından tanıyanın baba olmadığı iddiasıyla açılan iptal davasında ispat yükü, tanıyanın,"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 798",
+      "len": 298,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Malik, yararlanılamayacak derecede harap olan intifa konusu malı yararlanılacak hâle getirmekle yükümlü değildir; getirirse intifa hakkı yeniden kurulmuş olur. "
+    },
+    {
+      "kanun_adi": "HUKUK MUHAKEMELERİ KANUNU",
+      "kanun_no": "6100",
+      "madde_no": "MADDE 434",
+      "len": 299,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "(1) Tahkim yargılaması sırasında taraflar uyuşmazlık konusunda sulh olurlarsa, tahkim yargılamasına son verilir. Tarafların talebi, ahlâka veya kamu düzenine ay"
+    },
+    {
+      "kanun_adi": "TÜRK BORÇLAR KANUNU",
+      "kanun_no": "6098",
+      "madde_no": "MADDE 261",
+      "len": 299,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Hâkim, temerrüde düşen alıcının borçlarını ödeyeceği konusunda güvence vermesi ve satıcının da bu yeni düzenleme dolayısıyla herhangi bir zararının söz konusu o"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 393",
+      "len": 299,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Malik borçlarını ödemede acze düşerse, aile yurdunu yönetmek üzere mahkemece bir yönetici atanır. Yönetici, yurdu amacına ve alacaklıların menfaatlerine uygun b"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 398",
+      "len": 299,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vesayet altındaki kişinin menfaatinin haklı gösterdiği, özellikle bir işletmenin, bir ortaklığın veya benzeri işlerin sürdürülmesi gerektiği takdirde vesayet is"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 481",
+      "len": 299,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Vasi, vasiliğe engel bir sebebin ortaya çıkması hâlinde görevinden çekilmek zorundadır. Vasi, bir kaçınma sebebi ortaya çıktığı takdirde sürenin bitiminden önce"
+    },
+    {
+      "kanun_adi": "TÜRK MEDENİ KANUNU",
+      "kanun_no": "4721",
+      "madde_no": "Madde 734",
+      "len": 299,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "Önalım hakkı, alıcıya karşı dava açılarak kullanılır. Önalım hakkı sahibi, adına payın tesciline karar verilmeden önce, satış bedeli ile alıcıya düşen tapu gide"
+    },
+    {
+      "kanun_adi": "İCRA VE İFLAS KANUNU",
+      "kanun_no": "2004",
+      "madde_no": "Madde 170",
+      "len": 299,
+      "reasons": [
+        "short"
+      ],
+      "text_head": "/b – (Ek: 18/2/1965-538/85 md.; Değişik: 17/7/2003-4949/48 md.) 61 inci maddenin ikinci, üçüncü, dördüncü ve beşinci fıkraları ve 62 ilâ 72 nci maddeler bu fası"
+    },
+    {
+      "kanun_adi": "TÜRK CEZA KANUNU",
+      "kanun_no": "5237",
+      "madde_no": "Madde 141",
+      "len": 253,
+      "reasons": [
+        "short",
+        "mulga_body"
+      ],
+      "text_head": "(1) Zilyedinin rızası olmadan başkasına ait taşınır bir malı, kendisine veya başkasına bir yarar sağlamak maksadıyla bulunduğu yerden alan kimseye bir yıldan üç"
+    },
+    {
+      "kanun_adi": "AİLENİN KORUNMASI VE KADINA KARŞI ŞİDDETİN ÖNLENMESİNE DAİR KANUN",
+      "kanun_no": "6284",
+      "madde_no": "MADDE 22",
+      "len": 265,
+      "reasons": [
+        "short",
+        "mulga_body"
+      ],
+      "text_head": "– (1) Bu Kanunun uygulanmasına ilişkin usul ve esaslar altı ay içinde, Adalet, İçişleri, Maliye, Milli Eğitim ve Sağlık Bakanlıklarının görüşleri alınmak sureti"
+    }
+  ]
+}

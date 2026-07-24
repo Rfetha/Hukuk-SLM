@@ -42,6 +42,16 @@ Kararı değiştirirsek eskiyi SİLMEYİZ → "Süpersed" işaretler, yenisini e
 - [0018](0018-8gb-soft-gate-maliyet-egrisi.md) — 8 GB = soft gate (sert kısıt değil); erişilebilirlik = maliyet-performans eğrisi
 - [0019](0019-faz-sirasi-istisnasi-harness-teze-dahil.md) — Faz sırası istisnası: harness dilimi (retriever+doğrulayıcı+kapı) teze dahil, graph-RAG hariç
 - [0020](0020-rakip-seti-tavan-referansi.md) — Rakip seti: dağıtım-sınıfı kapalı modeller (Flash/Sonnet/5-mini) + tavan referansı (ADR-0016 revize)
+- [0021](0021-base-teyidi-olculmus-gerekce.md) — Base teyidi: Gemma 4 12B, ölçülmüş gerekçeyle (~~yürürlükte~~ → **ADR-0026 ile süperseded**)
+- [0022](0022-graf-kapsami-yapisal-deterministik.md) — Graf kapsamı: yapısal/deterministik graf teze dahil, çok-ajanlı GraphRAG hariç
+- [0023](0023-dagitim-konfigurasyonu-q40-kv-q8.md) — Dağıtım konfigürasyonu: saf Q4_0 + flash-attention + KV q8_0 (**ADR-0026 ile kısmen süperseded** — QAT-Q4_0'a özgü, evrensel değil)
+- [0024](0024-hat-emekliligi-arsiv-yapisi.md) — Hat emekliliği: base değişirse arşiv, kayıt yerinde kalır (~~koşullu~~ → **ADR-0026 ile YÜRÜRLÜKTE**)
+- [0025](0025-eval-yolu-llamacpp-gguf.md) — Eval yolu: Unsloth NF4 → llama.cpp + Q4_0 GGUF (OpenAI-uyumlu HTTP)
+- **[0026](0026-base-parametrelestirme-hat-emekliligi-yururlukte.md) — ⭐ Base bir PARAMETRE (gömülü default yok); hat emekliliği yürürlükte; `data/` yeniden yapılandırıldı (2026-07-24)**
+
+> **⭐⭐ Base artık sabit DEĞİL (2026-07-24, ADR-0026).** ADR-0017'nin "base SABİT" ve ADR-0021'in
+> teyit kararı süperseded — ama **silinmez**: o günkü ölçülmüş gerekçe (QAT, 8 GB'da bağlam tavanı,
+> KV analizi) yeni base seçiminde **kriter listesi** olarak geçerliliğini korur.
 
 > **⭐ Tez çerçevesi 2026-07-17'de değişti** — otorite belge `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md`. ADR-0017 çekirdek karar; 0018-0020 onu tamamlar. Önceki ADR'ler (özellikle 0006 "benchmark yan iş", 0016 rakip listesi) bu ışıkta okunur.
 

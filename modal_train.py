@@ -1,280 +1,244 @@
 #!/usr/bin/env python
 """
-HakHukuk — Modal sarmalayıcı (Faz 1 SFT, bulut eğitim).
+HakHukuk — Modal sarmalayıcı (bulut eğitim). **Base-agnostik.**
 
-`scripts/train_sft.py`'a DOKUNMADAN onu Modal A100'de subprocess ile koşar.
-Yerel RTX 5070 sadece prototip/eval; gerçek 12B QLoRA eğitimi burada (bkz CLAUDE.md).
+`scripts/train_sft.py` / `scripts/train_orpo.py`'a DOKUNMADAN onları Modal GPU'sunda
+subprocess ile koşar. Yerel kart sadece prototip/eval; gerçek eğitim burada.
 
-Kullanım (yerelden):
-  # 1) Önce KREDİ-DOSTU deneme koşusu (~50 step, ~3-4 dk, ~$0.15):
-  modal run modal_train.py --smoke
+⚠️ **Model adı bu dosyada YOK.** `--model` zorunlu parametre; verilmezse hata verir.
+Sessizce yanlış base'e düşmek, saatler süren bir koşuyu çöpe çevirir.
 
-  # 2) Loss düşüyor / config sağlamsa TAM koşu:
-  modal run modal_train.py --epochs 1
-  modal run modal_train.py --epochs 2 --run-name v0
+⚠️ GPU da parametre: `HUKUK_GPU` env (varsayılan `A100`). Küçük base'de `L4`/`A10G` yeter,
+büyükte `A100-80GB`/`H100`. Modal'da GPU dekoratör-zamanlı → env ile seçilir:
+    HUKUK_GPU=L4 modal run modal_train.py::spawn_sft --model <repo> --data /data/<set>
 
-  # 3) Bitince adapter'ı yerele çek (eval LOKALDE koşulur):
-  modal volume get hukuk-outputs /v0 ./outputs/v0
+Kullanım:
+  # 0) Veriyi bir kez volume'a yükle
+  modal volume put hukuk-data data/train/<set> /<set>
 
-GPU = A100 40GB (TEKNIK karar: 12B QLoRA tatlı nokta; H100 boşa, L4 yavaş).
+  # 1) Önce SMOKE (~50 step, config+loss doğrulama)
+  modal run modal_train.py::spawn_sft --model <hf-repo> --data /<set> --smoke \
+      --user-part '<|turn>user\n' --assistant-part '<|turn>model\n'
+
+  # 2) Loss düşüyorsa tam koşu (aynı --user-part/--assistant-part ile)
+  modal run modal_train.py::spawn_sft --model <hf-repo> --data /<set> --run-name r1 --epochs 1 \
+      --user-part '...' --assistant-part '...'
+
+  # 3) Bitince adapter'ı yerele çek
+  modal volume get hukuk-outputs /r1 ./outputs/r1
 """
+import os
+
 import modal
 
 app = modal.App("hukuk-sft")
 
-# --- Ortam: requirements.lock.txt'teki pinli sürümler (CUDA 12.x, A100 uyumlu) ---
-# Modal'da Ampere/Ada GPU → yerel Blackwell sm_120 wheel derdi YOK.
+# GPU seçimi — base'e göre değişir, bu yüzden env'den. Dekoratör import-zamanı okur.
+GPU = os.environ.get("HUKUK_GPU", "A100")
+
+# --- Ortam: requirements.lock.txt'teki pinli sürümler ---
+# ⚠️ --no-deps ZORUNLU: lock zaten tam-çözülmüş düz liste (tüm transitive pinli). Resolver'ı
+# atlar → unsloth'un eski `transformers<=…` metadata kısıtı çakışmaz. (Yerel env de fiilen
+# bu durumda: lock'taki transformers runtime'da unsloth ile çalışıyor.)
 image = (
     modal.Image.debian_slim(python_version="3.11")
-    # --no-deps: lock zaten tam-çözülmüş düz liste (106 paket, tüm transitive pinli).
-    # Resolver'ı atlar → unsloth'un eski `transformers<=5.5.0` metadata kısıtı çakışmaz
-    # (yerel env de fiilen bu durumda: transformers 5.10.2 runtime'da unsloth ile çalışıyor).
     .pip_install_from_requirements("requirements.lock.txt", extra_options="--no-deps")
     .env({
-        "HF_HUB_ENABLE_HF_TRANSFER": "1",   # gated Gemma (~24GB) hızlı indirme
+        "HF_HUB_ENABLE_HF_TRANSFER": "1",   # büyük/gated ağırlıklar için hızlı indirme
         "HF_HOME": "/cache/hf",             # model cache → kalıcı volume (her koşuda yeniden indirme yok)
         "PYTHONUNBUFFERED": "1",            # loss canlı görünsün
-        "UNSLOTH_DISABLE_STATISTICS": "1",  # açılış telemetri çağrısı (HF stats) hang/timeout'unu önle
+        "UNSLOTH_DISABLE_STATISTICS": "1",  # açılış telemetri çağrısı hang/timeout'unu önle
     })
-    # Sadece eğitim script'i image'a; train_sft.py yerel import kullanmıyor.
     .add_local_dir("scripts", remote_path="/root/scripts")
 )
 
-# --- Volume'lar (main env, zaten kurulu) ---
-data_vol = modal.Volume.from_name("hukuk-data")              # /data/sft_v1 (yükle: modal volume put), /data/eval
-out_vol = modal.Volume.from_name("hukuk-outputs")            # checkpoint + adapter
-hf_cache = modal.Volume.from_name("hukuk-hf-cache", create_if_missing=True)  # model cache
+data_vol = modal.Volume.from_name("hukuk-data")
+out_vol = modal.Volume.from_name("hukuk-outputs")
+hf_cache = modal.Volume.from_name("hukuk-hf-cache", create_if_missing=True)
+VOLUMES = {"/data": data_vol, "/outputs": out_vol, "/cache/hf": hf_cache}
+SECRETS = [modal.Secret.from_name("huggingface-secret")]   # HF_TOKEN → gated indirme
 
 
-@app.function(
-    image=image,
-    gpu="A100",                              # 40GB
-    volumes={"/data": data_vol, "/outputs": out_vol, "/cache/hf": hf_cache},
-    secrets=[modal.Secret.from_name("huggingface-secret")],   # HF_TOKEN → gated indirme
-    timeout=6 * 60 * 60,                     # tam epoch ~2.5h; 6h tampon
-)
-def train(run_name: str = "v1", epochs: float = 1.0, max_steps: int = -1,
-          data_path: str = "/data/sft_v1", extra_args: list[str] | None = None):
+def _require(name: str, value):
+    """Sessiz yanlış-base'e düşmeyi engelle: kritik parametre boşsa erken patla."""
+    if not value:
+        raise SystemExit(
+            f"[modal] 🚫 --{name} ZORUNLU. Base/veri bu dosyada gömülü DEĞİL "
+            f"(bilerek: yanlış modele sessizce düşmek bir koşuyu çöpe çevirir)."
+        )
+    return value
+
+
+def _run_with_commits(cmd, vols, every_s: int):
+    """Alt süreci koştur + periyodik commit. Kesinti olursa son commit'li checkpoint'ten
+    resume edilir (train_sft/train_orpo `get_last_checkpoint` ile otomatik).
+    Tek-seferlik son commit YETMEZ — kesinti commit'ten önce olursa checkpoint uçar."""
     import subprocess
-    import sys
     import time
 
+    print("[modal] çalıştırılıyor:", " ".join(cmd), flush=True)
+    proc = subprocess.Popen(cmd)
+    while proc.poll() is None:
+        time.sleep(every_s)
+        for v in vols:
+            try:
+                v.commit()
+            except Exception as e:
+                print(f"[modal] ara commit atlandı (önemsiz): {e}", flush=True)
+        print("[modal] ara commit → checkpoint kalıcı (resume güvencesi)", flush=True)
+    if proc.returncode != 0:
+        raise SystemExit(f"[modal] HATA çıkış kodu={proc.returncode}")
+    for v in vols:
+        v.commit()
+
+
+# ── SFT (QLoRA) ───────────────────────────────────────────────────────────────
+@app.function(image=image, gpu=GPU, volumes=VOLUMES, secrets=SECRETS,
+              timeout=6 * 60 * 60)
+def train(model: str, data_path: str, run_name: str, user_part: str, assistant_part: str,
+          epochs: float = 1.0, max_steps: int = -1, extra_args: list[str] | None = None):
+    import sys
     cmd = [
         sys.executable, "/root/scripts/train_sft.py",
+        "--model", model,
         "--data", data_path,
         "--run-name", run_name,
         "--output-dir", f"/outputs/{run_name}",
         "--epochs", str(epochs),
+        # Maskeleme sınırları — train_sft.py bunları render'a karşı ASSERT eder;
+        # yanlışsa eğitim başlamadan patlar (sessizce bozuk eğitmekten iyidir).
+        "--user-part", user_part,
+        "--assistant-part", assistant_part,
     ]
     if max_steps and max_steps > 0:
         cmd += ["--max-steps", str(max_steps)]
     if extra_args:
         cmd += extra_args
-
-    print("[modal] çalıştırılıyor:", " ".join(cmd), flush=True)
-    # Popen + periyodik commit: eğitim sürerken ara checkpoint'leri (save_steps=200) buluta
-    # kalıcılaştır. Kesinti olursa son commit'li checkpoint'ten resume edilir (train_sft
-    # get_last_checkpoint ile otomatik). Tek-seferlik son commit yeterli DEĞİL — kesinti
-    # commit'ten önce olursa checkpoint uçar.
-    proc = subprocess.Popen(cmd)
-    while proc.poll() is None:
-        time.sleep(900)  # 15 dk
-        try:
-            out_vol.commit()
-            print("[modal] ara commit → checkpoint kalıcı (resume güvencesi)", flush=True)
-        except Exception as e:
-            print(f"[modal] ara commit atlandı (önemsiz): {e}", flush=True)
-    if proc.returncode != 0:
-        raise SystemExit(f"[modal] train_sft HATA çıkış kodu={proc.returncode}")
-
-    # Final: adapter + cache kalıcılaştır.
-    out_vol.commit()
-    hf_cache.commit()
-    print(f"[modal] bitti → adapter: hukuk-outputs:/{run_name}", flush=True)
+    _run_with_commits(cmd, [out_vol, hf_cache], every_s=900)
+    print(f"[modal] SFT bitti → adapter: hukuk-outputs:/{run_name}", flush=True)
 
 
-@app.local_entrypoint()
-def main(smoke: bool = False, epochs: float = 1.0, run_name: str = "v1",
-         data_path: str = "/data/sft_v1"):
-    if smoke:
-        # Kredi-dostu sağlık kontrolü: 50 step, config + loss doğrulama.
-        print("[modal] SMOKE: 50 step deneme koşusu (~$0.15)", flush=True)
-        train.remote(run_name=f"{run_name}-smoke", epochs=1.0, max_steps=50,
-                     data_path=data_path)
-    else:
-        train.remote(run_name=run_name, epochs=epochs, data_path=data_path)
-
-
-@app.local_entrypoint()
-def spawn_train(epochs: float = 1.0, run_name: str = "v1", data_path: str = "/data/sft_v1"):
-    """FIRE-AND-FORGET tam koşu. train.remote()/--detach client'a bağlı BEKLER → WSL/PC kapanınca
-    client SIGTERM alıp Modal'a cancel yollar (4 kez bu yüzden öldü). train.spawn() ise job'ı
-    kuyruğa atıp HEMEN döner — client/PC kapanması işi ETKİLEMEZ (gerçek bağımsız çalışma).
-
-      modal run modal_train.py::spawn_train --epochs 1
-    """
-    call = train.spawn(run_name=run_name, epochs=epochs, data_path=data_path)
-    print(f"[modal] SPAWNED ✓ FunctionCall={call.object_id} | run={run_name} epochs={epochs}",
-          flush=True)
-    print("[modal] Job Modal'da BAĞIMSIZ koşuyor; client/PC kapanması etkilemez.", flush=True)
-    print(f"[modal] İzle: modal app logs <app-id> | Bitince: hukuk-outputs:/{run_name}", flush=True)
-
-
-# ── v3 ADIM 2 — REJECTED HARVEST (inference, EĞİTİM DEĞİL, ucuz) ──────────────
-# v2b modelini zor near-miss trap'lerde ORACLE framing'de (eval M2 birebir) koşturup GERÇEK
-# fabrikasyonları toplar (ORPO rejected). Lokal RTX 5070 ~20s/örnek çok yavaş → A100'de hızlı.
-# ÖN KOŞUL (yerelden bir kez):
-#   modal volume put hukuk-data data/processed/sft_v3/packed_v3.jsonl /sft_v3/packed_v3.jsonl
-#   (v2b adapter zaten hukuk-outputs:/v2b — eğitim çıktısı)
-@app.function(
-    image=image,
-    gpu="A100",
-    volumes={"/data": data_vol, "/outputs": out_vol, "/cache/hf": hf_cache},
-    secrets=[modal.Secret.from_name("huggingface-secret")],
-    timeout=3 * 60 * 60,
-)
-def harvest_rejected(target: int = 1500, batch: int = 16, max_new_tokens: int = 96,
-                     packed: str = "/data/sft_v3/packed_v3.jsonl",
-                     out: str = "/data/sft_v3/rejected.jsonl",
-                     adapter: str = "/outputs/v2b"):
-    import subprocess
+# ── ORPO (tercih öğrenmesi; adapter-continuation veya taze) ───────────────────
+@app.function(image=image, gpu=GPU, volumes=VOLUMES, secrets=SECRETS,
+              timeout=6 * 60 * 60)
+def train_orpo(model: str, data_path: str, run_name: str, adapter: str | None = None,
+               epochs: float = 1.0, max_steps: int = -1, beta: float = 0.1,
+               lr: float = 1e-5, grad_accum: int = 64, save_steps: int = 100):
     import sys
-    import time
-
-    cmd = [
-        sys.executable, "/root/scripts/gen_v3_rejected.py",
-        "--packed", packed, "--out", out, "--adapter", adapter,
-        "--oracle", "--batch", str(batch), "--target", str(target),
-        "--max-new-tokens", str(max_new_tokens),
-    ]
-    print("[modal] harvest:", " ".join(cmd), flush=True)
-    proc = subprocess.Popen(cmd)
-    while proc.poll() is None:
-        time.sleep(300)                      # 5 dk: ara commit → resume/pull güvencesi
-        try:
-            data_vol.commit()
-            print("[modal] ara commit → rejected.jsonl kalıcı", flush=True)
-        except Exception as e:
-            print(f"[modal] ara commit atlandı: {e}", flush=True)
-    if proc.returncode != 0:
-        raise SystemExit(f"[modal] harvest HATA çıkış={proc.returncode}")
-    data_vol.commit()
-    hf_cache.commit()
-    print(f"[modal] harvest bitti → hukuk-data:{out}", flush=True)
-
-
-# ── v3 ADIM 8 — ORPO EĞİTİM (PARA-KAPISI; smoke ADIM 7 önce) ──────────────────
-# ÖN KOŞUL: build_orpo_v3.py çıktısı (train/validation.jsonl) Modal'da:
-#   modal volume put hukuk-data data/processed/sft_v3/train.jsonl /sft_v3/train.jsonl
-#   modal volume put hukuk-data data/processed/sft_v3/validation.jsonl /sft_v3/validation.jsonl
-@app.function(
-    image=image, gpu="A100",
-    volumes={"/data": data_vol, "/outputs": out_vol, "/cache/hf": hf_cache},
-    secrets=[modal.Secret.from_name("huggingface-secret")],
-    timeout=6 * 60 * 60,
-)
-def train_orpo(run_name: str = "v3", epochs: float = 1.0, max_steps: int = -1,
-               beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64,
-               save_steps: int = 100):
-    import subprocess
-    import sys
-    import time
     cmd = [
         sys.executable, "/root/scripts/train_orpo.py",
-        "--data", "/data/sft_v3", "--adapter", "/outputs/v2b",
-        "--run-name", run_name, "--output-dir", f"/outputs/{run_name}",
+        "--model", model,
+        "--data", data_path,
+        "--run-name", run_name,
+        "--output-dir", f"/outputs/{run_name}",
         "--epochs", str(epochs), "--beta", str(beta), "--lr", str(lr),
         "--grad-accum", str(grad_accum), "--save-steps", str(save_steps),
     ]
+    # adapter verilirse continuation (önceki turun kazanımı taşınır), yoksa base'e taze adapter.
+    cmd += ["--adapter", adapter] if adapter else ["--fresh-adapter"]
     if max_steps and max_steps > 0:
         cmd += ["--max-steps", str(max_steps)]
-    print("[modal] ORPO:", " ".join(cmd), flush=True)
-    proc = subprocess.Popen(cmd)
-    while proc.poll() is None:
-        time.sleep(900)
-        try:
-            out_vol.commit(); print("[modal] ara commit → v3 checkpoint kalıcı", flush=True)
-        except Exception as e:
-            print(f"[modal] ara commit atlandı: {e}", flush=True)
-    if proc.returncode != 0:
-        raise SystemExit(f"[modal] ORPO HATA çıkış={proc.returncode}")
-    out_vol.commit(); hf_cache.commit()
-    print(f"[modal] ORPO bitti → hukuk-outputs:/{run_name}", flush=True)
+    _run_with_commits(cmd, [out_vol, hf_cache], every_s=900)
+    print(f"[modal] ORPO bitti → adapter: hukuk-outputs:/{run_name}", flush=True)
+
+
+# ── REJECTED HARVEST (inference, eğitim değil — ucuz) ─────────────────────────
+# Bir modeli zor near-miss tuzaklarında koşturup GERÇEK fabrikasyonları toplar (ORPO rejected).
+@app.function(image=image, gpu=GPU, volumes=VOLUMES, secrets=SECRETS,
+              timeout=3 * 60 * 60)
+def harvest_rejected(model: str, packed: str, out: str, adapter: str | None = None,
+                     target: int = 1500, batch: int = 16, max_new_tokens: int = 96):
+    import sys
+    cmd = [
+        sys.executable, "/root/scripts/gen_v3_rejected.py",
+        "--model", model, "--packed", packed, "--out", out,
+        "--oracle", "--batch", str(batch), "--target", str(target),
+        "--max-new-tokens", str(max_new_tokens),
+    ]
+    if adapter:
+        cmd += ["--adapter", adapter]
+    _run_with_commits(cmd, [data_vol, hf_cache], every_s=300)
+    print(f"[modal] harvest bitti → hukuk-data:{out}", flush=True)
+
+
+# ── Yerel giriş noktaları ─────────────────────────────────────────────────────
+# ⚠️ HEPSİ spawn() kullanır, remote() DEĞİL (ADR-0008): remote() client'a bağlı BEKLER →
+# PC/WSL kapanınca client SIGTERM alıp Modal'a cancel yollar (bu 4 koşuyu öldürdü).
+# spawn() job'ı kuyruğa atıp hemen döner — client kapanması işi ETKİLEMEZ.
+
+@app.local_entrypoint()
+def spawn_sft(model: str = "", data: str = "", run_name: str = "r1",
+              user_part: str = "", assistant_part: str = "",
+              epochs: float = 1.0, smoke: bool = False,
+              lr: float = 0.0, lora_r: int = 0, lora_alpha: int = 0,
+              warmup_ratio: float = 0.0, no_system: bool = False):
+    """QLoRA SFT — fire-and-forget. Önce --smoke (para-kapısı), sonra tam koşu.
+
+    --user-part / --assistant-part: base'in chat şablonundaki turn işaretleri.
+    ⚠️ Bunlar base'e göre DEĞİŞİR ve yanlışsa responses-only maskeleme sessizce çalışmaz
+    (loss tüm diziden akar = eğitim çöpe gider). Doğrusunu `diag_chat_template.sh` ile
+    /apply-template render'ından oku. train_sft.py ayrıca render'a karşı assert eder.
+    """
+    _require("model", model); _require("data", data)
+    _require("user-part", user_part); _require("assistant-part", assistant_part)
+    extra = []
+    if no_system:            # veri system prompt'unu zaten taşıyorsa çift-system'i önle
+        extra += ["--no-system"]
+    if lr:                   # ⚠️ lr ≥ 3e-4 train_sft.py'de kilitli (abstention çöküşü rejimi)
+        extra += ["--lr", str(lr)]
+    if lora_r:
+        extra += ["--lora-r", str(lora_r)]
+    if lora_alpha:
+        extra += ["--lora-alpha", str(lora_alpha)]
+    if warmup_ratio:
+        extra += ["--warmup-ratio", str(warmup_ratio)]
+
+    parts = dict(user_part=user_part, assistant_part=assistant_part)
+    if smoke:
+        print(f"[modal] SMOKE: 50 step (config+loss doğrulama) · gpu={GPU}", flush=True)
+        call = train.spawn(model=model, data_path=data, run_name=f"{run_name}-smoke",
+                           epochs=1.0, max_steps=50, extra_args=extra, **parts)
+    else:
+        call = train.spawn(model=model, data_path=data, run_name=run_name,
+                           epochs=epochs, extra_args=extra, **parts)
+    print(f"[modal] SPAWNED ✓ {call.object_id} | model={model} data={data} "
+          f"run={run_name} epochs={epochs} gpu={GPU} smoke={smoke}", flush=True)
+    print(f"[modal] Bağımsız koşuyor. İzle: modal app logs hukuk-sft | "
+          f"Bitince: modal volume get hukuk-outputs /{run_name} ./outputs/{run_name}", flush=True)
 
 
 @app.local_entrypoint()
-def spawn_v3(run_name: str = "v3", epochs: float = 1.0, smoke: bool = False,
-             beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64):
-    """v3 ORPO — FIRE-AND-FORGET. ÖNCE --smoke (ADIM 7 para-kapısı, ~50 step ~$0.15):
-      modal run modal_train.py::spawn_v3 --smoke
-      modal run modal_train.py::spawn_v3 --run-name v3 --epochs 1
-    Bitince: modal volume get hukuk-outputs /v3 ./outputs/v3
+def spawn_orpo(model: str = "", data: str = "", run_name: str = "orpo1",
+               adapter: str = "", epochs: float = 1.0, smoke: bool = False,
+               beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64,
+               save_steps: int = 100):
+    """ORPO tercih öğrenmesi — fire-and-forget.
+
+    --adapter verilirse o turun kazanımı taşınır (continuation); boşsa base'e taze adapter.
+    İzlenecek metrik: nll_loss trendi = forget-vekili (tırmanırsa grounding riski).
     """
+    _require("model", model); _require("data", data)
     if smoke:
-        print("[modal] v3 ORPO SMOKE: 50 step (format+loss+OOM doğrulama, ~$0.15)", flush=True)
-        call = train_orpo.spawn(run_name=f"{run_name}-smoke", epochs=1.0, max_steps=50,
+        print(f"[modal] ORPO SMOKE: 50 step (format+loss+OOM doğrulama) · gpu={GPU}", flush=True)
+        call = train_orpo.spawn(model=model, data_path=data, run_name=f"{run_name}-smoke",
+                                adapter=adapter or None, epochs=1.0, max_steps=50,
                                 beta=beta, lr=lr, grad_accum=grad_accum)
     else:
-        call = train_orpo.spawn(run_name=run_name, epochs=epochs, beta=beta, lr=lr,
-                                grad_accum=grad_accum)
-    print(f"[modal] v3 SPAWNED ✓ FunctionCall={call.object_id} | run={run_name} "
-          f"beta={beta} lr={lr} grad_accum={grad_accum} smoke={smoke}", flush=True)
-    print("[modal] İzle: modal app logs hukuk-sft | forget-vekili: nll_loss trendi (tırmanırsa M1-risk)",
-          flush=True)
+        call = train_orpo.spawn(model=model, data_path=data, run_name=run_name,
+                                adapter=adapter or None, epochs=epochs, beta=beta,
+                                lr=lr, grad_accum=grad_accum, save_steps=save_steps)
+    print(f"[modal] ORPO SPAWNED ✓ {call.object_id} | model={model} "
+          f"adapter={adapter or '(taze)'} beta={beta} lr={lr} ga={grad_accum} gpu={GPU}", flush=True)
 
 
 @app.local_entrypoint()
-def spawn_harvest(target: int = 1500, batch: int = 16, max_new_tokens: int = 96):
-    """FIRE-AND-FORGET rejected harvest (inference). Bitince yerele çek:
-      modal volume get hukuk-data /sft_v3/rejected.jsonl ./data/processed/sft_v3/rejected.jsonl
+def spawn_harvest(model: str = "", packed: str = "", out: str = "", adapter: str = "",
+                  target: int = 1500, batch: int = 16, max_new_tokens: int = 96):
+    """Fabrikasyon (rejected) toplama — inference, ucuz. Bitince yerele çek:
+      modal volume get hukuk-data <out> ./data/...
     """
-    call = harvest_rejected.spawn(target=target, batch=batch, max_new_tokens=max_new_tokens)
-    print(f"[modal] HARVEST SPAWNED ✓ FunctionCall={call.object_id} | target={target} batch={batch}",
-          flush=True)
-    print("[modal] Bağımsız koşuyor; client/PC kapanması etkilemez. İzle: modal app logs hukuk-sft",
-          flush=True)
-
-
-# v2b REÇETE varsayılanları (docs/V2_PLAN.md §5.1). v1'den farklar:
-#  · --no-system  → v2b verisi SYSTEM_PROMPT_RAG_MULTI'yi messages[0]'da TAŞIR (çift system'i önle)
-#  · lr=1e-4      → LoRA ≈ full-FT'nin 10x'i; v1'in 2e-4'ünden NAZİK (3e-4 YASAK = train_sft kilidi)
-#  · r=16/α=32    → düşük rank, az-unutan davranışsal SFT (sweep: r=8/16)
-#  · 1 epoch · warmup %5 · replay veride hazır (assemble --replay)
-@app.local_entrypoint()
-def spawn_v2b(run_name: str = "v2b", epochs: float = 1.0, lr: float = 1e-4,
-              lora_r: int = 16, lora_alpha: int = 32, warmup_ratio: float = 0.05,
-              data_path: str = "/data/sft_v2b", smoke: bool = False):
-    """v2b davranışsal RAFT-SFT — FIRE-AND-FORGET, reçete §5.1 varsayılanları.
-
-    ÖN KOŞUL: veri Modal volume'da olmalı:
-      modal volume put hukuk-data data/processed/sft_v2b /sft_v2b
-
-      # 1) Önce SMOKE (~50 step, config+loss doğrula, ~$0.15):
-      modal run modal_train.py::spawn_v2b --smoke
-      # 2) Loss düşüyorsa TAM koşu:
-      modal run modal_train.py::spawn_v2b --run-name v2b --epochs 1
-      # 3) Ablasyon (C2): farklı rank/lr veya ayrı veri dizini + ayrı --run-name
-      modal run modal_train.py::spawn_v2b --run-name v2b-r8 --lora-r 8 --lora-alpha 16
-
-    Bitince adapter: hukuk-outputs:/<run-name> → yerele çek:
-      modal volume get hukuk-outputs /<run-name> ./outputs/<run-name>
-    """
-    extra = [
-        "--no-system",                       # v2b veri system'i zaten taşır
-        "--lr", str(lr),
-        "--lora-r", str(lora_r),
-        "--lora-alpha", str(lora_alpha),
-        "--warmup-ratio", str(warmup_ratio),
-    ]
-    if smoke:
-        print("[modal] v2b SMOKE: 50 step (config+loss doğrulama, ~$0.15)", flush=True)
-        call = train.spawn(run_name=f"{run_name}-smoke", epochs=1.0, max_steps=50,
-                           data_path=data_path, extra_args=extra)
-    else:
-        call = train.spawn(run_name=run_name, epochs=epochs, data_path=data_path,
-                           extra_args=extra)
-    print(f"[modal] v2b SPAWNED ✓ FunctionCall={call.object_id} | run={run_name} "
-          f"lr={lr} r={lora_r} α={lora_alpha} warmup={warmup_ratio} epochs={epochs}", flush=True)
-    print(f"[modal] reçete §5.1: 3e-4 YASAK (kilit aktif) · all-linear · replay veride · {data_path}",
-          flush=True)
-    print(f"[modal] İzle: modal app logs <app-id> | Bitince: hukuk-outputs:/{run_name}", flush=True)
+    _require("model", model); _require("packed", packed); _require("out", out)
+    call = harvest_rejected.spawn(model=model, packed=packed, out=out,
+                                  adapter=adapter or None, target=target,
+                                  batch=batch, max_new_tokens=max_new_tokens)
+    print(f"[modal] HARVEST SPAWNED ✓ {call.object_id} | target={target} gpu={GPU}", flush=True)

@@ -5,13 +5,13 @@ Neden ayrı script: `score_corpus.py` referans=cevap koyar → groundedness'e ve
 hakem cevabı kendi kaynağı sanar (faith sahte-yüksek). gen_sft_v1 çıktısında madde METNİ
 yok (sadece kanun_adi/madde_no/kanun_no). Bu köprü o boşluğu kapatır:
 
-  train.jsonl örneği → her kayıt için data/raw/mevzuat_maddeler.jsonl'den (kanun_no|madde_no)
+  train.jsonl örneği → her kayıt için data/corpus/mevzuat_maddeler.jsonl'den (kanun_no|madde_no)
   ile GERÇEK madde metnini join et → referans alanına koy → groundedness.py --mode data.
 
 Böylece "v0 hatasını tekrarlama" kapısı dürüst çalışır: cevap GERÇEK maddeye karşı ölçülür.
 
 Kullanım:
-  python scripts/score_grounded_corpus.py --data data/processed/sft_v1/train.jsonl \
+  python scripts/score_grounded_corpus.py --data data/train/grounded_qa/train.jsonl \
       --label sft_v1 --n 40                 # detail yaz + groundedness koş (gpt-4o-mini)
   python scripts/score_grounded_corpus.py --data ... --label sft_v1 --n 40 \
       --judge-model gpt-4o --runs 3         # paper-grade çapraz-aile hakem
@@ -24,7 +24,7 @@ import random
 import subprocess
 import sys
 
-MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
+MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
 
 
 def parse_args():

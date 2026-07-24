@@ -15,7 +15,7 @@
 
 Kullanım:
   python scripts/build_eval_sets.py --core-n 40 --trap-n 35
-Çıktı: data/eval/core_hard.jsonl , data/eval/trap.jsonl
+Çıktı: data/eval/canon/core_hard.jsonl , data/eval/canon/trap.jsonl
 """
 import argparse
 import collections
@@ -24,8 +24,8 @@ import os
 import random
 import re
 
-MADDE_PATH = "data/raw/mevzuat_maddeler.jsonl"
-TEST_PATH = "data/processed/sft_v1/test.jsonl"
+MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
+TEST_PATH = "data/train/grounded_qa/test.jsonl"
 
 # --- KARMAŞIKLIK proxy'si (uzunluk değil) ---
 FIKRA_RE = re.compile(r"\((\d{1,2})\)")            # (1) (2) ... fıkra işaretleri

@@ -1,5 +1,5 @@
 ## v2c icra — ADIM 1: C1-v2b register ölçümü (2026-07-02)
-Otorite: [`v2c/roadmap.md`](../v2c/roadmap.md) §5 (tek numaralı akış) · §7·AÇ-KOŞ-1 · G4.
+Otorite: [`v2c/roadmap.md`](../../../old-version-gemma4-12b/record/v2c/roadmap.md) §5 (tek numaralı akış) · §7·AÇ-KOŞ-1 · G4.
 
 **Ne:** `score_register.py` (v1 leksik-proxy, hakemsiz, deterministik) v2b'nin M1 detail'i üstünde koşuldu. Roadmap'in "register ekseni script VAR, koşulmadı" boşluğunun (G4) v2b yarısını kapatır — base/v1 yarısı ADIM 2'de (C3 rescore detail'i üretince, §5 ⛓️).
 

@@ -41,10 +41,8 @@ SYSTEM_PROMPT_RAG = (
     "Cevabını kısa ve anlaşılır tut; dayandığın kanun ve madde numarasını belirt."
 )
 
-PACKED = "data/processed/sft_v3/packed_v3.jsonl"
-OUT = "data/processed/sft_v3/rejected.jsonl"
-ADAPTER = "outputs/v2b"
-MODEL = "google/gemma-4-12B-it-qat-q4_0-unquantized"
+PACKED = "data/_ham_ve_ara/orpo_packed.jsonl"
+OUT = "data/_ham_ve_ara/orpo_rejected.jsonl"
 
 
 def build_model(model_name, adapter, max_seq_len):
@@ -95,8 +93,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--packed", default=PACKED)
     p.add_argument("--out", default=OUT)
-    p.add_argument("--adapter", default=ADAPTER)
-    p.add_argument("--model", default=MODEL)
+    p.add_argument("--adapter", default=None, help="LoRA adapter dizini; yoksa ham base")
+    # ⚠️ Default YOK (bilerek) — fabrikasyonlar hangi modelden toplandığı ÖNEMLİ.
+    p.add_argument("--model", required=True, help="HF repo id veya yerel yol")
     p.add_argument("--target", type=int, default=2500, help="hedef fabrikasyon (rejected) sayısı; 0=tümü")
     p.add_argument("--max-candidates", type=int, default=0, help="işlenecek aday tavanı (0=sınırsız)")
     p.add_argument("--max-new-tokens", type=int, default=96,

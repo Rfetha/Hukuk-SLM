@@ -1,0 +1,17 @@
+{
+  "label": "bench_m1_v2b",
+  "n": 40,
+  "mode": "data",
+  "judge_model": "gpt-4o-mini",
+  "runs": 1,
+  "total_claims": 114,
+  "faithfulness_micro": 0.7368,
+  "hallucination_micro": 0.2632,
+  "unsupported_micro": 0.2632,
+  "cit_precision_micro": 0.925,
+  "wrong_ref_rate_micro": 0.075,
+  "cit_recall_macro": 1,
+  "faithfulness_macro": 0.7917,
+  "judge_cost_usd": 0.0184,
+  "note_validity": "LLM-judge (insan-κ kalibresiz, Aşama C) → mutlak değil, model-vs-model sıralama."
+}

@@ -17,7 +17,7 @@ Deterministik seed=3407. Kanon DEĞİL — DRAFT.
 
 Kullanım:
   python scripts/build_eval_ood_qa.py --per-law 7 --keep-per-law 5 --min-dogruluk 8
-Çıktı: data/eval/ood_qa.jsonl (üretilen sorular) + data/eval/trap_ood.jsonl (eval-mirror tuzak)
+Çıktı: data/eval/genelleme/ood_qa.jsonl (üretilen sorular) + data/eval/genelleme/trap_ood.jsonl (eval-mirror tuzak)
 """
 import argparse
 import collections

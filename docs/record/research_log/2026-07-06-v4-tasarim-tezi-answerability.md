@@ -2,7 +2,7 @@
 
 > **Bağlam:** v3 kapandı (KISMİ, ADR-0015). "SCORECARD'a bakıp her kulvarda #1 olmak için ne artmalı /
 > bu teorik mümkün mü?" tartışmasının kavramsal ürünü. Bu entry = v4 reçetesinin üstüne kurulacağı **tez**
-> (paper Discussion malzemesi). Deney değil, çerçeve. v4 detayı → [[../v4/README]] (yapılacak).
+> (paper Discussion malzemesi). Deney değil, çerçeve. v4 detayı → [v4/README](../../../old-version-gemma4-12b/record/v4/README.md) (yapılacak).
 
 ## Tez — 9 kulvar = 1 zor beceri + 1 kolay dik beceri
 

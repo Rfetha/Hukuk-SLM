@@ -20,7 +20,7 @@ Deterministik: seed=3407. Kanon DEĞİL — DRAFT.
 
 Kullanım:
   python scripts/build_eval_ood.py --xkanun-n 35 --ood-n 35
-Çıktı: data/eval/trap_xkanun.jsonl (+ mümkünse data/eval/trap_ood.jsonl)
+Çıktı: data/eval/genelleme/trap_xkanun.jsonl (+ mümkünse data/eval/genelleme/trap_ood.jsonl)
 """
 import argparse
 import collections
@@ -34,11 +34,11 @@ from build_eval_sets import norm, q_of, toks, load_madde, MADDE_PATH, TEST_PATH
 
 # v3 eğitim-türevi + kanon eval dosyaları (sızıntı-dışlama + "görülen kanun" kaynağı)
 V3_STRUCT = [
-    "data/processed/sft_v3/packed_v3.jsonl",
-    "data/processed/sft_v3/rejected.jsonl",
-    "data/processed/sft_v3/dev.jsonl",
+    "data/_ham_ve_ara/orpo_packed.jsonl",
+    "data/_ham_ve_ara/orpo_rejected.jsonl",
+    "data/train/orpo_abstain/dev.jsonl",
 ]
-CANON_EVAL = ["data/eval/trap.jsonl", "data/eval/core_hard.jsonl"]
+CANON_EVAL = ["data/eval/canon/trap.jsonl", "data/eval/canon/core_hard.jsonl"]
 
 
 def load(f):
@@ -63,11 +63,11 @@ def build_exclusion():
             kn = norm(r.get("gold_kanun_no"))
             excl.add((kn, mnum(r.get("gold_madde_no"))))
             excl.add((kn, mnum(r.get("trap_madde_no"))))  # v3 tuzağı aynı kanundan
-    for r in load("data/eval/trap.jsonl"):
+    for r in load("data/eval/canon/trap.jsonl"):
         kn = norm(r.get("kanun_no"))
         excl.add((kn, mnum(r.get("madde_no"))))
         excl.add((kn, mnum(r.get("gold_madde_no"))))
-    for r in load("data/eval/core_hard.jsonl"):
+    for r in load("data/eval/canon/core_hard.jsonl"):
         excl.add((norm(r.get("kanun_no")), mnum(r.get("madde_no"))))
     excl.discard(("", ""))
     return excl
@@ -87,7 +87,7 @@ def seen_chunk_keys():
     normalize-prefix olarak toplar. Böylece çapraz-kanun tuzağı eğitimde distractor olarak
     geçmiş bir maddeye denk gelirse elenir (yapısal (kanun,madde) dışlaması distractor'ı kaçırır)."""
     keys = set()
-    for f in ("data/processed/sft_v3/packed_v3.jsonl", "data/processed/sft_v3/rejected.jsonl"):
+    for f in ("data/_ham_ve_ara/orpo_packed.jsonl", "data/_ham_ve_ara/orpo_rejected.jsonl"):
         for r in load(f):
             sb = r.get("sources_block", "") or ""
             for chunk in re.split(r"\[KAYNAK[^\]]*\]", sb):
@@ -98,7 +98,7 @@ def seen_chunk_keys():
             for fld in ("gold_text", "trap_text"):
                 if r.get(fld):
                     keys.add(_tkey(r[fld]))
-    for r in load("data/processed/sft_v3/dev.jsonl"):
+    for r in load("data/train/orpo_abstain/dev.jsonl"):
         if r.get("trap_text"):
             keys.add(_tkey(r["trap_text"]))
     keys.discard("")

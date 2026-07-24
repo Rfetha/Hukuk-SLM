@@ -1,6 +1,6 @@
 # 2026-07-06 · v4 deep-research bulguları — DTA/Sufficient-Context/RAFT sentezi + taslak revizyonu
 
-> **Bağlam:** v4 tasarım taslağı ([[../v4/recipe]]) için `/deep-research` koştu (16 kaynak, 70 iddia,
+> **Bağlam:** v4 tasarım taslağı ([v4/recipe](../../../old-version-gemma4-12b/record/v4/recipe.md)) için `/deep-research` koştu (16 kaynak, 70 iddia,
 > 23 confirmed / 2 killed, 3-oy adversarial). Sentez-agent'ı stub döndü → bulgular journal'dan çıkarıldı.
 > Bu entry = 6 soruya göre organize edilmiş **künyeli bulgular + v4 recipe REVİZYON listesi.** Kaynaklar §sonda.
 > **En büyük keşif: DTA (Divide-Then-Align, ACL 2025) bizim problemimizin literatürdeki tam karşılığı.**
@@ -96,4 +96,4 @@ Abstention Survey (arXiv:2407.18418) · RALM-know-when (arXiv:2509.01476) · ORP
 ## Paper eşleme
 - **Related Work + Method:** DTA/Sufficient-Context/RAFT çerçevesi; bizim katkı = ORPO-ref-free-uyarlama + Türkçe-hukuk + register.
 - **K3 genişletme:** M2b = Sufficient-Context'in "RAG suppresses abstention"ının bizde tekrarı (bağımsız doğrulama).
-- İlgili: entry #33 (tez), #32 (v3 sonuç/M2b teşhis), [[../v4/recipe]] (revize edilecek).
+- İlgili: entry #33 (tez), #32 (v3 sonuç/M2b teşhis), [v4/recipe](../../../old-version-gemma4-12b/record/v4/recipe.md) (revize edilecek).
