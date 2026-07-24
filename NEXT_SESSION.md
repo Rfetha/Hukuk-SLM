@@ -62,7 +62,7 @@ Commit'ler: `14d22e3` (spec) + `863070e` (revizyon). **Durum: kullanıcı ONAY A
 ## 🚦 STANDING KURALLAR (değişmedi)
 - **Para-kapıları (onaysız KOŞMA):** Modal eğitim · GPT-judge scoring · **YENİ: OpenRouter rakip inference.**
 - **OPENAI_API_KEY / OPENROUTER_API_KEY** `.env`'de — **asla echo etme.** venv: `source ~/code/global_venv/bin/activate`.
-- **v2b/v2c/v3 ağırlıklarına dokunma.** `data/` + `outputs/eval` gitignored → script'ten üret.
+- **Final adapter'lara + `v3/checkpoint-28`'e dokunma.** *(Kural 2026-07-23'te daraltıldı: eskiden "v2b/v2c/v3 ağırlıklarına dokunma" idi; ara checkpoint'ler kullanıcı onayıyla silindi — v2c RED, v3/ck56 = final'in kopyası.)* Korunan: tüm `*/adapter_model.safetensors`, **`v3/checkpoint-28`** (SCORECARD'da `v3ck28` sütunu ölçülü), **`v2b/`** (v4'ün zemini). `data/` + `outputs/eval` gitignored → script'ten üret; `outputs/eval` **silinmez** (59 summary = SCORECARD kaynağı, 101 jsonl = spot-check kanıtı).
 - Eğitim = Modal A100 · eval generation = lokal RTX 5070.
 
 ## 📁 ELDE VAR (çöpe gitmeyen altyapı)
