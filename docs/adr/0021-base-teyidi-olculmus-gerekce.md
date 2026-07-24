@@ -46,6 +46,36 @@ Yeni, ölçülmüş gerekçe:
    halka quantization kaybı; Gemma onu resmî QAT ile garantiliyor. Qwen'de QAT checkpoint **yok**
    (411 topluluk quantizasyonu var, QAT değil) → kayıp doğrudan tezin kalite ekseninden düşer.
 
+> ⚠️ **KISMİ DÜZELTME (2026-07-24): "8 GB'a sığıyor" iddiası masaüstü yükünü saymıyordu.**
+> Kullanıcı itirazı: *"128K 7.55 GB istiyorsa o PC'de illaki başka VRAM yiyen app olacak, imkânsız."*
+> **Haklı.** 8 GB kartın 8 GB'ı kullanıcıya ait değil — Windows masaüstü compositor + tarayıcı
+> tipik 0.5–1.5 GB yer:
+>
+> | gerçek durum | uygun VRAM | 12B @128K (7.55 GB) | E4B @128K (5.82 GB) |
+> | :--- | ---: | :---: | :---: |
+> | sadece masaüstü | 7.5 GB | ❌ | ✅ |
+> | masaüstü + tarayıcı | 7.0 GB | ❌ | ✅ |
+> | çok sekme | 6.5 GB | ❌ | ✅ |
+>
+> 12B'nin sabiti 6.97 GB → tipik masaüstünde KV'ye **0.03 GB** kalır (~4K bağlam, kullanılamaz).
+>
+> **Ayakta kalan:** *göreli* iddia — aynı bütçede 12B, Qwen3.5 9B'den fazla bağlam verir (her ikisi
+> de aynı masaüstü yükünü çeker). Aile değiştirme reddi geçerli.
+> **Düşen:** *mutlak* iddia — "12B gerçek bir 8 GB tüketici PC'sinde uzun bağlamla çalışır."
+>
+> → **Aile içi küçültme kolu açıldı: Gemma 4 E4B** (`google/gemma-4-E4B-it-qat-q4_0-unquantized`
+> — QAT'li, aynı aile/tokenizer/hat → confound yok). Q4_0 ≈ 4.16 GB, @128K toplam **5.82 GB**;
+> `num_kv_shared_layers=18` (42 katmanın 18'i KV paylaşıyor) KV dezavantajını (`attention_k_eq_v:
+> false`) fazlasıyla kapatıyor. Native bağlam 131K (12B'de 262K). "E4B" = *effective* 4B —
+> gerçek ağırlık 14.79 GiB bf16 (~7.4B param, Gemma-3n tarzı per-layer embedding).
+>
+> **Kullanıcı kararı (2026-07-24): E4B'ye geçilecek — ama ÖNCE ÖLÇÜLECEK.** Kalite hiç ölçülmedi;
+> ADR-0021 ölçümle kuruldu, ölçümsüz değiştirilmez. Kapı = task #22 (E4B base, CANON, ~$0.10).
+> ⚠️ **Maliyet dürüstçe:** geçiş FT kolunu sıfırlar — LoRA adaptörleri modele özgü, `v2b/v3`
+> 12B adaptörleri E4B'de çalışmaz, v4 "v2b-continuation" olarak kilitli. ~5 koşu + ~35 judge
+> hücresi yeniden. Tezi geçersiz kılmaz (spec zaten "v0→v3 = proof-of-concept" diyor) ama
+> ucuz değil.
+
 2. **8 GB'da 1.9× bağlam tavanı — asıl ürün kriteri.**
    Aynı 8 GB kartta kullanıcının yapıştırabileceği en uzun metin: **Gemma 176.128 tok vs
    Qwen3.5 9B 90.982 tok** (~1.6 tok/kelime TR → ~110 bin vs ~57 bin kelime). Avukat tam dava
