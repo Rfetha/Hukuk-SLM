@@ -88,6 +88,13 @@ def parse_args():
                    help="M3 (E-set): hiç kaynak verme (boş bağlam) → doğru davranış=abstention")
     p.add_argument("--completion-fewshot", action="store_true",
                    help="chat-template YERİNE few-shot completion (foundation rakip: Mecellem CPT)")
+    p.add_argument("--server-url", default=os.environ.get("LLAMA_SERVER_URL"),
+                   help="OpenAI-uyumlu endpoint (llama-server veya OpenRouter). Verilirse "
+                        "model YEREL yüklenmez, HTTP üzerinden üretilir (ADR-0025). "
+                        "Ör: http://127.0.0.1:8080/v1")
+    p.add_argument("--server-model", default="local",
+                   help="--server-url ile gönderilecek model adı (llama-server'da önemsiz, "
+                        "OpenRouter'da rakip model id'si)")
     p.add_argument("--no-gold", action="store_true",
                    help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
                         "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
@@ -211,7 +218,8 @@ def generate_completion(model, tokenizer, soru, max_new_tokens, source=None, sou
     return gen[:cut].strip()
 
 
-def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
+def build_messages(soru, source=None, sources_block=None):
+    """Mod → (system, user) mesajları. Taşıyıcıdan (yerel/HTTP) BAĞIMSIZ — tek kaynak."""
     if sources_block is not None:  # M1/M3: çok-kaynak (distractor) veya boş bağlam
         sys = SYSTEM_PROMPT_RAG_MULTI
         user = f"KAYNAKLAR:\n{sources_block}\n\nSORU: {soru}"
@@ -221,10 +229,27 @@ def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=
     else:       # M5 kör mod: sadece soru (parametrik bilgi testi)
         sys = SYSTEM_PROMPT
         user = soru
-    msgs = [
-        {"role": "system", "content": sys},
-        {"role": "user", "content": user},
-    ]
+    return [{"role": "system", "content": sys}, {"role": "user", "content": user}]
+
+
+def generate_http(client, model_name, soru, max_new_tokens, source=None, sources_block=None):
+    """llama-server / OpenRouter üzerinden üretim (ADR-0025).
+
+    Rakiplerle BİREBİR aynı kod yolu → adalet kuralı (spec §5.2) yapısal garanti.
+    Deterministik: temperature=0, seed sabit.
+    """
+    r = client.chat.completions.create(
+        model=model_name,
+        messages=build_messages(soru, source, sources_block),
+        max_tokens=max_new_tokens,
+        temperature=0.0,
+        seed=3407,
+    )
+    return (r.choices[0].message.content or "").strip()
+
+
+def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
+    msgs = build_messages(soru, source, sources_block)
     inputs = tokenizer.apply_chat_template(
         msgs, tokenize=True, add_generation_prompt=True,
         return_tensors="pt",
@@ -269,7 +294,15 @@ def main():
     print(f"[gen-eval] {a.label}: havuz={len(pool)} (madde eşleşen) → örneklem={len(sample)} "
           f"| adapter={a.adapter or '—'}")
 
-    model, tokenizer = build_model(a)
+    # ADR-0025: --server-url verilirse yerel yükleme YOK — HTTP taşıyıcı.
+    http_client = None
+    if a.server_url:
+        from openai import OpenAI
+        http_client = OpenAI(base_url=a.server_url, api_key=os.environ.get("OPENAI_API_KEY", "none"))
+        model, tokenizer = None, None
+        print(f"[gen-eval] HTTP taşıyıcı: {a.server_url} (model={a.server_model})")
+    else:
+        model, tokenizer = build_model(a)
 
     import random as _rnd
     detail = os.path.join(a.out_dir, f"{a.label}_detail.jsonl")
@@ -308,11 +341,16 @@ def main():
                 context_shown = labeled_src
                 mode = "oracle"
 
-            gen_fn = generate_completion if a.completion_fewshot else generate
-            cevap = gen_fn(
-                model, tokenizer, soru, a.max_new_tokens,
-                source=labeled_src if (a.with_source and not a.distractors and not a.empty_context) else None,
-                sources_block=sources_block)
+            src_arg = labeled_src if (a.with_source and not a.distractors and not a.empty_context) else None
+            if http_client is not None:               # ADR-0025 HTTP taşıyıcı
+                cevap = generate_http(
+                    http_client, a.server_model, soru, a.max_new_tokens,
+                    source=src_arg, sources_block=sources_block)
+            else:
+                gen_fn = generate_completion if a.completion_fewshot else generate
+                cevap = gen_fn(
+                    model, tokenizer, soru, a.max_new_tokens,
+                    source=src_arg, sources_block=sources_block)
             out = {
                 "id": i,
                 "soru": soru,
