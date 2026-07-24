@@ -146,6 +146,37 @@ Detay: `knowledge/summary_citation_grounding.md`.
 5. Multimodal probe hiç koşulmadı.
 6. **Zamansal eksen** (mülga/değişik) CANON'da yok — yeni kulvar adayı.
 
+## Ek: ortam kırılganlığı (2026-07-24, süreç dersi)
+
+GGUF dönüştürme denemesi sırasında `pip install -r requirements-convert_hf_to_gguf.txt` **global
+venv'e** koştu ve lockfile'dan 4 paketi düşürdü. Tam hasar + onarım:
+
+| paket | lockfile | düşürüldü | sonuç |
+| :--- | :--- | :--- | :--- |
+| `torch` | 2.10.0 | 2.11.0**+cpu** | → 2.10.0+cu130 (CUDA geri geldi) |
+| `transformers` | 5.10.2 | 4.57.6 | → 5.10.2 |
+| `huggingface-hub` | 1.18.0 | 0.36.2 | → 1.18.0 |
+| `numpy` | 2.4.6 | 1.26.4 | → 2.4.6 |
+| `protobuf` | 7.35.0 | 4.25.9 | → 7.35.0 |
+| `torchvision` | 0.25.0 | 0.25.0**+cu128** | → 0.25.0+cu130 |
+
+**Kritik bulgu:** `transformers < 5.x` **`gemma4` mimarisini hiç tanımıyor** — ne `gemma4` ne
+`gemma4_unified`. Yani projenin tüm 12B eval'leri transformers 5.x'e bağlı; 4.x'e düşen bir ortamda
+model **yüklenmiyor bile**. `requirements.lock.txt` bu yüzden hayati.
+
+**Ders:** dış araç bağımlılıkları (llama.cpp vb.) **daima izole venv'e** kurulur. Lockfile-vs-kurulu
+diff'i tek komutla alınabiliyor; ortam şüphesinde ilk iş o.
+
+**Yan bulgu — Gemma 4 tokenizer_config hatası:** `extra_special_tokens` alanı **liste**
+(`['<|video|>']`), transformers **dict** bekliyor → `AttributeError: 'list' object has no attribute
+'keys'`. **transformers 5.10.2'de sorun çıkmıyor** (yalnız 4.x'te); llama.cpp'nin
+`convert_hf_to_gguf.py`'si ise kendi izole venv'inde 4.x kullandığı için yamayı gerektirdi
+(snapshot'ı symlink'le kopyala → alanı dict'e çevir).
+
+**Yan bulgu — transformers 5.x API kırılması:** `apply_chat_template(..., return_tensors='pt')`
+artık tensor değil `BatchEncoding` döndürüyor → `return_dict=True` + `**enc` kullanılmalı.
+Eski çağrı `AttributeError: shape` veriyor. Eval script'leri bu yüzden gözden geçirilmeli.
+
 ## Paper eşlemesi
 
 - **§Yöntem/Dağıtım:** sığdırma merdiveni + hedef config = "tüketici donanımı" iddiasının somut zemini.
