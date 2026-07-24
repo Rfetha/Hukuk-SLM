@@ -35,7 +35,7 @@ Bir base bunları geçmeden **hiçbir eğitim/eval sayısına güvenme.**
 | 7 | `--pure` doğru mu | QAT-Q4_0 base ise `PURE=1`, değilse `PURE=0` | QAT olmayanda `--pure` embedding'i gereksiz kaybettirir (ADR-0023) |
 | 8 | Bağlam tavanı + VRAM | `smoke_llamacpp.sh <gguf> <ctx>` VRAM payını basar | erişilebilirlik ekseni (≤8 GB soft-gate, ADR-0018) |
 
-Ayrıntılı gerekçeler: `docs/record/research_log/2026-07-24-llamacpp-sablon-tuzagi.md` ·
+Ayrıntılı gerekçeler: [kronoloji #38](../docs/record/gemma4-12b-kronoloji.md) ·
 [`ADR-0023`](../docs/adr/gemma4-12b-dersler.md#adr-0023) (dağıtım config) ·
 [`ADR-0025`](../docs/adr/gemma4-12b-dersler.md#adr-0025) (eval yolu) ·
 [`ADR-0027`](../docs/adr/0027-tasarim-kilitleri-paralel-kol-merge.md) (yeni hat) ·
