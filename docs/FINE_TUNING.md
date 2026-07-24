@@ -26,8 +26,9 @@
 | :--- | :--- | :--- |
 | Gemma 3 270M | ~1.5 GB | Pipeline doğrulama / smoke test. |
 | 2–3B (Phi-3.5-mini vb.) | ~5–6 GB | Rahat, hızlı iterasyon. |
-| Qwen3.5-4B (eski plan) | ~8–10 GB | Referans; artık seçilen model değil. |
-| **Gemma 4 12B QAT-unquantized (seçilen baz)** | ~11–12 GB | batch=1 + gradient_checkpointing zorunlu. **Sıkışık ama mümkün.** |
+| **~4B instruct (ADR-0027 çalışma varsayımı)** | ~8–10 GB | ✅ **Birincil nokta.** Üç kolun tamamı + tabanlar **yerelde, $0** koşar. |
+| ~~Gemma 4 12B QAT-unquantized~~ (emekli hat) | ~11–12 GB | batch=1 + grad-ckpt zorunlu; sıkışıktı → **her koşu Modal'a gitmek zorundaydı.** |
+| **~8-9B (karşıtlık noktası)** | sığmaz | Modal; yalnız **kazanan** merge konfigürasyonu tekrarlanır. |
 | 7B (Mistral, Llama-3-8B vb.) | ~14–18 GB | **Sığmaz.** Colab/Kaggle/RunPod'a kaçar. |
 
 > **ℹ️ 8 GB nereden geliyor?** 8 GB rakamı **ürün erişilebilirlik hedefi** (model son-kullanıcının ~8 GB tüketici GPU'sunda koşmalı) — bizim eğitim rig'imiz değil. Eğitimi 12 GB'de yapıp 4-bit'i 8 GB'a sığacak şekilde ölçeriz.
@@ -57,6 +58,45 @@
 | **Prompt/Prefix Tuning** | Çok düşük | Sınırlı | Hızlı | ❌ Domain adaptasyonu için yetersiz. |
 
 **Karar:** **QLoRA** (NF4 quantization + LoRA adapters). Akademik olarak `arXiv:2305.14314` referansı.
+
+### ⭐ Mimari değişimi: paralel kollar + task-vector merge (2026-07-24, ADR-0027)
+
+Eski hat **tek bir modeli ardışık turlarla** iyileştiriyordu (v0→v1→v2b→v3). Yeni hat, beceri başına
+ayrı kol eğitip ağırlık uzayında birleştiriyor.
+
+**Neden:** grounding ile abstention birbirini yiyor — düz SFT reddi sıfıra indirdi (`research_log` #07),
+Grounding-Abstention paradoksu (#24), v3'te M1 0.881'e çıkarken M2b 0.96→0.53 çöktü (#32). Ardışık
+eğitim bu çatışmayı zaman içinde çözmeye çalışıp **unutmayla** ödüyor. Task-vector merge ağırlık
+uzayında çözmeyi deniyor; TIES'ın işaret-çatışması mekanizması tam bu ortam için tasarlandı.
+
+| kol | veri | not |
+| :--- | :--- | :--- |
+| `τ_grounding` | `data/train/raft/` | gold + hard-negative distractor |
+| `τ_abstention` | `data/train/orpo_abstain/` | ⚠️ `rejected` yeni base ile **yeniden hasat** (`gen_v3_rejected.py`) — mevcut satırlar 12B'nin fabrikasyonları, olduğu gibi kullanmak **başka bir modelin hatalarını** öğretir |
+| `τ_register` | `data/train/grounded_qa/` | **koşullu** — base'in register'ı zaten yüksekse kol düşer |
+
+**Pazarlıksız kural: her kol HAM BASE'den, bağımsız eğitilir.** Task-vector tanımı `τ = θ_ft − θ_base`
+ortak bir `θ_base` şart koşar. Bir kolu diğerinin üstüne eğitmek task-vector değil **ardışık SFT**
+üretir — yani ölçmek istediğimiz şeyin kendisini yok eder.
+
+**Birleştirme:**
+- **Eşzamanlı k-yollu**, yinelemeli değil: `TIES(TIES(τg,τa),τr) ≠ TIES(τg,τa,τr)`, çünkü TIES budama +
+  işaret-seçimi + ayrık-ortalamayı *tüm* vektörler üzerinde aynı anda yapar.
+- Her kol `ΔW = (α/r)·BA` olarak **bf16'da açılır**; TIES/DARE budamayı **eleman bazında delta üzerinde**
+  yapar, dolayısıyla LoRA-uzayında birleştirme yalnız düz doğrusal toplam için geçerlidir.
+- Birleşim **tam ağırlık uzayında**, kuantizasyon **en son** (4-bit tabana doğrudan merge çifte
+  kuantizasyon hatası üretir — bkz. §4.2 mantığı).
+- **Host RAM'de ve akış hâlinde (tensör tensör)** koşar, GPU'ya girmez. Tam materyalizasyon
+  (base + 3 kol bf16) onlarca GB'a çıkar ve karşıtlık noktasında host RAM'i zorlar.
+- **Merge'in eğitim maliyeti sıfır** — bedel yalnız eval'de. Tarama bu yüzden gerçekçi;
+  ama tarama **DEV'de** yapılır, dondurulmuş CANON'da değil.
+
+**Ölçüm:** 7 hücreli kafes (3 tekil + 3 ikili + 1 üçlü). Tekiller **zorunlu** — `τ_abstention` tek
+başına ölçülmeden ikili sonucu atfedilemez ("merge çatışması" mı, "kol öğrenememiş" mi?).
+Tabanlar: tek-aşamalı karışık SFT + ardışık SFT. **Kafes harness KAPALI ölçülür**, yoksa red kapısı
+abstention'ı sağlar ve model-düzeyi fark maskelenir.
+
+→ Tam tasarım: `TASARIM.md` §4 ve §6.
 
 ### LoRA Hiperparametreleri (başlangıç)
 

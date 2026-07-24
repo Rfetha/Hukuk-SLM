@@ -1,7 +1,23 @@
 # Tez Çerçevesi — Maliyet-Normalize Parite (TASARIM)
 
-> **Durum:** YÜRÜRLÜKTE — otorite belge
-> **Tarih:** 2026-07-17 · **Revizyon: 2026-07-23** (ADR-0021/0022/0023)
+> ### ⚠️ KISMEN SÜPERSED (2026-07-24, ADR-0027) — otorite artık [`TASARIM.md`](../../../TASARIM.md)
+>
+> Bu belgenin **çekirdeği yürürlükte**: parite çerçevesi (§0-§1), katmanlı kapsam (§2), deney
+> hücreleri A/B/C/D/E (§4.3), adalet kuralı (§5.2), hakem tasarımı (§6), maliyet muhasebesi (§7),
+> sürüm kayması (§9), terminoloji (§13). Bunlar `TASARIM.md`'ye taşındı ve orada yaşıyor.
+>
+> **Güncellenen üç yer** — bu belge **yeniden yazılmaz**, çelişki burada işaretlenir:
+> | § | eski | yeni (ADR-0027) |
+> | :--- | :--- | :--- |
+> | §3.1 | Base **Gemma 4 12B SABİT** | ADR-0026 ile base bir **parametre**; çalışma varsayımı ~4B, doğrulama kapısına bağlı |
+> | §5.3 | LLM-indeksli GraphRAG **"KESİN DIŞARIDA"** | **Kapılı Katman-1 kolu** — iki itiraz (air-gapped, non-determinizm) yeniden incelenip düştü; ayakta kalan itiraz halüsinatif kenar |
+> | §12 s.1 | *"eval için dondurulmuş, doğrulayıcı için canlı"* | **İkisi de dondurulmuş** — aksi hâlde mülga olmuş maddeye atıf haksız reddedilir |
+>
+> Ayrıca §8'in adım sırası ve v4 kapıları **12B hattına** aitti; yeni hattın kapıları
+> `TASARIM.md` §7'de (Kapı 0-4).
+
+> **Durum:** Kısmen süperseded (→ ADR-0027) · çekirdek çerçeve yürürlükte
+> **Tarih:** 2026-07-17 · **Revizyon: 2026-07-23** (ADR-0021/0022/0023) · **2026-07-24** (ADR-0027)
 > **Kapsam:** Projenin Master tezi çıktısına göre yeniden çerçevelenmesi
 > **Sonraki adım:** `VISION.md` + `PAPER_TARGET.md` + `TEKNIK_PLAN.md` + `CLAUDE.md` revizyonu bu spec'ten türetilir
 >

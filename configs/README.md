@@ -36,4 +36,7 @@ Bir base bunları geçmeden **hiçbir eğitim/eval sayısına güvenme.**
 | 8 | Bağlam tavanı + VRAM | `smoke_llamacpp.sh <gguf> <ctx>` VRAM payını basar | erişilebilirlik ekseni (≤8 GB soft-gate, ADR-0018) |
 
 Ayrıntılı gerekçeler: `docs/record/research_log/2026-07-24-llamacpp-sablon-tuzagi.md` ·
-`docs/adr/0023-dagitim-konfigurasyonu-q40-kv-q8.md` · `docs/adr/0025-eval-yolu-llamacpp-gguf.md`
+[`ADR-0023`](../docs/adr/gemma4-12b-dersler.md#adr-0023) (dağıtım config) ·
+[`ADR-0025`](../docs/adr/gemma4-12b-dersler.md#adr-0025) (eval yolu) ·
+[`ADR-0027`](../docs/adr/0027-tasarim-kilitleri-paralel-kol-merge.md) (yeni hat) ·
+[`TASARIM.md`](../TASARIM.md) §8 (base doğrulama kapısı — bu kontrol listesinin otoritesi)

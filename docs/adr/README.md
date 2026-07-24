@@ -1,60 +1,76 @@
 # Mimari/Metodoloji Karar Kayıtları (ADR)
 
 Bu klasör, HakHukuk'ta **neden** belirli bir yol seçtiğimizi kaydeder — sadece *ne* yaptığımızı değil.
-Amaç tek: **paper yazılırken** (ve 6 ay sonra kendimize) "şunu neden böyle yaptık, hangi
-alternatifi neden eledik, sonuç ne oldu" sorusu kanıtla cevaplanabilsin.
+Amaç tek: **paper yazılırken** (ve altı ay sonra kendimize) *"şunu neden böyle yaptık, hangi
+alternatifi neden eledik, sonuç ne oldu"* sorusu kanıtla cevaplanabilsin.
 
-## Neden ADR (FAZ1_PLAN'daki "Kararlar (sabit)" varken)?
-`FAZ1_PLAN.md > Kararlar (sabit)` **mevcut durumu** özetler (canlı, sık güncellenir, üzerine yazılır).
-ADR ise **dondurulmuş anlatıdır**: bir kararın o ANki bağlamı + değerlendirilen seçenekler +
-gerekçe + sonuç. FAZ1_PLAN "ana metrik groundedness" der; ADR "şu üç alternatifi şu yüzden eledik,
-şu riski kabul ettik" der. Paper'ın *Methodology* ve *Limitations* bölümleri ADR'lerden yazılır.
+---
 
-## Format (hafif)
-Her ADR: `NNNN-kebab-baslik.md`. Şablon:
-- **Durum:** Önerildi | Kabul edildi | Yürürlükte | Süpersed (→ NNNN) | Geri alındı
+## ⚠️ 2026-07-24 — defter sadeleştirildi
+
+Gemma 4 12B hattının **26 ADR'si (0001-0026) tek dosyada toplandı ve tekil dosyalar silindi:**
+
+### 📕 [`gemma4-12b-dersler.md`](gemma4-12b-dersler.md)
+
+Üç bölüm: **(A) Dersler** — base-bağımsız, taşınan bilgi; yeni hatta başlayan burayı okur ·
+**(B) Karar kaydı** — 26 ADR'nin kararı, elenen alternatifleri, sonucu ve *yeni hattaki statüsü* ·
+**(C) Ham kayda giriş noktaları.**
+
+**Neden.** 26 ayrı dosya, yeni hatta başlayan için filtresiz bir yığındı ve çoğu 12B'ye özgüydü.
+Karar: **okuma yüzeyi tek belgeye insin, içerik kaybolmasın.** Silinen dosyalar git geçmişinde
+duruyor (`4d70a77` ve öncesi) — geri alınabilir.
+
+**Atıf uyumu.** Repo genelinde ~560 yerde `ADR-00NN` göndermesi var (`research_log`, spec'ler,
+`knowledge/`, script yorumları). O göndermeler **bozulmadı**: birleşik belge her ADR için bir çapa
+taşıyor → `gemma4-12b-dersler.md#adr-0011` gibi.
+
+> ⚠️ Bu, ADR-0024'ün *"`adr/` yerinde kalır, silinmez"* kuralından **bilinçli bir sapmadır**
+> (kullanıcı kararı, 2026-07-24). Aynı kuralın diğer yarısı — **`docs/record/research_log/`
+> asla taşınmaz/yeniden yazılmaz** — aynen yürürlüktedir.
+
+---
+
+## Dizin — yeni hat
+
+| # | statü | konu |
+| :-- | :--: | :--- |
+| **[0027](0027-tasarim-kilitleri-paralel-kol-merge.md)** | 🟢 | ⭐⭐ **Tasarım kilitleri:** paralel kol + task-vector merge · iki matris (iç ablasyon harness-kapalı / dış parite) · DEV/TEST ayrımı · dört katmanlı hakem savunması · kapılı hibrit graf kolu |
+
+**Otorite tasarım belgesi:** [`TASARIM.md`](../../TASARIM.md) (repo kökü) — ne inşa edeceğimiz ve
+neyi ölçeceğimiz. ADR-0027 onun kararlarını donmuş anlatı olarak kaydeder.
+Kullanıcı taslağı `referans-design-doc.md` **temiz tutulur, değiştirilmez.**
+
+**Eski hattan taşınan kararlar** (ADR-0004 Modal · 0005 veri stratejisi · 0007 lisans · 0008 `spawn` ·
+0010 uzman register · 0011 CANON · 0013 mod matrisi · 0016 dış benchmark · 0017 tez çerçevesi ·
+0018 soft gate · 0019 faz istisnası · 0020 rakip seti · 0022 graf kapsamı · 0024 emeklilik ·
+0025 eval yolu · 0026 base parametre) → [`gemma4-12b-dersler.md`](gemma4-12b-dersler.md) Bölüm B.
+
+---
+
+## Neden ADR
+
+Canlı planlar (`TASARIM.md`, `TODO.md`) **mevcut durumu** özetler — sık güncellenir, üzerine yazılır.
+ADR ise **dondurulmuş anlatıdır**: bir kararın o ANki bağlamı + değerlendirilen seçenekler + gerekçe
++ sonuç. Plan *"ana metrik groundedness"* der; ADR *"şu üç alternatifi şu yüzden eledik, şu riski
+kabul ettik"* der. **Paper'ın Methodology ve Limitations bölümleri ADR'lerden yazılır.**
+
+## Format
+
+Her ADR: `NNNN-kebab-baslik.md`.
+
+- **Statü:** Önerildi | Kabul edildi | Yürürlükte | Süperseded (→ NNNN) | Geri alındı
 - **Bağlam** — karar anında ne biliyorduk, hangi kısıt zorladı
 - **Karar** — ne yaptık
-- **Değerlendirilen alternatifler** — neyi neden elemeye/seçmedik (paper için kritik kısım)
+- **Değerlendirilen alternatifler** — neyi neden elemedik/seçmedik *(paper için kritik kısım)*
 - **Sonuç** — kanıt/sayı + kabul edilen risk + açık uçlar
-- **İlgili** — `[[memory-slug]]`, FAZ1_PLAN satırı, commit, ilgili ADR
+- **İlgili** — plan satırı, commit, ilgili ADR
 
-Kararı değiştirirsek eskiyi SİLMEYİZ → "Süpersed" işaretler, yenisini ekleriz (iz kalsın).
+**Kararı değiştirirsek eskiyi silmeyiz** → "Süperseded" işaretler, yenisini ekleriz. Eski gerekçe
+yanlış çıksa bile *neden öyle düşündüğümüz* paper malzemesidir.
 
-## Dizin
-- [0001](0001-groundedness-ana-eval-metrigi.md) — Groundedness ana eval metriği (Muhakim ikincil; insan-κ descope)
-- [0002](0002-v1-grounded-veri-kalite-kapisi.md) — v1 grounded SFT verisi: eğitim-öncesi kalite kapısı + bulgular
-- [0003](0003-base-model-gemma-4-12b.md) — Base model: Gemma 4 12B (Qwen3.5-4B süpersed)
-- [0004](0004-egitim-altyapisi-modal-a100.md) — Eğitim altyapısı: Modal serverless A100
-- [0005](0005-veri-stratejisi.md) — Veri stratejisi: lisans-temiz + EDA-doğrula + grounded sentetik üretim
-- [0006](0006-akademik-hedef-sistem-paper.md) — Akademik hedef: sistem paper'ı (benchmark yan iş)
-- [0007](0007-repo-lisans-private-proprietary.md) — Repo & lisans: private + proprietary
-- [0008](0008-modal-egitim-baslatma-spawn.md) — Modal eğitim başlatma: fire-and-forget `spawn` (WSL-kapanması cancel dersi)
-- [0009](0009-v1-filtre-dogrulama-hedefli-audit.md) — `gen_grounded.py` filtresi doğrulandı: dokunma + hedefli v1-audit (404 şüpheli)
-- [0010](0010-reframe-birincil-register-uzman.md) — Reframe: birincil register = uzman/hukukçu; sade dil app-layer'a taşındı (retroaktif yazıldı 2026-07-01, karar 2026-06-13)
-- [0011](0011-eval-metodoloji-canon.md) — CANON eval metodolojisi (4 eksen, mod-stratifiye, literatür-doğrulamalı)
-- [0012](0012-v2-strateji-on-kayit.md) — v2 strateji ön-kayıt (scope Product A; SFT=davranış, bilgi=RAG)
-- [0013](0013-eval-matrisi-v2-genisletme.md) — CANON eval v2 genişletme: 5 mod matrisi (distractor + E-set + register)
-- [0014](0014-v2c-red-karari-fix-yonu-acik.md) — v2c RED kararı (M2 0.407 + M1 regresyon) + K3 negatif bulgu; fix yönü AÇIK (potansiyel durumlar P1–P6, karar ertelendi)
-- [0015](0015-v3-orpo-kapi-karari-kismi-v4-yonu-net.md) — v3 ORPO kapı kararı (KISMİ: M1↑ ama M2 base-altı + M2b regresyon); v4 yönü net
-- [0016](0016-dis-benchmark-kapsami-rakip-konumlama.md) — Dış-benchmark kapsamı + rakip konumlama (BigLaw/LegalBench & Muhakim = cite-only)
-- **[0017](0017-tez-cercevesi-maliyet-normalize-parite.md) — ⭐ TEZ ÇERÇEVESİ: maliyet-normalize parite + base model (Gemma 4 12B QAT) SABİT (2026-07-17)**
-- [0018](0018-8gb-soft-gate-maliyet-egrisi.md) — 8 GB = soft gate (sert kısıt değil); erişilebilirlik = maliyet-performans eğrisi
-- [0019](0019-faz-sirasi-istisnasi-harness-teze-dahil.md) — Faz sırası istisnası: harness dilimi (retriever+doğrulayıcı+kapı) teze dahil, graph-RAG hariç
-- [0020](0020-rakip-seti-tavan-referansi.md) — Rakip seti: dağıtım-sınıfı kapalı modeller (Flash/Sonnet/5-mini) + tavan referansı (ADR-0016 revize)
-- [0021](0021-base-teyidi-olculmus-gerekce.md) — Base teyidi: Gemma 4 12B, ölçülmüş gerekçeyle (~~yürürlükte~~ → **ADR-0026 ile süperseded**)
-- [0022](0022-graf-kapsami-yapisal-deterministik.md) — Graf kapsamı: yapısal/deterministik graf teze dahil, çok-ajanlı GraphRAG hariç
-- [0023](0023-dagitim-konfigurasyonu-q40-kv-q8.md) — Dağıtım konfigürasyonu: saf Q4_0 + flash-attention + KV q8_0 (**ADR-0026 ile kısmen süperseded** — QAT-Q4_0'a özgü, evrensel değil)
-- [0024](0024-hat-emekliligi-arsiv-yapisi.md) — Hat emekliliği: base değişirse arşiv, kayıt yerinde kalır (~~koşullu~~ → **ADR-0026 ile YÜRÜRLÜKTE**)
-- [0025](0025-eval-yolu-llamacpp-gguf.md) — Eval yolu: Unsloth NF4 → llama.cpp + Q4_0 GGUF (OpenAI-uyumlu HTTP)
-- **[0026](0026-base-parametrelestirme-hat-emekliligi-yururlukte.md) — ⭐ Base bir PARAMETRE (gömülü default yok); hat emekliliği yürürlükte; `data/` yeniden yapılandırıldı (2026-07-24)**
+## Diğer kayıt yerleri
 
-> **⭐⭐ Base artık sabit DEĞİL (2026-07-24, ADR-0026).** ADR-0017'nin "base SABİT" ve ADR-0021'in
-> teyit kararı süperseded — ama **silinmez**: o günkü ölçülmüş gerekçe (QAT, 8 GB'da bağlam tavanı,
-> KV analizi) yeni base seçiminde **kriter listesi** olarak geçerliliğini korur.
-
-> **⭐ Tez çerçevesi 2026-07-17'de değişti** — otorite belge `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md`. ADR-0017 çekirdek karar; 0018-0020 onu tamamlar. Önceki ADR'ler (özellikle 0006 "benchmark yan iş", 0016 rakip listesi) bu ışıkta okunur.
-
-> İlk 7 ADR **geriye dönük** yazıldı (2026-06-08) — kararlar daha önce verildi, bağlam/alternatif/
-> sonuç anlatısı paper için sonradan yapısallaştırıldı. Bundan sonraki kararlar **anında** ADR'lenir
-> (0008 = ilk anında-ADR örneği).
+- [`../record/research_log/README.md`](../record/research_log/README.md) — kronolojik deney günlüğü.
+  **Kesintisiz akar**, taşınmaz, yeniden yazılmaz. Yeni hattın girdileri #39'dan devam eder.
+- [`gemma4-12b-dersler.md`](gemma4-12b-dersler.md) — emekli hattın kararları + dersleri.
+- `old-version-gemma4-12b/` — emekli hattın artefaktları (adaptörler, eval çıktıları, tur belgeleri).

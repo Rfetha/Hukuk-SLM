@@ -3,7 +3,7 @@
 > **Karar:** v3 **KISMİ / teslim değil** (2026-07-06, ADR-0015). K3'ü büyük ölçüde onardı (M2 0.35→0.59, M1 0.74→**0.88**)
 > ama base-M2'yi (0.704) geçmedi **+** M2b'de regresyon açtı (0.96→0.53). Bu doküman = ölçülen tam skorkart + kapı
 > gerekçesi + **M2b forced-source-selection teşhisi** + proxy→judge dersi.
-> Otorite: [[../../adr/0015-v3-orpo-kapi-karari-kismi-v4-yonu-net]] · kronoloji [[../research_log/2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) · birleşik tablo [[../SCORECARD]].
+> Otorite: [ADR-0015](../../../docs/adr/gemma4-12b-dersler.md#adr-0015) · kronoloji [[../research_log/2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) · birleşik tablo [[../SCORECARD]].
 
 ## Kurulum (tüm modlar ortak)
 - **Model:** Gemma 4 12B + QLoRA adapter `outputs/v3/` (**v2b-adaptöründen DEVAM eden ORPO**; `train_orpo.py:132` PeftModel is_trainable, lr düşük, 2 epoch / 56 step). Eğitim = Modal A100 (ADIM 8, entry #30).
@@ -96,4 +96,4 @@ Skor özetleri ayrıca `*_summary.json`, judge-etiketli per-item ise `abst_bench
 > `ck28` = checkpoint-28 (1 epoch); etiketsiz = final (2 epoch, checkpoint-56). Final tercih edildi (M2 0.519→0.593). Somut örnek cevaplar için dosyaları `cevap` alanından oku; M2b'deki *"İlgili kaynak KAYNAK 3'tür… elenmiştir"* örüntüsü fabrikasyon bulgusunun kanıtıdır.
 
 ## İlgili
-- [[../../adr/0015-v3-orpo-kapi-karari-kismi-v4-yonu-net]] · [[../research_log/2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) · [[../research_log/2026-07-05-v3-adim7-8-orpo-egitim-bitti]] (#30, eğitim) · [[../SCORECARD]] (birleşik) · [[receteler]] (v4) · önceki: [[../v2c/sonuclar]] (RED).
+- [ADR-0015](../../../docs/adr/gemma4-12b-dersler.md#adr-0015) · [[../research_log/2026-07-06-v3-eval-sonuc-kapi-karari]] (#32) · [[../research_log/2026-07-05-v3-adim7-8-orpo-egitim-bitti]] (#30, eğitim) · [[../SCORECARD]] (birleşik) · [[receteler]] (v4) · önceki: [[../v2c/sonuclar]] (RED).

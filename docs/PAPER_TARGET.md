@@ -79,6 +79,24 @@ tüm öznelere birebir aynı uygulanır.
 **E (base+harness) vs D (FT+harness)**. Bu, literatürde nadiren ayrıştırılan bir soru;
 `E ≈ D` çıkarsa **negatif bulgu olarak yayımlanır** (spec §11).
 
+**(Y3 — ANA, EKLENDİ 2026-07-24 · ADR-0027) Çatışan becerilerin ağırlık uzayında birleştirilmesi.**
+*Beceri başına **ham base'den bağımsız** eğitilmiş LoRA kolları + task-vector merge, çatışan becerileri
+(grounding ↔ abstention) ardışık ve tek-aşamalı SFT'den daha iyi koruyor mu?*
+
+Bu katkı repo'nun kendi negatif bulgusundan doğdu: düz SFT reddi sıfıra indirdi (`research_log` #07),
+Grounding-Abstention paradoksu (#24, ADR-0014), v3'te M1 0.881'e çıkarken M2b 0.96→0.53 çöktü
+(#32, ADR-0015). Ardışık eğitim çatışmayı *zaman içinde* çözmeye çalışıp **unutmayla** ödüyor;
+task-vector merge *ağırlık uzayında* çözmeyi deniyor — TIES'ın işaret-çatışması mekanizması tam
+bu ortam için tasarlandı.
+
+Ölçüm: **7 hücreli kafes** (3 tekil + 3 ikili + 1 üçlü; tekiller zorunlu — yoksa "merge çatışması" ile
+"kol öğrenememiş" ayrılamaz), tabanlar = karışık SFT + ardışık SFT, **harness KAPALI** (açıkken red
+kapısı abstention'ı sağlar ve model-düzeyi fark maskelenir). Detay: `TASARIM.md` §4, §6.1.
+
+> **Y3 çıkmazsa da yayımlanabilir:** *"ağırlık uzayı çözümü bu domainde çatışmayı çözmedi"* —
+> task-arithmetic literatürüne domain-spesifik negatif kanıt. Ve matrisler ayrı olduğu için (§6)
+> Y3'ün düşmesi Y1/Y2'yi düşürmez.
+
 **(Y3 — DESTEK) Dağıtım eğrisi: erişilebilirlik = ağırlık değil, kullanım bağlamında ağırlık + KV.**
 Ölçülmüş sonuç: 8 GB kapısında **12B, 9B'den daha erişilebilir** (bağlam tavanı 176K vs 91K).
 Hedef config: saf Q4_0 + `-fa` + KV q8_0 → 6.97 GB / ~250K bağlam (ADR-0023). KV-bit × bağlam ×
