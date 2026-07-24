@@ -32,8 +32,8 @@ compute buffer (fa'lı) 0.30 GB.
 **Hedef dağıtım konfigürasyonu = basamak 4:**
 
 ```
-llama-server -m gemma4-12b-q4_0.gguf -ngl 99 -fa on \
-             --cache-type-k q8_0 --cache-type-v q8_0 -c 262144
+llama-server -m gemma4-12b-q4_0.gguf -ngl 99 -fa on --no-context-shift \
+             --cache-type-k q8_0 --cache-type-v q8_0 -c 131072
 ```
 
 Dört kaldıraç, en önemlisinden:
@@ -55,6 +55,35 @@ Dört kaldıraç, en önemlisinden:
 **TurboQuant llama.cpp'de yok** — arXiv'de bir yöntem; dağıtım hattımız llama.cpp/GGUF olduğu
 için bugün kurulabilir değil. Kullanıcı kararı: **llama.cpp quant ile başlanır, TurboQuant sonra
 zorlanır** (paper-implementation işi, tez gövdesine üçüncü araştırma yüzeyi eklemez).
+
+### Bağlam bütçesi: `-c 131072`, 262144 değil *(2026-07-24 eki)*
+
+llama.cpp KV-cache'i **`-c` değerine göre önden tahsis eder** (konuşma uzadıkça büyütmez).
+Çalışırken VRAM:
+
+| bağlam | KV (q8_0) | **toplam VRAM** | 8 GB |
+| ---: | ---: | ---: | :--- |
+| 32K | 0.20 GB | 7.17 GB | ✅ |
+| 128K | 0.58 GB | **7.55 GB** | ✅ |
+| 256K | 1.08 GB | 8.05 GB | ❌ kıl payı |
+
+→ **Hedef `-c` = 131072** (0.45 GB pay). 262144 istenirse 8 GB'da **yüklenmez** (CUDA OOM,
+ilk saniyede — sürpriz yok). KV quant olmadan (bf16) sınır 64K'ya düşer → `--cache-type` opsiyonel
+değil, config'in parçası.
+
+> ⚠️ **DOĞRULUK TEHLİKESİ — sessiz kaynak düşürme.** `-c`'ye sığdırılmış ama bağlam dolmuş bir
+> istekte llama.cpp varsayılanı **context shift**: en eski token'ları atıp devam eder. Sohbet botu
+> için makul, **bizim için felaket** — RAG'de bağlamın başında **getirilen kanun maddeleri** durur;
+> shift onları sessizce atar, model kaynağı görmeden cevap üretir ve **hiçbir hata çıkmaz.**
+> Ölçtüğümüz groundedness'ın altı boşalır.
+>
+> **Kural:** `--no-context-shift` + **harness'ta bağlam bütçesi kontrolü** — sığmayan girdi
+> *kesilmez, reddedilir.* Bu, red kapısının (harness bileşen 3) doğal görevi; tasarımda yoktu,
+> eklendi. Doğru çözüm bağlamı büyütmek değil, **belgeyi de retriever'dan geçirmek** (chunk'la,
+> ilgili kısmı getir) — graf + retriever zaten bunun için var.
+>
+> Ayrıca **262144 = `max_position_embeddings`**; ötesi RoPE tanımsız (YaRN vb. ölçekleme olmadan
+> çıktı bozulur) — VRAM meselesi değil, mimari sınır.
 
 ### CPU offload ilkesi
 

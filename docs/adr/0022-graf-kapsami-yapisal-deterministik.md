@@ -37,9 +37,43 @@ LLM üretimi topluluk özetleri; ya da LegalGraphRAG'in üç-ajanlı hattı
 ## Karar
 
 1. **(a) yapısal/deterministik graf TEZE DAHİL.** Harness = retriever + **yapısal graf** +
-   Bedesten atıf-doğrulayıcı + red kapısı.
-2. **(b) çok-ajanlı / LLM-indeksli GraphRAG KESİN DIŞARIDA** (future work, ürün Faz 2).
+   Bedesten atıf-doğrulayıcı + red kapısı. → **Manşet konfigürasyon.**
+2. **(b) çok-ajanlı / LLM-indeksli GraphRAG MANŞET DIŞI** — ama *yasak değil*: bkz. §"Sınır nasıl
+   çizilir" (opsiyonel Pareto noktası).
 3. **OCR harness'a dahil DEĞİL** — ingestion katmanı, Faz 3 app. Harness metin *alır*.
+
+### Sınır nasıl çizilir: **flu değil, etiketli** *(2026-07-23 netleştirmesi)*
+
+Kullanıcı itirazı yerindeydi: *"ileride agentic de olabilir, neden net çiviliyoruz, ikisi de mümkün
+olacak şekilde flu bırakamaz mıyız?"* — çivi **ürün yol haritasına değil, manşet iddiaya** çakılı.
+Kapsamı **flu bırakmak** üç şeyi bozar:
+
+1. **Adalet kuralı (§5.2):** harness'a ne koyarsan rakiplere de aynısı verilir. Sınır flu olursa
+   *"bizde graf vardı, onlarda yoktu"* sorusu cevapsız kalır → kıyas **çürütülemez** hale gelir.
+2. **Maliyet metriği:** manşet $/sorgu tekrar üretilemez olur.
+3. **Ön-kayıt:** kapılar veriden önce yazıldı; kapsam sonradan esnerse sayıyı görüp kale direği
+   kaydırılmış olur.
+
+**Çözüm — flu sınır değil, ölçülmüş ikinci nokta.** Tez zaten bir **Pareto eğrisi**; (b) eğriyi
+bozmaz, **etiketlenmiş ek bir nokta** olarak zenginleştirir:
+
+```
+kalite ▲
+       │        ◆ + çok-ajanlı GraphRAG (~3× maliyet)   ← OPSİYONEL kol
+       │   ★ FT + deterministik harness                 ← MANŞET (parite iddiası burada)
+       │  ○ base + harness (E)
+       └────────────────────────────────────────────►  maliyet
+```
+
+- **Manşet** deterministik kalır → parite iddiası kurulur, maliyeti dürüst sayılır.
+- **(b) zaman kalırsa** ayrı, maliyeti **açıkça yazılmış** bir nokta olarak raporlanabilir.
+- Yan kazanç: LegalGraphRAG'in **raporlamadığı** şeyi raporlamış oluruz (maliyet/gecikme) —
+  literatürde açık boşluk.
+- Aynı ilke **agentic (Faz 3)** için de geçerli: ürün yol haritasında serbest (`VISION.md` Faz 3-5
+  hiç kısıtlanmadı), tez manşetinde yok.
+
+Yani kural: **sınır net, kapsam genişletilebilir — ama her genişleme kendi maliyet etiketiyle
+ayrı bir nokta olarak ölçülür, manşetin içine sessizce karışmaz.**
 
 ### Neden (a) içeride
 
