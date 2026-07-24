@@ -219,8 +219,8 @@ model.save_pretrained_merged("gemma4-hakhukuk-merged", tokenizer)  # bf16
 > | **+ KV q8_0 ← HEDEF** | **6.97 GB** | **250.752 tok** |
 >
 > ```bash
-> llama-server -m gemma4-12b-q4_0.gguf -ngl 99 -fa on \
->              --cache-type-k q8_0 --cache-type-v q8_0 -c 262144
+> llama-server -m gemma4-12b-q4_0.gguf -ngl 99 -fa on --no-context-shift \
+>              --cache-type-k q8_0 --cache-type-v q8_0 -c 131072
 > ```
 >
 > **Kritik:** `token_embd`'i **Q6_K'ya yükseltme** (llama.cpp varsayılanı öyle) — QAT checkpoint'i
