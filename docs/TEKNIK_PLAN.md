@@ -18,22 +18,28 @@
 > ⚠️ **SÜPERSED (2026-06-14, V2_PLAN.md) → güncel plan:** aktif iş artık **v2b SFT** (base'den taze QLoRA), bu bölümdeki v0→v1 execute akışı tamamlandı/tarihsel. Güncel yön: `docs/V2_PLAN.md §9` + `NEXT_SESSION.md`.
 
 **Hedef:** Türk hukuk diline adapte, **~~vatandaş diliyle~~ uzman-register ile** konuşan, ölçülebilir fine-tuned SLM. Kalite barı yüksek — üzerine kurulacak ekosistem (RAG, agent, UI) buna dayanacak.
-**Baz model (güncellendi 2026-06-07 · gerekçe ölçüldü 2026-07-23):** **Gemma 4 12B** (`google/gemma-4-12B-it-qat-q4_0-unquantized`, Apache 2.0 **+ Prohibited Use Policy** — ADR-0021) — 256K context. Deploy pipeline: QLoRA SFT → merge → Q4_0 GGUF (~6.5GB, 8GB VRAM end-user). ⚠️ **"multimodal" bir base-seçim gerekçesi DEĞİL** (ADR-0003 + ADR-0021: ağırlıkta encoder yok — audio 1 tensör/2.46M —, algılama decoder'da, ölçülmemiş). **Gerçek gerekçe:** resmî QAT Q4_0 zinciri + 8 GB'da bağlam tavanı (176K vs Qwen3.5 9B'nin 91K'sı). **Hedef dağıtım config (ADR-0023):** saf Q4_0 (token_embd Q6_K'ya yükseltilmez) + `-fa` + KV q8_0 → 6.97 GB sabit / ~250K bağlam.
+**Baz model — ⚠️ YENİDEN YAZILDI (2026-07-24, ADR-0027):** base bir **PARAMETRE** (ADR-0026), gömülü karar değil. Çalışma varsayımı **~4B sınıfı instruct model**, 6 maddelik doğrulama kapısına bağlı; **iki boyut noktası** (birincil ~4B yerelde $0 + karşıtlık ~8-9B). Kuantizasyon **Q4_K_M** (ADR-0023'ün saf-Q4_0'ı QAT'e özgüydü, taşınmaz). ~~Gemma 4 12B~~ süperseded, silinmedi. Detay: `TASARIM.md` §8.
 
-Adım akışı: Ortam → Smoke test → Veri toplama → Temizleme/format → Sadeleştirme → Base hazırlığı → v0 baseline → Grounded üretim → SFT iterasyonları → Eval → Ablation → Yayın.
-→ Detay **Bölüm 2**.
+**⚠️ Adım akışı DEĞİŞTİ (ADR-0027).** Eski akış tek bir modeli ardışık turlarla (v0→v1→v2b→v3) iyileştiriyordu. Yeni akış **paralel kollar + task-vector merge**:
+
+Ortam → Base doğrulama kapısı → **3 kol ayrı ayrı, HAM BASE'den** (`τ_grounding` · `τ_abstention` · `τ_register`) → **eşzamanlı k-yollu TIES/DARE** → **7 hücreli kafes** eval'i (harness KAPALI) → tabanlarla kıyas (karışık SFT + ardışık SFT) → kazanan konfigürasyon → harness → **dış parite matrisi** (A/B/C/D/E) → karşıtlık noktası.
+
+> Kolların **ham base'den** eğitilmesi geçerlilik şartı: task-vector tanımı (τ = θ_ft − θ_base) ortak base ister. Bir kolu diğerinin üstüne eğitmek ardışık SFT üretir — ölçmek istediğimiz şeyin kendisini yok eder.
+
+→ Aşağıdaki Bölüm 2 execute planı **12B hattına aittir, tarihsel iz olarak korunur.**
 
 ## Faz 2 — Güncel Bilgi: RAG + Knowledge Graph
 > ⚠️ **TEZ KAPSAMI (ADR-0019 + ADR-0022):** retriever + **yapısal/deterministik graf** + Bedesten atıf-doğrulayıcı + red kapısı **teze dahil**; çok-ajanlı/LLM-indeksli GraphRAG **tez dışı** (~3× çıkarım → maliyet iddiasını bozar). Harness **GPU'ya girmez** (embedder CPU, graf+indeks CPU RAM/disk — ADR-0023).
 > **TurboQuant notu:** ⚠️ **DÜZELTİLDİ (2026-07-23):** darboğaz KV değil **ağırlık** (128K'da KV = ağırlığın %18'i). TurboQuant = **bağlam tavanı kaldıracı**, darboğaz çözücü değil — ve llama.cpp'de **yok**; bugünkü kaldıraç `--cache-type-k/-v q8_0` (8 GB'da 64.755 → 149.990 tok). TurboQuant future-work. Bkz. `knowledge/summary_turboquant.md`, ADR-0018/0023.
 
-1. Hukuk metni yapı çıkarımı (kanun→madde→fıkra→atıf parser)
-2. Bedesten API ile bulk kanun çekimi (taze) + içtihat (yargi-mcp RE)
-3. Graph DB (Neo4j/Memgraph) şema tasarımı
-4. Embedding: `newmindai/Mursit-Base-TR-Retrieval` aday
-5. Hibrit getirme (graph traversal + vektör)
-6. Vanilla RAG vs Graph-RAG deneyi
-7. Atıf doğrulama (halüsinasyon önleme)
+1. Hukuk metni yapı çıkarımı (kanun→madde→fıkra→atıf parser) + **mülga/değişik zamansal zincirleri**
+2. Bedesten API ile bulk çekim → **dondurulmuş snapshot, sha256 ile pinlenir.** ⚠️ **ADR-0027 düzeltmesi:** eval'de retriever *ve* atıf doğrulayıcı **aynı** snapshot'ı kullanır — retriever dondurulmuş + doğrulayıcı canlı olursa, snapshot'ta var olup sonradan mülga olmuş maddeye yapılan atıf haksız reddedilir ve hata zamanla büyür. Canlı Bedesten **ürün yolunda.**
+3. ~~Graph DB (Neo4j/Memgraph)~~ → **gömülü graf: NetworkX/GraphML** (ADR-0027). ~40K düğüm gömülü kütüphane için önemsiz; ayak izinin *ölçüldüğü* bir tezde konteyner saf yük. Ayrıca GraphML LightRAG'in varsayılan deposu → hibrit kol açılırsa LLM kenarları **aynı grafa** `provenance` etiketiyle yazılır, ablasyon tek satırlık filtre olur. Sunucuya ihtiyaç **ölçüldüğünde** geçilir.
+4. Embedding: `newmindai/Mursit-Base-TR-Retrieval` aday — ⚠️ lisans + EDA doğrulaması şart (açık soru)
+5. Hibrit getirme (BM25 + vektör + 1-2 hop graf genişletme)
+6. ~~Vanilla RAG vs Graph-RAG deneyi~~ → **kapılı Katman-1 kolu** (ADR-0027, ADR-0022 revizyonu). Kapı = yalnız getirme ölçümü (recall@k + MRR, kavram kenarı açık/kapalı); jenerasyon yok, hakem yok. Geçmezse **"ölçtük, katkı yok"** negatif bulgusu.
+7. Atıf doğrulama (halüsinasyon önleme) — deterministik, Bedesten'e karşı
+8. **Red kapısı:** doğrulama düşerse cevap redde çevrilir. Modelin sahip olmadığı abstention'ı harness'ın **satın aldığı** yer.
 
 > **İçtihat:** Tüm 15 kurum (Yargıtay, Danıştay, AYM×2, GİB, KİK, Rekabet, Sayıştay, BDDK, KVKK, Sigorta…) `yargi-mcp`'den reverse-engineer edilmiş, harita hazır: `docs/YARGI_KAYNAKLARI.md`. %100 in-house.
 

@@ -13,4 +13,4 @@
 - [`sonuclar.md`](sonuclar.md) — v2c 6-mod tam skorkart + RED gerekçesi + K3 negatif bulgusu (paradoks mekanizması).
 
 > Kronoloji otoritesi: [`../../../docs/record/research_log/README.md`](../../../docs/record/research_log/README.md) (2026-07-02/03 girdileri).
-> Red kararı: `docs/adr/0014-v2c-red-karari-fix-yonu-acik.md`.
+> Red kararı: [ADR-0014](../../../docs/adr/gemma4-12b-dersler.md#adr-0014).

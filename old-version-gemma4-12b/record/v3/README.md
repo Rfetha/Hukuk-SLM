@@ -6,7 +6,7 @@
 > forced-source-selection bias). → v4 (negatif-aile çeşitliliği) gerekli.
 
 ## Sonuç otoritesi
-- **ADR-0015** (`../../adr/0015-v3-orpo-kapi-karari-kismi-v4-yonu-net.md`) — kapı kararı + v4 yönü NET.
+- **ADR-0015** ([gemma4-12b-dersler.md#adr-0015](../../../docs/adr/gemma4-12b-dersler.md#adr-0015)) — kapı kararı + v4 yönü NET.
 - research_log **entry #32** (`../research_log/2026-07-06-v3-eval-sonuc-kapi-karari.md`) — tam judge skorkartı + M2b teşhisi + proxy→judge dersi.
 
 ## Dosyalar
