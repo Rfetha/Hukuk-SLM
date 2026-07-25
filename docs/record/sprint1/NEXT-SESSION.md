@@ -1,9 +1,10 @@
 # NEXT SESSION — kaldığımız yer (2026-07-25 kapanış)
 
-> **Bu belge ne:** oturum kapanırken elde kalan işlerin devir notu. Sayılar ölçüldü ve **burada
-> korunuyor** — `outputs/eval/` gitignore'da ve bir sonraki koşuda üzerine yazılabilir.
+> **Bu belge ne:** oturum kapanırken elde kalan işlerin devir notu.
 > **Otorite:** [`TASARIM.md`](../../../TASARIM.md) · **yürütme:** [`sprint1.md`](../../../sprint1.md)
-> **Bulgular:** [`research_log #39`](../research_log/2026-07-24-cp0-base-dogrulama-kapisi.md)
+> **Bu oturumun bulguları:** [`research_log #40`](../research_log/2026-07-25-cp4-fla-core-ve-hiz-kaldiraclari.md) ·
+> **kararı:** [ADR-0033](../../adr/0033-egitim-hizi-fla-core-checkpointing-batch.md) ·
+> **CP7 kaydı:** [`cp7-gemini-onizleme.md`](cp7-gemini-onizleme.md)
 
 ---
 
@@ -11,157 +12,258 @@
 
 | | durum |
 | :--- | :--- |
-| **Sprint 1 / Faz A** | ✅ **TAMAMLANDI** — 6/6 çıkış ölçütü (CP0 · CP1 · CP2+Kapı 0 · hakem paneli · CP3 · #39) |
-| **CP7 — Gemini önizlemesi** | 🟡 **%90** — 6 modun tüm skorları ALINDI, kayıt belgesi yazılmadı, A1 (m4_gem) eksik |
-| **Sprint 1 / Faz B** | 🔴 **BAŞLAMADI** — CP4 smoke bir kez denendi, **kritik engel bulundu** (aşağıda) |
+| **Sprint 1 / Faz A** | ✅ **TAMAMLANDI** (2026-07-24, #39) — 6/6 çıkış ölçütü |
+| **CP7 — Gemini önizlemesi** | ✅ **TAMAMLANDI** — kayıt belgesi yazıldı, tüm A1/coverage yeniden hesaplandı |
+| **CP4 — smoke + hız** | ✅ **TAMAMLANDI** — 4/4 ölçüt yeşil, **36 → 5.4 s/it (6.4×)**, ADR-0033 |
+| **CP5 — `τ_grounding` tam eğitim** | 🔵 **HAZIR, BİLEREK BAŞLATILMADI** (kullanıcı kuralı, 2026-07-25) |
+| **CP6 — ölçüm + `research_log #41`** | 🔴 CP5'e bağlı |
 
-**Kararlar bu oturumda kilitlendi:** ADR-0030 (base + düşünce modu) · ADR-0031 (precision) ·
-ADR-0032 (hakem paneli). `sprint1.md` ve `TODO.md` Faz A sonuçlarıyla güncellendi.
-
----
-
-## 2. ⚠️ ÖNCE OKU — Faz B'yi bloke eden kritik bulgu
-
-**`τ_grounding` eğitimi Modal A100-40GB'de ~36 s/it ölçüldü** (step 7-9 istikrarlı 36-37 sn).
-Beklenen ~4-5 s/it idi → **~11 saat / ~$25**, kabul edilemez.
-
-**Kök neden:** `flash-linear-attention` + `causal-conv1d` **Modal image'ında YOK** →
-Qwen3.5'in **32 katmanının 24'ü linear-attention** ve torch-fallback'te koşuyor
-(log: *"fast path is not available ... Falling back to torch implementation"*).
-
-> ⚠️ **Bu bir güç-durumu (laptop pil/fan) sorunu DEĞİL.** Ölçüm Modal A100'de alındı.
-> (#39'daki 17× güç tuzağı ayrı bir konu ve yerel ölçümler için hâlâ geçerli.)
-
-**Çözüm yolu — sıradaki oturumun ilk işi:**
-`fla` + `causal-conv1d` uzantıları **torch ≥ 2.11** istiyor; bizim `requirements.lock.txt`
-**torch 2.10** (yerel Blackwell/sm_120 için gerekli). **Ama Modal A100 = sm_80, Blackwell değil**
-→ Modal image'ı yerelden **bağımsız** kurulabilir: torch ≥2.11 + `flash-linear-attention` +
-`causal-conv1d`. Bu fast-path'i açar → beklenen ~4-5 s/it → ~1.5 saat.
-
-**Plan:** taze bir subagent'a *"torch ≥2.11 + fast-path Modal image kur, CP4 smoke ile s/it
-doğrula, sonra CP5"* görevi ver. **CP4 smoke s/it'i görmeden CP5'e para harcama.**
+> ⚠️ **Önceki devir notunun §2'si (Faz B'yi bloke eden "kritik engel") ARTIK GEÇERSİZ.**
+> Teşhisi (*"`fla` torch ≥2.11 istiyor → yerelden bağımsız Modal image kur"*) **ölçülerek
+> çürütüldü.** O planı uygulama — gereksiz iş ve pinli lock'tan sapma riski. Doğrusu §2'de.
 
 ---
 
-## 3. Kalan iş — CP7 (Gemini) · ~30 dk, ucuz
+## 2. Faz B'nin kapısı nasıl açıldı (özet — ayrıntı #40'ta)
 
-### 3.1 Elde ne var
+**Engel sürüm değil, bir paket bölünmesiydi.** `flash-linear-attention` 0.5.x'te ikiye ayrılmış;
+çekirdekler (`fla.ops.gated_delta_rule`, `fla.modules`) **`fla-core`** paketinde ve image
+`--no-deps` kullandığı için o hiç kurulmuyordu. Sonuç, sessiz-bozulmanın "kötüden de kötü" bir
+biçimi: `import fla` çalıştığı için `transformers`'ın kapısı **True** dönüyor ama alt-modül yok →
+**model hiç yüklenmiyor.** Hata mesajı da kök nedeni gizliyordu.
 
-**Üretim TAM** (`outputs/eval/m*_gem_detail.jsonl`, 470 cevap, boş yok, hepsi `finish_reason=stop`).
-**Hakem skorları TAM** — 6 modun `_gem_summary.json` dosyaları mevcut.
+**Düzeltme:** image'a `fla-core` eklendi (`modal_train.py`). Pinli `requirements.lock.txt`
+**korundu** — `fla-core` yalnız `torch≥2.7` + `triton≥3.3` istiyor, bizde 2.10 + 3.6 var.
 
-### 3.2 ⚠️ Eksik iki kalem
+**Hız kaldıraçları — yalnız kalite-nötr olanlar alındı** (kullanıcı kuralı: *"kaliteden
+kaybetmeden"*): `gradient_checkpointing` kapalı + `batch 2 × grad_accum 8` (etkin batch **16
+sabit**). **`lora_dropout=0` reddedildi** — CP6'nın yan-hasar ölçümünde atfedilebilirliği bozardı.
 
-1. **A1 rescore `m4_gem`** — `gnd_m4_gem.jsonl` detay dosyası **yarış sonucu bozuldu** (aşağıdaki
-   ders). `m1_gem` A1 alındı (0.9729, 61/80). `m4_gem` için `groundedness.py` yeniden koşulmalı
-   (~$0.035), sonra `rescore_answered.py`.
-   ```bash
-   source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a && export LLM_GATEWAY=openai
-   python scripts/groundedness.py --details outputs/eval/m4_gem_detail.jsonl --label m4_gem --mode data
-   python scripts/rescore_answered.py --gnd outputs/eval/gnd_m4_gem.jsonl --bench outputs/eval/m4_gem_detail.jsonl --label m4_gem
-   ```
-2. **Kayıt belgesi** — `docs/record/sprint1/cp7-gemini-onizleme.md` (tablo + yorum). Sayılar §4'te hazır.
+| konfigürasyon | s/it | tam koşu |
+| :--- | ---: | ---: |
+| fla YOK (eski) | ~36 | ~11 sa · ~$25 |
+| `fla-core` + eski ayarlar | 10.5 | ~3.2 sa · ~$7.6 |
+| **seçilen** | **5.4** | **~1.9 sa · ~$4.5** *(1.6 sa eğitim + eval/checkpoint payı)* |
 
-### 3.3 🚨 Bu oturumun operasyonel dersi — YARIŞ KORUMASI YOK
-
-**Aynı label ile iki skorlama süreci paralel koşarsa detay dosyası bozulur.** Bu oturumda üç kez
-oldu (ana ajanın orphan shell'i + subagent aynı `_gem` label'ına yazdı): `gnd_m4_gem.jsonl` 74/80
-geçerli + 3 bozuk satır, `gnd_m5_gem.jsonl` 81 satır (1 bozuk). **Hata vermedi** — summary yazıldı
-ve sayı üretti. Bu, #39'daki sessiz-bozulma sınıfının **beşinci** vakası.
-
-> **Alınacak önlem (sıradaki oturumda koda gir):** `groundedness.py`/`score_abstention.py` çıktı
-> dosyasına yazmadan önce **kilit dosyası** (`.lock`) alsın ya da aynı label için canlı süreç varsa
-> **erken patlasın**. ADR-0026 ruhu: sessizce bozulmaktansa erken dur.
-
-**Ayrıca yapıldı (bu oturum):** API timeout dayanıklılığı — `llm_client.py` + `gen_eval_grounded.py`
-artık `max_retries=8`, `timeout=120s` (env: `LLM_MAX_RETRIES`/`LLM_TIMEOUT_S`). *"m5 got cut by
-timeout"* sınıfı kırılma bir daha koca koşuyu düşürmemeli.
+⚠️ **`causal-conv1d` bilerek yok** → *"The fast path is not available"* uyarısı **yine basılır.**
+Uyarıyı başarısızlık sanma; ölçüt **s/it**.
 
 ---
 
-## 4. 📊 ÖLÇÜLEN SAYILAR — kaybolmasın (asıl değer bu)
+## 3. Sıradaki iş — CP5 (komut hazır, kopyala-koş)
 
-**Künye:** DEV havuzu (core_hard 80 · trap 70) · seed **3407** · hakem **gpt-4o-mini**
-(`LLM_GATEWAY=openai`, tek aile — iç kıyas) · **harness KAPALI** (ikisi de çıplak) ·
-ölçüm tarihi **2026-07-24/25**.
+**Ön koşul yok.** Smoke bu komutun `--smoke` hâliyle geçti; tek fark `--smoke` yerine `--epochs 1`.
 
-**Özne 1:** `Qwen/Qwen3.5-4B` Q4_K_M, yerel llama.cpp, `--thinking off`, $0
-**Özne 2:** `google/gemini-3.1-flash-lite` (OpenRouter, provider **Google AI Studio**)
+```bash
+source ~/code/global_venv/bin/activate
+modal run --detach modal_train.py::spawn_sft \
+  --model 'Qwen/Qwen3.5-4B' --data /data/raft_scrubbed --run-name tg --epochs 1 \
+  --user-part '<|im_start|>user\n' --assistant-part '<|im_start|>assistant\n' \
+  --bf16-base --no-system --no-grad-checkpoint --batch 2 --grad-accum 8 \
+  --lr 1e-4 --lora-r 16 --lora-alpha 32 --warmup-ratio 0.05 \
+  --target-modules 'q_proj k_proj v_proj o_proj in_proj_qkv in_proj_z in_proj_a in_proj_b gate_proj up_proj down_proj'
+```
 
-| mod | doğru davranış | **Qwen base** | **Gemini 3.1 FL** | fark |
-| :--- | :--- | ---: | ---: | :--- |
-| **M1** distractor · faith_macro(ALL) | cevapla | 0.839 | **0.873** | Gemini +0.034 |
-| **M1** cit_precision | | 0.978 | **0.990** | ~eşit |
-| **M1** A1 (cevaplanan-only) | | **0.972** | 0.973 | **başa baş** |
-| **M1** coverage | | **34/80 = %42.5** | **61/80 = %76.2** | Gemini +%33.7 |
-| **M4** oracle · faith_macro | cevapla | **0.981** | 0.974 | ~eşit (base hafif önde) |
-| **M4** cit_precision | | 1.000 | 1.000 | eşit |
-| **M4** coverage | | 75/80 = %93.8 | 78/80 = %97.5 | ~eşit |
-| **M2** near-miss · Rej(regex) | **reddet** | 0.567 | **0.807** | Gemini +0.24 |
-| **M2** Rej(LLM) | | 0.633 | **0.842** | Gemini +0.21 |
-| **M2b** çok-kaynak · Rej(regex) | **reddet** | **0.987** | 0.970 | ~eşit |
-| **M2b** Rej(LLM) | | 0.973 | 0.970 | eşit |
-| **M3** boş bağlam · Rej | **reddet** | **1.000** | **1.000** | eşit (ikisi tavan) |
-| **M5** kör · faith (ANTİ-HEDEF) | ↑ istenmez | **0.399** | 0.583 | base daha "temiz" |
-| **M5** cit_precision | | 0.570 | 0.748 | |
-| **register** (M1 · M4 · M2 · M2b) | | 0.973 · 0.961 · 0.964 · 0.981 | 0.983 · 0.923 · 0.919 · 0.988 | ~eşit |
+**İzleme:** `modal app list` → app-id al → `modal app logs <app-id>`.
+Filtrelerken `grep -vF "Loading weights"` ekle, yoksa ağırlık çubuğu logu boğuyor.
 
-> ⚠️ **`m4_gem` faith için iki okuma var:** 0.987 (ilk tam koşu) ve **0.974** (ikinci koşu, üstteki
-> tabloda). Fark hakem varyansı — yarış olayından bağımsız, ikisi de n=80 tam koşu. **Tabloda
-> ikincisi kullanıldı; belgede bu varyans not edilmeli** (tek-hakem sınırının somut kanıtı).
+**Bitince:** `modal volume get hukuk-outputs /tg ./outputs/tg`
 
-### İlk okuma — yoruma temel
+### ⚠️ Bu komuttaki üç şey ASLA düşürülmez
 
-1. **M4 oracle'da fark yok** (0.981 vs 0.974, atıf 1.0 vs 1.0). Doğru kaynak eline verildiğinde
-   **çıplak 4B base, frontier'ın en ucuz modeliyle başa baş.** Kapasite sorunu yok.
-2. **A1'de de fark yok** (0.972 vs 0.973) — *cevapladığında* base tam olarak Gemini kadar sadık.
-3. **Asıl açık coverage'da: %42.5 vs %76.2.** Base distractor gürültüsü altında aşırı temkinli,
-   "kör red"e kaçıyor. **Bu tam olarak `τ_grounding`'in hedefi** — 12B hattında bu kol coverage'ı
-   %47.5 → **%72.5** yapmıştı, yani neredeyse Gemini bandına.
-4. **M2 near-miss'te Gemini net önde** (0.842 vs 0.633) — abstention kalitesi. Bu `τ_abstention`
-   (Sprint 2) ve **red kapısı harness'ının** (Sprint 4) hedefi.
-5. **M5 anti-hedefte base daha iyi** (0.399 vs 0.583): base parametrik ezberden daha az konuşuyor —
-   *"güncellik kütüphanede, ağırlıkta değil"* ilkesiyle uyumlu. Gemini'nin yüksek M5'i onun için
-   avantaj değil, bizim protokolümüzde **anti-hedef**.
+| bayrak | düşerse ne olur |
+| :--- | :--- |
+| `--data /data/raft_scrubbed` | `/raft_scrubbed` **yanlıştır** — volume konteynerde `/data`'ya bağlı. (Artık saniyede patlar, ama yine de doğrusunu yaz.) |
+| `--target-modules …` | Varsayılan liste `in_proj_*` içermez → **24 linear-attention katmanı LoRA'sız kalır, hata vermeden.** |
+| `--no-system` | Veri kendi system prompt'unu taşıyor → çift system olur. |
 
-**Zorluk okuması:** en ucuz frontier model bizi ezmiyor. Tavanda eşit, sadakatte eşit; açık
-**coverage** ve **near-miss abstention**'da — ikisi de tezin planladığı iki kolun (τg, τa) ve
-harness'ın doğrudan hedefi. **İş yapılabilir görünüyor.**
-
-⚠️ **Çerçeve uyarısı:** bu **çıplak base**, henüz FT yok, harness yok. Ve bu **Sprint 5 parite
-iddiası DEĞİL** — önizleme. Adalet kuralı (harness rakibe de verilir) burada uygulanmadı çünkü
-harness ikisinde de kapalı (model-düzeyi kıyas, CP2/CP6 ile aynı koşul).
+🚫 **`--no-grad-checkpoint` YEREL kartta kullanılmaz** (12 GB → OOM). Yalnız A100/H100.
 
 ---
 
-## 5. Sıradaki oturumun iş sırası
+## 4. CP6 — ölçüm (CP5 bitince)
 
-| # | iş | süre/maliyet | not |
-| :-- | :--- | :--- | :--- |
-| 1 | **CP7'yi kapat** — `m4_gem` gnd+A1 yeniden koş, `cp7-gemini-onizleme.md` yaz | ~30 dk · ~$0.04 | sayılar §4'te hazır |
-| 2 | **Yarış koruması** — skorlama scriptlerine kilit/erken-patlama | ~20 dk · $0 | §3.3 |
-| 3 | **Modal fast-path image** — torch ≥2.11 + `fla` + `causal-conv1d`, CP4 smoke ile s/it doğrula | ? · ~$0.15 | **Faz B'nin kapısı**, §2 |
-| 4 | CP5 — `τ_grounding` tam eğitim (spawn + `--detach`) | ~1.5 sa · ~$3.6 | ancak s/it yeşilse |
-| 5 | CP6 — ölçüm + `research_log #40` | ~1 sa · ~$0.25 | CP2 çıpalarıyla elmayla elma |
+`τ_grounding`'i CP2'nin **aynı** 6 modunda, **harness KAPALI**, aynı seed/n/hakem ile koş
+(`sprint1.md` CP6). Kıyas **DEV havuzundaki base çıpalarına** karşı — elmayla elma.
+Kayıt: `research_log` **#41** (⚠️ #40 bu oturumda CP4'e gitti).
 
-**Bütçe:** Modal ~$8.20 kalan ($35 cap; kullanıcı $42.50'ye çıkarmayı planladı).
-OpenAI hakem bütçesi `.env`'de `OPENAI_BUDGET_USD=5` — bu oturumda ~$0.35 harcandı.
+**Ön-kayıtlı beklenti** `sprint1.md` CP6'da yazılı — özellikle **M2'nin düşmesi beklenen bir
+sonuçtur**, panik sebebi değil; M2 ve M2b **birlikte** okunur.
 
 ---
 
-## 6. Bu oturumda değişen dosyalar (commit edilmedi)
+## 5. Bütçe
 
-**Yeni:** `docs/adr/003{0,1,2}-*.md` · `docs/record/research_log/2026-07-24-cp0-base-dogrulama-kapisi.md` ·
-`docs/record/sprint1/` · `scripts/{measure_vram_stack,scrub_teacher_jargon}.py` ·
-`scripts/{run,score}_gemini_benchmark.sh` · `data/train/raft_scrubbed/` · `outputs/`
+| kalem | durum |
+| :--- | :--- |
+| Modal cap | **$42.50** (kullanıcı kararı 2026-07-25, $35'ten yükseltildi — ADR-0033) |
+| Bu oturumda Modal harcaması | smoke denemeleri + teşhis koşuları (biri ~25 dk boşa giden ilk deneme) — **gerçek rakam Modal panelinden teyit edilmeli** |
+| CP5 projeksiyonu | ~$4.5 |
+| OpenAI hakem | `.env` `OPENAI_BUDGET_USD=5`; bu oturumda ~$0.08 (m4_gem + m5_gem yeniden skorlama) |
 
-**Değişen:** `sprint1.md` · `TODO.md` · `docs/adr/README.md` · `docs/record/research_log/README.md` ·
-`scripts/{gen_eval_grounded,llm_client,score_abstention,train_sft,diag_chat_template,setup_cuda_toolkit}.py|sh` ·
-`modal_train.py`
+---
 
-⚠️ `scripts/train_sft.py` ve `modal_train.py`'de **yarım kalmış Faz B değişiklikleri var**
-(bf16 taban bayrağı denemesi). Sıradaki oturumda **önce `git diff` ile gözden geçir** — yarım
-bırakılmış bir bayrak eğitimi sessizce bozabilir.
+## 6. Bu oturumda değişen dosyalar (commit EDİLMEDİ)
 
-**Eğitim verisi kararı açık:** `data/train/raft/` (orijinal, %7.51 teacher-jargon sızıntılı) vs
-**`data/train/raft_scrubbed/`** (temiz, 1435 satır onarıldı). **Öneri: `raft_scrubbed` kullan.**
+**Yeni:** `docs/adr/0033-egitim-hizi-fla-core-checkpointing-batch.md` ·
+`docs/record/research_log/2026-07-25-cp4-fla-core-ve-hiz-kaldiraclari.md` ·
+`docs/record/sprint1/cp7-gemini-onizleme.md` · `modal_diag.py` · `scripts/runlock.py` ·
+`outputs/eval/a1_{m1,m4,m5}_base.txt` · `outputs/eval/a1_m5_gem.txt` ·
+`outputs/eval/gnd_m{4,5}_gem_summary.run*-BOZUK-DETAY.json` *(eski okumaların yedeği — hakem varyansı kanıtı)*
+
+**Değişen:** `modal_train.py` · `scripts/train_sft.py` · `scripts/{groundedness,score_abstention,score_register,rescore_answered,gen_eval_grounded}.py` ·
+`sprint1.md` · `docs/adr/README.md` · `docs/record/research_log/README.md` · `.gitignore`
+
+---
+
+## 7. Bu oturumda kapanan üç kod borcu
+
+1. **Yarış koruması** (`scripts/runlock.py`) — aynı label'a paralel yazan ikinci süreç artık
+   **para harcamadan erken patlıyor.** Dört skorlama/üretim scripti kilit alıyor. Test edildi.
+2. **`rescore_answered.py` kalibrasyonu ithal ediyor** — kendi kopya red-regex'i #39'un
+   kalibrasyonunu almamıştı; üç yanlış-pozitif ölçüldü, hepsi **coverage'ı düşük gösteriyordu**.
+   Artık `from score_abstention import REJECT_RE`.
+3. **Veri kapısı model yüklemesinin önüne alındı** — yanlış `--data` artık saniyede patlıyor
+   (~10 dk A100 yemek yerine).
+
+---
+
+## 8. Açık kalemler (CP7 belgesinden taşınan)
+
+- **Sağlayıcı pinlemesi rakip tarafında kayda geçmiyor:** `gen_eval_grounded.py` OpenRouter'a ham
+  HTTP ile gidiyor, `llm_client`'ın `note_provider()` yolunu atlıyor. **Sprint 5 ön koşulu.**
+- **Rakip üretim maliyeti ölçülmedi** — `llm_client.PRICE`'ta `gemini-3.1-flash-lite` yok.
+- **`sprint1.md` CP2 tablosundaki M2 base regex `0.500`**, `abst_m2_base_summary.json`'daki
+  **0.567** ile uyuşmuyor. Değiştirilmedi, işaretlendi.
+- **`causal-conv1d`** ve **H100** hız kaldıraçları elenmedi, sırada bekliyor (ADR-0033).
+
+---
+
+## 9. ≤8 GB bütçesi — ölçülen + Graph RAG için ilk TAHMİN
+
+**Ölçülen** (`outputs/eval/vram_stack.json`, Q4_K_M, KV `q8_0`, `-ngl 99 -fa on`, **tek akış**).
+⚠️ `server_gib` sunucunun payı; kartın toplamı için **masaüstü/compositor 1.33 GiB** eklenir —
+ADR-0031'in Q8_0'ı elerken kullandığı ayrım budur, burada da geçerli.
+
+| bağlam | ağırlık | KV + compute | sunucu payı | + masaüstü = **kart toplamı** |
+| ---: | ---: | ---: | ---: | ---: |
+| 4.096 | 2.59 | **0.50** | 3.09 | **4.53 GiB** |
+| 32.768 | 2.59 | **1.11** | 3.70 | **5.15 GiB** |
+| 131.072 | 2.59 | **3.17** | 5.76 | **7.26 GiB** |
+
+Bağlamı **32× büyütmek KV'ye yalnız +2.67 GiB** ekliyor — 32 katmanın 24'ü linear-attention,
+KV sadece 8 full-attention katmanında büyüyor (ADR-0031 yan bulgusu).
+
+### Graph RAG — **CPU'da. VRAM katkısı SIFIR.** ⚠️ Aşağıdakiler TAHMİN (harness Sprint 4)
+
+**Yukarıdaki tablo full-stack'tir** — RAG eklenince değişmez, çünkü harness GPU'ya hiç girmiyor
+(CLAUDE.md kararı: embedder CPU'da, graf + index CPU RAM/diskte). RAG **sistem RAM'inde** yaşar:
+
+Korpus **ölçüldü**: `data/corpus/mevzuat_maddeler.jsonl` = **40.496 madde**,
+900-char clip ile **≈60.300 chunk** (ort. 735 char, medyan 314).
+
+| bileşen | **CPU RAM** (plan) | *(GPU'ya konsaydı)* |
+| :--- | ---: | ---: |
+| vektör index — 60.3k × 768-dim fp16 | 88 MB *(1024-dim fp32'de 236 MB)* | *~0.09 GiB* |
+| embedder — e5-base sınıfı 278M | ~1.1 GB fp32 *(int8 ~0.3 GB)* | *~0.56 GiB* |
+| graf — 40k düğüm + atıf kenarları | on-MB'lar | *~0* |
+| reranker (opsiyonel, 278M) | ~1.1 GB | *~0.56 GiB* |
+| **toplam (reranker'sız)** | **~1.3-1.5 GB RAM** | *~0.65 GiB VRAM* |
+
+**Bedeli tek yerde:** sorgu embedding'i CPU'da → **~10-50 ms** ek gecikme. Model zaten 122.9 t/s
+decode ediyor (300 token ≈ **2.4 sn**), yani embedding toplam gecikmenin **~%1'i** — tek
+kullanıcıda hissedilmez. Karşılığında **tüm bağlam başlığı** satın alınıyor.
+
+### Embedder GPU'da olmalı mı? — görev döngüsü (duty cycle) argümanı
+
+Embedder **kesikli**, sürekli değil: indeksleme (60.3k forward pass) **bir kez, çevrimdışı**;
+runtime'da **kullanıcı turu başına TEK kısa forward pass**. Model cevabı üretirken boşta.
+→ %99 boşta duran bir bileşen için kıt 8 GB'tan **0.56 GiB kalıcı** ayırmak, sorgu başına ~30 ms
+kazandırır. "İhtiyaç anında GPU'ya yükle" seçeneği elenir (her sorguda ~0.5-1 sn yükleme →
+CPU'da koşmaktan kötü).
+
+| senaryo | ctx 4.096 | ctx 32.768 | ctx 131.072 |
+| :--- | ---: | ---: | ---: |
+| embedder **CPU'da** (plan) | 4.53 ✅ | 5.15 ✅ | 7.26 ✅ *(0.74 başlık)* |
+| embedder **GPU'da** (+0.56) | 5.09 ✅ | 5.71 ✅ | **7.82 ❌** *(0.18 başlık)* |
+
+**Yani <8 GB runtime'da her iki durumda da tutuyor — tek istisna embedder-GPU + 131.072.**
+Çalışma bandında (4.096-32.768) embedder'ı GPU'ya almak **serbest**, bütçeyi bozmuyor;
+sadece 128k bağlamla birlikte olmuyor, ikisinden biri seçilir.
+
+⚠️ **Asıl GPU tartışması reranker üzerinden yapılmalı, embedder üzerinden değil:** reranker
+sorgu başına top-k (~20) belgeyi *uzun metinlerle* skorlar → 20 uzun forward pass. Runtime'ın
+ağır RAG bileşeni odur. Reranker kullanılacaksa bu tablo yeniden kurulur.
+
+### 131.072 bağlam ne kadar uzun — ve neden ona hiç yaklaşmıyoruz (ÖLÇÜLDÜ)
+
+**Proje sabiti:** Türkçe hukuk metninde **1 token ≈ 3.12 karakter** (gerçek Qwen3.5 tokenizer'ı,
+`mevzuat_maddeler.jsonl`'den n=500 rastgele örneklem, seed 3407: 352.483 char / 112.964 token).
+Madde başına ortalama **226 token**.
+
+| bağlam | karakter | ~A4 sayfa | ~madde |
+| ---: | ---: | ---: | ---: |
+| 2.048 | 6.400 | 3 | 9 |
+| **4.096** | 12.800 | 6 | 18 |
+| 32.768 | 102.200 | 51 | 145 |
+| 131.072 | 409.000 | **204** | 580 |
+
+**Fiili runtime bağlamımız ~2.000 token** = 131.072'nin **%1.5'i**: 5 `[KAYNAK]` × 900-char clip
+(4.500 char ≈ 1.440 token) + system + soru. `max_seq_len=2048` bu yüzden seçildi (#39: etkilenen %0.06).
+
+**Ve "uzun bağlam" stratejisi bu domende zaten çalışmıyor** — korpustan ölçüldü:
+
+| kanun | madde | ~token |
+| :--- | ---: | ---: |
+| TÜRK TİCARET KANUNU | 1570 | **~300.700** |
+| SOSYAL SİGORTALAR VE GSS | 473 | ~220.700 |
+| DEVLET MEMURLARI KANUNU | 848 | ~156.700 |
+| İCRA VE İFLAS KANUNU | 520 | ~132.800 |
+
+**En büyük dört kanunun hiçbiri 131k'ya sığmıyor.** Yani bağlamı büyütmek "kanunu modele okut"
+çözümünü açmıyor; **RAG tam olarak bu yüzden var.**
+
+→ **Çalışma noktası ctx 4096** (çok turlu sohbet için 8192-32768 rahat tavan).
+**131.072 satırı fiilen akademik** — ne VRAM bütçesinde ne ürün tasarımında bağlayıcı.
+
+### KV baştan tahsis ediliyor — "dolu bağlam" ek maliyet getirmiyor
+
+`measure_vram_stack.py` sunucuyu `-c <ctx>` ile açıp yalnız **8 token** üretiyor, yani context
+fiilen doldurulmadı. Buna rağmen sayılar geçerli: **llama.cpp KV cache'i `-c`'ye göre BAŞTAN
+tahsis ediyor**, dolarken büyütmüyor. Kanıt verinin kendisinde — üç ölçümde de prompt 8 token'dı
+ama KV+compute payı 0.50 → 1.11 → **3.17 GiB** diye büyüdü; tembel tahsis olsaydı üçü de aynı
+çıkardı. → Tablodaki rakamlar **dolu-KV rakamlarıdır**; 32.768'i tepesine kadar doldurmak
+KV tarafına tek byte eklemez.
+
+⚠️ **Ölçülmemiş tek pay:** gerçek bir 32k *prefill*'in compute buffer'ı, 8 token'lık üretimdekinden
+bir miktar büyük olabilir. llama.cpp'de bu buffer `-b/--batch-size` (varsayılan 2048) ile
+boyutlanır — **context uzunluğuyla değil** — yani sınırlı ve büyük kısmı yükleme anında zaten
+tahsisli. 2.3-2.9 GiB başlığı yiyebilmesi gerçekçi değil, ama *"olmalı"* diyoruz, ölçmedik.
+**Kapatması ucuz:** yerel kartta `-c 32768` + ~30k token'lık gerçek prompt + `nvidia-smi` tepe
+okuması. GPU maliyeti yok. ADR-0031'in VRAM tablosuna *"dolu-KV teyidi"* satırı olarak eklenecek.
+
+### 🟢 SONUÇ — embedder GPU'da olabilir, 131.072 hariç
+
+| senaryo | ctx 4.096 | ctx 32.768 | ctx 131.072 |
+| :--- | ---: | ---: | ---: |
+| embedder **CPU'da** (plan) | 4.53 ✅ | 5.15 ✅ | 7.26 ✅ *(0.74 başlık)* |
+| embedder **GPU'da** (+0.56) | 5.09 ✅ | 5.71 ✅ | **7.82 ❌** |
+
+**Embedder'ı GPU'ya almak ≤8 GB bütçesi açısından YEŞİL** — çalışma bandında (4.096-32.768)
+2.3-2.9 GiB başlık kalıyor, dolu KV dahil. **Tek kırıldığı yer 131.072+**, ki oraya zaten
+yaklaşmıyoruz (fiili bağlam ~2.000 token) ve en büyük kanunlarımız oraya sığmadığı için uzun-bağlam
+stratejisi bu domende çalışmıyor. Yani **hız için embedder GPU'da tutulabilir; 128k ile birlikte
+olmaz, ikisinden biri seçilir.**
+⚠️ Embedder boyutu **tahmin** (e5-base sınıfı, 278M fp16); model seçilmedi, hiçbir RAG sayısı
+ölçülmedi — Sprint 4.
+
+**İki yan bulgu:**
+- **Index önemsiz.** 60k chunk'lık korpusta vektör index'i çeyrek GB'ı geçmiyor — "RAG VRAM/RAM
+  yer" korkusu bizim ölçeğimizde yersiz. Yer kaplayan tek şey embedder/reranker **ağırlıkları**.
+- **Çalışma bandı ctx 4096-32768** (kart toplamı 4.53-5.15 GiB, 2.9-3.5 GiB başlık).
+  **131.072 "gösterilebilir tavan", çalışma noktası değil:** 7.26/8 GiB, tek akış, ve son
+  kullanıcının masaüstü bizim ölçtüğümüz 1.33 GiB'den ağırsa taşar.
+
+**Açık kalemler:** embedder seçimi yapılmadı (Türkçe kalitesi ayrı karar) · hiçbir RAG sayısı
+ölçülmedi · merge sonrası GGUF'un aynı boyutta çıktığı CP6'da teyit edilecek ·
+`≤8 GB full-stack` iddiası şu an **tasarım taahhüdü**, ölçüm değil.
