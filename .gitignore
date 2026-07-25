@@ -132,3 +132,6 @@ unsloth_compiled_cache/
 
 # Geçici çalışma alanı (Claude scratchpad) — repoya girmez
 scratchpad/
+
+# runlock (yarış koruması) — süreç ömrü boyunca duran geçici kilit dosyaları
+*.lock

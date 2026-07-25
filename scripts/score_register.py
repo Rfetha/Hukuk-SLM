@@ -18,6 +18,8 @@ import json
 import os
 import re
 
+import runlock  # aynı label'a paralel yazım = sessiz bozulma (bkz. runlock.py)
+
 # Uzman/teknik-hukuk register işaretleri (resmî bağlaç, mevzuat dili, atıf, alıntı).
 EXPERT_PAT = [
     r"uyarınca", r"gereğince", r"hükm(ü|ünce|leri|üne)", r"mezkûr", r"işbu", r"tabidir",
@@ -58,6 +60,7 @@ def main():
 
     rows = [json.loads(l) for l in open(a.details, encoding="utf-8") if l.strip()]
     out_path = os.path.join(a.out_dir, f"reg_{a.label}.jsonl")
+    runlock.acquire(out_path, tag=f"register {a.label}")   # 🚨 YARIŞ KAPISI
     scores = []
     with open(out_path, "w", encoding="utf-8") as f:
         for r in rows:

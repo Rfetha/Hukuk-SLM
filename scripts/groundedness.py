@@ -45,6 +45,7 @@ import statistics
 # maliyet-normalize parite iddiası (ADR-0017) tek ve denetlenebilir bir tabloya dayanmalı.
 from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E402
                         note_provider, seen_providers, loads_tolerant)
+import runlock  # noqa: E402  — aynı label'a paralel yazım = sessiz bozulma (bkz. runlock.py)
 
 MAX_SOURCE_CHARS = 3500
 
@@ -201,6 +202,8 @@ def main():
 
     os.makedirs(a.out_dir, exist_ok=True)
     op = os.path.join(a.out_dir, f"gnd_{a.label}.jsonl")
+    # 🚨 YARIŞ KAPISI: aynı label'a yazan ikinci bir süreç varsa BURADA dur — para harcamadan.
+    runlock.acquire(op, tag=f"gnd {a.label}")
     spent, out = 0.0, []
     print(f"[gnd] {a.label}: {len(rows)} cevap | mod={a.mode} | hakem={a.judge_model} "
           f"| runs={a.runs} | kaynak={a.source_field}")

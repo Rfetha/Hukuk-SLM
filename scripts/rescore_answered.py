@@ -13,15 +13,22 @@ Kullanım:
 """
 import argparse
 import json
-import re
 
-# score_abstention ile AYNI red-ifade tespiti (tutarlılık).
-ABSTAIN_RE = re.compile(
-    r"düzenle(?:m[ie]yor|nmemiş|nmemekte)|yer al(?:m[ıi]yor|mamakta)|"
-    r"bulunma(?:maktadır|z|yor)|kapsama(?:maktadır|z)|içerme(?:mektedir|z|miyor)|"
-    r"belirtilme(?:miş|mekte)|değinilme(?:miş|mekte)|bilgi (?:yok|bulunmamakta)|"
-    r"mevcut değil|söz konusu değil|bir avukata danış|ilgili maddeye danış|"
-    r"kaynak(?:lar)?da (?:bu|yok)", re.I)
+# ⚠️ TEK KAYNAK (2026-07-25): red tespiti score_abstention.REJECT_RE'den İTHAL edilir.
+#
+# Buraya kadar bu dosya kendi KOPYA regex'ini taşıyordu ve docstring "score_abstention ile
+# AYNI" diyordu — ama #39'un kalibrasyonu (2026-07-24) yalnız score_abstention.py'ye işlendi,
+# kopya eski hâlinde kaldı. İki tanım sessizce ayrıştı. Ölçülen fark (n=480 cevap, 6 küme):
+# üç ayrışma, ÜÇÜ DE eski kopyanın YANLIŞ-POZİTİFİ —
+#   · `kaynak(?:lar)?da (?:bu|yok)` bir CEVABI red saydı
+#     ("Verilen kaynaklarda bu konuyu düzenleyen madde TCK 227'dir")
+#   · `bulunmaz` kanunun kendi KOŞUL dilini red saydı ("hüküm bulunmazsa",
+#     "başvuruda bulunmazsanız") — #39'un `(?!sa)` bakışı tam bunu eliyor.
+# Yön tek taraflı: yanlış-pozitif red → doğru cevaplanmış satır "cevaplanan" kümesinden
+# DÜŞÜYOR → coverage OLDUĞUNDAN DÜŞÜK, A1 havuzu daralıyor. Coverage, τ_grounding'in
+# hedef metriği olduğu için bu yön zararsız değil.
+# Kopya yerine ithal → kalibrasyon bir yerde yapılır, her yerde geçerlidir (TASARIM §3.4).
+from score_abstention import REJECT_RE as ABSTAIN_RE
 
 
 def load(p):

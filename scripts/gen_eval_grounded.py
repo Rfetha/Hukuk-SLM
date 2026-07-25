@@ -59,6 +59,8 @@ SYSTEM_PROMPT_RAG_MULTI = raft_pack.SYSTEM_PROMPT_RAG_MULTI
 # birebir aynı fonksiyon → dağılım garantili eşleşir. (build_sft_v2b saf stdlib, torch/unsloth yok.)
 from build_sft_v2b import clip_sources_block
 
+import runlock  # aynı label'a paralel yazım = sessiz bozulma (bkz. runlock.py)
+
 MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
 
 
@@ -293,6 +295,8 @@ def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=
 def main():
     a = parse_args()
     os.makedirs(a.out_dir, exist_ok=True)
+    # 🚨 YARIŞ KAPISI: aynı label'a yazan ikinci bir üretim süreci varsa modeli yüklemeden dur.
+    runlock.acquire(os.path.join(a.out_dir, f"{a.label}_detail.jsonl"), tag=f"gen {a.label}")
 
     rows = [json.loads(l) for l in open(a.data, encoding="utf-8") if l.strip()]
     idx = load_madde_index(a.madde_path)
