@@ -38,6 +38,7 @@ JUDGE_SYSTEM = (
 # Fiyat + kapı + JSON-modu tek yerde: llm_client (ADR-0029).
 from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E402
                         note_provider, seen_providers, loads_tolerant)
+import runlock  # noqa: E402  — aynı label'a paralel yazım = sessiz bozulma (bkz. runlock.py)
 
 # G2 — exact-match rejection (Rej): deterministik red-ifadesi tespiti (RGB Rej, hakemsiz).
 # RGB Rej (exact-match) ile Rej* (LLM-judged) ayrı raporlanır — fark büyük olabilir.
@@ -106,6 +107,11 @@ def main():
     client, gateway = make_client()
     a.judge_model = resolve(a.judge_model, gateway)
     budget = float(os.environ.get("OPENAI_BUDGET_USD", "5") or "5")
+
+    # 🚨 YARIŞ KAPISI: hakem döngüsünden ÖNCE — ikinci bir süreç aynı label'a yazıyorsa
+    # burada dur (para harcanmadan, çıktı bozulmadan).
+    os.makedirs(a.out_dir, exist_ok=True)
+    runlock.acquire(f"{a.out_dir}/abst_{a.label}.jsonl", tag=f"abst {a.label}")
 
     rows = load_jsonl(a.details)
     out, spent = [], 0.0
