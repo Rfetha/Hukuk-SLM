@@ -40,6 +40,7 @@ Yeni hattın protokolü ve tasarımı: [`TASARIM.md`](../../../TASARIM.md) · ka
 | # | Tarih | Başlık | Kanca |
 |---|---|---|---|
 | **[39](2026-07-24-cp0-base-dogrulama-kapisi.md)** | 2026-07-24 | **Faz A: base kapısı (Qwen3.5-4B) + CP2 çıpaları** | 6/6 kapı · **dört sessiz-bozulma** (düşünce-modu · güç-durumu · red-regex `bulunmuyor` · teacher-jargon) · Kapı 0: `τ_register` düşer · base kör-red deseni %42.5 coverage |
+| **[40](2026-07-25-cp4-fla-core-ve-hiz-kaldiraclari.md)** | 2026-07-25 | **CP4: Faz B'nin kapısı bir paket bölünmesiydi · 36 → 5.4 s/it** | `fla-core` ayrı pakete taşınmış → `import fla` çalışıyor, kapı **True** dönüyor, model **hiç yüklenmiyor** (fla'sızdan kötü) · *"torch≥2.11 gerekiyor"* teşhisi çürütüldü · **6.4× hız, reçete sabit** (kanıt: loss 0.7987↔0.788, `adapter_config.json`) · `dropout=0` **atfedilebilirlik** gerekçesiyle reddedildi · yerel kartın varsayılanları buluta taşınmıştı |
 
 ⚠️ **Eski sayılar yeni tabloya karışmaz.** 12B protokolü (bf16/NF4, farklı base) ayrı satırda
 raporlanır; **dersler taşınır, rakamlar taşınmaz.**

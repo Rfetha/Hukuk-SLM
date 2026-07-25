@@ -385,6 +385,40 @@ modal run --detach modal_train.py::spawn_sft \
 "yerelde mi Modal'da mı eğitelim" sorusunu **tahminle değil ölçümle** kapatır — ve zaten yapman
 gereken işin içinde.
 
+> ### ✅ GERÇEKLEŞEN (2026-07-25) — **4/4 ölçüt yeşil · hız 36 → 5.4 s/it (6.4×)**
+>
+> Karar: **ADR-0033**. Modal A100-40GB, `--bf16-base`, 50/50 adım **6 dk 52 sn**.
+>
+> | ölçüt | sonuç |
+> | :--- | :--- |
+> | veri doğru yüklendi | ✅ `Num examples = 17,323` (`/data/raft_scrubbed`) |
+> | turn işareti assert'i | ✅ render'da doğrulandı |
+> | LoRA param sayısı | ✅ **29.908.992 / 4.57B = %0.65**, görüntü kulesi temiz |
+> | loss düşüyor · OOM/NaN yok | ✅ 0.7987 (adım 10) → **0.3537** (adım 50), grad_norm 0.54 |
+>
+> **Faz B'nin kapısı bir paket bölünmesiydi, sürüm değil.** Devir notunun *"fla torch≥2.11 istiyor,
+> ayrı image kur"* teşhisi **çürütüldü**: `flash-linear-attention` 0.5.x'te bölünmüş, çekirdekler
+> **`fla-core`**'da; `--no-deps` onu atlayınca `import fla` çalışıyor (→ transformers fast-path'i
+> **açık sanıyor**) ama `fla.modules` yok → **model hiç yüklenmiyor.** Eksik `fla-core`, fla'nın
+> hiç olmamasından KÖTÜ. Pinli lock korundu, ayrı image kurulmadı.
+> ⚠️ `causal-conv1d` yok → *"fast path is not available"* uyarısı **yine basılır**; uyarı ölçüt değil, **s/it** ölçüt.
+>
+> **Hız kaldıraçları KALİTE-NÖTR olanlarla sınırlandı** (kullanıcı kuralı): checkpointing kapalı +
+> `batch 2 × grad_accum 8` (etkin batch **16 sabit**). **`lora_dropout=0` reddedildi** — CP6'nın
+> yan-hasar ölçümünde *"kol mu bozdu, dropout mu"* sorusunu cevapsız bırakırdı.
+> Kanıt: adım 10 loss **0.7987 ↔ 0.788** (çıpa) · `adapter_config.json`: `lora_dropout=0.05`,
+> `use_rslora=False` → `ΔW=(α/r)·BA` tanımı sağlam.
+>
+> **⚠️ İki yol tuzağı kayda geçti** (ikisi de bir koşu yaktı):
+> `--data` **konteyner** yoludur → volume `/data`'ya bağlı, yani `/data/raft_scrubbed`
+> (artık model yüklenmeden **saniyede** patlıyor) · `--target-modules` verilmezse `in_proj_*`
+> düşer ve **24 linear-attention katmanı LoRA'sız kalır** — hata vermeden.
+>
+> **Yeni araç:** `modal_diag.py` — `transformers`'ın kök nedeni gizleyen tembel-modül hatasını
+> (`Could not import module 'Qwen3_5ForConditionalGeneration'`) en ucuz GPU'da saniyeler içinde açar.
+>
+> **Tam koşu projeksiyonu:** 1083 adım × 5.4 s ≈ **1.6 saat ≈ $4** (Modal cap $35 → **$42.50**).
+
 > ### ⚠️ 12B'den
 > **`--detach` ŞART.** `--detach`siz `spawn` → ephemeral app entrypoint bitince kapanır, spawn'lanan
 > job **iptal olur.** İlk smoke tam böyle 0 task koştu.
@@ -424,7 +458,7 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 | 6-mod CANON | CP2'nin komutları + `--adapter outputs/tg` |
 | A1 | **cevaplanan-only** + coverage yan yana |
 | Kıyas | CP2 çıpaları — **elmayla elma**, aynı harness/mod/n/seed/hakem |
-| Kayıt | `research_log/` girdisi **#40**, aynı gün |
+| Kayıt | `research_log/` girdisi **#41**, aynı gün *(#40 CP4'e gitti — 2026-07-25)* |
 
 ### Ön-kayıtlı beklenti
 
@@ -496,6 +530,31 @@ sinyali. Base çıpaları (CP2) çıktığına göre, tek komutla bir rakibin ay
 > ⚠️ **Fiyat:** parite maliyeti **birincil-kaynak LİSTE fiyatıyla** (kapıya ödenen tutarla değil).
 
 **Kayıt:** `docs/record/sprint1/` altında — metrik + n + hakem + **rakip snapshot** + seed + çıktı dosyası.
+
+> ### ✅ GERÇEKLEŞEN (2026-07-24/25) — **kayıt: [`docs/record/sprint1/cp7-gemini-onizleme.md`](docs/record/sprint1/cp7-gemini-onizleme.md)**
+>
+> 6-mod × 2 özne **DEV** havuzunda koşuldu (470 cevap/özne, seed 3407, hakem `gpt-4o-mini`
+> OpenAI-direct, harness KAPALI). **Aile-dışlama sağlandı** (Google özne ↔ OpenAI hakem, ADR-0032).
+>
+> **Sonuç: en ucuz frontier model çıplak base'i EZMİYOR.** Tavanda (M4 **0.981** vs 0.974) ve
+> *cevapladığında* (A1 **0.9730** vs 0.9729) fark **ölçülemiyor**; M3 boş bağlamda ikisi de **1.000**,
+> M2b'de ikisi de ~0.97-0.99. Açık **tam iki eksende**: **coverage** (M1 **%43.75** vs **%76.25**) ve
+> **near-miss abstention** (M2 Rej regex **0.567** vs **0.807**). İkisi de `τ_grounding` + `τ_abstention`
+> + red-kapısı harness'ının **doğrudan hedefi.** M5 anti-hedefte base daha temiz (0.399 vs 0.579).
+>
+> **§3.4 zorunlu ön-adımı yapıldı:** Gemini'nin red dağarcığı **kalibrasyon gerektirmedi** — bizim
+> base'imizin dağarcığının **alt kümesi** (`bulunmuyor`/`bulunmamaktadır` %80). 181 geçerli tuzakta
+> **2 ayrışma** (ikisi de regex'in hatası değil), 13 non-reject satırın **tamamı** + 18 reject satırı
+> elle okundu. Regex **değiştirilmedi.**
+>
+> **⚠️ İki bulgu kayda girdi:** (a) **hakem varyansı** — `m4_gem` faith üç okumada 0.987 · 0.9738 ·
+> 0.9736 (±0.013 bandı) → "M4/A1'de fark yok" ifadesi *fark ölçülemiyor* demektir; Sprint 3'ün
+> üç-aileli paneli tam bu yüzden var. (b) **`rescore_answered.py` kalibre edilmemiş bir regex
+> KOPYASI taşıyordu** → tek kaynaktan ithale çevrildi, tüm A1/coverage sayıları yeniden hesaplandı.
+>
+> **⚠️ Açık kalemler (Sprint 5 ön koşulu):** üretim tarafında **sağlayıcı pinlemesi artefaktlarda
+> kayıtlı değil** (ham HTTP yolu `llm_client`'ı atlıyor) · **rakip üretim maliyeti ölçülmedi**
+> (`llm_client.PRICE`'ta liste fiyatı yok).
 
 ---
 
