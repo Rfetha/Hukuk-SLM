@@ -12,17 +12,23 @@ Sessizce yanlış base'e düşmek, saatler süren bir koşuyu çöpe çevirir.
 büyükte `A100-80GB`/`H100`. Modal'da GPU dekoratör-zamanlı → env ile seçilir:
     HUKUK_GPU=L4 modal run modal_train.py::spawn_sft --model <repo> --data /data/<set>
 
+⚠️ **`--data` KONTEYNER İÇİ YOLDUR, volume yolu DEĞİL.** `hukuk-data` volume'ü `/data`'ya
+bağlanır (aşağıdaki VOLUMES), yani volume'deki `/<set>` konteynerde `/data/<set>` olur.
+`--data /<set>` yazmak `FileNotFoundError: Unable to find '/<set>/train.jsonl'` verir — ve bu hata
+(düzeltilmeden önce) model yüklendikten SONRA patlıyordu, yani ~10 dk GPU yakıyordu. Artık
+`train_sft.py` veriyi model yüklemeden önce denetliyor.
+
 Kullanım:
-  # 0) Veriyi bir kez volume'a yükle
+  # 0) Veriyi bir kez volume'a yükle  (volume kökü → /<set>)
   modal volume put hukuk-data data/train/<set> /<set>
 
-  # 1) Önce SMOKE (~50 step, config+loss doğrulama)
-  modal run modal_train.py::spawn_sft --model <hf-repo> --data /<set> --smoke \
+  # 1) Önce SMOKE (~50 step, config+loss doğrulama)   ← DİKKAT: /data/<set>
+  modal run --detach modal_train.py::spawn_sft --model <hf-repo> --data /data/<set> --smoke \
       --user-part '<|turn>user\n' --assistant-part '<|turn>model\n'
 
   # 2) Loss düşüyorsa tam koşu (aynı --user-part/--assistant-part ile)
-  modal run modal_train.py::spawn_sft --model <hf-repo> --data /<set> --run-name r1 --epochs 1 \
-      --user-part '...' --assistant-part '...'
+  modal run --detach modal_train.py::spawn_sft --model <hf-repo> --data /data/<set> --run-name r1 \
+      --epochs 1 --user-part '...' --assistant-part '...'
 
   # 3) Bitince adapter'ı yerele çek
   modal volume get hukuk-outputs /r1 ./outputs/r1
@@ -49,11 +55,30 @@ image = (
         "PYTHONUNBUFFERED": "1",            # loss canlı görünsün
         "UNSLOTH_DISABLE_STATISTICS": "1",  # açılış telemetri çağrısı hang/timeout'unu önle
     })
-    # ⚠️ Qwen3.5 HİBRİT linear-attention: causal-conv1d + flash-linear-attention YOKSA transformers
-    # torch reference fallback'e düşer (özyineli durumu her timestep materyalize eder) → A100-40GB'de
-    # ~38 s/it (ölçüldü, #39 smoke) = tam koşu ~10 sa. fla saf Triton (derleme yok) → fast path'i açar.
-    # --no-deps: fla'nın torch/transformers üst-sürüm istemesini engelle (pinli env korunur; einops eklendi).
-    .pip_install("einops", "flash-linear-attention", extra_options="--no-deps")
+    # ⚠️ Qwen3.5 HİBRİT linear-attention: 32 katmanın 24'ü linear-attention. Triton çekirdeği yoksa
+    # transformers torch reference fallback'e düşer (özyineli durumu her timestep materyalize eder)
+    # → A100-40GB'de ~36 s/it (ölçüldü, #39) = tam koşu ~10 sa.
+    #
+    # 🚨 **`fla-core` ZORUNLU — `flash-linear-attention` TEK BAŞINA İŞE YARAMAZ, HATTA ZARARLI.**
+    # Paket 0.5.x'te İKİYE BÖLÜNDÜ (ölçüldü 2026-07-25, CP4): `flash-linear-attention` yalnız
+    # `fla/layers` + `fla/models` taşıyor; ÇEKİRDEKLER (`fla.ops.gated_delta_rule`, `fla.modules`)
+    # `fla-core`'da ve oraya `Requires-Dist: fla-core==<sürüm>` ile bağlanıyor. `--no-deps` bu bağı
+    # kesiyor → konteynerde `import fla` ÇALIŞIYOR (dolayısıyla transformers'ın
+    # `is_flash_linear_attention_available()` kapısı **True** dönüyor) ama `fla.modules` YOK
+    # → `from fla.modules import FusedRMSNormGated` çöküyor ve model HİÇ yüklenmiyor.
+    # Yani eksik `fla-core`, fla'nın hiç olmamasından KÖTÜ: yavaş-ama-çalışır yerine hiç-çalışmaz.
+    # (Hata `transformers`'ın tembel-modül sarmalayıcısı yüzünden kök nedeni gizleyen tek satıra
+    #  dönüşüyor: "Could not import module 'Qwen3_5ForConditionalGeneration'". Teşhis: modal_diag.py)
+    #
+    # Sürüm uyumu ÖLÇÜLDÜ: `fla-core` yalnız `torch>=2.7` + `triton>=3.3` istiyor; lock'ta
+    # torch 2.10.0 + triton 3.6.0 var → **yeterli.** ⚠️ Devir notundaki *"fla torch>=2.11 istiyor,
+    # ayrı bir Modal image kurulmalı"* teşhisi YANLIŞTI — pinli lock korunuyor, ayrı image gerekmiyor.
+    #
+    # `causal-conv1d` BİLEREK YOK: fla'nın opsiyonel extra'sı (`extra == "conv1d"`), derleme ister.
+    # Yokluğunda yalnız depthwise conv torch'a düşer; PAHALI çekirdek (`chunk_gated_delta_rule`)
+    # fla'dan gelir. ⚠️ Bu yüzden "fast path is not available" UYARISI YİNE BASILIR — uyarıyı
+    # başarısızlık sanma, ölçüt **s/it**.
+    .pip_install("einops", "fla-core", "flash-linear-attention", extra_options="--no-deps")
     .add_local_dir("scripts", remote_path="/root/scripts")
 )
 
@@ -177,7 +202,9 @@ def spawn_sft(model: str = "", data: str = "", run_name: str = "r1",
               epochs: float = 1.0, smoke: bool = False,
               lr: float = 0.0, lora_r: int = 0, lora_alpha: int = 0,
               warmup_ratio: float = 0.0, no_system: bool = False,
-              bf16_base: bool = False, target_modules: str = ""):
+              bf16_base: bool = False, target_modules: str = "",
+              lora_dropout: float = -1.0, no_grad_checkpoint: bool = False,
+              batch: int = 0, grad_accum: int = 0):
     """QLoRA SFT — fire-and-forget. Önce --smoke (para-kapısı), sonra tam koşu.
 
     --user-part / --assistant-part: base'in chat şablonundaki turn işaretleri.
@@ -202,6 +229,23 @@ def spawn_sft(model: str = "", data: str = "", run_name: str = "r1",
         extra += ["--bf16-base"]
     if target_modules:       # ⚠️ Qwen3.5 VLM: all-linear görüntü kulesine takar (#39) → metin kulesi listesi
         extra += ["--target-modules", *target_modules.split()]
+    # ⚠️ ADR-0033 hız kaldıraçları. `lora_dropout` varsayılanı -1.0 = "dokunma" (script'in 0.05'i
+    # kalır); 0.0 geçerli bir DEĞER olduğu için `if lora_dropout:` yazılamaz — 0.0 falsy'dir ve
+    # bayrak sessizce yok sayılırdı. Tam da kaçınmaya çalıştığımız sessiz-yok-sayma sınıfı.
+    if lora_dropout >= 0:
+        extra += ["--lora-dropout", str(lora_dropout)]
+    if no_grad_checkpoint:   # yalnız A100/H100 — yerel 12 GB kartta OOM
+        extra += ["--no-grad-checkpoint"]
+    # ⚠️ batch × grad_accum ÇARPIMI SABİT TUTULMALI (etkin batch = 16, reçete sabiti).
+    # batch=1 varsayılanı YEREL 12 GB kartın kuralıydı; A100'de GPU boş çalışıyor.
+    # İkisi birlikte verilir ki çarpım gözle denetlenebilsin.
+    if batch:
+        extra += ["--batch", str(batch)]
+    if grad_accum:
+        extra += ["--grad-accum", str(grad_accum)]
+    if bool(batch) != bool(grad_accum):
+        raise SystemExit("[modal] 🚫 --batch ve --grad-accum BİRLİKTE verilir "
+                         "(etkin batch = çarpımları; tek başına vermek onu sessizce kaydırır).")
 
     parts = dict(user_part=user_part, assistant_part=assistant_part)
     if smoke:
