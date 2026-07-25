@@ -78,6 +78,14 @@ def parse_args():
     # bf16 ortam sorunu (causal-conv1d/OOM) smoke'u bloke ederse ADR-0031 QLoRA fallback'ini yetkiler.
     p.add_argument("--bf16-base", action="store_true",
                    help="ADR-0031: bf16 donuk taban + bf16 LoRA (QLoRA değil). Bayrak yoksa NF4 4-bit taban.")
+    # ⚠️ ADR-0033 (hız kaldıracı, YALNIZ geniş VRAM'de): gradient checkpointing aktivasyonları
+    # yeniden hesaplayarak bellek kazanır — bedeli hesap gücü. Aşağıdaki varsayılan `"unsloth"`
+    # YEREL 12 GB kart için konmuştu; A100-40GB'de bf16 4.57B ağırlık ~9.1 GB + LoRA gradyanı
+    # 29.9M → ihtiyacımız olmayan bir tasarruf için hız ödüyoruz. ÖLÇÜM: CP4 smoke, 10.5 s/it
+    # (checkpointing AÇIK) çıpasına karşı kıyaslanır.
+    # 🚫 Yerel kartta (12 GB) BU BAYRAĞI KULLANMA — OOM.
+    p.add_argument("--no-grad-checkpoint", action="store_true",
+                   help="gradient checkpointing'i KAPAT (yalnız geniş VRAM: A100/H100). Yerelde OOM eder.")
     p.add_argument("--wandb", action="store_true", help="W&B'ye logla")
     p.add_argument("--max-steps", type=int, default=-1, help="smoke test için sınırla")
     return p.parse_args()
@@ -108,6 +116,27 @@ def main():
     os.environ["WANDB_PROJECT"] = "hakhukuk-sft"
     report_to = "wandb" if args.wandb else "none"
 
+    # 🚫 VERİ KAPISI — model YÜKLENMEDEN ÖNCE. Bu denetim eskiden `load_dataset` sırasında,
+    # yani ~10 dakikalık model indirme/yüklemesinden SONRA patlıyordu; Modal'da bu doğrudan
+    # yanlış yazılmış bir yol için A100 dakikası demek (2026-07-25 CP4'te bir kez yaşandı:
+    # `--data /raft_scrubbed` verildi, oysa volume konteynerde `/data`'ya bağlı → `/data/raft_scrubbed`).
+    # Ucuz denetim önce: saniyede patla, saatte değil.
+    data_files = {"train": os.path.join(args.data, "train.jsonl"),
+                  "validation": os.path.join(args.data, "validation.jsonl")}
+    missing = [p for p in data_files.values() if not os.path.isfile(p)]
+    if missing:
+        parent = os.path.dirname(args.data.rstrip("/")) or "/"
+        try:
+            komsu = sorted(os.listdir(parent))[:20]
+        except OSError:
+            komsu = ["(üst dizin okunamadı)"]
+        raise SystemExit(
+            f"[train] 🚫 VERİ BULUNAMADI: {', '.join(missing)}\n"
+            f"  --data={args.data!r}\n"
+            f"  ⚠️ Modal'da volume yolu ≠ konteyner yolu: `hukuk-data` **/data**'ya bağlanır,\n"
+            f"     yani volume'deki /<set> konteynerde **/data/<set>** olur.\n"
+            f"  {parent!r} içeriği: {komsu}")
+
     # --- Model + tokenizer ---
     # ADR-0031: --bf16-base → donuk bf16 taban (QLoRA değil); yoksa NF4 4-bit (12B hattı).
     load_in_4bit = not args.bf16_base
@@ -130,9 +159,17 @@ def main():
         # Farklı mimaride (MoE, linear-attention) tutmaz → "0 LoRA takıldı" veya exception.
         target_modules=args.target_modules,
         bias="none",
-        use_gradient_checkpointing="unsloth",  # 12GB için zorunlu
+        # "unsloth" = 12 GB yerel kart için zorunlu; A100/H100'de --no-grad-checkpoint ile kapatılır
+        # (ADR-0033). Kapatma kararı ÖLÇÜLÜR, varsayılmaz: smoke s/it çıpasıyla kıyasla.
+        use_gradient_checkpointing=False if args.no_grad_checkpoint else "unsloth",
         random_state=args.seed,
     )
+    print(f"[train] gradient_checkpointing = "
+          f"{'KAPALI (ADR-0033 hız kaldıracı — geniş VRAM)' if args.no_grad_checkpoint else 'unsloth (bellek tasarrufu)'}"
+          f" | lora_dropout = {args.lora_dropout}"
+          # Etkin batch REÇETE SABİTİ (16). batch/grad_accum ayrı ayrı değişebilir ama çarpımları
+          # değişirse öğrenme rejimi kayar ve bu HİÇBİR YERDE hata vermez → gözle denetlenebilsin.
+          f" | etkin batch = {args.batch}×{args.grad_accum} = {args.batch * args.grad_accum}")
 
     # --- Veri: messages → Gemma chat-template metni ---
     def to_text(example):
@@ -144,9 +181,7 @@ def main():
         )
         return {"text": text}
 
-    data_files = {"train": os.path.join(args.data, "train.jsonl"),
-                  "validation": os.path.join(args.data, "validation.jsonl")}
-    ds = load_dataset("json", data_files=data_files)
+    ds = load_dataset("json", data_files=data_files)   # yollar yukarıda doğrulandı
     ds = ds.map(to_text, remove_columns=[c for c in ds["train"].column_names])
 
     # 🚨 SESSİZ-BOZULMA KAPISI: maske sınırları render'da GERÇEKTEN var mı?
