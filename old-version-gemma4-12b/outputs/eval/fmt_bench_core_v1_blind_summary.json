@@ -1,9 +1,0 @@
-{
-  "label": "bench_core_v1_blind",
-  "n": 40,
-  "cite_present_rate": 1.0,
-  "paren_cite_rate": 1.0,
-  "single_cite_rate": 1.0,
-  "med_len": 117,
-  "note": "deterministik regex; atıf-disiplini sinyali (SFT'nin görünür katkı iddiası)."
-}
