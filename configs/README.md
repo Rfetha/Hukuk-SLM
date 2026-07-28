@@ -16,7 +16,7 @@ CHAT_TEMPLATE=configs/<base-adi>.jinja bash scripts/smoke_llamacpp.sh <gguf>
 CHAT_TEMPLATE=configs/<base-adi>.jinja bash scripts/diag_abstain.sh <gguf>
 ```
 
-Örnek (emekli hat): `old-version-gemma4-12b/configs/gemma4_nothink.jinja`
+Örnek (emekli hat): `~/code/hukuk-devir/configs/gemma4_nothink.jinja` — repo'dan silindi (ADR-0034).
 
 ---
 

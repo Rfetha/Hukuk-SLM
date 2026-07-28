@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **⚠️⚠️ CURRENT STATE (2026-07-24): NEW LINE. Authoritative design doc = [`TASARIM.md`](TASARIM.md) at repo root. Read it first.** Locked by **ADR-0027**.
 
-The Gemma 4 12B line (v0→v3) was **retired**, not deleted — artifacts live under `old-version-gemma4-12b/` (ADR-0024/0026). Its **lessons carry forward; its numbers do not** (different base, different protocol). The user's own draft `referans-design-doc.md` is the *input* to `TASARIM.md` and is **kept clean — never edit it.**
+The Gemma 4 12B line (v0→v3) was **retired**. Its artifacts no longer live in this repo: the `old-version-gemma4-12b/` tree was deleted on **2026-07-28 (ADR-0034)**, superseding ADR-0024/0026's "moved, not deleted". Two recovery paths, both intact: **(a)** the out-of-repo handover package `~/code/hukuk-devir/` — the only home of the LoRA adapters (v0/v1/v2b/v2c/v3), which were never in git; **(b)** git history — `git show a0575e6:old-version-gemma4-12b/<path>`, last commit containing the tree. Its **lessons carry forward; its numbers do not** (different base, different protocol). The user's own draft `referans-design-doc.md` is the *input* to `TASARIM.md` and is **kept clean — never edit it.**
 
 **Two-layer claim now in force:**
 - **Outer (main thesis, ADR-0017 reaffirmed):** in a narrow high-stakes domain (TR law), how close does an SLM + deterministic harness running at ~zero marginal cost on consumer hardware get to the **deployment class** of closed commercial models at **cost-normalized parity** — and how much of that comes from fine-tuning vs. the harness? *Terminology rule: never say "frontier" in the paper; say **cost band**.*

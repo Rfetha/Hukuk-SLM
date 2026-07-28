@@ -41,6 +41,7 @@ taşıyor → `gemma4-12b-dersler.md#adr-0011` gibi.
 | **[0031](0031-precision-inference-q4km-egitim-bf16-lora.md)** | 🟡 | **Precision:** dağıtım **Q4_K_M** sabit (kullanıcı kararı; Q8_0 <8 GB'a sığıyor ama başlık bırakmıyor + decode %28 yavaş) · eğitim **bf16 taban + LoRA**, QLoRA değil. VRAM × bağlam matrisi **ölçüldü** → TASARIM §12 borcu kapandı. ⚠️ Eğitim kolu **ölçüme bağlı**, karar kuralı önceden yazılı |
 | **[0032](0032-hakem-paneli-uc-aile-ve-aile-dislama.md)** | 🟢 | **Hakem paneli = OpenAI · Anthropic · Google** (özne ailesi Qwen'den ayrık). Aile-dışlama haritası çizildi; **asimetri** (bizde 3 hakem, rakipte 2) ve **kendi öznemizde self-preference ölçülemiyor** sınırı önceden yazıldı. `TASARIM.md` §13 açık soru **5'i kapatır.** Sürüm pinleme + harcama **Sprint 3** |
 | **[0033](0033-egitim-hizi-fla-core-checkpointing-batch.md)** | 🟢 | **Eğitim hızı — Faz B'nin kapısı açıldı.** Devir notunun *"fla torch≥2.11 istiyor"* teşhisi **çürütüldü**: `flash-linear-attention` 0.5.x'te bölünmüş, çekirdekler **`fla-core`**'da ve `--no-deps` onu atlıyordu → `import fla` çalıştığı için transformers fast-path'i **açık sanıp çöküyordu** (fla'sız durumdan kötü). Düzeltmeyle **36 → 10.5 s/it (3.4×)**, pinli lock korundu. Kalan kaldıraçlar **kalite-nötr olanlarla sınırlandı** (checkpointing kapalı · batch 2×8, etkin batch 16 sabit); **`dropout=0` REDDEDİLDİ** — CP6'nın yan-hasar ölçümünde atfedilebilirliği bozardı. Teşhis aracı: `modal_diag.py`. Bütçe $35 → **$42.50** |
+| **[0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md)** | 🟢 | **`old-version-gemma4-12b/` repo'dan silindi** (205 dosya / 8.1 MB) — **ADR-0024'ün *"taşındı, silinmedi"* yarısı süperseded.** Kurtarma iki yoldan doğrulandı: git geçmişi (`git show a0575e6:…`) + repo dışı devir paketi `~/code/hukuk-devir/` (adaptörler **git'te hiç yoktu**, tek nüsha orada). Elenen: symlink · `filter-repo`. **Bedel:** `sft_v0_KIRLI_forum` kalıcı kayıp — ders `kronoloji #02`'de yaşıyor, veri yaşamıyor. **Yeni risk:** devir paketi yedeksiz tek nüsha |
 
 **Otorite tasarım belgesi:** [`TASARIM.md`](../../TASARIM.md) (repo kökü) — ne inşa edeceğimiz ve
 neyi ölçeceğimiz. ADR-0027 onun kararlarını donmuş anlatı olarak kaydeder.
@@ -79,4 +80,6 @@ yanlış çıksa bile *neden öyle düşündüğümüz* paper malzemesidir.
 - [`../record/research_log/README.md`](../record/research_log/README.md) — kronolojik deney günlüğü.
   **Kesintisiz akar**, taşınmaz, yeniden yazılmaz. Yeni hattın girdileri #39'dan devam eder.
 - [`gemma4-12b-dersler.md`](gemma4-12b-dersler.md) — emekli hattın kararları + dersleri.
-- `old-version-gemma4-12b/` — emekli hattın artefaktları (adaptörler, eval çıktıları, tur belgeleri).
+- `~/code/hukuk-devir/` *(repo dışı)* — emekli hattın artefaktları (adaptörler, eval çıktıları, tur
+  belgeleri). `old-version-gemma4-12b/` ağacı 2026-07-28'de repo'dan **silindi** ([ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md));
+  metin artefaktları git geçmişinde: `git show a0575e6:old-version-gemma4-12b/<yol>`.

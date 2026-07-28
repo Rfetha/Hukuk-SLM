@@ -2,7 +2,7 @@
 
 > **Misyon:** Adalete erişimi demokratikleştirmek. Vatandaşın yanında duran, hukuk dilini sadeleştiren, belge üreten ve kendi dosyasını anlamasına yardım eden açık bir yapay zeka asistanı.
 >
-> **⚠️⚠️ YENİ HAT (2026-07-24, ADR-0027).** Otorite tasarım belgesi artık **[`TASARIM.md`](../TASARIM.md)** (repo kökü) — ne inşa edeceğimiz ve neyi ölçeceğimiz orada. Gemma 4 12B hattı **emekli** (`old-version-gemma4-12b/`, ADR-0024/0026): dersleri taşınır, **sayıları taşınmaz.** Aşağıdaki Faz haritası ve tasarım prensipleri geçerliliğini korur; base'e ve tur numaralarına yapılan atıflar **tarihsel iz** olarak okunur.
+> **⚠️⚠️ YENİ HAT (2026-07-24, ADR-0027).** Otorite tasarım belgesi artık **[`TASARIM.md`](../TASARIM.md)** (repo kökü) — ne inşa edeceğimiz ve neyi ölçeceğimiz orada. Gemma 4 12B hattı **emekli** (ADR-0024/0026; artefaktları 2026-07-28'de repo'dan silindi — **ADR-0034**, devir paketi `~/code/hukuk-devir/`): dersleri taşınır, **sayıları taşınmaz.** Aşağıdaki Faz haritası ve tasarım prensipleri geçerliliğini korur; base'e ve tur numaralarına yapılan atıflar **tarihsel iz** olarak okunur.
 >
 > **Tez artık iki katmanlı:** *dış* = maliyet-normalize parite (ADR-0017 teyit edildi) · *iç (YENİ)* = beceri başına bağımsız eğitilmiş LoRA kolları + task-vector merge, **çatışan becerileri** (grounding ↔ abstention) ardışık SFT'den daha iyi koruyor mu?
 >

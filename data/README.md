@@ -139,8 +139,9 @@ Hattın ara çıktıları. Silinebilir (script'le yeniden üretilir) ama pahalı
 ## ⚠️ Bu veriyle çalışırken bilinmesi gerekenler
 
 1. **Kaynaksız QA verisi kullanma.** Forum verisiyle eğitilen ilk tur battı: tek bir cevap
-   154 farklı soruya birebir yapıştırılmıştı. O set `old-version-gemma4-12b/data/sft_v0_KIRLI_forum`
-   içinde — **uyarı olarak** duruyor, kullanılmak için değil.
+   154 farklı soruya birebir yapıştırılmıştı. ⚠️ Setin kendisi (`sft_v0_KIRLI_forum`) **artık
+   yok** — git'e hiç girmemişti ve emekli hat ağacıyla birlikte silindi (ADR-0034). Dersin kaydı
+   duruyor: [`gemma4-12b-kronoloji.md` #02](../docs/record/gemma4-12b-kronoloji.md).
 2. **Düz SFT abstention'ı yok eder.** `grounded_qa` cevaplarıyla düz SFT: red oranı
    0.741 → 0.000. Grounding kazanılırken "bilmiyorum deme" siliniyor.
 3. **Eval-mirror şart.** Eğitimde uygulanan chunk kırpması (900 char) eval'de **birebir**
@@ -164,5 +165,6 @@ Model ağırlıkları (`*.safetensors`, `*.gguf`, `*.pt`) **hiçbir zaman** git'
 250 MB, bir GGUF 6-15 GB.
 
 ## Geçmiş turların sayıları
-`old-version-gemma4-12b/record/SCORECARD.md` (12B protokolü, tarihsel) ·
-damıtılmış özet: `~/code/hukuk-devir/RECETELER_12B.md`
+`~/code/hukuk-devir/docs/record/SCORECARD.md` (12B protokolü, tarihsel — repo dışı, ADR-0034) ·
+damıtılmış özet: `~/code/hukuk-devir/RECETELER_12B.md` ·
+repo içi kronoloji: [`docs/record/gemma4-12b-kronoloji.md`](../docs/record/gemma4-12b-kronoloji.md)

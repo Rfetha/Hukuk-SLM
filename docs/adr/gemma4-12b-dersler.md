@@ -31,8 +31,9 @@
 
 **A1.1 Kaynaksız QA verisi ezberletir, öğretmez.** İlk tur forum verisiyle eğitildi ve battı:
 tek bir cevap **154 farklı soruya birebir** yapıştırılmıştı; model "7 Kasım 1982"yi ezberledi.
-`legal_acc 0.362 → 0.124`. Set `old-version-gemma4-12b/data/sft_v0_KIRLI_forum` altında
-**uyarı olarak** duruyor, kullanılmak için değil. → `#02`, [ADR-0002](#adr-0002)
+`legal_acc 0.362 → 0.124`. ⚠️ Setin kendisi (`sft_v0_KIRLI_forum`) **artık yok** — git'e hiç
+girmemişti, emekli hat ağacıyla birlikte silindi ([ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md)).
+Ders yalnız bu kayıtta yaşıyor. → `#02`, [ADR-0002](#adr-0002)
 
 **A1.2 Kâğıt üstündeki mükemmellik yalan söyler — her seti EDA ile örnekle.**
 `newmindai/EuroHPC-Legal`: 43K satır, Apache-2.0, kusursuz görünüyordu. Örnekleme eşleşmeyen Q&A,
@@ -589,11 +590,17 @@ maliyet artar → doğrudan parite metriğinden düşer. Rakip API'ler bu cezay�
 *ölçtüğümüz ≠ dağıttığımız*; en az bir hizalama koşusu gerekiyor.
 
 <a id="adr-0024"></a>
-### ADR-0024 — Hat emekliliği · 🟢 uygulandı
+### ADR-0024 — Hat emekliliği · 🟡 uygulandı, **kısmen süperseded → [ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md)**
 
 **Karar — bölme çizgisi: base'e bağlı mı, değil mi.** Base'e bağlı artefaktlar (LoRA adaptörleri,
 eval çıktıları, tur belgeleri, SCORECARD) arşive **taşınır, silinmez**; base'den bağımsız olanlar
 (`data/`, `scripts/`, `knowledge/`) yerinde kalır.
+
+> **⚠️ Süperseded (2026-07-28, ADR-0034):** *"taşınır, **silinmez**"* yarısı artık geçerli değil —
+> `old-version-gemma4-12b/` ağacı repo'dan silindi. Gerekçe: kronoloji + dersler belgeleri
+> damıtıldıktan ve repo dışı devir paketi (`~/code/hukuk-devir/`) kurulduktan sonra ağaç üçüncü
+> kopyaya dönüşmüştü. **Bölme çizgisinin kendisi** (base'e bağlı / bağımsız) aynen doğru kaldı;
+> değişen yalnız base'e bağlı tarafın nereye gittiği. Kurtarma: `git show a0575e6:…` + devir paketi.
 
 **İki pazarlıksız kural.** (1) **`research_log/` ve `adr/` yerinde kalır** — *"makaleyi repo'dan
 haftalar sonra yeniden kurabilmek"* garantisi kronolojik kayıt taşınırsa kırılır. Tarih
@@ -646,5 +653,6 @@ Yalnız altı `research_log` girdisi okuyacaksan bunlar:
 | `#36` | tez çerçeve değişimi | içeri-dönük → dışarı-dönük |
 | `#38` | şablon tuzağı | sessiz başarısızlığın anatomisi |
 
-**12B hattının tam sayıları:** `old-version-gemma4-12b/record/SCORECARD.md`
-**Repo dışı devir paketi:** `~/code/hukuk-devir/` (`DEVIR.md` + `RECETELER_12B.md` + git bundle)
+**12B hattının tam sayıları:** repo içinde [`docs/record/gemma4-12b-kronoloji.md`](../record/gemma4-12b-kronoloji.md) ·
+ham SCORECARD `~/code/hukuk-devir/docs/record/SCORECARD.md` (repo'dan silindi — [ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md))
+**Repo dışı devir paketi:** `~/code/hukuk-devir/` (`DEVIR.md` + `RECETELER_12B.md` + git bundle + adaptörler)

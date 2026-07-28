@@ -31,7 +31,7 @@ Bu, **ne inşa edeceğimizin ve neyi ölçeceğimizin** belgesidir. Üç şeyi b
 | [`docs/record/gemma4-12b-kronoloji.md`](docs/record/gemma4-12b-kronoloji.md) | *ne oldu ve kaç çıktı* — 12B hattının tam kronolojisi, **sayılar birebir** |
 | [`docs/adr/gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md) | *bundan ne öğrendik* — base-bağımsız dersler + 26 ADR'nin karar kaydı |
 | [`docs/record/research_log/`](docs/record/research_log/) | yeni hattın canlı günlüğü (#39'dan devam) |
-| `old-version-gemma4-12b/` | emekli hattın artefaktları — taşındı, silinmedi |
+| `~/code/hukuk-devir/` *(repo dışı)* | emekli hattın artefaktları — **repo'dan silindi** (ADR-0034); git geçmişi: `a0575e6` |
 
 **Bu belge onları yeniden yazmaz.** Yeni hattın her anlamlı bulgusu `research_log/`'a, her büyük
 kararı yeni bir ADR'ye gider.
