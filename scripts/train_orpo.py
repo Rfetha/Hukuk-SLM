@@ -110,10 +110,10 @@ def parse_args():
     p.add_argument("--max-steps", type=int, default=-1, help="smoke için sınırla")
     p.add_argument("--save-steps", type=int, default=100,
                    help="checkpoint aralığı; 2-epoch koşuda ~1-epoch ara-checkpoint için düşür (ör. 28)")
-    p.add_argument("--target-modules", nargs="+",
-                   default=["q_proj", "k_proj", "v_proj", "o_proj",
-                            "gate_proj", "up_proj", "down_proj"],
-                   help="LoRA katmanları (--fresh-adapter yolunda kullanılır). Mimariye göre değişir.")
+    # ⚠️ VARSAYILAN YOK — train_sft.py ile aynı gerekçe (rejim eşleşmesi, #13).
+    # Eski varsayılan `in_proj_*`'ı kaçırıyordu; ölçüldü: ‖τ‖'nin %26.8'i orada.
+    p.add_argument("--target-modules", nargs="+", default=None,
+                   help="ZORUNLU (--fresh-adapter yolunda). Mimariye göre değişir, varsayılanı YOK.")
     p.add_argument("--fresh-adapter", action="store_true",
                    help="continuation yerine base'e YENİ adapter (önceki turun kazanımını kaybeder)")
     # ⚠️ Aşağıdaki iki bayrak `train_sft.py` ile REJİM EŞLEŞMESİ içindir, stil tercihi değil:
@@ -130,6 +130,15 @@ def parse_args():
 
 def main():
     args = parse_args()
+    # ⚠️ Yalnız fresh-adapter yolunda gerekli: continuation'da LoRA yapısı adaptörden gelir.
+    if (args.fresh_adapter or not args.adapter) and not args.target_modules:
+        raise SystemExit(
+            "🚫 --target-modules ZORUNLU (fresh-adapter yolunda, varsayılanı yok — ADR-0026).\n"
+            "   τ_g ile MERGE edilebilmesi için liste onunkiyle AYNI olmalı (open_questions #13).\n"
+            "   Qwen3.5-4B: q_proj k_proj v_proj o_proj in_proj_qkv in_proj_z in_proj_a "
+            "in_proj_b gate_proj up_proj down_proj\n"
+            "   ⚠️ in_proj_* düşerse 24 linear-attention katmanı LoRA'sız kalır — HATA VERMEDEN."
+        )
     out = args.output_dir or f"outputs/{args.run_name}"
 
     # ADR-0031: --bf16-base → donuk bf16 taban (QLoRA değil); yoksa NF4 4-bit (12B hattı fallback).

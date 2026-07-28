@@ -353,7 +353,7 @@ ayrışıyordu — hata vermez, sayı üretir, sayı kıyaslanamaz olurdu:
 Bayraklar `modal_train.py`'ın `train_orpo` + `spawn_orpo` yollarından da geçiriliyor
 (`bf16_base` · `lora_dropout` · `target_modules`), yoksa Modal'dan kullanılamazlardı.
 
-### 🔴 AÇIK — `--target-modules` varsayılanı İKİ script'te de eksik
+### ✅ KAPANDI (2026-07-28) — `--target-modules` artık ZORUNLU, varsayılanı yok
 
 Düzeltme sırasında çıktı: **`train_sft.py` ve `train_orpo.py` aynı varsayılanı taşıyor** —
 `q/k/v/o + gate/up/down`, yani **`in_proj_qkv/z/a/b` YOK.** Bu ORPO'ya özgü bir sapma değil,
@@ -373,7 +373,14 @@ Bugün tek koruma, listeyi **her çağrıda elle vermek** (CP5 komutu öyle yap�
 **Seçenekler:** (a) varsayılanı sil, `--target-modules` **zorunlu** yap → tanımsız base erken
 patlar, ADR-0026'nın ruhu · (b) base'e göre liste tut → ADR-0026'ya aykırı (script base bilmemeli) ·
 (c) olduğu gibi bırak + uyarı bas.
-**Eğilim: (a).** ⚠️ `train_sft.py`'ye dokunmak CP5 koşarken **yapılmadı** — koşu bitince.
+
+> **KARAR: (a) uygulandı** (CP5 bitince, 2026-07-28). Her iki script'te varsayılan **silindi**,
+> `default=None` + açık kapı. Eksik verilirse hata mesajı Qwen3.5-4B'nin doğrulanmış listesini
+> ve *"in_proj_* düşerse 24 katman LoRA'sız kalır — HATA VERMEDEN"* uyarısını basıyor.
+> ORPO'da kapı yalnız **fresh-adapter** yolunda; continuation'da LoRA yapısı adaptörden gelir.
+> Kapı üç girdiyle test edildi (dolu liste geçer · `None` ve `[]` patlar).
+> **Not:** `train_sft.py`'nin docstring'i zaten *"`--target-modules` zorunlu"* diyordu —
+> belge ile kod çelişiyordu, kod belgeye uyduruldu.
 
 ### 🟡 PLANLANDI — `causal-conv1d` hız kaldıracı, Sprint 2 öncesi ÖLÇÜLECEK
 
