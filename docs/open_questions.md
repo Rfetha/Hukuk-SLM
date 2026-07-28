@@ -164,7 +164,38 @@ Fark küçükse bu sorunun tamamı düşer; büyükse hangi seçenek olursa olsu
 
 ---
 
-## 13. Kollar arası eğitim rejiminde ne eşleşmek ZORUNDA, ne serbest? 🔴
+## 13. Kollar arası eğitim rejiminde ne eşleşmek ZORUNDA, ne serbest? — ✅ **KAPANDI (2026-07-28)**
+
+> ### CEVAP: reçeteye saygı + ölçüm; zorla eşitleme TETİĞE bağlandı.
+>
+> | ayar | karar |
+> | :--- | :--- |
+> | precision · `lora_dropout` · `r`/`alpha` · seed | ✅ **eşleşti** (kod düzeltildi) |
+> | `lr` (1e-4 vs 1e-5) · etkin batch (16 vs 64) | 🟢 **ORPO'nun reçetesi korunur**, fark **limitations'a** yazılır. Çalışan bir yöntemi kıyas uğruna bozmak kötü takas |
+> | `max_seq_len` | ✅ **eşleşti** → ORPO 1536/1152'den **2048/1536**'ya çıkarıldı |
+>
+> **🔴 Kapatırken çıkan iki bulgu — ikisi de düzeltildi:**
+>
+> 1. **ORPO epoch başına yalnız 27 adım koşuyordu** (1.741 çift ÷ etkin batch 64). Kıyas:
+>    `τ_g` **1.083** adım. Yani ~40× az güncelleme + 10× düşük lr = "farklı yörünge" değil
+>    **farklı ölçekte eğitim**, ve `‖τ_a‖`'yı çökerterek #12'yi de zehirlerdi. 12B'de sorun
+>    değildi çünkü ORPO **continuation**'dı (dürtmesi yetiyordu); ham base'den yeni davranış
+>    öğretmek başka iş. → **`epochs` varsayılanı 1.0 → 3.0** (82 adım). `grad_accum`'a
+>    dokunulmadı — OR-sinyali ≥64 istiyor, meşru.
+> 2. **Sessiz kırpma:** `max_prompt_length=1152`'de prompt'ların **%4.4'ü**, `max_length=1536`'da
+>    prompt+chosen'ın **%2'si** kırpılıyordu (ort 406 tok, p95 1120, max 1703). → **2048/1536**,
+>    kırpma ~%0 ve `τ_g` tavanıyla aynı.
+>
+> **⚠️ TETİK — ne zaman zorla eşitleriz (ön-kayıtlı):**
+> *"`τ_a` tekil hücresi M2/M2b'de base çıpasını **geçemezse**, 'ORPO ham base'den çalışmıyor'
+> sonucuna varmadan ÖNCE eşleşmiş rejimde (lr 1e-4 / etkin batch 16) bir **tanı koşusu** yapılır."*
+> Gerekçe: rejimi dışlamadan yöntemi mahkûm etmek atıf hatası olur.
+>
+> **Ölçüm borcu:** `τ_a` eğitilir eğitilmez `‖τ_a‖` ölçülüp `‖τ_g‖` ile karşılaştırılacak —
+> bu zaten #12'nin gerektirdiği ölçüm, bedava geliyor.
+
+<details>
+<summary>Kararın alındığı andaki soru (kayıt için korunuyor)</summary>
 
 **Soru.** İki kol bugün farklı ayarlarda koşuyor. Hangileri task-vector geçerliliği için
 **eşleşmek zorunda**, hangileri yöntemin doğası gereği **serbest**?
@@ -189,6 +220,8 @@ içerir, referans model istemez — DPO'dan farkı bu) ve veri **%20 grounding r
 ama bu hatta **ölçülmedi.** `τa` tekil hücresi tam olarak bunu ölçecek.
 
 **Ne zaman:** Sprint 2 başlamadan. **Bağlı:** ADR-0031, ADR-0033, `TASARIM.md` §4.1.
+
+</details>
 
 ---
 
