@@ -13,7 +13,32 @@
 
 ---
 
-## 8. Tekil kafes hücreleri de TIES hattından geçecek mi? 🔴
+## 8. Tekil kafes hücreleri de TIES hattından geçecek mi? — ✅ **KAPANDI (2026-07-28)**
+
+> ### CEVAP: **B — aynı hat**, artı bir `τ_g` düz kontrol hücresi.
+>
+> | hücre | nasıl üretilir | ne söyler |
+> | :--- | :--- | :--- |
+> | `τg` tek · `τa` tek | **aynı hat** — budama + o ayarın normalizasyonu + `λ` | çiftle **kıyaslanabilir** |
+> | `τg+τa` | aynı hat | çatışma |
+> | **`τg` DÜZ (kontrol)** | `λ=1`, budama yok, normalizasyon yok | 🔵 **budama + normalizasyonun kendi hasarını ayrı ölçer** |
+>
+> **Gerekçe.** Tekilin varlık sebebi **atıf**: `τg+τa` düşükse sebep çatışma mı, kol mu?
+> Bu kıyasın anlamlı olması için tekil ile çiftin **aynı işlemlerden** geçmiş olması gerekir —
+> yoksa aradaki fark üçüncü bir şeyi (budamanın/normalizasyonun hasarını) de içerir ve
+> ayrıştırılamaz. B bunu garanti eder.
+>
+> **Neden bir de düz kontrol.** ADR-0036 ile hat artık *budama + normalizasyon* içeriyor;
+> normalize edilmiş bir tekil hücre *"τ_g tek başına ne satın aldı"* sorusunu değil,
+> *"τ_g'nin YÖNÜ, λ büyüklüğünde ne satın aldı"* sorusunu cevaplıyor. Düz kontrol farkı
+> görünür kılar. **Yalnız `τ_g` için** — hasarın en görünür olacağı yer o (büyük norm, 1.083 adım)
+> ve adaptör zaten elimizde: **ek eğitim yok, tek bir eval.**
+>
+> **Bedel:** kafes 3 → **4 hücre**, ADR-0036'nın iki ayarıyla **8 eval koşusu.** Merge bedava,
+> eval değil — kabul edildi.
+
+<details>
+<summary>Kararın alındığı andaki soru (kayıt için korunuyor)</summary>
 
 **Soru.** Kafesin tekil hücreleri (`τg tek`, `τa tek`) nasıl üretilecek — **düz adaptör**
 (`λ=1`, budama yok) mı, yoksa çoklu hücrelerle **aynı merge hattından** geçmiş mi?
@@ -34,6 +59,8 @@ budamanın kendi hasarını.
 **İlk eğilim:** A — atfedilebilirlik en pahalı şeyimiz. C teknik olarak en bilgilendirici ve
 maliyeti düşük; ciddiye alınmalı.
 **Ne zaman:** Sprint 3'ten önce. **Bağlı:** `TASARIM.md` §4.3.
+
+</details>
 
 ---
 

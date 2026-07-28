@@ -70,6 +70,12 @@ korur** — 6.6× asimetri DARE'den sonra da 6.6×'tır. DARE'in derdi *çok vek
 | **`lr`/batch'i eşitleyip asimetriyi kaynağında yok etmek** | #13'te reddedildi — çalışan ORPO reçetesini kıyas uğruna bozmak kötü takas. Tetiğe bağlandı |
 | **DARE ile çözmek** | Matematiksel olarak çözmüyor (yukarıda); yanlış araç |
 
+> **Ek (aynı gün, `open_questions` #8):** tekil hücreler de **aynı hattan** geçer (budama +
+> normalizasyon + `λ`) — yoksa tekil↔çift farkı budamanın hasarını da içerir ve atıf bozulur.
+> Buna karşılık **bir `τ_g` DÜZ kontrol hücresi** eklendi (`λ=1`, işlemsiz): normalize edilmiş
+> bir tekil *"τ_g ne satın aldı"* değil *"τ_g'nin YÖNÜ λ büyüklüğünde ne satın aldı"* sorusunu
+> cevaplar; düz kontrol farkı görünür kılar. **Fiilî kafes: 4 hücre × 2 ayar = 8 eval.**
+
 ## Sonuç — kabul edilen bedel
 
 - **Eval maliyeti iki katına çıkıyor** (kafes × 2 ayar). Merge bedava olduğu için bu yalnız hakem
