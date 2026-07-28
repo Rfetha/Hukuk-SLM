@@ -282,6 +282,48 @@ Kod bunu engellemiyor, sadece uyarı basıyor. `spawn_orpo` docstring'ine yazıl
 
 ---
 
+## İleri notlar — karar değil, kaydedilmeye değer gözlem
+
+### Sıfır marjinal maliyet asimetrik bir koz (2026-07-28)
+
+**Gözlem.** Yerel çıkarımda maliyet modeli rakiplerinkiyle **aynı şekilde davranmıyor:**
+
+```
+Rakip :  $/sorgu = token fiyatı × token        → hop sayısıyla DOĞRUSAL artar
+Bizde :  $/sorgu = eğitim_maliyeti / N         → hop sayısından BAĞIMSIZ
+         gerçek bedel = LATENCY (elektrik ihmal)
+```
+
+**Sonucu:** sorgu başına ek çıkarım gerektiren teknikler (ajan döngüsü, iteratif getirme,
+self-consistency, yeniden sıralama) **bizde ucuz, rakipte pahalı.** Adalet kuralı gereği aynı
+döngü rakibe de verilirse onun `$/sorgu`'su katlanır, bizimki sabit kalır → makas **bizim lehimize**
+açılır. Bu bir dezavantaj değil, **ürün fazında asimetrik avantaj.**
+
+**Latency bütçesi (ölçülen + tahmin):** decode **122.9 t/s** → 300 token'lık cevap **~2.4 sn**;
+3 hop ≈ **~8 sn** ⚠️ **tahmin** — her hop bağlamı büyüttüğü için prefill payı artar, **ölçülmedi.**
+Avukat için araştırma gecikmesi olarak kabul edilebilir bantta.
+
+**Tez metriğine etkisi yok:** `$/sorgu` değişmediği için **başabaş noktası N\* hop sayısından
+etkilenmiyor.** Latency ayrıca raporlanan bir metrik (`TASARIM.md` §6.4), oraya yazılır.
+
+### ⚠️ Düzeltme — §10.2'nin "çok-ajanlı" elemesi ne kapsıyor
+
+`TASARIM.md` §10.2'nin *"çok-ajanlı / LLM-indeksli GraphRAG"* elemesi bu oturumda bir kez
+**yanlış genişletildi** (sorgu-zamanı hop sayısına uygulandı). Doğru okuma: o satırın hedefi
+grafı **LLM ile kurmak** — 40.496 madde × LLM çağrısı = büyük çevrimdışı maliyet + halüsinatif
+kenar riski. **Sorgu-zamanı hop sayısı o cümlenin kapsamında değil**, ve yukarıdaki gerekçeyle
+bizde maliyet sorunu da değil. Ajanlaştırmayı tezden eleyen şey **kapsam ve gecikme**, maliyet değil.
+
+### İteratif getirme model değişikliği gerektirmeyebilir
+
+Atıf doğrulayıcı zaten *"cevapta atıf var ama o madde bağlamda yoktu"* durumunu tespit ediyor
+(red kapısının parçası). Bu sinyalle deterministik bir döngü kurulabilir: eksik maddeyi graf
+getirir, model yeniden koşar. **Model *"m.350 lazım"* demeyi öğrenmek zorunda değil** — atıf
+yapması yeterli. Alternatif (daha pahalı) yol, `τ_abstention`'ı 1 bitten *"yetersiz + şu eksik"*
+işaretçisine genişletmek; yeni beceri değil, mevcudun uzantısı. Her ikisi de **ürün fazı**.
+
+---
+
 ## Başka yerde duran açık kalemler — burada tekrarlanmaz
 
 | ne | nerede |
