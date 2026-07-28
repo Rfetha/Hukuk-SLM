@@ -86,7 +86,29 @@ sicili (`#38` şablon tuzağı, `#40` `fla-core`) bunu tavsiye değil zorunluluk
 
 ---
 
-## 11. `τ_reasoning` / RS-FT tez kapsamına giriyor mu? 🔴
+## 11. `τ_reasoning` / RS-FT tez kapsamına giriyor mu? — ✅ **KAPANDI (2026-07-28, [ADR-0035](adr/0035-tau-reasoning-rs-ft-kapsam-disi.md))**
+
+> ### CEVAP: HAYIR — kapsam dışı, future work.
+>
+> Kollar **2** (`τ_grounding` · `τ_abstention`), kafes **3 hücre**, FT bütçesi **5 koşu**.
+> **ADR-0030 madde 2 (düşünce modu KAPALI) yürürlükte kalır** — geri alma gerekçesi ortadan kalktı.
+>
+> **Kararı veren kanıt, tartışma değil ölçüm:**
+> 1. Kullanıcının istediği ürün davranışı (*"kaynak şu şu → sonucum bu bu"*) **`τ_grounding`'in
+>    eğitim hedefi.** `raft_scrubbed` sayıldı (n=17.323): `KAYNAK` bloğu **%97**, birebir alıntı
+>    **%77**, numaralı çıkarım adımı **%76**. Ayrı kol bu biçim için gereksiz.
+> 2. `τ_grounding`'in öğretmediği tek şey **maddeler arası zincir** — o da **harness'ın tasarlanmış
+>    işi** (`TASARIM.md` §5: hibrit retriever **1-2 hop** + graf atıf ağı). Ağırlığa gömmek tekrar olur.
+> 3. **Yeni karar değil, teyit:** `TASARIM.md` §10.2 *"CoT / gerekçe kolu"*nu zaten plandan
+>    çıkarmıştı; bu ADR onu yeni kanıtla RS-FT varyantına genişletir.
+>
+> **Bedel (limitations'a yazılır):** çok adımlı akıl yürütme model düzeyinde eğitilmedi;
+> zincirleme harness'a bırakıldı ve **ikisinin katkısı ayrı ayrı ölçülmedi.**
+>
+> **Elenen ama reddedilmeyen:** yalnız `pass@16` tanısını koşmak — ertelendi, tez sonrası.
+
+<details>
+<summary>Kararın alındığı andaki soru (kayıt için korunuyor)</summary>
 
 **Soru.** `docs/ft-is-akisi.mmd`'de taslak olarak duran **rejection-sampling FT** kolu — üçüncü
 task-vector olarak tez kapsamına girecek mi?
@@ -106,6 +128,8 @@ task-vector olarak tez kapsamına girecek mi?
 
 **Ne zaman:** Sprint 2 planlanmadan önce — Sprint 2'nin kapsamını doğrudan belirliyor.
 **Bağlı:** `docs/ft-is-akisi.mmd`, `docs/model-soyagaci.mmd` (🟡 işaretli), ADR-0030 madde 2.
+
+</details>
 
 ---
 

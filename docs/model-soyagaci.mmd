@@ -15,7 +15,7 @@ flowchart TD
     subgraph HED["① FT HEDEFLERİ — her biri HAM base'den, bağımsız · τ = θ_ft − θ_base"]
         H1["<b>Hedef 1 · τ_grounding</b> 🟢<br/>SFT · RAFT 17.323 satır<br/><i>verilen kaynaktan doğru atıf</i>"]
         H2["<b>Hedef 2 · τ_abstention</b> 🟢<br/>ORPO · 1.741 çift<br/><i>kaynak yoksa REDDET</i>"]
-        H3["<b>Hedef 3 · τ_reasoning</b> 🟡<br/>RS-FT · iç döngü → ft-is-akisi.mmd<br/><i>çok adımlı çıkarım</i><br/>⚠️ Kapı R'ye bağlı · ADR yok"]
+        H3["Hedef 3 · τ_reasoning ⬛<br/>❌ KAPSAM DIŞI — ADR-0035<br/>biçim zaten τ_grounding'de (%76)<br/>zincirleme = harness'ın işi (§5)<br/><i>future work</i>"]
         H4["Hedef 4 · τ_register ⬛<br/>❌ DÜŞTÜ — Kapı 0 (#39)<br/>base zaten 0.96-0.98"]
     end
 
@@ -74,7 +74,7 @@ flowchart TD
     classDef frozen fill:#4a3a1d,stroke:#c9a04f,color:#fff
     classDef star fill:#1d4a2e,stroke:#4fc97a,color:#fff
     class BASE origin
-    class H4,TA,TB dead
+    class H3,H4,TA,TB dead
     class DEC gate
     class TEST frozen
     class P1,WIN,SYS star
