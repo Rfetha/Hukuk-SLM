@@ -240,6 +240,21 @@ abstention düşükse sebep "merge çatışması" mı "kol zaten öğrenememiş"
 **Ölçüm merdiveni** (paper anlatısı): τg → τg+τa → τg+τa+τr. Basamak basamak, bir yetenek eklenirken
 öncekinin bozulup bozulmadığı gösterilir.
 
+> ### ⚠️ Bu hattaki fiilî kafes (2026-07-28 kararları)
+>
+> Kapı 0 (#39) `τ_register`'ı düşürdüğü için tablo 7 hücreden **3**'e indi:
+> `τg` · `τa` · **`τg+τa`**. Üstüne iki karar bindi:
+>
+> - **Tekiller çiftlerle AYNI hattan geçer** (budama + normalizasyon + `λ`) —
+>   `open_questions` #8. Why: `τg+τa` düşükse *"çatışma mı, kol mu"* sorusunu ancak aynı
+>   işlemlerden geçmiş bir tekille ayırt edebiliriz; farklı hat, farkın içine budamanın
+>   hasarını da katar.
+> - **+1 kontrol hücresi: `τg` DÜZ** (`λ=1`, budama/normalizasyon yok) — budama+normalizasyonun
+>   *kendi* hasarını ölçer. Ek eğitim yok, tek eval.
+>
+> **Toplam: 4 hücre × 2 ayar (ham / norm-dengeli, ADR-0036) = 8 eval koşusu.**
+> Merge bedava; bedel yalnız üretim + hakem.
+
 > ⚠️ **Bunlar bir zincir değil, iç içe alt kümeler.** Üçlü, ikilinin *üstüne* inşa edilmiyor;
 > üç vektörün taze birleşimi. "Kademeli" olan **ölçüm merdiveni**, birleştirme süreci değil.
 > Bu ayrım paper'da net yazılır.
