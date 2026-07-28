@@ -101,6 +101,7 @@ her iki yerde işaretle.* Tespit edilenler:
 | 10 | §1/§10 OCR + STT + Tauri + Docker uçtan uca | **Ürün katmanı, ölçüm dışı** | İddia model+harness iddiası; OCR gürültüsü groundedness skoruna karışır, ayrıştırılamaz |
 | 11 | §3 base = Qwen3.5-4B-Instruct | **Çalışma varsayımı**, sert doğrulama kapısına bağlı (§8) | ADR-0026: base bir parametre, gömülü karar değil |
 | 12 | §3 Aşama 3 kuantizasyon Q4_K_M | **Q4_K_M doğru** (değişmedi) | ADR-0023'ün saf-Q4_0 kararı QAT'e özgüydü; QAT'siz base'de taşınmaz |
+| 13 | §3/§75 "Aşama 2 — Reasoning & Distractor Filtering SFT" ayrı bir eğitim aşaması | **Ayrı reasoning kolu YOK** (ADR-0035) | Distractor eleme + gerekçe zaten `τ_grounding`'in RAFT verisinde (ölçüldü: %76 numaralı çıkarım adımı); maddeler arası zincir ise harness'ın işi (§5). Ayrı aşama, iki yerde birden yapılan işi tekrar ederdi |
 
 ---
 
@@ -513,7 +514,7 @@ eşleşmesini bozar → doğru mimari **ayrık OCR preprocessor**, native VLM OC
 | çıkan | neden |
 | :--- | :--- |
 | **Dilekçe eğitim verisi** | Gerçek dilekçe = müvekkil PII + toplu açık yayını olmayan belge. Lisans-temiz + PII kurallarına kapalı. Yolu var (baro/Bakanlık **şablonları** + sentetik üretim) ama o ürün fazı |
-| **CoT / gerekçe kolu** | Veri yok · CANON'da ölçüm modu yok · tümüyle hakem-bağımlı olurdu → "hakemsiz omurga" savunmasını zayıflatır |
+| **CoT / gerekçe kolu** — *ve RS-FT varyantı `τ_reasoning`* | Veri yok · CANON'da ölçüm modu yok · tümüyle hakem-bağımlı olurdu → "hakemsiz omurga" savunmasını zayıflatır. **Genişletildi ([ADR-0035](adr/0035-tau-reasoning-rs-ft-kapsam-disi.md), 2026-07-28):** istenen *"kaynak → sonuç"* biçimi zaten `τ_grounding`'in hedefi (`raft_scrubbed` ölçümü: alıntı %77, numaralı çıkarım %76), eksik olan **maddeler arası zincir** ise harness'ın işi (§5, 1-2 hop + atıf ağı). Ağırlığa gömmek tekrar olurdu |
 | **İçtihat kolu** | Korpus yok; Bedesten sunuyor ama TR IP + hacim/lisans/PII doğrulaması + EDA gerekiyor. **Ama içtihat→madde atıfı deterministik olduğu için yapısal grafa girmeye aday** (eğitim kolu olmadan) |
 | **Çok-ajanlı / LLM-indeksli GraphRAG (çekirdekte)** | Sorgu başına ek çıkarım → **doğrudan maliyet-normalize parite metriğinden düşer**; adalet kuralı gereği rakiplere de verileceği için maliyet iki taraflı katlanır. Kapılı Katman-1 kolu olarak duruyor (§5.4) |
 | **32B tier** | Tek tüketici GPU'da eğitilemez; çekirdek parite çalışması bitmeden bütçeyi boyut eğrisine harcar |
