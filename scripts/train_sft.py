@@ -61,10 +61,14 @@ def parse_args():
     p.add_argument("--lora-r", type=int, default=16)
     p.add_argument("--lora-alpha", type=int, default=32)
     p.add_argument("--lora-dropout", type=float, default=0.05)
-    p.add_argument("--target-modules", nargs="+",
-                   default=["q_proj", "k_proj", "v_proj", "o_proj",
-                            "gate_proj", "up_proj", "down_proj"],
-                   help="LoRA takılacak lineer katmanlar (all-linear). Mimariye göre değişir.")
+    # ⚠️ VARSAYILAN YOK — bilerek. Eski varsayılan (q/k/v/o + gate/up/down) Qwen3.5'in
+    # 24 linear-attention katmanındaki `in_proj_*` projeksiyonlarını KAÇIRIYORDU ve bu
+    # sessiz bir kayıptı: hata vermez, eğitim koşar, adaptasyonun bir kısmı hiç öğrenilmez.
+    # ÖLÇÜLDÜ (τ_grounding, outputs/eval/tau_norm_tg.json): `in_proj_*` ‖τ‖'nin **%26.8'i**.
+    # ADR-0026'nın kuralı: base bir parametredir, tanımsız kalırsa ERKEN patlamalı.
+    p.add_argument("--target-modules", nargs="+", default=None,
+                   help="ZORUNLU. LoRA takılacak lineer katmanlar — mimariye göre değişir, "
+                        "varsayılanı YOK. Base'in modül adlarını doğrulamadan verme.")
     p.add_argument("--warmup-ratio", type=float, default=0.03,
                    help="warmup oranı (v2b reçete §5.1-C: %3-5; sweep'lenebilir)")
     p.add_argument("--seed", type=int, default=3407)
@@ -100,8 +104,29 @@ def _decode_marker(s: str) -> str:
     return codecs.decode(s, "unicode_escape")
 
 
+def _require_target_modules(target_modules):
+    """ADR-0026: base bir parametredir; tanımsızsa ERKEN patla, sessizce varsayma.
+
+    Why bu ayrı bir kapı: yanlış/eksik modül listesi exception ATMAZ — eğitim koşar,
+    loss düşer, adaptörün bir kısmı hiç öğrenilmez. Ölçülen bedel: Qwen3.5-4B'de
+    `in_proj_*` modülleri ‖τ‖'nin %26.8'ini taşıyor (outputs/eval/tau_norm_tg.json).
+    """
+    if target_modules:
+        return
+    raise SystemExit(
+        "🚫 --target-modules ZORUNLU (varsayılanı yok — ADR-0026).\n"
+        "   Base'in lineer projeksiyon adlarını doğrulayıp AÇIKÇA ver.\n"
+        "   Qwen3.5-4B için (ölçüldü, 224 LoRA çifti):\n"
+        "     --target-modules q_proj k_proj v_proj o_proj \\\n"
+        "         in_proj_qkv in_proj_z in_proj_a in_proj_b \\\n"
+        "         gate_proj up_proj down_proj\n"
+        "   ⚠️ in_proj_* düşerse 24 linear-attention katmanı LoRA'sız kalır — HATA VERMEDEN."
+    )
+
+
 def main():
     args = parse_args()
+    _require_target_modules(args.target_modules)
     args.user_part = _decode_marker(args.user_part)
     args.assistant_part = _decode_marker(args.assistant_part)
     out = args.output_dir or f"outputs/{args.run_name}"
