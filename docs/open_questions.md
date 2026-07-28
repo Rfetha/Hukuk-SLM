@@ -410,6 +410,78 @@ Kod bunu engellemiyor, sadece uyarı basıyor. `spawn_orpo` docstring'ine yazıl
 
 ---
 
+## `TASARIM.md` §13'ün 1-7 sorularının durumu
+
+> §13 **donmuş kayıt** olarak duruyor, yeniden yazılmıyor; canlı durum burada.
+
+| §13 # | soru | durum |
+| :--: | :--- | :--- |
+| 1 | TR embedding modeli | ⏸️ ölçüm bekliyor — **aday çıktı: `bge-m3`**, aşağıda |
+| 2 | Red kapısı eşiği | 🔴 açık |
+| 3 | DEV `n` — güç analizi | ⏸️ ölçüm bekliyor |
+| 4 | Zamansal eksen | 🔴 açık |
+| 5 | Hakem panelinin 3. ailesi | 🔴 açık |
+| 6 | İçtihat grafa girsin mi | 🔴 açık |
+| **7** | **Yinelemeli vs eşzamanlı merge** | ✅ **KAPANDI — konusuz kaldı** |
+
+### §13.1 aday notu — `BAAI/bge-m3` (2026-07-28, kullanıcı işaret etti)
+
+**Kaynak:** [`muhamparlak/turkish-law-bge-m3-embeddings`](https://huggingface.co/datasets/muhamparlak/turkish-law-bge-m3-embeddings)
+— ⚠️ bu bir **veri seti**, model değil: Türkçe hukuk metinlerinin `bge-m3` ile önceden
+hesaplanmış gömüleri. Model adayı dolayısıyla **`BAAI/bge-m3`**.
+
+| künye (sayfadan) | değer |
+| :--- | :--- |
+| model | `BAAI/bge-m3`, çok dilli |
+| boyut | **1024-dim** |
+| satır | **1.824.298** — 1.82M **içtihat** parçası + 4.69k **mevzuat** maddesi |
+| kaynak | Yargıtay + Danıştay kararları · Anayasa, TMK, TCK ve diğer temel kanunlar |
+| chunk | içtihat **3000 char**, mevzuat chunk'sız |
+| lisans | **CC-BY-4.0** (atıf şartlı, temiz) |
+
+**Neden ilginç — iki soruya birden dokunuyor:**
+- **§13.1'e model adayı:** çok dilli, Türkçe destekli, açık lisans.
+- **§13.6'ya (içtihat) malzeme:** 1.82M içtihat gömüsü hazır. Bedesten'den ham çekip
+  kendimiz gömmeye göre büyük kısayol.
+
+**⚠️ Üç uyarı — hiçbiri doğrulanmadı:**
+1. **Chunk uyumsuzluğu.** Önceden hesaplanmış gömüler **3000 char**'da parçalanmış; bizim
+   protokolümüz **900 char eval-mirror** (ADR-0011 değişmezi). Hazır gömüler **olduğu gibi
+   kullanılamaz** — model alınıp korpus **kendi clip'imizle yeniden gömülmeli.** Yani değeri
+   "hazır index" değil, "model seçimi + doğrulama seti".
+2. **Boyut bütçeyi değiştirir.** `NEXT-SESSION.md` §9 tahmini **e5-base sınıfı (278M, 768-dim)**
+   varsayıyordu. `bge-m3` **~568M** ve **1024-dim** → embedder RAM'i ~1.1 GB değil **~2.3 GB**
+   (fp32), index 88 MB değil ~**236 MB**. ≤8 GB tablosu **CPU tarafında** yeniden kurulmalı
+   (VRAM tablosu etkilenmez — embedder CPU'da).
+3. **EDA kuralı geçerli.** `newmindai/EuroHPC-Legal` de kâğıt üstünde kusursuzdu. Kullanmadan
+   önce örnekle: içtihat metinleri temiz mi, mevzuat güncel mi, mülga hüküm ayıklanmış mı.
+
+**Karar verilmedi.** §13.1 açık kalıyor; bu yalnız **birinci aday** olarak kaydedildi.
+
+### §13.7 — ✅ KAPANDI (2026-07-28): soru konusuz kaldı
+
+**Cevap: ayrıca yinelemeli hücre koşulmayacak, çünkü `k=2`'de böyle bir ayrım yok.**
+
+`TASARIM.md` §4.2 eşzamanlı k-yollu merge'i seçerken gerekçesi
+`TIES(TIES(τg,τa),τr) ≠ TIES(τg,τa,τr)` idi — yani ayrım **`k ≥ 3` vektörde** anlamlı.
+Bu hatta:
+
+```
+Kapı 0 (#39)  → τ_register düştü
+ADR-0035      → τ_reasoning kapsam dışı
+                    ⇒  k = 2  (τg, τa)
+TIES(τg, τa) tek adım — "yinelemeli hâli" diye bir şey yok.
+```
+
+**Yeniden açılma koşulu:** `k ≥ 3`'e çıkılırsa (future work — RS-FT kolu ya da yeni bir beceri
+kolu eklenirse) soru **aynen geri gelir** ve o zaman ekstra hücre olarak koşulur; maliyeti
+yalnız eval.
+
+⚠️ **Not:** merge varyantı ihtiyacı bu hatta **başka bir eksende** zaten karşılanıyor —
+ADR-0036'nın **ham TIES ↔ norm-dengeli** ikilisi kafeste iki merge ayarı üretiyor.
+
+---
+
 ## İleri notlar — karar değil, kaydedilmeye değer gözlem
 
 ### Sıfır marjinal maliyet asimetrik bir koz (2026-07-28)
