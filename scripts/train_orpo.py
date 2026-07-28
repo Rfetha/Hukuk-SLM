@@ -97,8 +97,12 @@ def parse_args():
     p.add_argument("--epochs", type=float, default=1.0)
     p.add_argument("--batch", type=int, default=1)
     p.add_argument("--grad-accum", type=int, default=64, help="per_device×grad_accum≥64 (OR-sinyali stabil)")
-    p.add_argument("--max-length", type=int, default=1536)
-    p.add_argument("--max-prompt-length", type=int, default=1152)
+    # ⚠️ ÖLÇÜLDÜ (2026-07-28, n=1741): eski 1536/1152 ayarında prompt'ların **%4.4'ü** ve
+    # prompt+chosen'ın %2'si sessizce kırpılıyordu (ort 406 tok ama p95 1120, max 1703).
+    # Yeni değerler kırpmayı ~%0'a indiriyor VE τ_grounding'in 2048 tavanına oturuyor
+    # (rejim eşleşmesi — docs/open_questions.md #13).
+    p.add_argument("--max-length", type=int, default=2048)
+    p.add_argument("--max-prompt-length", type=int, default=1536)
     p.add_argument("--warmup-ratio", type=float, default=0.05)
     p.add_argument("--lora-r", type=int, default=16)
     p.add_argument("--lora-alpha", type=int, default=32)

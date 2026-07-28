@@ -273,7 +273,7 @@ def spawn_sft(model: str = "", data: str = "", run_name: str = "r1",
 
 @app.local_entrypoint()
 def spawn_orpo(model: str = "", data: str = "", run_name: str = "orpo1",
-               adapter: str = "", epochs: float = 1.0, smoke: bool = False,
+               adapter: str = "", epochs: float = 3.0, smoke: bool = False,
                beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64,
                save_steps: int = 100, bf16_base: bool = False,
                lora_dropout: float = -1.0, target_modules: str = ""):
@@ -285,6 +285,11 @@ def spawn_orpo(model: str = "", data: str = "", run_name: str = "orpo1",
     ⚠️ τ_abstention KOLU olarak koşarken: `--adapter` VERİLMEZ (taze = ham base'den) ve
     `--bf16-base --lora-dropout 0.05 --target-modules '<τ_g ile aynı liste>'` verilir.
     Aksi hâlde τ_g ile merge edilemez — bkz. docs/open_questions.md #13.
+
+    ⚠️ `epochs` varsayılanı 1.0 DEĞİL 3.0 (2026-07-28 kararı). Why: 1.741 çift ÷ etkin batch 64
+    = epoch başına yalnız **27 optimizer adımı**. 12B hattında ORPO continuation'dı, dürtmesi
+    yetiyordu; HAM BASE'den yeni davranış öğretmek 27 adımda lr 1e-5 ile olmuyor. 3 epoch = 82
+    adım. Kıyas: τ_grounding 1.083 adım koşuyor.
     """
     _require("model", model); _require("data", data)
     common = dict(bf16_base=bf16_base, lora_dropout=lora_dropout,
