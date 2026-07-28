@@ -69,7 +69,13 @@ old-version-gemma4-12b/data/
 # Gerekçe: veri + ölçüm çıktısı araştırma repro'sunun kendisi; GitHub'da dursun.
 # Boyut denetimi: data/ = 403 MB, 100 MB üstü dosya YOK (en büyük 98.2 MB).
 # ⚠️ İki kural: (1) yeni bir jsonl 100 MB'ı aşarsa push REDDEDİLİR — böl veya LFS'e al.
-#              (2) outputs/ altına adapter/checkpoint koyma; yukarıdaki desenler kesiyor.
+#              (2) outputs/ altına adapter/checkpoint koyma.
+#
+# ⚠️⚠️ DÜZELTME (2026-07-28): (2)'nin eski hâli *"yukarıdaki desenler kesiyor"* diyordu —
+# KESMİYORDU. Aşağıdaki `!outputs/**` negasyonu satır 37'deki `*.safetensors`'ı GEÇERSİZ
+# kılıyor (gitignore'da sonraki kural kazanır). Sonuç: `outputs/tg/adapter_model.safetensors`
+# (114 MB) sessizce commit'e girdi ve push GitHub'ın 100 MB sınırında reddedildi.
+# Negasyondan SONRA gelen ağırlık desenleri (aşağıda) bu boşluğu kapatıyor.
 # ══════════════════════════════════════════════════════════════════════════════
 data/external/
 *.parquet
@@ -82,6 +88,17 @@ data/external/
 # Emekli hattın ölçüm çıktıları: 8.3 MB, SCORECARD'ın her hücresinin kanıtı.
 # (Bu negasyon *.jsonl'den SONRA gelmeli — sıra önemli.)
 !old-version-gemma4-12b/outputs/eval/**
+
+# ⚠️ MODEL AĞIRLIKLARI — `!outputs/**` / `!data/**` negasyonlarından SONRA gelmeli, yoksa
+# negasyon onları geri açar (2026-07-28'de tam bu oldu: 114 MB adapter push'u kırdı).
+# Bir adapter 114-250 MB, bir GGUF 6-15 GB; GitHub tek dosyada 100 MB'ı REDDEDER.
+outputs/**/*.safetensors
+outputs/**/*.gguf
+outputs/**/*.bin
+outputs/**/*.pt
+outputs/**/checkpoint-*/
+data/**/*.safetensors
+data/**/*.gguf
 
 # Weights & Biases
 wandb/
