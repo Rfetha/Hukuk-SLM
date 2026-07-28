@@ -197,6 +197,24 @@ patlar, ADR-0026'nın ruhu · (b) base'e göre liste tut → ADR-0026'ya aykır�
 (c) olduğu gibi bırak + uyarı bas.
 **Eğilim: (a).** ⚠️ `train_sft.py`'ye dokunmak CP5 koşarken **yapılmadı** — koşu bitince.
 
+### 🟡 PLANLANDI — `causal-conv1d` hız kaldıracı, Sprint 2 öncesi ÖLÇÜLECEK
+
+CP5'te ölçüldü: kararlı hız **6.8-7.0 s/it**, **2.619 token/s**, **MFU ≈ %15**. Sebep büyük
+ölçüde `causal-conv1d`'nin kurulu olmaması — GatedDeltaNet katmanları PyTorch referans yoluna
+düşüyor (*"The fast path is not available"*) ve Qwen3.5-4B'nin **32 katmanının 24'ü**
+linear-attention. Fallback **matematiksel olarak aynı**: çıktı geçerli, yalnız yavaş.
+
+**Karar (2026-07-28): CP5'e dokunulmadı** — gerekçe [ADR-0033](adr/0033-egitim-hizi-fla-core-checkpointing-batch.md)
+ölçüm güncellemesinde.
+
+**Yapılacak:** Sprint 2'nin **4 koşusundan önce** (`τa` + Taban A + Taban B×2) image'a
+`causal-conv1d` eklenip **bir smoke ile s/it ölçülecek.** 2× çıkarsa ~5 saat + ~$12 tasarruf.
+⚠️ Kazanç **ölçülmeden yazılmayacak** — bu ADR'nin kendi dersi (`fla-core` teşhisi tahminle
+yapılmış ve yanlış çıkmıştı, `#40`).
+
+⚠️ Ayrıca `requirements.lock.txt` **korunmalı**: `fla-core` düzeltmesinde olduğu gibi, yeni paket
+pinli ortamı bozmamalı — önce sürüm uyumu kontrol edilir.
+
 ### ⚠️ Kalıcı uyarı — `--adapter` yolu
 
 `train_orpo`'nun **`--adapter` (continuation) yolu Sprint 2'de KULLANILMAZ**; `--fresh-adapter`
