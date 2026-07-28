@@ -417,7 +417,7 @@ Kod bunu engellemiyor, sadece uyarı basıyor. `spawn_orpo` docstring'ine yazıl
 | §13 # | soru | durum |
 | :--: | :--- | :--- |
 | 1 | TR embedding modeli | ⏸️ ölçüm bekliyor — **aday çıktı: `bge-m3`**, aşağıda |
-| 2 | Red kapısı eşiği | 🔴 açık |
+| 2 | Red kapısı eşiği | ✅ **KAPANDI — katı ([ADR-0038](adr/0038-red-kapisi-esigi-kati.md))** |
 | 3 | DEV `n` — güç analizi | ⏸️ ölçüm bekliyor |
 | 4 | Zamansal eksen | 🔴 açık |
 | 5 | Hakem panelinin 3. ailesi | 🔴 açık |
@@ -457,6 +457,25 @@ hesaplanmış gömüleri. Model adayı dolayısıyla **`BAAI/bge-m3`**.
    önce örnekle: içtihat metinleri temiz mi, mevzuat güncel mi, mülga hüküm ayıklanmış mı.
 
 **Karar verilmedi.** §13.1 açık kalıyor; bu yalnız **birinci aday** olarak kaydedildi.
+
+### §13.2 — ✅ KAPANDI (2026-07-28, [ADR-0038](adr/0038-red-kapisi-esigi-kati.md)): **katı**
+
+**Cevap: doğrulanamayan TEK atıf, cevabın tamamını reddettirir.** İkili kapı, ara durum yok.
+
+**Gerekçe üç katmanlı:** (1) ürün vaadi *"denetlenebilir"* — tek uydurma atıfın geçtiği sistem
+denetlenebilir değildir · (2) **hukukta kısmi doğruluk işe yaramaz** — avukat 3 atıftan 2'si
+doğru metne güvenemez, hangisinin yanlış olduğunu bilmediği için hepsini kontrol eder, sistem
+hiç zaman kazandırmamış olur · (3) katı politika **parametresiz**, eşikli varyantlar ADR-0037'nin
+çoklu karşılaştırma sorununu büyütürdü.
+
+**Bedel:** coverage düşer — ama gizlenmiyor, ADR-0011 gereği **A1 (cevaplanan-only) + coverage
+yan yana** raporlanıyor.
+
+**B (çoğunluk) ve C (cerrahi) elenmedi, ablasyona alındı** — üçü de **aynı cevap kümesi üzerinde
+post-hoc** uygulanabilir, maliyet ~0. Sprint 4'te coverage/precision eğrisi üç nokta olarak çizilir.
+
+⚠️ **Sınır:** doğrulayıcının yanlış-negatifi (doğru atıfı bulamama) bu politikada doğrudan
+coverage kaybına dönüşür. Doğrulayıcı kalibrasyonu Sprint 4'ün ayrı borcu.
 
 ### §13.7 — ✅ KAPANDI (2026-07-28): soru konusuz kaldı
 
