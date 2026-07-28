@@ -124,7 +124,38 @@ karşılaştırma sorunu).
 
 ---
 
-## 10. Merge kütüphanesi — hazır mı, kendi mi? 🟡
+## 10. Merge kütüphanesi — hazır mı, kendi mi? — ✅ **KAPANDI (2026-07-28) · 🔄 revize edilebilir**
+
+> ### CEVAP: **kendi streaming merge'imiz** + zorunlu birim testi + `mergekit` çapraz kontrolü
+>
+> **Ayrı ADR açılmadı** — kullanıcı kararı açıkça *"ileride uyarılara göre değişebilir"*.
+> Geri dönüşü kolay bir uygulama tercihi, dondurulmuş anlatı değil.
+>
+> **Neden kendi:**
+> - ADR-0036'nın **norm-dengeli ön-adımı `mergekit`'in standart `ties`'ında yok.** Onu kullansak
+>   bile `w_t = 1/‖τ_t‖`'yi elle hesaplayıp `weight` parametresine vermemiz gerekirdi — yani
+>   kritik adım zaten bizde kalıyor.
+> - Pinli `requirements.lock.txt`'e dokunulmuyor (`fla-core` dersi taze, `#40`).
+> - `TASARIM.md` §4.2 algoritmayı zaten satır satır tarif ediyor; paper'da birebir yazılabilir.
+> - **Ölçekle ilgili korku doğrulandı, iş küçük:** `‖τ_g‖` ölçümü (LoRA'dan ΔW çıkarma, katman
+>   bazında dolaşma, Frobenius) **~20 satırda çalıştı** → `outputs/eval/tau_norm_tg.json`.
+>
+> **⚠️ ŞART — doğrulama testi zorunlu.** ADR-0036'daki 5 parametreli örnek birim testine
+> çevrilir (ham TIES → p1 = 0.80 · norm-dengeli → p1 = 0.739 · p3 = 0.547) ve kodun çıktısıyla
+> karşılaştırılır. TIES'ın işaret-seçimini yanlış yazmak **sessiz hata sınıfıdır** — sayı çıkar,
+> yanlış çıkar. Bu hattın sicili (`#38` şablon, `#40` `fla-core`) bunu tavsiye değil zorunluluk yapar.
+>
+> **`mergekit` yine de kullanılır** — bağımsız **çapraz kontrol** olarak: ham TIES hücresi onunla
+> da üretilip bizimkiyle karşılaştırılır. Ayrı ortama kurulur, lock'a girmez.
+>
+> ### 🔄 Revizyon tetikleri — bunlardan biri olursa `mergekit`'e geçilir
+> 1. Birim testi elle hesaplanan değerleri **tutturamazsa**
+> 2. `mergekit` çapraz kontrolü bizimkiyle **tolerans dışı** ayrışırsa
+> 3. Streaming merge host RAM'de **OOM ederse** ya da kabul edilemez yavaşsa
+> 4. Uygulamadığımız bir tekniğe ihtiyaç doğarsa (DARE varyantları, SLERP, model soup vb.)
+
+<details>
+<summary>Kararın alındığı andaki soru (kayıt için korunuyor)</summary>
 
 **Soru.** `mergekit` mi, ~200 satırlık kendi streaming merge'imiz mi?
 
@@ -138,6 +169,8 @@ TIES'ın üç adımı elle hesaplanıp kodun çıktısıyla karşılaştırılma
 sicili (`#38` şablon tuzağı, `#40` `fla-core`) bunu tavsiye değil zorunluluk yapıyor.
 
 **Ne zaman:** Sprint 3 uygulamasından önce. **Bağlı:** `TASARIM.md` §4.2.
+
+</details>
 
 ---
 
@@ -325,6 +358,14 @@ Bayraklar `modal_train.py`'ın `train_orpo` + `spawn_orpo` yollarından da geçi
 Düzeltme sırasında çıktı: **`train_sft.py` ve `train_orpo.py` aynı varsayılanı taşıyor** —
 `q/k/v/o + gate/up/down`, yani **`in_proj_qkv/z/a/b` YOK.** Bu ORPO'ya özgü bir sapma değil,
 **paylaşılan bir mayın**: Qwen3.5'te 24 linear-attention katmanı LoRA'sız kalır, hata vermeden.
+
+> **⚠️ Bedeli artık ÖLÇÜLDÜ** (`τ_grounding`, 2026-07-28 → `outputs/eval/tau_norm_tg.json`):
+> `in_proj_*` modülleri `‖τ‖`'nin **%26.8'ini** taşıyor (`in_proj_qkv` %16.8 + `in_proj_z` %10.0).
+> Varsayılan liste kullanılsaydı **adaptasyonun dörtte biri hiç öğrenilmezdi.**
+> Ayrıca LoRA çifti sayısı **224** çıktı ve ADR-0031'in mimari varsayımını birebir doğruladı:
+> `8 full-attn × 4 + 24 linear-attn × 4 + 32 × 3 (MLP) = 224`.
+> *(Yan bulgu: ağırlık MLP'de toplanıyor — `gate_proj` %34.5 + `up_proj` %23.2 = %58;
+> `k_proj`/`v_proj` neredeyse hiç değişmemiş, %0.6 / %0.5.)*
 
 Bugün tek koruma, listeyi **her çağrıda elle vermek** (CP5 komutu öyle yapıyor,
 `NEXT-SESSION.md` §3 "asla düşürme" diye uyarıyor). Bu koruma değil, disiplin.
