@@ -202,12 +202,58 @@ elde ettiğin şey task-vector değil ardışık SFT olur — yani ölçmek iste
 > Olduğu gibi kullanmak yeni modele **başka bir modelin hatalarını** öğretir. `chosen` ve tuzak
 > kurgusu yeniden kullanılabilir. Tek çıkarım koşusu, eğitim değil.
 
+### 4.1.1 Rejim eşleşmesi — kollar merge edilebilir olmalı (2026-07-28)
+
+`τ = θ_ft − θ_base` ortak bir `θ_base` şart koştuğu için kolların eğitim rejimi keyfî olamaz.
+**Ne eşleşmek zorunda, ne serbest:**
+
+| ayar | `τ_grounding` | `τ_abstention` | statü |
+| :--- | ---: | ---: | :--- |
+| precision | bf16 taban | bf16 taban | 🔴 **ZORUNLU** — farklı `θ_base` tanımı bozar |
+| `lora_dropout` · `r`/`alpha` · seed | 0.05 · 16/32 · 3407 | aynı | 🔴 **ZORUNLU** |
+| `target_modules` | 11 modül (`in_proj_*` dahil) | aynı | 🔴 **ZORUNLU** |
+| `max_seq_len` | 2048 | 2048 / prompt 1536 | 🔴 eşleşti |
+| **`lr`** | 1e-4 | **1e-5** | 🟢 **SERBEST** — ORPO'nun kendi rejimi |
+| **etkin batch** | 16 | **64** | 🟢 **SERBEST** — OR-sinyali ≥64 ister |
+
+**lr/batch farkı korunuyor ve limitations'a yazılıyor.** Çalışan bir yöntemi kıyas uğruna
+bozmak kötü takas. **Ama ön-kayıtlı bir tetiği var:** *`τ_a` tekil hücresi M2/M2b'de base
+çıpasını **geçemezse**, "ORPO ham base'den çalışmıyor" sonucuna varmadan ÖNCE eşleşmiş rejimde
+(lr 1e-4 / etkin batch 16) bir **tanı koşusu** yapılır.* Rejimi dışlamadan yöntemi mahkûm etmek
+atıf hatası olur.
+
+**⚠️ ORPO `epochs = 3`, 1 değil.** 1.741 çift ÷ etkin batch 64 = epoch başına yalnız **27
+optimizer adımı**; `τ_g` **1.083** adım koşuyor. 12B hattında ORPO *continuation*'dı (dürtmesi
+yetiyordu), ham base'den yeni davranış öğretmek başka iş. 3 epoch = **82 adım.** `grad_accum`'a
+dokunulmadı.
+
+**⚠️ İki kod kapısı** (`train_sft.py` · `train_orpo.py`, 2026-07-28):
+`--target-modules` **varsayılansız ve zorunlu** — eski varsayılan `in_proj_*`'ı kaçırıyordu ve
+o modüller `‖τ_g‖`'nin **%26.8'ini** taşıyor (ölçüldü: `outputs/eval/tau_norm_tg.json`).
+`train_orpo`'nun **`--adapter` (continuation) yolu KULLANILMAZ**; `--fresh-adapter` zorunlu —
+`--adapter tg` yazmak ardışık SFT üretir, yani **Taban B**'yi kol diye kaydeder.
+
 ### 4.2 Birleştirme
 
 **Eşzamanlı k-yollu**, yinelemeli değil. TIES budama + işaret-seçimi + ayrık-ortalamayı tüm
 vektörler üzerinde aynı anda yapar, dolayısıyla `TIES(TIES(τg,τa),τr) ≠ TIES(τg,τa,τr)`.
-İkisi de meşru ama farklı şeyler; **eşzamanlı** olan TIES'ın tasarlandığı hâl. Yinelemeli birleşim
-ekstra bir hücre olarak durabilir (maliyeti yalnız eval).
+İkisi de meşru ama farklı şeyler; **eşzamanlı** olan TIES'ın tasarlandığı hâl.
+
+> **⚠️ Bu hatta ayrım KONUSUZ (2026-07-28).** Fark `k ≥ 3` vektörde anlamlı; Kapı 0 `τ_register`'ı
+> düşürdü, ADR-0035 `τ_reasoning`'i kapsam dışı bıraktı → **`k = 2`.** `TIES(τg, τa)` tek adım,
+> "yinelemeli hâli" diye bir şey yok. **Yeniden açılma koşulu:** `k ≥ 3`'e çıkılırsa soru aynen
+> geri gelir ve ekstra hücre olarak koşulur. *(§13 soru 7 böylece kapandı.)*
+
+**Uygulama — kendi streaming merge'imiz** (2026-07-28, 🔄 revize edilebilir). Hazır kütüphane
+(`mergekit`) yerine kendi kodumuz, çünkü **norm-dengeli ön-adım `mergekit`'in standart `ties`'ında
+yok** — onu kullansak bile `w_t = 1/‖τ_t‖`'yi elle hesaplayıp vermemiz gerekirdi; ayrıca pinli
+`requirements.lock.txt` korunuyor (`fla-core` dersi, `#40`).
+**⚠️ ŞART — doğrulama testi zorunlu:** ADR-0036'daki 5 parametreli örnek birim testine çevrilip
+kodun çıktısıyla karşılaştırılır (ham TIES → p1 = 0.80 · norm-dengeli → p1 = 0.739, p3 = 0.547).
+TIES'ın işaret-seçimini yanlış yazmak **sessiz hata sınıfıdır** — sayı çıkar, yanlış çıkar.
+**`mergekit` yine de bağımsız çapraz kontrol** olarak kullanılır (ayrı ortam, lock'a girmez).
+**Revizyon tetikleri:** birim testi tutmazsa · çapraz kontrol tolerans dışı ayrışırsa · host RAM
+OOM ederse · uygulanmamış bir tekniğe ihtiyaç doğarsa → `mergekit`'e geçilir.
 
 **Uygulama:**
 - Her kol `ΔW = (α/r)·BA` olarak **bf16'da açılır** — TIES/DARE budama ve işaret-seçimini
@@ -334,6 +380,26 @@ sha256 51e220081801098e813cc68eeccd59ef5352571f6e3d28354e2f04a9610f6f07
 ⚠️ Türetilmiş artefaktlar (graf, vektör indeksi) git'e girerken **dosya başına 100 MB sınırına**
 dikkat — GitHub o eşikte push'u reddeder (`data/README.md` git politikası).
 
+> ### 🔴 Korpus temizliği — Sprint 4'ün ÖN KOŞULU (ölçüldü 2026-07-28)
+>
+> Snapshot dondurulmadan önce temizlenmeli. 40.496 madde tarandı:
+>
+> | bulgu | sayı | ne demek |
+> | :--- | ---: | :--- |
+> | **saf kabuk** (<300 char + *"yerine işlenmiştir"*) | **1.901** (%4.7) | Hüküm değil **işaretçi**: *"( 21/7/1953 tarihli ve 6183 sayılı Kanun ile ilgili olup, yerine işlenmiştir.)"* |
+> | *"DEĞİŞİKLİK YAPILMASI…"* kanunlarından | 3.101 (%7.7) | Tadil metni, kendi başına norm taşımıyor |
+> | `<120 char` madde | 11.375 (%28.1) | ⚠️ **ham sayı**, ayrıştırılmadı — meşru kısa hükümler de var (yürürlük/yürütme maddeleri) |
+> | *"mülga"/"yürürlükten kaldır"* geçen | 5.574 (%13.8) | ⚠️ **mülga madde sayısı DEĞİL**, çoğu tadil dili; ayrıştırılmadı |
+>
+> **✅ Eğitim ve eval TEMİZ — sızıntı ölçüldü, yok.** `raft_scrubbed` (n=17.323) → *"yerine
+> işlenmiştir"* geçen **11 satır (%0.06)** ve onlar da kabuk değil, gerçek maddelerin **dipnotu**.
+> `data/eval/dev/{core_hard,trap}.jsonl` + `data/eval/canon/core_hard.jsonl` → **SIFIR** eşleşme.
+> **Yani `τ_grounding` kirli kaynakla eğitilmedi ve korpus temizliği YENİDEN EĞİTİM GEREKTİRMEZ.**
+>
+> **Risk yalnız retriever'da:** indeks tüm 40.496 maddeyi kapsayacak, kabuklar dahil. Bir kabuk
+> `KAYNAK` diye getirilirse model **boş kaynakla** cevap vermeye çalışır ve tüm harness ölçümü
+> zehirlenir. Temizlik **Sprint 4'ün ön koşulu**, eğitimin değil. *(§13 soru 4'ün de ön koşulu.)*
+
 ### 5.4 Hibrit kavram katmanı — kapılı Katman-1
 
 Deterministik graf **kavram** düğümlerini kapsamaz ("zamanaşımı", "ayıplı mal" gibi kavramların
@@ -419,6 +485,23 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 
 **Ölçülecekler:** `$/sorgu` · latency · throughput · VRAM · GPU-saat. Bugün mevcut tek maliyet
 ölçümü `judge_cost_usd` — yani *not verme* maliyeti, *servis* maliyeti değil. **Açık borç.**
+
+> ### Yan gözlem — sıfır marjinal maliyet asimetrik bir koz (2026-07-28)
+>
+> ```
+> Rakip :  $/sorgu = token fiyatı × token   → sorgu başına ek çıkarımla DOĞRUSAL artar
+> Bizde :  $/sorgu = eğitim_maliyeti / N    → ek çıkarımdan BAĞIMSIZ; bedel LATENCY
+> ```
+>
+> Sorgu başına ek çıkarım gerektiren teknikler (iteratif getirme, self-consistency, yeniden
+> sıralama, ajan döngüsü) **bizde ucuz, rakipte pahalı.** Adalet kuralı gereği aynı döngü rakibe
+> de verilirse **onun** `$/sorgu`'su katlanır, bizimki sabit kalır → makas **bizim lehimize** açılır.
+> **`N*` bundan etkilenmiyor.** Ölçülen latency bütçesi: decode **122.9 t/s** → 300 token ≈ **2.4 sn**;
+> 3 hop ≈ ~8 sn *(⚠️ tahmin — prefill büyümesi ölçülmedi)*.
+>
+> ⚠️ **§10.2'nin "çok-ajanlı / LLM-indeksli GraphRAG" elemesi bunu kapsamaz.** O satırın hedefi
+> grafı **LLM ile kurmak** (40.496 madde × LLM çağrısı + halüsinatif kenar). Sorgu-zamanı hop
+> sayısını tezden eleyen şey **kapsam ve gecikme**, maliyet değil.
 
 ---
 
@@ -544,6 +627,7 @@ eşleşmesini bozar → doğru mimari **ayrık OCR preprocessor**, native VLM OC
 | **32B tier** | Tek tüketici GPU'da eğitilemez; çekirdek parite çalışması bitmeden bütçeyi boyut eğrisine harcar |
 | **CPT (continued pre-training)** | Ayrı bir tez. Kaynak gelse bile hayır — kapsamı patlatacak şey bu |
 | **Agents / Faz 3-5** | Kapsam dışı, değişmedi |
+| **Zamansal eksen** — *"atıf yapılan tarihte yürürlükte miydi?"* *(2026-07-28, §13 soru 4)* | **Sebep tercih değil, veri.** `data/corpus/mevzuat_maddeler.jsonl` yalnız `kanun_no · kanun_adi · madde_no · text` taşıyor — **yürürlük tarihi yok, mülga bayrağı yok, tadil geçmişi yok.** CANON modu da doğrulayıcı boyutu da aynı metadata'yı ister. Ayrıca mimari ilke (*"güncellik kütüphanede, modelin beyninde değil"*) CANON modunu zaten reddediyor: metadata gelse bile doğru yer **doğrulayıcı**. **Ön koşul:** korpus temizliği (§5.3) + Bedesten'den yürürlük/mülga alanlarının EDA ile doğrulanması. Tez değeri yüksek (rakiplerin beceremediği eksen) ama **bu tezde yok** |
 
 ---
 
