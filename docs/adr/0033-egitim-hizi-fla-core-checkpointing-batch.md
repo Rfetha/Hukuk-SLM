@@ -110,9 +110,19 @@ batch 1 × grad-accum 16, 17.323 örnek → tam koşu 1083 adım):
 > olarak aynı** — loss/convergence etkilenmez, CP5 çıktısı geçerli — ama o katmanlar ~2-3× yavaş
 > ve Qwen3.5-4B'nin **32 katmanının 24'ü** linear-attention. Düşük MFU'yu büyük ölçüde bu açıklıyor.
 >
-> **Karar (kullanıcı, 2026-07-28): şimdi dokunulmuyor.** Koşan işi kesmek %30 için kumar; çıktı
-> zaten geçerli; bedel ~$1. **Sprint 2'de 4 koşu daha var** (`τa` + Taban A + Taban B×2) —
-> `causal-conv1d` orada bir smoke ile **ölçülecek**, `fla-core` dersi gereği tahminle yazılmayacak.
+> ### Karar — `causal-conv1d` ERTELENDİ (kullanıcı, 2026-07-28)
+>
+> **CP5'e dokunulmuyor.** Gerekçe üç kalem:
+> 1. **Çıktı geçerli** — fallback matematiksel olarak aynı, loss/convergence etkilenmiyor.
+>    Yavaş üretiyoruz, yanlış üretmiyoruz.
+> 2. **Bedel önemsiz** — bu koşuda ~$1 fazla; cap $42.50.
+> 3. **Kesmek kumar** — koşan işi 10 dk yükleme + belirsizlik karşılığında %27 için durdurmak,
+>    sebep henüz ölçülmemişken kötü takas.
+>
+> **Ama kapatılmadı, planlandı.** Sprint 2'de **4 koşu daha** var (`τa` + Taban A + Taban B×2).
+> Kaldıraç orada **bir smoke ile ölçülecek** — 2× çıkarsa ~5 saat ve ~$12 tasarruf. `fla-core`
+> dersi gereği (bu ADR'nin kendi konusu) **tahminle yazılmayacak, ölçülecek.**
+> Eylem maddesi: `docs/open_questions.md` → Kod borçları.
 
 ### Kalite-nötrlüğün KANITI (teori değil, ölçüm)
 
