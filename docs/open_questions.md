@@ -64,7 +64,33 @@ maliyeti düşük; ciddiye alınmalı.
 
 ---
 
-## 9. "Merge tabanlardan iyi" ne demek — sayıyla? 🔴
+## 9. "Merge tabanlardan iyi" ne demek — sayıyla? — ✅ **KAPANDI (2026-07-28, [ADR-0037](adr/0037-ic-iddia-karar-kurali-kapi-5.md) — Kapı 5)**
+
+> ### CEVAP — veriye bakılmadan yazıldı, hiçbir kafes hücresi üretilmemişti
+>
+> ```
+> KAPI 5 — norm-dengeli ayarda, τg+τa şunların HEPSİNİ sağlamalı:
+>   (a) M1/M4   ≥ 0.90 × (τg tek)              ← grounding korundu
+>   (b) M2/M2b  ≥ 0.90 × (τa tek)              ← abstention korundu
+>   (c) BİLEŞİK = min(grounding, abstention);  Taban A ve B'nin İKİSİ de geçilmeli
+>   (d) M5 base'in ÜSTÜNE çıkmamalı
+> ```
+>
+> **`min`, ortalama değil** — aritmetik ortalama **takasa izin verir** (grounding'i şişirip
+> abstention'ı feda etmek "kazanç" görünür), oysa iddia tam olarak bunun olmadığını söylüyor.
+> **X = Y = %90 simetrik** — asimetrik eşik bir beceriyi kayırır ve *"eşit koruyor mu"* iddiasını bozar.
+>
+> **Referans = tekil hücreler**, #8 gereği çiftle aynı hattan geçmiş hâlleri.
+>
+> **Çoklu karşılaştırma:** DEV'de bileşiği maksimize eden **tek** konfigürasyon TEST'e gider;
+> tüm tarama eklerde yayımlanır. ⚠️ **Aynı prosedür tabanlara da uygulanır** — yoksa biz taranmış
+> onlar taranmamış olur, kıyas haksız hâle gelir.
+>
+> **⚠️ Açık kalan:** güç analizi yok (`TASARIM.md` §13 soru 3). Kapı 5 bir **karar kuralıdır**,
+> istatistiksel testin yerini tutmaz — limitations'a öyle yazılır.
+
+<details>
+<summary>Kararın alındığı andaki soru (kayıt için korunuyor)</summary>
 
 **Soru.** İç iddianın karar kuralı ne? Hangi metrikte, ne kadar fark, hangi yönde?
 
@@ -93,6 +119,8 @@ tarama sonrası **hangi hücre** raporlanır (en iyi λ mi, önceden sabitlenmi�
 karşılaştırma sorunu).
 
 **Ne zaman:** Sprint 3 taramasından **önce**, veriye bakmadan. **Bağlı:** `TASARIM.md` §4.4, §7.
+
+</details>
 
 ---
 

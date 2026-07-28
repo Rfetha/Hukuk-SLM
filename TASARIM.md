@@ -437,7 +437,10 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 | **Kapı 2 — iş bölümü** | harness ablasyonu sonrası | **D** vs **E** | `D ≈ E` → *"bu domainde scaffolding ince-ayarı ikame ediyor"* — **kötü haber değil, yayımlanabilir bulgu.** `D > E` → iş bölümü doğrulandı |
 | **Kapı 3 — hibrit kol** | getirme ölçümü sonrası | recall@k + MRR (± kavram kenarı) | İyileştirmiyorsa kol kapanır, negatif bulgu raporlanır |
 
-*(Eski Kapı 4 — karşıtlık noktası — **kaldırıldı**, ADR-0028: tez tek boyut noktasında tamamlanıyor.)*
+| **Kapı 5 — iç iddia** ([ADR-0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md)) | kafes DEV ölçümü sonrası | **norm-dengeli** ayarda `τg+τa` | **Dördü birden:** (a) M1/M4 ≥ **0.90 ×** (`τg` tek) · (b) M2/M2b ≥ **0.90 ×** (`τa` tek) · (c) **bileşik = `min`(grounding, abstention)** ve bu bileşikte **Taban A ve B'nin İKİSİ de** geçilmeli · (d) M5 base'in üstüne çıkmamalı. *Referans = tekil hücreler (#8 gereği aynı hattan). Seçim: DEV'de bileşiği maksimize eden **tek** konfigürasyon TEST'e gider, tüm tarama eklerde; **aynı prosedür tabanlara da uygulanır**.* ⚠️ Güç analizi yok — karar kuralıdır, istatistiksel test değil |
+
+*(Eski Kapı 4 — karşıtlık noktası — **kaldırıldı**, ADR-0028: tez tek boyut noktasında tamamlanıyor.
+Kapı 5 onun numarasını almadı — kayıt izini bozmamak için sıradaki numara verildi.)*
 
 12B hattının referans değerleri (kıyas için, **12B protokolü, tarihsel**):
 base M2 = 0.704 · v3 M2 = 0.593 · base ood = 0.889 · v3 ood = 0.483.
