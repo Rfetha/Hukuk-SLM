@@ -215,6 +215,12 @@ ekstra bir hücre olarak durabilir (maliyeti yalnız eval).
   kombinasyon için geçerlidir.
 - Birleştirme **tam ağırlık uzayında**, kuantizasyon **en son.** (Referans belge §4.2 bunu zaten
   doğru söylüyor: 4-bit tabana doğrudan merge çifte kuantizasyon hatası üretir.)
+- **⚠️ Norm-dengeli ön-adım (ADR-0036).** Her `τ_t` merge'den önce `τ_t/‖τ_t‖` ile ölçeklenir.
+  Why: kollar farklı ölçekte eğitiliyor (`τ_g` 1.083 adım/lr 1e-4 · `τ_a` 82 adım/lr 1e-5) ve
+  TIES'ın işaret-seçimi + ayrık-ortalaması **kütle ağırlıklı** — müdahale etmezsek küçük normlu
+  kol her gerçek çatışmada silinir ve "çatışma korunmadı" diye okunur. **Ana sonuç norm-dengeli,
+  ham TIES ablasyon olarak yanında raporlanır.** DARE bunu çözmez (beklenen değeri koruduğu için
+  oranı da korur). Kafes bu yüzden **× 2 ayarda** koşulur; merge bedava olduğu için bedel yalnız eval'de.
 - **Host RAM'de koşar, GPU VRAM'e girmez.** Ve **akış hâlinde (tensör tensör)** yapılır: base
   tensörü + her kolun karşılık gelen ΔW'si yüklenir, TIES uygulanır, yazılır, bellek boşaltılır.
   Tam materyalizasyon (base + 3 kol aynı anda bf16'da) 4B'de bile onlarca GB'a çıkar; akış

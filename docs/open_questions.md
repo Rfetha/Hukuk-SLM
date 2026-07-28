@@ -133,7 +133,30 @@ task-vector olarak tez kapsamına girecek mi?
 
 ---
 
-## 12. Kol vektörlerinin ÖLÇEĞİ nasıl eşitlenecek? (ΔW norm asimetrisi) 🔴
+## 12. Kol vektörlerinin ÖLÇEĞİ nasıl eşitlenecek? — ✅ **KAPANDI (2026-07-28, [ADR-0036](adr/0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md))**
+
+> ### CEVAP: `‖τ‖` koşulsuz ölçülür · kafes İKİ ayarda koşar · ana sonuç NORM-DENGELİ
+>
+> 1. **`‖τ‖` ölçümü koşulsuz** — her kol eğitilir eğitilmez Frobenius normu (katman + toplam)
+>    `outputs/`'a yazılır, **sayı ne çıkarsa çıksın raporlanır.** `‖τ_g‖/‖τ_a‖` künye bilgisi.
+> 2. **Kafes iki ayarda:** ham TIES (`w=1`) + norm-dengeli (`τ_t ← τ_t/‖τ_t‖` sonra TIES).
+>    Merge bedava, bedel yalnız eval.
+> 3. **Ana sonuç norm-dengeli, ham TIES ablasyon** — yan yana raporlanır, gizlenmez.
+>
+> **Gerekçe (sayısal):** TIES'ın ②işaret-seçimi ve ③ayrık-ortalaması **kütle ağırlıklı**.
+> 6.6× normlu bir örnekte gerçek çatışma parametresinde küçük vektörün katkısı **tamamen
+> siliniyor** (oy farkı 0.70); normalize edildiğinde yarış başa baş oluyor (0.132) ve başka
+> bir parametrede katkı **6× büyüyor**. Yani müdahale etmezsek *"abstention eziliyor"* diye
+> okuruz ama sebep çatışma değil ölçek — tezin ölçtüğü şey ölçülemez hâle gelir.
+>
+> **⚠️ DARE bu sorunu ÇÖZMEZ:** `(m⊙τ)/(1−p)` beklenen değeri korur → **oranı da korur.**
+> DARE'in derdi çok-vektör girişimi, ölçek eşitleme değil. İki ayrı problem.
+>
+> **Bedel (limitations):** normalizasyon kolun *büyüklük* bilgisini atıyor · eval maliyeti ×2 ·
+> TIES literatüründe normalizasyon standart adım değil → paper'da **varyant** olarak sunulur.
+
+<details>
+<summary>Kararın alındığı andaki soru (kayıt için korunuyor)</summary>
 
 **Soru.** `τ_grounding` **17.323** satırda, `τ_abstention` **1.741** çiftte eğitiliyor — 10× fark.
 `τ_g`'nin deltası büyük olasılıkla belirgin şekilde **daha büyük normlu** çıkacak. Merge'de bu
@@ -161,6 +184,8 @@ haklı olarak *"abstention merge'de kayboldu mu, yoksa vektörünüz mü küçü
 Fark küçükse bu sorunun tamamı düşer; büyükse hangi seçenek olursa olsun rapora girer.
 
 **Ne zaman:** Sprint 3 öncesi. **Bağlı:** #8, #9, `TASARIM.md` §4.2.
+
+</details>
 
 ---
 
