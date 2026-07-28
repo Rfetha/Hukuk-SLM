@@ -31,6 +31,9 @@ Bu, **ne inşa edeceğimizin ve neyi ölçeceğimizin** belgesidir. Üç şeyi b
 | [`docs/record/gemma4-12b-kronoloji.md`](docs/record/gemma4-12b-kronoloji.md) | *ne oldu ve kaç çıktı* — 12B hattının tam kronolojisi, **sayılar birebir** |
 | [`docs/adr/gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md) | *bundan ne öğrendik* — base-bağımsız dersler + 26 ADR'nin karar kaydı |
 | [`docs/record/research_log/`](docs/record/research_log/) | yeni hattın canlı günlüğü (#39'dan devam) |
+| [`docs/open_questions.md`](docs/open_questions.md) | *neyi henüz bilmiyoruz* — canlı açık soru sicili (§13'ün 8'den devamı) |
+| [`docs/model-soyagaci.mmd`](docs/model-soyagaci.mmd) | *ne neden doğar* — artefakt soyağacı: ham base → kollar → kafes → final |
+| [`docs/ft-is-akisi.mmd`](docs/ft-is-akisi.mmd) | *ne zaman ne koşulur* — uçtan uca sıra ⚠️ **TASLAK**, RS-FT kolu kararlaşmadı (bkz. sicil #11) |
 | `~/code/hukuk-devir/` *(repo dışı)* | emekli hattın artefaktları — **repo'dan silindi** (ADR-0034); git geçmişi: `a0575e6` |
 
 **Bu belge onları yeniden yazmaz.** Yeni hattın her anlamlı bulgusu `research_log/`'a, her büyük
@@ -526,6 +529,7 @@ eşleşmesini bozar → doğru mimari **ayrık OCR preprocessor**, native VLM OC
 | Doğruluk-yüzdesi (kapalı-kitap sınav) ana metrik | CANON 6-mod | Parametrik ezber ölçer; "güncellik modelin beyninde değil kütüphanesinde" ilkesinin **zıttı**. Repo bunu M5 anti-hedefi ilan etti |
 | Tek güçlü hakem | Dört katmanlı savunma | Hakem ailesi özneyse self-preference savunmasız; tek hakem = tek bakış açısı, uyum ölçülemez |
 | Ardışık FT + `merge_and_unload` | Paralel kollar + k-yollu TIES/DARE | Ardışık kurguda TIES/DARE/SLERP'in çözeceği çatışma yok; iç iddia "curriculum ablasyonu"na inerdi |
+| **Ayrı adaptörler + çalışma-anı yönlendirme** (hot-swap / MoLE / AdapterFusion) | Ağırlık uzayında merge | **Yönlendirilecek bir şey yok:** grounding ve abstention sırayla değil **aynı forward pass'te** gerekli — tek cevap hem doğru atıf yapmalı hem kaynak yetersizse reddetmeli. *"Bu kaynak soruyu karşılıyor mu?"* sorusu zaten abstention'ın kendisi ve cevaplamak grounding ister → router'ın doğru yönlendirmesi için cevabı bilmesi gerekir (döngüsel). Yönlendirme beceriler **birbirini dışladığında** çalışır; bunlar dışlamıyor, **birlikte kısıtlıyor** |
 | LightRAG çekirdek harness | Deterministik yapısal graf | Mevzuatın yapısı zaten açık → LLM ile tahmin dominated. Halüsinatif kenar mülga hükmü yürürlükteymiş gibi ilişkilendirir ve **ucuza doğrulanamaz** (doğrulama = deterministik kurma emeği) |
 | Neo4j sunucusu | Gömülü NetworkX/GraphML | Ayak izinin ölçüldüğü tezde konteyner saf yük; ~40K düğüm gömülü kütüphane için önemsiz |
 | Retriever dondurulmuş + doğrulayıcı canlı | İkisi de dondurulmuş (eval'de) | Mülga olmuş maddeye atıf haksız reddedilir; hata zamanla büyür |
@@ -558,6 +562,11 @@ eşleşmesini bozar → doğru mimari **ayrık OCR preprocessor**, native VLM OC
 ---
 
 ## 13. Açık sorular
+
+> **Canlı sicil → [`docs/open_questions.md`](docs/open_questions.md).** Aşağıdaki 1-7 bu belgenin
+> yazıldığı andaki kayıttır ve **yeniden yazılmaz**; numaralandırma orada **8'den** devam eder
+> (merge hattının üç kararı + `τ_reasoning`/RS-FT kapsam sorusu). Bir soru kapanınca cevabı ve ADR
+> numarası **sicilde** işaretlenir.
 
 1. **TR embedding modeli** — hangisi? Lisansı? EDA-doğrulama kuralı burada da geçerli.
 2. **Red kapısı eşiği** — tüm atıflar doğrulanmalı mı, çoğunluk yeter mi? Ablasyon adayı.

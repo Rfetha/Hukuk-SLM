@@ -72,7 +72,7 @@ uzayında çözmeyi deniyor; TIES'ın işaret-çatışması mekanizması tam bu 
 | :--- | :--- | :--- |
 | `τ_grounding` | `data/train/raft/` | gold + hard-negative distractor |
 | `τ_abstention` | `data/train/orpo_abstain/` | ⚠️ `rejected` yeni base ile **yeniden hasat** (`gen_v3_rejected.py`) — mevcut satırlar 12B'nin fabrikasyonları, olduğu gibi kullanmak **başka bir modelin hatalarını** öğretir |
-| `τ_register` | `data/train/grounded_qa/` | **koşullu** — base'in register'ı zaten yüksekse kol düşer |
+| ~~`τ_register`~~ | `data/train/grounded_qa/` | ❌ **DÜŞTÜ (Kapı 0, `research_log` #39)** — base'in register proxy'si 0.96-0.98 çıktı, kol gereksiz |
 
 **Pazarlıksız kural: her kol HAM BASE'den, bağımsız eğitilir.** Task-vector tanımı `τ = θ_ft − θ_base`
 ortak bir `θ_base` şart koşar. Bir kolu diğerinin üstüne eğitmek task-vector değil **ardışık SFT**
@@ -90,7 +90,8 @@ ortak bir `θ_base` şart koşar. Bir kolu diğerinin üstüne eğitmek task-vec
 - **Merge'in eğitim maliyeti sıfır** — bedel yalnız eval'de. Tarama bu yüzden gerçekçi;
   ama tarama **DEV'de** yapılır, dondurulmuş CANON'da değil.
 
-**Ölçüm:** 7 hücreli kafes (3 tekil + 3 ikili + 1 üçlü). Tekiller **zorunlu** — `τ_abstention` tek
+**Ölçüm:** kafes. Tasarımın genel hâli 7 hücre (3 tekil + 3 ikili + 1 üçlü); **bu hatta Kapı 0
+`τ_register`'ı düşürdüğü için 3 hücre** (`τg` · `τa` · `τg+τa`). Tekiller **zorunlu** — `τ_abstention` tek
 başına ölçülmeden ikili sonucu atfedilemez ("merge çatışması" mı, "kol öğrenememiş" mi?).
 Tabanlar: tek-aşamalı karışık SFT + ardışık SFT. **Kafes harness KAPALI ölçülür**, yoksa red kapısı
 abstention'ı sağlar ve model-düzeyi fark maskelenir.
