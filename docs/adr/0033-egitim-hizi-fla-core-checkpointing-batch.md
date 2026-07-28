@@ -92,6 +92,28 @@ batch 1 × grad-accum 16, 17.323 örnek → tam koşu 1083 adım):
 
 **Toplam kazanç 36 → 5.4 s/it = 6.4×**, ve reçetede değişen hiçbir şey yok.
 
+> ### ⚠️ ÖLÇÜM GÜNCELLEMESİ (2026-07-28, CP5 tam koşusu)
+>
+> **Yukarıdaki 5.4 s/it, 50 adımlık smoke'tan çıkan bir PROJEKSİYONDU. 1083 adımlık gerçek
+> koşuda kararlı hız 6.8-7.0 s/it** — ~%27 yavaş, tam koşu ~1.6 sa değil **~2.1 sa**.
+> Marjinal hız olduğu için **warmup artefaktı değil** (adım 42→50: 56 sn / 8 = 7.0 · adım
+> 50→135: 577 sn / 85 = 6.8). ⚠️ Nihai rakam koşu bitince `research_log` **#41**'e yazılır.
+> Muhtemel sebep: 50 adım, 17.323 satırlık setin dizi-uzunluğu dağılımını temsil etmiyor.
+>
+> **Bağlamı: bu hız bu stack için NORMAL.** Ölçülen verim **2.619 token/s** (ort. 1.146 token ×
+> 16 dizi ÷ 7.0 sn); A100-40GB'de yayımlanmış Unsloth rakamı **2.857 token/s** — %8 aşağısındayız.
+> **MFU ≈ %15**; aynı kıyaslamada optimize bir framework %39.6 alıyor. Yani fark **framework
+> tavanı**, konfigürasyon hatası değil.
+>
+> **`causal-conv1d` bu tablonun neresinde:** kurulu olmadığı için GatedDeltaNet katmanları
+> PyTorch referans yoluna düşüyor (*"The fast path is not available"*). Bu yol **matematiksel
+> olarak aynı** — loss/convergence etkilenmez, CP5 çıktısı geçerli — ama o katmanlar ~2-3× yavaş
+> ve Qwen3.5-4B'nin **32 katmanının 24'ü** linear-attention. Düşük MFU'yu büyük ölçüde bu açıklıyor.
+>
+> **Karar (kullanıcı, 2026-07-28): şimdi dokunulmuyor.** Koşan işi kesmek %30 için kumar; çıktı
+> zaten geçerli; bedel ~$1. **Sprint 2'de 4 koşu daha var** (`τa` + Taban A + Taban B×2) —
+> `causal-conv1d` orada bir smoke ile **ölçülecek**, `fla-core` dersi gereği tahminle yazılmayacak.
+
 ### Kalite-nötrlüğün KANITI (teori değil, ölçüm)
 
 İki koşu aynı seed (3407), aynı etkin batch (16), aynı veri sırası:

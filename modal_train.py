@@ -153,7 +153,9 @@ def train(model: str, data_path: str, run_name: str, user_part: str, assistant_p
               timeout=6 * 60 * 60)
 def train_orpo(model: str, data_path: str, run_name: str, adapter: str | None = None,
                epochs: float = 1.0, max_steps: int = -1, beta: float = 0.1,
-               lr: float = 1e-5, grad_accum: int = 64, save_steps: int = 100):
+               lr: float = 1e-5, grad_accum: int = 64, save_steps: int = 100,
+               bf16_base: bool = False, lora_dropout: float = -1.0,
+               target_modules: str = ""):
     import sys
     cmd = [
         sys.executable, "/root/scripts/train_orpo.py",
@@ -164,6 +166,14 @@ def train_orpo(model: str, data_path: str, run_name: str, adapter: str | None = 
         "--epochs", str(epochs), "--beta", str(beta), "--lr", str(lr),
         "--grad-accum", str(grad_accum), "--save-steps", str(save_steps),
     ]
+    # ⚠️ REJİM EŞLEŞMESİ (τ_g ile merge edilebilirlik şartı) — sessizce ayrışırsa iki task-vector
+    # farklı θ_base'den türer ve kıyaslanamaz olur. Bkz. docs/open_questions.md #13.
+    if bf16_base:
+        cmd += ["--bf16-base"]
+    if lora_dropout >= 0:            # 0.0 geçerli DEĞER → `if lora_dropout:` yazılamaz (falsy tuzağı)
+        cmd += ["--lora-dropout", str(lora_dropout)]
+    if target_modules:               # varsayılan liste `in_proj_*` içermez → 24 katman LoRA'sız kalır
+        cmd += ["--target-modules", *target_modules.split()]
     # adapter verilirse continuation (önceki turun kazanımı taşınır), yoksa base'e taze adapter.
     cmd += ["--adapter", adapter] if adapter else ["--fresh-adapter"]
     if max_steps and max_steps > 0:
@@ -265,22 +275,29 @@ def spawn_sft(model: str = "", data: str = "", run_name: str = "r1",
 def spawn_orpo(model: str = "", data: str = "", run_name: str = "orpo1",
                adapter: str = "", epochs: float = 1.0, smoke: bool = False,
                beta: float = 0.1, lr: float = 1e-5, grad_accum: int = 64,
-               save_steps: int = 100):
+               save_steps: int = 100, bf16_base: bool = False,
+               lora_dropout: float = -1.0, target_modules: str = ""):
     """ORPO tercih öğrenmesi — fire-and-forget.
 
     --adapter verilirse o turun kazanımı taşınır (continuation); boşsa base'e taze adapter.
     İzlenecek metrik: nll_loss trendi = forget-vekili (tırmanırsa grounding riski).
+
+    ⚠️ τ_abstention KOLU olarak koşarken: `--adapter` VERİLMEZ (taze = ham base'den) ve
+    `--bf16-base --lora-dropout 0.05 --target-modules '<τ_g ile aynı liste>'` verilir.
+    Aksi hâlde τ_g ile merge edilemez — bkz. docs/open_questions.md #13.
     """
     _require("model", model); _require("data", data)
+    common = dict(bf16_base=bf16_base, lora_dropout=lora_dropout,
+                  target_modules=target_modules)
     if smoke:
         print(f"[modal] ORPO SMOKE: 50 step (format+loss+OOM doğrulama) · gpu={GPU}", flush=True)
         call = train_orpo.spawn(model=model, data_path=data, run_name=f"{run_name}-smoke",
                                 adapter=adapter or None, epochs=1.0, max_steps=50,
-                                beta=beta, lr=lr, grad_accum=grad_accum)
+                                beta=beta, lr=lr, grad_accum=grad_accum, **common)
     else:
         call = train_orpo.spawn(model=model, data_path=data, run_name=run_name,
                                 adapter=adapter or None, epochs=epochs, beta=beta,
-                                lr=lr, grad_accum=grad_accum, save_steps=save_steps)
+                                lr=lr, grad_accum=grad_accum, save_steps=save_steps, **common)
     print(f"[modal] ORPO SPAWNED ✓ {call.object_id} | model={model} "
           f"adapter={adapter or '(taze)'} beta={beta} lr={lr} ga={grad_accum} gpu={GPU}", flush=True)
 

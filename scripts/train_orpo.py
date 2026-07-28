@@ -112,6 +112,15 @@ def parse_args():
                    help="LoRA katmanları (--fresh-adapter yolunda kullanılır). Mimariye göre değişir.")
     p.add_argument("--fresh-adapter", action="store_true",
                    help="continuation yerine base'e YENİ adapter (önceki turun kazanımını kaybeder)")
+    # ⚠️ Aşağıdaki iki bayrak `train_sft.py` ile REJİM EŞLEŞMESİ içindir, stil tercihi değil:
+    # τ_g ve τ_a merge edilecekse ikisi de AYNI θ_base'den ve aynı LoRA rejiminden türemeli
+    # (task-vector tanımı ortak base şart koşar). Eskiden ikisi de burada sabit kodluydu ve
+    # sessizce `train_sft.py`'den ayrışıyordu — sayı üretir, sayı kıyaslanamaz olurdu.
+    p.add_argument("--bf16-base", action="store_true",
+                   help="ADR-0031: bf16 donuk taban + bf16 LoRA (QLoRA değil). Bayrak yoksa NF4 4-bit taban.")
+    p.add_argument("--lora-dropout", type=float, default=0.05,
+                   help="ADR-0033 `dropout=0`'ı REDDETTİ (yan-hasar ölçümünde atfedilebilirliği bozar). "
+                        "train_sft.py ile aynı tutulur.")
     return p.parse_args()
 
 
@@ -119,15 +128,22 @@ def main():
     args = parse_args()
     out = args.output_dir or f"outputs/{args.run_name}"
 
+    # ADR-0031: --bf16-base → donuk bf16 taban (QLoRA değil); yoksa NF4 4-bit (12B hattı fallback).
+    load_in_4bit = not args.bf16_base
+    print(f"[orpo] precision = {'bf16 taban + LoRA (ADR-0031 birincil)' if args.bf16_base else 'QLoRA NF4 4-bit (fallback)'}"
+          f" | lora_dropout = {args.lora_dropout}", flush=True)
+
     model, tokenizer = FastModel.from_pretrained(
         model_name=args.model, max_seq_length=args.max_length,
-        load_in_4bit=True, full_finetuning=False,
+        load_in_4bit=load_in_4bit,
+        dtype=torch.bfloat16 if args.bf16_base else None,
+        full_finetuning=False,
     )
 
     if args.fresh_adapter or not args.adapter:
         # Base'e yeni adapter — önceki turun kazanımı (grounding) TAŞINMAZ.
         model = FastModel.get_peft_model(
-            model, r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=0.0,
+            model, r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=args.lora_dropout,
             target_modules=args.target_modules,
             bias="none", use_gradient_checkpointing="unsloth", random_state=args.seed,
         )

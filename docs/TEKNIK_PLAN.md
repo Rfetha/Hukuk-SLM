@@ -22,7 +22,9 @@
 
 **⚠️ Adım akışı DEĞİŞTİ (ADR-0027).** Eski akış tek bir modeli ardışık turlarla (v0→v1→v2b→v3) iyileştiriyordu. Yeni akış **paralel kollar + task-vector merge**:
 
-Ortam → Base doğrulama kapısı → **3 kol ayrı ayrı, HAM BASE'den** (`τ_grounding` · `τ_abstention` · `τ_register`) → **eşzamanlı k-yollu TIES/DARE** → **7 hücreli kafes** eval'i (harness KAPALI) → tabanlarla kıyas (karışık SFT + ardışık SFT) → kazanan konfigürasyon → harness → **dış parite matrisi** (A/B/C/D/E). *(Tez burada biter — ADR-0028: tek boyut noktası; ikinci boyut tez sonrası, aynı reçeteyle.)*
+Ortam → Base doğrulama kapısı → **kollar ayrı ayrı, HAM BASE'den** (`τ_grounding` · `τ_abstention` · ~~`τ_register`~~) → **eşzamanlı k-yollu TIES/DARE** → **kafes** eval'i (harness KAPALI)
+
+> **⚠️ Güncelleme (Kapı 0 kararı, `research_log` #39):** `τ_register` **DÜŞTÜ** — base'in register proxy'si RAG modlarında **0.96-0.98**, kol gereksiz. Sonuç: **kol 3→2, kafes 7→3 hücre** (`τg` · `τa` · `τg+τa`), **FT bütçesi 6→5 koşu.** Aşağıdaki "3 kol / 7 hücre" ifadeleri tasarımın *genel* hâlini anlatır; bu hatta koşan sayı 2 ve 3'tür. → tabanlarla kıyas (karışık SFT + ardışık SFT) → kazanan konfigürasyon → harness → **dış parite matrisi** (A/B/C/D/E). *(Tez burada biter — ADR-0028: tek boyut noktası; ikinci boyut tez sonrası, aynı reçeteyle.)*
 
 > Kolların **ham base'den** eğitilmesi geçerlilik şartı: task-vector tanımı (τ = θ_ft − θ_base) ortak base ister. Bir kolu diğerinin üstüne eğitmek ardışık SFT üretir — ölçmek istediğimiz şeyin kendisini yok eder.
 

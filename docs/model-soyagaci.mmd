@@ -1,0 +1,80 @@
+%% Hukuk-SLM — MODEL SOYAĞACI: ham base → FT hedefleri → final model
+%% Tarih: 2026-07-28 · Statü: TASLAK — ADR'ye bağlanmadı
+%% Kardeş belge: ft-is-akisi.mmd (SIRA — ne zaman ne koşulur). Bu belge: ARTEFAKT — ne neden doğar.
+%%
+%% ⚠️ BU BİR ZAMAN ÇİZELGESİ DEĞİL. Üç yerde doğrusallık YOK:
+%%    (1) hedefler birbirinden bağımsız — hiçbiri diğerinin üstüne eğitilmez
+%%    (2) kafes hücreleri zincir değil, iç içe ALT KÜMELER — üçlü, ikilinin üstüne kurulmaz
+%%    (3) tabanlar ölü uç — yalnız kıyas için var, asla final olamaz
+%%
+%% Ok dili: ==> ağırlık üretir (eğitim) · --> artefakt akışı · -.-> etkiler ama ağırlığa girmez
+
+flowchart TD
+    BASE(["<b>HAM BASE</b> — Qwen3.5-4B, sha pinli<br/>θ_base · her task-vector'ün TEK referansı"])
+
+    subgraph HED["① FT HEDEFLERİ — her biri HAM base'den, bağımsız · τ = θ_ft − θ_base"]
+        H1["<b>Hedef 1 · τ_grounding</b> 🟢<br/>SFT · RAFT 17.323 satır<br/><i>verilen kaynaktan doğru atıf</i>"]
+        H2["<b>Hedef 2 · τ_abstention</b> 🟢<br/>ORPO · 1.741 çift<br/><i>kaynak yoksa REDDET</i>"]
+        H3["<b>Hedef 3 · τ_reasoning</b> 🟡<br/>RS-FT · iç döngü → ft-is-akisi.mmd<br/><i>çok adımlı çıkarım</i><br/>⚠️ Kapı R'ye bağlı · ADR yok"]
+        H4["Hedef 4 · τ_register ⬛<br/>❌ DÜŞTÜ — Kapı 0 (#39)<br/>base zaten 0.96-0.98"]
+    end
+
+    BASE ==> H1
+    BASE ==> H2
+    BASE ==> H3
+    BASE -.-> H4
+    H1 -.->|"yalnız İZ ÜRETİR (gen-k)<br/>eğitim YİNE ham base'den"| H3
+
+    subgraph KAFES["② KAFES — merge · eğitim maliyeti SIFIR · harness KAPALI ölçülür"]
+        S1["τg tek"]
+        S2["τa tek"]
+        S3["τr tek"]
+        P1["<b>τg + τa</b><br/>ÇATIŞAN ÇİFT<br/>iç iddianın kalbi"]
+        P2["τg + τr"]
+        P3["τa + τr"]
+        TR["<b>τg + τa + τr</b><br/>amiral gemisi"]
+    end
+
+    H1 --> S1
+    H2 --> S2
+    H3 --> S3
+    H1 & H2 --> P1
+    H1 & H3 --> P2
+    H2 & H3 --> P3
+    H1 & H2 & H3 --> TR
+
+    subgraph TAB["③ TABANLAR — yalnız KIYAS · ÖLÜ UÇ, final olamaz"]
+        TA["Taban A · tek-aşamalı KARIŞIK SFT<br/>1 koşu"]
+        TB["Taban B · ARDIŞIK SFT<br/>2 koşu · referans belgenin kurgusu"]
+    end
+
+    BASE ==> TA
+    BASE ==> TB
+
+    DEC{"④ SEÇİM — CANON <b>DEV</b><br/>λ · density · drop-rate taraması<br/><b>iç iddia: kafes > tabanlar ?</b>"}
+
+    S1 & S2 & S3 & P1 & P2 & P3 & TR --> DEC
+    TA & TB --> DEC
+    DEC -- "hayır · yeniden ayarla" --> KAFES
+
+    DEC -- evet --> WIN(["⑤ <b>KAZANAN AĞIRLIK</b> = aday final model<br/>bf16 · henüz kuantize DEĞİL"])
+    WIN --> QNT["⑥ kuantizasyon <b>EN SON</b><br/>Q4_K_M → GGUF"]
+
+    HARN["<b>HARNESS</b> — retriever + atıf doğrulayıcı + red kapısı<br/>CPU'da · Sprint 4 · ağırlıktan BAĞIMSIZ, paralel yürür"]
+
+    QNT --> SYS(["⑦ <b>FİNAL SİSTEM</b> = GGUF + harness<br/>harness ağırlığa GİRMEZ — dışarıda sarar"])
+    HARN -.-> SYS
+
+    SYS --> TEST["⑧ CANON <b>TEST</b> — donmuş 40+35<br/><b>BİR KEZ</b> görülür"]
+    TEST --> FIN(["<b>NİHAİ RAPOR + MODEL KARTI</b>"])
+
+    classDef origin fill:#1d3a4a,stroke:#4f9fc9,color:#fff
+    classDef dead fill:#2e2e2e,stroke:#777,color:#999
+    classDef gate fill:#4a1d1d,stroke:#c94f4f,color:#fff
+    classDef frozen fill:#4a3a1d,stroke:#c9a04f,color:#fff
+    classDef star fill:#1d4a2e,stroke:#4fc97a,color:#fff
+    class BASE origin
+    class H4,TA,TB dead
+    class DEC gate
+    class TEST frozen
+    class P1,WIN,SYS star
