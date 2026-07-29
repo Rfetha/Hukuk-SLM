@@ -6,15 +6,17 @@
 
 > ### 📍 Bu belge **harita**, yürütme planı değil
 >
-> Aktif iş → **[`sprint1.md`](sprint1.md)**: ilk FT koşusunun (`τ_grounding`) checkpoint zinciri,
-> komutlarıyla ve her adımda 12B hattından gelen *"burada şu patlar"* uyarılarıyla.
 > Buradaki maddeler **ne yapılacağını**, sprint belgesi **hangi sırayla ve neye dikkat ederek**
-> yapılacağını söyler.
+> yapılacağını söyler. Her koşudan önce ⭐ [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md)
+> — *"hata vermeden yanlış sonuç üreten"* kalıpların tek listesi.
+>
+> **Sprint 2 yürütme belgesi henüz yazılmadı.** Sprint 1 kapandı (2026-07-29); yeni sprint belgesi
+> yazılana kadar aktif yürütme belgesi **yok**.
 >
 > | sprint | kapsam | koşan FT | TODO bölümleri |
 > | :--- | :--- | :--- | :--- |
-> | **[1](sprint1.md)** ← *aktif* | **Faz A** hazırlık (base kapısı · **DEV havuzu** · base baseline + Kapı 0 · veri) → **Faz B** ilk FT · **+ CP7 Gemini 3.1 Flash-Lite erken önizleme** | **FT-1** | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
-> | 2 | `rejected` hasat · kalan kollar · tabanlar · regex kalibrasyonu | **FT-2 … FT-6** | §1 · §2 |
+> | **[1](sprint1.md)** ✅ **KAPANDI** | **Faz A** hazırlık (base kapısı · **DEV havuzu** · base baseline + Kapı 0 · veri) → **Faz B** ilk FT · **+ CP7 Gemini 3.1 Flash-Lite erken önizleme** | **FT-1** ✅ | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
+> | 2 ← *sıradaki* | `rejected` hasat · kalan kollar · tabanlar · regex kalibrasyonu — ⚠️ **önce `open_questions.md` §13.8** | **FT-2 … FT-6** | §1 · §2 |
 > | 3 | merge + 7 hücreli kafes → **🎯 hedef model doğuyor** + iç iddia kararı | — *(merge bedava)* | §3 |
 > | 4 | harness (retriever · graf · doğrulayıcı · kapı) + Kapı 3 — **2-3 ile paralel yürüyebilir** | — *(eğitim yok)* | §4 · §6 |
 > | 5 | dış parite matrisi + Kapı 1/2 + eşdeğerlik + başabaş N\* + kapanış ölçümleri (eval≠dağıtım · gerçek VRAM) — **tez burada biter** | — *(rakipler API)* | §5 · §6 |
