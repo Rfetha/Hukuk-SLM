@@ -64,7 +64,7 @@ Hiçbir eğitim koşusu bu altı madde geçmeden başlamaz (`TASARIM.md` §8).
 - [x] **Şablon render'ını GÖZLE doğrula** — ⚠️ Qwen3.5 **düşünen model**: varsayılan modda `</think>` kapanmıyor, `content` BOŞ (HTTP 200) → boş-cevap erken patlama kapısı eklendi (ADR-0030, #39). ⚠️ **2026-07-29 güncelleme:** `--thinking off` çözümü **geri alındı** — hat `--thinking on` + **bütçeli zorunlu kapatma** (1024+512) ile koşuyor, çünkü base belirsiz modlarda `</think>`'i **hiç** kapatmıyor ve bütçe artırmak çözmüyor (ADR-0043, #42)
 - [x] Turn işaretlerini assert et → `<|im_start|>user\n` / `<|im_start|>assistant\n`; model duruyor (`finish_reason=stop`)
 - [x] Unsloth + sm_120 ortamını onar → çekirdek engel **LD_LIBRARY_PATH** (`libnvJitLink.so.13`) idi, `global_venv/bin/activate`'e kalıcı satır eklendi, NF4 forward doğrulandı. *(Açık kalan `causal-conv1d` derlemesi Faz B'yi bekletir, kapıyı değil.)*
-- [x] Kuantizasyon yolunu doğrula → **Q4_K_M**, `PURE=0` (QAT yok), VRAM×ctx matrisi `outputs/eval/vram_stack.json`'a ölçüldü
+- [x] Kuantizasyon yolunu doğrula → **Q4_K_M**, `PURE=0` (QAT yok), VRAM×ctx matrisi `outputs/eval/_artefakt/vram_stack.json`'a ölçüldü
 - [x] Lisansı kaydet → **saf Apache-2.0** (ek kullanım politikası yok, Qwen3.5) → attribution + limitations
 
 ## 1 — Ölçüm zemini
