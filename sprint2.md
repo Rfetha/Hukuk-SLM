@@ -43,20 +43,24 @@ adil koşullarda ölçtük mü?"*
 
 ### ⭐ Yürürlükteki çıpalar (bütçeli kip, DEV, harness kapalı)
 
-| ölçüt | yön | base | `τ_g` v1 | Gemini 3.1 FL |
-| :--- | :-: | --: | --: | --: |
-| M1 sadık-cevap kütlesi % | ↑ | 56.7 | **71.4** | 72.9 |
-| M1 A1 | ↑ | **0.986** | 0.866 | 0.956 |
-| M2 Rej (LLM) | ↑ | 0.814 | 0.873 | **0.930** |
-| M2b Rej (LLM) | ↑ | 0.986 | **0.607** 🔴 | 1.000 |
-| M3 Rej | ↑ | 1.000 | 0.923 | 1.000 |
-| M5 ezber kütlesi % *(ANTİ-HEDEF)* | ↓ | 42.5 | **39.2** | 54.4 |
-| ort token/cevap | ↓ | 1135 | 772 | **543** |
+| ölçüt | yön | base | `τ_g` v1 | Gemini 3.1 FL | payda |
+| :--- | :-: | --: | --: | --: | :--- |
+| M1 sadık-cevap kütlesi % | ↑ | 56.7 | **71.4** | 72.9 | — |
+| M1 A1 *(CP1 hakemi)* | ↑ | **0.9777** | 0.9283 | 0.9421 | — |
+| **M2 Rej (LLM)** | ↑ | 0.803 | 0.833 | **0.848** | **66/70** kör |
+| **M2b Rej (LLM)** | ↑ | 0.949 | **0.519** 🔴 | 0.861 | **79/80** kör |
+| **M3 Rej** | ↑ | 1.000 | **0.800** | 1.000 | **80/80** tanım |
+| M5 ezber kütlesi % *(ANTİ-HEDEF)* | ↓ | 42.5 | **39.2** | 54.4 | — |
+| ort token/cevap | ↓ | 1135 | 772 | **543** | — |
+
+✅ **Çekinme satırları CP2-r'de cevaba-kör paydayla DÜZELTİLDİ** ([#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md) ·
+`outputs/eval/cp2-r-kor-payda/`). M1 A1 satırı **CP1'in yeni hakemindendir** (eski: 0.986 / 0.866 / 0.956).
+Eski özneye-bağlı sayılar `cp09-butceli-1024-512/`'de **yerinde duruyor** — silinmedi, yanına yazıldı.
 
 Kaynak: `research_log` [#43](docs/record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md) ·
 tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
 
-> ### 🚨 ÇEKİNME SATIRLARI (M2 · M2b · M3) DÜZELTİLECEK — [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md)
+> ### ✅ ÇEKİNME SATIRLARI DÜZELTİLDİ (CP2-r) — [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md)
 > Bu üç satırın **paydası özneye bağlı**: `valid_trap` her özne için, hakem o öznenin **cevabını
 > görerek** yeniden yargılanmış. Aynı 80 M3 kaleminde 54/56/**39** — ve M3'te bağlam **boş**
 > olduğundan doğru payda tanım gereği **80/80**'dir.
@@ -65,8 +69,12 @@ tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
 > `τ_g` 0.800 · Gemini 0.814 — M2b base 0.950 · `τ_g` 0.525 · Gemini 0.850.
 > Sapma **yön değiştiriyor**: M2b'de aleyhimize ~7p, M3'te lehimize ~12p.
 >
-> **CP2-r bu satırları cevaba-kör paydayla yeniden üretecek. O zamana kadar M2/M2b/M3 sayıları
-> KARAR DAYANAĞI OLARAK KULLANILMAZ.** M1 satırları (kütle · A1) etkilenmiyor — groundedness ekseni.
+> ✅ **CP2-r koştu ($0,23).** Paydalar: m2 **66/70** · m2b **79/80** · m3 **80/80** (tanım).
+> Yukarıdaki tablo artık düzeltilmiş sayıları taşıyor ve **karar dayanağıdır**.
+>
+> ⭐ **Düzeltme 6 karşılaştırmanın 4'ünde ALEYHİMİZE çıktı** — en çok kayan özne **rakip**
+> (Gemini M2 −0,082 · M2b −0,139). `τ_g`'nin base'e açığı üç modda da **büyüdü**
+> (m2b 0,379 → **0,430** · m3 0,077 → **0,200**).
 
 ### `τ_g`'nin negatifleri — **bütçeli kipte tablo değişti**
 
@@ -91,7 +99,9 @@ tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
 > koştu ve ölçüm aracının kendisini kırdı** → [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md).
 > **Sprint 2'nin kalan beş kararı `/grill-me` ile kilitlendi** →
 > [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md). Açık karar **kalmadı**.
-> **Sıradaki iş: CP2-r — cevaba-kör `valid_trap` önbelleği (150 kalem, ~$0,29).**
+> ✅ **CP2-r koştu ($0,23):** eşikler türetildi (**M2 ≥ 0.923 · A1 ≥ 0.880 · M2b ≥ 0.854**),
+> M2b kurgu tabanı **79/80 geçildi**, düzeltme 4/6 karşılaştırmada **aleyhimize** çıktı ([#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md)).
+> **Sıradaki iş: CP2-s — boru hattı mekanik smoke (~$0,15).**
 
 ### Elde ne var / ne yok — tek bakış
 
@@ -104,13 +114,13 @@ tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
 | **Yeni havuz** | 🔴 **Toplanmadı** — pilot 120+120 üretim koştu, hasat bilerek başlatılmadı |
 | **Hasat verimi** | ✅ **%5,0 → %10,0** — mini geçerli tuzakları geçersiz sayıp fabrikasyonların yarısını çöpe atıyordu. 750 hedef = **7.500 üretim** |
 | **Hedef + donanım** | ✅ ADR-0047: **750 negatif · Modal `-np 32`** · taşıyıcı Q4_K_M GGUF sabit · `τ_a` rejimi **~73 adım / 5 epoch** |
-| **Açık kalan** | ⏳ Yalnız **M1 A1 muhafızı (0.888)** — CP1'in yeni hakemiyle yeniden türetilecek (`valid_trap`'ten bağımsız) · ⏳ `cp2_harvest.py` eş zamanlı üretime alınmalı (kod) |
+| **Açık kalan** | ⏳ Yalnız **`cp2_harvest.py` eş zamanlı üretime alınmalı** (kod, CP2-c ön koşulu). *M1 A1 muhafızı CP2-r'de **0.880** olarak kapandı.* |
 
 ### ⭐ ADR-0049 ile kilitlenen beş karar
 
 | # | karar | sayı |
 | :-- | :--- | :--- |
-| 1 | ARA KAPI eşikleri **düzeltilmiş cevaba-kör çıpadan yeniden türetilir** — ön-kayıtlı olan **formül**, sayı değil (emsal: 0.75/0.876 → 0.934/0.888) | eşik 0.934 → **~0.91** bekleniyor · ⚠️ yön **lehimize**, savunması ADR-0049'da |
+| 1 ✅ | ARA KAPI eşikleri **düzeltilmiş cevaba-kör çıpadan yeniden türetilir** — ön-kayıtlı olan **formül**, sayı değil (emsal: 0.75/0.876 → 0.934/0.888) | ✅ **türetildi:** M2 **0.923** · A1 **0.880** · M2b **0.854**. Hareket tahminden küçük (1,1 p) ve düzeltmenin **net etkisi aleyhimize** — 6 karşılaştırmanın 4'ü |
 | 2 | 150 kalemlik kör `valid_trap` önbelleğini **gpt-4o** kurar, **bir kez** · skorlama hakemi **mini kalır** · `verdict` yeniden hesaplanmaz | **$0,29** · m2 70 + m2b 80 + m3 **0** (tanım gereği 80/80) |
 | 3 | **M2b kapı olarak kalır** — karşılaştırma kalem-içi, zayıflık seviyeyi bozar açığı bozmaz. Ön-kayıtlı taban | **40/80**; altında merge onarımı **tanımlayıcıya** iner |
 | 4 | Boru hattı **5 adımlık mekanik smoke** ile sınanır — tam pilot CP3 **değil** (okunabilir sayı = çıpalama riski) | **$0,15** |
@@ -132,11 +142,11 @@ onaracağı delik **kendi üstünde değil, `τ_g`'de**.
 **Karar:** ön-kayıtlı eşiğe **dokunulmadı**; yanına neredeyse bedava ikinci bir gözlem eklendi.
 
 ```
-1) τ_a TEKİL      → M2 Rej ≥ 0.934 · M1 A1 ≥ 0.888     (ön-kayıtlı, tavan riskli)
-2) τ_g+τ_a MERGE  → M2b ≥ 0.887 mi?  (τ_g 0.607'den onarım · 0.90 × base 0.986)
+1) τ_a TEKİL      → M2 Rej ≥ 0.923 · M1 A1 ≥ 0.880   ✅ CP2-r'de türetildi
+2) τ_g+τ_a MERGE  → M2b ≥ 0.854 mi?  (τ_g 0.519'dan onarım · 0.90 × base 0.949)
 ```
 
-| 1 | 2 | karar |
+| tekil | merge | karar |
 | :-: | :-: | :--- |
 | ✅ | ✅ | güçlü yeşil → CP4-CP5 |
 | ❌ | ✅ | devam — kapı tavan-sınırlıydı, gerekçe merge kanıtı (**açıkça öyle raporlanır**) |
@@ -154,7 +164,7 @@ onaracağı delik **kendi üstünde değil, `τ_g`'de**.
 | **CP0.5** ✅ | `causal-conv1d` hız ölçümü | yerel | **0** | ✅ **koşuldu:** tavan **1.254×** < 2.0× → **eklenmedi**, negatif bulgu #44'te |
 | **CP2-a** ✅ | Ön-eleme uyum kapısı — 2×2 hakem tasarımı | — | **0.121** | ✅ **koştu:** ön-eleme **net zararlı** → koşulmuyor; ve `valid_trap` özneye bağlı çıktı → [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) |
 | ~~**CP2-b**~~ ❌ | ~~Havuz ön-elemesi~~ | — | **0** | ❌ **İPTAL** — ADR-0048 m.4: filtre eleyeceğinden çok geçerli tuzak atıyor (isabet 0,14) |
-| **CP2-r** ⏳ | **Cevaba-kör `valid_trap` önbelleği** (150 kalem, gpt-4o) + 9 koşunun yeniden puanlanması (aritmetik) | — | **0.29** | ADR-0049 m.2 · çıktısı **ARA KAPI eşiklerini türetir** + M2b 40/80 tabanını okur |
+| **CP2-r** ✅ | Cevaba-kör `valid_trap` önbelleği (230 kalem) + 9 koşu yeniden puanlandı | — | **0.23** | ✅ **koştu:** eşikler **0.923 / 0.880 / 0.854** · M2b tabanı **79/80 GEÇİLDİ** · düzeltme 4/6 karşılaştırmada **aleyhimize** ([#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md)) |
 | **CP2-s** ⏳ | Boru hattı **mekanik smoke** — `τ_a` 5 adım → TIES merge → GGUF → 3 cevap | Modal | **0.15** | ADR-0049 m.4 · *sayı üretmez, çalışıyor mu diye bakar* |
 | **CP2-c** ⏳ | Üretim hasadı — **hedef 750** (7.500 üretim), kabul tasarımı **B** | **Modal** `-np 32` | **~6.7** | ADR-0046 m.1 + [ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) + ADR-0049 m.5 · ~1-2 sa |
 | **CP3** | `τ_a` eğitimi (**~73 adım / 5 epoch**, lr 1e-5, **`--fresh-adapter` ZORUNLU**) + tekil ölçüm | Modal | ~0.85 | 🔴 **ARA KAPI** *(eşik CP2-r'den türer)* |
@@ -184,7 +194,7 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 | # | kalem | kim çözer |
 | :-- | :--- | :--- |
 | ~~1~~ | ~~**Hedef negatif sayısı**~~ | ✅ **KAPANDI — [ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md): 750, Modal, ~73 adım / 5 epoch.** ⚠️ Koşullu geri alma: ön-eleme ≥ ~8.700 geçerli tuzak bırakmazsa hedef otomatik iner |
-| 2 | **M2b metrik olarak sağlam mı** — `--no-gold` bağlamı gerçekten cevaplanamaz mı? ADR-0045'in merge onarım eşiği (M2b ≥ 0.887) bunun üstünde duruyor | ~20 DEV örneği elle, ücretsiz |
+| ~~2~~ | ~~**M2b metrik olarak sağlam mı**~~ | ✅ **KAPANDI (CP2-r):** cevaba-kör geçerli tuzak **79/80** — kurgu endişesi desteklenmedi, pilotun *"24/25 geçersiz"* bulgusu kirli hakem artefaktıydı |
 | 3 | **Pilot CP3 koşulsun mu** — eldeki off-policy setle, Modal'da, ~$0.85. *Öneri: EVET* — `τ_a` boru hattı (`--fresh-adapter` → merge → GGUF → eval) ve **`τ_g`+`τ_a` TIES merge hiç koşmadı**; Sprint 3'ün 8 hücresi o merge yolunun üstünde. Şerh: kafes hücresi olarak raporlanmaz, ARA KAPI okuması değildir | insan kararı ⏳ |
 | 4 | **`cp2_harvest.py` eş zamanlı üretime alınmalı** — bugün seri; Modal `-np 32`'nin karşılığı `ThreadPoolExecutor` + dosya yazımına kilit. Kabul mantığı kalem-başına bağımsız olduğu için temiz paralelleşiyor | kod, CP2-c öncesi |
 
@@ -201,7 +211,7 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 ## Checkpoint akışı
 
 > **Sıra kapılara bağlı.** CP0 ✅ → CP0.9 ✅ → CP1 ✅ → CP0.5 ✅ → CP2 pilot ✅ → CP2-a ✅ →
-> ~~CP2-b~~ ❌ → **CP2-r ⏳ BURADAYIZ** → CP2-s → CP2-c → CP3 → **ARA KAPI** → CP4 → CP5.
+> ~~CP2-b~~ ❌ → CP2-r ✅ → **CP2-s ⏳ BURADAYIZ** → CP2-c → CP3 → **ARA KAPI** → CP4 → CP5.
 > Ara kapı geçilmeden rakip yöntemlere para harcanmaz (5/6 kararı, 2026-07-29).
 >
 > **DURUM (2026-07-30):** CP2 pilotu, hasadın **ön-kayıtlı kabul ölçütünün** ölçtüğünü sandığı
@@ -228,7 +238,7 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 | **CP2 pilot** | ✅ **KOŞULDU, KUSUR BULDU** — kabul ölçütü (regex) raporlanan metrikle (LLM hakemi) aynı değil; gerçek verim **%5**, hedef mevcut havuzdan **ulaşılamaz** | yerel | **0.01** | ✅ [ADR-0046](docs/adr/0046-cp2-kabul-olcutu-hakem-ve-havuz-on-elemesi.md) |
 | **CP2-a** | ✅ **KOŞTU — ölçüm aracının kendisini kırdı.** 2×2 hakem tasarımı: çapalanma mini'de **22,3p**, gpt-4o'da 8,4p → *%42 geçersiz* premisi **artefakt**. Ve `valid_trap` **özneye bağlı** çıktı | — | **0.121** | ✅ [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) + [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) |
 | ~~**CP2-b**~~ | ❌ **İPTAL** — ön-eleme filtresi net zararlı (kestiği 7 kalemin isabeti **0,14**, 6 geçerli tuzak boşa) | — | **0** | ADR-0048 m.4 |
-| **CP2-r** | ⏳ **Cevaba-kör `valid_trap` önbelleği** — gpt-4o, 150 kalem (m2 70 + m2b 80; m3 tanım gereği 80/80) → 9 koşu **aritmetikle** yeniden puanlanır | — | **0.29** | ⏳ ADR-0049 m.2 · **ARA KAPI eşiklerini türetir** · M2b **40/80** tabanı |
+| **CP2-r** | ✅ **KOŞTU** — 230 kalemlik kör önbellek (m2 66/70 · m2b 79/80 · m3 80/80 tanım) → 9 koşu aritmetikle yeniden puanlandı ($0). **Eşikler türetildi: 0.923 / 0.880 / 0.854.** M2b tabanı 79/80 ✅ | — | **0.23** | ✅ ADR-0049 m.2 |
 | **CP2-s** | ⏳ Boru hattı **mekanik smoke** — `τ_a` 5 adım → norm-dengeli TIES → GGUF → 3 cevap. *Sayı üretmez* | Modal | **0.15** | ⏳ ADR-0049 m.4 |
 | **CP2-c** | ⏳ Üretim hasadı — hedef **750** = **7.500 üretim** (verim %10), kabul tasarımı **B** | **Modal** `-np 32` | **~6.7** | ⏳ ADR-0049 m.5 · **ilk 10 dk verim kapısı** |
 | **CP3** | **FT-2 = `τ_a`** eğitimi + tekil ölçüm + **merge onarım kontrolü** | Modal | ~0.85 | 🔴 **ARA KAPI** |
@@ -282,7 +292,7 @@ eğitim verisine iz gerekir; v2'nin 4. gerekçesi.
 | ne | sonuç |
 | :--- | :--- |
 | **Sprint 1'in üç çıpası** | ✅ **CP0.9'da koşuldu** — 1.410 cevap, GPU $0, hakem **$0.45** |
-| **ARA KAPI'nın referansı** | ✅ **0.814** (base, bütçeli) → eşik **0.934** · muhafız **0.888** |
+| **ARA KAPI'nın referansı** | ⚠️ **SÜPERSED** — o gün 0.814 → eşik 0.934 · muhafız 0.888 idi. CP2-r cevaba-kör paydayla base'i **0.803**'e taşıdı → yürürlükteki eşikler **0.923 / 0.880 / 0.854** |
 | **`rejected` hasadı (CP2)** | `--thinking off` değil, **bütçeli düşünce** kipinde (ADR-0042 üst notu) |
 | **Maliyet ekseni** | ✅ ölçüldü: 249 → **1135 tok/cevap (4.5×)**; `τ_g` **772**, kendi istem ailesinde **476** |
 | **Ön-kayıtlı 🟢🟡🔴 kuralı** | ✅ koşuldu → **🟡 SARI**; RS-FT kapsam dışı kalıyor |
@@ -404,9 +414,8 @@ iddia göründü. Yerine meta-taşıyan ↔ meta-taşımayan **kontrol grubu** �
 **Etkilenmeyen (doğrulandı):** abstention regex'i · atıf doğrulayıcı · register hakemi.
 Yığın pinlemesi (ADR-0029/0032) değişmedi.
 
-> ⏳ **Açık kalan:** ARA KAPI'nın M1 A1 muhafızı **0.888** sayısı, CP0.9'un **eski hakem**
-> çıpasından türedi. Yeni hakemle base 0.986 → farklı bir sayı verirse muhafız 0.888 mi 0.880 mi
-> olmalı? `τ_a` bu bantta çıkmadıkça karar **ısırmıyor** — o yüzden iki eşiğe karşı da raporlanır.
+> ✅ **KAPANDI (CP2-r):** muhafız **0.880**. CP1'in yeni hakemi base A1'i 0.986 → **0.9777**'ye
+> taşıdı, muhafız = 0.9777 × 0.90. Sonuç eski **0.888**'e karşı da raporlanır.
 
 ---
 
@@ -484,10 +493,11 @@ Mevcut havuz emekli **12B** hattının fabrikasyonları — yeni modele **başka
 > ve Kapı 5'in tamamı çürür. *(API'nin meşru yeri zaten planda: ön-eleme ve kabul hakemi — onlar
 > veri üretmiyor, veri seçiyor.)*
 >
-> ⚠️ **Kapsam:** ön-eleme **m2 tipine** kuruldu. m2b'nin tuzağı hasat anında RNG ile kuruluyor,
-> çevrimdışı etiketlenemez — ve pilotta 25 adayın 24'ü geçersiz çıktı. Bu, M2b'nin **metrik
-> olarak** sağlamlığını sorgulatıyor; ADR-0045'in merge onarım eşiği (M2b ≥ 0.887) onun üstünde
-> duruyor. Ucuz kontrol: ~20 DEV m2b örneğini elle gözden geçir.
+> ✅ **M2b ENDİŞESİ ÇÖZÜLDÜ (CP2-r).** Pilotta m2b'de 25 adayın 24'ü geçersiz çıkmıştı ve bu
+> M2b'yi metrik olarak sorgulatıyordu. Cevaba-kör ölçüm **79/80 geçerli** dedi — o bulgu **kirli
+> hakem artefaktıydı**. Merge onarım eşiği (**M2b ≥ 0.854**) sağlam zemin üstünde duruyor.
+> ⚠️ Şerh: pilot **havuz** kalemlerinde, CP2-r **DEV** kalemlerinde ölçtü — aynı kurgu, farklı
+> küme. Havuz tarafı CP2-c'de aynı kör damgayla ayrıca ölçülecek.
 
 > ### 🆕 İKİ TİP birden toplanır ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) m.4)
 > | tip | üretim | neden |
@@ -541,27 +551,31 @@ Bu sayı Kapı 5'in **(b) referans noktasıdır** — onsuz *"abstention korundu
 
 ```
 τ_a TEKİL olarak base'i ANLAMLI biçimde geçmeli.
-Eşik:    M2 Rej  ≥ base + 12 puan  →  ≥ 0.934
-Muhafız: M1 A1   ≥ 0.90 × base     →  ≥ 0.888
+Eşik:    M2 Rej  ≥ base + 12 puan  →  ≥ 0.923   ✅ CP2-r'de TÜRETİLDİ (base 0.803)
+Muhafız: M1 A1   ≥ 0.90 × base     →  ≥ 0.880   ✅ CP1 hakemi (base A1 0.9777)
 ```
+
+**Eski eşikler 0.934 / 0.888 — sonuç ikisine karşı da raporlanır** (ADR-0049 m.1).
 
 ✅ **Sayılar CP0.9'dan geldi** (formül ön-kayıtlıydı, sayı değil). Eski eşikler (0.75 / 0.876)
 thinking-off protokolündendi ve **düştü**.
 
-> ### 🔄 EŞİK BİR KEZ DAHA TÜRETİLECEK — [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.1
-> Yukarıdaki **0.934**, `valid_trap`'in özneye bağlı olduğu paydadan (`48/59 = 0.814`) türedi.
-> CP2-r cevaba-kör paydayı kurunca çıpa **~0.79'a** inecek → eşik **~0.91**.
+> ### ✅ EŞİKLER TÜRETİLDİ (CP2-r) — [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.1
+> Eski **0.934**, `valid_trap`'in özneye bağlı olduğu paydadan (`48/59 = 0.814`) türemişti.
+> Cevaba-kör paydayla (66/70) çıpa **0.803** → eşik **0.923**. Tahmin ~0.91'di; hareket
+> tahminden **çok küçük: 1,1 puan.** Merge onarım eşiği **0.887 → 0.8541** (base M2b 0.949 × 0.90).
 >
 > **Ön-kayıtlı olan FORMÜL** (`base + 12 puan`), sayı değil — ve emsal var: eşikler thinking-off →
 > bütçeli geçişinde bir kez zaten taşındı (0.75 → 0.934).
 >
-> ⚠️ **Yön bizim lehimize ve bunu açıkça yazıyoruz.** Savunma: (a) `τ_a` **henüz yok**, sonucu
-> bilmeden düzeltiyoruz; (b) düzeltme base'e, rakibe ve her hücreye **aynı** uygulanıyor;
-> (c) bozuk ölçümden türeyen eşiği korumak ön-kayıtlılığı değil **hatayı** korumaktır.
-> **Sonuç eski eşiğe karşı da raporlanır.**
+> ⭐ **VE ÖLÇÜM SAVUNMAYI DOĞRULADI:** düzeltme **6 karşılaştırmanın 4'ünde ALEYHİMİZE** çıktı.
+> `τ_g`'nin base'e açığı üç modda da büyüdü (m2b **0,379 → 0,430** · m3 **0,077 → 0,200**), ve en
+> çok kayan özne **rakip** oldu (Gemini M2 −0,082 · M2b −0,139 — kirli paydadan en çok o
+> yararlanıyordu). Net etki **aleyhimize**; eşiğin 1,1 puan kolaylaşması bunun yanında küçük.
 >
-> **M1 A1 muhafızı 0.888 bu düzeltmeden ETKİLENMEZ** (groundedness ekseni) — ama CP1'in yeni
-> hakem isteminden etkilenir ve o ayrı bir açık kalem.
+> ✅ **M1 A1 muhafızı KAPANDI: 0.880.** `valid_trap`'ten bağımsız — CP1'in yeni hakemi base A1'i
+> 0.986 → **0.9777**'ye taşıdı, muhafız = 0.9777 × 0.90. *(#44'te "ısırmıyor" diye açık
+> bırakılmıştı.)*
 
 > ### 🚨 Tavan riski — şimdi kayda geçiyor, sonra değil
 > Base geçerli 59 tuzağın **48'ini zaten reddediyor**. +12 puan, kalan **11 hatanın 7'sinin**
@@ -573,12 +587,13 @@ thinking-off protokolündendi ve **düştü**.
 > ### ✅ İkinci gözlem: merge onarım kontrolü ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md))
 > Tek gözlemli kapı *"kaldı ama neden kaldı"* sorusunu teşhis edemiyordu. `τ_a` eğitildikten
 > sonra **`τ_g` + `τ_a` norm-dengeli TIES merge** DEV'de koşulur ve **M2b** okunur:
-> **onarım eşiği M2b ≥ 0.887** (0.90 × base 0.986 — muhafız formülüyle aynı çarpan).
+> **onarım eşiği M2b ≥ 0.854** (0.90 × base **0.949**, cevaba-kör — muhafız formülüyle aynı çarpan;
+> eski 0.887 çıpası 0.986'dan türemişti, CP2-r düzeltti).
 > Maliyet: merge eğitim compute'u gerektirmiyor → **GPU $0 + hakem ~$0.15**.
 > Bu bir **kafes hücresi değil, kapı ölçümüdür** ve DEV'de yapılır; Sprint 3'ün 8 hücresi ayrıca
 > ve aynı rejimle koşulur (ADR-0036).
 
-| tekil M2 ≥ 0.934 | merge M2b ≥ 0.887 | eylem |
+| tekil M2 ≥ **0.923** | merge M2b ≥ **0.854** | eylem |
 | :-: | :-: | :--- |
 | ✅ | ✅ | **Güçlü yeşil** — CP4-CP5 koşulur |
 | ❌ | ✅ | **Devam** — kapı tavan-sınırlıydı; gerekçe merge kanıtı, raporda açıkça öyle yazılır |
@@ -654,9 +669,9 @@ güçlü tabana karşı kazanmamız gerekir.
 | ~~ADR-0040 🟢🟡🔴~~ | CP0.9 ✅ | **🟡 SARI** — M2 eşiği geçti (0.814≥0.78), M5 muhafızı İHLAL (%36.9→%42.5). **RS-FT kapsam dışı kalıyor**, ADR-0035 açılmıyor |
 | ~~CP0.5 hız kapısı~~ | CP0.5 ✅ | **KALDI** — tavan 1.254× < 2.0× → `causal-conv1d` **eklenmedi**, `requirements.lock.txt` korundu |
 | ~~CP2-a uyum kapısı~~ | CP2-a ✅ | **KALDI** — hakemler %58,3-%91,7 arasında dağıldı; ön-eleme **koşulmadı** ([ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) m.4) |
-| **M2b kurgu tabanı** | CP2-r | Cevaba-kör geçerli tuzak **< 40/80** ise M2b tasarlandığı mod olmaktan çıkar → ADR-0045'in merge onarım kontrolü **tanımlayıcıya** iner, ARA KAPI'nın 2. gözlemi olmaktan çıkar ([ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.3) |
+| ~~M2b kurgu tabanı~~ | CP2-r ✅ | **GEÇİLDİ: 79/80 ≫ 40/80** → merge onarımı ARA KAPI'nın 2. gözlemi olarak KALIR. *(Kural: cevaba-kör geçerli tuzak < 40/80 ise M2b tasarlandığı mod olmaktan çıkar → ADR-0045'in merge onarım kontrolü **tanımlayıcıya** iner, ARA KAPI'nın 2. gözlemi olmaktan çıkar ([ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.3) |
 | **CP2-c verim kapısı** | CP2-c | Modal koşusunun **ilk 10 dakikasında** gerçek `s/üretim` okunur; tahminin **2 katını** aşarsa koşu **DURUR**, sayı negatif bulgu olarak yazılır ([ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) m.3) |
-| **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.934 · M1 A1 ≥ 0.888** ⚠️ tavan riski **+** `τ_g+τ_a` merge **M2b ≥ 0.887** ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)) |
+| **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.923 · M1 A1 ≥ 0.880** **+** `τ_g+τ_a` merge **M2b ≥ 0.854** — ✅ üçü de CP2-r'de türetildi ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) · [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.1). Eski 0.934/0.888/0.887'ye karşı da raporlanır |
 | **Kapı 5** | Sprint 3 | ADR-0037 (3 madde) — referansları burada üretiliyor |
 | **Kapı 6** | Sprint 3 | **ADR-0044 sayıları** — M5 coverage ≤ **%97.5** · ezber kütlesi ≤ **%42.5** (base, bütçeli kip) |
 
@@ -674,9 +689,9 @@ güçlü tabana karşı kazanmamız gerekir.
 | **CP0.5** fiili *(planlanan 0)* | **0** — ölçüm yerelde, `causal-conv1d` derlenmedi (gerek kalmadı) |
 | **CP2 pilot** fiili *(planlanan 0)* | **−0.01** — GPU yerelde $0; kabul edilen adayların LLM hakemiyle denetimi |
 | **CP2-a** fiili *(planlanan 0.004)* | **−0.121** — 2×2 hakem tasarımı: 0.003 mini + 0.049 gpt-4o kör + 0.069 gpt-4o cevaplı |
-| | **FİİLİ HARCANAN: $6.57 · KALAN CAP: $35.93** |
+| | **FİİLİ HARCANAN: $6.80 · KALAN CAP: $35.70** *(CP2-r dahil)* |
 | ~~CP2-b~~ | **0** — İPTAL (ADR-0048 m.4) |
-| **CP2-r** planlanan *(ADR-0049 m.2)* | **−0.29** — 150 kalemlik kör `valid_trap` önbelleği, gpt-4o, bir kez |
+| **CP2-r** fiili *(planlanan 0.29)* | **−0.23** — 230 kalemlik kör önbellek (gpt-4o); yeniden puanlama **$0**, saf aritmetik |
 | **CP2-s** planlanan *(ADR-0049 m.4)* | **−0.15** — boru hattı mekanik smoke |
 | **CP2-c** planlanan *(ADR-0047 + 0049 m.5)* | **−6.7** — Modal `-np 32` ~$3.0 + kabul tasarımı B $3.68 |
 | **CP3** planlanan | **−0.85** |
