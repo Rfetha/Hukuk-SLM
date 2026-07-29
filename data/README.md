@@ -165,6 +165,6 @@ Model ağırlıkları (`*.safetensors`, `*.gguf`, `*.pt`) **hiçbir zaman** git'
 250 MB, bir GGUF 6-15 GB.
 
 ## Geçmiş turların sayıları
-`~/code/hukuk-devir/docs/record/SCORECARD.md` (12B protokolü, tarihsel — repo dışı, ADR-0034) ·
-damıtılmış özet: `~/code/hukuk-devir/RECETELER_12B.md` ·
+`git show a19fc25^:old-version-gemma4-12b/record/SCORECARD.md` (12B protokolü, tarihsel — repo dışı
+devir paketi 2026-07-29'da silindi, ADR-0034 üst notu; `RECETELER_12B.md` **kayıp**) ·
 repo içi kronoloji: [`docs/record/gemma4-12b-kronoloji.md`](../docs/record/gemma4-12b-kronoloji.md)

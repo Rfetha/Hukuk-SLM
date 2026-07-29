@@ -8,7 +8,8 @@ tasarım `TASARIM.md`'de.
 | **Yeni hattın kronolojisi** (girdiler #39'dan devam) | [`research_log/`](research_log/) |
 | **Gemma 4 12B hattının tam kronolojisi + sayıları** | [`gemma4-12b-kronoloji.md`](gemma4-12b-kronoloji.md) |
 | Emekli hattın **damıtılmış dersleri** + karar kaydı | [`../adr/gemma4-12b-dersler.md`](../adr/gemma4-12b-dersler.md) |
-| Emekli hattın artefaktları (adaptör, eval çıktıları, tur belgeleri, SCORECARD) | `~/code/hukuk-devir/` *(repo dışı — ADR-0034)* · metinler ayrıca `git show a0575e6:old-version-gemma4-12b/<yol>` |
+| **Eğitilmiş kolların künyesi + versiyonlama** | [`kollar.md`](kollar.md) — `τ_X` adaptörleri, rejim, `‖τ‖`, açık kalemler |
+| Emekli hattın artefaktları | ⚠️ **Adaptörler kalıcı KAYIP** (repo dışı paket 2026-07-29'da silindi, kasıtlı — ADR-0034 üst notu). Metinler git geçmişinde: `git show a19fc25^:old-version-gemma4-12b/<yol>` |
 
 ## Hangi belge ne işe yarar
 

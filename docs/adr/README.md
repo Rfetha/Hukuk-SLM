@@ -68,6 +68,12 @@ kabul ettik"* der. **Paper'ın Methodology ve Limitations bölümleri ADR'lerden
 
 ## Format
 
+| **[0039](0039-kapi-6-parametrik-sizinti.md)** | 🟢 | **Kapı 6 — parametrik sızıntı kendi kapısına ayrıldı**, ADR-0037 madde (d) düşer. Çıpa **base** (rakip değil), iki metrik: M5 coverage ≤ **%37.5** · ezber kütlesi (`coverage × A1`) ≤ **%10.7**. Gerekçe: sert M5 vetosu Kapı 5'i **hiçbir `τ_g` içeren hücrenin geçemeyeceği** hâle getiriyordu — kapı, ölçmek için kurulduğu şeyi ölçemeden kapanıyordu. Gevşetme değil: `τ_g` bugün bu kapıdan **geçemiyor** ve öyle raporlanıyor; her hücre ayrıca özgün (d)'ye karşı da verilir |
+| **[0040](0040-dusunce-modu-olculecek-on-kayitli-kural.md)** | 🟡 | **Düşünce modu ÖLÇÜLECEK — ön-kayıtlı 🟢🟡🔴 kuralı** (M2 Rej ≥ 0.78 **veya** M1 kütle ≥ %57.6, **ve** M5 muhafızı). RS-FT'nin tetikleyicisi olarak tasarlandı. ⚠️ **Kural öngörmediği bir dala çarptı** — ölçüm üretilemedi (base `</think>`'i hiç kapatmıyor, #42); karar **ADR-0043** ile ürün gereksinimi üzerinden alındı. Eşik **iptal değil**, bütçeli kipte yeniden koşulacak. Madde 4 (yeniden eğitilen kol düşünmeyi korur) **yürürlükte** |
+| **[0041](0041-raft-meta-iddia-hakem-kurali.md)** | 🟢 | **RAFT meta-iddiaları hakemde iddia sayılmaz** — groundedness istemine kural satırı. Üç uygulama şartı: **tüm kollara aynı anda** (tek kola uygulamak sayıyı bizim lehimize kaydırır) · eski skorlar saklanır · ham sayılar da yayımlanır (`τ_g`'nin kalan açığı %9.9 vs %2.7 artefakt **değil**). `τ_g`'nin desteksiz iddialarının **%58'i** bu biçimden geliyordu |
+| **[0042](0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md)** | 🟡 | **`rejected` havuzu tek kaynaktan, ham base'den hasat** — `τ_a` · Taban A · Taban B'nin iki aşaması **aynı** veriyi görür (ablasyonun anlamı veriyi sabit tutmaktan gelir). Mevcut havuz emekli **12B**'nin fabrikasyonlarıydı → yeni modele başka bir modelin hatalarını öğretirdi. + **on-policy kontrol koşusu** (~$0.65): Taban B kendi çıktısından hasat edilmiş veriyle de eğitilir, yoksa *"tabanı zayıf eğittiniz"* itirazı Kapı 5'i çürütebilir. ⚠️ **Künyedeki `--thinking off` ADR-0043 ile geçersiz** — hasat bütçeli düşünce kipinde yapılacak |
+| **[0043](0043-dusunce-modu-acik-butceli-kapatma.md)** | 🟢 | ⭐ **Düşünce modu AÇIK, bütçeli zorunlu kapatma ile — ADR-0030 madde 2 DÜŞER.** Ölçüm: base `--thinking on`'da M1/M2/M5'te `</think>`'i **hiç kapatmıyor** (kesilme değil **sonlanmama**; bütçe 8× ❌, `temp 0.6` yarısı 🟡, Q8_0 ❌ — #42). Protokol: **düşünce 1024 + cevap 512**, ön-kayıtlı, `--think-budget` ile zorunlu kapatma; bütçe **rejim değişmezi** (seed/klip ile aynı statüde). ⚠️ **Karar ölçümle değil ÜRÜN GEREKSİNİMİYLE alındı** (final model düşünecek, izleri okunabilecek) ve öyle yazıldı. **Bedeller:** maliyet **~4.8×** (249 → ~1.198 tok) · Sprint 1'in üç çıpası yeniden koşulacak (~$0.6) · zorunlu kapatma bir **protokol müdahalesidir** · iz dili **İngilizce** (Limitations + `τ_g` v2 gerekçesi) |
+
 Her ADR: `NNNN-kebab-baslik.md`.
 
 - **Statü:** Önerildi | Kabul edildi | Yürürlükte | Süperseded (→ NNNN) | Geri alındı
@@ -85,6 +91,9 @@ yanlış çıksa bile *neden öyle düşündüğümüz* paper malzemesidir.
 - [`../record/research_log/README.md`](../record/research_log/README.md) — kronolojik deney günlüğü.
   **Kesintisiz akar**, taşınmaz, yeniden yazılmaz. Yeni hattın girdileri #39'dan devam eder.
 - [`gemma4-12b-dersler.md`](gemma4-12b-dersler.md) — emekli hattın kararları + dersleri.
-- `~/code/hukuk-devir/` *(repo dışı)* — emekli hattın artefaktları (adaptörler, eval çıktıları, tur
-  belgeleri). `old-version-gemma4-12b/` ağacı 2026-07-28'de repo'dan **silindi** ([ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md));
-  metin artefaktları git geçmişinde: `git show a0575e6:old-version-gemma4-12b/<yol>`.
+- [`../record/kollar.md`](../record/kollar.md) — **kol kaydı:** her `τ_X` versiyonunun künyesi,
+  adlandırma şeması (`tg_v1` → merge → GGUF → eval etiketi) ve açık kalemler.
+- ⚠️ `~/code/hukuk-devir/` *(repo dışı devir paketi)* — **2026-07-29'da silindi**, 12B LoRA
+  adaptörleri **kalıcı kayıp** (kasıtlı; [ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md)
+  üst notu). Emekli hattın **metin** artefaktları git geçmişinde:
+  `git show a19fc25^:old-version-gemma4-12b/<yol>`. **Repo dışı artefakt kuralı: yok.**

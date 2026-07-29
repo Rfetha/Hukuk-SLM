@@ -1,6 +1,13 @@
 # ADR-0042 — `rejected` havuzu **tek kaynaktan** (ham base) · Taban B için **on-policy kontrol koşusu**
 
-**Statü:** Yürürlükte · **Tarih:** 2026-07-29
+> ### ⚠️ ÜRETİM AYARI DEĞİŞTİ (2026-07-29 akşamı, [ADR-0043](0043-dusunce-modu-acik-butceli-kapatma.md))
+> Bu ADR hasat künyesinde **`--thinking off`** yazıyor. Hat thinking-on'a geçtiğine göre o ayar
+> **geçersiz**: hasat, kolların eğitileceği ve dağıtılacağı kiple aynı olmalı — **bütçeli düşünce
+> (1024 + 512)**. Yoksa negatif örnekler modelin gerçekten ürettiği çıktılar olmaz ve ADR'nin
+> kendi *"on-policy"* gerekçesi kendi künyesi tarafından çürütülür. Kararın özü (**tek havuz, ham
+> base'den, tüm kollar aynı veriyi görür** + on-policy kontrol koşusu) **değişmedi.**
+
+**Statü:** Yürürlükte (üretim ayarı ADR-0043 ile güncellendi) · **Tarih:** 2026-07-29
 **Otorite belge:** `TASARIM.md` §4.1 (kol verisi) · §4.4 (karşılaştırma tabanları)
 **İlgili:** **ADR-0037 (Kapı 5 — "iki tabanı da geç" şartı)** · ADR-0027 (görev-vektörü:
 her kol ham base'den) · ADR-0034 (12B artefaktları emekli)

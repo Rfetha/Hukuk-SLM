@@ -1,6 +1,15 @@
 # ADR-0030 — Base seçimi: Qwen3.5-4B · ve düşünce modu KAPALI koşulur
 
-**Statü:** Yürürlükte · **Tarih:** 2026-07-24
+> ### ⚠️ MADDE 2 DÜŞTÜ (2026-07-29, [ADR-0043](0043-dusunce-modu-acik-butceli-kapatma.md))
+> **Base seçimi (madde 1) yürürlükte.** *"Düşünce modu KAPALI koşulur"* kararı **geri alındı**:
+> hat artık `--thinking on` + **bütçeli zorunlu kapatma** (düşünce 1024 + cevap 512) ile koşuyor.
+> Karar ölçümle değil **ürün gereksinimiyle** alındı. Aşağıdaki üç gerekçenin bugünkü durumu:
+> eğitim-eval hizalaması **kısmen geçersiz** (`τ_g` izsiz veriyle eğitildiği hâlde düşünüyor ve
+> base'den **daha kararlı** — `research_log` [#42](../record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)) ·
+> sessiz çöp riski **çözüldü** (bütçeli kapatma) · maliyet **gerçek ve ödeniyor** (249 → ~1.198 tok).
+> Metin **değiştirilmedi** — o günkü gerekçe paper malzemesidir.
+
+**Statü:** Kısmen süperseded (madde 2 → ADR-0043) · **Tarih:** 2026-07-24
 **Otorite belge:** `TASARIM.md` §8 (doğrulama kapısı) · §3.1 (CANON) · `sprint1.md` CP0
 **İlgili:** ADR-0026 (base bir parametredir) · ADR-0027 (çalışma varsayımı Qwen3.5-4B) ·
 ADR-0028 (tek boyut noktası) · ADR-0025 (eval yolu llama.cpp) · ADR-0023 (saf-Q4_0 QAT'e özgü)

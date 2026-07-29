@@ -16,7 +16,7 @@
 > | sprint | kapsam | koşan FT | TODO bölümleri |
 > | :--- | :--- | :--- | :--- |
 > | **[1](sprint1.md)** ✅ **KAPANDI** | **Faz A** hazırlık (base kapısı · **DEV havuzu** · base baseline + Kapı 0 · veri) → **Faz B** ilk FT · **+ CP7 Gemini 3.1 Flash-Lite erken önizleme** | **FT-1** ✅ | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
-> | **[2](sprint2.md)** ← *aktif* | düşünce modu ölçümü (CP0) · hakem düzeltmesi · `rejected` hasat · `τ_a` + **ARA KAPI** · tabanlar | **FT-2 · FT-4 · FT-5/6** | §1 · §2 |
+> | **[2](sprint2.md)** ← *aktif* | ✅ düşünce modu (CP0 → **thinking AÇIK, bütçeli**, ADR-0043) · **çıpaların yeniden koşulması (CP0.9)** · hakem düzeltmesi · `rejected` hasat · `τ_a` + **ARA KAPI** · tabanlar | **FT-2 · FT-4 · FT-5/6** | §1 · §2 |
 > | 3 | merge + 7 hücreli kafes → **🎯 hedef model doğuyor** + iç iddia kararı | — *(merge bedava)* | §3 |
 > | 4 | harness (retriever · graf · doğrulayıcı · kapı) + Kapı 3 — **2-3 ile paralel yürüyebilir** | — *(eğitim yok)* | §4 · §6 |
 > | 5 | dış parite matrisi + Kapı 1/2 + eşdeğerlik + başabaş N\* + kapanış ölçümleri (eval≠dağıtım · gerçek VRAM) — **tez burada biter** | — *(rakipler API)* | §5 · §6 |
@@ -61,7 +61,7 @@ Hiçbir eğitim koşusu bu altı madde geçmeden başlamaz (`TASARIM.md` §8).
 
 - [x] Aday base seç → **`Qwen/Qwen3.5-4B`** (~4B sınıfı instruct, ADR-0030)
 - [x] **llama.cpp mimari desteği** doğrula — yükleniyor, GGUF `q35-4b-q4_k_m.gguf` (2.59 GiB) üretildi (ADR-0025 artık bir *base seçim kriteri*)
-- [x] **Şablon render'ını GÖZLE doğrula** — ⚠️ Qwen3.5 **düşünen model**: varsayılan modda `</think>` kapanmıyor, `content` BOŞ (HTTP 200) → `--thinking off` + boş-cevap erken patlama kapısı eklendi (ADR-0030, #39)
+- [x] **Şablon render'ını GÖZLE doğrula** — ⚠️ Qwen3.5 **düşünen model**: varsayılan modda `</think>` kapanmıyor, `content` BOŞ (HTTP 200) → boş-cevap erken patlama kapısı eklendi (ADR-0030, #39). ⚠️ **2026-07-29 güncelleme:** `--thinking off` çözümü **geri alındı** — hat `--thinking on` + **bütçeli zorunlu kapatma** (1024+512) ile koşuyor, çünkü base belirsiz modlarda `</think>`'i **hiç** kapatmıyor ve bütçe artırmak çözmüyor (ADR-0043, #42)
 - [x] Turn işaretlerini assert et → `<|im_start|>user\n` / `<|im_start|>assistant\n`; model duruyor (`finish_reason=stop`)
 - [x] Unsloth + sm_120 ortamını onar → çekirdek engel **LD_LIBRARY_PATH** (`libnvJitLink.so.13`) idi, `global_venv/bin/activate`'e kalıcı satır eklendi, NF4 forward doğrulandı. *(Açık kalan `causal-conv1d` derlemesi Faz B'yi bekletir, kapıyı değil.)*
 - [x] Kuantizasyon yolunu doğrula → **Q4_K_M**, `PURE=0` (QAT yok), VRAM×ctx matrisi `outputs/eval/vram_stack.json`'a ölçüldü

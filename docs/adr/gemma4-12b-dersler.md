@@ -654,5 +654,7 @@ Yalnız altı `research_log` girdisi okuyacaksan bunlar:
 | `#38` | şablon tuzağı | sessiz başarısızlığın anatomisi |
 
 **12B hattının tam sayıları:** repo içinde [`docs/record/gemma4-12b-kronoloji.md`](../record/gemma4-12b-kronoloji.md) ·
-ham SCORECARD `~/code/hukuk-devir/docs/record/SCORECARD.md` (repo'dan silindi — [ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md))
-**Repo dışı devir paketi:** `~/code/hukuk-devir/` (`DEVIR.md` + `RECETELER_12B.md` + git bundle + adaptörler)
+ham SCORECARD: `git show a19fc25^:old-version-gemma4-12b/record/SCORECARD.md`
+⚠️ **Repo dışı devir paketi 2026-07-29'da silindi** ([ADR-0034](0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md)
+üst notu): **LoRA adaptörleri (v0/v1/v2b/v2c/v3) ve `RECETELER_12B.md` kalıcı kayıp** — kasıtlı,
+o hat emekli. Tek kurtarma yolu **git geçmişi**; metin artefaktları orada tam.

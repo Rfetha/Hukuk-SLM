@@ -1,6 +1,29 @@
 # ADR-0034 — Emekli hattın artefaktları repo'dan çıkarıldı (`old-version-gemma4-12b/` silindi)
 
-**Statü:** Yürürlükte · **Tarih:** 2026-07-28
+> ### 🔴 TEK-NÜSHA RİSKİ GERÇEKLEŞTİ (2026-07-29) — 12B adaptörleri **kalıcı kayıp**
+> Bu ADR'nin *"yedeklenmemiş tek nüsha"* diye işaretlediği `~/code/hukuk-devir/` paketi
+> **kullanıcı tarafından silindi.** **Kasıtlı:** 12B hattı emekli, sayıları yeni hatta taşınmıyor,
+> o ağırlıklara bir daha ihtiyaç duyulmayacak.
+>
+> | ne | durum |
+> | :--- | :--- |
+> | `outputs/adapters_12b/` — **v0/v1/v2b/v2c/v3, 1.8 GB** | 🔴 **kalıcı kayıp** (git'te hiç olmadılar) |
+> | `DEVIR.md` · `RECETELER_12B.md` (devir için yazılmış notlar) | 🔴 muhtemelen kayıp — git geçmişinde bu adlarda kayıt yok |
+> | `git/hukuk-slm-full.bundle` | 🟢 önemsiz — repo'nun kendisi o geçmiş |
+> | `SCORECARD.md` · v3 reçeteleri · `gemma4_nothink.jinja` · eval çıktıları | 🟢 **git'te:** `git show a19fc25^:old-version-gemma4-12b/record/SCORECARD.md` |
+> | 12B'nin **sayıları ve dersleri** | 🟢 repo içi: `gemma4-12b-kronoloji.md` · `gemma4-12b-dersler.md` |
+>
+> **Kurtarma yolu artık BİR tane:** git geçmişi. Bu ADR'nin *"iki yoldan doğrulandı"* cümlesi
+> ve `~/code/hukuk-devir/…` adresini öneren **kural fıkrası geçersizdir** — o adresi bir daha yazma.
+> **Bedel:** 12B modelleri bir daha koşulamaz/ölçülemez. ADR-0028 dış geçerlilik açığını zaten
+> kabul etmişti; bu, girmemeye karar verilmiş bir kapıyı kilitliyor, argümanda yeni delik açmıyor.
+>
+> **Yeni kural (kullanıcı, 2026-07-29):** **repo dışı artefakt YOK** — her şey
+> `/home/ersoy/code/Hukuk-SLM` altında. Kollar versiyonlu ve kayıtlı:
+> [`docs/record/kollar.md`](../record/kollar.md). Yeni hattın adaptörleri de git'te **değil** ve
+> **yedeklenmiyor** — bilinçli karar: adaptör veri + reçete + seed sabitken yeniden üretilebilir.
+
+**Statü:** Yürürlükte (kurtarma yolu ikiden **bire** indi — bkz. üst not) · **Tarih:** 2026-07-28
 **Otorite belge:** `TASARIM.md` §2 (belge haritası)
 **İlgili:** **ADR-0024 (emeklilik) — bu ADR onun *"taşındı, silinmedi"* yarısını süperseder**,
 diğer yarısı (*dersler taşınır, sayılar taşınmaz*) aynen yürürlükte ·

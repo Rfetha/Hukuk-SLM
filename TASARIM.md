@@ -34,7 +34,8 @@ Bu, **ne inşa edeceğimizin ve neyi ölçeceğimizin** belgesidir. Üç şeyi b
 | [`docs/open_questions.md`](docs/open_questions.md) | *neyi henüz bilmiyoruz* — canlı açık soru sicili (§13'ün 8'den devamı) |
 | [`docs/model-soyagaci.mmd`](docs/model-soyagaci.mmd) | *ne neden doğar* — artefakt soyağacı: ham base → kollar → kafes → final |
 | [`docs/ft-is-akisi.mmd`](docs/ft-is-akisi.mmd) | *ne zaman ne koşulur* — uçtan uca sıra ⚠️ **TASLAK**, RS-FT kolu kararlaşmadı (bkz. sicil #11) |
-| `~/code/hukuk-devir/` *(repo dışı)* | emekli hattın artefaktları — **repo'dan silindi** (ADR-0034); git geçmişi: `a0575e6` |
+| [`docs/record/kollar.md`](docs/record/kollar.md) | *hangi artefakt hangi koşunun* — kol kaydı: `τ_X` versiyonları, rejim künyesi, `‖τ‖`, adlandırma şeması |
+| ~~`~/code/hukuk-devir/`~~ | ⚠️ **2026-07-29'da silindi** (kasıtlı) — 12B adaptörleri kalıcı kayıp. **Repo dışı artefakt YOK.** Emekli hattın metinleri: `git show a19fc25^:old-version-gemma4-12b/<yol>` |
 
 **Bu belge onları yeniden yazmaz.** Yeni hattın her anlamlı bulgusu `research_log/`'a, her büyük
 kararı yeni bir ADR'ye gider.
@@ -120,7 +121,18 @@ her iki yerde işaretle.* Tespit edilenler:
 
 **Değişmeyen sabitler:** seed **3407** · eval-mirror **900-char** chunk kırpma (eğitimde uygulanan
 kırpma eval'de birebir uygulanır, yoksa model eğitildiğinden uzun bağlamla ölçülür) ·
-**A1 = cevaplanan-only macro.**
+**A1 = cevaplanan-only macro** · 🆕 **düşünce AÇIK, bütçeli: 1024 düşünce + 512 cevap token'ı,
+zorunlu kapatma** (ADR-0043).
+
+> ⚠️ **Düşünce bütçesi neden bir sabit (2026-07-29).** Base `--thinking on` altında M1/M2/M5'te
+> `</think>`'i **hiç kapatmıyor** — cevaplamak ile çekinmek arasında salınıp bütçeyi tüketiyor,
+> `content` boş dönüyor (HTTP 200). **Kesilme değil sonlanmama:** bütçeyi 8× artırmak, örneklemeyi
+> değiştirmek ve Q8_0'a çıkmak üçü de çözmedi (`research_log`
+> [#42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)). Bütçe içinde
+> kapatılmazsa iz + `</think>` isteme yapıştırılıp üretim sürdürülür.
+> **Bedel: ~4.8× token** (249 → ~1.198), ADR-0017 muhasebesine yazılır.
+> ⚠️ **Sprint 1'in üç çıpası thinking-off protokolündendir ve bu tabloya çıpa olarak giremez** —
+> bütçeli kipte yeniden koşulur (sprint2 CP0.9).
 
 ⚠️ **Yeni base'in sayıları eski 12B tablosuna karıştırılmaz.** Protokol satırı ayrı tutulur (ADR-0025).
 
@@ -215,6 +227,13 @@ elde ettiğin şey task-vector değil ardışık SFT olur — yani ölçmek iste
 | `max_seq_len` | 2048 | 2048 / prompt 1536 | 🔴 eşleşti |
 | **`lr`** | 1e-4 | **1e-5** | 🟢 **SERBEST** — ORPO'nun kendi rejimi |
 | **etkin batch** | 16 | **64** | 🟢 **SERBEST** — OR-sinyali ≥64 ister |
+| **düşünce bütçesi** *(ADR-0043)* | 1024 + cevap 512 | aynı | 🔴 **ZORUNLU** — eval/üretim/hasat, her özne ve her hücre aynı bütçeyle |
+
+> **⚠️ Düşünce bütçesi neden bu tabloda (2026-07-29, ADR-0043).** Hat `--thinking on` koşuyor ve
+> base kendi başına `</think>`'i kapatmadığı için **zorunlu kapatma** kullanılıyor. Bütçe artık
+> seed 3407 ve 900-kar klip ile **aynı statüde bir değişmez**: bir kol 1024, diğeri 2048 ile
+> koşarsa üretilen `τ`'lar farklı davranış dağılımından gelir, merge'ün kıyası anlamsızlaşır ve
+> **hiçbir katman hata vermez.** `rejected` hasadı da (ADR-0042) bu kiple yapılır.
 
 **lr/batch farkı korunuyor ve limitations'a yazılıyor.** Çalışan bir yöntemi kıyas uğruna
 bozmak kötü takas. **Ama ön-kayıtlı bir tetiği var:** *`τ_a` tekil hücresi M2/M2b'de base

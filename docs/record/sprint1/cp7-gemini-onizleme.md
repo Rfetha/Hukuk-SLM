@@ -9,6 +9,12 @@
 *Methodology* (aile-dışlama, red-regex kalibrasyonunun rakip ailesinde tekrarı) ·
 **Limitations** (tek hakem varyansı, sağlayıcı pinlemesinin kayda geçmemesi).
 
+
+> ### 🔴 PROTOKOL DEĞİŞTİ (2026-07-29 akşamı, [ADR-0043](../../adr/0043-dusunce-modu-acik-butceli-kapatma.md))
+> Bu önizlemenin iki öznesi de **`--thinking off`** ile ölçüldü. Hat artık **`--thinking on` +
+> bütçeli zorunlu kapatma** (1024+512) koşuyor → buradaki sayılar **thinking-off kaydıdır**,
+> yeni protokolde çıpa değildir. Gemini de dahil üç özne `sprint2.md` **CP0.9**'da yeniden koşulacak.
+
 ---
 
 ## Özet

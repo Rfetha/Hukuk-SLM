@@ -10,6 +10,14 @@
 >
 > ⚠️ **Bu bir parite iddiası DEĞİL.** Model-düzeyi kıyas; harness kapalı, maliyet normalize edilmedi.
 > Parite `harness × {açık/kapalı}` matrisiyle **Sprint 5**'te kurulur.
+>
+> ### 🔴 PROTOKOL DEĞİŞTİ (2026-07-29 akşamı) — bu tablo artık **çıpa değil**
+> Bu tablonun üç sütunu da **`--thinking off`** ile üretildi. [ADR-0043](../../adr/0043-dusunce-modu-acik-butceli-kapatma.md)
+> ile hat **`--thinking on` + bütçeli zorunlu kapatma** (1024+512) koşuyor. Yani buradaki
+> sayılar **thinking-off protokolünün kalıcı kaydıdır** — silinmez, ama `τ_a` ve kafes hücreleri
+> **bunlara karşı ölçülemez.** Yeni çıpalar `sprint2.md` **CP0.9**'da üretilecek ve iki kip
+> yan yana raporlanacak. Sebep: base düşünce açıkken M1/M2/M5'te hiç sonlanmıyor
+> (`research_log` [#42](../research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)).
 
 ---
 
