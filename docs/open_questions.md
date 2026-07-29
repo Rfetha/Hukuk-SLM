@@ -153,8 +153,10 @@ p1 = 0.739, p3 = 0.547). **Zorunlu şart**, `TASARIM.md` §4.2'de kayıtlı.
 
 | ne | nerede |
 | :--- | :--- |
-| `τ_abstention` Sprint 1'e çekilsin mi | [`sprint1.md`](../sprint1.md) §Sprint 1 dışında kalanlar |
-| Sağlayıcı pinlemesi · rakip üretim maliyeti · CP2 M2 regex uyuşmazlığı | [`docs/record/sprint1/NEXT-SESSION.md`](record/sprint1/NEXT-SESSION.md) |
+| ~~`τ_abstention` Sprint 1'e çekilsin mi~~ | ✅ **konusuz** — Sprint 1 kapandı (2026-07-29), `τ_a` Sprint 2'ye kaldı |
+| Sağlayıcı pinlemesi · rakip üretim maliyeti (Sprint 5 ön koşulu) | [`sprint1-sonuc-tablosu.md`](record/sprint1/sprint1-sonuc-tablosu.md) §Geçerlilik şerhleri |
+| Rakip aileleri için red-regex kalibrasyonu | [`yurutme-tuzaklari.md`](record/yurutme-tuzaklari.md) §2.2 |
+| CP2 tablosundaki 4 sayı uyuşmazlığı (işaretlendi, düzeltilmedi) | [`sprint1.md`](../sprint1.md) CP2 · [#41 §6](record/research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
 | H100 hız kaldıracı | [ADR-0033](adr/0033-egitim-hizi-fla-core-checkpointing-batch.md) |
 | Devir paketinin yedeksiz tek nüsha olması | [ADR-0034](adr/0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md) |
 | Doğrulayıcı kalibrasyonu (yanlış-negatif → coverage kaybı) | [ADR-0038](adr/0038-red-kapisi-esigi-kati.md) |

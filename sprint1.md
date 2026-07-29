@@ -1,8 +1,47 @@
-# Sprint 1 — hazırlık ve ilk fine-tune
+# Sprint 1 — hazırlık ve ilk fine-tune · ✅ **KAPANDI (2026-07-29)**
+
+> # 🔒 BU BELGE KAPANDI — YÜRÜTME İÇİN KULLANILMAZ
+>
+> Sprint 1'in **8 checkpoint'i de bitti** (CP0-CP7). Belge **arşiv**: ne planlandığını, hangi
+> uyarıyla koşulduğunu ve neyin gerçekleştiğini gösteren denetim izi. **Yeni iş buradan
+> yürütülmez** — kalıcı içerik aşağıdaki belgelere işlendi.
+>
+> **Dosya taşınmadı** (12+ gelen bağlantı var; iz kırılmasın diye yerinde bırakıldı).
+>
+> ### Ne nereye gitti
+>
+> | sprint1.md'deki içerik | kalıcı yeri |
+> | :--- | :--- |
+> | **Kararlar** (Kapı 0 sonucu · kafes · rejim eşleşmesi · Kapı 5) | [`TASARIM.md`](TASARIM.md) · ADR-0027…0038 |
+> | **CP0-CP3 sonuçları** | [`research_log` #39](docs/record/research_log/2026-07-24-cp0-base-dogrulama-kapisi.md) |
+> | **CP4 sonuçları** | [`research_log` #40](docs/record/research_log/2026-07-25-cp4-fla-core-ve-hiz-kaldiraclari.md) |
+> | **CP5-CP6 sonuçları** | [`research_log` #41](docs/record/research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
+> | **CP7 (rakip önizleme)** | [`cp7-gemini-onizleme.md`](docs/record/sprint1/cp7-gemini-onizleme.md) |
+> | **Üçlü sonuç tablosu** (base ↔ Gemini ↔ `τ_g`) | ⭐ [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md) |
+> | **Uyarı blokları / sessiz-bozulma kalıpları** | ⭐ [`yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
+> | **Açık kalemler** | [`docs/open_questions.md`](docs/open_questions.md) |
+> | **Sprint 2'ye devreden iş** | aşağıda §"Sprint 1 dışında kalanlar" — Sprint 2 planının girdisi |
+>
+> ### Sprint 1 çıkışı — üç soru cevaplandı
+>
+> 1. **Hat çalışıyor mu?** ✅ veri → eğitim → **merge → GGUF** → eval, yeni base'de uçtan uca.
+> 2. **`τ_grounding` ne satın aldı?** M1 coverage **%43.8 → %85.0**, sadık-cevap kütlesi
+>    **%42.6 → %72.0** (Gemini %74.2), M2b **1.000**, register korundu.
+> 3. **Yan hasar ne kadar?** **A1 −0.126** (eşleştirilmiş alt kümede de −0.10 → gerçek, seçim değil)
+>    · **M2 0.633 → 0.458** (ön-kayıtlı) · ❌ **M5 anti-hedefi 0.285 → 0.402** (parametrik sızıntı,
+>    ön-kayıt ihlali).
+>
+> ### 🔴 Sprint 2 başlamadan kapanması gereken karar
+>
+> [`open_questions.md` §13.8](docs/open_questions.md) — RAFT meta-iddia artefaktı. Kafesin 8 eval
+> koşusunun hepsini etkiler; `τ_g` içeren her hücre ceza alır, `τ_a` tekili almaz → **Kapı 5'in
+> iç-iddia kıyası taraflanır.**
+
+---
 
 > **Otorite:** [`TASARIM.md`](TASARIM.md) · **kararlar:** ADR-0027, ADR-0028 · **tam iş listesi:** [`TODO.md`](TODO.md)
-> **Bu belge neden var:** `TODO.md` tüm tezin haritası (7 bölüm, 40+ madde). Sprint 1 onun ilk
-> dilimini **yürütülebilir** hâle getirir: sıra, kapı, komut, ve *"burada ne patlar."*
+> **Bu belge neden vardı:** `TODO.md` tüm tezin haritası (7 bölüm, 40+ madde). Sprint 1 onun ilk
+> dilimini **yürütülebilir** hâle getirdi: sıra, kapı, komut, ve *"burada ne patlar."*
 >
 > **Kaynak:** sıralama ve uyarılar **Gemma 4 12B hattının 5 turundan** çıkarıldı
 > ([kronoloji](docs/record/gemma4-12b-kronoloji.md) · [dersler](docs/adr/gemma4-12b-dersler.md)).
@@ -294,6 +333,20 @@ CP0 biter bitmez üç aileyi yaz; harcama Sprint 3'e kalsın.
 > | **M5** kör *(anti-hedef)* | red | **%62.5** |
 > | **register** (deterministik proxy) | RAG modlarında | **0.96-0.98** |
 >
+> 🚨 **BU TABLONUN DÖRT SAYISI ARTEFAKTLARLA UYUŞMUYOR** (2026-07-29, #41'de işaretlendi).
+> Sessizce düzeltilmedi — denetim izi varlığın kendisi (CLAUDE.md). **Otorite `outputs/eval/*.json`:**
+>
+> | eksen | burada yazan | **artefakt (otorite)** | #39 metni |
+> | :--- | ---: | ---: | ---: |
+> | M1 coverage | %56 | **%43.8 (35/80)** | %42.5 (34/80) |
+> | M1 A1 | *(yok)* | **0.973** | 0.972 |
+> | M2 Rej(regex) | 0.500 | **0.567** | 0.567 |
+> | M2b Rej(regex) | 0.938 | **0.987** | 0.987 |
+>
+> #39 ile artefakt arasındaki 1 örneklik fark **açıklanmadı** (muhtemel sebep: red-regex kalibrasyonundan
+> sonra `rescore_answered.py`'nin yeniden koşması — **doğrulanmadı**). CP6 kıyas tablosu artefakt
+> JSON'larından üretildi: [`docs/record/sprint1/cp6-tablo.md`](docs/record/sprint1/cp6-tablo.md).
+>
 > ⚠️ **Regex kalibrasyonu YAPILDI — kendi base'imizde (#39).** Eski regex, base'in **baskın red kalıbı**
 > olan `bulunmuyor`u görmüyordu → kalibrasyonsuz **M3 0.000** (gerçek 1.000) ve **M2b 0.662** (gerçek 0.938)
 > çıkacaktı. `score_abstention.py` kalibre edildi, **15/15 ileri + 2/2 geri** yön elle doğrulandı. Bu, TASARIM
@@ -516,6 +569,30 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 1. **Hat çalışıyor mu?** veri → eğitim → GGUF → eval, yeni base'de uçtan uca.
 2. **`τ_grounding` ne satın aldı?** M1 ve coverage'da base'e göre delta.
 3. **Yan hasar ne kadar?** M2/M2b/M3 düştü mü — grounding kolu tek başına abstention'ı bozuyor mu.
+
+> ### ✅ GERÇEKLEŞEN — CP5 + CP6 (2026-07-29, **#41**)
+>
+> **CP5 künyesi:** 1.083 adım · A100-40GB · **6.8-7.0 s/it** *(ADR-0033'ün 5.4'ü smoke
+> projeksiyonuydu — düzeltildi)* · 2.619 tok/s · MFU ≈ %15 · **`‖τ_g‖_F = 10.4589`** ·
+> **224 LoRA çifti** (`8×4 + 24×4 + 32×3` — mimari varsayımını birebir doğruladı) · ~$5.5.
+>
+> **CP6 zinciri — eksik halka yazıldı.** `setup_llamacpp.sh` adaptör almıyordu:
+> `merge_lora.py` (**akıtmalı** tensör-tensör merge) + `setup_llamacpp.sh` yerel-dizin desteği.
+> İki teyit kapısı geçti: `‖merged−base‖ = 10.4966` vs `‖τ_g‖ = 10.4589` (+%0.36 bf16) ·
+> GGUF **2.59 GiB = base**. Görüntü kulesi / `mtp` / embed Δ = **tam 0**.
+>
+> **Üç sorunun cevabı** (tam tablo: [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md)):
+>
+> | soru | cevap |
+> | :--- | :--- |
+> | hat çalışıyor mu | ✅ uçtan uca, 470 cevap, hakem $0.15, GPU $0 |
+> | `τ_g` ne satın aldı | coverage **%43.8 → %85.0** · sadık-cevap kütlesi **%42.6 → %72.0** (Gemini %74.2) · M2b **0.973 → 1.000** · register korundu |
+> | yan hasar | **A1 0.973 → 0.847**, eşleştirilmiş 27 soruda **0.977 → 0.878** (seçim değil, gerçek) · M2 **0.633 → 0.458** (ön-kayıtlı) · ❌ **M5 A1 0.285 → 0.402** (anti-hedef ihlali) |
+>
+> **Ön-kayıtlı 7 beklentinin 5'i tuttu, 1'i yarım (M1), 1'i ihlal edildi (M5).**
+>
+> ⚠️ **A1 düşüşünün %58'i ölçüm artefaktı** — RAFT şablonunun 1. adımı hakeme "kaynakta
+> desteklenmeyen iddia" olarak gidiyor. Sayılar **düzeltilmedi**; karar `open_questions.md` §13.8.
 
 ---
 
