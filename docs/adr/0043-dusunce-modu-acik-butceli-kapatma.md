@@ -6,7 +6,31 @@
 **İlgili:** ADR-0040 (ön-kayıtlı 🟢🟡🔴 kuralı — *iptal değil, bütçeli kipte yeniden koşulacak*) ·
 ADR-0035 (`τ_reasoning`/RS-FT kapsam dışı — **kapı aralandı**, henüz açılmadı) ·
 ADR-0017 (maliyet-normalize parite) · ADR-0036 (rejim eşleşmesi = merge geçerliliği)
-**Kanıt:** `research_log` [#42](../record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)
+**Kanıt:** `research_log` [#42](../record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md) ·
+[#43](../record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md) (CP0.9 ölçümü + ablasyon)
+
+> ## ✅ 2026-07-29 gecesi — karar ÖLÇÜMLE de teyit edildi, m.4 daraltıldı
+> **m.1 güçlendi.** Karar ürün gereksinimiyle alınmıştı; CP0.9 ölçümü artık **ölçümle de**
+> destekliyor: bütçeli düşünce thinking-off'u **M5 hariç her eksende domine ediyor**
+> (M1 kütle 42.6→56.7 · M2 Rej 0.633→0.814 · fabrikasyon 0.367→0.186 · M4 93.1→95.9 ·
+> M2b 0.973→0.986 · M3 eşit). Ve ablasyon (#43 Bulgu 5-b) kazancın **biçimden gelmediğini**
+> kanıtladı: kaynak-yeterliliği önsözü M2'yi 0.968'e çıkarıyor ama M1'i 28.2'ye düşürüyor —
+> tek eksende kaydırma. Düşünce iki ekseni birden taşıyor; **prompt-mühendisliği alternatifi
+> elendi.**
+>
+> **m.4 DARALTILDI (kullanıcı kararı):** thinking-off artık **canlı rejim değil** — çıpa değil,
+> kapı referansı değil, kıyas tabanı değil. **Bundan sonra her şey thinking-on koşar.**
+> Gerekçe: dağıtılan kip ile ölçülen kip aynı olmak zorunda (ADR-0036'nın rejim-eşleşmesi
+> kuralının eval'deki karşılığı); off ölçmek dağıtılmayacak bir modelin sayılarını üretmektir.
+>
+> **Ne SİLİNMİYOR:** `outputs/eval/sprint1-thinking-off/` ve iki-kip kıyası **kayıt olarak
+> durur** — o kıyasın kendisi ölçülmüş bir bulgudur (#43 Bulgu 5/5-b) ve makalede Results'a
+> girer. Değişen şey, off'un bir **alternatif rejim** olarak raporlanmayı bırakması.
+>
+> **Kabul edilen bedeller aynen duruyor:** M5 ezber kütlesi 36.9→42.5 (ADR-0040'ı 🟡 yapan
+> muhafız ihlali) · base tarafında 4.5× token (`τ_g` 772, kendi istem ailesinde **476** —
+> orada Gemini'nin 543'ünün altında) · iz hâlâ İngilizce, ürünün *"okunabilir muhakeme"*
+> vaadi bugün karşılanmıyor (m.6 açık kalemi).
 
 ---
 

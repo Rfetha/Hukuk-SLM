@@ -41,6 +41,7 @@ kuantizasyon yarıda kesilse de dosya **diskte durur**.
 | 1.6 | **Güç durumu** | Pilde **7.9** t/s, şarjda **134** t/s — **17×**. Performans sayısı prize bağlı | ölçüm öncesi şarj durumunu künyeye yaz | #39 Bulgu 2 |
 | 1.7 | **Yanlış runtime ile kıyas** | Çıpalar Q4_K_M GGUF + llama-server ile üretildiyse, `--adapter` (transformers, 4-bit) yolu **kıyaslanamaz** sayı verir — tablo yine dolar | özne hep aynı taşıyıcıdan; adaptör **merge edilip GGUF'a** gider | #41 §2 |
 | 1.8 | **`--thinking on` + bütçe = "artırırsan düzelir" sanısı** | Base M1/M2/M5'te `</think>`'i **hiç** kapatmıyor: kesilme değil **sonlanmama**. Aynı muhakeme satırı 219 kez tekrarlanıyor; 4096 → 32768 (**8×**) hiçbir şey değiştirmedi, Q8_0'da da aynı, `temp 0.6` yarısını kurtardı. Bütçe artırmak **saatleri yakar ve yine "geçersiz koşu" yazar** | düşünen model + belirsizlik içeren istem = **`--think-budget N` zorunlu** (zorunlu kapatma). Bütçe **ön-kayıtlı** seçilir, künyeye ve maliyet muhasebesine yazılır | #42 |
+| 1.10 | **n=3 smoke, n=470'i temsil eder sanılır** | CP0 n=36'da *"base M4/M3'te kendi kapatıyor, `τ_g` 35/36 duruyor"* dedi; n=470'te M4 **76/80 zorla**, M3 **60/80** ve `τ_g`'nin kazancı **yalnız kendi istem ailesinde**. Smoke hata vermez, sadece **yanlış genelleme** kurdurur | smoke = *"boru hattı çalışıyor mu"*, **asla** *"davranış şu"*. Davranış iddiası tam n bekler | #43 Bulgu 2·4 |
 | 1.9 | **900-kar klip numaralı listeyi ortadan keser** | Kaynak bloğu `"…Suçlar (madde 309, 310, 311,"` diye biterse model *"birebir alıntıla"* talimatıyla **sayıyı saymayı sürdürüyor**: `…1682, 1683, 1684` — 8 örnekte 1'i. Hata yok, cevap dolu, **çöp**. Yalnız düşünce açıkken gözlendi (thinking-off Sprint 1'de 0/80) | `finish_reason='length'` sayacı bunu yakalar — **kesik oranı okunmadan sonuç okunmaz**; satır-bazlı döngü metriği bunu KAÇIRIR (2 satır, 8625 kar) | #42 |
 
 ## 2. Hakem / skorlama
@@ -57,6 +58,8 @@ kuantizasyon yarıda kesilse de dosya **diskte durur**.
 | 2.8 | **Hakem gürültüsü sinyal sanılır** | Aynı girdi + aynı hakem, iki koşu: `faith_macro` ±0.005 ama **`cit_precision` ±0.044** | tavan dışı `cit_precision`'da 0.04'lük fark **sinyal değildir**; `runs=1` künyeye yazılır | #41 §6 |
 | 2.9 | **Regex kopyası çoğalır** | `rescore_answered.py` kalibre edilmemiş bir regex **kopyası** taşıyordu → tüm A1/coverage sayıları yanlıştı | tek kaynaktan import (`score_abstention.REJECT_RE`) | CP7 kaydı |
 | 2.10 | **Eğitim biçimi hakemde cezalanır** | RAFT şablonunun 1. adımı (*"ilgili kaynak KAYNAK 3'tür, diğerleri farklı konuda"*) kaynak **hakkında** cümle → hakem `NOT_IN_SOURCE` der. `τ_g`'nin desteksiz iddialarının **%58'i** bu | 🔴 **AÇIK** — `open_questions.md` §13.8, `τ_a`'dan önce karara bağlanmalı | #41 §4.3 |
+| 2.12 | **Red-regex MOD'a göre yanlış** | Kör modun sistem istemi feragat cümlesini (*"bir avukata danışın"*) **emrediyor**; regex onu red sayınca **dolu cevaplar çekinme oldu** → M5 coverage düşük, ezber kütlesi **3.4× küçük** ölçüldü. M5 anti-hedef olduğu için sapma **bizim lehimize**. base 54/56 · Gemini 58/62 · `τ_g` 50/51 "red" yalnızca o cümleydi | kalibrasyon **aile × MOD** — `exact_reject(cevap, mode)`, `mode` zorunlu (ADR-0044) | #43 Bulgu 1 |
+| 2.13 | **Tek eksende ölçüp "iyileşti" demek** | M2'de doğru davranış reddetmek → *"her şeye reddet"* diyen model **1.0** alır. Kaynak-yeterliliği önsözü M2'yi 0.968'e çıkardı, M1 kütlesini **28.2**'ye düşürdü (aşırı-red 0.6875) | çekinme ekseninde her kazanç **karşı eksende** (M1 coverage/kütle) doğrulanır | #43 Bulgu 5-b |
 | 2.11 | **`.env` yüklenmez** | Hakem anahtarı görünmez, script ilk adımda durur (bu sefer **gürültülü** — para harcanmadı) | skorlama kabuğunda `set -a; source .env; set +a` | #41 (oturum) |
 
 ## 3. Eğitim
@@ -96,20 +99,24 @@ kuantizasyon yarıda kesilse de dosya **diskte durur**.
 | 5.5 | **Göreli yol `cd`'den sonra** | Script içinde `cd` varsa argümandaki göreli yol **başka yere** çözülür | argümanları **başta mutlaklaştır** | #41 (oturum) |
 | 5.6 | **`.env` emekli base'i gösterir** | `BASE_MODEL` eski hattı işaret ediyordu — ADR-0026'nın tam uyardığı tuzak. Koşular script'ler `--model` zorunlu kıldığı için kurtuldu (**şans, tasarım değil**) | base **parametre**, varsayılan **yok**, tanımsızsa erken patla | #39 Bulgu 5 |
 | 5.7 | **Ara f16 GGUF diski doldurur** | 8-22 GiB; `KEEP_F16=1` unutulursa birikir | varsayılan sil; scratchpad **oturum-kapsamlı**, kalıcı iş `~/code/` altına | sprint1 CP0 |
+| 5.9 | **`pgrep`/`pkill -f` kendini yakalar** | `pkill -f "llama-server -m models/..."` kendi komut satırıyla eşleşip **kabuğu öldürdü** (exit 144); `until ! pgrep -f "groundedness\|..."` döngüsü kendini görüp **asla çıkmadı** (13 dk boşa döndü) | desende köşeli parantez: `pkill -f "[l]lama-server"` | #43 (oturum) |
 | 5.8 | **WSL2 belleği host'un yarısı** | Host 32 GB olsa da VM **15.9 GB** görür (`.wslconfig`'de `memory=` yoksa) | bellek hesabını **`free`'den** yap, host'tan değil | #41 §2 |
 
 ---
 
 ## Kullanım — koşu öncesi kısa liste
 
-**Eval koşusu:** `--data` açık mı · `--thinking off` var mı · `--max-chunk-chars 900` · n/seed CP2 ile
-aynı mı · taşıyıcı CP2 ile aynı mı (GGUF/llama-server) · künyede hepsi görünüyor mu.
+**Eval koşusu:** `--data` açık mı · **`--thinking on` + `--think-budget 1024` + `--max-new-tokens 512`**
+(ADR-0043; thinking-off artık canlı rejim DEĞİL) · `--max-chunk-chars 900` · n/seed CP2 ile aynı mı ·
+taşıyıcı CP2 ile aynı mı (GGUF/llama-server) · **koşu klasörü + `KUNYE.json`** yazıldı mı ·
+kesik oranı %5'in altında mı.
 
 **Eğitim koşusu:** `--target-modules` verildi mi · turn işareti assert'i tetiklendi mi · `fla-core`
 kurulu mu · `--data` konteyner yolu mu · `spawn()` + `--detach` · rejim TASARIM §4.1.1 ile eşleşiyor mu.
 
-**Skorlama:** `.env` yüklü mü · gateway pinli mi · red-regex bu **aile** için kalibre mi · A1
-cevaplanan-only mu · coverage yanında mı · payda yazıldı mı.
+**Skorlama:** `.env` yüklü mü · gateway pinli mi · red-regex bu **aile VE bu mod** için kalibre mi
+(ADR-0044) · A1 cevaplanan-only mu · coverage yanında mı · payda yazıldı mı · çekinme kazancı
+**karşı eksende** doğrulandı mı.
 
 **Artefakt:** merge 224/224 mü · `‖merged − base‖ ≈ ‖τ‖` mi · GGUF boyutu base ile aynı mı ·
 kuantizasyon bitti mi.

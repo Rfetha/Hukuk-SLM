@@ -180,6 +180,39 @@ eksende zıt yönde hareket üretemez. Bedeli: m2'de 249 → 1116 token (**4.5×
 > **Paper eşlemesi:** Results (düşünce ekseni) + Limitations (düşünce ↔ zorunlu kapatma bu
 > tasarımda ayrılamıyor; ayrım ancak izli veriyle eğitilmiş, kendi duran bir kolda ölçülebilir).
 
+### Bulgu 5-b ⭐ — Ablasyon: kazanç **biçimden gelmiyor** (koşuldu, $0.046)
+
+Bulgu 5'in (B) şıkkı ayrıca test edildi: sistem istemine *"cevabına başlamadan önce kaynağın
+soruyu cevaplayıp cevaplamadığını belirt"* satırı eklenip **thinking-off** koşuldu
+(`--sufficiency-preamble`, `outputs/eval/cp09-ab-ayrimi/`). Amaç: düşüncenin ürettiği **biçimi**
+muhakeme olmadan taklit etmek.
+
+| kol | M1 kütle ↑ | M1 coverage | M2 Rej ↑ | ort token |
+| :--- | --: | --: | --: | --: |
+| base thinking-off | 42.6% | 43.8% | 0.633 | ~249 |
+| base **bütçeli düşünce** | **56.7%** | 57.5% | **0.814** | 1116 |
+| base **önsöz + thinking-off** | **28.2%** 🔴 | 31.3% | **0.968** | **116** |
+
+Önsöz M2'de 0.968'e çıkıyor — düşünceden de, Gemini'den de yüksek — ama **aşırı-red oranı 0.6875**:
+M1'de cevaplaması gereken 80 sorunun yalnız 25'ini cevaplıyor ve base'in kendi thinking-off
+hâlinden **14.4 puan** geriye düşüyor.
+
+**Ayrım tamamlandı:**
+- **Önsöz** tek eksende kaydırıyor — M2'de +33.5p alırken M1'de −14.4p veriyor. Bu ayırt etme değil,
+  **red eşiğini indirmek**; kesinlik/kapsam ödünleşmesinde başka bir çalışma noktası.
+- **Bütçeli düşünce** iki ekseni **aynı anda** yukarı taşıyor (M1 42.6→56.7 **ve** M2 0.633→0.814).
+  Bir eşik kaydırması tanım gereği bunu yapamaz.
+
+→ **Mekanizma (A) doğrulandı: düşünce gerçekten ayırt etme yeteneğini artırıyor, 4.5× token'ın
+karşılığı var.** İkincil sonuç: `τ_a`'nın işi de bir istem satırıyla yapılamaz — **kör red ucuz,
+ayırt etme pahalı.**
+
+⚠️ Şerh: paydalar farklı (`valid_traps` 62 / 59 / 60 — tuzak 2.6) · `runs=1` · önsöz bir
+**ablasyon kolu**, ana tabloya girmez (`--sufficiency-preamble` künyeye uyarı basar).
+
+> **Paper eşlemesi:** Results — "düşünce mi biçim mi" sorusunun ölçülmüş cevabı; prompt-mühendisliği
+> alternatifinin **elenmiş** olması iddiayı güçlendirir.
+
 ### Bulgu 6 ⭐ — `τ_g`'nin üç negatifinden ikisi bütçeli kipte **kapandı**, yerine yenisi doğdu
 
 `sprint2.md`'nin açılış tablosu thinking-off'tan geliyordu:

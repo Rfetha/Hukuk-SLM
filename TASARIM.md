@@ -131,8 +131,23 @@ zorunlu kapatma** (ADR-0043).
 > [#42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)). Bütçe içinde
 > kapatılmazsa iz + `</think>` isteme yapıştırılıp üretim sürdürülür.
 > **Bedel: ~4.8× token** (249 → ~1.198), ADR-0017 muhasebesine yazılır.
-> ⚠️ **Sprint 1'in üç çıpası thinking-off protokolündendir ve bu tabloya çıpa olarak giremez** —
-> bütçeli kipte yeniden koşulur (sprint2 CP0.9).
+> ✅ **CP0.9'da koşuldu (2026-07-29).** Üç çıpa bütçeli kipte yeniden üretildi
+> (`outputs/eval/cp09-butceli-1024-512/`, `research_log`
+> [#43](docs/record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md)). Ölçülen bedel
+> **4.5×** (249 → 1135 base; `τ_g` 772, kendi istem ailesinde **476**).
+>
+> **Ve karar ölçümle teyit edildi:** bütçeli düşünce thinking-off'u **M5 hariç her eksende**
+> domine ediyor; ablasyon (Bulgu 5-b) kazancın **biçimden gelmediğini** kanıtladı — kaynak-
+> yeterliliği önsözü M2'yi 0.968'e çıkarıyor ama M1 kütlesini 28.2'ye düşürüyor (tek eksende
+> kaydırma). **Prompt-mühendisliği alternatifi elendi.**
+> 🔴 **thinking-off artık canlı rejim DEĞİL** (ADR-0043 m.4 daraltıldı): çıpa değil, kapı
+> referansı değil, kıyas tabanı değil. Dosyaları ve iki-kip kıyası **kayıt olarak** durur.
+>
+> ⚠️ **İç iddiaya daraltıcı şerh (ADR-0043 m.5 tetiklendi).** Base, bütçeli düşünceyle tuzak
+> reddini kendi başına 0.633 → **0.814**'e taşıdı. Dolayısıyla herhangi bir merge kazancı için
+> **üç** aday açıklama var: kol · birleştirme yöntemi · **modelin kendi muhakemesi**. Bu şerh
+> Results'ın yorumuna girer, Limitations'a değil. Ayrıca `τ_a`'nın ön-kayıtlı gerekçesi (M2
+> açığı) bu protokolde **kapandı**; kolun ölçülebilir açığı **M2b**'ye taşındı (0.986 → 0.607).
 
 ⚠️ **Yeni base'in sayıları eski 12B tablosuna karıştırılmaz.** Protokol satırı ayrı tutulur (ADR-0025).
 
