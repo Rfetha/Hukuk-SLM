@@ -128,6 +128,11 @@ def parse_args():
     p.add_argument("--reasoning-budget", type=int, default=0, metavar="N",
                    help="N>0: OpenRouter `reasoning.max_tokens=N` gönder ve toplam bütçeyi "
                         "N+--max-new-tokens yap (rakip tarafı; --think-budget'ın karşılığı)")
+    p.add_argument("--sufficiency-preamble", action="store_true",
+                   help="ABLASYON (research_log #43): sistem istemine 'önce kaynağın soruyu "
+                        "cevaplayıp cevaplamadığını belirt' satırını ekle. Düşünce ile gelen "
+                        "kazancın BİÇİMDEN mi muhakemeden mi geldiğini ayırmak için. "
+                        "Ana tabloda KULLANILMAZ.")
     p.add_argument("--no-gold", action="store_true",
                    help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
                         "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
@@ -251,7 +256,21 @@ def generate_completion(model, tokenizer, soru, max_new_tokens, source=None, sou
     return gen[:cut].strip()
 
 
-def build_messages(soru, source=None, sources_block=None):
+# ── ABLASYON: kaynak-yeterliliği önsözü (2026-07-29, research_log #43 Bulgu 5) ──
+# Bütçeli düşünce M2'de tuzak reddini 0.633 → 0.814 çıkardı. İki mekanizma aday:
+# (A) muhakeme kaynağı soruyla karşılaştırıyor · (B) zorunlu kapatma sonrası model kaynağın
+# içeriğini SAYIP DÖKMÜŞ durumda, oradan doğal devam "kaynak bunu kapsamıyor" oluyor.
+# CP0.9 ikisini ayıramadı (70 örneğin 69'u zorla kapatıldı → kendi duran kontrol grubu yok).
+# Bu önsöz (B)'nin BİÇİM kısmını düşünce OLMADAN taklit eder: kazanç buradan geliyorsa aynı
+# sonuç 1× token'la alınır (ADR-0017 maliyet ekseninde doğrudan kaldıraç).
+# ⚠️ Bu bir PROTOKOL DEĞİL, ablasyon kolu — ana tablodaki hiçbir hücre bu bayrakla üretilmez.
+SUFFICIENCY_PREAMBLE = (
+    "\nCevabına başlamadan ÖNCE, verilen kaynağın soruyu cevaplayıp cevaplamadığını "
+    "tek cümleyle belirt. Kaynak soruyu cevaplamıyorsa bunu söyle ve cevap uydurma."
+)
+
+
+def build_messages(soru, source=None, sources_block=None, sufficiency=False):
     """Mod → (system, user) mesajları. Taşıyıcıdan (yerel/HTTP) BAĞIMSIZ — tek kaynak."""
     if sources_block is not None:  # M1/M3: çok-kaynak (distractor) veya boş bağlam
         sys = SYSTEM_PROMPT_RAG_MULTI
@@ -262,6 +281,8 @@ def build_messages(soru, source=None, sources_block=None):
     else:       # M5 kör mod: sadece soru (parametrik bilgi testi)
         sys = SYSTEM_PROMPT
         user = soru
+    if sufficiency:
+        sys = sys + SUFFICIENCY_PREAMBLE
     return [{"role": "system", "content": sys}, {"role": "user", "content": user}]
 
 
@@ -306,7 +327,8 @@ def _reasoning_tokens(resp):
 
 
 def generate_http(client, model_name, soru, max_new_tokens, source=None, sources_block=None,
-                  thinking="none", think_budget=0, server_url=None, reasoning_budget=0):
+                  thinking="none", think_budget=0, server_url=None, reasoning_budget=0,
+                  sufficiency=False):
     """llama-server / OpenRouter üzerinden üretim (ADR-0025).
 
     Rakiplerle BİREBİR aynı kod yolu → adalet kuralı (spec §5.2) yapısal garanti.
@@ -318,7 +340,7 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
     Neden gerekli: Qwen3.5-4B base'i M1/M2/M5'te hiç kapatmıyor (32k token'da bile), `content`
     boş dönüyor ve ölçüm ÜRETİLEMİYOR — kesilme değil, sonlanmama (research_log #42).
     """
-    msgs = build_messages(soru, source, sources_block)
+    msgs = build_messages(soru, source, sources_block, sufficiency)
     extra = {}
     if thinking != "none":
         extra["chat_template_kwargs"] = {"enable_thinking": thinking == "on"}
@@ -357,8 +379,9 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
                   reasoning_tokens=_reasoning_tokens(r))
 
 
-def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
-    msgs = build_messages(soru, source, sources_block)
+def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None,
+             sufficiency=False):
+    msgs = build_messages(soru, source, sources_block, sufficiency)
     inputs = tokenizer.apply_chat_template(
         msgs, tokenize=True, add_generation_prompt=True,
         return_tensors="pt",
@@ -480,7 +503,7 @@ def main():
                     http_client, a.server_model, soru, a.max_new_tokens,
                     source=src_arg, sources_block=sources_block, thinking=a.thinking,
                     think_budget=a.think_budget, server_url=a.server_url,
-                    reasoning_budget=a.reasoning_budget)
+                    reasoning_budget=a.reasoning_budget, sufficiency=a.sufficiency_preamble)
             else:
                 gen_fn = generate_completion if a.completion_fewshot else generate
                 g = GenOut(gen_fn(model, tokenizer, soru, a.max_new_tokens,
@@ -548,6 +571,9 @@ def main():
         print(f"[gen-eval] rakip düşünce bütçesi: reasoning.max_tokens={a.reasoning_budget} "
               f"(toplam {a.reasoning_budget + a.max_new_tokens}) | ort reasoning_tokens "
               f"{rt_sum / max(1, rt_n):.1f}/cevap (bildirilen n={rt_n}/{len(sample)}) — künyeye yazılır")
+    if a.sufficiency_preamble:
+        print("[gen-eval] ⚠️ ABLASYON: kaynak-yeterliliği önsözü AÇIK — sistem istemi "
+              "ana protokolden FARKLI, bu koşu ana tabloya girmez")
     print(f"[gen-eval] taşıyıcı={'http' if http_client else 'yerel'} | thinking={a.thinking} "
           f"| max_new_tokens={a.max_new_tokens} | seed={a.seed}")
     print(f"[gen-eval] detay → {detail}")

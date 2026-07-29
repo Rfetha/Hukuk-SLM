@@ -45,22 +45,42 @@ açılmaz — aynı artefakttır.
 | `τ_grounding` | **v1** | 2026-07-28 | 🟢 aktif | 1.083 adım · lr 1e-4 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · seed 3407 · veri `train/raft/` | **10.4589** | `*_tg` *(Sprint 1; v1 demektir)* | [#41](research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
 | `τ_abstention` | — | — | ⏳ CP3'te eğitilecek | 82 adım (3 epoch) · lr 1e-5 · etkin batch 64 · `--fresh-adapter` | — | — | `sprint2.md` CP3 |
 
-### `τ_grounding` v1 — açık kalemler (v2'yi tetikleyebilecekler)
+### `τ_grounding` v1 — açık kalemler *(2026-07-29 gecesi, bütçeli kipte YENİDEN YAZILDI)*
 
-| # | sebep | durum |
-| :-- | :--- | :--- |
-| 1 | **M5 anti-hedef ihlali** — ezber kütlesi %10.7 → **%14.6**; Kapı 6'dan (ADR-0039) bugün **geçemiyor** | 🔴 en güçlü sebep |
-| 2 | **A1 düşüşü** 0.973 → 0.847 (hatalı iddia %2.7 → %17.4, meta düşülünce %9.9) | ⏳ ne kadarı artefakt — CP1 söyleyecek |
-| 3 | **RAFT şablonunun 1. adımı** meta-iddia üretiyor (desteksiz iddiaların %58'i) | 🟡 şimdilik hakem tarafında (ADR-0041) |
-| 4 | **Akıl yürütme izi İngilizce** — ürün gereksinimi Türkçe okunabilir iz | 🟡 izli eğitim verisi gerektirir |
+⚠️ Aşağıdaki tablo **CP0.9'dan sonra baştan yazıldı**. Eski hâli thinking-off ölçümünden geliyordu
+ve o protokol artık canlı değil (ADR-0043 m.4). Kaynak:
+[`research_log` #43](research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md).
 
-> **Kural:** v2 açılırsa **bütün açık kalemler aynı anda** kapatılır. Ayrı ayrı eğitmek iki kat
-> para (eğitim ~$5.5) ve iki kat kafes yeniden ölçümü demektir. Ayrıca ADR-0040 m.4 gereği yeniden
-> eğitilen her kol **düşünme yeteneğini koruyacak** biçimde eğitilir.
+| # | sebep | thinking-off | **bütçeli** | durum |
+| :-- | :--- | :--- | :--- | :--- |
+| 1 | **M5 anti-hedef ihlali** | 36.9 → **44.2** ❌ | 42.5 → **39.2** | ✅ **KAPANDI** — Kapı 6'yı bugün `τ_g` geçiyor, base geçemiyor |
+| 2 | **A1 düşüşü** (cevapladığında hata) | 0.973 → 0.847 | 0.986 → **0.866** | 🟡 **duruyor** — ne kadarı meta-iddia artefaktı, CP1 söyleyecek |
+| 3 | **RAFT şablonunun meta-iddiaları** (desteksiz iddiaların %58'i) | — | — | 🟡 hakem tarafında (ADR-0041, CP1) |
+| 4 | **Akıl yürütme izi İngilizce** | 8/8 | 8/8 | 🟡 ürün vaadi *"okunabilir muhakeme"* karşılanmıyor; izli eğitim verisi gerektirir |
+| 5 | 🆕 **M2b çöküşü** — gold yokken distractor'lardan cevap uyduruyor | 1.000 ✅ | **0.607** (fabrikasyon 0.393) | 🔴 **EN GÜÇLÜ sebep** — üstelik tam kendi eğitim ailesinde (RAG_MULTI) |
 
-### `τ_grounding` v1 — düşünce modu davranışı *(2026-07-29, ölçüldü)*
+**Ne değişti:** eski tablonun *"en güçlü sebep"*i (M5 ihlali) bütçeli kipte **ortadan kalktı**;
+yerine M2b geldi. Yani `τ_g` v2'nin gerekçesi artık *"ezberi azalt"* değil **"kaynak yokken sus"**.
+Bu aynı zamanda `τ_a`'nın hedefiyle çakışıyor — v2 mi `τ_a` mı sorusu Sprint 2'nin açık kararı
+([`sprint2.md`](../../sprint2.md) ARA KAPI bölümü).
 
-Thinking-on'da **35/36 örnekte `</think>`'i kendi kapatıyor**, medyan **510 token**, düşünce izinde
-tekrar döngüsü **yok**, iz yapılı (kaynakları tek tek eleyip gerekçesiyle seçiyor). Çıplak base aynı
-istemlerde **hiç kapatmıyor** (32k token'da bile). → *"reçete fazla sertti"* hipotezi **desteklenmedi**;
-eğitim düşünmeyi öldürmemiş, kararlı hâle getirmiş. Ayrıntı: `research_log` #42.
+> **Kural (değişmedi):** v2 açılırsa **bütün açık kalemler aynı anda** kapatılır. Ayrı ayrı
+> eğitmek iki kat para (~$5.5) ve iki kat kafes yeniden ölçümü demektir. ADR-0040 m.4 gereği
+> yeniden eğitilen her kol **düşünme yeteneğini koruyacak** biçimde eğitilir.
+
+### `τ_grounding` v1 — düşünce modu davranışı *(n=470'te DÜZELTİLDİ, 2026-07-29)*
+
+⚠️ CP0'ın n=36'lık ölçümü *"`τ_g` düşünüyor ve duruyor, 35/36"* diyordu ve bu **genel bir kazanç**
+sanılmıştı. n=470'te kazanç **eğitim istemi ailesine özgü** çıktı:
+
+| istem ailesi | modlar | base zorunlu kapatma | `τ_g` | ort token base→`τ_g` |
+| :--- | :--- | --: | --: | :--- |
+| **RAG_MULTI** ← `τ_g`'nin eğitim biçimi | m1 · m2b · m3 | %91.7 | **%5.8** | 1098 → **476** |
+| RAG_tek | m4 · m2 | %96.7 | %79.3 | 1116 → 1046 |
+| BLIND | m5 | %100.0 | %95.0 | 1284 → 1146 |
+
+Kendi ailesinde etki muazzam (token **yarıya**, kendi kendine kapanma %94); dışında marjinal.
+CP0'ın örneklemi o aileden geldiği için genel görünmüştü. Ayrıntı: `research_log` #43 Bulgu 2.
+
+**Maliyet ekseni:** `τ_g` toplamda **772 tok/cevap** (base 1135, Gemini 543) — kendi istem
+ailesinde **476**, yani orada rakipten ucuz.
