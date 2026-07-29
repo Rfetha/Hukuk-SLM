@@ -18,7 +18,7 @@ set -uo pipefail        # -e BİLEREK yok: tuzak 5.4
 die() { echo "❌ $*" >&2; exit 1; }
 
 TAG="${1:?kullanım: cp0_thinking_score.sh <etiket-son-eki>   (örn. base_th)}"
-OUT_DIR="${OUT_DIR:-outputs/eval}"
+OUT_DIR="${OUT_DIR:-outputs/eval/cp09-butceli-1024-512}"   # koşu klasörü (2026-07-29)
 MODES="${MODES:-m1 m4 m2 m2b m3 m5}"
 
 # --- hakem erişimi: .env kabuğa YÜKLENİR (tuzak 2.11) ------------------------
@@ -61,10 +61,14 @@ for M in $MODES; do
 done
 
 # --- ÖN-KAYITLI KARAR KURALI (ADR-0040) -------------------------------------
+# ⚠️ Kuralın referansı BASE'in thinking-off sayılarıdır → hüküm yalnız BASE öznesi için okunur.
+# Başka bir özne (τ_g, rakip) için basılan bir "🟢 YEŞİL" satırı o öznenin bulgusu sanılır —
+# bu hattın hata sınıfı tam olarak bu (sessiz yanlışlık). Bu yüzden hüküm TAG'e bağlı.
+BASE_TAG="${BASE_TAG:-base_th}"
 echo "==================== ADR-0040 KARAR KURALI ===================="
-python - "$OUT_DIR" "$TAG" <<'PY'
+python - "$OUT_DIR" "$TAG" "$BASE_TAG" <<'PY'
 import json, os, sys
-out_dir, tag = sys.argv[1], sys.argv[2]
+out_dir, tag, base_tag = sys.argv[1], sys.argv[2], sys.argv[3]
 
 def j(p):
     return json.load(open(p, encoding="utf-8")) if os.path.exists(p) else None
@@ -101,6 +105,11 @@ if m5: print(f"  (M5 coverage {m5['n_answered']}/{m5['n_total']} · A1 {m5['A1_f
 
 if rej is None or k1 is None or k5 is None:
     sys.exit("\n⚠️ Karar için gereken üç sayının hepsi yok — eksik modu koş, sonra tekrar.")
+
+if tag != base_tag:
+    sys.exit(f"\nℹ️ Yukarıdaki üç sayı `{tag}` öznesinin — ADR-0040 HÜKMÜ BASILMADI.\n"
+             f"   Kuralın referansı base'in thinking-off sayıları; hüküm yalnız `{base_tag}` için\n"
+             f"   okunur. Bu öznenin kıyası: compare_runs.py ile base_th'ye karşı.")
 
 kazanc_m2 = 100 * (rej - REF["m2_rej"])          # puan
 kazanc_m1 = k1 - REF["m1_kutle"]                 # puan

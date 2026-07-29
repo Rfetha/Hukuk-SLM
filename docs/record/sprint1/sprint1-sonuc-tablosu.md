@@ -18,6 +18,20 @@
 > **bunlara karşı ölçülemez.** Yeni çıpalar `sprint2.md` **CP0.9**'da üretilecek ve iki kip
 > yan yana raporlanacak. Sebep: base düşünce açıkken M1/M2/M5'te hiç sonlanmıyor
 > (`research_log` [#42](../research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)).
+>
+> ### 🔴 M5 SATIRLARI YANLIŞ SAYILMIŞTI (2026-07-29 gecesi) — [ADR-0044](../../adr/0044-mod-duyarli-feragat-kurali.md)
+> Kör modun sistem istemi modele feragat cümlesini (*"…bir avukata danışmanızı öneririm"*)
+> **emrediyor**; red-regex onu çekinme sayıyordu. Sonuç: **dolu cevaplar "reddetti" sayıldı**,
+> M5 coverage sistematik olarak düşük, **ezber kütlesi ~3.4× küçük** ölçüldü — ve M5 **anti-hedef**
+> olduğu için sapma **bizim lehimizeydi**. Etki alanı **yalnız M5**: M1/M4 hücrelerinin hepsi
+> yeniden hesapta **birebir aynı** çıktı.
+>
+> Düzeltilmiş satırlar aşağıda ✅ ile, eskiler ~~üstü çizili~~ olarak duruyor — **hakem yeniden
+> çağrılmadı**, `gnd_m5_*.jsonl` zaten 80 satırın hepsini taşıyordu, yalnız cevaplanan/çekinen
+> ayrımı yeniden yapıldı (`sprint1-thinking-off/a1_m5_*_adr0044.txt`).
+>
+> **Sıralama korundu, sonuç değişmedi:** `τ_g` base'in üstünde kalıyor — fark **+3.9 → +7.3 puan**
+> büyüdü. Kapı 6'nın çıpası bu sayılarla yeniden yazıldı (ADR-0039'un iki sayısı düştü, kuralı durdu).
 
 ---
 
@@ -63,9 +77,12 @@
 | M2b geçerli tuzak *(payda)* | 75 | 67 | **80** |
 | **M3** Rej | 1.0000 | 1.0000 | 1.0000 |
 | M3 geçerli tuzak *(payda)* | 57 | 57 | 50 |
-| **M5** faith_macro *(ANTİ-HEDEF ↓)* | **0.3992** | 0.5786 | 0.4421 |
-| **M5 A1** *(ANTİ-HEDEF ↓)* | **0.2852** | 0.6213 | 0.4018 |
-| M5 coverage *(kör cevaplama ↓)* | 30/80 = %37.5 | **19/80 = %23.8** | 29/80 = %36.2 |
+| ~~**M5** faith_macro~~ 🔴 | ~~0.3992~~ | ~~0.5786~~ | ~~0.4421~~ |
+| ~~**M5 A1**~~ 🔴 *(ADR-0044 — aşağı bak)* | ~~0.2852~~ | ~~0.6213~~ | ~~0.4018~~ |
+| ~~M5 coverage~~ 🔴 *(ADR-0044)* | ~~30/80 = %37.5~~ | ~~19/80 = %23.8~~ | ~~29/80 = %36.2~~ |
+| **M5 A1** ✅ *(ADR-0044, aynı hakem)* | **0.3941** | 0.5783 | 0.4480 |
+| **M5 coverage** ✅ *(ADR-0044)* | 75/80 = **%93.8** | 79/80 = **%98.8** | 79/80 = **%98.8** |
+| **M5 ezber kütlesi** ✅ *(cov × A1, ANTİ-HEDEF ↓)* | **%36.9** | **%57.1** | **%44.2** |
 | register proxy M1 | 0.9730 | 0.9830 | **1.0000** |
 | register proxy M4 | 0.9610 | 0.9230 | 0.9750 |
 | register proxy M2 | 0.9640 | 0.9190 | 0.9450 |

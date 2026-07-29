@@ -10,6 +10,16 @@ M5 anti-hedef) · ADR-0027 (kol tanımı)
 görülmüşken, **hiçbir kafes/merge hücresi üretilmemişken** yapıldı. Savunmanın tamamı bu cümleye
 dayanır — değiştirilen kuralın uygulanacağı veri henüz yoktur.
 
+> ## ⚠️ 2026-07-29 · SAYILARI GEÇERSİZ — kural yürürlükte
+> Bu ADR'nin iki eşiği (**M5 coverage ≤ %37.5** · **ezber kütlesi ≤ %10.7**) kırık bir red
+> sayımından geliyordu: kör modun sistem istemi modele feragat cümlesini **emrediyor**, red-regex
+> ise onu çekinme sayıyordu → coverage sistematik olarak düşük, ezber kütlesi ~**3.4× küçük**
+> ölçüldü ve sapma **bizim lehimizeydi**. Düzeltilmiş çıpa: **coverage ≤ %93.8 · kütle ≤ %36.9**
+> (base, thinking-off). Ayrıntı ve kanıt: [**ADR-0044**](0044-mod-duyarli-feragat-kurali.md).
+>
+> **Düşen:** yalnız iki sayı. **Duran:** kapının varlığı, base'e çıpalanması, iki-ölçütlü yapısı
+> ve aşağıdaki gerekçenin tamamı. `τ_g`'nin ihlali artefakt çıkmadı — **büyüdü** (+3.9 → +7.3 puan).
+
 ---
 
 ## Bağlam — ölçülen çıkmaz

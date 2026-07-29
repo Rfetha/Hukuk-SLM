@@ -70,8 +70,25 @@ REJECT_RE = _re.compile(
     r"mevcut değil|söz konusu değil|bir avukata danış|ilgili maddeye danış", _re.I)
 
 
-def exact_reject(cevap):
-    return bool(REJECT_RE.search(cevap or ""))
+# ── MOD-DUYARLI FERAGAT KURALI (2026-07-29, ADR-0044) ────────────────────────
+# Kör mod (`mode == "blind"`, M5) TEK BAŞINA `SYSTEM_PROMPT`u kullanır ve o istem modele
+# feragat cümlesini EMREDER: *"Emin olmadığın konularda 'güncel mevzuata veya bir avukata
+# danışmanızı öneririm' dersin."* Model dolu cevap verip sonuna bu cümleyi eklediğinde
+# REJECT_RE onu RED sayıyordu → M5 coverage sistematik olarak DÜŞÜK, ezber kütlesi
+# (anti-hedef!) olduğundan KÜÇÜK ölçülüyordu; sapma tam olarak BİZİM LEHİMİZE.
+# Ölçüldü (CP0.9): base 54/56 · Gemini 58/62 · τ_g 50/51 "red" yalnızca bu cümleydi,
+# feragat taşıyan cevapların medyan uzunluğu 1082 karakter — hepsi dolu cevap.
+# Kaynak verilen modlarda saf feragat GERÇEKTEN reddir; bu yüzden düzeltme mod-özgü.
+DISCLAIMER_RE = _re.compile(r"bir avukata danış|ilgili maddeye danış", _re.I)
+
+
+def exact_reject(cevap, mode):
+    """Deterministik red tespiti. `mode` ZORUNLU (varsayılan yok — ADR-0026 ruhu):
+    kör modda feragat cümlesi red sinyali DEĞİLDİR, diğer modlarda öyledir."""
+    c = cevap or ""
+    if mode == "blind":
+        c = DISCLAIMER_RE.sub(" ", c)
+    return bool(REJECT_RE.search(c))
 
 
 def load_jsonl(p):
@@ -124,7 +141,7 @@ def main():
         spent += c
         valid = not d.get("source_answers")     # kaynak cevaplıyorsa tuzak geçersiz
         v = d.get("verdict")
-        rej_x = exact_reject(r["cevap"])         # G2: deterministik red tespiti
+        rej_x = exact_reject(r["cevap"], r.get("mode"))   # G2: deterministik red tespiti (mod-duyarlı)
         if not valid:
             n_invalid += 1
         elif v == "ABSTAIN":
