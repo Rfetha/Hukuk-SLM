@@ -106,6 +106,14 @@ kuantizasyon yarıda kesilse de dosya **diskte durur**.
 | 5.9 | **`pgrep`/`pkill -f` kendini yakalar** | `pkill -f "llama-server -m models/..."` kendi komut satırıyla eşleşip **kabuğu öldürdü** (exit 144); `until ! pgrep -f "groundedness\|..."` döngüsü kendini görüp **asla çıkmadı** (13 dk boşa döndü) | desende köşeli parantez: `pkill -f "[l]lama-server"` | #43 (oturum) |
 | 5.8 | **WSL2 belleği host'un yarısı** | Host 32 GB olsa da VM **15.9 GB** görür (`.wslconfig`'de `memory=` yoksa) | bellek hesabını **`free`'den** yap, host'tan değil | #41 §2 |
 
+## 6. Bulut / orkestrasyon
+
+| # | tuzak | ne olur | korunma | kaynak |
+| :-- | :--- | :--- | :--- | :-- |
+| 6.1 | **`modal run` efemer app + `spawn()` = iş HİÇ koşmaz** | Terminal *"✓ App completed"* yazar, log yalnızca *"Stopping app — local entrypoint completed"* içerir. **Hiçbir iş başlamamıştır, hata da yoktur.** Yerel giriş noktası dönünce efemer app kapanır ve kuyruktaki `spawn()` işi onunla ölür. Ders A4.1 zaten `spawn() + --detach` diyordu, bayrak düşürülmüştü | **`modal run --detach`** zorunlu. Ve *"SPAWNED ✓"* mesajı işin koştuğunu **KANITLAMAZ** — `modal volume ls <out>` ile çıktının gerçekten yazıldığını doğrula | **#47** |
+| 6.2 | **Veri kapısı model yüklemeden SONRA** | Yol/format hatası, model A100'e yüklendikten sonra patlar → boşa GPU dakikası. `train_orpo.py --data` bir **dizin** bekliyordu (`train.jsonl` + `validation.jsonl`); dosya yolu verilince `load_dataset` `<dosya>/train.jsonl` aradı. `train_sft.py` aynı denetimi **yükleme öncesi** yapıyordu, `train_orpo.py` yapmıyordu | Her eğitim betiği girdi dosyalarını `os.path.isfile` ile **model yüklenmeden önce** doğrular. `train_orpo.py` düzeltildi | **#47** |
+| 6.3 | **Bütçe defteri iki cüzdanı toplar** | `sprint2.md` *"Modal cap $42.50 · harcanan $6.57 · kalan $35.93"* diyordu; gerçek Modal kalanı **$7.27**'ydi. Defterdeki harcamaların neredeyse tamamı **OpenAI hakem** ücretiydi (GPU yereldeydi), ~$28'lik Modal harcaması ise **emekli 12B hattına** aitti ve bu defterde hiç görünmüyordu → CP4-CP5 sığmaz hâle gelmişti ve fark edilmemişti | GPU ve hakem maliyetleri **ayrı tabloda**. Modal sayısı **panelden okunur**, defterden türetilmez | **#47** (oturum) |
+
 ---
 
 ## Kullanım — koşu öncesi kısa liste

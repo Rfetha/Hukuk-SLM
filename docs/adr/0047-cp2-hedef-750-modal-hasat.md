@@ -105,13 +105,41 @@ elverdiği seviyeye iner ve `sprint2.md`'ye şerhle yazılır.
 
 ---
 
+## ✅ 2026-07-30 — m.2 ÖLÇÜMLE DOĞRULANDI, geri-dönüş şıkkı kapandı
+
+Modal payı kalmayınca (bkz. `yurutme-tuzaklari` **6.3**: defter iki cüzdanı topluyordu, gerçek
+Modal kalanı **$7,27**'ydi) bu ADR'nin geri-dönüş şıkkı — *"yerel `-np 8`"* — denendi ve **elendi**.
+
+`cp2_harvest.py` eş zamanlı üretime alındı, `llama-server` 8 slotla açıldı:
+
+| | s/üretim | kazanç |
+| :--- | --: | --: |
+| seri | 11,12 | — |
+| `-np 8` | **8,23** | **1,35×** *(beklenen 4-6×)* |
+
+**Sebep:** zorunlu kapatma **9/9**. Her üretim iki istek; ikincisi 3.933 karakterlik izi baştan
+**prefill** ediyor ve o compute-bound iş slotlar arası ölçeklenmiyor. Düzeltilemez — `</think>`'in
+kapanmaması #42'de ölçülmüş bir base özelliği, zorunlu kapatma ADR-0043'ün rejim değişmezi.
+
+Yerelde 750 negatif = **17,1 saat**. Hasat `load_done` ile devam ettirilebilir olsa da iki geceye
+bölmek makul değil.
+
+**Karar:** hasat **Modal'da kalır** (m.2 aynen). Zamanlama değişti — Modal fatura dönemi
+**1 Ağustos**'ta yenilenip $42,50 açılınca koşulacak. Tahmini **1,5-3 saat / $3-6** (yerel verimden
+türetildi; m.3'ün **ilk 10 dakika kapısı** bunu denetler).
+
+**m.1 (hedef 750) ve `τ_a` rejimi (~73 adım / 5 epoch) DEĞİŞMEDİ** — bekleme, ön-kayıtlı hiçbir
+sayıya dokunmadan hedefi korumanın yolu oldu.
+
+---
+
 ## Reddedilen seçenekler
 
 | seçenek | neden reddedildi |
 | :--- | :--- |
 | **Sentetik `rejected` (API)** | Üçüncü bir modelin hataları → ADR-0042'nin düzeltmek için var olduğu kusurun daha kötüsü; CP5'in on-policy sigortasını **bize karşı** çevirir, Kapı 5'i çürütür |
 | **vLLM / bf16 ile Modal'da hızlı üretim** | Taşıyıcı değişir → negatifler dağıtılan modelin hataları olmaz; nicemleme davranışı değiştirir |
-| **Yerel `-np 8` ile koş** | Ölçülmedi, tahmini 4-6× → 750 hedefte hâlâ **~7 saat**. $0 avantajı var ama kullanıcı için yürütülebilir değil. *Modal koşusu tıkanırsa geri dönülecek seçenek olarak duruyor* |
+| **Yerel `-np 8` ile koş** | ✅ **2026-07-30'da ÖLÇÜLDÜ ve ELENDİ:** kazanç 4-6× değil **1,35×** (zorunlu kapatma 9/9 → ikinci istek izi baştan prefill ediyor). 750 hedefte **17,1 saat**. Geri-dönüş şıkkı **kapandı** |
 | **Hedef 1.495'te kalsın** | Modal'da ~$5,7 = kalan bütçenin dörtte biri; CP4-CP5 ~$12 istiyor. 750 + 5 epoch, 82 adımın **%89'unu** ~yarı fiyata veriyor |
 | **Hedef 500'e insin** | Adım 29'a iner → ARA KAPI kalırsa *"kol mu kötü, veri mi az"* ayrılamaz; kapı ölçemez hâle gelir |
 | **Düşünce bütçesini hasatta düşür** | ADR-0043 rejim değişmezi; hasat dağıtım kipiyle aynı olmalı, yoksa on-policy gerekçe kendi künyesince çürür |

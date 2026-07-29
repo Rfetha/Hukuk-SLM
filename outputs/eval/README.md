@@ -19,6 +19,7 @@
 | [`cp1-hakem-meta-iddia/`](cp1-hakem-meta-iddia/KUNYE.json) | **üretim yok** — CP0.9 cevapları, YENİ hakem istemi (ADR-0041) | base · `τ_g` v1 · Gemini 3.1 FL | 80/özne (M1) | 🟢 **yürürlükteki M1 groundedness** — CP0.9'un `gnd_m1_*` dosyaları artık **ham/kontrol** |
 | [`cp2-rejected-hasat/`](cp2-rejected-hasat/KUNYE.json) | hasat pilotu, bütçeli düşünce | base (çıplak) | 120 + 120 | 🔴 **PİLOT** — üretim hasadı başlamadı; kabul ölçütü ADR-0046/0048 ile değişti |
 | [`cp2-on-eleme/`](cp2-on-eleme/KUNYE.json) | **üretim yok** — 2×2 hakem tasarımı (mini/gpt-4o × cevap gizli/görünür) | pilotun 36 etiketli adayı | 36 | 🟡 **teşhis** — ön-eleme net zararlı bulundu, koşulmadı → ADR-0048 |
+| [`cp2-s-boru-hatti-smoke/`](cp2-s-boru-hatti-smoke/KUNYE.json) | **MEKANİK smoke** — `τ_a` 50 adım → norm-dengeli TIES → GGUF → 3 cevap | `τ_g` + SENTETİK kol | 3 | 🟡 **SAYI ÜRETMEZ** — ADR-0049 m.4; hiçbir değeri çıpa olarak kullanılmaz |
 | [`cp2-r-kor-payda/`](cp2-r-kor-payda/KUNYE.json) | **üretim yok** — cevaba KÖR `valid_trap` önbelleği + 9 koşunun aritmetikle yeniden puanlanması | base · `τ_g` v1 · Gemini 3.1 FL | 230 kalem | 🟢 **YÜRÜRLÜKTEKİ ÇEKİNME PAYDASI** — `cp09`'un `abst_*` özetleri artık **ham/kontrol**. ARA KAPI eşikleri burada türetildi (`ara_kapi_esikleri.json`) |
 | `_artefakt/` | — | ölçüm dışı artefaktlar | — | `tau_norm_tg` · `vram_stack` · `token_budget` · eski smoke |
 

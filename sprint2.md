@@ -39,7 +39,7 @@ adil koşullarda ölçtük mü?"*
 | Ölçüm zemini | DEV havuzu (80 core_hard + 70 trap), TEST (`eval/canon/`) **hiç görülmedi** |
 | Çıpalar | ✅ **CP0.9'da yeniden üretildi** — base · `τ_g` v1 · Gemini 3.1 FL, bütçeli kipte, `outputs/eval/cp09-butceli-1024-512/` |
 | **Protokol** | **thinking AÇIK, bütçeli**: düşünce 1024 + cevap 512, zorunlu kapatma (ADR-0043) — rejim değişmezi. **thinking-off artık canlı rejim DEĞİL** (ADR-0043 m.4 daraltıldı) |
-| Bütçe | Modal cap **$42.50** · fiili harcanan **$6.57** · **kalan $35.93** *(2026-07-30, CP2-a dahil)* |
+| Bütçe | **İKİ CÜZDAN — karıştırılmaz.** Modal GPU: workspace limiti **$42.50**, harcanan **$35.23**, **kalan $7.27** *(Modal panelinden, 2026-07-30 — büyük kısmı emekli 12B hattı, bu defterde görünmüyor)*. OpenAI hakem: ayrı cüzdan, Sprint 2'de **$1.00** harcandı |
 
 ### ⭐ Yürürlükteki çıpalar (bütçeli kip, DEV, harness kapalı)
 
@@ -101,7 +101,16 @@ tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
 > [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md). Açık karar **kalmadı**.
 > ✅ **CP2-r koştu ($0,23):** eşikler türetildi (**M2 ≥ 0.923 · A1 ≥ 0.880 · M2b ≥ 0.854**),
 > M2b kurgu tabanı **79/80 geçildi**, düzeltme 4/6 karşılaştırmada **aleyhimize** çıktı ([#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md)).
-> **Sıradaki iş: CP2-s — boru hattı mekanik smoke (~$0,15).**
+> ✅ **CP2-s koştu (~$0,35):** zincirin dört halkası doğrulandı — ve **ikinci halkanın hiç var
+> olmadığı** ortaya çıktı. `scripts/merge_ties.py` yazıldı, operatörde bir **işaret hatası bulunup
+> düzeltildi** ([#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md)).
+>
+> 🔒 **CP2-c 1 AĞUSTOS'A ERTELENDİ.** Modal bütçesi tükendi (kalan **$7,27**, bkz. tuzak 6.3) ve
+> eğitim hızı kayıtlının **10 katı yavaş** çıktı (70 s/it, 7 değil) → CP3 tek başına ~$3,2.
+> Yerel hasat **ölçülüp elendi**: `-np 8` yalnız **1,35×** veriyor (zorunlu kapatma 9/9 → ikinci
+> istek izi baştan prefill ediyor) → 750 negatif **17,1 saat**.
+> **Karar: fatura dönemi 1 Ağustos'ta yenilenince Modal'da koşulacak** (~1,5-3 sa, ~$3-6).
+> **Hiçbir ön-kayıtlı sayı değişmedi** — hedef 750, `τ_a` ~73 adım, üç eşik yerinde.
 
 ### Elde ne var / ne yok — tek bakış
 
@@ -165,8 +174,8 @@ onaracağı delik **kendi üstünde değil, `τ_g`'de**.
 | **CP2-a** ✅ | Ön-eleme uyum kapısı — 2×2 hakem tasarımı | — | **0.121** | ✅ **koştu:** ön-eleme **net zararlı** → koşulmuyor; ve `valid_trap` özneye bağlı çıktı → [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) |
 | ~~**CP2-b**~~ ❌ | ~~Havuz ön-elemesi~~ | — | **0** | ❌ **İPTAL** — ADR-0048 m.4: filtre eleyeceğinden çok geçerli tuzak atıyor (isabet 0,14) |
 | **CP2-r** ✅ | Cevaba-kör `valid_trap` önbelleği (230 kalem) + 9 koşu yeniden puanlandı | — | **0.23** | ✅ **koştu:** eşikler **0.923 / 0.880 / 0.854** · M2b tabanı **79/80 GEÇİLDİ** · düzeltme 4/6 karşılaştırmada **aleyhimize** ([#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md)) |
-| **CP2-s** ⏳ | Boru hattı **mekanik smoke** — `τ_a` 5 adım → TIES merge → GGUF → 3 cevap | Modal | **0.15** | ADR-0049 m.4 · *sayı üretmez, çalışıyor mu diye bakar* |
-| **CP2-c** ⏳ | Üretim hasadı — **hedef 750** (7.500 üretim), kabul tasarımı **B** | **Modal** `-np 32` | **~6.7** | ADR-0046 m.1 + [ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) + ADR-0049 m.5 · ~1-2 sa |
+| **CP2-s** ✅ | Boru hattı mekanik smoke | Modal | **~0.20** | ✅ **koştu:** 4/4 halka çalışıyor · 🔴 **norm-dengeli TIES'in kodu YOKTU** → `merge_ties.py` yazıldı, operatörde işaret hatası düzeltildi ([#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md)) |
+| **CP2-c** 🔒 | Üretim hasadı — hedef **750** (7.500 üretim), kabul tasarımı **B** | **Modal** `-np 32` | ~3-6 GPU + 3.68 hakem | 🔒 **1 AĞUSTOS** — Modal bütçesi yenilenince. Yerel şık ölçülüp elendi (1,35×) |
 | **CP3** | `τ_a` eğitimi (**~73 adım / 5 epoch**, lr 1e-5, **`--fresh-adapter` ZORUNLU**) + tekil ölçüm | Modal | ~0.85 | 🔴 **ARA KAPI** *(eşik CP2-r'den türer)* |
 | **CP4** | Taban A — karışık SFT | Modal | ~5.7 | Kapı 5'in (a) referansı |
 | **CP5** | Taban B — ardışık SFT + on-policy kontrol | Modal | ~6.5 | Kapı 5'in (a) referansı |
@@ -211,7 +220,7 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 ## Checkpoint akışı
 
 > **Sıra kapılara bağlı.** CP0 ✅ → CP0.9 ✅ → CP1 ✅ → CP0.5 ✅ → CP2 pilot ✅ → CP2-a ✅ →
-> ~~CP2-b~~ ❌ → CP2-r ✅ → **CP2-s ⏳ BURADAYIZ** → CP2-c → CP3 → **ARA KAPI** → CP4 → CP5.
+> ~~CP2-b~~ ❌ → CP2-r ✅ → CP2-s ✅ → **CP2-c 🔒 1 AĞUSTOS'A ERTELENDİ (Modal bütçesi)** → CP3 → **ARA KAPI** → CP4 → CP5.
 > Ara kapı geçilmeden rakip yöntemlere para harcanmaz (5/6 kararı, 2026-07-29).
 >
 > **DURUM (2026-07-30):** CP2 pilotu, hasadın **ön-kayıtlı kabul ölçütünün** ölçtüğünü sandığı
@@ -239,8 +248,8 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 | **CP2-a** | ✅ **KOŞTU — ölçüm aracının kendisini kırdı.** 2×2 hakem tasarımı: çapalanma mini'de **22,3p**, gpt-4o'da 8,4p → *%42 geçersiz* premisi **artefakt**. Ve `valid_trap` **özneye bağlı** çıktı | — | **0.121** | ✅ [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) + [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) |
 | ~~**CP2-b**~~ | ❌ **İPTAL** — ön-eleme filtresi net zararlı (kestiği 7 kalemin isabeti **0,14**, 6 geçerli tuzak boşa) | — | **0** | ADR-0048 m.4 |
 | **CP2-r** | ✅ **KOŞTU** — 230 kalemlik kör önbellek (m2 66/70 · m2b 79/80 · m3 80/80 tanım) → 9 koşu aritmetikle yeniden puanlandı ($0). **Eşikler türetildi: 0.923 / 0.880 / 0.854.** M2b tabanı 79/80 ✅ | — | **0.23** | ✅ ADR-0049 m.2 |
-| **CP2-s** | ⏳ Boru hattı **mekanik smoke** — `τ_a` 5 adım → norm-dengeli TIES → GGUF → 3 cevap. *Sayı üretmez* | Modal | **0.15** | ⏳ ADR-0049 m.4 |
-| **CP2-c** | ⏳ Üretim hasadı — hedef **750** = **7.500 üretim** (verim %10), kabul tasarımı **B** | **Modal** `-np 32` | **~6.7** | ⏳ ADR-0049 m.5 · **ilk 10 dk verim kapısı** |
+| **CP2-s** | ✅ **KOŞTU** — `τ_a` 50 adım (`--fresh-adapter`, %0,65 eğitilebilir) → norm-dengeli TIES **224/224** → GGUF **Q4_K_M 2,59 GiB** → `llama-server` **3/3 dolu cevap**. 🔴 **TIES kodu yoktu, yazıldı**; `TIES(τ,−τ)=0` testi hatayı yakaladı | Modal | **~0.20** | ✅ ADR-0049 m.4 |
+| **CP2-c** | 🔒 **1 AĞUSTOS'A ERTELENDİ** — hedef 750 = 7.500 üretim (verim %10), kabul tasarımı B. Modal bütçesi tükendi; yerel `-np 8` ölçüldü ve **elendi** (1,35×, 17,1 sa) | **Modal** | ~3-6 + 3.68 | 🔒 bütçe · **ilk 10 dk verim kapısı** |
 | **CP3** | **FT-2 = `τ_a`** eğitimi + tekil ölçüm + **merge onarım kontrolü** | Modal | ~0.85 | 🔴 **ARA KAPI** |
 | **CP4** | **FT-4** Taban A (karışık SFT) + ölçüm | Modal | ~5.7 | 🔒 insan onayı |
 | **CP5** | **FT-5/FT-6** Taban B (ardışık SFT) + on-policy kontrol + ölçüm | Modal | ~6.5 | 🔒 insan onayı |
@@ -677,30 +686,46 @@ güçlü tabana karşı kazanmamız gerekir.
 
 ---
 
-## Bütçe
+## Bütçe — **İKİ CÜZDAN, ayrı tutulur**
+
+> ### 🚨 2026-07-30'da düzeltildi: tablo iki cüzdanı tek satırda topluyordu
+> Eski tablo *"Modal cap $42.50 · harcanan $6.57 · kalan $35.93"* diyordu. **Yanlıştı.** Oradaki
+> harcamaların neredeyse tamamı **OpenAI hakem** ücretiydi (GPU yereldeydi, $0), Modal'ın gerçek
+> durumu ise panelde: **$35.23 / $42.50 harcanmış, kalan $7.27.** Aradaki ~$28 **emekli 12B
+> hattının** eğitim koşuları — bu defterde hiç görünmüyordu.
+>
+> **Kural:** GPU ve hakem maliyetleri aynı satırda toplanmaz. Modal sayısı **panelden** okunur,
+> defterden türetilmez.
+
+### A. Modal GPU — workspace limiti $42.50
 
 | kalem | $ |
 | :--- | ---: |
-| Modal cap | 42.50 |
-| Sprint 1 fiili | −5.80 |
-| CP0 fiili *(planlanan ~0.15)* | **0** — hakem hiç çağrılmadı, cevap üretilemedi |
-| **CP0.9** fiili *(planlanan 0.60)* | **−0.49** — GPU yerelde $0; 0.45 hakem + 0.05 A/B ablasyonu |
-| **CP1** fiili *(planlanan 0.12)* | **−0.15** — 0.113 yeniden puanlama + 0.037 hakem-gürültüsü kontrol koşusu |
-| **CP0.5** fiili *(planlanan 0)* | **0** — ölçüm yerelde, `causal-conv1d` derlenmedi (gerek kalmadı) |
-| **CP2 pilot** fiili *(planlanan 0)* | **−0.01** — GPU yerelde $0; kabul edilen adayların LLM hakemiyle denetimi |
-| **CP2-a** fiili *(planlanan 0.004)* | **−0.121** — 2×2 hakem tasarımı: 0.003 mini + 0.049 gpt-4o kör + 0.069 gpt-4o cevaplı |
-| | **FİİLİ HARCANAN: $6.80 · KALAN CAP: $35.70** *(CP2-r dahil)* |
-| ~~CP2-b~~ | **0** — İPTAL (ADR-0048 m.4) |
-| **CP2-r** fiili *(planlanan 0.29)* | **−0.23** — 230 kalemlik kör önbellek (gpt-4o); yeniden puanlama **$0**, saf aritmetik |
-| **CP2-s** planlanan *(ADR-0049 m.4)* | **−0.15** — boru hattı mekanik smoke |
-| **CP2-c** planlanan *(ADR-0047 + 0049 m.5)* | **−6.7** — Modal `-np 32` ~$3.0 + kabul tasarımı B $3.68 |
-| **CP3** planlanan | **−0.85** |
-| **CP4-CP5** planlanan 🔒 | **−12.2** — insan onayı şart |
-| | **planlanan toplam −$20.19 → cap sonrası ~$15.74** |
+| emekli 12B hattı + Sprint 1 (`τ_g`) — panelden | **−35.23** |
+| **KALAN (panel, 2026-07-30)** | **$7.27** |
+| CP0 · CP0.9 · CP0.5 · CP1 · CP2 pilot · CP2-a · CP2-r | **0** — hepsi yerelde ya da yalnız hakem |
+| **CP2-s** smoke *(koşuyor)* | ~−0.20 |
+| **CP2-c** hasat | ~−3.00 |
+| **CP3** `τ_a` | ~−0.85 |
+| **ARA KAPI'ya kadar toplam** | **~$4.05 → sığıyor**, ~$3.2 pay kalır |
+| ~~CP4 Taban A~~ · ~~CP5 Taban B~~ | ~~−12.20~~ 🔴 **BU LİMİTLE İMKÂNSIZ** |
 
-⚠️ **CP2-c ilk kez Modal'da koşan bir HASAT işi** — önceki hasat planı yerel/$0 idi. Süre tahmini
-tutmazsa (ilk 10 dk kapısı) koşu durur; harcanan kısım künyeye yazılır.
+> 🔴 **CP4-CP5 artık onay meselesi değil, LİMİT meselesi.** $7.27 içine sığmıyor. Karar
+> (2026-07-30): **ARA KAPI'ya ulaşmak yeterli**; CP4-CP5 fatura döneminin yenilenmesini bekler.
 
-⚠️ **Açık kalemler bütçeye henüz girmedi:** düşünce modu token maliyetini **4.5×** artırdı
-(249 → 1135 tok/cevap, base) — Modal'da koşulan her üretim işi bu oranda uzar. Ve `τ_g` v2 açılırsa
-(**5 gerekçe**: [`kollar.md`](docs/record/kollar.md)) eğitim ~$5.5 + yeniden ölçüm ~$0.15 eklenir.
+### B. OpenAI hakem — ayrı cüzdan
+
+| kalem | $ |
+| :--- | ---: |
+| CP0.9 | −0.49 |
+| CP1 | −0.15 |
+| CP2 pilot | −0.01 |
+| CP2-a | −0.121 |
+| CP2-r | −0.23 |
+| **Sprint 2'de harcanan** | **−$1.00** |
+| CP2-c kabul tasarımı B *(planlanan)* | ~−3.68 |
+| CP3 merge onarım ölçümü *(planlanan)* | ~−0.15 |
+
+⚠️ **Açık kalem:** düşünce modu token maliyetini **4.5×** artırdı (249 → 1135 tok/cevap) — Modal'da
+koşan her üretim işi bu oranda uzar. Ve `τ_g` v2 açılırsa eğitim ~$5.5 eklenir (**5 gerekçe**:
+[`kollar.md`](docs/record/kollar.md)) — o da mevcut Modal limitine sığmaz.
