@@ -9,7 +9,7 @@
 # Kullanım:
 #   bash scripts/setup_llamacpp.sh <hf-repo-id|yerel-dizin> [etiket]
 #     <hf-repo-id>  ör. <org>/<model>          (HF cache'te indirilmiş olmalı)
-#     <yerel-dizin> ör. models/merged/tg       (merge_lora.py çıktısı — adaptör zinciri)
+#     <yerel-dizin> ör. models/merged/tg_v1    (merge_lora.py çıktısı — adaptör zinciri)
 #     [etiket]      GGUF dosya adı öneki (varsayılan: yolun son parçası)
 #
 #   Sadece derleme (dönüştürme yok):

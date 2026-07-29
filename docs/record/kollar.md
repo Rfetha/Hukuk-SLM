@@ -1,0 +1,66 @@
+# Kol kaydı — her `τ_X` versiyonunun künyesi
+
+> **Bu belge ne:** eğitilmiş her kolun (task-vector dalının) **tek kayıt yeri**. Bir artefakt
+> diskte duruyorsa burada bir satırı vardır; satırı yoksa o artefakt **kimliksizdir ve kullanılmaz.**
+>
+> **Neden var:** bu hattın hata sınıfı sessiz yanlışlık. *"Bu sayı hangi kolun, hangi versiyonun
+> sayısı"* sorusu **dosya adından** cevaplanabilmeli — o yüzden versiyon zincirin her halkasında
+> taşınır: adaptör → merge → GGUF → eval etiketi.
+>
+> **Kural (2026-07-29):** repo dışı artefakt **yok**. Her şey `/home/ersoy/code/Hukuk-SLM` altında.
+> Adaptörler git'te **değil** (`.gitignore: outputs/**/*.safetensors`, ayrıca 114 MB > GitHub'ın
+> 100 MB dosya sınırı) ve **yedeklenmiyor** — bilinçli karar: adaptör veri + reçete + seed sabitken
+> yeniden üretilebilir, yeri doldurulamaz varlıklar (veri · belgeler · eval çıktıları) zaten metin
+> ve git'te. *(12B hattının adaptörleri bu kararın bedelini gösterdi: repo dışı devir paketi
+> silindi, adaptörler kalıcı kayıp — kasıtlı, çünkü o hat emekli.)*
+
+---
+
+## Adlandırma
+
+```
+outputs/<kol>_v<N>/                      LoRA adaptörü        (asıl artefakt)
+models/merged/<kol>_v<N>/                merge edilmiş bf16   (yeniden üretilebilir)
+models/gguf/<kol>_v<N>-<QUANT>.gguf      taşıyıcıya giden     (yeniden üretilebilir)
+eval etiketi: <mod>_<kol>_v<N>           ör. m1_tg_v1
+```
+
+**Kol kısaltmaları:** `tg` = `τ_grounding` · `ta` = `τ_abstention` · `base_a` = Taban A (karışık SFT) ·
+`base_b1`/`base_b2` = Taban B'nin iki aşaması (ardışık SFT).
+
+**Yeni versiyon ne zaman açılır:** eğitim rejiminde (veri · adım · lr · `r`/`alpha` · dropout ·
+`target_modules` · precision · seed) **herhangi bir** değişiklik. Rejim aynıysa yeni versiyon
+açılmaz — aynı artefakttır.
+
+> ⚠️ **Versiyon karıştırma = merge geçersizliği.** `τ = θ_ft − θ_base` tanımı bütün kolların
+> **aynı θ_base**'den ve **eşleşen rejimden** gelmesini şart koşar (`TASARIM.md` §4.1.1, ADR-0036).
+> Farklı versiyonları birleştirmek hata vermez, sadece ölçtüğün şeyi yok eder.
+
+---
+
+## Kollar
+
+| kol | ver | tarih | durum | rejim | `‖τ‖_F` | eval etiketi | kayıt |
+| :--- | :-- | :--- | :--- | :--- | ---: | :--- | :--- |
+| `τ_grounding` | **v1** | 2026-07-28 | 🟢 aktif | 1.083 adım · lr 1e-4 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · seed 3407 · veri `train/raft/` | **10.4589** | `*_tg` *(Sprint 1; v1 demektir)* | [#41](research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
+| `τ_abstention` | — | — | ⏳ CP3'te eğitilecek | 82 adım (3 epoch) · lr 1e-5 · etkin batch 64 · `--fresh-adapter` | — | — | `sprint2.md` CP3 |
+
+### `τ_grounding` v1 — açık kalemler (v2'yi tetikleyebilecekler)
+
+| # | sebep | durum |
+| :-- | :--- | :--- |
+| 1 | **M5 anti-hedef ihlali** — ezber kütlesi %10.7 → **%14.6**; Kapı 6'dan (ADR-0039) bugün **geçemiyor** | 🔴 en güçlü sebep |
+| 2 | **A1 düşüşü** 0.973 → 0.847 (hatalı iddia %2.7 → %17.4, meta düşülünce %9.9) | ⏳ ne kadarı artefakt — CP1 söyleyecek |
+| 3 | **RAFT şablonunun 1. adımı** meta-iddia üretiyor (desteksiz iddiaların %58'i) | 🟡 şimdilik hakem tarafında (ADR-0041) |
+| 4 | **Akıl yürütme izi İngilizce** — ürün gereksinimi Türkçe okunabilir iz | 🟡 izli eğitim verisi gerektirir |
+
+> **Kural:** v2 açılırsa **bütün açık kalemler aynı anda** kapatılır. Ayrı ayrı eğitmek iki kat
+> para (eğitim ~$5.5) ve iki kat kafes yeniden ölçümü demektir. Ayrıca ADR-0040 m.4 gereği yeniden
+> eğitilen her kol **düşünme yeteneğini koruyacak** biçimde eğitilir.
+
+### `τ_grounding` v1 — düşünce modu davranışı *(2026-07-29, ölçüldü)*
+
+Thinking-on'da **35/36 örnekte `</think>`'i kendi kapatıyor**, medyan **510 token**, düşünce izinde
+tekrar döngüsü **yok**, iz yapılı (kaynakları tek tek eleyip gerekçesiyle seçiyor). Çıplak base aynı
+istemlerde **hiç kapatmıyor** (32k token'da bile). → *"reçete fazla sertti"* hipotezi **desteklenmedi**;
+eğitim düşünmeyi öldürmemiş, kararlı hâle getirmiş. Ayrıntı: `research_log` #42.

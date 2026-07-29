@@ -43,6 +43,11 @@ outputs/tg (LoRA) + Qwen/Qwen3.5-4B  →  scripts/merge_lora.py  →  models/mer
    →  QUANT=Q4_K_M PURE=0 setup_llamacpp.sh  →  models/gguf/tg-q4_k_m.gguf  →  llama-server
 ```
 
+> ℹ️ **Yol adları 2026-07-29 akşamı versiyonlandı** — yukarıdaki adlar koşunun yapıldığı andaki
+> hâlleridir ve **değiştirilmedi** (denetim izi). Diskteki karşılıkları: `outputs/tg_v1` ·
+> `models/merged/tg_v1` · `models/gguf/tg_v1-q4_k_m.gguf`. Aynı artefakt, yalnız ad.
+> Kol kaydı: [`../kollar.md`](../kollar.md).
+
 **`merge_lora.py` akıtmalı** (tensör-tensör), `PeftModel.merge_and_unload()` **değil** — CLAUDE.md
 merge doktrini ("host RAM, streaming") ve Sprint 3'ün k-yollu TIES'i aynı raydan geçecek.
 `ΔW = (α/r)·B@A`, float32'de toplanıp özgün dtype'a dönüyor. 41 sn, tepe RSS 9.86 GB.

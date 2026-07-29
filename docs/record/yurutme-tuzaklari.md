@@ -40,6 +40,8 @@ kuantizasyon yarıda kesilse de dosya **diskte durur**.
 | 1.5 | **`--n` / seed kayması** | Kıyasın iki tarafı farklı örneklem → delta anlamsız | n = 80/80/70/80/80/80, seed **3407** | sprint1 CP2 |
 | 1.6 | **Güç durumu** | Pilde **7.9** t/s, şarjda **134** t/s — **17×**. Performans sayısı prize bağlı | ölçüm öncesi şarj durumunu künyeye yaz | #39 Bulgu 2 |
 | 1.7 | **Yanlış runtime ile kıyas** | Çıpalar Q4_K_M GGUF + llama-server ile üretildiyse, `--adapter` (transformers, 4-bit) yolu **kıyaslanamaz** sayı verir — tablo yine dolar | özne hep aynı taşıyıcıdan; adaptör **merge edilip GGUF'a** gider | #41 §2 |
+| 1.8 | **`--thinking on` + bütçe = "artırırsan düzelir" sanısı** | Base M1/M2/M5'te `</think>`'i **hiç** kapatmıyor: kesilme değil **sonlanmama**. Aynı muhakeme satırı 219 kez tekrarlanıyor; 4096 → 32768 (**8×**) hiçbir şey değiştirmedi, Q8_0'da da aynı, `temp 0.6` yarısını kurtardı. Bütçe artırmak **saatleri yakar ve yine "geçersiz koşu" yazar** | düşünen model + belirsizlik içeren istem = **`--think-budget N` zorunlu** (zorunlu kapatma). Bütçe **ön-kayıtlı** seçilir, künyeye ve maliyet muhasebesine yazılır | #42 |
+| 1.9 | **900-kar klip numaralı listeyi ortadan keser** | Kaynak bloğu `"…Suçlar (madde 309, 310, 311,"` diye biterse model *"birebir alıntıla"* talimatıyla **sayıyı saymayı sürdürüyor**: `…1682, 1683, 1684` — 8 örnekte 1'i. Hata yok, cevap dolu, **çöp**. Yalnız düşünce açıkken gözlendi (thinking-off Sprint 1'de 0/80) | `finish_reason='length'` sayacı bunu yakalar — **kesik oranı okunmadan sonuç okunmaz**; satır-bazlı döngü metriği bunu KAÇIRIR (2 satır, 8625 kar) | #42 |
 
 ## 2. Hakem / skorlama
 

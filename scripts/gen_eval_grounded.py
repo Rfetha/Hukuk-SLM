@@ -27,6 +27,8 @@ import argparse
 import json
 import os
 import random
+import urllib.request
+from typing import NamedTuple
 
 # Unsloth, torch'tan ÖNCE (train_sft.py/eval.py ile aynı kural).
 from unsloth import FastModel
@@ -110,6 +112,14 @@ def parse_args():
     #   off  = enable_thinking=false  |  on = enable_thinking=true
     p.add_argument("--thinking", choices=("none", "off", "on"), default="none",
                    help="chat_template_kwargs.enable_thinking (yalnız HTTP taşıyıcı)")
+    # ── Bütçeli düşünce (2026-07-29, CP0 / research_log #42) ────────────────────
+    # Base M1/M2/M5'te `</think>`'i HİÇ kapatmıyor (32k token'da bile) → cevap üretilemiyor.
+    # Kesilme değil SONLANMAMA; bütçe büyütmek çare değil. Bu bayrak modeli N token sonra
+    # zorla kapatır → ölçüm üretilebilir hâle gelir. Bütçe ÖN-KAYITLI seçilir, sonuca göre
+    # değiştirilmez; künyeye ve maliyet muhasebesine (ADR-0017) yazılır.
+    p.add_argument("--think-budget", type=int, default=0, metavar="N",
+                   help="N>0: düşünceye N token izin ver, kapatmazsa `</think>` yapıştırıp "
+                        "cevabı --max-new-tokens ile ürettir (yalnız --thinking on + HTTP)")
     p.add_argument("--no-gold", action="store_true",
                    help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
                         "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
@@ -247,22 +257,53 @@ def build_messages(soru, source=None, sources_block=None):
     return [{"role": "system", "content": sys}, {"role": "user", "content": user}]
 
 
+class GenOut(NamedTuple):
+    """Tek üretimin künyesi. finish_reason/reasoning_len SESSİZ-BOZULMA kapısı için;
+    completion_tokens maliyet-normalize parite muhasebesi için (ADR-0017)."""
+    text: str
+    finish_reason: str | None
+    reasoning_len: int
+    completion_tokens: int | None
+    forced_close: bool = False
+
+
+def render_prompt(server_url, messages, thinking):
+    """llama-server /apply-template — şablonun ürettiği HAM istem.
+    Zorunlu kapatmanın devam edeceği metin bu; sohbet API'si mid-mesaj devam ettiremez."""
+    root = server_url.rstrip("/")
+    if root.endswith("/v1"):
+        root = root[:-3].rstrip("/")
+    body = {"messages": messages}
+    if thinking != "none":
+        body["chat_template_kwargs"] = {"enable_thinking": thinking == "on"}
+    req = urllib.request.Request(
+        root + "/apply-template", data=json.dumps(body).encode("utf-8"),
+        headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.load(r)["prompt"]
+
+
 def generate_http(client, model_name, soru, max_new_tokens, source=None, sources_block=None,
-                  thinking="none"):
+                  thinking="none", think_budget=0, server_url=None):
     """llama-server / OpenRouter üzerinden üretim (ADR-0025).
 
     Rakiplerle BİREBİR aynı kod yolu → adalet kuralı (spec §5.2) yapısal garanti.
     Deterministik: temperature=0, seed sabit.
 
-    Dönen: (cevap, finish_reason, reasoning_len) — son ikisi SESSİZ-BOZULMA kapısı için.
+    `think_budget > 0` → **BÜTÇELİ DÜŞÜNCE** (iki geçiş): model `think_budget` token içinde
+    `</think>` kapatmazsa istemin sonuna izi + `</think>` yapıştırılır ve üretim `/completions`
+    üzerinden sürdürülür — model o noktadan sonra cevabı yazmak ZORUNDA kalır.
+    Neden gerekli: Qwen3.5-4B base'i M1/M2/M5'te hiç kapatmıyor (32k token'da bile), `content`
+    boş dönüyor ve ölçüm ÜRETİLEMİYOR — kesilme değil, sonlanmama (research_log #42).
     """
+    msgs = build_messages(soru, source, sources_block)
     extra = {}
     if thinking != "none":
         extra["chat_template_kwargs"] = {"enable_thinking": thinking == "on"}
     r = client.chat.completions.create(
         model=model_name,
-        messages=build_messages(soru, source, sources_block),
-        max_tokens=max_new_tokens,
+        messages=msgs,
+        max_tokens=think_budget or max_new_tokens,
         temperature=0.0,
         seed=3407,
         extra_body=extra or None,
@@ -271,7 +312,20 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
     msg = ch.message
     # reasoning_content OpenAI şemasında yok; llama-server/OpenRouter ekliyor.
     reasoning = getattr(msg, "reasoning_content", None) or ""
-    return (msg.content or "").strip(), ch.finish_reason, len(reasoning)
+    comp_tok = getattr(getattr(r, "usage", None), "completion_tokens", None) or 0
+    text = (msg.content or "").strip()
+    if text or not think_budget or not reasoning:
+        return GenOut(text, ch.finish_reason, len(reasoning), comp_tok)
+
+    # ── 2. geçiş: zorunlu kapatma ────────────────────────────────────────────
+    prompt = render_prompt(server_url, msgs, thinking) + reasoning + "\n</think>\n\n"
+    r2 = client.completions.create(
+        model=model_name, prompt=prompt, max_tokens=max_new_tokens,
+        temperature=0.0, seed=3407, stop=["<|im_end|>"],
+    )
+    c2 = r2.choices[0]
+    tok2 = getattr(getattr(r2, "usage", None), "completion_tokens", None) or 0
+    return GenOut(c2.text.strip(), c2.finish_reason, len(reasoning), comp_tok + tok2, True)
 
 
 def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
@@ -297,6 +351,10 @@ def main():
     os.makedirs(a.out_dir, exist_ok=True)
     # 🚨 YARIŞ KAPISI: aynı label'a yazan ikinci bir üretim süreci varsa modeli yüklemeden dur.
     runlock.acquire(os.path.join(a.out_dir, f"{a.label}_detail.jsonl"), tag=f"gen {a.label}")
+
+    if a.think_budget and not (a.thinking == "on" and a.server_url):
+        raise SystemExit("[gen-eval] 🚫 --think-budget yalnız `--thinking on` + `--server-url` ile "
+                         "anlamlı (zorunlu kapatma /apply-template + /completions gerektirir).")
 
     rows = [json.loads(l) for l in open(a.data, encoding="utf-8") if l.strip()]
     idx = load_madde_index(a.madde_path)
@@ -342,7 +400,8 @@ def main():
         model, tokenizer = build_model(a)
 
     import random as _rnd
-    n_truncated = 0
+    n_truncated = n_forced = 0
+    tok_sum = tok_n = 0
     detail = os.path.join(a.out_dir, f"{a.label}_detail.jsonl")
     with open(detail, "w", encoding="utf-8") as f:
         for i, (rec, soru, src) in enumerate(sample):
@@ -381,15 +440,18 @@ def main():
 
             src_arg = labeled_src if (a.with_source and not a.distractors and not a.empty_context) else None
             if http_client is not None:               # ADR-0025 HTTP taşıyıcı
-                cevap, finish_reason, reasoning_len = generate_http(
+                g = generate_http(
                     http_client, a.server_model, soru, a.max_new_tokens,
-                    source=src_arg, sources_block=sources_block, thinking=a.thinking)
+                    source=src_arg, sources_block=sources_block, thinking=a.thinking,
+                    think_budget=a.think_budget, server_url=a.server_url)
             else:
                 gen_fn = generate_completion if a.completion_fewshot else generate
-                cevap = gen_fn(
-                    model, tokenizer, soru, a.max_new_tokens,
-                    source=src_arg, sources_block=sources_block)
-                finish_reason, reasoning_len = None, 0
+                g = GenOut(gen_fn(model, tokenizer, soru, a.max_new_tokens,
+                                  source=src_arg, sources_block=sources_block), None, 0, None)
+            cevap, finish_reason, reasoning_len, comp_tok = (
+                g.text, g.finish_reason, g.reasoning_len, g.completion_tokens)
+            if g.forced_close:
+                n_forced += 1
 
             # 🚨 SESSİZ-BOZULMA KAPISI (research_log #39): boş cevap = hata değil, sessiz çöp.
             # Düşünen model bütçe içinde </think> kapatmazsa content='' gelir, HTTP 200 döner,
@@ -399,7 +461,8 @@ def main():
                     f"[gen-eval] 🚫 BOŞ cevap — örnek {i} ({mode}), finish_reason={finish_reason!r}, "
                     f"reasoning_content={reasoning_len} kar.\n"
                     + ("  → Model düşünce kanalını KAPATMADI. Bu bir düşünen model: "
-                       "`--thinking off` ver (ve/veya --max-new-tokens büyüt).\n"
+                       "`--think-budget N` ile zorla kapat (ölçülebilir kip), `--thinking off` "
+                       "ver, ya da --max-new-tokens büyüt.\n"
                        if reasoning_len else
                        "  → reasoning_content da boş; sunucu/şablon tarafına bak (diag_chat_template.sh).\n")
                     + "  Boş cevaplar üzerinde ÜRETİLEN HER SAYI GEÇERSİZDİR — koşu durduruldu.")
@@ -413,6 +476,8 @@ def main():
                 "cevap": cevap,
                 "finish_reason": finish_reason,        # 'length' = kesilmiş cevap (kalite uyarısı)
                 "reasoning_len": reasoning_len,        # >0 = düşünce kanalı kullanıldı
+                "completion_tokens": comp_tok,         # düşünce DAHİL üretilen token (maliyet ekseni)
+                "forced_close": g.forced_close,        # `</think>` bütçe dolunca ZORLA kapatıldı mı
                 "kanun_adi": rec.get("kanun_adi"),
                 "madde_no": rec.get("madde_no"),
                 "kanun_no": rec.get("kanun_no"),
@@ -420,6 +485,9 @@ def main():
             f.write(json.dumps(out, ensure_ascii=False) + "\n")
             if finish_reason == "length":
                 n_truncated += 1
+            if comp_tok:
+                tok_sum += comp_tok
+                tok_n += 1
             print(f"  [{i+1}/{len(sample)}] ({mode}) {rec.get('kanun_adi')} {rec.get('madde_no')} "
                   f"→ {len(cevap)} kar"
                   + (f"  ⚠️ KESİK ({finish_reason})" if finish_reason == "length" else ""))
@@ -429,6 +497,12 @@ def main():
         print(f"[gen-eval] ⚠️ {n_truncated}/{len(sample)} (%{pct:.1f}) cevap max_new_tokens'a ÇARPTI "
               f"(finish_reason='length') — yarım cevaplar hakeme yarım gidiyor. "
               f"--max-new-tokens büyüt ya da sebebini kayda geç.")
+    if tok_n:
+        print(f"[gen-eval] completion_tokens: ort {tok_sum / tok_n:.1f}/cevap "
+              f"(toplam {tok_sum}, n={tok_n}) — düşünce token'ı DAHİL (ADR-0017 maliyet ekseni)")
+    if a.think_budget:
+        print(f"[gen-eval] bütçeli düşünce: {n_forced}/{len(sample)} cevapta `</think>` ZORLA "
+              f"kapatıldı (bütçe={a.think_budget} tok) — künyeye yazılır")
     print(f"[gen-eval] taşıyıcı={'http' if http_client else 'yerel'} | thinking={a.thinking} "
           f"| max_new_tokens={a.max_new_tokens} | seed={a.seed}")
     print(f"[gen-eval] detay → {detail}")

@@ -527,9 +527,13 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 >
 > **Doğru zincir** — aradaki halka yoktu, 2026-07-29'da yazıldı:
 > ```bash
-> python scripts/merge_lora.py --base Qwen/Qwen3.5-4B --adapter outputs/tg --out models/merged/tg
-> QUANT=Q4_K_M PURE=0 bash scripts/setup_llamacpp.sh models/merged/tg tg   # ⚠️ PURE=0: QAT yok
+> python scripts/merge_lora.py --base Qwen/Qwen3.5-4B --adapter outputs/tg_v1 --out models/merged/tg_v1
+> QUANT=Q4_K_M PURE=0 bash scripts/setup_llamacpp.sh models/merged/tg_v1 tg_v1   # ⚠️ PURE=0: QAT yok
 > ```
+> ℹ️ **Artefakt adları 2026-07-29'da versiyonlandı** (`tg` → `tg_v1`); koşu o gün `tg` adıyla
+> yapılmıştı, **aynı artefakttır**. Eval etiketleri (`*_tg`) tarihsel olarak **değiştirilmedi** —
+> Sprint 1 tablolarının her satırı onlara atıf veriyor. Kol kaydı:
+> [`docs/record/kollar.md`](docs/record/kollar.md).
 > `merge_lora.py` **akıtmalı** (tensör-tensör, `PeftModel.merge_and_unload()` değil) — CLAUDE.md
 > merge doktrini ve Sprint 3'ün k-yollu TIES'i aynı raydan geçer. `setup_llamacpp.sh` artık HF
 > repo-id'nin yanında **yerel dizin** de alıyor.
