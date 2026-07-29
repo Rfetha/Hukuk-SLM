@@ -7,9 +7,10 @@
 # **Base-agnostik**: model gömülü DEĞİL, argümandan gelir.
 #
 # Kullanım:
-#   bash scripts/setup_llamacpp.sh <hf-repo-id> [etiket]
+#   bash scripts/setup_llamacpp.sh <hf-repo-id|yerel-dizin> [etiket]
 #     <hf-repo-id>  ör. <org>/<model>          (HF cache'te indirilmiş olmalı)
-#     [etiket]      GGUF dosya adı öneki (varsayılan: repo adının son parçası)
+#     <yerel-dizin> ör. models/merged/tg       (merge_lora.py çıktısı — adaptör zinciri)
+#     [etiket]      GGUF dosya adı öneki (varsayılan: yolun son parçası)
 #
 #   Sadece derleme (dönüştürme yok):
 #     bash scripts/setup_llamacpp.sh
@@ -29,7 +30,9 @@ VENV="$HOME/code/llamacpp_venv"          # global_venv'den AYRI — onu asla kir
 OUT="$(cd "$(dirname "$0")/.." && pwd)/models/gguf"
 HUB="$HOME/.cache/huggingface/hub"
 
-REPO="${1:-}"                             # ör. <org>/<model>
+REPO="${1:-}"                             # ör. <org>/<model> ya da yerel dizin
+# ⚠️ Mutlaklaştır: aşağıda `cd "$LC"` var, göreli yol oradan çözülmez.
+[ -d "$REPO" ] && REPO="$(cd "$REPO" && pwd)"
 TAG="${2:-}"
 QUANT="${QUANT:-Q4_0}"
 PURE="${PURE:-1}"
@@ -82,9 +85,15 @@ ls -la "$LC/build-cuda/bin/llama-server"
 # Bazı tokenizer_config'lerde `extra_special_tokens` LİSTE gelir; transformers 4.x DICT
 # bekler → AttributeError. Snapshot'ı symlink'le kopyalayıp alanı düzelt (FIX_TOKENIZER=1).
 prep() {
-  local cache_dir="$1" dst="$2"
-  local snap; snap=$(ls -d "$HUB/$cache_dir"/snapshots/*/ 2>/dev/null | head -1)
-  [ -n "$snap" ] || { echo "❌ HF cache'te bulunamadı: $HUB/$cache_dir"; exit 1; }
+  local ref="$1" dst="$2"
+  local snap
+  if [ -d "$ref" ]; then                      # yerel HF dizini (ör. merge_lora.py çıktısı)
+    snap="$ref/"
+  else
+    # `|| true`: ls başarısızlığı `set -e` ile mesajsız ölüme yol açıyordu.
+    snap=$(ls -d "$HUB/models--${ref//\//--}"/snapshots/*/ 2>/dev/null | head -1 || true)
+  fi
+  [ -n "$snap" ] || { echo "❌ ne yerel dizin ne HF cache: $ref"; exit 1; }
   rm -rf "$dst"; mkdir -p "$dst"
   for f in "$snap"*; do ln -sf "$(readlink -f "$f")" "$dst/$(basename "$f")"; done
   if [ "$FIX_TOKENIZER" = "1" ]; then
@@ -104,14 +113,13 @@ PY
 
 convert() {
   local repo="$1" tag="$2"
-  local cache_dir="models--${repo//\//--}"          # google/foo-bar → models--google--foo-bar
   local suffix; suffix="$(echo "$QUANT" | tr 'A-Z' 'a-z')"
   [ "$PURE" = "1" ] && suffix="$suffix-pure"
   local final="$OUT/$tag-$suffix.gguf"
   [ -f "$final" ] && { echo "### $(basename "$final") zaten var, atlanıyor"; return; }
 
   echo "### $tag: hazırlık + dönüştürme (quant=$QUANT pure=$PURE fix_tokenizer=$FIX_TOKENIZER)"
-  prep "$cache_dir" "/tmp/gguf-prep-$tag"
+  prep "$repo" "/tmp/gguf-prep-$tag"
   cd "$LC"
   "$VENV/bin/python" convert_hf_to_gguf.py "/tmp/gguf-prep-$tag" \
       --outfile "$OUT/$tag-f16.gguf" --outtype f16 2>&1 | tail -6
