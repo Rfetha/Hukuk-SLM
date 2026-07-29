@@ -141,6 +141,19 @@ def main():
         )
     out = args.output_dir or f"outputs/{args.run_name}"
 
+    # 🚫 VERİ KAPISI — model YÜKLENMEDEN ÖNCE (train_sft.py ile aynı kalıp).
+    # Why: `--data` bir DİZİN bekler (train.jsonl + validation.jsonl). Dosya yolu verilirse
+    # `load_dataset` `<dosya>/train.jsonl` arar ve patlar — ama bu, model A100'e yüklendikten
+    # SONRA olur, yani boşa GPU dakikası. Ölçüldü (2026-07-30, CP2-s): bir smoke koşusu tam
+    # böyle kaybedildi. Kapı burada, yükleme öncesi.
+    data_files = {"train": os.path.join(args.data, "train.jsonl"),
+                  "validation": os.path.join(args.data, "validation.jsonl")}
+    missing = [p for p in data_files.values() if not os.path.isfile(p)]
+    if missing:
+        raise SystemExit(
+            f"🚫 --data bir DİZİN olmalı (train.jsonl + validation.jsonl içeren).\n"
+            f"   verilen: {args.data}\n   bulunamayan: {missing}")
+
     # ADR-0031: --bf16-base → donuk bf16 taban (QLoRA değil); yoksa NF4 4-bit (12B hattı fallback).
     load_in_4bit = not args.bf16_base
     print(f"[orpo] precision = {'bf16 taban + LoRA (ADR-0031 birincil)' if args.bf16_base else 'QLoRA NF4 4-bit (fallback)'}"

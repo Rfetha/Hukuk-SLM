@@ -31,7 +31,9 @@ import json
 import os
 import random
 import sys
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -61,6 +63,10 @@ def parse_args():
     p.add_argument("--max-new-tokens", type=int, default=512)  # ADR-0043, rejim değişmezi
     p.add_argument("--distractors", type=int, default=4)
     p.add_argument("--max-chunk-chars", type=int, default=900)
+    # ⚠️ Sunucudaki `-np` ile EŞLEŞMELİ. llama-server tek slotla açıldıysa (`-np` yok) burada
+    # 8 vermek kuyruk yapar, hızlandırmaz: 11,12 s/üretim bir GECİKME sayısıdır, verim değil.
+    p.add_argument("--concurrency", type=int, default=1,
+                   help="eş zamanlı üretim isteği (sunucunun --parallel/-np değeriyle eşleşmeli)")
     return p.parse_args()
 
 
@@ -107,71 +113,98 @@ def main():
     print(f"[cp2] tip={a.type} · mod={mode} · havuz={len(rows)} · düşünce {a.think_budget}"
           f"+{a.max_new_tokens} · seed {a.seed} · devam={n_prev} kayıt")
 
-    with open(a.out, "a", encoding="utf-8") as f:
-        for i, rec in enumerate(rows):
+    def baglam(i, rec):
+        """Kalemin istemini kur. `None` → atlanır (eksik alan)."""
+        if a.type == "m2":
+            # build_orpo_v3 ORACLE framing ile BİREBİR
+            source = (rec.get("trap_text") or "")[:TRAP_CLIP]
+            return (source, None) if source else None
+        gold = rec.get("gold_text") or ""
+        if not gold:
+            return None
+        grec = {"kanun_adi": rec.get("gold_kanun_adi", ""),
+                "madde_no": rec.get("gold_madde_no", ""),
+                "kanun_no": rec.get("gold_kanun_no", ""),
+                "messages": []}
+        # ⚠️ RNG kalemin SIRA İNDEKSİNDEN türer (seed + i) — eş zamanlılık bunu değiştirmez,
+        # yani üretilen bağlam iş parçacığı sırasından BAĞIMSIZ ve tekrarlanabilir.
+        rng = random.Random(a.seed + i)
+        chunks, _ = raft_pack.pack_context(
+            grec, gold, pool_recs, pool_by_kanun, a.distractors, rng,
+            include_gold=False)              # gold HİÇ YOK — M2b tanımı
+        sources_block = raft_pack.format_sources_block(chunks)
+        if a.max_chunk_chars > 0:            # eval-mirror klip (ADR-0011 değişmezi)
+            gold_label = f"{grec['kanun_adi']} {grec['madde_no']}"
+            sources_block = clip_sources_block(sources_block, "", gold_label, a.max_chunk_chars)
+        return (None, sources_block)
+
+    kilit = threading.Lock()
+
+    def uret(arg):
+        """Tek kalem: üret → kabul ölçütünü uygula. Sayaçlar kilit altında."""
+        nonlocal tried, kept, tok_sum, forced
+        i, rec, source, sources_block = arg
+        try:
+            g = generate_http(client, a.server_model, rec["soru"], a.max_new_tokens,
+                              source=source, sources_block=sources_block,
+                              thinking="on", think_budget=a.think_budget,
+                              server_url=a.server_url)
+        except Exception as e:
+            print(f"  id={rec['id']} üretim hatası: {e}", flush=True)
+            return None
+        with kilit:
+            tried += 1
+            tok_sum += g.completion_tokens or 0
+            forced += 1 if g.forced_close else 0
+            n = tried
+        # KABUL ÖLÇÜTÜ: regex ön-filtre — RED değilse aday (ADR-0046 m.1: kabul kararı
+        # hakemde, bu yalnız bedava ön-eleme).
+        if exact_reject(g.text, mode):
+            if n % 25 == 0:
+                el = time.time() - t0
+                print(f"  denenen={n} kabul={kept} oran={kept/n:.3f} | {el/n:.2f} s/üretim "
+                      f"| ort tok={tok_sum/n:.0f}", flush=True)
+            return None
+        return {
+            "id": rec["id"], "tip": a.type, "soru": rec["soru"],
+            "rejected": g.text, "mode": mode,
+            # Hakeme GERÇEKTEN gösterilen bağlam saklanır: yoksa kabul edilen negatifin
+            # denetimi (LLM red hakemi) bağlamı yeniden üretmek zorunda kalır ve o yol
+            # kırılgandır. Denetlenemeyen bir eğitim örneği, ölçülemeyen bir sayıdır.
+            "context_shown": sources_block if sources_block is not None else source,
+            "finish_reason": g.finish_reason, "completion_tokens": g.completion_tokens,
+            "forced_close": g.forced_close, "reasoning_len": g.reasoning_len,
+        }
+
+    # Uygun kalemleri sırayla hazırla (üretim değil, yalnız istem kurulumu — ucuz).
+    isler = []
+    for i, rec in enumerate(rows):
+        if rec["id"] in seen_ids:
+            continue
+        b = baglam(i, rec)
+        if b is None:
+            continue
+        isler.append((i, rec, b[0], b[1]))
+
+    print(f"[cp2] {len(isler)} uygun kalem · eş zamanlılık={a.concurrency}", flush=True)
+
+    with open(a.out, "a", encoding="utf-8") as f, \
+            ThreadPoolExecutor(max_workers=max(1, a.concurrency)) as pool:
+        # Öbek öbek gönder: durma koşulları öbek aralarında kontrol edilir, böylece
+        # `--target`e ulaşıldığında en fazla bir öbek fazla üretilir (iptal karmaşası yok).
+        obek = max(1, a.concurrency)
+        for bas in range(0, len(isler), obek):
             if a.limit and tried >= a.limit:
                 break
             if a.target and (n_prev + kept) >= a.target:
                 break
-            if rec["id"] in seen_ids:
-                continue
-
-            source = sources_block = None
-            if a.type == "m2":
-                # build_orpo_v3 ORACLE framing ile BİREBİR
-                source = (rec.get("trap_text") or "")[:TRAP_CLIP]
-                if not source:
+            for rec_out in pool.map(uret, isler[bas:bas + obek]):
+                if rec_out is None:
                     continue
-            else:
-                gold = rec.get("gold_text") or ""
-                if not gold:
-                    continue
-                grec = {"kanun_adi": rec.get("gold_kanun_adi", ""),
-                        "madde_no": rec.get("gold_madde_no", ""),
-                        "kanun_no": rec.get("gold_kanun_no", ""),
-                        "messages": []}
-                rng = random.Random(a.seed + i)
-                chunks, _ = raft_pack.pack_context(
-                    grec, gold, pool_recs, pool_by_kanun, a.distractors, rng,
-                    include_gold=False)          # gold HİÇ YOK — M2b tanımı
-                sources_block = raft_pack.format_sources_block(chunks)
-                if a.max_chunk_chars > 0:        # eval-mirror klip (ADR-0011 değişmezi)
-                    gold_label = f"{grec['kanun_adi']} {grec['madde_no']}"
-                    sources_block = clip_sources_block(sources_block, "", gold_label,
-                                                       a.max_chunk_chars)
-
-            try:
-                g = generate_http(client, a.server_model, rec["soru"], a.max_new_tokens,
-                                  source=source, sources_block=sources_block,
-                                  thinking="on", think_budget=a.think_budget,
-                                  server_url=a.server_url)
-            except Exception as e:
-                print(f"  id={rec['id']} üretim hatası: {e}", flush=True)
-                continue
-
-            tried += 1
-            tok_sum += g.completion_tokens or 0
-            forced += 1 if g.forced_close else 0
-            # KABUL ÖLÇÜTÜ: red DEĞİLSE model tuzağa düşmüş → gerçek negatif
-            if exact_reject(g.text, mode):
-                continue
-            kept += 1
-            f.write(json.dumps({
-                "id": rec["id"], "tip": a.type, "soru": rec["soru"],
-                "rejected": g.text, "mode": mode,
-                # Hakeme GERÇEKTEN gösterilen bağlam saklanır: yoksa kabul edilen negatifin
-                # denetimi (LLM red hakemi) bağlamı yeniden üretmek zorunda kalır ve o yol
-                # kırılgandır. Denetlenemeyen bir eğitim örneği, ölçülemeyen bir sayıdır.
-                "context_shown": sources_block if sources_block is not None else source,
-                "finish_reason": g.finish_reason, "completion_tokens": g.completion_tokens,
-                "forced_close": g.forced_close, "reasoning_len": g.reasoning_len,
-            }, ensure_ascii=False) + "\n")
-            f.flush()
-
-            if tried % 10 == 0:
-                el = time.time() - t0
-                print(f"  denenen={tried} kabul={kept} oran={kept/tried:.3f} "
-                      f"| {el/tried:.1f} s/üretim | ort tok={tok_sum/tried:.0f}", flush=True)
+                with kilit:
+                    kept += 1
+                    f.write(json.dumps(rec_out, ensure_ascii=False) + "\n")
+                    f.flush()
 
     el = time.time() - t0
     funnel = {
