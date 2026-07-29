@@ -82,9 +82,18 @@ Kapı 6 (ADR-0039 formülü · ADR-0044 sayıları · thinking-off verisi)
   M5 ezber kütlesi  ≤ %36.9   (base)
 ```
 
-⚠️ Bu iki sayı **thinking-off** verisinden. Bütçeli düşünce protokolündeki (ADR-0043) base sayıları
-CP0.9 puanlamasıyla üretilir ve **ana çıpa o olur**; thinking-off sütunu iki kip yan yana
-raporlanmak üzere korunur.
+✅ **Bütçeli kipteki çıpa CP0.9'da ölçüldü ve ANA ÇIPA odur** (thinking-off artık canlı rejim
+değil — ADR-0043 m.4 daraltması):
+
+```
+Kapı 6 (yürürlükteki) — base, bütçeli düşünce
+  M5 coverage       ≤ %97.5
+  M5 ezber kütlesi  ≤ %42.5
+```
+
+Bugün `τ_g` v1 bu kapıyı **geçiyor** (coverage %96.2 · kütle **%39.2**), base kendi çıpası olduğu
+için tanım gereği sınırda. Yukarıdaki thinking-off sayıları (%93.8 / %36.9) protokol kaydı olarak
+durur.
 
 ### 3. Sıralama korunuyor — `τ_g`'nin ihlali artefakt DEĞİL
 
