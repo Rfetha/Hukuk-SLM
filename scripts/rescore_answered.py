@@ -14,7 +14,9 @@ Kullanım:
 import argparse
 import json
 
-# ⚠️ TEK KAYNAK (2026-07-25): red tespiti score_abstention.REJECT_RE'den İTHAL edilir.
+# ⚠️ TEK KAYNAK (2026-07-25): red tespiti score_abstention.exact_reject'ten İTHAL edilir.
+# (2026-07-29, ADR-0044: ithal edilen şey artık ham regex değil MOD-DUYARLI fonksiyon —
+#  kör modda sistem isteminin emrettiği feragat cümlesi çekinme sayılmaz.)
 #
 # Buraya kadar bu dosya kendi KOPYA regex'ini taşıyordu ve docstring "score_abstention ile
 # AYNI" diyordu — ama #39'un kalibrasyonu (2026-07-24) yalnız score_abstention.py'ye işlendi,
@@ -28,7 +30,7 @@ import json
 # DÜŞÜYOR → coverage OLDUĞUNDAN DÜŞÜK, A1 havuzu daralıyor. Coverage, τ_grounding'in
 # hedef metriği olduğu için bu yön zararsız değil.
 # Kopya yerine ithal → kalibrasyon bir yerde yapılır, her yerde geçerlidir (TASARIM §3.4).
-from score_abstention import REJECT_RE as ABSTAIN_RE
+from score_abstention import exact_reject
 
 
 def load(p):
@@ -48,8 +50,9 @@ def main():
 
     answered, abstained = [], []
     for i in ids:
-        cevap = bench[i].get("cevap", "")
-        (abstained if ABSTAIN_RE.search(cevap) else answered).append(i)
+        # mod-duyarlı: kör modda feragat cümlesi çekinme sayılmaz (ADR-0044).
+        rejected = exact_reject(bench[i].get("cevap", ""), bench[i].get("mode"))
+        (abstained if rejected else answered).append(i)
 
     def macro(field, subset):
         vals = [gnd[i].get(field) for i in subset if gnd[i].get(field) is not None]
@@ -67,7 +70,7 @@ def main():
         "faithfulness_macro_ALL(çekinme dahil)": macro("faithfulness", ids),
         "cit_precision_micro_answered": round(cit_ok / cit_tot, 4) if cit_tot else None,
         "wrong_ref_rate_macro_answered": macro("wrong_ref_rate", answered),
-        "note": "A1=cevaplanan (ABSTAIN_RE ile çekinme ayrıldı, ADR-0011). Aynı kural tüm modellere.",
+        "note": "A1=cevaplanan (exact_reject mod-duyarlı, ADR-0011 + ADR-0044). Aynı kural tüm modellere.",
     }
     print(json.dumps(out, ensure_ascii=False, indent=2))
     return out
