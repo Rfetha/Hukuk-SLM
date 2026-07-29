@@ -73,6 +73,34 @@ kendimiz gömmeye göre kısayol olabilir, ama aynı üç uyarı geçerli.
 
 ---
 
+### §13.8 — RAFT meta-iddiaları groundedness hakeminde nasıl ele alınacak? 🔴 ⏰ **`τ_a`'DAN ÖNCE**
+
+**Ölçülen sorun (#41, CP6).** RAFT şablonunun 1. adımı — *"İlgili kaynak KAYNAK 3'tür çünkü diğer
+kaynaklar farklı konuları ele almaktadır"* — kaynak **hakkında** bir cümle, kaynaktan değil. Hakem
+haklı olarak `NOT_IN_SOURCE` diyor. M1'de `τ_g`'nin 31 `NOT_IN_SOURCE` iddiasının **18'i (%58)**
+bu şekilde; hatalı-iddia oranı **%17.4 → %9.9**'a iniyor bunlar düşülünce.
+
+**Neden karar gerektiriyor:** model bu cümleyi yazmak **zorunda** (eğitim verisinin %77'si bu biçim,
+ADR-0013). Kafesin **8 eval koşusunun** hepsi bu hakemden geçecek → **`τ_g` içeren her hücre
+sistematik ceza alır, `τ_a` tekili almaz.** ADR-0037'nin Kapı 5 kuralı `min`(grounding, abstention)
+üzerinden çalıştığı için **iç iddianın kıyası doğrudan taraflanır.**
+
+**Seçenekler:**
+
+| # | ne | bedel | risk |
+| :-- | :--- | :--- | :--- |
+| A | Hakem istemine *"kaynak seçimi hakkındaki meta-cümleleri iddia sayma"* satırı | ~$0.12 (base+gem+tg yeniden hakem) | istem değişikliği başka etkiler doğurabilir |
+| B | Eval-mirror'da cevabın 1. adımını hakeme göndermeden ayıkla | kod + yeniden hakem | ayıklama regex'i biçim varyasyonunda kırılır |
+| C | Dokunma, artefaktı Limitations'a yaz | $0 | **kafes taraflı ölçülür** — iç iddia zarar görür |
+
+**Pre-registration kuralı (TASARIM §7):** karar **veriye bakılarak** verilecekse cevap kuralı önce
+yazılır. Hangi seçenek seçilirse seçilsin **base + Gemini dahil TÜM kollara aynı anda** uygulanır;
+tek kola uygulamak sayıyı bizim lehimize kaydırır.
+
+**Ne zaman:** Sprint 2 başlamadan — `τ_abstention` eğitilmeden önce.
+
+---
+
 ## 🟡 PLANLANMIŞ İŞ — karar değil, yapılacak
 
 ### `causal-conv1d` hız kaldıracı — Sprint 2 öncesi ÖLÇÜLECEK

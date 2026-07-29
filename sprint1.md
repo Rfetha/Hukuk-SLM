@@ -191,13 +191,18 @@ export DEV=data/eval/dev
 **1) Altı modun cevaplarını üret** — `--data` her modda AÇIKÇA verilir:
 
 ```bash
-python scripts/gen_eval_grounded.py --label m1_base  --data $DEV/core_hard.jsonl --distractors 4 --max-chunk-chars 900 --n 80
-python scripts/gen_eval_grounded.py --label m4_base  --data $DEV/core_hard.jsonl --with-source --n 80
-python scripts/gen_eval_grounded.py --label m2_base  --data $DEV/trap.jsonl      --with-source --n 70
-python scripts/gen_eval_grounded.py --label m2b_base --data $DEV/core_hard.jsonl --distractors 4 --no-gold --n 80
-python scripts/gen_eval_grounded.py --label m3_base  --data $DEV/core_hard.jsonl --empty-context --n 80
-python scripts/gen_eval_grounded.py --label m5_base  --data $DEV/core_hard.jsonl --n 80        # kör
+G="python scripts/gen_eval_grounded.py --thinking off"   # ⚠️ ADR-0030: düşünen model
+$G --label m1_base  --data $DEV/core_hard.jsonl --distractors 4 --max-chunk-chars 900 --n 80
+$G --label m4_base  --data $DEV/core_hard.jsonl --with-source --n 80
+$G --label m2_base  --data $DEV/trap.jsonl      --with-source --n 70
+$G --label m2b_base --data $DEV/core_hard.jsonl --distractors 4 --no-gold --n 80
+$G --label m3_base  --data $DEV/core_hard.jsonl --empty-context --n 80
+$G --label m5_base  --data $DEV/core_hard.jsonl --n 80        # kör
 ```
+
+> ⚠️ **`--thinking off` bu bloktan atlanmıştı, koşu onunla yapıldı** (künye: `research_log` #39).
+> Varsayılan `none`'dır. Düşürülürse model `</think>` kapatmaz → `content=''` → script patlar
+> (sessiz değil), ama **CP6 ile elmayla-elma kıyas için bayrak zorunlu.** 2026-07-29'da eklendi.
 
 > ⚠️ **`--data`'yı ASLA düşürme.** Script'in default'u `data/train/grounded_qa/test.jsonl`
 > (1022 satır) — CANON değil, eğitim setinin komşusu. Hata vermez, tablo dolar, sayı yanlış sete
@@ -455,10 +460,30 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 
 | ne | nasıl |
 | :--- | :--- |
-| 6-mod CANON | CP2'nin komutları + `--adapter outputs/tg` |
+| 6-mod CANON | CP2'nin komutları, **etiket `_base` → `_tg`** — model GGUF'tan gelir *(aşağı bak)* |
 | A1 | **cevaplanan-only** + coverage yan yana |
 | Kıyas | CP2 çıpaları — **elmayla elma**, aynı harness/mod/n/seed/hakem |
 | Kayıt | `research_log/` girdisi **#41**, aynı gün *(#40 CP4'e gitti — 2026-07-25)* |
+
+> ### 🚫 `--adapter outputs/tg` **KULLANILMAZ** — düzeltme (2026-07-29)
+>
+> Bu satır önce *"CP2'nin komutları + `--adapter outputs/tg`"* diyordu. **Yanlış.** O yol
+> `transformers` + 4-bit yükleme demek; CP2 çıpaları ise **Q4_K_M GGUF + llama-server** ile
+> üretildi. Farklı precision/runtime → sayı CP2 ile **kıyaslanamaz**, ama tablo dolar ve doğru
+> görünür (hattın klasik hata sınıfı: #38 · #39 · #40 — hepsi hata vermeden yanlış sayı üretti).
+>
+> **Doğru zincir** — aradaki halka yoktu, 2026-07-29'da yazıldı:
+> ```bash
+> python scripts/merge_lora.py --base Qwen/Qwen3.5-4B --adapter outputs/tg --out models/merged/tg
+> QUANT=Q4_K_M PURE=0 bash scripts/setup_llamacpp.sh models/merged/tg tg   # ⚠️ PURE=0: QAT yok
+> ```
+> `merge_lora.py` **akıtmalı** (tensör-tensör, `PeftModel.merge_and_unload()` değil) — CLAUDE.md
+> merge doktrini ve Sprint 3'ün k-yollu TIES'i aynı raydan geçer. `setup_llamacpp.sh` artık HF
+> repo-id'nin yanında **yerel dizin** de alıyor.
+>
+> **İki teyit kapısı:** (a) `‖merged − base‖_F` ≈ `‖τ‖` *(ölçüldü: 10.4966 vs 10.4589, +%0.36 bf16
+> yuvarlaması)*; (b) GGUF **base ile aynı boyutta** — LoRA merge parametre sayısını değiştirmez
+> *(2.59 GiB ✅)*.
 
 ### Ön-kayıtlı beklenti
 
