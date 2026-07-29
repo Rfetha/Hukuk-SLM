@@ -1,7 +1,7 @@
 # Sprint 2 — ikinci kol, tabanlar ve zeminin düzeltilmesi
 
 > **Otorite:** [`TASARIM.md`](TASARIM.md) · **bu sprint'in kararları:** ADR-0039 · ADR-0040 ·
-> ADR-0041 · ADR-0042 · **ADR-0043** · **tam iş listesi:** [`TODO.md`](TODO.md)
+> ADR-0041 · ADR-0042 · **ADR-0043** · **ADR-0044** · **ADR-0045** · **tam iş listesi:** [`TODO.md`](TODO.md)
 > **Önceki sprint:** [`sprint1.md`](sprint1.md) 🔒 kapalı ·
 > ⭐ sonuçları [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md)
 >
@@ -84,18 +84,28 @@ tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
 3. [`research_log` #43](docs/record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md)
 4. `outputs/eval/README.md` — koşu klasörü düzeni; **yeni koşu = yeni klasör + `KUNYE.json`**
 
-### 1. 🔴 ÖNCE KARAR: `τ_a`'nın hedefi neresi?
+### 1. ✅ KARAR VERİLDİ — [ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)
 
-CP0.9 `τ_a`'nın ön-kayıtlı gerekçesini (M2 açığı) **ortadan kaldırdı** ve yerine M2b'de
-0.986 → **0.607**'lik yeni bir açık koydu. Üç seçenek, ikisi ciddi:
+Base bütün çekinme modlarında tavana yaklaştığı için (M2 0.814 · M2b 0.986 · M3 1.000)
+`base + 12 puan` formülü **her modda kırık**. Ayrıca `τ_a` ham base'den eğitildiği için
+onaracağı delik **kendi üstünde değil, `τ_g`'de**.
 
-| seçenek | ne demek | riski |
-| :--- | :--- | :--- |
-| **A. `τ_a`'yı M2b'ye yönelt** | Hasat *(CP2)* gold-yok dağılımından toplanır, ARA KAPI M2b'de okunur | Eşik yeniden türetilir (base M2b **0.986** → +12 puan tavanı aşıyor ⇒ formül M2b'de çalışmıyor, yeni ölçüt gerekir) |
-| **B. M2'de kal** | Plan değişmez | Bar **0.934**, tavana 6.6 puan — kapı ölçmek için kurulduğu şeyi ölçemeyebilir |
-| **C. Bileşik ölçüt** | `min(M2, M2b)` üzerinden oku (Kapı 5'in ADR-0037 mantığı) | En savunulabilir; ama **ön-kayıtlı formülü değiştirmek** demek, gerekçesi ADR'ye yazılmalı |
+**Karar:** ön-kayıtlı eşiğe **dokunulmadı**; yanına neredeyse bedava ikinci bir gözlem eklendi.
 
-⚠️ Bu karar **CP2'den önce** verilmeli: hasadın hangi mod dağılımından toplanacağını belirliyor.
+```
+1) τ_a TEKİL      → M2 Rej ≥ 0.934 · M1 A1 ≥ 0.888     (ön-kayıtlı, tavan riskli)
+2) τ_g+τ_a MERGE  → M2b ≥ 0.887 mi?  (τ_g 0.607'den onarım · 0.90 × base 0.986)
+```
+
+| 1 | 2 | karar |
+| :-: | :-: | :--- |
+| ✅ | ✅ | güçlü yeşil → CP4-CP5 |
+| ❌ | ✅ | devam — kapı tavan-sınırlıydı, gerekçe merge kanıtı (**açıkça öyle raporlanır**) |
+| ✅ | ❌ | **DUR** — kol tek başına iyi ama birleşince taşımıyor |
+| ❌ | ❌ | **DUR** — `τ_a` rejimi düzeltilir, rakiplere para harcanmaz |
+
+**CP2'ye etkisi:** hasat **iki tipi birden** toplar — M2-tipi (tuzak verilmiş) + M2b-tipi
+(gold hiç yok). Karışım oranı künyeye yazılır.
 
 ### 2. Sonra sırayla
 
@@ -128,7 +138,7 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 
 - **İz İngilizce** — ürünün *"okunabilir muhakeme"* vaadi karşılanmıyor; `τ_g` v2'nin gerekçesi
 - **Düşünce ↔ zorunlu kapatma ayrılamıyor** (base'in %94.7'si zorla kapatıldı) — Limitations
-- **`τ_g` v2 mi `τ_a` mı?** M2b açığı ikisinin de hedefi; çakışma çözülmeli
+- **`τ_g` v2 mi `τ_a` mı?** ⏳ Önce `τ_a` denenir (ADR-0045 merge kontrolü tam bunu sınıyor); v2 kararı **Sprint 2 sonu**, kafes kurulmadan önce
 - **Kapı 6'yı bugün base geçemiyor** (kendi çıpası olduğu için sorun değil, ama raporlanacak)
 
 ---
@@ -138,9 +148,8 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 > **Sıra kapılara bağlı.** CP0 ✅ → CP0.9 ✅ → **CP1** → CP2 → CP3 → **ARA KAPI** → CP4 → CP5.
 > Ara kapı geçilmeden rakip yöntemlere para harcanmaz (5/6 kararı, 2026-07-29).
 >
-> 🔴 **CP2'den ÖNCE karara bağlanacak:** `τ_a`'nın hedefi M2 mi M2b mi? (yukarıdaki negatif
-> tablosu — M2 açığı kapandı, M2b'de 0.607'lik yeni açık var). Hasadın hangi mod dağılımından
-> toplanacağını bu belirler.
+> ✅ **Çözüldü ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)):** ön-kayıtlı eşik
+> durdu, yanına merge onarım kontrolü eklendi; CP2 hasadı **iki tipi birden** toplayacak.
 
 | CP | ne | GPU | $ | kapı |
 | :--- | :--- | :--- | ---: | :--- |
@@ -149,10 +158,10 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 | **CP0.5** | `causal-conv1d` hız ölçümü | yerel | 0 | 2× yoksa yazılmaz |
 | **CP1** | Hakem istemi düzeltmesi + üç öznenin yeniden puanlanması | — | ~0.12 | ADR-0041 |
 | **CP2** | `rejected` havuzunun base'den yeniden hasadı | yerel | 0 | ADR-0042 |
-| **CP3** | **FT-2 = `τ_a`** eğitimi + tekil ölçümü | Modal | ~0.7 | 🔴 **ARA KAPI** |
+| **CP3** | **FT-2 = `τ_a`** eğitimi + tekil ölçüm + **merge onarım kontrolü** | Modal | ~0.85 | 🔴 **ARA KAPI** |
 | **CP4** | **FT-4** Taban A (karışık SFT) + ölçüm | Modal | ~5.7 | — |
 | **CP5** | **FT-5/FT-6** Taban B (ardışık SFT) + on-policy kontrol + ölçüm | Modal | ~6.5 | — |
-| | **toplam** | | **~$13.51** | kalan bütçe ~$23.19 |
+| | **toplam** | | **~$13.66** | kalan bütçe ~$23.04 |
 
 ---
 
@@ -308,6 +317,15 @@ Mevcut havuz emekli **12B** hattının fabrikasyonları — yeni modele **başka
 **Kabul kriteri:** `score_abstention.py` **RED saymıyor** — yani model tuzağa düşmüş, gerçek bir
 negatif örnek.
 
+> ### 🆕 İKİ TİP birden toplanır ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) m.4)
+> | tip | üretim | neden |
+> | :--- | :--- | :--- |
+> | **M2-tipi** | `--with-source`, tuzak madde **verilmiş** | ARA KAPI'nın ön-kayıtlı ekseni |
+> | **M2b-tipi** | `--distractors 4 --no-gold`, gold **hiç yok** | `τ_g`'nin gerçek açığı (0.607) |
+>
+> `τ_a`'nın iki eksende de çalışması gerekiyor. Karışım oranı ve her tipten kaç örnek kabul
+> edildiği **künyeye yazılır**.
+
 **Tek havuz, tüm kollar** (`τ_a` · Taban A · Taban B'nin iki aşaması) aynı veriyi görür. Gerekçe:
 ablasyonun anlamı veriyi sabit tutmaktan gelir.
 
@@ -323,7 +341,7 @@ tarih · kaç örnekten kaçı kabul edildi.
 
 ## CP3 — FT-2 `τ_abstention` + 🔴 ARA KAPI
 
-**TODO:** §2 · **GPU:** Modal · **$:** ~0.7 · **Kayıt:** `research_log` #45
+**TODO:** §2 · **GPU:** Modal · **$:** ~0.85 · **Kayıt:** `research_log` #45
 
 **Rejim** (`TASARIM.md` §4.1.1 ile eşleşmeli): 1.741 çift · **82 adım** (3 epoch) · lr **1e-5** ·
 etkin batch **64** · **`--fresh-adapter` ZORUNLU**.
@@ -354,16 +372,20 @@ thinking-off protokolündendi ve **düştü**.
 > Kapı 5'in ADR-0039'da başına gelen şeyin aynısı. Sayı ön-kayıtlı formülden geldiği için
 > **değiştirilmedi** — ama bu şerh sonuçla birlikte raporlanır.
 >
-> ### ⚠️ Ve asıl soru: kapı hangi modda okunmalı?
-> `τ_a` M2 için tasarlanmıştı, ama o açık kapandı (yukarıdaki negatif tablosu). `τ_g`'nin taze
-> ve büyük açığı **M2b**'de (0.986 → 0.607). ARA KAPI'yı M2'de okumak, tavana yapışık bir barda
-> kapanmış bir açığı ölçmektir. **Karar CP2 hasadından önce verilmeli** — çünkü hasadın hangi
-> mod dağılımından toplanacağını da belirler.
+> ### ✅ İkinci gözlem: merge onarım kontrolü ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md))
+> Tek gözlemli kapı *"kaldı ama neden kaldı"* sorusunu teşhis edemiyordu. `τ_a` eğitildikten
+> sonra **`τ_g` + `τ_a` norm-dengeli TIES merge** DEV'de koşulur ve **M2b** okunur:
+> **onarım eşiği M2b ≥ 0.887** (0.90 × base 0.986 — muhafız formülüyle aynı çarpan).
+> Maliyet: merge eğitim compute'u gerektirmiyor → **GPU $0 + hakem ~$0.15**.
+> Bu bir **kafes hücresi değil, kapı ölçümüdür** ve DEV'de yapılır; Sprint 3'ün 8 hücresi ayrıca
+> ve aynı rejimle koşulur (ADR-0036).
 
-| sonuç | eylem |
-| :--- | :--- |
-| ✅ geçti | CP4-CP5'e devam — rakip yöntemler koşulur |
-| ❌ kaldı | **DUR.** `τ_a` rejimi düzeltilir (epoch · lr · çift sayısı) ve tekrar koşulur. Rakiplere ~$12 harcanmaz |
+| tekil M2 ≥ 0.934 | merge M2b ≥ 0.887 | eylem |
+| :-: | :-: | :--- |
+| ✅ | ✅ | **Güçlü yeşil** — CP4-CP5 koşulur |
+| ❌ | ✅ | **Devam** — kapı tavan-sınırlıydı; gerekçe merge kanıtı, raporda açıkça öyle yazılır |
+| ✅ | ❌ | **DUR** — kol tek başına iyi ama birleşince taşımıyor; iç iddianın öncülü sorunlu |
+| ❌ | ❌ | **DUR** — `τ_a` rejimi düzeltilir (epoch · lr · çift sayısı). Rakiplere ~$12 harcanmaz |
 
 **Gerekçe:** `τ_a` tutmazsa birleştirilecek ikinci kol yok, Kapı 5'in (b) referansı yok, ve iç
 iddia ölçülemez. Rakipleri önce eğitmek, sonucu bilinmeyen bir deneye peşin para yatırmaktır.
@@ -433,7 +455,7 @@ güçlü tabana karşı kazanmamız gerekir.
 | ~~CP0 düşünce kuralı~~ | CP0 ✅ | **Kapandı** — karar [ADR-0043](docs/adr/0043-dusunce-modu-acik-butceli-kapatma.md) (thinking AÇIK, bütçeli) |
 | ~~ADR-0040 🟢🟡🔴~~ | CP0.9 ✅ | **🟡 SARI** — M2 eşiği geçti (0.814≥0.78), M5 muhafızı İHLAL (%36.9→%42.5). **RS-FT kapsam dışı kalıyor**, ADR-0035 açılmıyor |
 | **CP0.5 hız kapısı** | CP0.5 | ≥2× yoksa eklenmez (ADR-0033, `fla-core` dersi) |
-| **ARA KAPI** | CP3 | `τ_a` **M2 Rej ≥ 0.934 · M1 A1 ≥ 0.888** (CP0.9 sayılarıyla) ⚠️ tavan riski |
+| **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.934 · M1 A1 ≥ 0.888** ⚠️ tavan riski **+** `τ_g+τ_a` merge **M2b ≥ 0.887** ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)) |
 | **Kapı 5** | Sprint 3 | ADR-0037 (3 madde) — referansları burada üretiliyor |
 | **Kapı 6** | Sprint 3 | **ADR-0044 sayıları** — M5 coverage ≤ **%97.5** · ezber kütlesi ≤ **%42.5** (base, bütçeli kip) |
 
@@ -447,8 +469,8 @@ güçlü tabana karşı kazanmamız gerekir.
 | Sprint 1 fiili | −5.80 |
 | CP0 fiili *(planlanan ~0.15)* | **0** — hakem hiç çağrılmadı, cevap üretilemedi |
 | **CP0.9** fiili *(planlanan 0.60)* | **−0.49** — GPU yerelde $0; 0.45 hakem + 0.05 A/B ablasyonu |
-| **Sprint 2 tahmini** | **−13.51** |
-| kalan | **~23.19** |
+| **Sprint 2 tahmini** | **−13.66** |
+| kalan | **~23.04** |
 
 ⚠️ **Açık kalemler bütçeye henüz girmedi:** düşünce modu token maliyetini **4.5×** artırdı
 (249 → 1135 tok/cevap, base) — Modal'da koşulan her üretim işi bu oranda uzar. Ve `τ_g` v2 açılırsa
