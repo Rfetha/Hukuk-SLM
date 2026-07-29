@@ -1,7 +1,7 @@
-# NEXT SESSION — Sprint 1 kapandı (2026-07-29)
+# NEXT SESSION — Sprint 2 başladı (2026-07-29)
 
-> **Bu belge ne:** oturumlar arası devir notu. **Sprint 1'in devri bitti.**
-> ⚠️ Önceki içerik (CP6 hazırlığı) **tamamen değiştirildi** — CP6 koşuldu ve bitti.
+> **Bu belge ne:** oturumlar arası devir notu.
+> ⚠️ Önceki içerik (Sprint 1 kapanış notu) **değiştirildi** — Sprint 2 planlandı ve yazıldı.
 
 ---
 
@@ -9,39 +9,40 @@
 
 | | durum |
 | :--- | :--- |
-| Sprint 1 (CP0-CP7) | ✅ **KAPANDI** — [`sprint1.md`](../../../sprint1.md) arşiv, yürütme için kullanılmaz |
-| Sprint 2 | 🔵 **planlanmadı** — yürütme belgesi henüz yok |
+| Sprint 1 (CP0-CP7) | ✅ **KAPANDI** — [`sprint1.md`](../../../sprint1.md) arşiv |
+| Sprint 2 | 🟢 **PLANLANDI** — ⭐ yürütme belgesi [`sprint2.md`](../../../sprint2.md), **hiçbir CP koşulmadı** |
 
-## Sprint 1 ne bıraktı
+## Sıradaki iş — `sprint2.md` **CP0**
 
-| ne | nerede |
+**Düşünce modu ölçümü.** Sprint 2'nin 1. günü, ~$0.15, ikisi de yerel:
+
+| | ne | çıktısı |
+| :-- | :--- | :--- |
+| **CP0-a** | base, DEV, `--thinking on`, **4096 token** + kesik sayacı | 🟢🟡🔴 → RS-FT kararı ([ADR-0040](../../adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) |
+| **CP0-b** | `τ_g`, `--thinking on`, ~20 çıktı **gözle** | reçete fazla sert miydi → `τ_g` v2 hipotezi |
+
+🚨 **Geçerlilik ön şartı:** kesik-cevap > %5 ise **koşu geçersiz** — sonuç okunmaz, bütçe artırılır.
+*(ADR-0030 ölçtü: 1024 token'da `</think>` kapanmıyor, `content` boş dönüyor, HTTP 200.)*
+
+**Neden ilk sırada:** sonucu RS-FT kararını, `τ_a`'nın referans noktasını ve olası bir `τ_g` v2'yi
+belirliyor. Sonra koşulursa arkasındaki her şey yanlış varsayımla koşulmuş olur.
+
+## Bu oturumda verilen kararlar (grill, 2026-07-29)
+
+| ADR | karar |
 | :--- | :--- |
-| ⭐ **Üçlü sonuç tablosu** (base ↔ Gemini 3.1 FL ↔ `τ_g`) | [`sprint1-sonuc-tablosu.md`](sprint1-sonuc-tablosu.md) |
-| CP5-CP6 kaydı | [`research_log` #41](../research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
-| ⭐ Yürütme tuzakları (her koşudan önce oku) | [`yurutme-tuzaklari.md`](../yurutme-tuzaklari.md) |
-| Artefakt | `outputs/tg/` (adaptör) · `models/merged/tg/` (bf16) · `models/gguf/tg-q4_k_m.gguf` |
-| Yeni araç | `scripts/merge_lora.py` · `scripts/compare_runs.py` |
-
-## 🔴 Sprint 2'nin ÖNÜNDEKİ karar
-
-[`docs/open_questions.md`](../../open_questions.md) **§13.8** — RAFT meta-iddia artefaktı.
-Kafesin 8 eval koşusunun hepsini etkiler: `τ_g` içeren her hücre sistematik ceza alır, `τ_a`
-tekili almaz → **ADR-0037'nin Kapı 5 kıyası taraflanır.** Üç seçenek belgede; **`τ_abstention`
-eğitilmeden önce** ve **veriye bakmadan** verilmeli (TASARIM §7 pre-registration).
-
-## Sprint 2'ye devreden iş — *plan değil, girdi*
-
-Sıra ve kapılar **Sprint 2 planı yazılırken** belirlenecek.
-
-| iş | not |
-| :--- | :--- |
-| `rejected` yeniden hasadı | Bağımlılığı olan "çalışan çıkarım hattı" **CP6'da doğdu**. Yerel, $0. Mevcut `rejected` 12B'nin fabrikasyonları — olduğu gibi kullanmak yeni modele başka bir modelin hatalarını öğretir (TASARIM §4.1) |
-| `τ_abstention` (ORPO) | 1.741 çift · **82 adım** (3 epoch) · lr 1e-5 · etkin batch 64 · **`--fresh-adapter` zorunlu** · rejim TASARIM §4.1.1 ile eşleşmeli |
-| Tabanlar (karışık · ardışık SFT) | Kapı 5 ikisini de geçmeyi şart koşuyor (ADR-0037) |
-| Rakip aileleri için red-regex kalibrasyonu | Para gerektirmez; kapanınca Gemini'nin regex satırları raporlanabilir |
-| Sağlayıcı pinlemesi + rakip üretim maliyeti | Sprint 5 ön koşulu |
+| [0039](../../adr/0039-kapi-6-parametrik-sizinti.md) | Kapı 5'in **(d) maddesi ayrıldı → Kapı 6**. Çıpa **base** (rakip değil): M5 coverage ≤ %37.5 · ezber kütlesi ≤ %10.7. `τ_g` bugün **kalıyor** ve öyle raporlanıyor |
+| [0040](../../adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) | Düşünce modu **ölçülecek**, ön-kayıtlı 🟢🟡🔴 kuralı. RS-FT'nin tetikleyicisi. Kalıcı kural: kol yeniden eğitilirse **düşünme korunur** |
+| [0041](../../adr/0041-raft-meta-iddia-hakem-kurali.md) | §13.8 **A** ile kapandı — hakem istemine muafiyet satırı, **TÜM kollara aynı anda**, ham sayılar da yayımlanır |
+| [0042](../../adr/0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md) | `rejected` **tek havuz ham base'den** + **FT-6 on-policy kontrol koşusu** (~$0.65) |
+| — | Tabanlar **ARA KAPI'dan sonra**: `τ_a` M2 Rej ≥ 0.75 geçmezse rakiplere ~$12 harcanmaz |
 
 ## Bütçe
 
-Modal cap **$42.50** · Sprint 1 fiili ~**$5.5** (CP4 $0.15 + CP5 ~$5.5) · hakem toplam ~$0.30.
-`τ_abstention` 82 adım — `τ_g`'nin 1.083 adımının yanında ihmal edilebilir.
+Modal cap **$42.50** · harcanan ~**$5.8** · Sprint 2 tahmini ~**$13.2** · kalan ~**$23.5**.
+⚠️ CP0-a **YEŞİL** çıkarsa bütçe ve takvim yeniden hesaplanır (~3-4 hafta uzama).
+
+## Ortam notu
+
+`.wslconfig`'e `memory=24GB` eklendi mi kontrol et — merge tepe RSS **9.86 GB** yapmıştı, Sprint 3'ün
+k-yollu TIES'i daha fazlasını isteyecek. `free -g` ile doğrula.
