@@ -120,6 +120,14 @@ def parse_args():
     p.add_argument("--think-budget", type=int, default=0, metavar="N",
                    help="N>0: düşünceye N token izin ver, kapatmazsa `</think>` yapıştırıp "
                         "cevabı --max-new-tokens ile ürettir (yalnız --thinking on + HTTP)")
+    # ── Rakip tarafı düşünce bütçesi (2026-07-29, CP0.9 / ADR-0043 m.3) ─────────
+    # Bütçe REJİM DEĞİŞMEZİ: "bütün özneler, bütün kollar, bütün rakipler aynı bütçeyle".
+    # Bizim tarafta zorunlu kapatma gerekiyor (Qwen sonlanmıyor); rakip tarafta sunucu
+    # bütçeyi kendi uyguluyor → OpenRouter `reasoning.max_tokens`. Aynı sayı, farklı
+    # mekanizma; ikisi de künyeye `reasoning_tokens` olarak yazılır.
+    p.add_argument("--reasoning-budget", type=int, default=0, metavar="N",
+                   help="N>0: OpenRouter `reasoning.max_tokens=N` gönder ve toplam bütçeyi "
+                        "N+--max-new-tokens yap (rakip tarafı; --think-budget'ın karşılığı)")
     p.add_argument("--no-gold", action="store_true",
                    help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
                         "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
@@ -265,6 +273,10 @@ class GenOut(NamedTuple):
     reasoning_len: int
     completion_tokens: int | None
     forced_close: bool = False
+    # Sunucunun bildirdiği düşünce token'ı. Rakip (Gemini) izi METİN olarak vermiyor →
+    # reasoning_len=0 gelir ama düşünce GERÇEKTEN harcanmıştır; karakter sayısıyla token
+    # sayısını tek alanda karıştırmak sessiz-yanlışlık üretir, bu yüzden ayrı alan.
+    reasoning_tokens: int | None = None
 
 
 def render_prompt(server_url, messages, thinking):
@@ -283,8 +295,18 @@ def render_prompt(server_url, messages, thinking):
         return json.load(r)["prompt"]
 
 
+def _reasoning_tokens(resp):
+    """`usage.completion_tokens_details.reasoning_tokens` — sunucu bildirirse (OpenRouter)."""
+    det = getattr(getattr(resp, "usage", None), "completion_tokens_details", None)
+    if det is None:
+        return None
+    if not isinstance(det, dict):
+        det = getattr(det, "model_dump", dict)()
+    return det.get("reasoning_tokens")
+
+
 def generate_http(client, model_name, soru, max_new_tokens, source=None, sources_block=None,
-                  thinking="none", think_budget=0, server_url=None):
+                  thinking="none", think_budget=0, server_url=None, reasoning_budget=0):
     """llama-server / OpenRouter üzerinden üretim (ADR-0025).
 
     Rakiplerle BİREBİR aynı kod yolu → adalet kuralı (spec §5.2) yapısal garanti.
@@ -300,10 +322,15 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
     extra = {}
     if thinking != "none":
         extra["chat_template_kwargs"] = {"enable_thinking": thinking == "on"}
+    if reasoning_budget:
+        # Rakip tarafı: bütçeyi sunucu uyguluyor, zorunlu kapatmaya gerek yok. Toplam
+        # bütçe = düşünce + cevap; yoksa düşünce cevabın payını yer (bizde 1024|512 ayrı).
+        extra["reasoning"] = {"max_tokens": reasoning_budget}
     r = client.chat.completions.create(
         model=model_name,
         messages=msgs,
-        max_tokens=think_budget or max_new_tokens,
+        max_tokens=(reasoning_budget + max_new_tokens) if reasoning_budget
+                   else (think_budget or max_new_tokens),
         temperature=0.0,
         seed=3407,
         extra_body=extra or None,
@@ -315,7 +342,8 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
     comp_tok = getattr(getattr(r, "usage", None), "completion_tokens", None) or 0
     text = (msg.content or "").strip()
     if text or not think_budget or not reasoning:
-        return GenOut(text, ch.finish_reason, len(reasoning), comp_tok)
+        return GenOut(text, ch.finish_reason, len(reasoning), comp_tok,
+                      reasoning_tokens=_reasoning_tokens(r))
 
     # ── 2. geçiş: zorunlu kapatma ────────────────────────────────────────────
     prompt = render_prompt(server_url, msgs, thinking) + reasoning + "\n</think>\n\n"
@@ -325,7 +353,8 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
     )
     c2 = r2.choices[0]
     tok2 = getattr(getattr(r2, "usage", None), "completion_tokens", None) or 0
-    return GenOut(c2.text.strip(), c2.finish_reason, len(reasoning), comp_tok + tok2, True)
+    return GenOut(c2.text.strip(), c2.finish_reason, len(reasoning), comp_tok + tok2, True,
+                  reasoning_tokens=_reasoning_tokens(r))
 
 
 def generate(model, tokenizer, soru, max_new_tokens, source=None, sources_block=None):
@@ -355,6 +384,13 @@ def main():
     if a.think_budget and not (a.thinking == "on" and a.server_url):
         raise SystemExit("[gen-eval] 🚫 --think-budget yalnız `--thinking on` + `--server-url` ile "
                          "anlamlı (zorunlu kapatma /apply-template + /completions gerektirir).")
+    if a.reasoning_budget and not a.server_url:
+        raise SystemExit("[gen-eval] 🚫 --reasoning-budget yalnız `--server-url` ile anlamlı "
+                         "(sunucu-taraflı düşünce bütçesi).")
+    if a.reasoning_budget and a.think_budget:
+        raise SystemExit("[gen-eval] 🚫 --think-budget (istemci-taraflı zorunlu kapatma) ile "
+                         "--reasoning-budget (sunucu-taraflı bütçe) aynı koşuda kullanılmaz: "
+                         "iki farklı mekanizma, bütçe iki kez sayılır.")
 
     rows = [json.loads(l) for l in open(a.data, encoding="utf-8") if l.strip()]
     idx = load_madde_index(a.madde_path)
@@ -401,7 +437,7 @@ def main():
 
     import random as _rnd
     n_truncated = n_forced = 0
-    tok_sum = tok_n = 0
+    tok_sum = tok_n = rt_sum = rt_n = 0
     detail = os.path.join(a.out_dir, f"{a.label}_detail.jsonl")
     with open(detail, "w", encoding="utf-8") as f:
         for i, (rec, soru, src) in enumerate(sample):
@@ -443,7 +479,8 @@ def main():
                 g = generate_http(
                     http_client, a.server_model, soru, a.max_new_tokens,
                     source=src_arg, sources_block=sources_block, thinking=a.thinking,
-                    think_budget=a.think_budget, server_url=a.server_url)
+                    think_budget=a.think_budget, server_url=a.server_url,
+                    reasoning_budget=a.reasoning_budget)
             else:
                 gen_fn = generate_completion if a.completion_fewshot else generate
                 g = GenOut(gen_fn(model, tokenizer, soru, a.max_new_tokens,
@@ -477,6 +514,7 @@ def main():
                 "finish_reason": finish_reason,        # 'length' = kesilmiş cevap (kalite uyarısı)
                 "reasoning_len": reasoning_len,        # >0 = düşünce kanalı kullanıldı
                 "completion_tokens": comp_tok,         # düşünce DAHİL üretilen token (maliyet ekseni)
+                "reasoning_tokens": g.reasoning_tokens,  # sunucu bildirdiyse: düşünceye giden pay
                 "forced_close": g.forced_close,        # `</think>` bütçe dolunca ZORLA kapatıldı mı
                 "kanun_adi": rec.get("kanun_adi"),
                 "madde_no": rec.get("madde_no"),
@@ -488,6 +526,9 @@ def main():
             if comp_tok:
                 tok_sum += comp_tok
                 tok_n += 1
+            if g.reasoning_tokens is not None:
+                rt_sum += g.reasoning_tokens
+                rt_n += 1
             print(f"  [{i+1}/{len(sample)}] ({mode}) {rec.get('kanun_adi')} {rec.get('madde_no')} "
                   f"→ {len(cevap)} kar"
                   + (f"  ⚠️ KESİK ({finish_reason})" if finish_reason == "length" else ""))
@@ -503,6 +544,10 @@ def main():
     if a.think_budget:
         print(f"[gen-eval] bütçeli düşünce: {n_forced}/{len(sample)} cevapta `</think>` ZORLA "
               f"kapatıldı (bütçe={a.think_budget} tok) — künyeye yazılır")
+    if a.reasoning_budget:
+        print(f"[gen-eval] rakip düşünce bütçesi: reasoning.max_tokens={a.reasoning_budget} "
+              f"(toplam {a.reasoning_budget + a.max_new_tokens}) | ort reasoning_tokens "
+              f"{rt_sum / max(1, rt_n):.1f}/cevap (bildirilen n={rt_n}/{len(sample)}) — künyeye yazılır")
     print(f"[gen-eval] taşıyıcı={'http' if http_client else 'yerel'} | thinking={a.thinking} "
           f"| max_new_tokens={a.max_new_tokens} | seed={a.seed}")
     print(f"[gen-eval] detay → {detail}")
