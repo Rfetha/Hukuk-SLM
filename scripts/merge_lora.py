@@ -12,8 +12,8 @@ Akıtmalı yolun tepesi tek tensör (~1.3 GB). Sprint 3'ün k-yollu TIES'i de bu
 ΔW = (lora_alpha / r) · B @ A   —   W' = W + ΔW, float32'de toplanıp özgün dtype'a döner.
 
 Kullanım:
-    python scripts/merge_lora.py --base Qwen/Qwen3.5-4B --adapter outputs/tg \\
-        --out models/merged/tg
+    python scripts/merge_lora.py --base Qwen/Qwen3.5-4B --adapter outputs/tg_v1 \\
+        --out models/merged/tg_v1
 """
 from __future__ import annotations
 
