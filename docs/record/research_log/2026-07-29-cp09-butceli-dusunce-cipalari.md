@@ -146,6 +146,17 @@ Tablo `scripts/cp09_tablo.py` ile **dosyalardan** üretilir (elle kopyalama yok)
 *(off sütununda token yok — o alan Sprint 1'de kaydedilmiyordu. M5 satırları her iki protokolde
 de ADR-0044 kuralıyla.)*
 
+> ⚠️ **ÇELİŞKİ İŞARETİ (2026-07-30, [#45](2026-07-30-cp2a-hakem-capalanmasi.md)).** Bu tablodaki
+> **M2 / M2b / M3 Rej** satırlarının paydası (`valid_trap`) hakem tarafından **özne başına yeniden
+> yargılanıyor** ve hakem o öznenin cevabını görüyor → payda özneye bağlı. Aynı 80 M3 kaleminde
+> `valid_trap` = base 54 · Gemini 56 · `τ_g` **39**. **M3'te bağlam boş** olduğundan doğru payda
+> tanım gereği **80/80**'dir; dolayısıyla bu satırın doğru okunuşu base **1.000** · Gemini **1.000**
+> · `τ_g` **0.800** — yukarıdaki **0.923 fazla iyimser.** M2/M2b satırları da aynı kusuru taşıyor
+> (filtresiz: M2 base 0.786 · `τ_g` 0.800 · Gemini 0.814 — M2b base 0.950 · `τ_g` 0.525 ·
+> Gemini 0.850). Sapma tek yönlü değil: M2b'de aleyhimize ~7p, M3'te lehimize ~12p.
+> **ADR-0040'ın 🟡 hükmü değişmiyor** — M2 eşiği filtresiz de geçiliyor (0.786 ≥ 0.78).
+> Sayılar düzeltilmeden **üzerine yazılmadı**; düzeltme kararı ADR-0048'e bağlı.
+
 ### ADR-0040 hükmü: **🟡 SARI** — muhafız düştü, eşik geçti
 
 | ölçüt | ref (off) | bütçeli | eşik | sonuç |
