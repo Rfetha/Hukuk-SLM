@@ -125,7 +125,7 @@ davranışı** — ADR-0043'ün bütçeli kapatma kararı n=3'te göründüğün
 
 ## Puanlama sonuçları
 
-Hakem: `gpt-4o-mini` · OpenAI-direct · gateway PİNLİ · `runs=1`.
+Hakem: `gpt-4o-mini` · OpenAI-direct · gateway PİNLİ · `runs=1` · **maliyet $0.447** (+ ablasyon $0.046 = **$0.492**).
 Tablo `scripts/cp09_tablo.py` ile **dosyalardan** üretilir (elle kopyalama yok).
 
 | ölçüt | yön | base off | **base bütçeli** | `τ_g` off | **`τ_g` bütçeli** | Gemini off | **Gemini bütçeli** |

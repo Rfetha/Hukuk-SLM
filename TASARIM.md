@@ -130,7 +130,7 @@ zorunlu kapatma** (ADR-0043).
 > değiştirmek ve Q8_0'a çıkmak üçü de çözmedi (`research_log`
 > [#42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)). Bütçe içinde
 > kapatılmazsa iz + `</think>` isteme yapıştırılıp üretim sürdürülür.
-> **Bedel: ~4.8× token** (249 → ~1.198), ADR-0017 muhasebesine yazılır.
+> **Bedel: 4.5× token** (249 → **1135** base; ölçüldü CP0.9), ADR-0017 muhasebesine yazılır.
 > ✅ **CP0.9'da koşuldu (2026-07-29).** Üç çıpa bütçeli kipte yeniden üretildi
 > (`outputs/eval/cp09-butceli-1024-512/`, `research_log`
 > [#43](docs/record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md)). Ölçülen bedel
@@ -555,8 +555,8 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 | **Kapı 3 — hibrit kol** | getirme ölçümü sonrası | recall@k + MRR (± kavram kenarı) | İyileştirmiyorsa kol kapanır, negatif bulgu raporlanır |
 
 | **Kapı 5 — iç iddia** ([ADR-0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md)) | kafes DEV ölçümü sonrası | **norm-dengeli** ayarda `τg+τa` | **Üçü birden:** (a) M1/M4 ≥ **0.90 ×** (`τg` tek) · (b) M2/M2b ≥ **0.90 ×** (`τa` tek) · (c) **bileşik = `min`(grounding, abstention)** ve bu bileşikte **Taban A ve B'nin İKİSİ de** geçilmeli. ~~(d) M5~~ → **Kapı 6'ya taşındı** (ADR-0039). *Referans = tekil hücreler (#8 gereği aynı hattan). Seçim: DEV'de bileşiği maksimize eden **tek** konfigürasyon TEST'e gider, tüm tarama eklerde; **aynı prosedür tabanlara da uygulanır**.* ⚠️ Güç analizi yok — karar kuralıdır, istatistiksel test değil |
-| **Kapı 6 — parametrik sızıntı** ([ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md)) | kafes DEV ölçümü sonrası | M5 (kaynaksız mod) | **İkisi de base'i geçmeyecek:** M5 **coverage** ≤ %37.5 · M5 **ezber kütlesi** (`coverage × A1`) ≤ %10.7. *Hedef coverage → sıfıra yakın. Çıpa **base**, rakip değil — modeli aldığımız noktadan kötüye götürmemek. Her hücre üç sayıyı da (coverage · A1 · kütle) base farkıyla yayımlar.* Kalınca ön-kayıtlı merdiven: `τ_a` → merge ağırlığı → harness → `τ_g` v2 |
-| **CP0 düşünce kuralı** ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) | Sprint 2 başında | base `--thinking on`, DEV | 🟢 M2 Rej ≥ 0.78 **veya** M1 kütle ≥ %57.6, **ve** M5 kütle ≤ %10.7 → **RS-FT kapsama girer**, ADR-0030 m.2 geri alınır · 🟡 eşiğin altı → thinking *rapor edilen eksen* olur, plan değişmez · 🔴 kazanç ≤ +5 puan → ADR-0030 m.2 **kanıtla teyit**, RS-FT future-work. *Geçerlilik ön şartı: 4096 token + kesik-cevap ≤ %5* |
+| **Kapı 6 — parametrik sızıntı** ([ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md)) | kafes DEV ölçümü sonrası | M5 (kaynaksız mod) | **İkisi de base'i geçmeyecek:** M5 **coverage** ≤ **%97.5** · M5 **ezber kütlesi** (`coverage × A1`) ≤ **%42.5** *(base, bütçeli kip — [ADR-0044](docs/adr/0044-mod-duyarli-feragat-kurali.md); eski %37.5/%10.7 kırık red sayımındandı)*. *Hedef coverage → sıfıra yakın. Çıpa **base**, rakip değil — modeli aldığımız noktadan kötüye götürmemek. Her hücre üç sayıyı da (coverage · A1 · kütle) base farkıyla yayımlar.* Kalınca ön-kayıtlı merdiven: `τ_a` → merge ağırlığı → harness → `τ_g` v2 |
+| ~~**CP0 düşünce kuralı**~~ ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) | ✅ **KOŞULDU** CP0.9, 2026-07-29 | base bütçeli kip, DEV | **🟡 SARI** — M2 eşiği **geçti** (0.633 → **0.814** ≥ 0.78), M1 kütlesi 0.9 puan kaldı (%56.7 < %57.6), **M5 muhafızı İHLAL** (%36.9 → %42.5, [ADR-0044](docs/adr/0044-mod-duyarli-feragat-kurali.md) sayılarıyla). → **RS-FT kapsam dışı kalır**, ADR-0035 açılmaz, plan değişmez; thinking **raporlanan bir eksen** olur. Kayıt: `research_log` #43 |
 
 *(Eski Kapı 4 — karşıtlık noktası — **kaldırıldı**, ADR-0028: tez tek boyut noktasında tamamlanıyor.
 Kapı 5 onun numarasını almadı — kayıt izini bozmamak için sıradaki numara verildi.
@@ -564,7 +564,7 @@ Kapı 5 onun numarasını almadı — kayıt izini bozmamak için sıradaki numa
 
 > ### ⚠️ Kapı 5 → Kapı 6 ayrımının gerekçesi (2026-07-29, ADR-0039)
 >
-> CP6 `τ_g`'nin M5 ezber kütlesini %10.7 → %14.6 çıkardığını ölçtü. (d) sert veto olduğu için
+> CP6 `τ_g`'nin M5 ezber kütlesini yükselttiğini ölçtü (**ADR-0044 düzeltmesiyle %36.9 → %44.2**; ham sayılar %10.7 → %14.6 kırık red sayımındandı). (d) sert veto olduğu için
 > `τ_g` içeren **her** hücre — ölçmek üzere kurulmuş `τg+τa` dahil — (a)(b)(c)'yi geçse bile
 > kalıyordu: **kapı, ölçmek için kurulduğu şeyi ölçemeden kapanıyordu.** (d) *gevşetilmedi*,
 > **ayrıldı**: iç iddia *"merge çatışan becerileri korur mu"* sorusudur; M5 o çatışmanın tarafı
