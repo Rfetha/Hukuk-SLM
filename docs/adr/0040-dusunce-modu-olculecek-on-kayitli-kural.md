@@ -1,6 +1,24 @@
 # ADR-0040 — Düşünce modu **ölçülecek**: ön-kayıtlı karar kuralı · RS-FT'nin tetikleyicisi
 
-**Statü:** Yürürlükte · **Tarih:** 2026-07-29
+> ### ⚠️ ÖLÇÜM KOŞULDU, KURAL ÖNGÖRMEDİĞİ BİR DALA ÇARPTI (2026-07-29 akşamı)
+> Ölçüm a **üretilemedi**: base `--thinking on` altında M1/M2/M5'te `</think>`'i **hiç kapatmıyor**,
+> `content` boş dönüyor. Geçerlilik ön şartı *"kesik > %5 → bütçeyi artır, tekrarla"* diyordu;
+> bütçe **8× artırıldı** (4096 → 32768) ve hiçbir şey değişmedi — çünkü **kesilme değil
+> sonlanmama** (`temp 0.6` yarısını kurtardı, Q8_0 hiç etkilemedi). Üç karar sayısı da (M2 Rej ·
+> M1 kütle · M5 ezber kütlesi) tam olarak sonlanmayan modlardan geliyordu.
+>
+> **Sonuç 🟢/🟡/🔴 değil**, *"bu kipte ölçüm üretilemiyor"* + mekanizma:
+> `research_log` [#42](../record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md).
+> Karar [**ADR-0043**](0043-dusunce-modu-acik-butceli-kapatma.md) ile **ürün gereksinimi**
+> üzerinden alındı (düşünce AÇIK, bütçeli kapatma) — bu ADR'nin eşiğiyle değil.
+>
+> **Bu ADR'nin yürürlükte kalan kısımları:** (a) ön-kayıtlı 🟢🟡🔴 eşiği **iptal değil**, bütçeli
+> kipte yeniden koşulacak ve artık *"thinking açılsın mı"*yı değil **RS-FT'nin gerekliliğini**
+> belirleyecek · (b) **madde 4** — yeniden eğitilen her kol düşünme yeteneğini koruyacak biçimde
+> eğitilir · (c) madde 3'ün hasar sensörü **koşuldu ve hasar bulmadı** (`τ_g` 35/36 sonlanıyor,
+> medyan 452 token, döngü yok) → *"reçete fazla sertti"* hipotezi **desteklenmedi**.
+
+**Statü:** Kısmen yürütüldü (bkz. üst not) · **Tarih:** 2026-07-29
 **Otorite belge:** `TASARIM.md` §8 · §10.2 · `sprint2.md` CP0
 **İlgili:** **ADR-0030 madde 2 (düşünce modu KAPALI)** — bu ADR onu *sorguya açar*, geri almaz ·
 **ADR-0035 (`τ_reasoning`/RS-FT kapsam dışı)** — YEŞİL sonuçta yeniden açılır ·

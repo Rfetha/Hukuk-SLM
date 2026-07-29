@@ -1,7 +1,7 @@
 # Sprint 2 — ikinci kol, tabanlar ve zeminin düzeltilmesi
 
 > **Otorite:** [`TASARIM.md`](TASARIM.md) · **bu sprint'in kararları:** ADR-0039 · ADR-0040 ·
-> ADR-0041 · ADR-0042 · **tam iş listesi:** [`TODO.md`](TODO.md)
+> ADR-0041 · ADR-0042 · **ADR-0043** · **tam iş listesi:** [`TODO.md`](TODO.md)
 > **Önceki sprint:** [`sprint1.md`](sprint1.md) 🔒 kapalı ·
 > ⭐ sonuçları [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md)
 >
@@ -20,7 +20,7 @@ Bitince şu soru cevaplanmış olur: *"İki kolumuz da tek başına ayakta mı, 
 adil koşullarda ölçtük mü?"*
 
 **Kapsam dışı, açıkça:** birleştirme (Sprint 3) · harness (Sprint 4) · parite iddiası (Sprint 5) ·
-`τ_g`'ye dokunmak *(şartlı istisna: CP0'ın sonucu — ADR-0040 madde 3)*.
+`τ_g`'ye dokunmak *(CP0 koşuldu: v2 gerekçesi **çıkmadı**, açık kalemler [`kollar.md`](docs/record/kollar.md)'de bekliyor)*.
 
 ---
 
@@ -28,17 +28,18 @@ adil koşullarda ölçtük mü?"*
 
 | | durum |
 | :--- | :--- |
-| Eğitilmiş kol | **1** — `τ_g` (FT-1), 1.083 adım, `‖τ_g‖_F = 10.4589` |
+| Eğitilmiş kol | **1** — `τ_g` **v1** (FT-1), 1.083 adım, `‖τ_g‖_F = 10.4589` · künye: [`kollar.md`](docs/record/kollar.md) |
 | Çalışan hat | veri → eğitim → merge → GGUF → `llama-server` → eval → hakem, uçtan uca ✅ |
 | Ölçüm zemini | DEV havuzu (80 core_hard + 70 trap), TEST (`eval/canon/`) **hiç görülmedi** |
-| Çıpalar | base · Gemini 3.1 FL · `τ_g` — üçü de aynı protokolde, **harness kapalı** |
+| Çıpalar | base · Gemini 3.1 FL · `τ_g` v1 — ⚠️ **hepsi `--thinking off`**, yani ADR-0043'ten sonra **referans değil** (CP0.9'da yeniden koşulacak) |
+| **Protokol** | 🆕 **thinking AÇIK, bütçeli**: düşünce 1024 + cevap 512, zorunlu kapatma (ADR-0043) — rejim değişmezi |
 | Bütçe | Modal cap **$42.50** · harcanan ~**$5.8** · **kalan ~$36.7** |
 
 ### `τ_g`'nin bıraktığı üç negatif — hangisinin sahibi var
 
 | # | ne bozuldu | base → `τ_g` | Sprint 2'deki sahibi |
 | :-- | :--- | :--- | :--- |
-| **1** | Cevapladığında hata oranı | %2.7 → **%17.4** *(meta düşülünce %9.9)* | ⚠️ **sahipsiz** — kısmen CP1 (ölçüm), kısmen CP0-b (hipotez), asıl çare Sprint 4 harness |
+| **1** | Cevapladığında hata oranı | %2.7 → **%17.4** *(meta düşülünce %9.9)* | ⚠️ **sahipsiz** — CP0-b hipotezi **çürütüldü** (reçete sert değil: `τ_g` düşünüyor ve duruyor, #42); kalan sahipler CP1 (ölçüm) + Sprint 4 harness |
 | **2** | Tuzak reddi (M2) | 0.633 → **0.458** | **FT-2 `τ_a`** — ön-kayıtlı beklenti, bunun için var |
 | **3** | Parametrik sızıntı (M5 kütle) | %10.7 → **%14.6** | **FT-2** + **Kapı 6** (ADR-0039) |
 
@@ -46,74 +47,72 @@ adil koşullarda ölçtük mü?"*
 
 ## Checkpoint akışı
 
-> **Sıra kapılara bağlı.** CP0 → CP1 → CP2 → CP3 → **ARA KAPI** → CP4 → CP5.
+> **Sıra kapılara bağlı.** CP0 ✅ → **CP0.9** → CP1 → CP2 → CP3 → **ARA KAPI** → CP4 → CP5.
+> *(CP0.9 yeni: ADR-0043 protokolü değiştirdi, çıpalar yeniden üretilmeden `τ_a` ölçülemez.)*
 > Ara kapı geçilmeden rakip yöntemlere para harcanmaz (5/6 kararı, 2026-07-29).
 
 | CP | ne | GPU | $ | kapı |
 | :--- | :--- | :--- | ---: | :--- |
-| **CP0** | Düşünce modu ölçümü (a: base thinking-on · b: `τ_g` hasar sensörü) | yerel | ~0.15 | 🟢🟡🔴 ADR-0040 |
+| **CP0** | ✅ Düşünce modu — **koşuldu**: base sonlanmıyor, `τ_g` sonlanıyor → **thinking AÇIK, bütçeli** | yerel | **0** | ADR-0043 |
+| **CP0.9** | 🆕 **Üç çıpanın yeniden koşulması** (base · Gemini · `τ_g` v1, bütçeli kipte) | yerel/Modal | ~0.6 | ADR-0043 m.4 |
 | **CP0.5** | `causal-conv1d` hız ölçümü | yerel | 0 | 2× yoksa yazılmaz |
 | **CP1** | Hakem istemi düzeltmesi + üç öznenin yeniden puanlanması | — | ~0.12 | ADR-0041 |
 | **CP2** | `rejected` havuzunun base'den yeniden hasadı | yerel | 0 | ADR-0042 |
 | **CP3** | **FT-2 = `τ_a`** eğitimi + tekil ölçümü | Modal | ~0.7 | 🔴 **ARA KAPI** |
 | **CP4** | **FT-4** Taban A (karışık SFT) + ölçüm | Modal | ~5.7 | — |
 | **CP5** | **FT-5/FT-6** Taban B (ardışık SFT) + on-policy kontrol + ölçüm | Modal | ~6.5 | — |
-| | **toplam** | | **~$13.2** | kalan bütçe ~$23.5 |
+| | **toplam** | | **~$13.65** | kalan bütçe ~$23.05 |
 
 ---
 
-## CP0 — Düşünce modu: ölçülecek, tartışılmayacak
+## CP0 — Düşünce modu ✅ **KOŞULDU** — ölçüm üretilemedi, karar başka yerden geldi
 
-**Karar belgesi:** [ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) ·
-**TODO:** §1 · **GPU:** yerel ($0) · **Kayıt:** `research_log` #42
+**Karar belgeleri:** [ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) (ön-kayıtlı kural)
+→ [**ADR-0043**](docs/adr/0043-dusunce-modu-acik-butceli-kapatma.md) (sonuç) ·
+**GPU:** yerel ($0) · **Kayıt:** [`research_log` #42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md) ·
+**Betikler:** `scripts/cp0_thinking_gen.sh` · `scripts/cp0_thinking_score.sh`
 
-**Neden ilk sırada:** sonucu **RS-FT kararını**, `τ_a`'nın **referans noktasını** ve olası bir
-`τ_g` v2'yi belirliyor. Sonra koşulursa, arkasındaki her şey yanlış varsayımla koşulmuş olur.
+> ### 🚨 Olan şu: base `--thinking on` altında **DURMUYOR**
+> M1 · M2 · M5'te `</think>` **hiç kapanmıyor**, `content` boş dönüyor. Kesilme değil
+> **sonlanmama**: model cevaplamak ile çekinmek arasında salınıp aynı muhakeme satırını
+> **219 kez** tekrarlıyor. Üç açıklama elendi — bütçe **8×** (4096→32768) ❌ · `temp 0.6` 🟡 (yarısı)
+> · **Q8_0** ❌. Ve karar eksenlerinin üçü (M1 kütle · M2 Rej · M5 ezber) **tam o üç modda.**
+>
+> Döngü **belirsizlikle** geliyor: cevabın açık olduğu **M4** (3/3, ort 3.932 tok) ve reddin açık
+> olduğu **M3** (3/3, ort 1.126 tok) sorunsuz sonlanıyor.
 
-### CP0-a — base, DEV, `--thinking on`
+### Çözüm — bütçeli düşünce (ADR-0043)
 
 ```bash
-# ⚠️ max-new-tokens 4096 — ADR-0030 ölçtü: 1024'te </think> KAPANMIYOR, content BOŞ dönüyor
-python scripts/gen_eval_grounded.py \
-  --server-url "$SRV" --server-model "$BASE_GGUF" \
-  --thinking on --max-new-tokens 4096 --max-chunk-chars 900 \
-  --data data/eval/dev/... --out outputs/eval/..._base_think.json
+# üretim: 6 mod, düşünce 1024 + cevap 512, zorunlu kapatma, kesik kapısı dahil
+THINK_BUDGET=1024 MAXTOK=512 bash scripts/cp0_thinking_gen.sh models/gguf/<gguf> <etiket>
+# puanlama: .env yükler, hakem/gateway pinli, ADR-0040 kuralını otomatik uygular
+bash scripts/cp0_thinking_score.sh <etiket>
 ```
 
-> ### 🚨 Geçerlilik ön şartı — sonuçtan ÖNCE kontrol edilir
-> Kesik-cevap sayacı **> %5** ise **koşu geçersizdir.** Sonuç okunmaz, bütçe artırılır, tekrarlanır.
-> *(Boş `content` zaten `gen_eval_grounded.py` içinde erken patlıyor — ADR-0030 madde 3.)*
+Model `</think>`'i bütçe içinde kapatmazsa iz + `</think>` isteme yapıştırılır ve üretim
+`/completions` ile sürdürülür → cevap **zorunlu olarak** yazılır (`--think-budget`, `forced_close`).
+**Bütçe ön-kayıtlı ve rejim değişmezi** — `TASARIM.md` §4.1.1'e işlendi.
 
-**Ön-kayıtlı karar kuralı** — referans: `base --thinking off`, M2 Rej **0.6330** · M1 sadık-cevap
-kütlesi **%42.6** · M5 ezber kütlesi **%10.7** · **249 token**/cevap:
+### CP0-b — `τ_g` hasar sensörü ✅ **hasar YOK, tersi çıktı**
 
-```
-YEŞİL  →  M2 Rej ≥ 0.78  VEYA  M1 kütle ≥ %57.6      (ikisi de +15 puan)
-          VE  M5 ezber kütlesi ≤ %10.7                (Kapı 6 muhafızı)
-SARI   →  kazanç var, eşiğin altında — ya da M5 muhafızı ihlal
-KIRMIZI→  her iki eksende de kazanç ≤ +5 puan
-```
+`τ_g` v1 aynı istemlerde **35/36 kendi kapatıyor**, medyan **452 token**, düşünce izinde döngü
+**yok**, iz yapılı (kaynakları tek tek eleyip gerekçesiyle seçiyor) — base aynı iki istemde
+108K/119K karakter üretip hiç bitirmiyor. → *"reçete fazla sertti"* hipotezi **desteklenmedi**;
+`τ_g` v2 bu gerekçeyle **açılmıyor** (diğer dört gerekçe: [`kollar.md`](docs/record/kollar.md)).
 
-| | eylem |
+⚠️ Yan bulgu: iz **8/8 İngilizce**, cevap **8/8 Türkçe** → ürün *"okunabilir iz"* hedefi için
+eğitim verisine iz gerekir; v2'nin 4. gerekçesi.
+
+### ⚠️ Bunun Sprint 2'ye faturası
+
+| ne | sonuç |
 | :--- | :--- |
-| 🟢 | **RS-FT Sprint 2'ye alınır.** ADR-0030 m.2 geri alınır, ADR-0035 yeniden açılır. Sprint 1'in **üç öznesi yeniden koşulur** (~$0.5). Takvim ~3-4 hafta uzar |
-| 🟡 | Plan değişmez; thinking **rapor edilen eksen** olur. RS-FT Kapı 6 merdiveninin 4. basamağında bekler |
-| 🔴 | ADR-0030 m.2 **kanıtla teyit**. Limitations'taki itiraf **bulguya** döner. RS-FT future-work |
-
-**Token maliyeti kapı değil, raporlanır** — maliyet-normalize parite muhasebesine girer (ADR-0017).
-
-> ⚠️ **YEŞİL sadece iyi haber değil.** Base *hiç eğitilmeden* `τ_a`'nın işinin çoğunu yapıyorsa,
-> dış iddiada **üçüncü bir açıklama** belirir: kazanç ince-ayardan mı, harness'tan mı, yoksa
-> **modelin zaten sahip olduğu düşünme yeteneğinden mi?** Çıkarsa daraltıcı bulgu olarak yazılır.
-
-### CP0-b — `τ_g` hasar sensörü
-
-`τ_g` `--thinking on` koşulur, **~20 çıktı gözle** incelenir. Kapı değil, **fiyat etiketi**:
-
-| gözlem | anlamı | eylem |
-| :--- | :--- | :--- |
-| Düzgün akıl yürütüyor | Reçete yumuşak | `τ_g` olduğu gibi devam |
-| İlk cümlede `</think>` kapatıyor / bozuk iz | **"Eğitim fazla sertti"** hipotezi güçlenir — 1.083 adım · lr 1e-4 · `all-linear` · r=16. **Sahipsiz doğruluk sorununun (negatif #1) da açıklaması olabilir** | `τ_g` v2 (yumuşak reçete + `build_replay_tr.py` replay karışımı) **masaya gelir** — ama **CP0-a'nın sonucu beklenir**: a YEŞİL ise `τ_g` zaten RS-FT kapsamında yeniden doğar, ayrı v2 israf olur |
+| **Sprint 1'in üç çıpası** | `--thinking off` ile ölçüldü → **yeniden koşulacak** (base · Gemini · `τ_g` v1 × 6 mod = 1.410 cevap; GPU $0, Gemini + hakem ≈ **$0.5-0.6**) |
+| **ARA KAPI'nın referansı** | `τ_a` artık **0.6330'a karşı ölçülmez** — yeni protokoldeki base sayısına karşı ölçülür |
+| **`rejected` hasadı (CP2)** | `--thinking off` değil, **bütçeli düşünce** kipinde (ADR-0042 üst notu) |
+| **Maliyet ekseni** | 249 → **~1.198 token/cevap (~4.8×)**, ADR-0017 muhasebesine girer |
+| **Ön-kayıtlı 🟢🟡🔴 kuralı** | İptal değil — bütçeli kipte koşulacak, artık *"thinking açılsın mı"*yı değil **RS-FT gerekliliğini** belirliyor |
 
 > **Kalıcı kural (ADR-0040 m.4):** bundan sonra herhangi bir kol yeniden eğitilirse **düşünme
 > yeteneğini koruyacak biçimde** eğitilir. Kapıyı açık tutmanın maliyeti eğitim anında ≈ sıfır,
@@ -121,10 +120,37 @@ KIRMIZI→  her iki eksende de kazanç ≤ +5 puan
 
 ---
 
+## CP0.9 — Üç çıpanın bütçeli kipte yeniden koşulması 🆕
+
+**Karar belgesi:** [ADR-0043](docs/adr/0043-dusunce-modu-acik-butceli-kapatma.md) madde 4 ·
+**GPU:** yerel/Modal · **$:** ~0.6 (Gemini + hakem) · **Kayıt:** `research_log` #43
+
+Sprint 1'in üç öznesi `--thinking off` ile ölçüldü. Protokol değiştiğine göre **hiçbiri artık
+çıpa değil** — `τ_a` bunlara karşı ölçülürse elmayla armut kıyaslanır ve ARA KAPI yanlış okunur.
+
+| özne | ne koşacak |
+| :--- | :--- |
+| **base** | 6 mod × DEV · bütçeli düşünce (1024+512) · seed 3407 · 900-kar klip |
+| **`τ_g` v1** | aynı protokol, `models/gguf/tg_v1-q4_k_m.gguf` |
+| **Gemini 3.1 FL** | aynı protokol *(rakip tarafında düşünce bütçesi karşılığı künyeye yazılır)* |
+
+**Toplam 1.410 cevap.** GPU yerelde $0 ama uzun (cevap başına ~1.198 token) → **Modal**'a taşınır;
+taşıyıcı **değişmez** (aynı llama.cpp + aynı GGUF + aynı bayraklar — tuzak 1.7).
+
+> ### 🚨 Koşudan önce
+> Kesik-cevap oranı **> %5** ise koşu geçersiz (betik otomatik durduruyor) · zorunlu kapatma oranı
+> künyeye yazılır · `completion_tokens` ortalaması ADR-0017 muhasebesine girer · Sprint 1'in
+> thinking-off sayıları **silinmez**, iki kip yan yana raporlanır.
+
+**Çıktısı:** ARA KAPI'nın iki eşiği (M2 Rej ≥ base+12 puan · M1 A1 ≥ 0.90×base) **sayıyla** dolar,
+ve ADR-0040'ın 🟢🟡🔴 kuralı bütçeli kipte koşulup **RS-FT gerekliliğini** belirler.
+
+---
+
 ## CP0.5 — `causal-conv1d` hız kaldıracı
 
 **Karar belgesi:** [ADR-0033](docs/adr/0033-egitim-hizi-fla-core-checkpointing-batch.md) ·
-**GPU:** yerel · **Kayıt:** `research_log` #42
+**GPU:** yerel · **Kayıt:** `research_log` #43
 
 CP5'te ölçüldü: **6.8-7.0 s/it · 2.619 token/s · MFU ≈ %15.** Sebep büyük ölçüde `causal-conv1d`
 kurulu olmaması — Qwen3.5-4B'nin **32 katmanının 24'ü** linear-attention ve PyTorch referans
@@ -145,7 +171,7 @@ hızla koşar. 2× çıkarsa Sprint 2'nin üç eğitim koşusunda ~5 saat + ~$12
 ## CP1 — Hakem istemi düzeltmesi ve yeniden puanlama
 
 **Karar belgesi:** [ADR-0041](docs/adr/0041-raft-meta-iddia-hakem-kurali.md) ·
-**$:** ~0.12 · **Kayıt:** `research_log` #42
+**$:** ~0.12 · **Kayıt:** `research_log` #43
 
 Groundedness hakem istemine kural satırı eklenir: *kaynak seçimi/eleme hakkındaki meta-cümleler
 iddia olarak ayrıştırılmaz.* `base` · `Gemini 3.1 FL` · `τ_g` **üçü birden** yeniden puanlanır.
@@ -167,10 +193,14 @@ kaynağın *içeriği* hakkındaki iddialar puanlanmaya devam etmeli.
 ## CP2 — `rejected` havuzunun yeniden hasadı
 
 **Karar belgesi:** [ADR-0042](docs/adr/0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md) ·
-**GPU:** yerel ($0) · **Kayıt:** `research_log` #42
+**GPU:** yerel ($0) · **Kayıt:** `research_log` #43
 
 Mevcut havuz emekli **12B** hattının fabrikasyonları — yeni modele **başka bir modelin hatalarını**
-öğretir. Yeniden hasat: **çıplak base**'den (`--thinking off`, seed **3407**, aynı üretim ayarları).
+öğretir. Yeniden hasat: **çıplak base**'den, seed **3407**, aynı üretim ayarları.
+
+> ⚠️ **`--thinking off` DEĞİL** (ADR-0043, 2026-07-29): hasat, kolların eğitileceği ve
+> dağıtılacağı kiple aynı olmalı → **bütçeli düşünce (1024 + 512)**. Aksi hâlde negatif örnekler
+> modelin gerçekten ürettiği çıktılar olmaz ve ADR-0042'nin kendi *on-policy* gerekçesi çürür.
 
 **Kabul kriteri:** `score_abstention.py` **RED saymıyor** — yani model tuzağa düşmüş, gerçek bir
 negatif örnek.
@@ -178,7 +208,7 @@ negatif örnek.
 **Tek havuz, tüm kollar** (`τ_a` · Taban A · Taban B'nin iki aşaması) aynı veriyi görür. Gerekçe:
 ablasyonun anlamı veriyi sabit tutmaktan gelir.
 
-**Künye kayda geçer:** base sha · `--thinking off` · sıcaklık/`top_p` · `max_new_tokens` · seed ·
+**Künye kayda geçer:** base sha · **düşünce bütçesi (1024+512) + zorunlu kapatma oranı** · sıcaklık/`top_p` · `max_new_tokens` · seed ·
 tarih · kaç örnekten kaçı kabul edildi.
 
 > ⚠️ **Bedel $0 ama süre gerektirir** — hasat boyutu burada ölçülür ve kaydedilir.
@@ -187,7 +217,7 @@ tarih · kaç örnekten kaçı kabul edildi.
 
 ## CP3 — FT-2 `τ_abstention` + 🔴 ARA KAPI
 
-**TODO:** §2 · **GPU:** Modal · **$:** ~0.7 · **Kayıt:** `research_log` #43
+**TODO:** §2 · **GPU:** Modal · **$:** ~0.7 · **Kayıt:** `research_log` #44
 
 **Rejim** (`TASARIM.md` §4.1.1 ile eşleşmeli): 1.741 çift · **82 adım** (3 epoch) · lr **1e-5** ·
 etkin batch **64** · **`--fresh-adapter` ZORUNLU**.
@@ -203,10 +233,15 @@ Bu sayı Kapı 5'in **(b) referans noktasıdır** — onsuz *"abstention korundu
 ### 🔴 ARA KAPI — rakip yöntemlere geçmeden önce
 
 ```
-τ_a TEKİL olarak M2 Rej'de base'i (0.6330) ANLAMLI biçimde geçmeli.
-Eşik: M2 Rej ≥ 0.75            (+12 puan)
-Muhafız: M1 A1  ≥ 0.90 × base  (0.876) — abstention öğretirken grounding çökmemeli
+τ_a TEKİL olarak M2 Rej'de base'i ANLAMLI biçimde geçmeli.
+Eşik: M2 Rej ≥ base + 12 puan
+Muhafız: M1 A1 ≥ 0.90 × base — abstention öğretirken grounding çökmemeli
 ```
+
+> ⚠️ **Sayılar CP0.9'dan gelecek** (ADR-0043). Eski çıpalar — base M2 Rej **0.6330**, eşik 0.75,
+> muhafız 0.876 — `--thinking off` protokolündendi ve **artık referans değil.** Bütçeli kipteki
+> base sayısı ölçülür ölçülmez bu iki eşik **aynı formülle** (+12 puan · 0.90×) yeniden yazılır;
+> formül ön-kayıtlı, sayı değil.
 
 | sonuç | eylem |
 | :--- | :--- |
@@ -217,15 +252,15 @@ Muhafız: M1 A1  ≥ 0.90 × base  (0.876) — abstention öğretirken grounding
 iddia ölçülemez. Rakipleri önce eğitmek, sonucu bilinmeyen bir deneye peşin para yatırmaktır.
 82 adım — bekleme ucuz.
 
-> ⚠️ **CP0-a YEŞİL çıktıysa** bu kapı yeniden değerlendirilir: base düşünerek tuzak reddini zaten
-> yükseltiyorsa, `τ_a`'nın referans noktası 0.6330 değil o sayıdır — yoksa `τ_a`'ya haksız kredi
-> verilir.
+> ⚠️ **Bu kapı CP0.9'a bağlandı** (ADR-0043): base bütçeli düşünceyle tuzak reddini zaten
+> yükseltiyorsa, `τ_a`'nın referans noktası 0.6330 değil **o sayıdır** — yoksa `τ_a`'ya haksız
+> kredi verilir. CP0.9 koşulmadan ARA KAPI okunamaz.
 
 ---
 
 ## CP4 — FT-4 Taban A: tek-aşamalı **karışık** SFT
 
-**TODO:** §2 · **GPU:** Modal · **$:** ~5.7 · **Kayıt:** `research_log` #44
+**TODO:** §2 · **GPU:** Modal · **$:** ~5.7 · **Kayıt:** `research_log` #45
 
 Grounding + abstention verisi **tek koşuda karıştırılarak** eğitilir. `rejected` havuzu CP2'den
 (tek havuz kuralı). Ham base'den.
@@ -240,7 +275,7 @@ Grounding + abstention verisi **tek koşuda karıştırılarak** eğitilir. `rej
 
 ## CP5 — FT-5/FT-6 Taban B: **ardışık** SFT + on-policy kontrol
 
-**TODO:** §2 · **GPU:** Modal · **$:** ~6.5 · **Kayıt:** `research_log` #44
+**TODO:** §2 · **GPU:** Modal · **$:** ~6.5 · **Kayıt:** `research_log` #45
 
 **FT-5** (aşama 1: grounding, ham base'den) → **FT-6** (aşama 2: abstention, FT-5'in üstüne).
 
@@ -269,7 +304,7 @@ güçlü tabana karşı kazanmamız gerekir.
 | Kol | **2** — `τ_g` (var) + `τ_a` (yeni), ikisi de ham base'den, ikisi de tekil ölçülmüş |
 | Taban | **2** — karışık SFT · ardışık SFT (+ on-policy kontrol) |
 | Zemin | Hakem istemi düzeltilmiş, üç özne yeniden puanlanmış · `rejected` havuzu temiz |
-| Cevaplanmış | Düşünce modu bu protokolde ne kadar kazandırıyor · `τ_g` reçetesi fazla sert miydi |
+| Cevaplanmış | ✅ `τ_g` reçetesi fazla sert **değildi** (kol düşünüyor ve duruyor) · ✅ düşünce modu bu protokolde **bütçesiz çalışmıyor** · ⏳ bütçeli düşünce ne kazandırıyor (CP0.9) |
 | Sprint 3 hazır | Kapı 5'in (a) ve (b) referans noktaları · Kapı 6'nın base çıpası · iki taban |
 
 ---
@@ -278,7 +313,7 @@ güçlü tabana karşı kazanmamız gerekir.
 
 | kapı | nerede | kuralı |
 | :--- | :--- | :--- |
-| **CP0 düşünce kuralı** | CP0-a | ADR-0040 — 🟢🟡🔴 |
+| ~~CP0 düşünce kuralı~~ | CP0 ✅ | **Kapandı** — ölçüm üretilemedi, karar [ADR-0043](docs/adr/0043-dusunce-modu-acik-butceli-kapatma.md) (thinking AÇIK, bütçeli). ADR-0040'ın eşiği CP0.9'da koşulacak, artık **RS-FT gerekliliğini** belirliyor |
 | **CP0.5 hız kapısı** | CP0.5 | ≥2× yoksa eklenmez (ADR-0033, `fla-core` dersi) |
 | **ARA KAPI** | CP3 | `τ_a` M2 Rej ≥ 0.75 · M1 A1 ≥ 0.876 |
 | **Kapı 5** | Sprint 3 | ADR-0037 (3 madde) — referansları burada üretiliyor |
@@ -292,8 +327,11 @@ güçlü tabana karşı kazanmamız gerekir.
 | :--- | ---: |
 | Modal cap | 42.50 |
 | Sprint 1 fiili | −5.80 |
-| **Sprint 2 tahmini** | **−13.20** |
-| kalan | **~23.50** |
+| CP0 fiili *(planlanan ~0.15)* | **0** — hakem hiç çağrılmadı, cevap üretilemedi |
+| **CP0.9** üç çıpanın yeniden koşulması *(YENİ, ADR-0043)* | −0.60 |
+| **Sprint 2 tahmini** | **−13.65** |
+| kalan | **~23.05** |
 
-⚠️ **CP0-a YEŞİL çıkarsa** bütçe yeniden hesaplanır: üç öznenin yeniden koşulması (~$0.5) +
-RS-FT'nin üretim yükü + olası yeniden eğitimler. Takvim ~3-4 hafta uzar.
+⚠️ **Açık kalemler bütçeye henüz girmedi:** düşünce modu token maliyetini **~4.8×** artırdı
+(249 → ~1.198 tok/cevap) — Modal'da koşulan her üretim işi bu oranda uzar. Ve `τ_g` v2 açılırsa
+(4 gerekçe: [`kollar.md`](docs/record/kollar.md)) eğitim ~$5.5 + yeniden ölçüm ~$0.15 eklenir.
