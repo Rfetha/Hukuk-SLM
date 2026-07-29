@@ -509,7 +509,7 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 
 > Eşikler sonradan yazılırsa çıkan sonuç rasyonalize edilir. Proje pre-registration'ı zaten biliyor.
 >
-> ⚠️ **İsimlendirme:** kapılar **Kapı 0–4** diye anılır. `K1`/`K3` kısaltmaları repo'da **paper
+> ⚠️ **İsimlendirme:** kapılar **Kapı 0–6** diye anılır (4 kaldırıldı, ADR-0028). `K1`/`K3` kısaltmaları repo'da **paper
 > katkı haritası** için ayrılmıştır (K1 = ablasyon, K3 = ayrışma/negatif bulgular —
 > `docs/record/gemma4-12b-kronoloji.md` §Paper eşlemesi); karıştırılmaz.
 
@@ -520,10 +520,23 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 | **Kapı 2 — iş bölümü** | harness ablasyonu sonrası | **D** vs **E** | `D ≈ E` → *"bu domainde scaffolding ince-ayarı ikame ediyor"* — **kötü haber değil, yayımlanabilir bulgu.** `D > E` → iş bölümü doğrulandı |
 | **Kapı 3 — hibrit kol** | getirme ölçümü sonrası | recall@k + MRR (± kavram kenarı) | İyileştirmiyorsa kol kapanır, negatif bulgu raporlanır |
 
-| **Kapı 5 — iç iddia** ([ADR-0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md)) | kafes DEV ölçümü sonrası | **norm-dengeli** ayarda `τg+τa` | **Dördü birden:** (a) M1/M4 ≥ **0.90 ×** (`τg` tek) · (b) M2/M2b ≥ **0.90 ×** (`τa` tek) · (c) **bileşik = `min`(grounding, abstention)** ve bu bileşikte **Taban A ve B'nin İKİSİ de** geçilmeli · (d) M5 base'in üstüne çıkmamalı. *Referans = tekil hücreler (#8 gereği aynı hattan). Seçim: DEV'de bileşiği maksimize eden **tek** konfigürasyon TEST'e gider, tüm tarama eklerde; **aynı prosedür tabanlara da uygulanır**.* ⚠️ Güç analizi yok — karar kuralıdır, istatistiksel test değil |
+| **Kapı 5 — iç iddia** ([ADR-0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md)) | kafes DEV ölçümü sonrası | **norm-dengeli** ayarda `τg+τa` | **Üçü birden:** (a) M1/M4 ≥ **0.90 ×** (`τg` tek) · (b) M2/M2b ≥ **0.90 ×** (`τa` tek) · (c) **bileşik = `min`(grounding, abstention)** ve bu bileşikte **Taban A ve B'nin İKİSİ de** geçilmeli. ~~(d) M5~~ → **Kapı 6'ya taşındı** (ADR-0039). *Referans = tekil hücreler (#8 gereği aynı hattan). Seçim: DEV'de bileşiği maksimize eden **tek** konfigürasyon TEST'e gider, tüm tarama eklerde; **aynı prosedür tabanlara da uygulanır**.* ⚠️ Güç analizi yok — karar kuralıdır, istatistiksel test değil |
+| **Kapı 6 — parametrik sızıntı** ([ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md)) | kafes DEV ölçümü sonrası | M5 (kaynaksız mod) | **İkisi de base'i geçmeyecek:** M5 **coverage** ≤ %37.5 · M5 **ezber kütlesi** (`coverage × A1`) ≤ %10.7. *Hedef coverage → sıfıra yakın. Çıpa **base**, rakip değil — modeli aldığımız noktadan kötüye götürmemek. Her hücre üç sayıyı da (coverage · A1 · kütle) base farkıyla yayımlar.* Kalınca ön-kayıtlı merdiven: `τ_a` → merge ağırlığı → harness → `τ_g` v2 |
+| **CP0 düşünce kuralı** ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) | Sprint 2 başında | base `--thinking on`, DEV | 🟢 M2 Rej ≥ 0.78 **veya** M1 kütle ≥ %57.6, **ve** M5 kütle ≤ %10.7 → **RS-FT kapsama girer**, ADR-0030 m.2 geri alınır · 🟡 eşiğin altı → thinking *rapor edilen eksen* olur, plan değişmez · 🔴 kazanç ≤ +5 puan → ADR-0030 m.2 **kanıtla teyit**, RS-FT future-work. *Geçerlilik ön şartı: 4096 token + kesik-cevap ≤ %5* |
 
 *(Eski Kapı 4 — karşıtlık noktası — **kaldırıldı**, ADR-0028: tez tek boyut noktasında tamamlanıyor.
-Kapı 5 onun numarasını almadı — kayıt izini bozmamak için sıradaki numara verildi.)*
+Kapı 5 onun numarasını almadı — kayıt izini bozmamak için sıradaki numara verildi.
+**Kapı 6 de ADR-0039 ile sıradaki numarayı aldı**, boşluğu doldurmadı.)*
+
+> ### ⚠️ Kapı 5 → Kapı 6 ayrımının gerekçesi (2026-07-29, ADR-0039)
+>
+> CP6 `τ_g`'nin M5 ezber kütlesini %10.7 → %14.6 çıkardığını ölçtü. (d) sert veto olduğu için
+> `τ_g` içeren **her** hücre — ölçmek üzere kurulmuş `τg+τa` dahil — (a)(b)(c)'yi geçse bile
+> kalıyordu: **kapı, ölçmek için kurulduğu şeyi ölçemeden kapanıyordu.** (d) *gevşetilmedi*,
+> **ayrıldı**: iç iddia *"merge çatışan becerileri korur mu"* sorusudur; M5 o çatışmanın tarafı
+> değildir (`τ_a` M5'i düşürür, `τ_g` yükseltir — aynı yöne bakıyorlar). Katılık korundu (çıpa
+> yine base), ve her hücre **orijinal (d)'ye karşı da** raporlanır. **Ön-kayıt şerhi:** değişiklik
+> tekil M5'ler görülmüşken, **hiçbir merge hücresi üretilmemişken** yapıldı.
 
 12B hattının referans değerleri (kıyas için, **12B protokolü, tarihsel**):
 base M2 = 0.704 · v3 M2 = 0.593 · base ood = 0.889 · v3 ood = 0.483.

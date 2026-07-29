@@ -50,6 +50,12 @@
 | `tuncgulec1979/Kanunlar` | Satır-parçalı + eski-dil mülga metinler karışık; Mevzuat'tan temiz çekmek daha iyi |
 | Lexpera / Kazancı vb. ticari | Telif — katı yasak |
 
+### ⏸️ Değerlendirildi → **Faz 2'ye ertelendi** (tez kapsamı dışı)
+
+| Kaynak | Ne · neden şimdi değil |
+| :-- | :-- |
+| [`erdem-erdem/Turkish-Law-Documents-700k-clustered`](https://huggingface.co/datasets/erdem-erdem/Turkish-Law-Documents-700k-clustered) *(2026-07-29)* | **İçtihat**, mevzuat değil: 702.295 satır · 1.75 GB · Yargıtay + Danıştay kararları (2006-2024), `fikriokan` repo'larından yeniden paketlenmiş; alanlar `text`/`source`/`esasNo`/`kararNo`/`kararTarihi` + 4 küme kimliği (e5 KNN/HDBSCAN). **Korpusumuzla kesişimi sıfır.** 🚫 **Lisans belirtilmemiş** → varsayılan "tüm hakları saklı"; kaynak portallar açık ama bu paketleme değil, kullanılacaksa kaynaktan çekilir. ⚠️ **EDA borcu** — kümeleme etiketleri metnin kalitesi hakkında hiçbir şey söylemez (EuroHPC dersi). **Tez için kullanım yeri yok:** eğitim değil (kapsam mevzuat; içtihat uzman-uzun kayıt, register'ı kaydırır) · harness retriever değil (ADR-0019 graph-RAG'i dışarıda bırakıyor, Sprint 4 mevzuat üzerinde) · distractor madenciliği değil (tür farkı distractor'ı fazla kolaylaştırır). **Gerçek değeri Faz 2/3 içtihat katmanı** — orada da muhtemelen bedesten API'sinden (`docs/BEDESTEN_API.md`), taze ve lisans zinciri temiz. *Bkz. [`open_questions.md` §13.6](open_questions.md)* |
+
 ---
 
 ## 3. Üretme Pipeline'ı ("üretme pipeline bulamaz mıyız?" → evet)

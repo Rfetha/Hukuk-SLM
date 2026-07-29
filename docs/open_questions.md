@@ -73,31 +73,29 @@ kendimiz gömmeye göre kısayol olabilir, ama aynı üç uyarı geçerli.
 
 ---
 
-### §13.8 — RAFT meta-iddiaları groundedness hakeminde nasıl ele alınacak? 🔴 ⏰ **`τ_a`'DAN ÖNCE**
+### §13.9 — `τ_g` reçetesi fazla sert miydi? ⏸️ *ölçüm bekliyor* — **CP0-b**
 
-**Ölçülen sorun (#41, CP6).** RAFT şablonunun 1. adımı — *"İlgili kaynak KAYNAK 3'tür çünkü diğer
-kaynaklar farklı konuları ele almaktadır"* — kaynak **hakkında** bir cümle, kaynaktan değil. Hakem
-haklı olarak `NOT_IN_SOURCE` diyor. M1'de `τ_g`'nin 31 `NOT_IN_SOURCE` iddiasının **18'i (%58)**
-bu şekilde; hatalı-iddia oranı **%17.4 → %9.9**'a iniyor bunlar düşülünce.
+CP6 iki hasar bıraktı ve **ikisi de aynı sebepten olabilir**: cevap doğruluğu %2.7 → %17.4
+(**sahipsiz negatif** — hiçbir kolun görevi değil) ve *(varsayım)* düşünme yeteneğinin bastırılması.
+Ortak şüpheli **reçete**: 1.083 adım · lr 1e-4 · `all-linear` · r=16.
 
-**Neden karar gerektiriyor:** model bu cümleyi yazmak **zorunda** (eğitim verisinin %77'si bu biçim,
-ADR-0013). Kafesin **8 eval koşusunun** hepsi bu hakemden geçecek → **`τ_g` içeren her hücre
-sistematik ceza alır, `τ_a` tekili almaz.** ADR-0037'nin Kapı 5 kuralı `min`(grounding, abstention)
-üzerinden çalıştığı için **iç iddianın kıyası doğrudan taraflanır.**
+**Ölçüm:** `τ_g` `--thinking on` koşulur, ~20 çıktı gözle incelenir (`sprint2.md` CP0-b, $0).
+**Karar kuralı:** bozulmuşsa `τ_g` v2 (yumuşak reçete + `build_replay_tr.py` replay karışımı)
+masaya gelir — **ama CP0-a'nın sonucu beklenir**: a YEŞİL ise `τ_g` zaten RS-FT kapsamında
+yeniden doğar, ayrı v2 israf olur. Gerekçe: [ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) m.3.
 
-**Seçenekler:**
+---
 
-| # | ne | bedel | risk |
-| :-- | :--- | :--- | :--- |
-| A | Hakem istemine *"kaynak seçimi hakkındaki meta-cümleleri iddia sayma"* satırı | ~$0.12 (base+gem+tg yeniden hakem) | istem değişikliği başka etkiler doğurabilir |
-| B | Eval-mirror'da cevabın 1. adımını hakeme göndermeden ayıkla | kod + yeniden hakem | ayıklama regex'i biçim varyasyonunda kırılır |
-| C | Dokunma, artefaktı Limitations'a yaz | $0 | **kafes taraflı ölçülür** — iç iddia zarar görür |
+### §13.10 — RS-FT / düşünce modu tez kapsamına girecek mi? ⏸️ *ölçüm bekliyor* — **CP0-a**
 
-**Pre-registration kuralı (TASARIM §7):** karar **veriye bakılarak** verilecekse cevap kuralı önce
-yazılır. Hangi seçenek seçilirse seçilsin **base + Gemini dahil TÜM kollara aynı anda** uygulanır;
-tek kola uygulamak sayıyı bizim lehimize kaydırır.
+**Karar kuralı ön-kayıtlı ve yazılı** ([ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md));
+açık olan yalnız **sonuç**. 🟢 YEŞİL → RS-FT kapsama girer, ADR-0030 m.2 geri alınır, ADR-0035
+yeniden açılır, Sprint 1'in üç öznesi yeniden koşulur (~$0.5), takvim ~3-4 hafta uzar ·
+🟡 → thinking rapor edilen eksen olur · 🔴 → ADR-0030 m.2 kanıtla teyit, RS-FT future-work.
 
-**Ne zaman:** Sprint 2 başlamadan — `τ_abstention` eğitilmeden önce.
+⚠️ **YEŞİL sadece iyi haber değil:** base *hiç eğitilmeden* `τ_a`'nın işinin çoğunu yapıyorsa,
+dış iddiada üçüncü bir açıklama belirir (*ince-ayar mı, harness mı, **düşünme mi***) ve makalenin
+çerçevesi daralır. **Ne zaman:** Sprint 2'nin 1. günü.
 
 ---
 
@@ -110,9 +108,10 @@ CP5'te ölçüldü: **6.8-7.0 s/it · 2.619 token/s · MFU ≈ %15.** Sebep büy
 (*"The fast path is not available"*) ve Qwen3.5-4B'nin **32 katmanının 24'ü** linear-attention.
 Fallback **matematiksel olarak aynı**: çıktı geçerli, yalnız yavaş.
 
-**Yapılacak:** Sprint 2'nin 4 koşusundan **önce** image'a eklenip **bir smoke ile s/it ölçülecek.**
-2× çıkarsa ~5 saat + ~$12 tasarruf. ⚠️ **Kazanç ölçülmeden yazılmayacak** (`fla-core` dersi, `#40`)
-· `requirements.lock.txt` **korunacak**.
+**Yapılacak:** Sprint 2'nin 3 eğitim koşusundan **önce** image'a eklenip **bir smoke ile s/it
+ölçülecek** — [`sprint2.md`](../sprint2.md) **CP0.5**. **Kapı: ≥2× yoksa eklenmez**, ölçüm negatif
+bulgu olarak yazılır. 2× çıkarsa ~5 saat + ~$12 tasarruf. ⚠️ **Kazanç ölçülmeden yazılmayacak**
+(`fla-core` dersi, `#40`) · `requirements.lock.txt` **korunacak**.
 Gerekçe ve erteleme kararı: [ADR-0033](adr/0033-egitim-hizi-fla-core-checkpointing-batch.md).
 
 ### Korpus temizliği — Sprint 4 ön koşulu
@@ -137,12 +136,16 @@ p1 = 0.739, p3 = 0.547). **Zorunlu şart**, `TASARIM.md` §4.2'de kayıtlı.
 | **#8** tekil hücreler | aynı hat + `τg` düz kontrol → **4 hücre** | [ADR-0036](adr/0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md) Ek · `TASARIM.md` §4.3 |
 | **#9** iç iddianın karar kuralı | **Kapı 5** — `min` bileşik, simetrik %90, iki tabanı da geç | [ADR-0037](adr/0037-ic-iddia-karar-kurali-kapi-5.md) · `TASARIM.md` §7 |
 | **#10** merge kütüphanesi | **kendi kodumuz** + zorunlu birim testi + `mergekit` çapraz kontrol 🔄 | `TASARIM.md` §4.2 |
-| **#11** `τ_reasoning` / RS-FT | **kapsam dışı** — biçim zaten `τ_g`'de (%76), zincirleme harness'ın işi | [ADR-0035](adr/0035-tau-reasoning-rs-ft-kapsam-disi.md) · `TASARIM.md` §2 (satır 13), §10.2 |
+| **#11** `τ_reasoning` / RS-FT | **kapsam dışı** — biçim zaten `τ_g`'de (%76), zincirleme harness'ın işi. ⚠️ **§13.10 ile şartlı yeniden açıldı** (CP0-a YEŞİL çıkarsa) | [ADR-0035](adr/0035-tau-reasoning-rs-ft-kapsam-disi.md) · [ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) · `TASARIM.md` §2 (satır 13), §10.2 |
 | **#12** ΔW norm asimetrisi | **norm-dengeli ana**, ham TIES ablasyon · `‖τ‖` koşulsuz ölçülür | [ADR-0036](adr/0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md) · `TASARIM.md` §4.2 |
 | **#13** rejim eşleşmesi | precision/dropout/modül/uzunluk **eşleşti** · lr/batch **serbest** + tetik · ORPO **epochs 3** | `TASARIM.md` **§4.1.1** |
 | **§13.2** red kapısı eşiği | **katı** — tek doğrulanamayan atıf tüm cevabı reddettirir | [ADR-0038](adr/0038-red-kapisi-esigi-kati.md) |
 | **§13.4** zamansal eksen | **kapsam dışı** — sebep tercih değil, korpusta metadata yok | `TASARIM.md` §10.2 · ön koşul §5.3 |
 | **§13.7** yinelemeli merge | **konusuz kaldı** — `k=2`'de ayrım tanımsız | `TASARIM.md` §4.2 |
+| **§13.8** RAFT meta-iddiaları | **A** — hakem istemine muafiyet satırı, **TÜM kollara aynı anda**, ham sayılar da yayımlanır | [ADR-0041](adr/0041-raft-meta-iddia-hakem-kurali.md) · `sprint2.md` CP1 |
+| — M5 anti-hedefi Kapı 5'i kilitliyor | **(d) ayrıldı → Kapı 6**; çıpa **base** (rakip değil), coverage + ezber kütlesi, orijinal (d)'ye karşı da rapor | [ADR-0039](adr/0039-kapi-6-parametrik-sizinti.md) · `TASARIM.md` §7 |
+| — `rejected` havuzu hangi modelden | **tek havuz ham base'den** (veri sabit) + **FT-6 on-policy kontrol koşusu** (~$0.65) | [ADR-0042](adr/0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md) · `sprint2.md` CP2/CP5 |
+| — rakip yöntemler Sprint 2'de mi | **önce `τ_a`, ARA KAPI'da dur, sonra tabanlar** — `τ_a` tutmazsa ~$12 harcanmaz | `sprint2.md` CP3 |
 | kod borcu — ORPO rejim sapması | `--bf16-base` + `--lora-dropout` eklendi | `scripts/train_orpo.py` · `modal_train.py` · `TASARIM.md` §4.1.1 |
 | kod borcu — `--target-modules` | **zorunlu**, varsayılan silindi (bedel ölçüldü: `‖τ‖`'nin %26.8'i) | her iki eğitim script'i · `TASARIM.md` §4.1.1 |
 | gözlem — sıfır marjinal maliyet | ek çıkarım bizde ucuz/rakipte pahalı · `N*` etkilenmiyor | `TASARIM.md` §6.4 |
