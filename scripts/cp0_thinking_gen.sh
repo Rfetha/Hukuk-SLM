@@ -40,7 +40,9 @@ SERVER_URL="${SERVER_URL:-}"      # verilirse sunucu AÇILMAZ, var olan kullanı
 NGL="${NGL:-99}"
 DEV="${DEV:-data/eval/dev}"
 MODES="${MODES:-m1 m4 m2 m2b m3 m5}"
-OUT_DIR="${OUT_DIR:-outputs/eval}"
+# Çıktılar KOŞU KLASÖRÜNE yazılır (2026-07-29): her ölçüm turu kendi dizininde + KUNYE.json.
+# Düz `outputs/eval` artık yalnız koşu klasörlerini barındırır; oraya yazmak turları karıştırır.
+OUT_DIR="${OUT_DIR:-outputs/eval/cp09-butceli-1024-512}"
 BIN="${BIN:-$HOME/code/llama.cpp/build-cuda/bin/llama-server}"
 LOG="$OUT_DIR/cp0_server_${TAG}.log"
 
