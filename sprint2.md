@@ -2,7 +2,7 @@
 
 > **Otorite:** [`TASARIM.md`](TASARIM.md) · **bu sprint'in kararları:** ADR-0039 · ADR-0040 ·
 > ADR-0041 · ADR-0042 · **ADR-0043** · **ADR-0044** · **ADR-0045** · **ADR-0046** · **ADR-0047** ·
-> **tam iş listesi:** [`TODO.md`](TODO.md)
+> **ADR-0048** · **ADR-0049** · **tam iş listesi:** [`TODO.md`](TODO.md)
 > **Önceki sprint:** [`sprint1.md`](sprint1.md) 🔒 kapalı ·
 > ⭐ sonuçları [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md)
 >
@@ -39,7 +39,7 @@ adil koşullarda ölçtük mü?"*
 | Ölçüm zemini | DEV havuzu (80 core_hard + 70 trap), TEST (`eval/canon/`) **hiç görülmedi** |
 | Çıpalar | ✅ **CP0.9'da yeniden üretildi** — base · `τ_g` v1 · Gemini 3.1 FL, bütçeli kipte, `outputs/eval/cp09-butceli-1024-512/` |
 | **Protokol** | **thinking AÇIK, bütçeli**: düşünce 1024 + cevap 512, zorunlu kapatma (ADR-0043) — rejim değişmezi. **thinking-off artık canlı rejim DEĞİL** (ADR-0043 m.4 daraltıldı) |
-| Bütçe | Modal cap **$42.50** · harcanan **$6.29** · **kalan $36.21** |
+| Bütçe | Modal cap **$42.50** · fiili harcanan **$6.57** · **kalan $35.93** *(2026-07-30, CP2-a dahil)* |
 
 ### ⭐ Yürürlükteki çıpalar (bütçeli kip, DEV, harness kapalı)
 
@@ -55,6 +55,18 @@ adil koşullarda ölçtük mü?"*
 
 Kaynak: `research_log` [#43](docs/record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md) ·
 tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
+
+> ### 🚨 ÇEKİNME SATIRLARI (M2 · M2b · M3) DÜZELTİLECEK — [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md)
+> Bu üç satırın **paydası özneye bağlı**: `valid_trap` her özne için, hakem o öznenin **cevabını
+> görerek** yeniden yargılanmış. Aynı 80 M3 kaleminde 54/56/**39** — ve M3'te bağlam **boş**
+> olduğundan doğru payda tanım gereği **80/80**'dir.
+>
+> **Bilinen düzeltmeler:** M3 `τ_g` **0.923 → 0.800**. M2/M2b filtresiz değerler: M2 base 0.786 ·
+> `τ_g` 0.800 · Gemini 0.814 — M2b base 0.950 · `τ_g` 0.525 · Gemini 0.850.
+> Sapma **yön değiştiriyor**: M2b'de aleyhimize ~7p, M3'te lehimize ~12p.
+>
+> **CP2-r bu satırları cevaba-kör paydayla yeniden üretecek. O zamana kadar M2/M2b/M3 sayıları
+> KARAR DAYANAĞI OLARAK KULLANILMAZ.** M1 satırları (kütle · A1) etkilenmiyor — groundedness ekseni.
 
 ### `τ_g`'nin negatifleri — **bütçeli kipte tablo değişti**
 
@@ -75,21 +87,34 @@ tablo `scripts/cp09_tablo.py` ile dosyalardan üretilir.
 
 ## 🎯 SONRAKİ OTURUM — buradan nereye
 
-> **Durum (2026-07-30):** CP0 ✅ · CP0.9 ✅ · CP1 ✅ · CP0.5 ✅ · CP2 **pilot koştu, kusur
-> bulundu, karar verildi ([ADR-0046](docs/adr/0046-cp2-kabul-olcutu-hakem-ve-havuz-on-elemesi.md)),
-> uygulama BAŞLAMADI.** Protokol kilitli (thinking-on, bütçeli), çıpalar yerinde.
-> **Sıradaki iş: ADR-0046 m.3 — ön-eleme uyum ölçümü (~$0,004).**
+> **Durum (2026-07-30 sonu):** CP0 ✅ · CP0.9 ✅ · CP1 ✅ · CP0.5 ✅ · CP2 pilot ✅ · **CP2-a ✅
+> koştu ve ölçüm aracının kendisini kırdı** → [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md).
+> **Sprint 2'nin kalan beş kararı `/grill-me` ile kilitlendi** →
+> [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md). Açık karar **kalmadı**.
+> **Sıradaki iş: CP2-r — cevaba-kör `valid_trap` önbelleği (150 kalem, ~$0,29).**
 
 ### Elde ne var / ne yok — tek bakış
 
 | | durum |
 | :--- | :--- |
-| **Ölçüm zemini** | ✅ Hakem istemi düzeltildi (CP1) · üç özne bütçeli kipte yeniden puanlandı · `causal-conv1d` kapısı karara bağlandı |
-| **`τ_a` eğitim verisi** | ⚠️ **Diskte var ama kusurlu** — `data/train/orpo_abstain/train.jsonl` (1.741 çift): `rejected` emekli 12B hattından (off-policy), `chosen` %42 geçersiz tuzak dilimindan |
-| **Yeni havuz** | 🔴 **Toplanmadı** — pilot 120+120 üretim koştu, üretim hasadı bilerek başlatılmadı |
-| **Karar** | ✅ Verildi — ADR-0046 (ölçüt hakeme · havuz üretimden önce elenir · `chosen` aynı koşuda süzülür) |
-| **Hedef + donanım** | ✅ Karara bağlandı — ADR-0047: **750 negatif · Modal `-np 32` · ~1,4 sa · ~$3** (yerel seri 54 sa'ydı). `τ_a` rejimi **~73 adım / 5 epoch** |
-| **Açık kalan** | ⏳ M2b metrik olarak sağlam mı · ⏳ pilot CP3 koşulsun mu · ⏳ `cp2_harvest.py` eş zamanlı üretime alınmalı |
+| **Ölçüm zemini** | ⚠️ **Kusur bulundu ve düzeltme kararı verildi:** `valid_trap` özne başına yeniden yargılanıyordu → **22 çekinme koşusunun 21'inin paydası özneye bağlı** (ADR-0048). Bağlamın özneler arası **bit-birebir aynı** olduğu ölçüldü → düzeltme 150 kalemlik tek önbellekle çözülüyor |
+| **Hakem istemi** | ✅ Düzeltildi (CP1) · üç özne bütçeli kipte yeniden puanlandı |
+| **`causal-conv1d`** | ✅ Kapı KALDI (tavan 1.254×) → eklenmedi |
+| **`τ_a` eğitim verisi** | ⚠️ **Diskte var ama kusurlu** — `data/train/orpo_abstain/train.jsonl` (1.741 çift): `rejected` emekli 12B hattından (off-policy). *`chosen` için "%42 geçersiz" iddiası ise **çürüdü** — zayıf hakemin çapalanma artefaktıydı, gerçek ~%17* |
+| **Yeni havuz** | 🔴 **Toplanmadı** — pilot 120+120 üretim koştu, hasat bilerek başlatılmadı |
+| **Hasat verimi** | ✅ **%5,0 → %10,0** — mini geçerli tuzakları geçersiz sayıp fabrikasyonların yarısını çöpe atıyordu. 750 hedef = **7.500 üretim** |
+| **Hedef + donanım** | ✅ ADR-0047: **750 negatif · Modal `-np 32`** · taşıyıcı Q4_K_M GGUF sabit · `τ_a` rejimi **~73 adım / 5 epoch** |
+| **Açık kalan** | ⏳ Yalnız **M1 A1 muhafızı (0.888)** — CP1'in yeni hakemiyle yeniden türetilecek (`valid_trap`'ten bağımsız) · ⏳ `cp2_harvest.py` eş zamanlı üretime alınmalı (kod) |
+
+### ⭐ ADR-0049 ile kilitlenen beş karar
+
+| # | karar | sayı |
+| :-- | :--- | :--- |
+| 1 | ARA KAPI eşikleri **düzeltilmiş cevaba-kör çıpadan yeniden türetilir** — ön-kayıtlı olan **formül**, sayı değil (emsal: 0.75/0.876 → 0.934/0.888) | eşik 0.934 → **~0.91** bekleniyor · ⚠️ yön **lehimize**, savunması ADR-0049'da |
+| 2 | 150 kalemlik kör `valid_trap` önbelleğini **gpt-4o** kurar, **bir kez** · skorlama hakemi **mini kalır** · `verdict` yeniden hesaplanmaz | **$0,29** · m2 70 + m2b 80 + m3 **0** (tanım gereği 80/80) |
+| 3 | **M2b kapı olarak kalır** — karşılaştırma kalem-içi, zayıflık seviyeyi bozar açığı bozmaz. Ön-kayıtlı taban | **40/80**; altında merge onarımı **tanımlayıcıya** iner |
+| 4 | Boru hattı **5 adımlık mekanik smoke** ile sınanır — tam pilot CP3 **değil** (okunabilir sayı = çıpalama riski) | **$0,15** |
+| 5 | CP2-c kabul: **B** = mini ön-filtre → gpt-4o verdict **teyit** → gpt-4o **kör** geçerlilik damgası | **$3,68** · artık kirlilik ~0 (A'da %9,5 kalıyordu) |
 
 ### 0. Oturuma başlarken oku (bu sırayla)
 
@@ -127,10 +152,12 @@ onaracağı delik **kendi üstünde değil, `τ_g`'de**.
 | :-- | :--- | :--- | ---: | :--- |
 | **CP1** ✅ | Hakem istemi düzeltmesi (ADR-0041) + **üç öznenin bütçeli-kip sayılarının** yeniden puanlanması | — | **0.15** | ✅ **koşuldu:** `τ_g`'nin A1 açığının **%59'u** meta-iddia artefaktıymış (0.120 → 0.049). Kalan %41 gerçek, maskelenmiyor |
 | **CP0.5** ✅ | `causal-conv1d` hız ölçümü | yerel | **0** | ✅ **koşuldu:** tavan **1.254×** < 2.0× → **eklenmedi**, negatif bulgu #44'te |
-| **CP2-a** ⏳ | **Ön-eleme uyum ölçümü** — `cp2_prefilter.py --against`, 36 etiketli örnek | — | **0.004** | ADR-0046 m.3 **kapısı**: uyum yetersizse ön-eleme koşulmaz |
-| **CP2-b** ⏳ | Havuz ön-elemesi (`(soru, tuzak madde)` → geçerlilik) + **hedef sayı kararı** | — | **0.94** | ADR-0046 m.2 · m.5 |
-| **CP2-c** ⏳ | Üretim hasadı — **hedef 750**, regex ön-filtre → **hakem kabulü** | **Modal** `-np 32` | **~3.4** | ADR-0046 m.1 + [**ADR-0047**](docs/adr/0047-cp2-hedef-750-modal-hasat.md) · ~1.4 sa |
-| **CP3** | `τ_a` eğitimi (**~73 adım / 5 epoch**, lr 1e-5, **`--fresh-adapter` ZORUNLU**) + tekil ölçüm | Modal | ~0.7 | 🔴 **ARA KAPI** |
+| **CP2-a** ✅ | Ön-eleme uyum kapısı — 2×2 hakem tasarımı | — | **0.121** | ✅ **koştu:** ön-eleme **net zararlı** → koşulmuyor; ve `valid_trap` özneye bağlı çıktı → [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) |
+| ~~**CP2-b**~~ ❌ | ~~Havuz ön-elemesi~~ | — | **0** | ❌ **İPTAL** — ADR-0048 m.4: filtre eleyeceğinden çok geçerli tuzak atıyor (isabet 0,14) |
+| **CP2-r** ⏳ | **Cevaba-kör `valid_trap` önbelleği** (150 kalem, gpt-4o) + 9 koşunun yeniden puanlanması (aritmetik) | — | **0.29** | ADR-0049 m.2 · çıktısı **ARA KAPI eşiklerini türetir** + M2b 40/80 tabanını okur |
+| **CP2-s** ⏳ | Boru hattı **mekanik smoke** — `τ_a` 5 adım → TIES merge → GGUF → 3 cevap | Modal | **0.15** | ADR-0049 m.4 · *sayı üretmez, çalışıyor mu diye bakar* |
+| **CP2-c** ⏳ | Üretim hasadı — **hedef 750** (7.500 üretim), kabul tasarımı **B** | **Modal** `-np 32` | **~6.7** | ADR-0046 m.1 + [ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) + ADR-0049 m.5 · ~1-2 sa |
+| **CP3** | `τ_a` eğitimi (**~73 adım / 5 epoch**, lr 1e-5, **`--fresh-adapter` ZORUNLU**) + tekil ölçüm | Modal | ~0.85 | 🔴 **ARA KAPI** *(eşik CP2-r'den türer)* |
 | **CP4** | Taban A — karışık SFT | Modal | ~5.7 | Kapı 5'in (a) referansı |
 | **CP5** | Taban B — ardışık SFT + on-policy kontrol | Modal | ~6.5 | Kapı 5'in (a) referansı |
 
@@ -173,8 +200,8 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 
 ## Checkpoint akışı
 
-> **Sıra kapılara bağlı.** CP0 ✅ → CP0.9 ✅ → CP1 ✅ → CP0.5 ✅ →
-> **CP2** *(pilot ✅ · karar ✅ · uygulama ⏳ **BURADAYIZ**)* → CP3 → **ARA KAPI** → CP4 → CP5.
+> **Sıra kapılara bağlı.** CP0 ✅ → CP0.9 ✅ → CP1 ✅ → CP0.5 ✅ → CP2 pilot ✅ → CP2-a ✅ →
+> ~~CP2-b~~ ❌ → **CP2-r ⏳ BURADAYIZ** → CP2-s → CP2-c → CP3 → **ARA KAPI** → CP4 → CP5.
 > Ara kapı geçilmeden rakip yöntemlere para harcanmaz (5/6 kararı, 2026-07-29).
 >
 > **DURUM (2026-07-30):** CP2 pilotu, hasadın **ön-kayıtlı kabul ölçütünün** ölçtüğünü sandığı
@@ -199,13 +226,15 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 | **CP0.5** | ✅ `causal-conv1d` hız ölçümü — **kapı KALDI** (tavan 1.254× < 2.0×) → **eklenmedi** | yerel | **0** | ✅ karara bağlandı |
 | **CP1** | ✅ Hakem istemi düzeltmesi + üç öznenin yeniden puanlanması · `τ_g` A1 açığının **%59'u artefaktmış** | — | **0.15** | ✅ ADR-0041 uygulandı |
 | **CP2 pilot** | ✅ **KOŞULDU, KUSUR BULDU** — kabul ölçütü (regex) raporlanan metrikle (LLM hakemi) aynı değil; gerçek verim **%5**, hedef mevcut havuzdan **ulaşılamaz** | yerel | **0.01** | ✅ [ADR-0046](docs/adr/0046-cp2-kabul-olcutu-hakem-ve-havuz-on-elemesi.md) |
-| **CP2-a** | ⏳ Ön-eleme **uyum ölçümü** (36 etiketli örnek) — ön-eleme hakemi ile denetim hakemi aynı şeyi mi diyor | — | **0.004** | ⏳ **ADR-0046 m.3 kapısı** |
-| **CP2-b** | ⏳ Havuz ön-elemesi (8.000 kalem) + `chosen` süzme + **hedef sayı kararı** | — | **0.94** | ⏳ m.2 · m.5 |
-| **CP2-c** | ⏳ Üretim hasadı — **hedef 750**, Modal `-np 32`, taşıyıcı Q4_K_M GGUF (vLLM **değil**) | **Modal** | **~3.4** | ⏳ m.1 + [ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) · ilk 10 dk verim kapısı |
+| **CP2-a** | ✅ **KOŞTU — ölçüm aracının kendisini kırdı.** 2×2 hakem tasarımı: çapalanma mini'de **22,3p**, gpt-4o'da 8,4p → *%42 geçersiz* premisi **artefakt**. Ve `valid_trap` **özneye bağlı** çıktı | — | **0.121** | ✅ [ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) + [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) |
+| ~~**CP2-b**~~ | ❌ **İPTAL** — ön-eleme filtresi net zararlı (kestiği 7 kalemin isabeti **0,14**, 6 geçerli tuzak boşa) | — | **0** | ADR-0048 m.4 |
+| **CP2-r** | ⏳ **Cevaba-kör `valid_trap` önbelleği** — gpt-4o, 150 kalem (m2 70 + m2b 80; m3 tanım gereği 80/80) → 9 koşu **aritmetikle** yeniden puanlanır | — | **0.29** | ⏳ ADR-0049 m.2 · **ARA KAPI eşiklerini türetir** · M2b **40/80** tabanı |
+| **CP2-s** | ⏳ Boru hattı **mekanik smoke** — `τ_a` 5 adım → norm-dengeli TIES → GGUF → 3 cevap. *Sayı üretmez* | Modal | **0.15** | ⏳ ADR-0049 m.4 |
+| **CP2-c** | ⏳ Üretim hasadı — hedef **750** = **7.500 üretim** (verim %10), kabul tasarımı **B** | **Modal** `-np 32` | **~6.7** | ⏳ ADR-0049 m.5 · **ilk 10 dk verim kapısı** |
 | **CP3** | **FT-2 = `τ_a`** eğitimi + tekil ölçüm + **merge onarım kontrolü** | Modal | ~0.85 | 🔴 **ARA KAPI** |
-| **CP4** | **FT-4** Taban A (karışık SFT) + ölçüm | Modal | ~5.7 | — |
-| **CP5** | **FT-5/FT-6** Taban B (ardışık SFT) + on-policy kontrol + ölçüm | Modal | ~6.5 | — |
-| | **toplam** | | **~$14.99** | kalan bütçe ~$22.9 |
+| **CP4** | **FT-4** Taban A (karışık SFT) + ölçüm | Modal | ~5.7 | 🔒 insan onayı |
+| **CP5** | **FT-5/FT-6** Taban B (ardışık SFT) + on-policy kontrol + ölçüm | Modal | ~6.5 | 🔒 insan onayı |
+| | **toplam kalan** | | **~$20.2** | fiili harcanan **$6.57** · cap sonrası **~$15.7** |
 
 ---
 
@@ -519,6 +548,21 @@ Muhafız: M1 A1   ≥ 0.90 × base     →  ≥ 0.888
 ✅ **Sayılar CP0.9'dan geldi** (formül ön-kayıtlıydı, sayı değil). Eski eşikler (0.75 / 0.876)
 thinking-off protokolündendi ve **düştü**.
 
+> ### 🔄 EŞİK BİR KEZ DAHA TÜRETİLECEK — [ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.1
+> Yukarıdaki **0.934**, `valid_trap`'in özneye bağlı olduğu paydadan (`48/59 = 0.814`) türedi.
+> CP2-r cevaba-kör paydayı kurunca çıpa **~0.79'a** inecek → eşik **~0.91**.
+>
+> **Ön-kayıtlı olan FORMÜL** (`base + 12 puan`), sayı değil — ve emsal var: eşikler thinking-off →
+> bütçeli geçişinde bir kez zaten taşındı (0.75 → 0.934).
+>
+> ⚠️ **Yön bizim lehimize ve bunu açıkça yazıyoruz.** Savunma: (a) `τ_a` **henüz yok**, sonucu
+> bilmeden düzeltiyoruz; (b) düzeltme base'e, rakibe ve her hücreye **aynı** uygulanıyor;
+> (c) bozuk ölçümden türeyen eşiği korumak ön-kayıtlılığı değil **hatayı** korumaktır.
+> **Sonuç eski eşiğe karşı da raporlanır.**
+>
+> **M1 A1 muhafızı 0.888 bu düzeltmeden ETKİLENMEZ** (groundedness ekseni) — ama CP1'in yeni
+> hakem isteminden etkilenir ve o ayrı bir açık kalem.
+
 > ### 🚨 Tavan riski — şimdi kayda geçiyor, sonra değil
 > Base geçerli 59 tuzağın **48'ini zaten reddediyor**. +12 puan, kalan **11 hatanın 7'sinin**
 > düzeltilmesi demek — tavana **6.6 puan** kala. `τ_a` bu kapıda kalırsa sebebi kolun kötülüğü
@@ -609,7 +653,8 @@ güçlü tabana karşı kazanmamız gerekir.
 | ~~CP0 düşünce kuralı~~ | CP0 ✅ | **Kapandı** — karar [ADR-0043](docs/adr/0043-dusunce-modu-acik-butceli-kapatma.md) (thinking AÇIK, bütçeli) |
 | ~~ADR-0040 🟢🟡🔴~~ | CP0.9 ✅ | **🟡 SARI** — M2 eşiği geçti (0.814≥0.78), M5 muhafızı İHLAL (%36.9→%42.5). **RS-FT kapsam dışı kalıyor**, ADR-0035 açılmıyor |
 | ~~CP0.5 hız kapısı~~ | CP0.5 ✅ | **KALDI** — tavan 1.254× < 2.0× → `causal-conv1d` **eklenmedi**, `requirements.lock.txt` korundu |
-| **CP2-a uyum kapısı** | CP2-a | Ön-eleme hakemi ≟ denetim hakemi, 36 etiketli örnekte. **Yetersizse ön-eleme koşulmaz** ve ADR-0047'nin süre/maliyet tablosu geçersizdir ([ADR-0046](docs/adr/0046-cp2-kabul-olcutu-hakem-ve-havuz-on-elemesi.md) m.3) |
+| ~~CP2-a uyum kapısı~~ | CP2-a ✅ | **KALDI** — hakemler %58,3-%91,7 arasında dağıldı; ön-eleme **koşulmadı** ([ADR-0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) m.4) |
+| **M2b kurgu tabanı** | CP2-r | Cevaba-kör geçerli tuzak **< 40/80** ise M2b tasarlandığı mod olmaktan çıkar → ADR-0045'in merge onarım kontrolü **tanımlayıcıya** iner, ARA KAPI'nın 2. gözlemi olmaktan çıkar ([ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.3) |
 | **CP2-c verim kapısı** | CP2-c | Modal koşusunun **ilk 10 dakikasında** gerçek `s/üretim` okunur; tahminin **2 katını** aşarsa koşu **DURUR**, sayı negatif bulgu olarak yazılır ([ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) m.3) |
 | **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.934 · M1 A1 ≥ 0.888** ⚠️ tavan riski **+** `τ_g+τ_a` merge **M2b ≥ 0.887** ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)) |
 | **Kapı 5** | Sprint 3 | ADR-0037 (3 madde) — referansları burada üretiliyor |
@@ -628,11 +673,15 @@ güçlü tabana karşı kazanmamız gerekir.
 | **CP1** fiili *(planlanan 0.12)* | **−0.15** — 0.113 yeniden puanlama + 0.037 hakem-gürültüsü kontrol koşusu |
 | **CP0.5** fiili *(planlanan 0)* | **0** — ölçüm yerelde, `causal-conv1d` derlenmedi (gerek kalmadı) |
 | **CP2 pilot** fiili *(planlanan 0)* | **−0.01** — GPU yerelde $0; kabul edilen adayların LLM hakemiyle denetimi |
-| **CP2-a** tahmini *(ADR-0046 m.3)* | **−0.004** — ön-eleme uyum kapısı, 36 örnek |
-| **CP2-b** tahmini *(ADR-0046 m.2)* | **−0.94** — havuz ön-elemesi, ~8.000 kalem |
-| **CP2-c** tahmini *(ADR-0047)* | **−3.4** — Modal A100 `-np 32` ~1.4 sa ≈ $3.0 + hakem kabulü ~$0.4 |
-| **CP3-CP5** tahmini | **−13.05** — 0.85 + 5.7 + 6.5 |
-| kalan cap | **~$5.5** (CP2-CP5 tamamı koşarsa) · bugün itibarıyla harcanmamış **~22.9** |
+| **CP2-a** fiili *(planlanan 0.004)* | **−0.121** — 2×2 hakem tasarımı: 0.003 mini + 0.049 gpt-4o kör + 0.069 gpt-4o cevaplı |
+| | **FİİLİ HARCANAN: $6.57 · KALAN CAP: $35.93** |
+| ~~CP2-b~~ | **0** — İPTAL (ADR-0048 m.4) |
+| **CP2-r** planlanan *(ADR-0049 m.2)* | **−0.29** — 150 kalemlik kör `valid_trap` önbelleği, gpt-4o, bir kez |
+| **CP2-s** planlanan *(ADR-0049 m.4)* | **−0.15** — boru hattı mekanik smoke |
+| **CP2-c** planlanan *(ADR-0047 + 0049 m.5)* | **−6.7** — Modal `-np 32` ~$3.0 + kabul tasarımı B $3.68 |
+| **CP3** planlanan | **−0.85** |
+| **CP4-CP5** planlanan 🔒 | **−12.2** — insan onayı şart |
+| | **planlanan toplam −$20.19 → cap sonrası ~$15.74** |
 
 ⚠️ **CP2-c ilk kez Modal'da koşan bir HASAT işi** — önceki hasat planı yerel/$0 idi. Süre tahmini
 tutmazsa (ilk 10 dk kapısı) koşu durur; harcanan kısım künyeye yazılır.
