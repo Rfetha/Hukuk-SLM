@@ -248,7 +248,7 @@ dokunulmadı.
 
 **⚠️ İki kod kapısı** (`train_sft.py` · `train_orpo.py`, 2026-07-28):
 `--target-modules` **varsayılansız ve zorunlu** — eski varsayılan `in_proj_*`'ı kaçırıyordu ve
-o modüller `‖τ_g‖`'nin **%26.8'ini** taşıyor (ölçüldü: `outputs/eval/tau_norm_tg.json`).
+o modüller `‖τ_g‖`'nin **%26.8'ini** taşıyor (ölçüldü: `outputs/eval/_artefakt/tau_norm_tg.json`).
 `train_orpo`'nun **`--adapter` (continuation) yolu KULLANILMAZ**; `--fresh-adapter` zorunlu —
 `--adapter tg` yazmak ardışık SFT üretir, yani **Taban B**'yi kol diye kaydeder.
 
