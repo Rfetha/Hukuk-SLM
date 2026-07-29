@@ -261,6 +261,17 @@ optimizer adımı**; `τ_g` **1.083** adım koşuyor. 12B hattında ORPO *contin
 yetiyordu), ham base'den yeni davranış öğretmek başka iş. 3 epoch = **82 adım.** `grad_accum`'a
 dokunulmadı.
 
+> ### 🔄 GÜNCELLENDİ — [ADR-0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) (2026-07-30)
+> `rejected` hasadının hedefi **1.495 → 750** indi (gerekçe: yerel seri hasat 1.495 için **54
+> saat**; ADR-0046'nın ön-elemesiyle bile yürütülebilir değildi). Yeni rejim:
+> **~937 çift · epoch 5 · ~73 adım** · lr 1e-5 ve etkin batch 64 **değişmedi**.
+> Yukarıdaki 82 adım / 3 epoch **tarihsel** — 1.495'lik hedefin sayısı, audit için duruyor.
+>
+> Adım sayısı kasten 82'ye yakın tutuldu: 500 hedefte 29 adıma inecekti ve ARA KAPI kalırsa
+> *"kol mu kötüydü, veri mi azdı"* ayrılamayacaktı. ⚠️ **Epoch 3 → 5 aşırı-uyum riski taşır**;
+> `‖τ_a‖_F` koşulsuz ölçülür, seçim DEV'de yapılır, belirti görülürse epoch 3'e dönülür (adım 44).
+> **Limitations'a girer.**
+
 **⚠️ İki kod kapısı** (`train_sft.py` · `train_orpo.py`, 2026-07-28):
 `--target-modules` **varsayılansız ve zorunlu** — eski varsayılan `in_proj_*`'ı kaçırıyordu ve
 o modüller `‖τ_g‖`'nin **%26.8'ini** taşıyor (ölçüldü: `outputs/eval/_artefakt/tau_norm_tg.json`).

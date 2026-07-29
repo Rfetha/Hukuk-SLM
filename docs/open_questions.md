@@ -101,18 +101,81 @@ dış iddiada üçüncü bir açıklama belirir (*ince-ayar mı, harness mı, **
 
 ## 🟡 PLANLANMIŞ İŞ — karar değil, yapılacak
 
-### `causal-conv1d` hız kaldıracı — Sprint 2 öncesi ÖLÇÜLECEK
+### ~~`causal-conv1d` hız kaldıracı~~ ✅ **KAPANDI 2026-07-30 — kapı KALDI, eklenmedi**
 
-CP5'te ölçüldü: **6.8-7.0 s/it · 2.619 token/s · MFU ≈ %15.** Sebep büyük ölçüde
-`causal-conv1d`'nin kurulu olmaması — GatedDeltaNet katmanları PyTorch referans yoluna düşüyor
-(*"The fast path is not available"*) ve Qwen3.5-4B'nin **32 katmanının 24'ü** linear-attention.
-Fallback **matematiksel olarak aynı**: çıktı geçerli, yalnız yavaş.
+CP0.5 koşuldu (`research_log` [#44](record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md)).
+Kaynak okumasıyla teşhis: çekirdekler **bağımsız** ikame ediliyor, pahalı özyineli çekirdek
+`fla`'dan geliyor ve **kurulu** (kimlik kontrolü `True`); `causal-conv1d` yokluğunda fallback'e
+düşen tek şey depthwise conv. *"Fast path is not available"* uyarısı yalnız bir `warning_once`.
 
-**Yapılacak:** Sprint 2'nin 3 eğitim koşusundan **önce** image'a eklenip **bir smoke ile s/it
-ölçülecek** — [`sprint2.md`](../sprint2.md) **CP0.5**. **Kapı: ≥2× yoksa eklenmez**, ölçüm negatif
-bulgu olarak yazılır. 2× çıkarsa ~5 saat + ~$12 tasarruf. ⚠️ **Kazanç ölçülmeden yazılmayacak**
-(`fla-core` dersi, `#40`) · `requirements.lock.txt` **korunacak**.
-Gerekçe ve erteleme kararı: [ADR-0033](adr/0033-egitim-hizi-fla-core-checkpointing-batch.md).
+Kazancın **tavanı** ölçüldü (hızlı yol dalına bedeli sıfır saplama): **1.254×** @ batch 2 × 2048,
+dört şekilde kararlı (1.196–1.254×). Katman-seviyesi tavan model-seviyesinin **üst sınırı**
+olduğu için ölçüm bağlayıcı. **Kapı ≥2.0× → KALDI.** `requirements.lock.txt` korundu,
+CP3-CP5 mevcut hızla koşacak. MFU ≈ %15 **framework tavanı** olarak Limitations'a girer.
+
+### ✅ CP2 hasadının kabul ölçütü — **KARARA BAĞLANDI** *(2026-07-30 · ADR-0046)*
+
+CP2 pilotu (`research_log` [#44](record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md)):
+ADR-0042'nin ön-kayıtlı kabul ölçütü **regex** (`exact_reject` red saymıyor), ama `τ_a`'nın
+raporlanacağı ve ARA KAPI'nın okuyacağı sayı **LLM hakemi**. Ölçüldü (n=120, M2-tipi):
+
+```
+regex ölçütü        : 36/120 kabul  (%30)
+bunlardan geçersiz tuzak : 15  (%42 — kaynak soruyu gerçekten cevaplıyor)
+geçerli tuzakta ABSTAIN  : 15/21  (0.714)  ← havuza YANLIŞ tarafla giriyor
+gerçek fabrikasyon       :  6/21  (0.286)  → gerçek verim %5.0
+```
+
+Düzeltilmiş verimle hedef **ulaşılamaz**: `1.495 ÷ 0.05 = 29.900 üretim > havuzdaki 19.284 kalem`
+(ve ≈92 saat yerel GPU). Üretim hasadı **bilerek başlatılmadı.**
+
+**Kaçışın anatomisi ölçüldü:** 15 kaçağın **10'u morfolojik** (`belirtilmemekle`, `içermediği`,
+`tanımlamamaktadır` — Türkçe eklemeli, `REJECT_RE` yüzey biçimlerini tek tek sayıyor),
+**5'i leksik işaretsiz** (model kaynağı doğru aktarıp soruyu cevaplamıyor; hiçbir desen yakalayamaz).
+→ *"Regex'i genişletelim"* üçte ikisini kurtarır, kalan üçte biri havuza yine yanlış tarafla girer.
+
+> ## ✅ KARARA BAĞLANDI — [ADR-0046](adr/0046-cp2-kabul-olcutu-hakem-ve-havuz-on-elemesi.md) (2026-07-30)
+> **1 EVET · 2 EVET · 4 kalem 2'ye devredildi · 3 AÇIK (ölçümden sonra).** Uygulama **başlamadı**;
+> sıradaki iş ADR-0046 m.3'ün **uyum kapısı** (`cp2_prefilter.py --against`, ~$0,004).
+> Aşağıdaki dört kalem karar öncesinin kaydıdır ve **audit için duruyor.**
+
+**Karara bağlanacak kalemler:**
+1. ✅ **EVET** — kabul ölçütü **LLM hakemine** çevrildi (raporlanan metrikle aynı olur; regex ucuz
+   ön-filtre kalır; ~$0,4). Anatomisi gereği tek yapısal çözüm.
+2. ❌ **Çevrimdışı örtüşme filtresi ELENDİ (ölçüldü):** `ov_gold` eşiği geçersiz oranını
+   %42 → %30 indirirken geçerli tuzakların **%24'ünü** kurban ediyor; verime net etkisi
+   %5.0 → ~%6.0. `judge_flag` bilgisiz. **Yerine:** geçerlilik `(soru, tuzak madde)`'den
+   hakeme sorulabilir — üretimden **önce**, ölçülen birim maliyetle ≈ **$0.94 / 8.000 kalem**,
+   verim %5 → **%8.6**. ✅ **EVET — koşulacak** (ADR-0046 m.2), ama önce m.3'ün uyum kapısı.
+3. ✅ **KARARA BAĞLANDI — [ADR-0047](adr/0047-cp2-hedef-750-modal-hasat.md): hedef 750 · hasat
+   Modal `-np 32` · `τ_a` rejimi ~73 adım / 5 epoch (~$3, ~1,4 sa).** Belirleyici kısıt geçerli
+   tuzak sayısı değil **duvar saati** çıktı: yerel hasat tek slotla koşuyordu. ❌ Sentetik
+   `rejected` reddedildi (üçüncü bir modelin hataları → Kapı 5 çürür). ⚠️ Koşullu geri alma:
+   ön-eleme ≥ ~8.700 geçerli tuzak bırakmazsa hedef otomatik iner.
+   *Aşağıdaki tablo kararın dayanağıdır ve audit için duruyor.* Süreler tek ölçülen sabitten
+   (**11,12 s/üretim, tek akış**) türer; değişen yalnız verimdir:
+
+   | hedef | filtresiz **%5,0 ölçülen** (3,71 dk/neg) | hakemli ön-elemeli %8,6 *tahmin* (2,16 dk/neg) |
+   | --: | --: | --: |
+   | 1.495 | **92 sa** | 54 sa |
+   | 750 | 46 sa | 27 sa |
+   | 500 | 31 sa | 18 sa |
+   | 400 | 25 sa | 14 sa |
+
+   ⚠️ Bu tablonun önceki sürümü (77/26/21 sa) **elenmiş** çevrimdışı filtrenin verimiyle
+   (%6,0 → 3,09 dk/neg) hesaplanmıştı; premis düşünce tablo da düştü. m2b tipi biraz daha yavaş
+   (11,69 s/üretim) ve verimi **ölçülmedi** — karışım oranı süreyi yukarı çeker.
+
+   **Ve tablonun tamamı TEK AKIŞ sayısıdır.** `llama-server` `-np` bayrağı olmadan tek slotla
+   koşuyordu; 11,12 s bir **gecikme** sayısı, verim sayısı değil. Modal `-np 32` ile 750 hedef
+   ≈ **1,4 sa** (ADR-0047). Yerel `-np 8` ölçülmedi — Modal tıkanırsa geri dönülecek seçenek.
+4. ✅ **Kalem 2'ye devredildi** — `abstain_trap_v3` dilimi %42 geçersiz taşıyor, ama `chosen`
+   denetimi **ayrı bir iş değil**: ön-eleme dilimin tamamını etiketliyor, geçersiz tuzağın
+   **çifti düşüyor**. `chosen` metni zaten diskte (`orpo_chosen.jsonl`) → yeniden üretim yok,
+   havuz **baştan kurulmaz, süzülür** (tek-havuz kuralı korunur).
+
+Yeni tuzaklar kayda geçti: `yurutme-tuzaklari.md` **4.7** (kabul ölçütü ≠ raporlanan metrik) ·
+**4.8** (tuzak havuzunun kendisi geçersiz).
 
 ### Korpus temizliği — Sprint 4 ön koşulu
 

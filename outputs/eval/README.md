@@ -16,6 +16,8 @@
 | [`sprint1-thinking-off/`](sprint1-thinking-off/KUNYE.json) | `--thinking off` | base · `τ_g` v1 · Gemini 3.1 FL | 470/özne | 🔴 **çıpa değil** (ADR-0043) — kayıt olarak durur |
 | [`cp09-butceli-1024-512/`](cp09-butceli-1024-512/KUNYE.json) | thinking **on**, bütçe 1024+512, zorunlu kapatma | aynı üç özne | 470/özne | 🟢 **yürürlükteki çıpa** |
 | [`cp09-ab-ayrimi/`](cp09-ab-ayrimi/KUNYE.json) | thinking **off** + kaynak-yeterliliği önsözü | base | 70 + 80 | ⚗️ **ABLASYON** — ana tabloya girmez |
+| [`cp1-hakem-meta-iddia/`](cp1-hakem-meta-iddia/KUNYE.json) | **üretim yok** — CP0.9 cevapları, YENİ hakem istemi (ADR-0041) | base · `τ_g` v1 · Gemini 3.1 FL | 80/özne (M1) | 🟢 **yürürlükteki M1 groundedness** — CP0.9'un `gnd_m1_*` dosyaları artık **ham/kontrol** |
+| [`cp2-rejected-hasat/`](cp2-rejected-hasat/KUNYE.json) | hasat pilotu, bütçeli düşünce | base (çıplak) | 120 + 120 | 🔴 **PİLOT** — üretim hasadı başlamadı, kabul ölçütü karar bekliyor |
 | `_artefakt/` | — | ölçüm dışı artefaktlar | — | `tau_norm_tg` · `vram_stack` · `token_budget` · eski smoke |
 
 ## Dosya adı şeması (klasör içinde)

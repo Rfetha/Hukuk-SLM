@@ -1,0 +1,16 @@
+{
+  "tip": "m2b",
+  "mod": "distractor_nogold",
+  "denenen": 120,
+  "kabul": 25,
+  "elenen_red": 95,
+  "kabul_orani": 0.2083,
+  "saniye_per_uretim": 11.69,
+  "ort_completion_tokens": 1133.1,
+  "zorunlu_kapatma": "120/120",
+  "dusunce_butcesi": 1024,
+  "cevap_butcesi": 512,
+  "seed": 3407,
+  "toplam_kayit": 25,
+  "gecen_sure_s": 1403.2
+}

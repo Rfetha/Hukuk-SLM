@@ -43,7 +43,7 @@ açılmaz — aynı artefakttır.
 | kol | ver | tarih | durum | rejim | `‖τ‖_F` | eval etiketi | kayıt |
 | :--- | :-- | :--- | :--- | :--- | ---: | :--- | :--- |
 | `τ_grounding` | **v1** | 2026-07-28 | 🟢 aktif | 1.083 adım · lr 1e-4 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · seed 3407 · veri `train/raft/` | **10.4589** | `*_tg` *(Sprint 1; v1 demektir)* | [#41](research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
-| `τ_abstention` | — | — | ⏳ CP3'te eğitilecek | 82 adım (3 epoch) · lr 1e-5 · etkin batch 64 · `--fresh-adapter` | — | — | `sprint2.md` CP3 |
+| `τ_abstention` | — | — | ⏳ CP3'te eğitilecek | **~73 adım (5 epoch)** · lr 1e-5 · etkin batch 64 · `--fresh-adapter` — ⚠️ [ADR-0047](../adr/0047-cp2-hedef-750-modal-hasat.md) ile değişti (eski: 82 adım / 3 epoch / 1.495 negatif; yeni: **750 negatif ~937 çift**). Epoch 3→5 aşırı-uyum riski: `‖τ_a‖_F` koşulsuz raporlanır, belirti görülürse epoch 3'e dönülür (adım 44) | — | — | `sprint2.md` CP3 |
 
 ### `τ_grounding` v1 — açık kalemler *(2026-07-29 gecesi, bütçeli kipte YENİDEN YAZILDI)*
 
