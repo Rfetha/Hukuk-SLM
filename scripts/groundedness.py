@@ -60,6 +60,17 @@ EXTRACT_SYSTEM = (
     "'düzenlediği', bir işlemin 'şu kanuna/maddeye tabi olduğu', 'şu maddede yer aldığı' türü "
     "ifadeler maddenin İÇERİĞİ hakkında bilgi taşımaz (atıf zaten ayrıca puanlanır). SADECE maddenin "
     "NE DEDİĞİNE — hangi hak/yükümlülük/şart/süre/usulü koyduğuna — dair önermeleri iddia yaz.\n"
+    # ADR-0041: RAFT şablonunun 1. adımı kaynağın İÇİNDEN değil, kaynak SEÇİMİ hakkında bir
+    # cümledir; iddia sayılınca `τ_g` içeren her hücre sistematik ceza alıyordu (CP6: desteksiz
+    # iddiaların %58'i). Muafiyet DAR tutulur — sınırı yeniden hakem koşusunda elle doğrulanır.
+    "- KAYNAK SEÇİMİ/ELEME cümlesi İDDİA DEĞİL — ÇIKARMA: öznesi bir kaynak olan ('KAYNAK 3', "
+    "'bu kaynak', 'diğer kaynaklar') ve yüklemi o kaynağın soruyla İLGİLİ/İLGİSİZ olduğunu, hangi "
+    "KONUYU ele aldığını ya da soruyu cevaplayıp cevaplamadığını söyleyen cümleler — ör. 'İlgili "
+    "kaynak KAYNAK 3'tür', 'diğer kaynaklar farklı konuları ele almaktadır', 'KAYNAK 2 doğrudan "
+    "sorunun cevabını vermemektedir', 'bu kaynak X'e dair bilgi sunmaktadır'. Bunlar ayrıştırma "
+    "sürecini anlatır, hukuki bir önerme kurmaz.\n"
+    "  ⚠️ MUAFİYETİN SINIRI DAR: kaynağın NE DEDİĞİNE dair her cümle normal şekilde iddia yazılır "
+    "— 'KAYNAK 3'e göre süre 15 gündür' bir İDDİADIR (kaynak seçimi değil, kaynağın içeriği).\n"
     "- İddiayı kaynak metne bakmadan, yalnız cevaptan, kısa ve kendi başına anlaşılır yaz.\n"
     'SADECE JSON: {"claims": ["<iddia>", ...]}'
 )
