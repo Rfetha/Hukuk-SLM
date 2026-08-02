@@ -182,7 +182,224 @@ def train_orpo(model: str, data_path: str, run_name: str, adapter: str | None = 
     print(f"[modal] ORPO bitti → adapter: hukuk-outputs:/{run_name}", flush=True)
 
 
-# ── REJECTED HARVEST (inference, eğitim değil — ucuz) ─────────────────────────
+# ── CP2-c HASAT: llama.cpp taşıyıcısı (ADR-0047 m.2) ──────────────────────────
+# ⚠️ Aşağıdaki `harvest_rejected` CP2'nin hasadı DEĞİLDİR (eski `gen_v3_rejected.py`'yi çağırır).
+# CP2-c `cp2_harvest.py` kullanır: bütçeli düşünce · iki tip · eş zamanlı. Giriş: `spawn_cp2c`.
+#
+# 🚨 TAŞIYICI YERELLE BİREBİR OLMAK ZORUNDA. Hasat, kolların dağıtılacağı kiple aynı kipte
+# yapılır (ADR-0042 on-policy gerekçesi + ADR-0047 m.2): **Q4_K_M GGUF + llama.cpp**, KV q8_0,
+# `-fa on`, `--no-context-shift`, slot başına 8192 ctx — hepsi `cp0_thinking_gen.sh` ile aynı.
+# Değişen YALNIZ ikisi: `-np` ve kart. **vLLM/bf16 YASAK** — bf16'da üretilen negatifler
+# dağıtılan modelin hataları olmaz, ADR-0042'nin kendi gerekçesi künyesince çürür.
+harvest_image = (
+    # llama.cpp'nin resmî CUDA server imajı — yerelde derlenen ikilinin karşılığı.
+    modal.Image.from_registry("ghcr.io/ggml-org/llama.cpp:server-cuda", add_python="3.11")
+    # ⚠️ İmajın ENTRYPOINT'i `/app/llama-server`; temizlenmezse Modal'ın çalıştırıcısı ona
+    # argüman olarak geçer ve konteyner `invalid argument: python` ile ölür (ölçüldü).
+    .entrypoint([])
+    # Python ortamı eğitim imajıyla AYNI lock'tan: `cp2_harvest.py` üretim yolunu
+    # `gen_eval_grounded.generate_http`ten import eder (ikinci bir üretim gövdesi = sessiz
+    # protokol sapması), o da modül düzeyinde unsloth/torch çeker.
+    .pip_install_from_requirements("requirements.lock.txt", extra_options="--no-deps")
+    .pip_install("einops", "fla-core", "flash-linear-attention", extra_options="--no-deps")
+    # `openai` lock'ta YOK (lock eğitim içindi) — hasadın HTTP istemcisi bu. Sürüm yerelle
+    # eşitlendi: üretim yolu yerelde ölçülen pilotla aynı istemci gövdesinden geçsin.
+    .pip_install("openai==2.41.0")
+    .env({"PYTHONUNBUFFERED": "1", "UNSLOTH_DISABLE_STATISTICS": "1"})
+    .add_local_dir("scripts", remote_path="/root/scripts")
+)
+
+
+@app.function(image=harvest_image, gpu=GPU, volumes=VOLUMES, timeout=12 * 60 * 60)
+def harvest_cp2(gguf: str, packed: str, madde: str, out_dir: str, types: list[str],
+                limit: int = 0, target: int = 0, np_slots: int = 32,
+                ctx_per_slot: int = 8192, gate_after_s: int = 600,
+                gate_max_s: float = 2.88, seed: int = 3407, commit_every_s: int = 120):
+    """CP2-c üretim hasadı — `llama-server` (-np) + `cp2_harvest.py`, iki tip sırayla.
+
+    Hasat HTTP üzerinden çalışır (doğrudan transformers değil), o yüzden sunucu bu
+    konteynerin içinde ayağa kalkar. Çıktı `out_dir`e yazılır ve periyodik commit'lenir —
+    koşu kesilirse `load_done` kaldığı yerden devam eder.
+    """
+    import hashlib
+    import json
+    import os
+    import shutil
+    import subprocess
+    import sys
+    import time
+    import urllib.request
+
+    # ── VERİ KAPISI: hiçbir şey yüklenmeden önce (tuzak 6.2) ──────────────────
+    for etiket, yol in (("gguf", gguf), ("packed", packed), ("madde", madde)):
+        if not os.path.isfile(yol):
+            raise SystemExit(f"[cp2c] 🚫 {etiket} yok: {yol} — volume'a yüklendi mi?")
+    binary = shutil.which("llama-server") or "/app/llama-server"
+    if not os.path.isfile(binary):
+        raise SystemExit(f"[cp2c] 🚫 llama-server bulunamadı ({binary}) — imaj değişti mi?")
+    os.makedirs(out_dir, exist_ok=True)
+
+    ctx = np_slots * ctx_per_slot
+    with open(gguf, "rb") as fh:                      # taşıyıcı kimliği künyeye girer
+        h = hashlib.sha256()
+        for blok in iter(lambda: fh.read(1 << 24), b""):
+            h.update(blok)
+    gguf_sha = h.hexdigest()
+    # ⚠️ Modal'ın "A100" takma adı 40GB **ya da** 80GB verebilir (ikisi de görüldü) ve bant
+    # genişlikleri 1,55 ↔ 2,03 TB/s. Kart künyeye yazılmazsa iki koşunun hız farkı yanlış
+    # nedene atfedilir — bu hattın sessiz-yanlışlık sınıfı.
+    kart = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"],
+                          capture_output=True, text=True).stdout.strip()
+    surum = subprocess.run([binary, "--version"], capture_output=True, text=True)
+    surum_s = (surum.stderr or surum.stdout).strip().splitlines()[0] if (surum.stderr or surum.stdout) else "?"
+
+    print(f"[cp2c] künye · gguf={os.path.basename(gguf)} sha256={gguf_sha[:16]}… "
+          f"-np {np_slots} · ctx {ctx} ({ctx_per_slot}/slot) · {surum_s} · kart={kart}", flush=True)
+
+    log_yolu = os.path.join(out_dir, "llama_server.log")
+    log = open(log_yolu, "w")
+    srv = subprocess.Popen(
+        [binary, "-m", gguf, "-ngl", "99", "-fa", "on", "--no-context-shift",
+         "--cache-type-k", "q8_0", "--cache-type-v", "q8_0",
+         "-c", str(ctx), "-np", str(np_slots),
+         "--host", "127.0.0.1", "--port", "8080"],
+        stdout=log, stderr=subprocess.STDOUT)
+    try:
+        for _ in range(180):                          # 6 dk: ağırlık yükleme + KV ayırma
+            if srv.poll() is not None:
+                print(open(log_yolu).read()[-4000:], flush=True)
+                raise SystemExit(f"[cp2c] 🚫 llama-server öldü (kod {srv.returncode})")
+            try:
+                urllib.request.urlopen("http://127.0.0.1:8080/health", timeout=2).read()
+                break
+            except Exception:
+                time.sleep(2)
+        else:
+            print(open(log_yolu).read()[-4000:], flush=True)
+            raise SystemExit("[cp2c] 🚫 sunucu 360 s'te açılmadı")
+        print(f"[cp2c] ✅ llama-server hazır · log {log_yolu}", flush=True)
+
+        huniler = {}
+        for tip in types:
+            out = os.path.join(out_dir, f"cp2c_{tip}.jsonl")
+            cmd = [sys.executable, "-u", "/root/scripts/cp2_harvest.py",
+                   "--type", tip, "--packed", packed, "--madde-path", madde,
+                   "--out", out, "--seed", str(seed),
+                   "--server-url", "http://127.0.0.1:8080/v1",
+                   "--concurrency", str(np_slots),
+                   "--gate-after-s", str(gate_after_s),
+                   "--gate-max-s-per-uretim", str(gate_max_s)]
+            cmd += ["--limit", str(limit)] if limit else ["--target", str(target)]
+            print(f"\n[cp2c] ==================== {tip} ====================", flush=True)
+            _run_with_commits(cmd, [data_vol], every_s=commit_every_s)
+            fp = out.replace(".jsonl", "_funnel.json")
+            huniler[tip] = json.load(open(fp, encoding="utf-8")) if os.path.exists(fp) else None
+    finally:
+        srv.terminate()
+        try:
+            srv.wait(timeout=30)
+        except Exception:
+            srv.kill()
+        log.close()
+
+    kunye = {
+        "checkpoint": "CP2-c", "karar": "ADR-0047 · ADR-0045 m.4",
+        "tasiyici": {"runtime": "llama.cpp/llama-server", "surum": surum_s,
+                     "gguf": os.path.basename(gguf), "gguf_sha256": gguf_sha,
+                     "quant": "Q4_K_M", "kv_cache": "q8_0", "flash_attn": True,
+                     "context_shift": False, "np": np_slots,
+                     "ctx_toplam": ctx, "ctx_slot": ctx_per_slot,
+                     "gpu_etiket": GPU, "gpu_gercek": kart},
+        "rejim": {"dusunce_butcesi": 1024, "cevap_butcesi": 512, "seed": seed,
+                  "max_chunk_chars": 900, "kaynak": "ADR-0043 rejim değişmezi"},
+        "uretim_butcesi": {"limit_per_tip": limit or None, "target_per_tip": target or None},
+        "verim_kapisi": {"gate_after_s": gate_after_s, "esik_s_per_uretim": gate_max_s},
+        "huni": huniler,
+    }
+    with open(os.path.join(out_dir, "KUNYE.json"), "w", encoding="utf-8") as f:
+        json.dump(kunye, f, ensure_ascii=False, indent=2)
+    data_vol.commit()
+    print("\n[cp2c] KÜNYE: " + json.dumps(kunye["huni"], ensure_ascii=False), flush=True)
+    print(f"[cp2c] bitti → hukuk-data:{out_dir}", flush=True)
+
+
+@app.function(image=harvest_image, gpu=GPU, volumes=VOLUMES, timeout=900, retries=0)
+def diag_cp2_tasiyici():
+    """Taşıyıcı kapısı — hasat imajında llama-server GPU'yu GERÇEKTEN kullanıyor mu?
+
+    Why: CP2-c duman testi 11,5 tok/s/slot verdi ve sunucu logunda tek bir CUDA satırı yoktu.
+    Çıplak imajda `--list-devices` CUDA0'ı görüyor; fark pip katmanında olabilir. GPU belleği
+    ayrılmıyorsa model CPU'da koşuyordur — hata vermez, yalnız 5× yavaşlar ve fatura akar.
+    """
+    import os
+    import subprocess
+
+    def kos(*cmd, **kw):
+        print(f"\n$ {' '.join(cmd)}", flush=True)
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=300, **kw)
+        print((r.stdout or "") + (r.stderr or ""), flush=True)
+
+    print("LD_LIBRARY_PATH =", os.environ.get("LD_LIBRARY_PATH"), flush=True)
+    kos("/app/llama-server", "--list-devices")
+    # Gerçek yükleme: 30 s sonra nvidia-smi'de bellek var mı?
+    srv = subprocess.Popen(["/app/llama-server", "-m", "/data/gguf/q35-4b-q4_k_m.gguf",
+                            "-ngl", "99", "-fa", "on", "-c", "8192",
+                            "--host", "127.0.0.1", "--port", "8080"],
+                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    import time
+    for _ in range(20):                        # 5 dk: yükleme + KV ayırma bitene kadar izle
+        time.sleep(15)
+        r = subprocess.run(["nvidia-smi", "--query-gpu=memory.used", "--format=csv,noheader"],
+                           capture_output=True, text=True)
+        print(f"  GPU bellek: {r.stdout.strip()}", flush=True)
+        if srv.poll() is not None:
+            break
+    srv.terminate()
+    cikti = srv.communicate(timeout=60)[0] or ""
+    print("\n--- sunucu ilk 60 satır ---\n" + "\n".join(cikti.splitlines()[:60]), flush=True)
+
+
+@app.local_entrypoint()
+def diag_tasiyici():
+    diag_cp2_tasiyici.remote()
+
+
+@app.local_entrypoint()
+def spawn_cp2c(gguf: str = "", packed: str = "", madde: str = "", out_dir: str = "",
+               types: str = "m2 m2b", limit: int = 0, target: int = 0,
+               np_slots: int = 32, ctx_per_slot: int = 8192,
+               gate_after_s: int = 600, gate_max_s: float = 2.88, seed: int = 3407,
+               commit_every_s: int = 120):
+    """CP2-c hasadı — fire-and-forget.
+
+    ⚠️ `modal run --detach` ZORUNLU (tuzak 6.1): efemer app, yerel giriş noktası dönünce
+    kapanır ve `spawn()` ile kuyruğa atılan iş **onunla birlikte ölür** — hata vermeden.
+
+    `--limit` ÜRETİM bütçesidir (tip başına), `--target` KABUL sayısı. CP2-c `--limit` ile
+    koşar: maliyet böyle sınırlı kalır, verim ise ölçülen bir sayı olur — tersi (`--target`)
+    verim tahminden kötüyse koşuyu sessizce uzatır.
+    """
+    _require("gguf", gguf); _require("packed", packed)
+    _require("madde", madde); _require("out-dir", out_dir)
+    # tuzak 3.6: yollar KONTEYNER yoludur (`hukuk-data` → /data). Yerel yol verilirse koşu,
+    # GPU ayrıldıktan sonra yanar. Yerelde saniyede patla.
+    for ad, yol in (("gguf", gguf), ("packed", packed), ("madde", madde), ("out-dir", out_dir)):
+        if not yol.startswith("/data/"):
+            raise SystemExit(f"[cp2c] 🚫 --{ad} konteyner yolu olmalı (/data/…), verilen: {yol}")
+    if bool(limit) == bool(target):
+        raise SystemExit("[cp2c] 🚫 --limit (üretim bütçesi) YA DA --target (kabul sayısı), biri.")
+    call = harvest_cp2.spawn(gguf=gguf, packed=packed, madde=madde, out_dir=out_dir,
+                             types=types.split(), limit=limit, target=target,
+                             np_slots=np_slots, ctx_per_slot=ctx_per_slot,
+                             gate_after_s=gate_after_s, gate_max_s=gate_max_s, seed=seed,
+                             commit_every_s=commit_every_s)
+    print(f"[cp2c] SPAWNED ✓ {call.object_id} | tipler={types} limit={limit} target={target} "
+          f"-np {np_slots} gpu={GPU}", flush=True)
+    print("[cp2c] ⚠️ 'SPAWNED' işin KOŞTUĞUNU KANITLAMAZ (tuzak 6.1). Doğrula:\n"
+          f"       modal app logs hukuk-sft   ·   modal volume ls hukuk-data {out_dir}", flush=True)
+
+
+# ── REJECTED HARVEST (ESKİ — v3 hattı; CP2-c bunu KULLANMAZ, bkz. harvest_cp2) ─
 # Bir modeli zor near-miss tuzaklarında koşturup GERÇEK fabrikasyonları toplar (ORPO rejected).
 @app.function(image=image, gpu=GPU, volumes=VOLUMES, secrets=SECRETS,
               timeout=3 * 60 * 60)

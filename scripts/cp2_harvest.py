@@ -33,7 +33,7 @@ import random
 import sys
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -67,6 +67,12 @@ def parse_args():
     # 8 vermek kuyruk yapar, hızlandırmaz: 11,12 s/üretim bir GECİKME sayısıdır, verim değil.
     p.add_argument("--concurrency", type=int, default=1,
                    help="eş zamanlı üretim isteği (sunucunun --parallel/-np değeriyle eşleşmeli)")
+    # ADR-0047 m.3 — ön-kayıtlı VERİM KAPISI. Bulut koşusunda para insan bakmadan akıyor;
+    # tahmin tutmazsa koşu kendi kendini durdurur ve sayı negatif bulgu olarak yazılır.
+    p.add_argument("--gate-after-s", type=int, default=0,
+                   help="bu saniyeden sonra gerçek s/üretim denetlenir (0 = kapalı)")
+    p.add_argument("--gate-max-s-per-uretim", type=float, default=0.0,
+                   help="ADR-0047 m.3: tahminin 2 katı. Aşılırsa koşu DURUR")
     return p.parse_args()
 
 
@@ -108,6 +114,10 @@ def main():
     tried = kept = 0
     tok_sum = forced = 0
     t0 = time.time()
+    # Açılış geçicisi: `concurrency` kalem aynı anda başlar ve birlikte iner, yani boru hattı
+    # dolana kadar geçen süre ölçekte amortize olur (7.500 üretimde toplam sürenin ~%0,6'sı).
+    # Verim kapısı bu yüzden t0'dan DEĞİL, boru hattı dolduktan sonradan ölçer.
+    t_warm = n_warm = 0
     mode = "oracle" if a.type == "m2" else "distractor_nogold"
 
     print(f"[cp2] tip={a.type} · mod={mode} · havuz={len(rows)} · düşünce {a.think_budget}"
@@ -140,9 +150,21 @@ def main():
 
     kilit = threading.Lock()
 
+    def kararli_hiz():
+        """Açılış geçicisi HARİÇ s/üretim — verim kapısının ölçtüğü büyüklük.
+
+        # Why: t0'dan kümülatif ortalama, boru hattı dolarken geçen ~1 dalga süresini her
+        # kaleme paylaştırır ve erken okumada hızı sistematik olarak KÖTÜ gösterir. 2026-08-02'de
+        # bu, gerçek hızı ~2,4 s/üretim olan bir koşuyu 600. saniyede 2,97 ile durdurdu
+        # (eşik 2,88). Eşik değişmedi; yanlı olan tahmin ediciydi.
+        """
+        if t_warm and tried > n_warm:
+            return (time.time() - t_warm) / (tried - n_warm)
+        return (time.time() - t0) / tried if tried else 0.0
+
     def uret(arg):
         """Tek kalem: üret → kabul ölçütünü uygula. Sayaçlar kilit altında."""
-        nonlocal tried, kept, tok_sum, forced
+        nonlocal tried, kept, tok_sum, forced, t_warm, n_warm
         i, rec, source, sources_block = arg
         try:
             g = generate_http(client, a.server_model, rec["soru"], a.max_new_tokens,
@@ -157,13 +179,15 @@ def main():
             tok_sum += g.completion_tokens or 0
             forced += 1 if g.forced_close else 0
             n = tried
+            if n == a.concurrency:          # boru hattı doldu → geçici bitti
+                t_warm, n_warm = time.time(), n
         # KABUL ÖLÇÜTÜ: regex ön-filtre — RED değilse aday (ADR-0046 m.1: kabul kararı
         # hakemde, bu yalnız bedava ön-eleme).
         if exact_reject(g.text, mode):
             if n % 25 == 0:
                 el = time.time() - t0
                 print(f"  denenen={n} kabul={kept} oran={kept/n:.3f} | {el/n:.2f} s/üretim "
-                      f"| ort tok={tok_sum/n:.0f}", flush=True)
+                      f"(kararlı {kararli_hiz():.2f}) | ort tok={tok_sum/n:.0f}", flush=True)
             return None
         return {
             "id": rec["id"], "tip": a.type, "soru": rec["soru"],
@@ -188,23 +212,67 @@ def main():
 
     print(f"[cp2] {len(isler)} uygun kalem · eş zamanlılık={a.concurrency}", flush=True)
 
+    kapi = None
+    kapi_bakildi = False
+    kararli_dururken = None      # besleme kesildiği andaki kararlı hız (boşalma fazı hariç)
+
+    def durmali():
+        """Durma koşulları. VERİM KAPISI (ADR-0047 m.3) ÖNCE bakılır: bütçe dolduğu için erken
+        dönülürse kapı hiç değerlendirilmez ve huniye hak edilmemiş bir 'geçildi' damgası düşer
+        — `-np 64` testi 2,93 s/üretim ile tam bunu yaptı (eşik 2,88)."""
+        nonlocal kapi, kapi_bakildi, kararli_dururken
+
+        def dur():
+            nonlocal kararli_dururken
+            if kararli_dururken is None:
+                kararli_dururken = round(kararli_hiz(), 2)
+            return True
+
+        if a.gate_after_s and tried and (time.time() - t0) >= a.gate_after_s:
+            kapi_bakildi = True
+            hiz = kararli_hiz()          # açılış geçicisi hariç — eşik 2,88 değişmedi
+            if hiz > a.gate_max_s_per_uretim and kapi is None:
+                kapi = (f"DURDU: {hiz:.2f} s/üretim (kararlı) > {a.gate_max_s_per_uretim:.2f} "
+                        f"(ADR-0047 m.3, {tried} üretimde)")
+                print(f"\n🔴 VERİM KAPISI {kapi}", flush=True)
+            if kapi is not None:
+                return dur()
+        if a.limit and tried >= a.limit:
+            return dur()
+        if a.target and (n_prev + kept) >= a.target:
+            return dur()
+        return False
+
+    # ⚠️ SÜREKLİ BESLEME, öbek DEĞİL. Öbekli sürümde her öbek en yavaş kalemini bekliyordu:
+    # CP2-c duman testinde slot doluluğu **%70** ölçüldü (10.220 slot-saniye iş / 14.496 kapasite).
+    # Kalemler bağımsız olduğu için bariyerin hiçbir işlevi yoktu — yalnız GPU'yu boş bekletiyordu.
+    # Gönderilen istek, sıra, seed ve örnekleme AYNI; değişen yalnız zamanlama.
     with open(a.out, "a", encoding="utf-8") as f, \
             ThreadPoolExecutor(max_workers=max(1, a.concurrency)) as pool:
-        # Öbek öbek gönder: durma koşulları öbek aralarında kontrol edilir, böylece
-        # `--target`e ulaşıldığında en fazla bir öbek fazla üretilir (iptal karmaşası yok).
-        obek = max(1, a.concurrency)
-        for bas in range(0, len(isler), obek):
-            if a.limit and tried >= a.limit:
-                break
-            if a.target and (n_prev + kept) >= a.target:
-                break
-            for rec_out in pool.map(uret, isler[bas:bas + obek]):
+        sira = iter(isler)
+        bekleyen = set()
+
+        def besle():
+            while len(bekleyen) < a.concurrency and not durmali():
+                try:
+                    bekleyen.add(pool.submit(uret, next(sira)))
+                except StopIteration:
+                    return
+
+        besle()
+        while bekleyen:
+            biten, kalan = wait(bekleyen, return_when=FIRST_COMPLETED)
+            bekleyen.clear()
+            bekleyen.update(kalan)
+            for fut in biten:
+                rec_out = fut.result()
                 if rec_out is None:
                     continue
                 with kilit:
                     kept += 1
                     f.write(json.dumps(rec_out, ensure_ascii=False) + "\n")
                     f.flush()
+            besle()
 
     el = time.time() - t0
     funnel = {
@@ -212,10 +280,17 @@ def main():
         "denenen": tried, "kabul": kept, "elenen_red": tried - kept,
         "kabul_orani": round(kept / tried, 4) if tried else None,
         "saniye_per_uretim": round(el / tried, 2) if tried else None,
+        # Kapının okuduğu büyüklük: açılış geçicisi hariç, besleme kesildiği anda.
+        "saniye_per_uretim_kararli": kararli_dururken,
         "ort_completion_tokens": round(tok_sum / tried, 1) if tried else None,
         "zorunlu_kapatma": f"{forced}/{tried}",
         "dusunce_butcesi": a.think_budget, "cevap_butcesi": a.max_new_tokens,
         "seed": a.seed, "toplam_kayit": n_prev + kept, "gecen_sure_s": round(el, 1),
+        "es_zamanlilik": a.concurrency,
+        "verim_kapisi": kapi or ("kapalı" if not a.gate_after_s else
+                                 f"geçildi (eşik {a.gate_max_s_per_uretim:.2f} s/üretim)"
+                                 if kapi_bakildi else
+                                 f"değerlendirilmedi (koşu {a.gate_after_s}s'den kısa bitti)"),
     }
     print("\n[cp2] HUNİ: " + json.dumps(funnel, ensure_ascii=False))
     fp = a.out.replace(".jsonl", "_funnel.json")

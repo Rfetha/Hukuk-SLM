@@ -112,6 +112,15 @@ boşa gitmeyecek.
 
 ## 🔴 Yan bulgu: eğitim hızı kayıtlının **10 katı yavaş** — CP3 bütçesi değişti
 
+> ### ⚠️ DÜZELTME (2026-08-02, [#48](2026-08-02-cp2c-modal-koprusu.md))
+> Aşağıdaki *"kayıtlı 7 s/it **yanlıştı**"* ifadesi **iki farklı rejimi** kıyaslıyor. Yanlış olan
+> kayıt değil, kıyas:
+> **6,8-7,0 s/it = SFT, efektif batch 16** (`τ_g`'nin gerçek 1.083 adımlık koşusu —
+> `raft_scrubbed/train.jsonl` **17.323 satır ÷ 16 = 1.083 adım**, doğrulandı) ·
+> **~70 s/it = ORPO, efektif batch 64** (bu smoke).
+> **Sonuç: CP4/CP5'in SFT tahminleri (~$5,7 / ~$6,5) AYAKTA**; yalnız **ORPO** kalemleri ~**4×**
+> pahalılaştı. Bu bölümün CP3 (ORPO) sayıları geçerli kalıyor.
+
 Smoke'un progress bar'ı **60-81 s/it** gösterdi (medyan ~**70 s/it**). Kayıtlı değer CP5'ten
 **6,8-7,0 s/it**'ti. 10× fark.
 
