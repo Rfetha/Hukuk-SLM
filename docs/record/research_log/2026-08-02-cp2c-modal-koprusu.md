@@ -321,8 +321,8 @@ disiplininin doğrudan getirisi.
 ## 5. Yeni koşu — `-np 64` (yeniden başlatma)
 
 ```
-app          ap-5d1ssJOgSKZz1VNAQvxwhD          (insan kaydı: geçerli koşu)
-başlangıç    2026-08-02 16:52
+app          ap-LHKDDasU1MD6b4xG10WK8W          (17:05'te GEÇERLİ koşu olarak seçildi)
+başlangıç    2026-08-02 16:47
 çıktı        hukuk-data:/cp2c-64/
 -np          64          · --limit 3750/tip = 7.500 üretim
 kart         NVIDIA A100-SXM4-40GB              (künye · gpu_gercek)
@@ -346,13 +346,22 @@ beklenti     m2 ~2,09 · m2b ~2,6 kararlı → ~4,4 saat ≈ $11   (⚠️ TAHM�
 > yeniden yazar** → künyedeki sayaçlar dosyanın içeriğini tarif etmez. Yani provenansı korumak
 > için ayrı dizin kullanma kararı (aşağıda) **bu çakışma tarafından delinmiş** olur.
 >
-> **Hiçbir iş durdurulmadı** — para/state kararı insana ait. Karar verilince buraya sonucu yazılır.
-> Kabul zinciri, hangi kararla devam edilirse edilsin, `/cp2c-64` dosyalarında **id bazlı
-> tekilleştirme** yapmak zorunda.
+> **✅ ÇÖZÜM (17:05).** `ap-5d1ssJOgSKZz1VNAQvxwhD` durduruldu (`modal app stop -y`);
+> `ap-LHKDDasU1MD6b4xG10WK8W` sürdü. **Seçim ölçütü ilerlemedir, başlangıç saati değil:**
+> durdurulan iş ~200 üretim **geride**ydi (log: `denenen=625` ↔ `denenen=~425`), yani onu
+> tutmak yanmış GPU'yu bir kez daha yakmak olurdu. Bedel: ~20 dk fazladan GPU (**~$0,8**,
+> panelden doğrulanacak).
+>
+> **Kalıcı iz — kabul zinciri bunu onarmak zorunda:** (a) `/cp2c-64/cp2c_m2.jsonl`'de
+> **yinelenen id**'ler, (b) durdurulan süreç yazarken kesildiği için **yarım son satır**.
+> İkisi de sessiz yanlışlık: zincir çökmeden yanlış sayı üretir. Onarım kabul zincirinden
+> **önce**, ayrı ve kayıtlı bir adım olarak yapılır → **`scripts/cp2c_birlestir.py`**
+> (id bazlı tekilleştirme · yarım **son** satırı atar · **ortadaki** bozuk satırda çöker,
+> çünkü o bilinen kesilme kalıbı değildir · her kayda `kaynak`, dizine `BIRLESIM.json`).
+> Karışım künyesi zaten gerekiyordu (aşağıda, iki dizin) — aynı araç onu da üretir.
 
-*(⚠️ Bu kayıtta önce `ap-LHKDDasU1MD6b4xG10WK8W` / 16:48 yazılıydı ve tek koşu sanılıyordu;
-insan kaydı geçerli koşu olarak `ap-5d1ssJOgSKZz1VNAQvxwhD` / 16:52'yi veriyor. Eski satır
-silinmedi, yukarıdaki tabloda **iki app de** duruyor — hangisinin kalacağı insan kararı.)*
+*(⚠️ Bu kayıtta bir ara geçerli koşu olarak `ap-5d1ss…` / 16:52 yazılıydı; yukarıdaki ölçüt
+uygulanınca `ap-LHKDD…` / 16:47 seçildi. Eski satır silinmedi, tabloda **iki app de** duruyor.)*
 
 **Neden AYRI dizin — provenans.** Aynı dizine yazılsaydı künye `np: 64` derken **113 kayıt
 `-np 32`'den** gelmiş olacaktı. İki dizin sayesinde iki künye de dürüst kalıyor. Kabul
@@ -403,6 +412,136 @@ karıştırıcısını **çözdü**.
   hâli raporlanır — ilk negatif bulgu iki karıştırıcı (kart + tahmin edici) taşıyordu.
 - **Negatif bulgu (düzeltildi):** *"slot sayısını ikiye katlamak kötüleştirir"* iddiası **aynı
   kartta ölçülünce çöktü** — `-np 64` (m2 ~2,09) `-np 32`'den (m2 ~2,4) **hızlı**.
+
+## 7. 🔴 ÜÇÜNCÜ EKSİK KÖPRÜ — hasat bitmeden bulundu: **m2b için `chosen` tarafı yok**
+
+Hasat koşarken CP3'ün girdi zinciri önden denetlendi (tuzak 6.2'nin dersi: veri kapısı GPU'dan
+önce). `cp2c_kabul.sh` bitiş satırı *"sıradaki: `build_orpo_v3.py` ile çift kur"* diyor. O betik
+çifti şöyle kuruyor (satır 93-99):
+
+```
+src  = r["trap_text"][:900]
+user = f"KAYNAK MADDE:\n{src}\n\nSORU: {r['soru']}"      ← ORACLE/M2 kalıbı, TEK madde
+sys  = SYSTEM_PROMPT_RAG                                  ← RAG_MULTI DEĞİL
+rejected = r["model_answer"]  ·  chosen = chosen_by_id[r["id"]]
+```
+
+Üç ayrı uyumsuzluk çıktı; ikisi mekanik, biri **tasarımsal**:
+
+| # | ne | sınıf |
+| :-- | :--- | :--- |
+| 1 | **Alan adları tutmuyor.** CP2-c kaydı `rejected` / `context_shown` yazıyor, betik `model_answer` / `trap_text` okuyor. `abstained` alanı da yok (kabul zincirinde hakem zaten çekinmeleri elemiş oluyor) | mekanik — `KeyError` ile **çöker**, sessiz değil |
+| 2 | **m2b'nin kalıbı ifade edilemiyor.** Betik sistem istemini ve `KAYNAK MADDE:` kalıbını **sabit** kuruyor; m2b'nin istemi `SYSTEM_PROMPT_RAG_MULTI` + `KAYNAKLAR:` çok-kaynak bloğu. Naif beslenirse hata vermez, yalnız kolu **eval'de hiç görülmeyen bir kalıpta** eğitir | 🔇 **sessiz yanlışlık** |
+| 3 | **m2b için `chosen` metni HİÇ YOK** | 🔴 **tasarımsal boşluk** |
+
+**(3)'ün kanıtı — mevcut `τ_a` eğitim seti sayıldı:**
+
+```
+data/train/orpo_abstain/train.jsonl        1.741 çift
+  _kind=abstain  1.449  → sistem: "…sade, anlaşılır…"  · user: "KAYNAK MADDE:"   = M2 kalıbı
+  _kind=ground     292  → sistem: "…uzman bir…"        · user: "KAYNAKLAR:"      = RAG_MULTI
+```
+
+RAG_MULTI kalıbı yalnız **grounding-replay** çiftlerinde var ve onların `rejected`'ı
+placeholder + `is_pref=0`, yani OR terimi **maskeli** — çekinmeyi hiç öğretmiyorlar. Yani:
+
+> **`τ_a`, bugüne dek M2b kalıbında tek bir çekinme çifti görmedi.**
+
+Ve `data/_ham_ve_ara/orpo_chosen.jsonl`'deki `chosen` metinleri **oracle biçimli**:
+*"Sağlanan {trap_kanun} MADDE 54 … hususunu düzenlemektedir; sorulan konu bu maddede yer
+almamaktadır."* M2b'de **"sağlanan madde" diye tek bir şey yok** — 4 çeldirici var, gold hiç yok.
+O metin m2b çiftine takılırsa doğru cevabın kendisi yanlış olur.
+
+**Niçin bu can alıcı:** defterin negatif tablosunda `τ_a`'nın **gerçek** hedefi #4 —
+*kaynak yokken susma (M2b)*, `τ_g` orada **0.986 → 0.607** çöküyor. m2b tipini hasat etme kararı
+([ADR-0045](../../adr/0045-ara-kapi-merge-onarim-kontrolu.md) m.4) tam bunun içindi ve
+**ARA KAPI'nın ikinci gözlemi** (merge M2b ≥ 0.854) bu eksende okunuyor. m2b yarısı çifte
+dönüşemezse hasadın yarısı çöpe gider ve ARA KAPI, `τ_a`'nın hazırlanmadığı bir ekseni ölçer.
+
+**(1) ve (2) zorunlu düzeltme** — seçim yok, eval-ayna kuralı kalıbı belirliyor: eğitim istemi
+M2b eval istemiyle **birebir** olmalı, yani `SYSTEM_PROMPT_RAG_MULTI` + hasadın sakladığı
+`context_shown` bloğu (hasat onu tam bu sebeple saklıyor — `cp2_harvest.py` satır 195-197).
+
+**(3) bir karardır, kod değil → İNSANA SORULDU** (2026-08-02, hasat sürerken; CP3'ten önce
+cevaplanması yeterli, hasadı bloklamıyor).
+
+> ### ✅ KARAR (insan, 2026-08-02) — **şık A: şablon**, dış model kullanılmaz → [ADR-0051](../../adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md)
+> Belirleyici gerekçe: hedef cümleyi **`SYSTEM_PROMPT_RAG_MULTI`'nin kendisi tarif ediyor**
+> (*"İlgili kaynak YOKSA … 'Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor' de"*),
+> yani `chosen`'ın işi o talimatı örneklemek. Dış modele yazdırmak (**B**) yeni bilgi üretmez,
+> yalnız o modelin üslubunu çifte sokar — `rejected` tarafı on-policy iken (ADR-0042) çift
+> **iki modelin karışımı** olurdu. **C** (m2b'yi atmak) ADR-0045 m.4'ün gerekçesini iptal ederdi.
+> Ölçülen: 45 gerçek kalemde **45/45 tekil** `chosen`. Kalıp-öğrenme riski **M1 A1 ≥ 0.880**
+> muhafızıyla ölçülüyor ve ön-kayıtlı geri dönüş yolu B'dir (ADR-0051 m.3).
+> (1) ve (2) karar değil zorunluluktu — eval-ayna kuralı gereği birlikte düzeltildi.
+
+## 8. Kabul zinciri **mekanik smoke** — 5+5 kalem, $0,018 (hasat sürerken, hakem parası yanmadan)
+
+CP2-s'in deseni tekrar edildi: *tam pilot değil, mekanik smoke* — **okunabilir sayı üretmeyecek
+kadar küçük** tutuldu (çapalama riski). Amaç yalnız halkaların birbirine geçtiğini görmek.
+
+**✅ Dört halka da çalıştı:** `cp2_audit` şema çevirisi (`--source-field` m2→`referans`,
+m2b→`context_shown` doğru seçiliyor) · mini verdict · FABRICATE alt kümesinin gpt-4o'ya teyide
+gitmesi · `valid_trap_cache.py`'nin beklediği `{mod}_{etiket}_detail.jsonl` dosya düzeni ·
+kör damga · huni birleştirme + `kabul_huni.json`. Zincir **$3,68'lik koşuya hazır**.
+
+> ### ⚠️ Smoke'ta m2b 0/5 çıktı — **ve bu gürültüydü** (aşağıda n=113 ile düzeltildi)
+> 5 m2b adayının hiçbiri teyide gidemedi; metinler *"Verilen kaynakta bilirkişilik görevinin
+> kime verilebileceği …"* diye başlayan **yumuşak çekinme**lerdi (tuzak 2.5'in regex↔hakem açığı).
+> n=5'te *"m2b hakemde eriyor"* gibi okundu. **§9 bunu çürüttü** — n=45'te m2b hakem hayatta
+> kalması m2'den **daha iyi** (%42,2 ↔ %38,2). Küçük örnekten yürüme uyarısı olarak burada
+> duruyor; alarmın kendisi geçersiz.
+>
+> ADR-0048'in bulgusu ise tekrar göründü ve geçerli: **cevaba bağlı** geçerlilik ile **kör**
+> damga aynı kalemlerde ayrıştı (m2b: cevaba bağlı 0/5 → kör damga **4/5 geçerli**).
+
+## 9. Hasat verimi **ölçüldü** — n=113 gerçek kayıt, $0,018 (öne alınmış iş, israf yok)
+
+§8'in alarmını sınamak için `/cp2c`'nin 113 gerçek adayı **tamamen** mini hakemden geçirildi
+(bu iş kabul zincirinde zaten yapılacaktı; erken yapılması bedeli değiştirmiyor):
+
+| tip | regex aday | mini FABRICATE | oran | ADR-0049 varsayımı |
+| :--- | ---: | ---: | ---: | :--- |
+| m2 | 68 | **26** | **%38,2** | ~%40 ✅ |
+| m2b | 45 | **19** | **%42,2** | ~%40 ✅ |
+
+**Hakem hayatta kalması sorun değil — iki tip de ön-kayıtlı huniye uyuyor.** §8'in alarmı
+n=5 gürültüsüydü. Darboğaz **hakem değil, regex ön-filtresi**: m2 %31,3 geçirirken m2b **%19,2**
+geçiriyor (ADR-0049 ikisi için de ~%30 varsaymıştı).
+
+**Bunun sebebi base'in kendisi ve zaten ölçülüydü:** cevaba-kör base **M2b Rej 0.949** ↔
+**M2 Rej 0.803** (CP2-r, [#46](2026-07-30-cp2r-kor-payda.md)). Base M2b'de zaten neredeyse hiç
+uydurmuyor — yani *"m2b'den az negatif çıkar"* huninin kusuru değil, **hedef davranışın
+kendisinin ölçüsü**. 7.500 üretimin 50/50 bölünmesi bu asimetriyi hesaba katmıyordu.
+
+**Projeksiyon (⚠️ tahmin, fiili sayı kabul zincirinden okunacak):**
+
+```
+m2   3.750 × %31,3 = 1.174 aday × %38,2 = ~448 ham
+m2b  3.750 × %19,2 =   720 aday × %42,2 = ~304 ham
+/cp2c artığı                     113 aday          =  ~45 ham
+                                          toplam ham ≈ 797
+temiz (ADR-0049'un ham→temiz %83'ü)                  ≈ 660      hedef 750
+```
+
+→ **~%12 açık.** ADR-0047 m.1 hedefin altını **insana sorulacak** ilan ediyor. En ucuz kapatma:
+bu koşu bittikten **sonra** ~1.500 üretimlik ek m2 turu (~40 dk, ~$1,6) — m2'nin üretim başına
+verimi m2b'nin ~2 katı.
+
+> ### 🐞 Ek tur **iki yoldan da yanlış çalışacaktı** — `--skip-first` eklendi
+> Yukarıdaki tavsiye ilk yazıldığında *"ek tur ayrı dizine"* diyordu (tuzak 6.10 refleksi).
+> Kontrol edilince ikisi de kırık çıktı:
+>
+> | yol | ne olur |
+> | :--- | :--- |
+> | **taze dizin** | `seen_ids` boş → havuz sırası **0'dan** başlar. Sıra `seed 3407` ile deterministik ve hasat onu **sırayla** yürüyor (doğrulandı: `/cp2c`'nin 68 kabulü havuz pozisyonu **1-229** arasında). Ek tur **aynı kalemleri** yeniden üretir |
+> | **aynı dizin** | `load_done` çıktı dosyasından okuyor, o dosyada yalnız **KABUL edilenler** var (68), **denenenler** (233) yok. Ek turun ~%69'u zaten denenip elenmiş kalemleri **yeniden** üretir |
+>
+> İkisi de sessiz: hata yok, GPU yanar, sonra tekilleştirme havuzu küçültür ve *"neden az çıktı"*
+> diye bakılır. **Çözüm:** `cp2_harvest.py --skip-first N` — havuz sırasındaki ilk N uygun kalemi
+> atlar, N = önceki turun künyesindeki `denenen`. Taze dizinde koşar (provenans korunur, künyeye
+> `skip_first` yazılır), sıra tam bıraktığı yerden devam eder. Havuz biterse **üretimden önce**
+> çöker (tuzak 6.2 ilkesi).
 
 ## Doğan karar ve tuzak
 
