@@ -26,6 +26,7 @@ Kullanım (rejected.jsonl geldikten sonra):
 import argparse
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -57,9 +58,64 @@ def load_jsonl(p):
     return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
 
 
+def m2b_chosen(sources_block):
+    """M2b çiftinin 'doğru cevap' tarafı — şablon, yuvaları kalemin KENDİ kaynaklarından dolu.
+
+    # Why şablon: red cümlesini `SYSTEM_PROMPT_RAG_MULTI`'nin kendisi tarif ediyor
+    # ("İlgili kaynak YOKSA … 'Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor' de").
+    # Yani hedef davranış istemde zaten yazılı; `chosen`'ın işi onu örneklemek. Bir dış modele
+    # yazdırmak (seçenek B) o modelin üslubunu `chosen` tarafına sokar ve bedelin karşılığı yok.
+    # M2 tarafındaki hazır metinler ("Sağlanan {tuzak madde} …") buraya TAKILAMAZ: M2b'de tek bir
+    # sağlanan madde yoktur, gold hiç yoktur.
+    """
+    basliklar = re.findall(r"\[KAYNAK \d+\]\n(.+)", sources_block)
+    # "KANUN ADI Madde 75" → kanun başına madde listesi (aynı kanundan çeldirici olağan).
+    # ⚠️ IGNORECASE zorunlu: külliyatta HEM "Madde 75" HEM "MADDE 64" var. Duyarlı regex
+    # 45 kalemin 15'ini sessizce yedek dala düşürüyordu (metin kısalıyor, hata çıkmıyor).
+    gruplar = {}
+    for b in basliklar:
+        m = re.match(r"(.+?)\s+Madde\s+(\S+)", b.strip(), re.IGNORECASE)
+        if m:
+            gruplar.setdefault(m.group(1), []).append(m.group(2))
+    kaynak_ozeti = "; ".join(f"{k} Madde {', '.join(v)}" for k, v in gruplar.items())
+    if not kaynak_ozeti:
+        return "Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor."
+    return (f"Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor. "
+            f"Sağlanan kaynaklar ({kaynak_ozeti}) başka hususları düzenlemektedir; "
+            f"doğru bir atıf yapabilmek için ilgili hükmün ayrıca temini gerekir.")
+
+
+def cp2c_cifti(r, chosen_by_id, clip):
+    """CP2-c hasat kaydı → ORPO çifti. `None` → atlanır (`chosen` yok).
+
+    İki kalıp, ikisi de EVAL AYNASI: eğitim istemi ilgili modun eval istemiyle birebir olmalı.
+    m2 → ORACLE (tek kaynak) · m2b → RAG_MULTI (çok kaynak, gold yok).
+    """
+    ctx, soru = r.get("context_shown") or "", r["soru"]
+    if r["tip"] == "m2b":
+        sistem, user = SYSTEM_PROMPT_RAG_MULTI, f"KAYNAKLAR:\n{ctx}\n\nSORU: {soru}"
+        ch = m2b_chosen(ctx)
+    else:
+        sistem, user = SYSTEM_PROMPT_RAG, f"KAYNAK MADDE:\n{ctx[:clip]}\n\nSORU: {soru}"
+        ch = chosen_by_id.get(r["id"])
+        if not ch:
+            return None
+    return {
+        "prompt": [{"role": "system", "content": sistem},
+                   {"role": "user", "content": user}],
+        "chosen": [{"role": "assistant", "content": ch}],
+        "rejected": [{"role": "assistant", "content": r["rejected"]}],
+        "is_pref": 1,
+        "_kind": "abstain", "_mod": r["tip"], "_kaynak": r.get("kaynak"),
+        "_hi_overlap": False,
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--rejected", required=True, help="gen_v3_rejected çıktısı (fabrikasyonlar)")
+    ap.add_argument("--rejected", required=True, nargs="+",
+                    help="fabrikasyon dosyaları: gen_v3_rejected çıktısı VEYA CP2-c kabul "
+                         "havuzu (cp2c_kabul_m2.jsonl cp2c_kabul_m2b.jsonl — birden çok verilebilir)")
     ap.add_argument("--chosen", default=DEFAULTS["chosen"])
     ap.add_argument("--dev", default=DEFAULTS["dev"])
     ap.add_argument("--v2b-train", default=DEFAULTS["v2b_train"])
@@ -74,32 +130,45 @@ def main():
 
     chosen_by_id = {r["id"]: r["chosen"] for r in load_jsonl(a.chosen)}
     dev_ids = {r["id"] for r in load_jsonl(a.dev)} if os.path.exists(a.dev) else set()
-    rej = load_jsonl(a.rejected)
+    rej = [r for p in a.rejected for r in load_jsonl(p)]
 
     # --- abstain-çiftleri: yalnız GERÇEK fabrikasyon (abstained=False), dev HARİÇ, chosen mevcut ---
     pairs = []
     n_abst = n_nodev = n_nochosen = 0
+    mod_sayaci = {}
     for r in rej:
-        if r.get("abstained"):
+        if r.get("abstained"):        # CP2-c havuzunda bu alan YOK — çekinmeleri hakem zaten eledi
             n_abst += 1
             continue
         if r["id"] in dev_ids:
             n_nodev += 1
             continue
-        ch = chosen_by_id.get(r["id"])
-        if not ch:
-            n_nochosen += 1
-            continue
-        src = (r.get("trap_text") or "")[:a.max_chunk_chars]
-        user = f"KAYNAK MADDE:\n{src}\n\nSORU: {r['soru']}"
-        pairs.append({
-            "prompt": [{"role": "system", "content": SYSTEM_PROMPT_RAG},
-                       {"role": "user", "content": user}],
-            "chosen": [{"role": "assistant", "content": ch}],
-            "rejected": [{"role": "assistant", "content": r["model_answer"]}],
-            "is_pref": 1,
-            "_kind": "abstain", "_hi_overlap": r.get("judge_flag") == "hi_overlap",
-        })
+        # Şema ayrımı: CP2-c hasadı `tip`+`rejected`+`context_shown` yazar,
+        # emekli gen_v3 hattı `model_answer`+`trap_text`.
+        if "tip" in r and "rejected" in r:
+            pr = cp2c_cifti(r, chosen_by_id, a.max_chunk_chars)
+            if pr is None:
+                n_nochosen += 1
+                continue
+            mod_sayaci[pr["_mod"]] = mod_sayaci.get(pr["_mod"], 0) + 1
+        else:
+            ch = chosen_by_id.get(r["id"])
+            if not ch:
+                n_nochosen += 1
+                continue
+            src = (r.get("trap_text") or "")[:a.max_chunk_chars]
+            user = f"KAYNAK MADDE:\n{src}\n\nSORU: {r['soru']}"
+            pr = {
+                "prompt": [{"role": "system", "content": SYSTEM_PROMPT_RAG},
+                           {"role": "user", "content": user}],
+                "chosen": [{"role": "assistant", "content": ch}],
+                "rejected": [{"role": "assistant", "content": r["model_answer"]}],
+                "is_pref": 1,
+                "_kind": "abstain", "_mod": "m2", "_kaynak": None,
+                "_hi_overlap": r.get("judge_flag") == "hi_overlap",
+            }
+            mod_sayaci["m2"] = mod_sayaci.get("m2", 0) + 1
+        pairs.append(pr)
 
     # --- grounding-replay: v2b grounded örnekleri (RAG_MULTI), rejected=placeholder ---
     v2b = load_jsonl(a.v2b_train) if os.path.exists(a.v2b_train) else []
@@ -152,6 +221,10 @@ def main():
         "replay_frac_eff": round(len(grounds) / max(1, len(pairs)), 3),
         "interleave_step": (max(1, (len(pairs) + len(grounds)) // len(grounds)) if grounds else None),
         "skipped": {"abstained_no_contrast": n_abst, "dev_excluded": n_nodev, "no_chosen": n_nochosen},
+        # ADR-0045 m.4: hangi tipten kaç örnek — karışım oranı künyeye yazılır
+        "abstain_mod_karisimi": mod_sayaci,
+        "hasat_kaynak_karisimi": {k: sum(1 for p in pairs if p.get("_kaynak") == k)
+                                  for k in sorted({p.get("_kaynak") for p in pairs} - {None})},
         "hi_overlap_provisional": n_hi,
         "note": "hi_overlap fabrikasyonlar DAHİL (ADIM 4 judge τ'sü RAFİNE edecek). is_pref=1 abstain, 0 grounding.",
     }
