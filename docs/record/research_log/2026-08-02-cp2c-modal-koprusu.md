@@ -543,6 +543,44 @@ verimi m2b'nin ~2 katı.
 > `skip_first` yazılır), sıra tam bıraktığı yerden devam eder. Havuz biterse **üretimden önce**
 > çöker (tuzak 6.2 ilkesi).
 
+## 10. ✅ HASAT KAPANDI — 16:47 → 20:09 (3,4 saat), iki tipte de kapı geçildi
+
+```
+taşıyıcı  llama.cpp 10223 (11924d4c1) · q35-4b-q4_k_m.gguf
+          sha256 214826aa… · Q4_K_M · KV q8_0 · flash_attn · -np 64 · ctx_slot 8192
+kart      NVIDIA A100-SXM4-40GB (gpu_gercek — etiket "A100" değil, tuzak 6.7)
+rejim     düşünce 1024 + cevap 512 · seed 3407 · max_chunk_chars 900   (ADR-0043)
+```
+
+| tip | denenen | kabul (regex) | oran | kararlı s/üretim | zorunlu kapatma | kapı |
+| :--- | --: | --: | --: | --: | :--- | :--- |
+| m2 | 3.813 | **1.205** | %31,6 | **1,43** | 3.810/3.813 | ✅ geçildi |
+| m2b | 3.813 | **708** | %18,6 | **1,59** | **3.813/3.813** | ✅ geçildi |
+
+**Kapı damgası bu kez hak edilmiş:** ADR-0050'nin düzelttiği sıra sayesinde kapı `--limit`ten
+**önce** değerlendirildi. Sabahki koşuda aynı damga hak edilmeden basılabiliyordu.
+
+**Tahmin tam isabet.** ADR-0047 m.3'ün eşiği *"tahminin iki katı"* kuralıyla konmuştu; tahmin
+**1,44 s/üretim**, m2'nin fiili kararlı hızı **1,43**. Sabahki `-np 32` turunun 2,9'a çıkması
+taşıyıcının değil, slot sayısı + yanlı tahmin edicinin işiydi (ikisi de düzeltildi).
+
+**Birleştirme (`cp2c_birlestir.py`):**
+
+```
+m2   cp2c-64 1.205 + cp2c 21 yeni  = 1.226 tekil   (47 yinelenen atıldı)
+m2b  cp2c-64   708 + cp2c 10 yeni  =   718 tekil   (35 yinelenen atıldı)
+                                     ─────────────
+                          TOPLAM     1.944 aday    · yarım satır 0
+```
+
+> ### ✅ §5'in "kalıcı iz" endişesi GERÇEKLEŞMEDİ
+> Durdurulan ikinci iş (`ap-5d1ss…`, 16:52-17:05) aynı dosyaya yazıyordu; çıktıda **ne yinelenen
+> id ne yarım satır** çıktı — `cp2c-64/cp2c_m2.jsonl` 1.205 satır ve hepsi tekil, künyedeki
+> `kabul` sayısıyla **birebir**. Modal volume'un commit semantiği durdurulan konteynerin
+> yazımlarını taşımamış. **Yine de onarım adımı boşa değil:** iki dizin arasındaki **82 gerçek
+> çakışmayı** o yakaladı (havuz sırası deterministik olduğu için `/cp2c`'nin 113 kaleminin
+> 82'si yeni turda yeniden üretilmişti — tuzak **6.11**'in kanıtı).
+
 ## Doğan karar ve tuzak
 
 - [**ADR-0050**](../../adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md) — verim kapısının tahmin
@@ -552,3 +590,124 @@ verimi m2b'nin ~2 katı.
   ([`yurutme-tuzaklari.md`](../yurutme-tuzaklari.md)). **6.8**'in kod tarafındaki kardeşi: 6.8
   *insanın* ara çıktıya bakıp koşu iptal etmesiydi, 6.9 *kapının* aynı yanlı sayıyla otomatik
   karar vermesi.
+
+---
+
+## 11. ✅ KABUL ZİNCİRİ KAPANDI — **362 temiz negatif**, hedefin yarısı · $5,11
+
+```
+        regex   →  mini      →  teyit      →  kör damga
+m2      1226      430 (%35,1)   295 (%68,6)   272        · mini $0,147 · teyit $0,880
+m2b      718      305 (%42,5)    90 (%29,5)    90        · mini $0,154 · teyit $1,079
+                                            ──────
+                                TOPLAM       362        · kör damga (1944 kalem) $2,849
+                                                        · HAKEM TOPLAM $5,11
+```
+
+Dosya: `outputs/eval/cp2c-kabul/kabul_huni.json` · zincir `scripts/cp2c_kabul.sh` (tasarım B,
+ADR-0049 m.5) · ön-filtre gpt-4o-mini · teyit + kör damga gpt-4o · `LLM_GATEWAY=openai` pinli.
+
+**Ön-kayıtlı hedef 750'ye karşı %48.** İnsanın onayladığı yeniden-açma çizgisi (550) de kırıldı
+→ ek tur koşuldu (§12).
+
+### ⚠️ Nerede kaybettik — huni ADR-0049'un varsaydığından **iki kat** dar
+
+ADR-0049 m.5'in projeksiyonu ~%50'lik tek bir teyit süzgeci varsayıyordu; ölçülen iki katmanlı
+daralma çok daha sert, **ve mod başına ayrışıyor**:
+
+| | m2 | m2b |
+| :--- | ---: | ---: |
+| regex → mini FABRICATE | %35,1 | %42,5 |
+| mini → **teyit** FABRICATE | **%68,6** | **%29,5** |
+| toplam temiz / regex adayı | %22,2 | %12,5 |
+| **temiz / ÜRETİM** (kapasite planlaması için tek doğru sayı) | **%7,13** | **%2,36** |
+
+Ayrışmanın kaynağı teyit katmanının **geçersiz** alt kümedeki davranışı:
+
+| teyit FABRICATE | geçerli tuzakta | geçersiz tuzakta | toplam |
+| :--- | ---: | ---: | ---: |
+| m2 | 236/274 (%86) | 59/156 (%38) | 295/430 |
+| m2b | 82/93 (%88) | **8/212 (%4)** | 90/305 |
+
+**Geçerli tuzaklarda iki mod da ~%87** — teyit katmanı orada tutarlı. Fark yalnız geçersiz
+kolonunda: m2'de mini'nin "kaynak cevaplıyor" dediklerinin %38'i yine de uydurma çıkıyor,
+m2b'de %4. Yani m2b'de mini'nin yanlış-pozitifleri gpt-4o tarafından toptan eleniyor.
+
+### ⭐ ADR-0048 LEHİNE KANIT — teyit ile kör damga güçlü örtüşüyor
+
+Kör damga (cevaba **kör**, kalem düzeyinde) havuz genelinde:
+
+| | havuz geneli geçerlilik | **teyitten geçmiş uydurmalarda** |
+| :--- | ---: | ---: |
+| m2 | 1012/1226 = **%82,5** | 272/295 = **%92,2** |
+| m2b | 571/718 = **%79,5** | 90/90 = **%100** |
+
+Yani "bu cevap uydurma" (cevaba bakan yargı) ile "bu tuzak geçerli" (cevaba kör yargı) **bağımsız
+değil, uyumlu**. Mekanizma açık: kaynak soruyu gerçekten cevaplıyorsa modelin cevabı zaten
+uydurma olmaz, dolayısıyla teyitten geçen küme geçerli tuzaklar bakımından **zenginleşmiş**
+oluyor. Bu, ADR-0048'in kör damgayı otorite ilan etme kararını zayıflatmıyor — tersine, iki
+bağımsız ölçümün aynı yöne bakması damganın gürültü değil sinyal ölçtüğünü gösteriyor.
+
+⚠️ Karşı okuma da kayda geçsin: örtüşme **aynı hakem ailesinin** (gpt-4o) iki çağrısı arasında
+ölçüldü, bağımsız aile değil. Öz-tutarlılık ile doğruluk burada ayrıştırılamaz.
+
+### Planlama dersi
+
+**Kapasite planı `regex kabul` üzerinden yapılamaz.** Bu turda 1.944 aday "hedefin %26 altındayız"
+gibi görünüyordu; gerçek sayı 362, yani hedefin **%52 altında**. Aday sayısı hakem huninin
+girdisidir, çıktısı değil; planlama birimi **temiz negatif / üretim** olmalı (m2 %7,13 ·
+m2b %2,36). Bu oran ancak tam bir zincir koştuktan sonra bilinebildiği için, ADR-0047'nin
+"`--limit` ile koş, verimi ölç" kararı doğru çıktı — ama ölçülmesi gereken verim hasat verimi
+değil, **zincir sonu verimi**ymiş.
+
+---
+
+## 12. Ek tur — insan kararı **A** (2026-08-02 21:44)
+
+Sunulan üç şık ve elenme gerekçeleri:
+
+| # | şık | elendi mi | gerekçe |
+| :-: | :--- | :-: | :--- |
+| **A** | ek hasat turu koş | ✅ **seçildi** | ~$12, ~3 sa; ORPO adımını 35'ten ~70'e çıkarır |
+| B | 362 ile devam et | ❌ | 362 → **35 adım**; ADR-0047'nin reddettiği 29-adım bölgesine bitişik. `τ_a` öğrenmezse CP3 ölçülemez olur, ARA KAPI'nın 1. gözlemi anlamsızlaşır |
+| C | `grad-accum` 64→32 ile adımı ikiye katla | ❌ | bedava, ama efektif batch yarıya iner → `τ_g`'nin eğitim rejimiyle eşleşmez (ADR-0031). "Kollar aynı reçeteyle eğitildi" iddiası düşer |
+
+```
+app        ap-NpNr0GD8A1xO0Ywnrbz1nk  ·  fc-01KZ1WN4FVKA6JFP9TXGBWKQ81
+başlangıç  2026-08-02 21:44
+çıktı      hukuk-data:/cp2c-ek1/       ← AYRI dizin (provenans; birleştirme cp2c_birlestir.py)
+skip-first 3813/tip                    ← 1. turun `denenen` sayısı
+limit      3750/tip = 7.500 üretim
+taşıyıcı   gguf sha256 214826aaca724dc7… · Q4_K_M · -np 64 · A100-SXM4-40GB · seed 3407
+           → 1. turla BİREBİR (ADR-0047 m.2 taşıyıcı kimliği korundu)
+beklenti   m2 ~267 · m2b ~89 → toplam ~718 temiz ≈ 70 ORPO adımı   ⚠️TAHMİN
+```
+
+**Boyut seçiminin gerekçesi.** 3.000/tip tam 551'e denk geliyordu — sıfır pay. Bu turda her
+tahmin tutarlı biçimde iyimser çıktığı için (630 → 385 → 308 → gerçek 362) pay bırakıldı;
+3.750 ayrıca 1. turun aynısı olduğu için künye ve provenans tek kalıp kalıyor.
+
+### 🔴 DÖRDÜNCÜ EKSİK KÖPRÜ — `--skip-first` Modal tarafına hiç geçmemişti
+
+`scripts/cp2_harvest.py`'ye `--skip-first` bu sabah eklenmişti (§9, tuzak 6.11), ama
+`modal_train.py`'de **ne `spawn_cp2c` imzasında ne `harvest_cp2` komut kurulumunda** vardı.
+Argüman kabul edilir, sessizce yok sayılır ve ek tur **1. turun ürettiği kalemleri baştan
+üretirdi** — 3 saatlik GPU, tamamı yinelenen. §2/§7'nin aynı sınıfı: *köprünün ucu eksik.*
+
+Onarım üç noktada: `spawn_cp2c(skip_first=0)` → `harvest_cp2(skip_first=0)` → `cmd +=
+["--skip-first", …]`, artı künyeye `uretim_butcesi.skip_first` (provenans).
+
+**Kanıt — logdan, koşu başladıktan sonra:**
+
+```
+[cp2] tip=m2 · mod=oracle · havuz=19284 · seed 3407 · devam=0 kayıt
+[cp2] --skip-first 3813 → sıra 3813. kalemden başlıyor
+[cp2] 15471 uygun kalem · eş zamanlılık=64        ← 19284 − 3813, tam
+```
+
+Havuz **tükenmedi**: 1. tur `--limit 3750` ile durdurulmuştu, her modda ~15.400 kalem el
+değmemiş. Aynı seed → aynı karışım sırası → 1. turla çakışma yok.
+
+**Genel ders (üç kez tekrarlandı, artık kalıp):** bu hatta bir bayrak *script'e* eklendiğinde iş
+bitmiyor; **çağrı zinciri uçtan uca izlenmeden** ekleme tamamlanmış sayılmaz. Üçü de aynı
+sessiz-yanlışlık sınıfı: hata vermez, yanlış sayı üretir.
