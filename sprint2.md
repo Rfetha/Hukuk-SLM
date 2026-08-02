@@ -22,6 +22,11 @@ kapsam    : CP2-c → kabul zinciri → CP3 → ARA KAPI.  CP4-CP5 bu hedefin DI
 durması gereken** 🔴 ARA KAPI var ve hemen altında ~**$12**'lik iş duruyor. Bu yüzden HEDEF
 Sprint 2'nin tamamını değil, **ARA KAPI'ya kadarki kısmı** kapsar.
 
+> ⏸️ **2026-08-02 ~22:30 — oturum kapandı, hedef İPTAL DEĞİL.** İnsan PC'yi kapattı; Modal'daki
+> ek tur hasadı `--detach` ile koşmaya devam ediyor. Yeniden başlarken **▶ SIRADAKİ İŞ'teki
+> DEVAM NOKTASI bloğu** ilk okunacak yerdir — orası "iş bitmiş mi, yarıda mı ölmüş" ayrımını
+> ve her iki hâlin komutunu taşıyor. Yerelde koşan hiçbir süreç kalmadı.
+
 ---
 
 ## 📌 BU BELGE CANLI TUTULUR — sprint akarken güncellenir, sonunda değil
@@ -41,42 +46,84 @@ CP'yi tekrar koşar, tetiklenmiş bir kapıyı görmez.
 
 ## ▶ SIRADAKİ İŞ
 
-```
-CP   : CP2-c EK TUR hasat — 🟡 KOŞUYOR (insan kararı A, 21:44)
-       app ap-NpNr0GD8A1xO0Ywnrbz1nk · fc-01KZ1WN4FVKA6JFP9TXGBWKQ81
-       çıktı /data/cp2c-ek1/ · --skip-first 3813/tip · --limit 3750/tip · -np 64 · seed 3407
-       ölçülen: kararlı 1,45 s/üretim (eşik 2,88) · kabul %32 — 1. turla birebir
-       → 7.500 üretim ≈ 3,2 sa ≈ ~$6,6 (⚠️ beklenti, fiili panelden — tuzak 6.3)
-       bitiş beklentisi ~00:55
+### ⏸️ OTURUM KAPANDI — 2026-08-02 ~22:30, insan PC'yi kapattı
 
-✅ 1. TUR HASAT KAPANDI (20:09) — /cp2c-64 + /cp2c → birleştirildi 1.944 aday
-✅ KABUL ZİNCİRİ KAPANDI (22:00) — outputs/eval/cp2c-kabul/kabul_huni.json
-       regex 1944 → mini 735 → teyit 385 → kör damga **362 TEMİZ NEGATİF** · hakem $5,11
-       m2 272 (1226'dan) · m2b 90 (718'den)
-       🔴 hedef 750'nin %48'i, insan çizgisi 550'nin de ALTINDA → DURULDU, insana soruldu
-       → insan kararı **A: ek tur koş** (elenen B=35 adım riski, C=grad-accum değişimi)
-       ölçülen gerçek verim (planlama birimi): temiz/ÜRETİM m2 %7,13 · m2b %2,36
-       ⚠️ ders: kapasite planı `regex kabul` sayısıyla yapılamaz — o hakem huninin GİRDİSİ.
-          Ayrıntı #48 §11 (huni + ADR-0048 lehine kanıt) · §12 (ek tur + 4. eksik köprü)
+**Kapatma güvenliydi ve bilinçliydi.** Hasat Modal'ın A100'ünde koşuyor, yerel makinede değil;
+`modal run --detach` verildiği için iş terminale bağlı değil (`modal app list` → `ephemeral
+(detached)`) ve çıktı `hukuk-data:/cp2c-ek1/` volume'una periyodik commit'leniyor. PC kapanınca
+**yalnız yerel izleyiciler** öldü — veri değil, iş değil. Devam eden hiçbir yerel süreç yok.
 
-ÖN   : modal app list | grep ap-NpNr0GD8A1xO0Ywnrbz1nk   ← BAŞKA canlı iş OLMAMALI (6.10)
-       modal volume ls hukuk-data /cp2c-ek1               ← KUNYE.json çıktıysa BİTTİ (6.1)
-OKU  : iki huninin saniye_per_uretim_kararli + verim_kapisi damgası + kabul sayıları
-       🛑 kapı KIRMIZI ise DUR, insana sor — koşuyu kendi başına yeniden başlatma
-SONRA: (1) İNDİR      modal volume get hukuk-data /cp2c-ek1
-       (2) BİRLEŞTİR  python scripts/cp2c_birlestir.py --out data/_ham_ve_ara/cp2c_birlesik2 \
-                             <indirilen>/cp2c-ek1 <indirilen>/cp2c-64 <indirilen>/cp2c
-                      (üç dizin; id bazlı tekilleştirme + karışım künyesi BIRLESIM.json)
-       (3) KABUL ZİNCİRİ — ✅ önbellek devralma eklendi, ~$2,85 kurtarır:
-           ONBELLEK=outputs/eval/cp2c-kabul/valid_trap_cache.json \
-           bash scripts/cp2c_kabul.sh data/_ham_ve_ara/cp2c_birlesik2 outputs/eval/cp2c-kabul2
-                      1. turun 1.944 kalemi yeniden hakeme GİTMEZ (ADR-0048: geçerlilik
-                      kalemin özelliği). Kaynak parmak izi tutmazsa ÇÖKER — sınandı.
-BİTİŞ: temiz negatif ~718 bekleniyor (1. tur 362 + ek tur ~356) ≈ **70 ORPO adımı**
-       🛑 yine 550'nin altındaysa DUR ve insana sor (ADR-0047 m.1)
-YAZ  : (📌 canlı belge kuralı) #48'e ek tur sonucu · durum tablosu · kapı tetiklendiyse ADR
-EN SONRA: CP3 — komut aşağıda hazır (açık karar YOK, ADR-0051 ile kapandı)
+⚠️ **Kabul zinciri PC kapalıyken koşamaz** (OpenAI hakem çağrıları yerelden gider). Sırası
+zaten hasattan sonra, dolayısıyla kayıp yok.
+
 ```
+DEVAM NOKTASI — bu belge /goal ile okunduğunda İLK İŞ bu blok
+```
+
+**1️⃣ Hasat bitti mi?**
+
+```bash
+modal app list | grep ap-NpNr0GD8A1xO0Ywnrbz1nk     # canlı mı, bitti mi
+modal volume ls hukuk-data /cp2c-ek1                # KUNYE.json VARSA temiz bitti
+```
+
+| gördüğün | anlamı | ne yap |
+| :--- | :--- | :--- |
+| `KUNYE.json` var | ✅ temiz bitti | **2️⃣**'ye geç |
+| app canlı, künye yok | 🟡 hâlâ koşuyor | bitmesini bekle (kalan süreyi logdaki `denenen=`den kestir) |
+| app yok **ve** künye yok | 🔴 yarıda öldü | `cp2c_m2.jsonl`/`cp2c_m2b.jsonl` yine de **kullanılabilir** (120 sn'de bir commit'lendi). Kabul zinciri kısmi hasatla koşar; sayı 550'nin altında kalırsa 3. tur `--skip-first` = **3813 + o turun `denenen`i**. Künye yoksa `denenen` bilinmez → logdan son `denenen=` satırı okunur, **yoksa 3. tur koşulmaz, insana sorulur** |
+
+**2️⃣ İndir → birleştir → kabul zinciri**
+
+```bash
+modal volume get hukuk-data /cp2c-ek1 outputs/_indirilen/
+
+python scripts/cp2c_birlestir.py --out data/_ham_ve_ara/cp2c_birlesik2 \
+       outputs/_indirilen/cp2c-ek1 outputs/_indirilen/cp2c-64 outputs/_indirilen/cp2c
+       # üç dizin · id bazlı tekilleştirme · karışım künyesi BIRLESIM.json
+       # ⚠️ ortadaki bozuk satırda ÇÖKER (bilinen kesilme kalıbı değil) — bu kasıtlı
+
+ONBELLEK=outputs/eval/cp2c-kabul/valid_trap_cache.json \
+bash scripts/cp2c_kabul.sh data/_ham_ve_ara/cp2c_birlesik2 outputs/eval/cp2c-kabul2
+       # 1. turun 1.944 kalemi yeniden hakeme GİTMEZ → ~$2,85 kurtarır (ADR-0048)
+       # kaynak parmak izi tutmazsa ÇÖKER — devralma ve çökme yolu ikisi de sınandı
+```
+
+**3️⃣ Karar noktası — `outputs/eval/cp2c-kabul2/kabul_huni.json` → `toplam_kabul`**
+
+```
+≥ 550  → CP3'e geç, ARA KAPI'ya kadar durma
+< 550  → 🛑 DUR, insana sor (ADR-0047 m.1) — 3. tur mu, azıyla mı devam
+```
+
+Beklenti **~718** (1. tur 362 + ek tur ~356) ≈ **~70 ORPO adımı**.
+
+**4️⃣ Sonra:** aşağıdaki CP3 komutu → 3a-3e → 🔴 **ARA KAPI'da DUR, insana sun.**
+
+**5️⃣ Her adımda:** 📌 canlı belge kuralı — durum tablosunu ve #48'i **aynı gün** güncelle.
+
+---
+
+<details><summary>Bu noktaya nasıl gelindi (2026-08-02 özeti)</summary>
+
+```
+✅ 1. TUR HASAT (16:47→20:09) — /cp2c-64 + /cp2c → 1.944 tekil aday
+✅ KABUL ZİNCİRİ 1. TUR (→22:00) — outputs/eval/cp2c-kabul/kabul_huni.json
+      regex 1944 → mini 735 → teyit 385 → kör damga **362 TEMİZ NEGATİF** · hakem $5,11
+      m2 272 (1226'dan) · m2b 90 (718'den)
+      🔴 hedef 750'nin %48'i, insan çizgisi 550'nin de ALTINDA → DURULDU, insana soruldu
+      → insan kararı **A: ek tur koş** (elenen B = 35 adım riski, C = grad-accum değişimi)
+      ölçülen gerçek verim (planlama birimi): temiz/ÜRETİM m2 %7,13 · m2b %2,36
+      ⚠️ ders: kapasite planı `regex kabul` sayısıyla yapılamaz — o hakem huninin GİRDİSİ
+🟡 EK TUR (21:44→) app ap-NpNr0GD8A1xO0Ywnrbz1nk · fc-01KZ1WN4FVKA6JFP9TXGBWKQ81
+      /data/cp2c-ek1/ · --skip-first 3813/tip · --limit 3750/tip · -np 64 · seed 3407
+      taşıyıcı 1. turla BİREBİR (gguf sha 214826aa… · A100-SXM4-40GB)
+      22:30 itibarıyla: m2 ~1.100/3.750 · kabul %33 · kararlı 1,42 s/üretim · hata 0
+      ⚠️ yol boyunca 4. eksik köprü: `--skip-first` Modal tarafına hiç geçmemişti (tuzak 6.12)
+      ayrıntı: #48 §11 (huni + ADR-0048 lehine kanıt) · §12 (ek tur kararı + köprü)
+```
+
+</details>
 
 **CP3 komutu — ateşe hazır** (arayüz `--help` ile doğrulandı; base ADR-0030, modül listesi ADR-0031):
 
@@ -177,8 +224,8 @@ kısa yedek metne düşüyordu (hata yok, yalnız zayıf hedef). `re.IGNORECASE`
 
 </details>
 
-**Maliyet:** kabul zinciri OpenAI hakem ~**$3,68** (ADR-0049 m.5, tasarım B) · o adımda GPU **$0**
-(koşan hasadın kendi beklentisi ~$11, durum tablosunda).
+**Maliyet — fiili:** kabul zinciri 1. tur OpenAI hakem **$5,11** (ADR-0049 m.5'in ~$3,68
+beklentisinin **%39 üstünde**; fark kör damganın 1.944 kalemde $2,85'i). O adımda GPU **$0**.
 
 ---
 
