@@ -14,6 +14,9 @@
 # Kullanım:
 #   bash scripts/cp2c_kabul.sh <hasat-dizini> [koşu-adı]
 #     <hasat-dizini>  cp2c_m2.jsonl + cp2c_m2b.jsonl'in bulunduğu yer (Modal'dan çekilmiş)
+#   ONBELLEK=<eski>/valid_trap_cache.json[ <eski2>…]  bash scripts/cp2c_kabul.sh …
+#     ek turlarda 1. turun kör damgası devralınır — o kalemler yeniden hakeme GİTMEZ.
+#     Meşruiyeti: geçerlilik kalemin özelliği (ADR-0048). Kaynak parmak izi tutmazsa çöker.
 #
 set -uo pipefail        # -e BİLEREK yok: tuzak 5.4 (mesajı yutar)
 
@@ -23,6 +26,7 @@ HASAT="${1:?kullanım: cp2c_kabul.sh <hasat-dizini> [koşu-adı]}"
 RUN="${2:-outputs/eval/cp2c-kabul}"
 JUDGE_MINI="${JUDGE_MINI:-gpt-4o-mini}"
 JUDGE_4O="${JUDGE_4O:-gpt-4o}"
+ONBELLEK="${ONBELLEK:-}"
 
 [ -d "$HASAT" ] || die "hasat dizini yok: $HASAT"
 mkdir -p "$RUN"
@@ -73,7 +77,8 @@ done
 # 4) KÖR geçerlilik damgası — cevap GÖSTERİLMEDEN, kalem düzeyinde, bir kez (ADR-0048)
 echo; echo "==================== kör geçerlilik damgası ===================="
 python -u scripts/valid_trap_cache.py --run-dir "$RUN" --tags cp2c --modes m2 m2b \
-    --judge-model "$JUDGE_4O" --out "$RUN/valid_trap_cache.json" || die "kör damga"
+    --judge-model "$JUDGE_4O" --out "$RUN/valid_trap_cache.json" \
+    ${ONBELLEK:+--onceki-onbellek $ONBELLEK} || die "kör damga"
 
 # 5) Havuzu birleştir: teyit FABRICATE **ve** kör damga geçerli
 python -u - "$HASAT" "$RUN" <<'PY' || die "birleştirme"
