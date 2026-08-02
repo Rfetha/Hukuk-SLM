@@ -214,7 +214,8 @@ harvest_image = (
 def harvest_cp2(gguf: str, packed: str, madde: str, out_dir: str, types: list[str],
                 limit: int = 0, target: int = 0, np_slots: int = 32,
                 ctx_per_slot: int = 8192, gate_after_s: int = 600,
-                gate_max_s: float = 2.88, seed: int = 3407, commit_every_s: int = 120):
+                gate_max_s: float = 2.88, seed: int = 3407, commit_every_s: int = 120,
+                skip_first: int = 0):
     """CP2-c üretim hasadı — `llama-server` (-np) + `cp2_harvest.py`, iki tip sırayla.
 
     Hasat HTTP üzerinden çalışır (doğrudan transformers değil), o yüzden sunucu bu
@@ -290,6 +291,8 @@ def harvest_cp2(gguf: str, packed: str, madde: str, out_dir: str, types: list[st
                    "--gate-after-s", str(gate_after_s),
                    "--gate-max-s-per-uretim", str(gate_max_s)]
             cmd += ["--limit", str(limit)] if limit else ["--target", str(target)]
+            if skip_first:
+                cmd += ["--skip-first", str(skip_first)]
             print(f"\n[cp2c] ==================== {tip} ====================", flush=True)
             _run_with_commits(cmd, [data_vol], every_s=commit_every_s)
             fp = out.replace(".jsonl", "_funnel.json")
@@ -312,7 +315,8 @@ def harvest_cp2(gguf: str, packed: str, madde: str, out_dir: str, types: list[st
                      "gpu_etiket": GPU, "gpu_gercek": kart},
         "rejim": {"dusunce_butcesi": 1024, "cevap_butcesi": 512, "seed": seed,
                   "max_chunk_chars": 900, "kaynak": "ADR-0043 rejim değişmezi"},
-        "uretim_butcesi": {"limit_per_tip": limit or None, "target_per_tip": target or None},
+        "uretim_butcesi": {"limit_per_tip": limit or None, "target_per_tip": target or None,
+                           "skip_first": skip_first or None},
         "verim_kapisi": {"gate_after_s": gate_after_s, "esik_s_per_uretim": gate_max_s},
         "huni": huniler,
     }
@@ -369,7 +373,7 @@ def spawn_cp2c(gguf: str = "", packed: str = "", madde: str = "", out_dir: str =
                types: str = "m2 m2b", limit: int = 0, target: int = 0,
                np_slots: int = 32, ctx_per_slot: int = 8192,
                gate_after_s: int = 600, gate_max_s: float = 2.88, seed: int = 3407,
-               commit_every_s: int = 120):
+               commit_every_s: int = 120, skip_first: int = 0):
     """CP2-c hasadı — fire-and-forget.
 
     ⚠️ `modal run --detach` ZORUNLU (tuzak 6.1): efemer app, yerel giriş noktası dönünce
@@ -378,6 +382,10 @@ def spawn_cp2c(gguf: str = "", packed: str = "", madde: str = "", out_dir: str =
     `--limit` ÜRETİM bütçesidir (tip başına), `--target` KABUL sayısı. CP2-c `--limit` ile
     koşar: maliyet böyle sınırlı kalır, verim ise ölçülen bir sayı olur — tersi (`--target`)
     verim tahminden kötüyse koşuyu sessizce uzatır.
+
+    `--skip-first N`: ek tur. Çıktı yalnız KABUL edilenleri saklıyor, bu yüzden `load_done`
+    "zaten denendi"yi ifade edemez — taze dizinde koşan ek tur sırayı 0'dan başlatıp aynı
+    kalemleri yeniden üretir (tuzak 6.11). Önceki turun künyesindeki `denenen` sayısını ver.
     """
     _require("gguf", gguf); _require("packed", packed)
     _require("madde", madde); _require("out-dir", out_dir)
@@ -392,9 +400,9 @@ def spawn_cp2c(gguf: str = "", packed: str = "", madde: str = "", out_dir: str =
                              types=types.split(), limit=limit, target=target,
                              np_slots=np_slots, ctx_per_slot=ctx_per_slot,
                              gate_after_s=gate_after_s, gate_max_s=gate_max_s, seed=seed,
-                             commit_every_s=commit_every_s)
+                             commit_every_s=commit_every_s, skip_first=skip_first)
     print(f"[cp2c] SPAWNED ✓ {call.object_id} | tipler={types} limit={limit} target={target} "
-          f"-np {np_slots} gpu={GPU}", flush=True)
+          f"skip_first={skip_first} -np {np_slots} gpu={GPU}", flush=True)
     print("[cp2c] ⚠️ 'SPAWNED' işin KOŞTUĞUNU KANITLAMAZ (tuzak 6.1). Doğrula:\n"
           f"       modal app logs hukuk-sft   ·   modal volume ls hukuk-data {out_dir}", flush=True)
 

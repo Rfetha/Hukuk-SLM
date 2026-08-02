@@ -42,58 +42,48 @@ CP'yi tekrar koşar, tetiklenmiş bir kapıyı görmez.
 ## ▶ SIRADAKİ İŞ
 
 ```
-CP   : CP2-c hasat (-np 64) — 🟡 KOŞUYOR, bitmesi bekleniyor
-       app ap-LHKDDasU1MD6b4xG10WK8W · 16:47 başladı
-       ölçülen: kararlı 1,46-1,50 s/üretim (eşik 2,88) · kabul ~%33 · hata 0
-       → 7.500 üretim ≈ 3,1 sa ≈ ~$7,8 (⚠️ beklenti, fiili panelden)
-✅ ÇÖZÜLDÜ (17:05): 16:52'de AYNI dosyaya yazan ikinci iş (ap-5d1ssJOgSKZz1VNAQvxwhD)
-       DURDURULDU — 200 üretim geride olduğu için o seçildi. Fazladan ~20 dk GPU (~$0,8).
-       ⚠️ KALICI İZ: /cp2c-64/cp2c_m2.jsonl'de YİNELENEN id'ler var + durdurulan süreç
-       yazarken kesilmiş olabilir (son satır yarım JSON olabilir). Kabul zinciri
-       İNDİRİRKEN: (1) bozuk son satırı at, (2) id bazlı TEKİLLEŞTİR. Ayrıntı #48 §5.
-ÖN   : modal app list | grep ap-LHKDDasU1MD6b4xG10WK8W    ← BAŞKA canlı iş OLMAMALI
-       modal volume ls hukuk-data /cp2c-64     ← KUNYE.json çıktıysa BİTTİ (tuzak 6.1)
-OKU  : her iki huninin  saniye_per_uretim_kararli  +  verim_kapisi damgası  +  kabul sayıları
+CP   : CP2-c EK TUR hasat — 🟡 KOŞUYOR (insan kararı A, 21:44)
+       app ap-NpNr0GD8A1xO0Ywnrbz1nk · fc-01KZ1WN4FVKA6JFP9TXGBWKQ81
+       çıktı /data/cp2c-ek1/ · --skip-first 3813/tip · --limit 3750/tip · -np 64 · seed 3407
+       ölçülen: kararlı 1,45 s/üretim (eşik 2,88) · kabul %32 — 1. turla birebir
+       → 7.500 üretim ≈ 3,2 sa ≈ ~$6,6 (⚠️ beklenti, fiili panelden — tuzak 6.3)
+       bitiş beklentisi ~00:55
+
+✅ 1. TUR HASAT KAPANDI (20:09) — /cp2c-64 + /cp2c → birleştirildi 1.944 aday
+✅ KABUL ZİNCİRİ KAPANDI (22:00) — outputs/eval/cp2c-kabul/kabul_huni.json
+       regex 1944 → mini 735 → teyit 385 → kör damga **362 TEMİZ NEGATİF** · hakem $5,11
+       m2 272 (1226'dan) · m2b 90 (718'den)
+       🔴 hedef 750'nin %48'i, insan çizgisi 550'nin de ALTINDA → DURULDU, insana soruldu
+       → insan kararı **A: ek tur koş** (elenen B=35 adım riski, C=grad-accum değişimi)
+       ölçülen gerçek verim (planlama birimi): temiz/ÜRETİM m2 %7,13 · m2b %2,36
+       ⚠️ ders: kapasite planı `regex kabul` sayısıyla yapılamaz — o hakem huninin GİRDİSİ.
+          Ayrıntı #48 §11 (huni + ADR-0048 lehine kanıt) · §12 (ek tur + 4. eksik köprü)
+
+ÖN   : modal app list | grep ap-NpNr0GD8A1xO0Ywnrbz1nk   ← BAŞKA canlı iş OLMAMALI (6.10)
+       modal volume ls hukuk-data /cp2c-ek1               ← KUNYE.json çıktıysa BİTTİ (6.1)
+OKU  : iki huninin saniye_per_uretim_kararli + verim_kapisi damgası + kabul sayıları
        🛑 kapı KIRMIZI ise DUR, insana sor — koşuyu kendi başına yeniden başlatma
-SONRA: (1) İNDİR  → modal volume get hukuk-data /cp2c-64 · /cp2c
-       (2) ONAR+BİRLEŞTİR — ✅ araç hazır, sentetik veriyle iki yolu da sınandı:
-           python scripts/cp2c_birlestir.py --out data/_ham_ve_ara/cp2c_birlesik \
-                  <indirilen>/cp2c-64 <indirilen>/cp2c
-           yapar: id bazlı TEKİLLEŞTİRME · yarım SON satırı atar · ortadaki bozuk
-           satırda ÇÖKER (bilinen kesilme kalıbı değil) · karışımı BIRLESIM.json'a
-           ve her kayda `kaynak` alanına yazar (ADR-0047 m.2 -np ve kartı serbest)
-       (3) KABUL ZİNCİRİ:
-KOMUT: bash scripts/cp2c_kabul.sh data/_ham_ve_ara/cp2c_birlesik
-BİTİŞ: outputs/eval/cp2c-kabul/kabul_huni.json yazıldı ve temiz negatif sayısı ~750
-       (hedefin altındaysa DUR ve insana sor — ADR-0047 m.1)
-       ⚠️ VERİM ÖLÇÜLDÜ (n=113 gerçek aday, $0,018 — #48 §9). Hakem tarafı SORUN DEĞİL:
-       mini FABRICATE m2 %38,2 · m2b %42,2, ikisi de ADR-0049'un ~%40 varsayımında.
-       Darboğaz REGEX ön-filtresi: m2 %31,3 ↔ m2b %19,2 (huni ikisine de ~%30 diyordu).
-       Sebebi base'in kendisi ve zaten ölçülüydü: kör base M2b Rej 0.949 ↔ M2 0.803 —
-       base M2b'de zaten uydurmuyor, yani 50/50 bölüşüm bu asimetriyi hesaba katmamış.
-       ✅ m2 KAPANDI 18:2x: denenen 3.813 · kabul 1.205 (%31,6) · kararlı 1,43 s/üretim
-          · kapı "geçildi" (bu kez --limit'ten ÖNCE bakıldı) · zorunlu kapatma 3.810/3.813
-       → PROJEKSİYON ~630 temiz (hedef 750, ~%16 açık) ⚠️tahmin
-         m2 1.205×%38,2≈460 · m2b ~600×%42,2≈253 · /cp2c 45  → ham ~758 × %83 ≈ 630
-       → önerilen kapatma: koşu bittikten SONRA ~1.500 üretimlik ek m2 turu (~40dk ~$1,6).
-         ⚠️ TAZE dizin + `--skip-first <önceki turun denenen sayısı>` ZORUNLU: havuz sırası
-         deterministik ve hasat onu SIRAYLA yürüyor, `--skip-first` olmadan ek tur aynı
-         kalemleri yeniden üretir (aynı dizine koşmak da çare değil — `load_done` yalnız
-         KABUL edilenleri biliyor, denenenleri değil). Bayrak eklendi. Detay #48 §9
-         Fiili sayı gelince karar insana (ADR-0047 m.1)
-YAZ  : (📌 canlı belge kuralı) iş biter bitmez → #48'e sonuç bölümü · defter.md'ye kabul huni
-       satırı · ⭐ AŞAĞIDAKİ DURUM TABLOSUNDA CP2-c satırlarını güncelle (durum ✅/🔴, fiili
-       sayılar, çıktı yolu, hangi research_log girdisi) · kapı tetiklendiyse ADR + #48 aynı gün
-EN SONRA: CP3 — komut ön-denetlendi, aşağıda hazır (⚠️ önce AÇIK KARAR çözülmeli)
+SONRA: (1) İNDİR      modal volume get hukuk-data /cp2c-ek1
+       (2) BİRLEŞTİR  python scripts/cp2c_birlestir.py --out data/_ham_ve_ara/cp2c_birlesik2 \
+                             <indirilen>/cp2c-ek1 <indirilen>/cp2c-64 <indirilen>/cp2c
+                      (üç dizin; id bazlı tekilleştirme + karışım künyesi BIRLESIM.json)
+       (3) KABUL ZİNCİRİ  bash scripts/cp2c_kabul.sh data/_ham_ve_ara/cp2c_birlesik2 \
+                                 outputs/eval/cp2c-kabul2
+                      ⚠️ kör damga önbelleği {mod}:{id} anahtarlı — 1. turun 1.944 kalemi
+                         YENİDEN ÖDENMEZ ise önbelleği taşı, yoksa ~$2,8 tekrar yanar
+BİTİŞ: temiz negatif ~718 bekleniyor (1. tur 362 + ek tur ~356) ≈ **70 ORPO adımı**
+       🛑 yine 550'nin altındaysa DUR ve insana sor (ADR-0047 m.1)
+YAZ  : (📌 canlı belge kuralı) #48'e ek tur sonucu · durum tablosu · kapı tetiklendiyse ADR
+EN SONRA: CP3 — komut aşağıda hazır (açık karar YOK, ADR-0051 ile kapandı)
 ```
 
 **CP3 komutu — ateşe hazır** (arayüz `--help` ile doğrulandı; base ADR-0030, modül listesi ADR-0031):
 
 ```bash
-# 1) çiftleri kur (kabul zinciri bittikten sonra)
+# 1) çiftleri kur — ⚠️ EK TUR sonrası dizin: cp2c-kabul2 (1. tur cp2c-kabul'de kaldı)
 python scripts/build_orpo_v3.py \
-  --rejected outputs/eval/cp2c-kabul/cp2c_kabul_m2.jsonl \
-             outputs/eval/cp2c-kabul/cp2c_kabul_m2b.jsonl \
+  --rejected outputs/eval/cp2c-kabul2/cp2c_kabul_m2.jsonl \
+             outputs/eval/cp2c-kabul2/cp2c_kabul_m2b.jsonl \
   --out-dir data/train/orpo_abstain_cp2c
 
 # 2) τ_a — TAZE adapter (--adapter VERİLMEZ ⇒ spawn_orpo --fresh-adapter'a çevirir)
@@ -142,6 +132,11 @@ hakem    : gpt-4o-mini · LLM_GATEWAY=openai PİNLİ · red kuralı mod-duyarlı
 > **Onaylanan: A.** Hedef cümleyi sistem isteminin kendisi tarif ediyor; dış model (B) yeni bilgi
 > üretmeden üslup kirliliği ekliyordu, C hasadın yarısını çöpe atıyordu. Ölçülen **45/45 tekil**
 > `chosen`. Kalıp-öğrenme riski **M1 A1 ≥ 0.880** muhafızıyla ölçülüyor; ön-kayıtlı geri dönüş B.
+> ### ⛔ AŞAĞIDAKİ İKİNCİ CÜMLE ARTIK GEÇERSİZ (2026-08-02 21:44)
+> Ek tur **koşulmayacaktı**, çünkü ~665 temiz bekleniyordu. **Fiili sayı 362** çıktı — aynı
+> paragrafın kendi koyduğu 550 şartı işledi, karar yeniden açıldı ve insan **A**'yı seçti:
+> ek tur koşuyor (#48 §12). Metin **silinmedi**, denetim izi olarak duruyor.
+>
 > **Ayrıca onaylandı: ek hasat turu KOŞULMAYACAK** — ~665 temiz ≈ **65 adım**, ön-kayıtlı 73'ün
 > %89'u ve ADR-0047'nin reddettiği 29-adım bölgesinden uzak. ⚠️ Fiili sayı **550'nin altına**
 > düşerse karar yeniden açılır (o noktada adım ~54) → `--skip-first 3813`, ~29 dk, ~$1,2.
@@ -202,8 +197,10 @@ kısa yedek metne düşüyordu (hata yok, yalnız zayıf hedef). `re.IGNORECASE`
 | **CP2-r** | ✅ cevaba-kör payda · **eşikler türetildi 0.923 / 0.880 / 0.854** | 0.23 | `outputs/eval/cp2-r-kor-payda/` · [#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md) |
 | **CP2-s** | ✅ boru hattı 4/4 · 🔴 TIES kodu yoktu → `merge_ties.py` yazıldı | ~0.35 | `outputs/eval/cp2-s-boru-hatti-smoke/` · [#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md) |
 | **CP2-c** `-np 32` denemesi | 🔴 **VERİM KAPISI TETİKLENDİ** 16:19-16:46 (m2 `2,97>2,88` · m2b `2,95>2,88`) — kapı *yanlı tahmin ediciyle* ölçüyordu (gerçek kararlı hız m2 ~2,4), **tahmin edici düzeltildi, eşiğe DOKUNULMADI** → [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md) · **113 kabul kaydı korundu** | ~1.2 ⚠️**beklenti** — fiilisi **panelden** okunacak (tuzak 6.3) | app `ap-5f6rLHHFohhupMGvhkla9I` → `hukuk-data:/cp2c/` · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c hasat** | 🟡 **KOŞUYOR** — 2026-08-02 **16:47**, `-np 64`, `--limit 3750`/tip. **m2 ✅ BİTTİ 18:2x**: denenen **3.813** · kabul **1.205 (%31,6)** · kararlı **1,43** · kapı **"geçildi"** (hak edilmiş: `--limit`'ten önce bakıldı) · zorunlu kapatma 3.810/3.813. **m2b 🟡 koşuyor** (kararlı ~1,78 · kabul ~%16) · hata **0** · ✅ 17:05'te aynı dosyaya yazan ikinci iş (`ap-5d1ss…`) durduruldu → çıktıda **id tekilleştirmesi şart** (#48 §5) | ~7.8 ⚠️beklenti (+~0.8 çift iş) | app `ap-LHKDDasU1MD6b4xG10WK8W` → `hukuk-data:/cp2c-64/` · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c kabul** | ▶ **SIRADAKİ** — `cp2c_kabul.sh`, tasarım B (ADR-0049 m.5) | ~3.68 | `outputs/eval/cp2c-kabul/` |
+| **CP2-c hasat** | ✅ **BİTTİ** 16:47→**20:09** (3,4 sa), `-np 64`, A100-40GB. **m2** denenen 3.813 · kabul **1.205 (%31,6)** · kararlı **1,43** — **m2b** denenen 3.813 · kabul **708 (%18,6)** · kararlı **1,59**. **İki tipte de kapı "geçildi"** (hak edilmiş: `--limit`'ten önce bakıldı) · hata **0** · zorunlu kapatma m2 3.810/3.813 · m2b **3.813/3.813**. Birleştirme: **1.944 tekil aday** (m2 1.226 · m2b 718), 82 yinelenen atıldı, **yarım satır yok** → durdurulan ikinci işin (`ap-5d1ss…`) kalıcı izi **çıkmadı** | ~7.8 ⚠️beklenti (+~0.8 çift iş) | app `ap-LHKDDasU1MD6b4xG10WK8W` → `hukuk-data:/cp2c-64/` · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c kabul (1. tur)** | ✅ **BİTTİ** 20:1x→**22:00**, `cp2c_kabul.sh` tasarım B (ADR-0049 m.5). Huni: regex **1.944** → mini **735** → teyit **385** → kör damga **362 TEMİZ** (m2 272 · m2b 90). 🔴 hedef 750'nin **%48**'i, insan çizgisi 550'nin de altında → **DURULDU, insana soruldu**. Ölçülen gerçek verim: temiz/üretim m2 **%7,13** · m2b **%2,36**. ⭐ Kör damga teyitten geçmiş uydurmalarda m2 %92,2 · m2b **%100** — ADR-0048 lehine kanıt | **5.11** ✅fiili (mini 0,30 · teyit 1,96 · kör damga 2,85) | `outputs/eval/cp2c-kabul/kabul_huni.json` · [#48 §11](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c ek tur** | 🟡 **KOŞUYOR** 21:44→, insan kararı **A**. `--skip-first 3813/tip` · `--limit 3750/tip` · -np 64 · seed 3407 · taşıyıcı 1. turla birebir (sha `214826aa…`). Ölçülen kararlı **1,45** · kabul **%32** — 1. turla tutarlı. ⚠️ Yol boyunca **4. eksik köprü**: `--skip-first` Modal tarafına hiç geçmemişti (tuzak **6.12**) | ~6.6 ⚠️beklenti + hakem ~5.5 | app `ap-NpNr0GD8A1xO0Ywnrbz1nk` → `hukuk-data:/cp2c-ek1/` · [#48 §12](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c kabul (2. tur)** | ▶ **SIRADAKİ** — üç dizin birleşimi → `cp2c_kabul.sh`. Beklenti **~718 temiz ≈ 70 ORPO adımı** | ~5.5 ⚠️beklenti | `outputs/eval/cp2c-kabul2/` |
 | **CP3** `τ_a` + merge | ⏳ ADR-0047 rejimi (~73 adım / 5 epoch) · **`--fresh-adapter` ZORUNLU** | ~3.20 + 0.15 | → 🔴 **ARA KAPI** |
 | ~~CP4 · CP5~~ | 🔒 **BU HEDEFİN DIŞINDA** — ARA KAPI yeşilse ikinci `/goal` | ~12.2 | spec: [`defter.md`](docs/record/sprint2/defter.md) |
 
