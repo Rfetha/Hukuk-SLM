@@ -29,6 +29,7 @@ Kullanım:
       --out outputs/eval/cp2-r-kor-payda/valid_trap_cache.json
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -67,6 +68,11 @@ def parse_args():
     p.add_argument("--tags", nargs="+", default=["base_th", "tg_v1_th", "gem_th"],
                    help="bağlam-aynılığı doğrulaması için özne etiketleri")
     p.add_argument("--modes", nargs="+", default=["m2", "m2b", "m3"])
+    p.add_argument("--onceki-onbellek", nargs="+", default=[],
+                   help="daha önce yazılmış valid_trap_cache.json dosyaları — içlerindeki "
+                        "{mod}:{id} kalemleri YENİDEN HAKEME GİTMEZ. Geçerlilik kalemin "
+                        "özelliği olduğu için (ADR-0048) bu meşru; ek turlarda 1. turun "
+                        "bedeli tekrar ödenmez.")
     p.add_argument("--judge-model", default="gpt-4o")
     p.add_argument("--budget-usd", type=float,
                    default=float(os.environ.get("OPENAI_BUDGET_USD", "5") or "5"))
@@ -102,6 +108,27 @@ def collect_items(run_dir, mode, tags, alan):
     return items, sapan
 
 
+def kaynak_izi(source):
+    """Kaynak metnin parmak izi — önbellek yeniden kullanımını doğrulamak için.
+
+    Why: önbellek `{mod}:{id}` anahtarlı ve bu 'bağlam kalemin özelliğidir' varsayımına
+    dayanıyor. Varsayım iki koşu ARASINDA bozulursa (havuz değişti, kırpma değişti) yeniden
+    kullanım sessizce yanlış etiket taşır. İz eşleşmiyorsa çökeriz.
+    """
+    return hashlib.sha256((source or "").encode("utf-8")).hexdigest()[:16]
+
+
+def onbellek_yukle(yollar):
+    """Önceki önbellekleri tek sözlükte birleştir. Aynı anahtar çakışırsa ilk dosya kazanır."""
+    birlesik = {}
+    for y in yollar:
+        d = json.load(open(y, encoding="utf-8"))["cache"]
+        yeni = {k: v for k, v in d.items() if k not in birlesik}
+        birlesik.update(yeni)
+        print(f"[kör-payda] önceki önbellek {y}: {len(d)} kalem, {len(yeni)} yeni")
+    return birlesik
+
+
 def judge(client, model, soru, source):
     r = client.chat.completions.create(
         model=model, temperature=0, **request_kwargs(model),
@@ -120,6 +147,7 @@ def main():
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
 
     cache, meta, spent = {}, {}, 0.0
+    onceki = onbellek_yukle(a.onceki_onbellek)
     for mode in a.modes:
         cfg = MOD_KAYNAK[mode]
         items, sapan = collect_items(a.run_dir, mode, a.tags, cfg["alan"])
@@ -143,29 +171,45 @@ def main():
             print(f"[kör-payda] {mode}: {len(items)}/{len(items)} GEÇERLİ — hakeme gitmedi (tanım)")
             continue
 
-        n_valid, cost0 = 0, spent
+        n_valid, cost0, devralinan = 0, spent, 0
         for k, i in enumerate(items, 1):
+            anahtar, iz = f"{mode}:{i}", kaynak_izi(items[i])
+            eski = onceki.get(anahtar)
+            if eski is not None:
+                if eski.get("kaynak_izi") not in (None, iz):
+                    raise SystemExit(
+                        f"🚨 {anahtar}: önceki önbellekteki kaynak izi TUTMUYOR "
+                        f"({eski['kaynak_izi']} ≠ {iz}). Aynı id farklı bağlam taşıyor — "
+                        "önbellek yeniden kullanılamaz. DURDURULDU.")
+                cache[anahtar] = eski
+                n_valid += 1 if eski["gecerli"] else 0
+                devralinan += 1
+                continue
             if spent >= a.budget_usd:
                 raise SystemExit(f"BÜTÇE doldu (${spent:.3f}) — önbellek YARIM, yazılmadı")
             d, c = judge(client, a.judge_model, first[i]["soru"], items[i])
             spent += c
             g = not d.get("source_answers")
             n_valid += 1 if g else 0
-            cache[f"{mode}:{i}"] = {"gecerli": g, "kaynak": a.judge_model,
-                                    "reason": d.get("reason")}
+            cache[anahtar] = {"gecerli": g, "kaynak": a.judge_model,
+                              "reason": d.get("reason"), "kaynak_izi": iz}
             if k % 20 == 0:
                 print(f"  {mode} {k}/{len(items)} geçerli={n_valid} ${spent:.4f}", flush=True)
         meta[mode] = {"n": len(items), "gecerli": n_valid,
                       "gecerli_orani": round(n_valid / len(items), 4),
+                      "devralinan": devralinan, "yeni_hakem": len(items) - devralinan,
                       "hakem": a.judge_model, "maliyet_usd": round(spent - cost0, 4)}
         print(f"[kör-payda] {mode}: {n_valid}/{len(items)} GEÇERLİ "
-              f"({n_valid/len(items):.3f}) ${spent-cost0:.4f}")
+              f"({n_valid/len(items):.3f}) ${spent-cost0:.4f}"
+              + (f" · {devralinan} devralındı, {len(items)-devralinan} yeni hakem"
+                 if devralinan else ""))
 
     out = {
         "olcum": "cevaba KÖR valid_trap — kalem düzeyinde, bir kez (ADR-0048 · ADR-0049 m.2)",
         "run_dir": a.run_dir, "judge_model": a.judge_model, "judge_gateway": gateway,
         "judge_providers": seen_providers(), "temperature": 0, "clip": CLIP,
         "baglam_ayniligi_dogrulandi": True,
+        "devralinan_onbellekler": a.onceki_onbellek or None,
         "mod_ozet": meta, "toplam_maliyet_usd": round(spent, 4),
         "not": "Skorlama hakemi gpt-4o-mini OLARAK KALIR; bu bir kürasyon etiketi. "
                "verdict yeniden hesaplanmaz — cevaba bağlılığı meşrudur.",

@@ -67,10 +67,11 @@ SONRA: (1) İNDİR      modal volume get hukuk-data /cp2c-ek1
        (2) BİRLEŞTİR  python scripts/cp2c_birlestir.py --out data/_ham_ve_ara/cp2c_birlesik2 \
                              <indirilen>/cp2c-ek1 <indirilen>/cp2c-64 <indirilen>/cp2c
                       (üç dizin; id bazlı tekilleştirme + karışım künyesi BIRLESIM.json)
-       (3) KABUL ZİNCİRİ  bash scripts/cp2c_kabul.sh data/_ham_ve_ara/cp2c_birlesik2 \
-                                 outputs/eval/cp2c-kabul2
-                      ⚠️ kör damga önbelleği {mod}:{id} anahtarlı — 1. turun 1.944 kalemi
-                         YENİDEN ÖDENMEZ ise önbelleği taşı, yoksa ~$2,8 tekrar yanar
+       (3) KABUL ZİNCİRİ — ✅ önbellek devralma eklendi, ~$2,85 kurtarır:
+           ONBELLEK=outputs/eval/cp2c-kabul/valid_trap_cache.json \
+           bash scripts/cp2c_kabul.sh data/_ham_ve_ara/cp2c_birlesik2 outputs/eval/cp2c-kabul2
+                      1. turun 1.944 kalemi yeniden hakeme GİTMEZ (ADR-0048: geçerlilik
+                      kalemin özelliği). Kaynak parmak izi tutmazsa ÇÖKER — sınandı.
 BİTİŞ: temiz negatif ~718 bekleniyor (1. tur 362 + ek tur ~356) ≈ **70 ORPO adımı**
        🛑 yine 550'nin altındaysa DUR ve insana sor (ADR-0047 m.1)
 YAZ  : (📌 canlı belge kuralı) #48'e ek tur sonucu · durum tablosu · kapı tetiklendiyse ADR
@@ -205,11 +206,21 @@ kısa yedek metne düşüyordu (hata yok, yalnız zayıf hedef). `re.IGNORECASE`
 | ~~CP4 · CP5~~ | 🔒 **BU HEDEFİN DIŞINDA** — ARA KAPI yeşilse ikinci `/goal` | ~12.2 | spec: [`defter.md`](docs/record/sprint2/defter.md) |
 
 **Bütçe — İKİ CÜZDAN, karıştırılmaz (tuzak 6.3).** Modal sayısı **panelden** okunur, defterden
-türetilmez. Sprint 2'de OpenAI hakem harcaması bugüne dek **$1.00**. Tam tablolar defterde.
+türetilmez. Tam tablolar defterde.
 
-> ⚠️ **Yukarıdaki GPU sayıları BEKLENTİ, ölçüm değil.** `-np 32` denemesinin (16:19-16:46) fiili
-> maliyeti **panelden okunacak** — tahmin ~$1,2, defterden türetilmedi. Aynısı koşan `-np 64`
-> hasadı için de geçerli (~$11 beklenti). Panelden okunan sayı geldiğinde bu satır güncellenir.
+| cüzdan | harcanan | **kalan** | okuma |
+| :--- | ---: | ---: | :--- |
+| **Modal GPU** | **$11,85** | **$18,15** | ✅ **panelden** 2026-08-02 22:1x (workspace cap: $30,65 / $42,50). Ek turun ilk ~45 dk'sı bu sayının **içinde** |
+| **OpenAI hakem** | **$5,11** (CP2-c kabul 1. tur) | — | ✅ fiili, zincir çıktısından: mini 0,30 · teyit 1,96 · kör damga 2,85 |
+
+> ⚠️ Durum tablosundaki GPU sayıları **BEKLENTİ**; toplamı ($7,8 + $1,2 + $0,8 ≈ $9,8) panelin
+> $11,85'inin altında kalıyor — **defter GPU'yu eksik sayıyor**, tam da 6.3'ün uyardığı yön.
+> Bağlayıcı olan panel.
+>
+> **ARA KAPI'ya kalan yol:** ek turun geri kalanı ~$5,0 → CP3 `τ_a` ORPO ~$1,5-2 →
+> 3b/3c/3d/3e **$0** (yerel RTX 5070 + llama-server). Kapıda ~**$11** kalması bekleniyor.
+> ✅ 2. kabul zincirinde kör damganın $2,85'i **kurtarıldı**: `valid_trap_cache.py
+> --onceki-onbellek` (kaynak parmak izi doğrulamalı; devralma ve çökme yolu ikisi de sınandı).
 
 ---
 
