@@ -83,6 +83,14 @@ A100 40GB                        ← 4B Q4_K_M ağırlık 2,5 GB; hibrit mimarid
 
 ### 3. Koşunun **ilk 10 dakikasında** gerçek verim ölçülür — tahmin tutmazsa durur
 
+> ### ➕ NOT (2026-08-02) — m.3'ün **tahmin edicisi** [ADR-0050](0050-verim-kapisi-tahmin-edici-duzeltmesi.md) ile düzeltildi; **eşik aynı (2,88 s/üretim)**
+> Aşağıdaki metin **değiştirilmedi.** Kapı `geçen_süre ÷ tamamlanan` (t0'dan **kümülatif**)
+> okuyordu; yüksek eş zamanlılıkta bu, açılış geçicisini her kaleme paylaştırıp hızı erken okumada
+> **sistematik olarak kötü** gösteriyor. Fiilen ısırdı: gerçek hızı ~2,4 s/üretim olan bir koşu
+> 600. saniyede **2,97** okunup durduruldu; **aynı koşu 673. saniyede zaten 2,89'daydı.** Kapı artık
+> **kararlı hızı** okur (boru hattı `concurrency` kalemle dolduktan sonrası). **Ön-kayıtlı büyüklük
+> ve eşik değişmedi** — değişen yalnız onları kestiren alettir. Tuzak **6.9**.
+
 Huni çıktısı (`saniye_per_uretim`) ilk 10 dakikada okunur ve kalan süre yeniden hesaplanır.
 Tahminin **2 katını** aşıyorsa koşu **durdurulur**, sayı negatif bulgu olarak yazılır, hedef ya da
 donanım yeniden karara bağlanır. *Para akarken tahmine güvenilmez* — `fla-core` dersi (#40) ve
