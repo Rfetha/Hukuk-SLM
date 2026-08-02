@@ -56,6 +56,12 @@ def parse_args():
     p.add_argument("--out", required=True)
     p.add_argument("--limit", type=int, default=0, help="kaç ÜRETİM denenecek (pilot)")
     p.add_argument("--target", type=int, default=0, help="kaç KABUL edilene kadar (üretim)")
+    p.add_argument("--skip-first", type=int, default=0,
+                   help="havuz sırasındaki ilk N uygun kalemi ATLA — ek tur için. "
+                        "Gerekçe: çıktı dosyası yalnız KABUL edilenleri saklıyor, bu yüzden "
+                        "`load_done` 'zaten denendi'yi ifade edemez; taze dizinde koşan bir ek "
+                        "tur sırayı 0'dan başlatıp aynı kalemleri yeniden üretir. Önceki turun "
+                        "künyesindeki `denenen` sayısını buraya ver.")
     p.add_argument("--seed", type=int, default=3407)
     p.add_argument("--server-url", default="http://127.0.0.1:8080/v1")
     p.add_argument("--server-model", default="local")
@@ -210,6 +216,12 @@ def main():
             continue
         isler.append((i, rec, b[0], b[1]))
 
+    if a.skip_first:
+        if a.skip_first >= len(isler):
+            raise SystemExit(f"--skip-first {a.skip_first} ≥ uygun kalem {len(isler)} — havuz bitti")
+        isler = isler[a.skip_first:]
+        print(f"[cp2] --skip-first {a.skip_first} → sıra {a.skip_first}. kalemden başlıyor", flush=True)
+
     print(f"[cp2] {len(isler)} uygun kalem · eş zamanlılık={a.concurrency}", flush=True)
 
     kapi = None
@@ -287,6 +299,7 @@ def main():
         "dusunce_butcesi": a.think_budget, "cevap_butcesi": a.max_new_tokens,
         "seed": a.seed, "toplam_kayit": n_prev + kept, "gecen_sure_s": round(el, 1),
         "es_zamanlilik": a.concurrency,
+        "skip_first": a.skip_first,          # ek turda hangi sıradan başlandığı — provenans
         "verim_kapisi": kapi or ("kapalı" if not a.gate_after_s else
                                  f"geçildi (eşik {a.gate_max_s_per_uretim:.2f} s/üretim)"
                                  if kapi_bakildi else
