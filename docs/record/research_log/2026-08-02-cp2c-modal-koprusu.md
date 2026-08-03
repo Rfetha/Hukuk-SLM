@@ -1126,3 +1126,59 @@ base            56,7%            0,803
 `τ_g` cevaplıyor ama çekinmiyor; `τ_a` çekiniyor ama cevaplamıyor. **Hiçbiri tek başına
 kullanılabilir değil.** İç iddia tam olarak bunun üzerine kurulu: task-vector merge iki
 kolun kazanımını aynı anda taşıyabiliyor mu? 3d/3e bunu ölçecek.
+
+### 3c tamamlandı — geçerlilik kapısı ve `τ_a`'nın tam tekil tablosu
+
+```
+mod      n  kesik      %  ort tok  düşünen  zorla
+m1      80      0   0,0%   1100,9      80     80
+m2      70      1   1,4%   1109,8      70     70
+m2b     80      0   0,0%   1045,1      80     80
+TOPLAM 230      1   0,4%   1084,2     230    230      ✅ kapı (%5) geçildi
+```
+
+`τ_a` düşünceyi **hiç kendi kapatmıyor** — 230/230 zorunlu kapatma. `τ_g` kapatıyordu
+(35/36, medyan 452 — #42). ADR-0017 maliyet ekseni: cevap başına ~1084 token.
+
+```
+özne          M1 kütle   M2 Rej   M2b Rej
+base            56,7%     0,803    0,949
+Gemini 3.1FL    72,9%       —        —
+τ_g             71,4%     zayıf      —
+τ_a             41,2%     0,984    0,987
+merge kapısı      —         —      ≥ 0,854
+```
+
+`τ_a` çekinme eksenlerinde **neredeyse tavanda** (0,984 / 0,987); bedeli grounding'in çıplak
+base'in altına düşmesi. Merge'in koruması gereken kazanım budur.
+
+---
+
+## 19. ✅ CP3 · 3d — norm-dengeli TIES merge (k=2) tamamlandı
+
+```
+‖τ_tg‖_F = 10,472179   → norm katsayısı 0,095491
+‖τ_ta‖_F =  1,180576   → norm katsayısı 0,847044      (τ_a 8,87× yukarı ölçeklenir)
+geri ölçek = 5,826377 = ortalama(‖τ_tg‖, ‖τ_ta‖)
+trim_k = 0,2 · λ = 1,0 · birleşik tensör 224/224 · ortak LoRA hedefi 224
+çıktı: models/merged/tg_ta_normdengeli · künye: outputs/eval/cp3d-merge/KUNYE_ties.json
+```
+
+### ⭐ TIES istatistikleri — çatışmanın NİCELİĞİ
+
+```
+çatışan parametre oranı = %2,245     ← iki kolun İŞARET olarak çeliştiği yüzey
+sıfır kalan oran        = %64,56     (trim_k=0,2 sonrası)
+```
+
+İç iddianın niceliksel karşılığı: iki beceri parametre düzeyinde gerçekten çarpışıyor ama
+**dar bir yüzeyde** (%2,2). Norm dengelenmeseydi bu yüzeyin tamamında `τ_g` kazanırdı — kütlesi
+8,87× fazla ve TIES'in işaret-seçimi kütle ağırlıklı. ADR-0036'nın koruduğu şey tam olarak bu
+%2,245'lik yüzeydir.
+
+Modül kırılımı (künyede tam hâli): iki kolun da en büyük normu **aynı MLP yüzeyinde** —
+`gate_proj` (τ_g 6,150 ↔ τ_a 0,621) ve `up_proj` (5,047 ↔ 0,628). Yani çatışma rastgele
+dağılmıyor, aynı alt-uzayda yoğunlaşıyor.
+
+⚠️ Norm kapsamı **global** (tek `‖τ‖_F`); modül-başına normalleştirme alınmadı —
+`docs/open_questions.md`'ye açık soru olarak duruyor.
