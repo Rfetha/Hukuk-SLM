@@ -154,6 +154,17 @@ Güncellik iddiamızın **tek dayanağı** bu ve sözleşme 2026-06-07'den beri 
 Değişmişse: retriever statik korpusla sürer ama **güncellik iddiası DÜŞER** →
 [`ROADMAP.md`](ROADMAP.md) + [`MODEL_CARD.md`](MODEL_CARD.md) düzeltilir.
 
+#### 📋 Uygulama planı hazır
+
+[`docs/plans/2026-08-03-s3a-on-prob.md`](docs/plans/2026-08-03-s3a-on-prob.md) — 5 görev,
+TDD adımlarıyla, gerçek kodla. İlk görev **madde anahtarı normalleştirme**: altın etiketi
+korpusa bağlayan çekirdek, kendi testleriyle. *(Plan yazılırken burada bir hata bulundu:
+`Geçici Madde 1` ile `Madde 1` aynı sayılınca 40.496 madde 27.706 anahtara düşüyor ve
+recall sessizce şişiyor — test olarak çivilendi.)*
+
+⚠️ **S3'ün planı YAZILMADI, bilinçli.** S3a'nın sonucu S3'ün şeklini belirliyor; probu
+koşmadan S3 planı yazmak, probun engellemek için var olduğu şeyi yapmak olur.
+
 #### S3a çıkış ölçütü
 
 ```
