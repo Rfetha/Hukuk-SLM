@@ -907,3 +907,80 @@ yüklendi.
 
 *Ders (tuzak 6.12'nin kardeşi): "hazır komut" bloğu, **koşulmadığı sürece doğrulanmamış**
 koddur. Belgede durması onu sınanmış yapmaz.*
+
+---
+
+## 16. ✅ CP3 · 3a — `τ_abstention` EĞİTİLDİ (2026-08-03 10:49 → 11:26, 36,5 dk)
+
+```
+app        ap-80DlzMmkEwTjerjwJlh1sO · fc-01KZ39K0CWEPPJRE41GK7S2V8N · A100-SXM4-40GB
+veri       /data/orpo_abstain_cp2c · 845 train / 26 validation
+rejim      5 epoch · lr 1e-5 (cosine) · beta 0.1 · grad-accum 64 · batch 1
+           --fresh-adapter · --bf16-base · --lora-dropout 0.05 · 11 modül
+adım       **70** (845÷64=13,2 → 14/epoch × 5) — ön-kayıtlı ~73'ün %96'sı
+çıktı      hukuk-outputs:/ta_v1 → outputs/ta_v1
+```
+
+Unsloth bandı: `Trainable parameters = 29,908,992 of 4,569,174,528 (0.65% trained)` — ön-kayıtlı
+sayı **birebir**.
+
+### ⛔ Kapı log satırından değil ARTEFAKTTAN kuruldu
+
+`modal app logs` kayan pencere döndürüyor; parametre bandı ilk denemede görünmedi. Kapı bunun
+yerine üretilen dosya üzerinden kuruldu — **niyeti değil ürünü doğrulayan**, daha güçlü bir test:
+
+| | `τ_g` (referans) | `τ_a` | |
+| :--- | ---: | ---: | :-: |
+| tensör | 448 | 448 | ✅ |
+| parametre | 29.908.992 | 29.908.992 | ✅ |
+| r / alpha / dropout | 16 / 32 / 0,05 | 16 / 32 / 0,05 | ✅ |
+| target_modules | 11 | 11 | ✅ |
+
+*Ders: bir kapının ölçütü mümkünse **artefakt** olmalı, log satırı değil. Log kaybolur, kayar,
+tamponlanır; dosya kalır ve tekrar ölçülebilir.*
+
+### ⭐⭐ ADR-0036'NIN GEREKÇESİ ÖLÇÜLDÜ — 8,87× norm asimetrisi
+
+```
+‖τ_grounding‖  = 10,4722      (1.083 adım @ lr 1e-4)
+‖τ_abstention‖ =  1,1806      (   70 adım @ lr 1e-5)
+                  ──────
+oran            8,87×
+```
+
+ADR-0036 bu asimetriyi **öngörerek** yazılmıştı; şimdi gerçek kollarda ölçüldü. TIES'in
+işaret-seçimi ve ayrık-ortalaması **kütle ağırlıklı** olduğundan, norm dengelenmezse `τ_a` tam
+da iki becerinin çatıştığı parametrelerde silinir — ve sonuç *"çekinme korunmadı"* diye
+okunurdu. Bu bir **ölçek artefaktı** olurdu, bulgu değil. Ana sonuç norm-dengeli koşar; ham
+TIES ablasyon olarak raporlanır (ADR-0036).
+
+### Eğitim eğrisi — çekinme öğrenilirken cevaplama unutulmadı
+
+| epoch | 0,38 | 1,08 | 2,15 | 3,61 | 4,30 | **5 (eval)** |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `loss` | 2,640 | 2,372 | 2,000 | 1,782 | 1,760 | **1,773** |
+| `nll_loss` (forget-vekili) | 2,434 | 2,168 | 1,849 | 1,667 | 1,648 | **1,636** |
+| `rewards/margins` | −0,1035 | −0,0955 | −0,0536 | −0,0323 | −0,0222 | **−0,0326** |
+| `log_odds_chosen` | −1,573 | −1,476 | −0,949 | −0,614 | −0,476 | **−0,626** |
+| `rewards/accuracies` | 0,175 | 0,160 | 0,190 | 0,147 | 0,201 | **0,143** |
+
+`nll_loss` **baştan sona düştü** (2,434 → 1,636): kol çekinmeyi öğrenirken grounding'i
+kaybetmedi — %20 replay'in görevi buydu ve yaptı.
+
+### ⚠️ NOT DÜŞÜLECEK BULGU — tercih sıralaması hiç dönmedi
+
+`rewards/accuracies` 5 epoch boyunca **0,14-0,20 bandında kaldı**, 0,5'i hiç geçmedi. Yani
+eğitim sonunda model hâlâ örneklerin ~%85'inde **kendi akıcı uydurmasına**, kalıplı red
+cümlesinden yüksek olasılık veriyor (`logps` −0,95 ↔ −1,28). Marj kapandı (−0,104 → −0,033,
+%68) ama işaret değiştirmedi.
+
+İki okuma mümkün ve **3c bunları ayırır**:
+1. **Yetersiz eğitim** — 70 adım ve lr 1e-5, sıralamayı çevirmeye yetmedi.
+2. **Metrik yanıltıcı** — `accuracies` token-olasılığı sıralamasını ölçüyor; ORPO'nun
+   hedeflediği davranış (üretimde çekinme) düşük-olasılıklı bir cümleyi *seçmek* değil,
+   uydurmanın olasılığını **bastırmak**. `log_odds_chosen` −1,573 → −0,626 (%60 iyileşme)
+   tam da bunu gösteriyor olabilir.
+
+⚠️ **Ön-kayıt niteliğinde:** ARA KAPI'nın 1. gözlemi (M2 Rej ≥ 0,923) **düşerse**, bu tablo
+"kol öğrenmedi mi, yoksa yeterince mi öğrenmedi" sorusunun kanıtı olacak — ve okuma (1) ise
+çare rejimdir (epoch/lr), veri değil. Sayı görülmeden bu yorum yapılmayacak.

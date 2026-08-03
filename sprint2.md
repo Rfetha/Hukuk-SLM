@@ -52,7 +52,10 @@ CP   : CP3 · 3a — τ_a ORPO eğitimi — 🟡 KOŞUYOR (2026-08-03 10:49 baş
        veri /data/orpo_abstain_cp2c (726 çift + 145 replay = 871; train 845)
        rejim 5 epoch · lr 1e-5 · beta 0.1 · grad-accum 64 · --fresh-adapter · 11 modül
        → **65 optimizer adımı** (845÷64=13 × 5) · ön-kayıtlı ~73'ün %89'u
-       ⛔ İLK LOGDA 29.908.992 (%0,65) EĞİTİLEBİLİR ÇIKMAZSA DURDUR
+       ⛔ KAPI (log yerine ARTEFAKT üzerinden — daha güçlü): ta_v1 indiğinde
+          adapter_model.safetensors → 448 tensör · 29.908.992 parametre
+          adapter_config.json      → r=16 · alpha=32 · dropout=0.05 · 11 modül
+          (τ_g'de ölçüldü, birebir aynı olmalı; tutmazsa DUR — merge edilemez)
        çıktı hukuk-outputs:/ta_v1
 
 ✅ CP2-c KAPANDI — **728 temiz negatif** (hedef 750'nin %97'si) · hakem toplam $7,97
@@ -60,8 +63,13 @@ CP   : CP3 · 3a — τ_a ORPO eğitimi — 🟡 KOŞUYOR (2026-08-03 10:49 baş
       iki turun huni oranları örtüşüyor → kapı değişikliği sayıyı kaydırmadı (#48 §15)
 
 SONRA (3b-3e, hepsi YEREL, GPU parası $0):
-  3b  τ_a TEKİL materyalize   python scripts/merge_ties.py --adapter ta=<indirilen ta_v1> (k=1)
-                              → bf16 → GGUF Q4_K_M   (⚠️ tekil kol da GGUF'tan ölçülür)
+  3b  τ_a TEKİL materyalize  ⚠️ merge_ties.py DEĞİL — o en az 2 kol ister ve tek kol için
+                             merge_lora.py'ye yönlendirir (çökerek, sessiz değil):
+        modal volume get hukuk-outputs /ta_v1 outputs/
+        python scripts/merge_lora.py --base Qwen/Qwen3.5-4B \
+               --adapter outputs/ta_v1 --out models/merged/ta_v1
+        QUANT=Q4_K_M PURE=0 bash scripts/setup_llamacpp.sh models/merged/ta_v1 ta_v1
+        → models/gguf/ta_v1-q4_k_m.gguf   (⚠️ tekil kol da GGUF'tan ölçülür — tuzak 1.7)
   3c  τ_a tekil eval          M2 Rej ≥ 0.923 · muhafız M1 A1 ≥ 0.880
                               🛑 kesik oranı > %5 → KOŞU GEÇERSİZ
   3d  τ_g+τ_a merge           merge_ties.py --adapter tg=… --adapter ta=… (norm-dengeli, k=2)
