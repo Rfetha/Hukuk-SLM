@@ -22,6 +22,14 @@ arşiv: [`docs/_arsiv/`](docs/_arsiv/)
 
 ---
 
+## 🎯 Vizyon — üç drop
+
+```
+🟦 A  model+harness → HF   ·   🟩 B  kurulabilir web app   ·   🟪 C  vatandaş platformu
+```
+
+Tasarım: [`docs/specs/2026-08-03-yol-haritasi-design.md`](docs/specs/2026-08-03-yol-haritasi-design.md)
+
 ## ▶ Şimdi — Sprint 3: HARNESS
 
 Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
@@ -34,6 +42,8 @@ Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
   - [x] **K5** red kapısı → [ADR-0038](docs/adr/0038-red-kapisi-esigi-kati.md) **katı**; aşırı-red ölçülecek
   - [ ] **K1** gömme modeli → adaylar **recall@k** ile **ölçülür**, seçilmez
   - [ ] **K4** ⭐ harness AÇIK ölçüm protokolü → tasarlanıp ADR olarak sunulur
+- [ ] ⭐ **S3a ön-prob** — `recall@k` (BM25 önce) + bedesten sözleşmesi · $0 · ~1 gün
+      ⛔ ön-kayıtlı eşik: `recall@10` ≥%90 plan aynen · %70-90 hibrit · <%70 **DUR**
 - [ ] **Adım 0** — modül-başına normalleştirme *(1 sa · $0)*
       kabul: M2b > 0,877 **ve** M1 kütlesi ≥ %71,6 *(ikisi birden)*
 - [ ] **Adım 1** — retriever: indeks + `recall@k`
@@ -60,6 +70,8 @@ Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
       ⚠️ Sade dille *eğitmek* denendi ve **doğruluğu düşürdü** ([ADR-0010](docs/adr/gemma4-12b-dersler.md#adr-0010))
 - [ ] HF yayını — `HakHukuk-4B-v0.1` + model kartı
 - [ ] Sürüm kabul testi — frozen TEST (`data/eval/canon/`) **bir kez**, `v1.0` öncesi
+- [ ] 🚨 **v2.0 için YENİ donmuş set üret — S4'ten ÖNCE.** Sonra üretilirse yetişmez:
+      o noktada TEST zaten harcanmış olur. CANON protokolü belgeli, ~$1 + yarım gün
 
 ### Boyut — kısıt kalktı
 

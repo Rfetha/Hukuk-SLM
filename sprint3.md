@@ -44,7 +44,7 @@ elde edilemeyecek üstünlük.
 
 ## ⛔ TASARIM KARARLARI — kod yazılmadan çözülür
 
-### K1. Gömme modeli (embedder)
+### K1. Gömme modeli (embedder) — ✅ **S3a ön-probunda çözülüyor**
 
 Türkçe hukuk metni · **CPU'da** koşacak (harness GPU'ya girmez — bu, sığar/sığmaz
 farkı). Adaylar ölçülmeli, seçilmemeli:
@@ -101,6 +101,7 @@ yaratmadığı ölçülecek (kütle ekseni).
 ## ▶ ADIMLAR
 
 ```
+S3a) ÖN-PROB                $0 · ~1 gün ← ⭐ PLANIN TEMELİNİ SINAR, önce koşar
 0) MODÜL-BAŞINA NORM        1 sa · $0   ← bedava, harness'tan bağımsız
 1) RETRIEVER                indeks + recall@k ölçümü
 2) ATIF DOĞRULAYICI         deterministik, hakem gerekmez
@@ -108,6 +109,61 @@ yaratmadığı ölçülecek (kütle ekseni).
 4) HARNESS AÇIK ÖLÇÜM       ⭐ gerçek ürün sayımız — hiç görülmedi
    → 🛑 DUR, harness açık/kapalı tabloyu insana sun
 ```
+
+### S3a — ÖN-PROB · $0 · ~1 gün · ⭐ ÖNCE BU
+
+1-2 aylık bir sprinte girmeden **planın iki temel varsayımını** sınar. İkisi de model çağrısı,
+hakem ve GPU **gerektirmez**.
+
+#### Prob 1 — `recall@k`: retriever altın maddeyi buluyor mu
+
+DEV soruları maddelerden üretildi; her sorunun altın `kanun_adi + madde_no`'su **biliniyor**.
+Saf bilgi-erişim ölçümü.
+
+**Sırayla, ucuzdan pahalıya:**
+
+```
+1. BM25             gömme YOK · indeks dakikalar · TAMAMEN BEDAVA
+2. multilingual-e5  CPU · model indirme
+3. bge-m3           CPU · uzun bağlam
+4. hibrit           BM25 + yoğun — ilk üçü yetmezse
+```
+
+> **BM25 neden ilk:** hukuk metni ayırt edici terimlerle dolu (kanun adları, madde numaraları).
+> Sözlüksel arama burada beklenenden güçlü olabilir ve **taban çizgisi** kurar. Yoğun gömme
+> BM25'i geçemiyorsa gömme modeli seçmenin anlamı yok. *(Bu aynı zamanda K1'i çözer.)*
+
+**⛔ ÖN-KAYITLI KARAR EŞİKLERİ — sayı görülmeden yazıldı:**
+
+| `recall@10` | S3 ne olur |
+| :--- | :--- |
+| **≥ %90** | plan tarif edildiği gibi koşar |
+| **%70-90** | **hibrit** eklenir, S3 büyür |
+| **< %70** | 🛑 **DUR, insana sor** — sorun korpus yapısında, S3'e girilmez |
+
+`recall@1/5/10/20` eğrisi de çıkarılır → modele kaç parça verileceğini o belirler.
+
+#### Prob 2 — bedesten sözleşmesi hâlâ geçerli mi
+
+```
+scripts/bedesten_probe.py  →  arama · tam metin · madde ağacı
+⚠️ Türk IP gerekiyor (gov firewall)
+```
+
+Güncellik iddiamızın **tek dayanağı** bu ve sözleşme 2026-06-07'den beri doğrulanmadı.
+Değişmişse: retriever statik korpusla sürer ama **güncellik iddiası DÜŞER** →
+[`ROADMAP.md`](ROADMAP.md) + [`MODEL_CARD.md`](MODEL_CARD.md) düzeltilir.
+
+#### S3a çıkış ölçütü
+
+```
+✅ recall@1/5/10/20 eğrisi ölçüldü, en iyi yöntem seçildi (K1 çözüldü)
+✅ eşik kararı verildi ve S3'ün boyutu buna göre kesinleşti
+✅ bedesten sözleşmesi sınandı, sonucu kayda geçti
+→ research_log #49
+```
+
+---
 
 ### Adım 0 — modül-başına normalleştirme *(harness'tan bağımsız, önce yapılır)*
 
@@ -177,6 +233,7 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
 | adım | durum | çıktı |
 | :--- | :--- | :--- |
 | **K1-K5** tasarım kararları | 🛑 **çözülecek** | ADR-0053+ |
+| **S3a** ön-prob (recall@k + bedesten) | ⏳ ⭐ **ÖNCE BU** | `outputs/eval/` + research_log #49 |
 | **0** modül-başına norm | ⏳ | `models/gguf/` + `outputs/eval/` |
 | **1** retriever | ⏳ | `scripts/` + recall@k |
 | **2** atıf doğrulayıcı | ⏳ | `scripts/` |
