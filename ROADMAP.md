@@ -25,7 +25,7 @@ red kapısı) hiç açılmadı — tez döneminde iç ablasyonun gereğiydi, art
 
 ---
 
-## 1. Harness — en büyük kazanç burada
+## 1. Harness — en büyük kazanç burada  ✅ **SEÇİLDİ (2026-08-03)** → [`sprint3.md`](sprint3.md)
 
 | bileşen | hangi açığı kapatır | nasıl |
 | :--- | :--- | :--- |
@@ -40,7 +40,7 @@ eksende ilerleme değil, farklı bir kategori.
 
 Ayrıntılı faz tarifi: [`docs/VISION.md`](docs/VISION.md) Faz 2.
 
-## 2. Model — ölçülmüş, ucuz düzeltmeler
+## 2. Model — ölçülmüş, ucuz düzeltmeler  *(2.1 harness'tan ÖNCE, gerisi sonra)*
 
 | # | açık | kanıt | bedel |
 | :-: | :--- | :--- | :--- |
@@ -83,10 +83,29 @@ o karşılaştırma *"neden daha iyi"* sorusunu cevaplıyor.
 
 ---
 
-## Sırayı belirleyen argüman
+## ✅ SIRA KARARA BAĞLANDI (2026-08-03)
+
+```
+0.  modül-başına norm (2.1)   1 sa · $0    ← bedava, harness'tan bağımsız
+1.  HARNESS                    asıl iş      → sprint3.md
+2.  harness AÇIK ölçüm         gerçek ürün sayımız — hiç görülmedi
+3.  τ_a v2 (2.2)               artık doğru girdi dağılımını bilerek
+4.  Türkçe muhakeme (2.3)      veri turu
+```
+
+**Gerekçe:** üç açığımızdan ikisini (A1 · M2b) harness **deterministik kodla**
+kapatıyor; eğitim ancak kısmen. Ayrıca retriever modelin gördüğü girdi dağılımını
+değiştiriyor — önce eğitmek, yanlış dağılıma optimize etmek olurdu. Ve en önemlisi:
+**retriever olmadan ortada ürün yok** — kullanıcının mevzuat metnini kendisi
+yapıştırması gerekiyor.
+
+## Sırayı belirleyen argüman — ve nasıl çözüldü
 
 Gerçek retriever ~5 gürültülü parça verecek — yani **M2b'ye benzeyen** koşullar.
 **En zayıf olduğumuz eksen, üretimde en çok kullanılacak eksen.**
 
-Bu iki yöne birden çekiyor ve karar buna bakarak verilir:
-*"M2b'yi modelde düzelt"* ↔ *"M2b'yi red kapısı zaten kodla kapatıyor"*.
+Bu iki yöne birden çekiyordu: *"M2b'yi modelde düzelt"* ↔ *"M2b'yi red kapısı zaten
+kodla kapatıyor"*. **Kod tarafı seçildi** — çünkü deterministik, çünkü eğitim onu
+ancak kısmen kapatır, ve çünkü retriever olmadan ölçtüğümüz dağılım üretimdeki
+dağılım değil. Model tarafı (2.2 · 2.3) **iptal olmadı**, harness'tan sonraya
+alındı; o zaman modelin gerçekten hangi girdiyi gördüğünü bilerek eğitiriz.
