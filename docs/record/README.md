@@ -14,12 +14,12 @@ tasarım `TASARIM.md`'de.
 ## Hangi belge ne işe yarar
 
 **`gemma4-12b-kronoloji.md`** — *ne oldu ve kaç çıktı.* 38 girdinin birleşik hâli; protokol künyesi,
-her turun tam skorkartı, ölçüm dosyalarının yolları, paper eşlemesi. **Sayılar birebir korundu.**
-Paper'ın **Results** bölümünün ham maddesi.
+her turun tam skorkartı, ölçüm dosyalarının yolları, ders ve paper eşlemesi (arxiv opsiyonel). **Sayılar birebir korundu.**
+OSS şeffaflık kaydının çekirdeği — ve arxiv yazılırsa **Results**'ın ham maddesi.
 
 **`../adr/gemma4-12b-dersler.md`** — *bundan ne öğrendik.* Base-bağımsız dersler (veri · eğitim
 davranışı · değerlendirme · operasyonel tuzaklar · metodoloji) + 26 ADR'nin karar kaydı.
-Paper'ın **Methodology** ve **Limitations** bölümlerinin ham maddesi. **Yeni hatta başlayan
+Yöntem ve sınırların kaydı — arxiv yazılırsa **Methodology**/**Limitations**'ın ham maddesi. **Yeni hatta başlayan
 önce burayı okur.**
 
 **`research_log/`** — yeni hattın canlı günlüğü. Kurallar orada.

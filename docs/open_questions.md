@@ -94,7 +94,7 @@ yeniden açılır, Sprint 1'in üç öznesi yeniden koşulur (~$0.5), takvim ~3-
 🟡 → thinking rapor edilen eksen olur · 🔴 → ADR-0030 m.2 kanıtla teyit, RS-FT future-work.
 
 ⚠️ **YEŞİL sadece iyi haber değil:** base *hiç eğitilmeden* `τ_a`'nın işinin çoğunu yapıyorsa,
-dış iddiada üçüncü bir açıklama belirir (*ince-ayar mı, harness mı, **düşünme mi***) ve makalenin
+dış iddiada üçüncü bir açıklama belirir (*ince-ayar mı, harness mı, **düşünme mi***) ve raporun/makalenin
 çerçevesi daralır. **Ne zaman:** Sprint 2'nin 1. günü.
 
 ---
