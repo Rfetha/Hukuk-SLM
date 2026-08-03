@@ -83,6 +83,47 @@ o karşılaştırma *"neden daha iyi"* sorusunu cevaplıyor.
 
 ---
 
+## 🎯 VİZYON — üç drop
+
+```
+🟦 A   model + harness → HF        kendi sistemine kuracak kişi
+🟩 B   kurulabilir web uygulaması  kullanmak isteyen kişi
+🟪 C   vatandaş platformu          vatandaş
+```
+
+Her biri bir sonrakinin basamağı. Tam tasarım ve elenen seçenekler:
+[`docs/specs/2026-08-03-yol-haritasi-design.md`](docs/specs/2026-08-03-yol-haritasi-design.md)
+
+```
+S3a ön-prob → S3 harness → S4 model → 🟦 A → S5 servis → 🟩 B → S6+ → 🟪 C
+                                                                    ↻ bakım
+```
+
+⚠️ **Takvim yok, çıkış ölçütü var.** Aralıklı ritimde süre tahmini yanlış çıkar ve yapay
+baskı yaratır. Bağlayıcı olan **sıra** ve her halkanın **çıkış ölçütü**dür.
+
+## ⭐ Bakım halkası — model eskimesi kriz değil
+
+1-2 yılda base modeller değişir, `v1.0` geriler. **Ama biz bir model değil REÇETE ürettik:**
+
+```
+yeni base  →  τ_g ~$4,4  →  τ_a ~$1,3  →  merge $0  →  eval ~$1
+              ────────────────────────────────────────────────
+              TOPLAM ~$7 · ~1 gün
+```
+
+Veri sabit, hiperparametreler künyede, merge kuralı ADR-0052'de, eval hattı otomatik.
+**Disiplinin asıl getirisi bu.**
+
+**Tetikleyici takvim değil, olay:** belirgin daha iyi bir ~4B base · kendi eval'imizde gerileme ·
+mevzuat değişti → ⚠️ **İNDEKSİ tazele, modeli DEĞİL** (güncellik harness'ın işi).
+
+## Rakip çerçevesi — ölçüt, hedef değil
+
+1-2 yılda Gemini Flash-Lite bugünkü Flash olur; *"FL'i geçmek"* koşan bir hedef. **Yapısal
+üstünlüğümüz bundan etkilenmiyor:** güncellik (kapalı ağırlık bugünün mevzuatını bilemez) ve
+mahremiyet (hukuki sorular kişiseldir). İkisi de zamanla **büyüyor**.
+
 ## ✅ SIRA KARARA BAĞLANDI (2026-08-03)
 
 ```

@@ -70,6 +70,19 @@ The configuration was selected on DEV and has **not** been validated against
 single-stage or sequential fine-tuning baselines. Until it is, the version stays
 below 1.0.
 
+## Hardware
+
+```
+GPU     ~6 GB VRAM   weights 2.59 GiB + KV cache (1 slot, 8192 ctx, q8_0) + buffers ≈ 3.5 GB
+                     4 GB may work with -c 4096 — untested
+RAM     ~8 GB        the harness (embedder, index) runs on CPU by design
+disk    ~5 GB        model + corpus + index
+```
+
+⚠️ These are **calculated, not measured**. A measured peak will replace them when the harness
+lands. The design rule behind them: **the harness never enters the GPU** — that is what makes
+the difference between fitting on a laptop and not.
+
 ## Method
 
 ```
