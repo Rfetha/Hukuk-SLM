@@ -1031,3 +1031,40 @@ kuralıyla aynı ruh: tek sayı davranışı tarif etmiyorsa iki sayı raporlan�
 
 Tuzak **6.8**: ara çıktıya bakıp koşuyu iptal etmek, sağlıklı bir koşuyu öldürür ve parayı iki
 kez yakar. Üretim sonuna kadar koşacak, puanlanacak, sayı öyle okunacak.
+
+### ✅ §17 DOĞRULANDI — M1 tamamlandı (n=80), üç özne aynı protokolde
+
+```
+M1 (cevaplaması BEKLENEN mod) — kaba red işareti (regex vekil, hakem DEĞİL)
+özne        n   red    oran    medyan cevap uzunluğu
+base       80    34   42,5%          426 karakter
+τ_g        80     2    2,5%          697 karakter
+τ_a        80    46   57,5%           58 karakter     ← şablon cümlesinin uzunluğu
+```
+
+`τ_a`'nın **medyan M1 cevabı 58 karakter** — tipik cevap, ADR-0051 şablonunun kendisi. Aynı
+sorulara `τ_g` 697 karakterlik kaynaklı cevap veriyor. **`τ_a` tek başına grounding'i çıplak
+base'den bile kötü hâle getirmiş** (%42,5 → %57,5).
+
+⚠️ Regex kaba bir vekildir; kesin sayı hakemden gelecek (ADR-0044 mod-duyarlı red kuralı).
+
+### ⭐ Bu, iç iddianın ÖNCÜLÜNÜ doğruluyor — çatışma gerçek
+
+Defterdeki iki negatif artık **simetrik** olarak elde:
+
+| bulgu | yön |
+| :--- | :--- |
+| #07 — plain SFT çekinmeyi **sıfırladı** | grounding eğitimi → çekinme çöker |
+| **#48 §17 — ORPO çekinme kolu grounding'i base'in altına indirdi** | çekinme eğitimi → grounding çöker |
+
+`τ_g`'nin aynı modda %2,5'te durması, iki kolun **gerçekten çatıştığını** gösteriyor: bu bir
+eğitim kusuru değil, becerilerin birbirini itmesi. İç iddianın sorduğu şey (*"task-vector merge
+çatışan becerileri ardışık/karışık SFT'den iyi korur mu?"*) ancak korunacak bir çatışma varsa
+anlamlıdır — **öncül ölçüldü ve doğrulandı.**
+
+Ayrıca `τ_a` düşünceyi kendi kapatmıyor: **80/80 zorunlu kapatma**, ort **1100,9 token/cevap**.
+`τ_g` kapatıyordu (35/36, medyan 452 — #42). ADR-0017'nin maliyet eksenine giren fark.
+
+**Asıl test 3d/3e'de:** merge, `τ_g`'nin cevaplamasını korurken `τ_a`'nın çekinmesini
+taşıyabiliyor mu? Tekil kolların ikisi de tek başına yetersiz — iddia tam olarak bunun
+üzerine kurulu.
