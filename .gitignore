@@ -157,3 +157,6 @@ scratchpad/
 
 # runlock (yarış koruması) — süreç ömrü boyunca duran geçici kilit dosyaları
 *.lock
+
+# Ara/ham çalışma verisi — üretilebilir, provenansı outputs/ künyelerinde (OSS temizliği 2026-08-03)
+data/_ham_ve_ara/

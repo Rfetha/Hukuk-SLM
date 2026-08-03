@@ -19,7 +19,7 @@
 > kabul etmişti; bu, girmemeye karar verilmiş bir kapıyı kilitliyor, argümanda yeni delik açmıyor.
 >
 > **Yeni kural (kullanıcı, 2026-07-29):** **repo dışı artefakt YOK** — her şey
-> `/home/ersoy/code/Hukuk-SLM` altında. Kollar versiyonlu ve kayıtlı:
+> repo kökü altında. Kollar versiyonlu ve kayıtlı:
 > [`docs/record/kollar.md`](../record/kollar.md). Yeni hattın adaptörleri de git'te **değil** ve
 > **yedeklenmiyor** — bilinçli karar: adaptör veri + reçete + seed sabitken yeniden üretilebilir.
 

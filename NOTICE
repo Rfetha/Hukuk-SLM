@@ -1,0 +1,35 @@
+HakHukuk
+Copyright 2026 HakHukuk contributors
+
+This product includes software and model weights developed for Turkish legal
+question answering.
+
+────────────────────────────────────────────────────────────────────────────
+BASE MODEL
+────────────────────────────────────────────────────────────────────────────
+Qwen/Qwen3.5-4B — Apache License 2.0, Alibaba Cloud.
+The released weights are a LoRA fine-tune + task-vector merge of this base.
+Base commit pinned: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+
+────────────────────────────────────────────────────────────────────────────
+TRAINING DATA
+────────────────────────────────────────────────────────────────────────────
+Primary source of legal text:
+  Mevzuat.gov.tr / bedesten.adalet.gov.tr — Republic of Türkiye legislation,
+  public government sources.
+
+Hugging Face datasets used (both Apache License 2.0):
+  OrionCAF/turkish_law_qa_dataset
+  Renicames/turkish-law-chatbot
+
+Synthetic pairs were generated FROM the statute text above and verified.
+
+⚠️ NO commercial legal databases (Lexpera, Kazancı, etc.) were used at any
+point. This was a standing project rule from the beginning, not a later
+cleanup — see docs/VERI_PLANI.md.
+
+────────────────────────────────────────────────────────────────────────────
+INFERENCE / TOOLING
+────────────────────────────────────────────────────────────────────────────
+llama.cpp (MIT) — GGUF conversion and serving
+Unsloth, TRL, PEFT, transformers — training stack

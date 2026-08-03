@@ -4,19 +4,69 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repository is
 
-**HakHukuk / Hukuk-TR** — a Turkish-language legal AI assistant built on a Small Language Model (SLM). The mission: democratize access to justice by simplifying legal language, drafting documents, and helping citizens understand their own cases.
+**HakHukuk** — an open-source Turkish legal assistant built on a small language
+model. Mission: make legal language legible to the citizen.
 
-**Project framing (decided 2026-05-29): private repo + proprietary license for now.** Repo is private, commercial rights belong to the owner. Model weights + model card may be published on HF later (optional). Academic paper door is not closed — if it makes sense later, the rigor/reproducibility (fixed seeds, logged runs, clean ablations) is already in place. Do NOT assume OSS or Apache-2.0 for the project itself; base model (Gemma 4 12B, `gemma-4-12B-it-qat-q4_0-unquantized`) is Apache-2.0 and must be attributed. ⚠️ **Lisans dipnotu (2026-07-23, ADR-0021):** Gemma 4 gerçekten Apache-2.0 (model kartı frontmatter; Gemma 1/2/3'ün "Gemma Terms of Use"undan farklı) — **ama Google üstüne Prohibited Use Policy + Intended Use Statement katmanlıyor.** "Tamamen open-weight" iddiası kurulacaksa limitations'ta bir cümle gerekir; hukuk asistanı hiçbir yasak kullanımı ihlal etmiyor, pratikte engel yok. (Kıyas: Qwen3.5 saf Apache-2.0.)
+**⚠️⚠️ FRAMING CHANGED 2026-08-03 — read this before anything else.**
 
-**⚠️⚠️ CURRENT STATE (2026-07-24): NEW LINE. Authoritative design doc = [`TASARIM.md`](TASARIM.md) at repo root. Read it first.** Locked by **ADR-0027**.
+This was a **master's thesis** project (private repo, proprietary licence, claim-driven).
+It is now a **fully public open-source product**: Apache-2.0, weights + code + data +
+the entire research record. An arxiv paper may follow, but it is **no longer the goal**.
 
-The Gemma 4 12B line (v0→v3) was **retired**. Its artifacts no longer live in this repo: the `old-version-gemma4-12b/` tree was deleted on **2026-07-28 (ADR-0034)**, superseding ADR-0024/0026's "moved, not deleted". **⚠️ ONE recovery path remains (2026-07-29):** the out-of-repo handover package `~/code/hukuk-devir/` was **deleted by the user** — the 12B LoRA adapters (v0/v1/v2b/v2c/v3, 1.8 GB, never in git) are **permanently lost, deliberately**: that line is retired and its weights will not be needed again. Text artifacts survive in git history — `git show a19fc25^:old-version-gemma4-12b/<path>` — as do all numbers and lessons (`docs/record/gemma4-12b-kronoloji.md`, `docs/adr/gemma4-12b-dersler.md`). **Standing rule: NO out-of-repo artifacts** — everything lives under this repo; branch artifacts are versioned and registered in [`docs/record/kollar.md`](docs/record/kollar.md). Its **lessons carry forward; its numbers do not** (different base, different protocol). The user's own draft `referans-design-doc.md` is the *input* to `TASARIM.md` and is **kept clean — never edit it.**
+```
+WAS   thesis  → prove a claim  → gates, pre-registration, ablations serve the claim
+IS    product → build the best model → same discipline, now a "don't fool yourself" tool
+```
 
-**Two-layer claim now in force:**
-- **Outer (main thesis, ADR-0017 reaffirmed):** in a narrow high-stakes domain (TR law), how close does an SLM + deterministic harness running at ~zero marginal cost on consumer hardware get to the **deployment class** of closed commercial models at **cost-normalized parity** — and how much of that comes from fine-tuning vs. the harness? *Terminology rule: never say "frontier" in the paper; say **cost band**.*
-- **Inner (methodological, NEW):** do **per-skill LoRA branches trained independently from the raw base + task-vector merge** preserve *conflicting* skills (grounding ↔ abstention) better than sequential or single-stage mixed SFT? This hypothesis is anchored to the line's most expensive negative finding — plain SFT drove refusal to zero (`research_log` #07), the Grounding-Abstention paradox (#24), and v3's M2b collapse 0.96→0.53 (#32).
+**The goal is the model.** Beat Gemini 3.1 Flash-Lite, then reach Flash and Pro.
+Priorities live in [`ROADMAP.md`](ROADMAP.md), tied to measured gaps.
 
-**Design essentials** (details in `TASARIM.md`; live decision register = **[`docs/open_questions.md`](docs/open_questions.md)**): **2 branches** (`τ_grounding` · `τ_abstention` — `τ_register` **dropped** by Kapı 0/#39, `τ_reasoning`/RS-FT **out of scope** by ADR-0035) → simultaneous k-way TIES/DARE → lattice **4 cells** (`τg` · `τa` · `τg+τa` · `τg` plain-control) **× 2 merge settings** (**raw TIES** / norm-balanced, ADR-0036 → **ADR-0052: main result is RAW TIES**, norm-balanced is the ablation — roles swapped after measurement) = **8 eval runs**, singletons mandatory and produced through the *same* pipeline as the pair · **Kapı 5** is the pre-registered decision rule for the inner claim (ADR-0037: `min`(grounding, abstention), symmetric 0.90 thresholds, both baselines must be beaten) · baselines = mixed SFT + sequential SFT · **two separate matrices** (inner ablation runs **harness OFF**, else the rejection gate masks model-level differences; outer parity matrix runs × {harness on/off}) · **DEV/TEST split** — new CANON-protocol items become DEV for merge/hyperparameter selection, the frozen `eval/canon/` (40+35) is TEST and is seen **once** · four-layer judge defense with family exclusion · **ONE size point** (ADR-0028) — the whole grid runs on a single ~4B-class base, mostly **local at $0**; a second size is future work with the same recipe, not part of the thesis.
+### What the change removes
+
+| constraint | why it existed | now |
+| :--- | :--- | :--- |
+| **ONE size point** (ADR-0028, ~4B) | the thesis ran at a single point | ❌ **lifted** — 8B/12B are open, multiple sizes may ship |
+| **graph-RAG out of scope** (ADR-0019) | thesis boundary | ❌ **lifted** — the harness is the product's core |
+| **Kapı 5 / CP4-CP5 baselines** | proving the methodological claim | 🔽 **optional** — deferred, see [`sprint2b.md`](sprint2b.md) |
+| **frozen TEST seen once** | selection bias vs. the paper | 🔁 repurposed as a **release acceptance test** |
+| *"never say frontier"* | paper terminology rule | ❌ moot |
+
+### What the change keeps — all of it
+
+Fixed seeds · logged runs · run manifests (`KUNYE.json`) · pre-registered gates ·
+same-day research log · an ADR per decision · the trap list.
+
+**This is not ceremony.** In one sprint the discipline caught four things that would
+otherwise have become wrong published numbers: a metric that rewarded refusing
+(`A1` is answered-only), the same blind spot on the merge side, a validity gate that
+voided a degenerate model's results, and a normalization prescription that
+**measurement reversed** ([ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md)).
+
+### Current artifact
+
+**`HakHukuk-4B-v0.1`** (internal id `tgta_v1`) — two LoRA branches trained
+independently from the raw base, merged as task vectors with raw TIES.
+Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: [`docs/record/kollar.md`](docs/record/kollar.md).
+
+```
+                  ours 4B   Gemini 3.1 FL
+M1 faithful mass    71.6%      72.9%
+M2 Rej              0.893      0.930
+A1                  0.909      0.956
+M2b Rej             0.877      1.000   ← widest gap; the harness closes it in code
+```
+
+⚠️ **All of it measured with the harness OFF** — the real product number has never
+been run. `v0.1` because the config was selected on DEV and is not validated against
+baselines.
+
+### Target audience: the CITIZEN — but read the trap
+
+Plain language is the **presentation layer of a correct answer, not a training
+target.** Training toward plain/short answers was tried and **lowered accuracy**;
+the citizen-register round matched base while abstention collapsed
+([ADR-0010](docs/adr/gemma4-12b-dersler.md#adr-0010)). So: train for correctness and
+abstention, simplify at the **prompt layer**.
 
 **Three record documents, three different jobs** — don't confuse them:
 - `TASARIM.md` — *what we will do.* Decisions, rejected alternatives, gates, open questions.

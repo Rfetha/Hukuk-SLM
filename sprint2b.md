@@ -17,7 +17,7 @@ koşul     : CP4 ve CP5 eğitildi, aynı protokolde ölçüldü ve Kapı 5 karar
             · ⛔ AŞAĞIDAKİ AÇIK KARAR çözülmeden CP4 BAŞLATILMAZ
 kapsam    : CP4 (karışık) · CP5 (ardışık + on-policy kontrol) · Kapı 5 okuması
             Sprint 3'ün 8 hücreli kafesi bu hedefin DIŞINDA
-bedel     : ⚠️ Modal'da KALAN $9,81 — plan bu rakama göre kurulur (bütçe bölümü)
+bedel     : ~$19,64 / kalan bütçe $22,31 (panelden) · pay ~$2,67 · ~10 saat
 ```
 
 **Neden bu sprint var:** ARA KAPI *"bu yola para harcamaya değer"* dedi, **iddiayı kanıtlamadı**.
@@ -191,67 +191,64 @@ Taban B            ?        ?        ?      ← CP5
 
 ---
 
-## 🛑 BÜTÇE — panelden okundu, **CP4-CP5 OLDUĞU GİBİ SIĞMIYOR**
+## 💰 BÜTÇE ve HESAP PLANI — panelden okundu, plan kilitlendi
 
 ```
-Modal    KALAN $9,81   (kullanılan $20,19 / $30,00 kredi · workspace $22,31 / $42,50)
-         ✅ panelden okundu 2026-08-03, henüz koşu YOK
-OpenAI   $0 — kredi tükendi (2026-08-03 09:37)
-OpenRouter ~$1,4 — eval hakemi buradan · sağlayıcı `OpenAI` PİNLİ
+Modal  KALAN $22,31   ← usage limit $42,50 − harcanan $20,19    ⭐ BAĞLAYICI OLAN BU
+       (kredi $9,81 yalnız ön-ödemeli kısım — tavan değil)
+OpenAI $0 — kredi tükendi (2026-08-03)
+OpenRouter ~$1,4 · eval hakemi · sağlayıcı `OpenAI` PİNLİ
 ```
 
-⚠️ Krediler **aylık yenilenmiyor**, sabit havuz. Beklemek yardım etmez; ya sığdırılır ya yüklenir.
+⚠️ **Kredi ≠ bütçe.** Krediler bitince fatura karta gider, tavan `usage limit`tir.
 
-### Ölçülen maliyetler — tahmin değil, `τ_a` koşusundan türetildi
+### Ölçülen maliyet — tahmin değil, `τ_a` koşusundan türetildi
 
 `τ_a`: 845 örnek × 5 epoch = 4.225 geçiş, `train_runtime` **2.188 s** → **0,518 s/örnek-geçiş**.
-
-| iş | geçiş | süre | ~$ | $9,81'e sığar mı |
-| :--- | ---: | ---: | ---: | :-: |
-| CP4 karışık ORPO · **5 epoch** | 90.245 | 12,98 sa | **27,26** | ❌ |
-| CP4 karışık ORPO · **2 epoch** | 36.098 | 5,19 sa | **10,90** | ❌ |
-| CP4 karışık ORPO · **1 epoch** | 18.049 | 2,60 sa | **5,45** | ✅ |
-| CP5 FT-6 (`τ_g` üstüne) | 4.225 | 0,61 sa | **1,28** | ✅ |
-| CP5c on-policy kontrol (hasat + eğitim) | — | ~1 sa | ~1,5 | ✅ |
-
-### ⭐ İki bulgu maliyeti düşürüyor
-
-**1. CP5'in FT-5'i zaten elimizde — `τ_g v1`'in ta kendisi.** FT-5'in tarifi *"aşama 1:
-grounding, ham base'den"*; `τ_g v1` **tam olarak budur** (raft verisi, ham base, SFT, aynı 11
-modül, seed 3407). Yeniden eğitmek ~$4,4 yakmak olurdu.
-
-Üstelik bu **daha temiz bilim**: ardışık taban ile merge'in **birinci aşaması birebir aynı**
-olur, tek fark *"üstüne eğit"* ↔ *"ayrı eğit ve birleştir"*. Kıyas tam olarak yöntemi ölçer.
-→ **CP5 = yalnız FT-6**, `--adapter outputs/tg_v1` ile.
-
-**2. Karışık ORPO'nun epoch sayısı bütçeyi belirliyor.** 5 epoch $27, 1 epoch $5,45.
-⚠️ Epoch **rejim değişmezi DEĞİL** — o kural birleştirilecek *kollar* içindir (TASARIM §4.1.1);
-tabanlar birleştirilmiyor. Sabit tutulması gereken **veri**dir (ADR-0042 tek havuz) ve
-**seçim prosedürü**dür (ADR-0037).
-
-### Sığan plan (~$8,2, $1,6 pay)
+`τ_g`: 1.083 adım × **7,0 s/it** (defter, SFT batch 16) → 7.581 s.
 
 ```
-CP4   karışık ORPO · 1 epoch          ~$5,45
-CP5   FT-6 (τ_g üstüne) · 5 epoch     ~$1,28
-CP5c  on-policy kontrol               ~$1,50
-                                      ───────
-                                       ~$8,23   ·  kalan pay ~$1,58
+MERGE'İN TOPLAM EĞİTİMİ — iddianın öznesi bu kadar hesap gördü
+  τ_g   17.323 geçiş · 2,11 sa · ~$4,42
+  τ_a    4.225 geçiş · 0,61 sa · ~$1,28
+  ───────────────────────────────────────
+  TOPLAM 21.548 geçiş · 2,71 sa · ~$5,70          ← "1,00× merge" referansı
 ```
 
-🛑 **Ama 1 epoch'un adilliği kararı insanındır:** taban 1 epoch, kollarımız 1.083 + 70 adım
-gördü. *"Tabanı az eğittiniz"* itirazı Kapı 5'i çürütebilir — CP5c kontrol koşusunun
-varlık sebebiyle **aynı** itiraz. Seçenekler:
+### 🔒 KİLİTLENEN PLAN — CP4 **3 epoch** (insan kararı, seçenek iv)
 
-| # | plan | bedel | itiraza karşı |
-| :-: | :--- | ---: | :--- |
-| **i** | CP4 1 epoch + CP5 + kontrol | ~$8,2 | zayıf — *"taban az eğitildi"* açık kalır |
-| **ii** | CP4 2 epoch + CP5, kontrol **ertelenir** | ~$12,2 | ❌ **sığmıyor** |
-| **iii** | Modal'a kredi yükle, CP4 5 epoch | ~$30 | güçlü — taban tam eğitilir |
-| **iv** | CP4'ü **eşit ADIM** sayısında koş (kollar toplamı ≈ 1.153 adım) | ölçülmeli | en savunulabilir: *"aynı hesap bütçesi"* |
+| iş | detay | ~$ |
+| :--- | :--- | ---: |
+| **CP4** karışık ORPO · **3 epoch** | 54.147 geçiş = **2,51× merge** · 7,79 sa | **16,36** |
+| **CP5** FT-6 (`τ_g` üstüne) · 5 epoch | 4.225 geçiş · 0,61 sa | 1,28 |
+| **CP5c** on-policy kontrol | hasat + eğitim | ~1,50 |
+| hakem | 3 özne × 3 eksen | ~0,50 |
+| | **TOPLAM** | **~19,64** |
+| | **kalan pay** | **~2,67** |
 
-**Önerim iv** — eşit hesap bütçesi, hem adil hem ölçülebilir bir kıyas ekseni. Ama epoch/adım
-dönüşümü hesaplanmalı ve insana sunulmalı.
+**Neden 3 epoch — "eşit" değil, itirazı kapatan sayı.** Asıl mesele *"tabanı az eğittiniz"*
+itirazını kapatmak. 3 epoch şu cümleyi satın alıyor:
+
+> **Tek-aşamalı taban, merge'in iki kolunun toplamının 2,5 katı eğitim hesabı gördü —
+> ve yine de kaybetti.**
+
+Elenenler: **1,19 epoch** (tam 1,00× — teknik olarak "eşit" ama *"sınırda tuttunuz"*
+itirazına açık) · **3,5 epoch** (2,93× ama pay **−$0,05**; bir yeniden koşu bütçeyi bitirir).
+
+⚠️ **Epoch bir rejim değişmezi DEĞİL.** O kural birleştirilecek **kollar** içindir
+(TASARIM §4.1.1); tabanlar birleştirilmiyor. Sabit tutulması gereken **veri** (ADR-0042 tek
+havuz) ve **seçim prosedürü**dür (ADR-0037). Taban lehine sapma **kasıtlıdır** ve raporda
+böyle geçer.
+
+⚠️ Bu sayılar **karışık ORPO** varsayar (açık kararın **A** şıkkı). Saf SFT seçilirse maliyet
+de gerekçe de yeniden hesaplanır.
+
+### ⭐ CP5'in FT-5'i yeniden eğitilmeyecek — `τ_g v1` onun ta kendisi
+
+Tarifi *"aşama 1: grounding, ham base'den"*; `τ_g v1` **tam olarak budur** (raft · ham base ·
+SFT · aynı 11 modül · seed 3407). ~**$4,4 tasarruf** — ve **daha temiz bilim**: ardışık tabanın
+1. aşaması ile merge'in `τ_g` kolu **birebir aynı artefakt** olur, tek fark 2. aşamada
+*"üstüne eğit"* ↔ *"ayrı eğit ve birleştir"*. Kıyas tam olarak **yöntemi** ölçer.
 
 ## Koşu öncesi kısa liste — Sprint 2'nin ısırdığı yerler
 
