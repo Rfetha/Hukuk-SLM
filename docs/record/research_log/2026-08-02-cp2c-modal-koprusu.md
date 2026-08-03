@@ -1341,3 +1341,74 @@ bütçeyi büyütmek değil, **merge'i düzeltmek** (DEV süpürmesi, §21'deki 
 
 Karar tablosu iki gözlem ister; ikincisi **yok**. Ön-kayıtlı kural gereği **DUR, insana sor**.
 CP4-CP5'e para harcanmaz.
+
+---
+
+## 22. ✅ MERGE SÜPÜRMESİ DENEY 1 — geri ölçek `min`: dejenerasyon çözüldü, grounding çözülmedi
+
+İnsan kararı **A** (DEV'de merge süpürmesi). Değişen **tek şey** geri-ölçek kuralı; TIES'in
+kırpma/işaret/ortalama adımları ve tüm rejim değişmezleri **aynı** — tek değişkenli deney.
+
+```
+geri ölçek   ortalama 5,826  →  min 1,181        (4,9× küçüldü)
+TIES ist.    çatışan %2,245 · sıfır kalan %64,56  →  AYNI (beklendiği gibi)
+künye        outputs/eval/cp3d-merge/KUNYE_ties_min.json  (geri_olcek_kurali: "min")
+koşu         outputs/eval/cp3-supurme-min/
+```
+
+### ✅ Teşhis DOĞRULANDI — dejenerasyon aşırı yükseltmedendi
+
+```
+kesik oranı   ortalama-merge %5,2 (KOŞU GEÇERSİZ)  →  min-merge %0,6 ✅ GEÇERLİ
+  m2b                        %6,2                  →              %1,2
+  m1                         %7,5                  →              %0,0
+```
+
+Tekrarlama döngüleri kayboldu. **Kapının reçetesi (`MAXTOK` büyüt) yanlıştı, teşhis doğruydu:**
+sorun bütçe darlığı değil, `τ_a`'nın eğitildiği genliğin 4,9 katında uygulanmasıydı.
+
+### Tam tablo (hepsi geçerli koşu, aynı protokol)
+
+```
+özne          cevaplanan  aşırı-red      A1   M1 kütle   M2 Rej   M2b Rej
+base             46/80       0,425   0,9864     56,7%    0,814    0,986
+Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,930    1,000
+τ_g              66/80       0,175   0,8658     71,4%    0,873    0,607 🔴
+τ_a              34/80       0,575   0,9697     41,2% 🔴 0,984    0,987
+MERGE(min)       43/80       0,463   0,9940     53,4%      —      0,987 ✅
+```
+
+**Çekinme tam korundu:** `τ_g`'nin çöken 0,607'si → **0,987**, `τ_a` ile birebir.
+**Grounding korunmadı:** M1 kütlesi 53,4% — `τ_a`'nın 41,2%'sinden iyi ama **çıplak base'in
+56,7%'sinin altında**, `τ_g`'nin 71,4%'ünden uzak.
+
+Her iki ön-kayıtlı kapı geçildi (M2 0,984 · M2b 0,987) ama **iddia henüz kanıtlanmadı** —
+merge iki kazanımı birden taşımıyor, yalnız birini.
+
+### ⭐ GEOMETRİ ANLAŞILDI — sorun ÖLÇEK değil ORAN
+
+Geri ölçek **toplam gücü** ayarlıyor, **oranı değil**. Norm dengeleme iki kolu **eşit ağırlığa**
+getiriyor; geri ölçek ikisini birlikte büyütüp küçültüyor:
+
+```
+eşit oran + toplam ölçek 1,18  →  çekinme ✅ · grounding zayıf (53,4%) · geçerli
+eşit oran + toplam ölçek 5,83  →  DEJENERASYON · geçersiz
+```
+
+**Eşit oranla grounding geri getirilemiyor:** ölçek düşükse `τ_g` zayıf kalıyor, yüksekse model
+bozuluyor. Aradaki bir ölçek (λ süpürmesi) yalnız bu iki uç arasında gezinir.
+
+⚠️ Bu, §21'de önerilen *"deney 2 = geri ölçek `‖τ_g‖`"*'yi **geçersiz kılar** — o da eşit oran,
+sadece daha yüksek ölçek → daha beter dejenerasyon. Öneri düzeltildi.
+
+### Doğru deney 2: **ham TIES** (`--no-norm-balance`) — artık kontrol değil HİPOTEZ
+
+Ham TIES **oranı** değiştirir: `τ_g` kendi 10,47'siyle, `τ_a` kendi 1,18'iyle girer.
+
+ADR-0036 bunun `τ_a`'yı sileceğini öngörmüştü. **Şimdi aksi yönde kanıt var:** `τ_a` yalnız
+1,18 normla bile M1 reddini %42,5 → %57,5'e çıkarabiliyor, yani **etkisi normundan çok daha
+güçlü**. Norm, etkinin iyi bir vekili değil.
+
+Bu, ADR-0036'nın gerekçesini zayıflatmıyor (asimetri gerçek, 8,87×) ama **çıkarımını** sorgulatıyor:
+*"küçük normlu kol silinir"* varsayımı ölçülmedi, varsayıldı. Ham TIES artık ablasyon değil,
+**doğrudan sınanan hipotez**.
