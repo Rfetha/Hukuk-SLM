@@ -1,7 +1,7 @@
 # Sprint 2 defteri — sayılar, elenen seçenekler, eşik türetmeleri
 
 > **Amaç:** Sprint 2'nin tarihi — sayılar, elenen seçenekler ve eşik türetmeleri.
-> [`sprint2.md`](../../../sprint2.md) **icra dokümanıdır, bu defter kayıt.**
+> [`sprint2.md`](../../_arsiv/sprint2.md) **icra dokümanıdır, bu defter kayıt.**
 >
 > **Emsal biçim:** [`sprint1-sonuc-tablosu.md`](../sprint1/sprint1-sonuc-tablosu.md).
 > **Kaynak kayıtlar:** `research_log` [#42](../research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md) ·

@@ -4,12 +4,12 @@
 > Sprint 2 kapandı ([`sprint2.md`](sprint2.md), ARA KAPI 🟢); geriye **CP4-CP5** kaldı.
 >
 > ### ⭐ HER KOŞUDAN ÖNCE OKU
-> [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) — bu hattın hata sınıfı
+> [`docs/record/yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) — bu hattın hata sınıfı
 > **çökme değil, sessiz yanlışlık**. Sprint 2 buraya **6.10 · 6.11 · 6.12**'yi ekledi.
 
 ---
 
-> ## ⏸️ ERTELENDİ (2026-08-03) — aktif hedef [`sprint3.md`](sprint3.md)
+> ## ⏸️ ERTELENDİ (2026-08-03) — aktif hedef [`sprint3.md`](../../sprint3.md)
 >
 > Proje tez olmaktan çıkıp OSS ürün oldu. CP4-CP5 **iddiayı kanıtlamak** için vardı
 > (*"merge, karışık ve ardışık SFT'den iyi korur"*) — bu **arxiv sorusu**, ürün sorusu
@@ -91,7 +91,7 @@ rejim    ⚠️ τ_g ve τ_a ile EŞLEŞMELİ (aşağıdaki değişmezler)
 
 > ### 🚨 Adil kıyas şartı (ADR-0037)
 > **Aynı seçim prosedürü tabana da uygulanır.** Biz merge'i DEV'de **3 varyant** arasından
-> seçtik ([ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md)). Taban A için de
+> seçtik ([ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)). Taban A için de
 > DEV'de en iyi checkpoint/ayar seçilir — yoksa *"biz taranmış, onlar taranmamış"* olur ve
 > `D > A` iddiası **değersizdir**. Kaç varyant denendiyse **raporda sayısıyla** geçer.
 
@@ -176,8 +176,8 @@ tek komut, kapı düşerse zincir kırılır.
 
 ## 🚦 KAPI 5 — iç iddianın karar kuralı
 
-[ADR-0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md) · ölçüm **ham TIES** ayarında
-([ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md), ADR-0036'nın hükmü tersine)
+[ADR-0037](../adr/0037-ic-iddia-karar-kurali-kapi-5.md) · ölçüm **ham TIES** ayarında
+([ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md), ADR-0036'nın hükmü tersine)
 
 ```
 (a) grounding  M1/M4  ≥ 0,90 × (τ_g tek)
@@ -302,9 +302,9 @@ SFT · aynı 11 modül · seed 3407). ~**$4,4 tasarruf** — ve **daha temiz bil
 
 | ne | nerede |
 | :--- | :--- |
-| Sprint 2'nin kapanışı ve tam tablosu | [`sprint2.md`](sprint2.md) · [`defter.md`](docs/record/sprint2/defter.md) |
-| Artefakt kimlikleri (`tg_v1` · `ta_v1` · **`tgta_v1`**) | ⭐ [`kollar.md`](docs/record/kollar.md) |
-| Bu sprint'in kaynağı | [#48 §11-§24](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| Kararlar | ADR-[0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md) · [0042](docs/adr/0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md) · [0043](docs/adr/0043-dusunce-modu-acik-butceli-kapatma.md) · **[0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md)** |
-| Otorite tasarım | [`TASARIM.md`](TASARIM.md) · canlı defter [`open_questions.md`](docs/open_questions.md) |
-| **Koşu öncesi tuzaklar** | ⭐ [`yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
+| Sprint 2'nin kapanışı ve tam tablosu | [`sprint2.md`](sprint2.md) · [`defter.md`](../record/sprint2/defter.md) |
+| Artefakt kimlikleri (`tg_v1` · `ta_v1` · **`tgta_v1`**) | ⭐ [`kollar.md`](../record/kollar.md) |
+| Bu sprint'in kaynağı | [#48 §11-§24](../record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| Kararlar | ADR-[0037](../adr/0037-ic-iddia-karar-kurali-kapi-5.md) · [0042](../adr/0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md) · [0043](../adr/0043-dusunce-modu-acik-butceli-kapatma.md) · **[0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)** |
+| Otorite tasarım | [`TASARIM.md`](../../TASARIM.md) · canlı defter [`open_questions.md`](../open_questions.md) |
+| **Koşu öncesi tuzaklar** | ⭐ [`yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) |

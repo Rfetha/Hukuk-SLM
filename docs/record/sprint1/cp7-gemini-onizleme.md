@@ -1,7 +1,7 @@
 # CP7 — erken rakip önizlemesi: Gemini 3.1 Flash-Lite ↔ Qwen3.5-4B çıplak base
 
 **Tarih:** ölçüm 2026-07-24/25 · belge 2026-07-25 · **Faz:** Sprint 1 / CP7
-**Otorite:** [`TASARIM.md`](../../../TASARIM.md) · **yürütme:** [`sprint1.md`](../../../sprint1.md) CP7
+**Otorite:** [`TASARIM.md`](../../../TASARIM.md) · **yürütme:** [`sprint1.md`](../../_arsiv/sprint1.md) CP7
 **İlgili kararlar:** ADR-0029 (model erişim kapısı) · ADR-0030 (base + düşünce modu) · ADR-0032 (hakem paneli, aile-dışlama)
 **Bağlam girdisi:** [`research_log #39`](../research_log/2026-07-24-cp0-base-dogrulama-kapisi.md) (CP2 base çıpaları)
 

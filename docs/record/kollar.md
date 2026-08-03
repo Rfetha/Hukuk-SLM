@@ -81,7 +81,7 @@ ve o protokol artık canlı değil (ADR-0043 m.4). Kaynak:
 **Ne değişti:** eski tablonun *"en güçlü sebep"*i (M5 ihlali) bütçeli kipte **ortadan kalktı**;
 yerine M2b geldi. Yani `τ_g` v2'nin gerekçesi artık *"ezberi azalt"* değil **"kaynak yokken sus"**.
 Bu aynı zamanda `τ_a`'nın hedefiyle çakışıyor — v2 mi `τ_a` mı sorusu Sprint 2'nin açık kararı
-([`sprint2.md`](../../sprint2.md) ARA KAPI bölümü).
+([`sprint2.md`](../_arsiv/sprint2.md) ARA KAPI bölümü).
 
 > **Kural (değişmedi):** v2 açılırsa **bütün açık kalemler aynı anda** kapatılır. Ayrı ayrı
 > eğitmek iki kat para (~$5.5) ve iki kat kafes yeniden ölçümü demektir. ADR-0040 m.4 gereği

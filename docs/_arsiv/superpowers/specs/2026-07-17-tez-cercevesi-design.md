@@ -1,6 +1,6 @@
 # Tez Çerçevesi — Maliyet-Normalize Parite (TASARIM)
 
-> ### ⚠️ KISMEN SÜPERSED (2026-07-24, ADR-0027) — otorite artık [`TASARIM.md`](../../../TASARIM.md)
+> ### ⚠️ KISMEN SÜPERSED (2026-07-24, ADR-0027) — otorite artık [`TASARIM.md`](../../../../TASARIM.md)
 >
 > Bu belgenin **çekirdeği yürürlükte**: parite çerçevesi (§0-§1), katmanlı kapsam (§2), deney
 > hücreleri A/B/C/D/E (§4.3), adalet kuralı (§5.2), hakem tasarımı (§6), maliyet muhasebesi (§7),

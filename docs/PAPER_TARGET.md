@@ -3,7 +3,7 @@
 > ## 📁 TARİHÎ BELGE — TEZ ÇERÇEVESİ (2026-08-03'te aşıldı)
 >
 > Proje **yüksek lisans tezi** olmaktan çıkıp **açık kaynak ürün** oldu
-> ([`README.md`](README.md) · [`ROADMAP.md`](ROADMAP.md)). Bu belge o dönemin
+> ([`README.md`](../README.md) · [`ROADMAP.md`](../ROADMAP.md)). Bu belge o dönemin
 > tasarımıdır ve **silinmedi** — içindeki ölçüm protokolü, kapılar ve elenen
 > alternatifler hâlâ geçerli ve değerli.
 >

@@ -1,5 +1,13 @@
 # HakHukuk — Fine-Tuning Teknik Araştırması
 
+> ## ⚠️ BAYAT NOKTA — base değişti
+>
+> Bu belge **Gemma 4 12B** hattına göre yazıldı; o hat **emekli** (ADR-0027).
+> Güncel base **Qwen3.5-4B**, güncel model **`HakHukuk-4B-v0.1`**.
+> Donanım kısıtları, QLoRA/Unsloth yığını ve veri hattı **hâlâ geçerli**;
+> base'e özgü sayılar (boyut, kuantizasyon, VRAM) **değil**.
+> Güncel künyeler: [`docs/record/kollar.md`](record/kollar.md)
+
 > **Amaç:** Faz 1'de Türk hukuk diline adapte edilmiş bir SLM üretmek için fine-tuning stratejisini, donanım kısıtlarını ve teknik kararları belgelemek.
 >
 > **Kısıt:** Yerel donanım — ASUS ROG Strix G16 G614FR (RTX 5070 Laptop, **12 GB VRAM**, Blackwell sm_120, CUDA 13.1; AMD Ryzen 9 9955HX 16-core, 32 GB DDR5).

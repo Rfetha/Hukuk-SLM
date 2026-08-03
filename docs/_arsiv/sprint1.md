@@ -12,14 +12,14 @@
 >
 > | sprint1.md'deki içerik | kalıcı yeri |
 > | :--- | :--- |
-> | **Kararlar** (Kapı 0 sonucu · kafes · rejim eşleşmesi · Kapı 5) | [`TASARIM.md`](TASARIM.md) · ADR-0027…0038 |
-> | **CP0-CP3 sonuçları** | [`research_log` #39](docs/record/research_log/2026-07-24-cp0-base-dogrulama-kapisi.md) |
-> | **CP4 sonuçları** | [`research_log` #40](docs/record/research_log/2026-07-25-cp4-fla-core-ve-hiz-kaldiraclari.md) |
-> | **CP5-CP6 sonuçları** | [`research_log` #41](docs/record/research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
-> | **CP7 (rakip önizleme)** | [`cp7-gemini-onizleme.md`](docs/record/sprint1/cp7-gemini-onizleme.md) |
-> | **Üçlü sonuç tablosu** (base ↔ Gemini ↔ `τ_g`) | ⭐ [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md) |
-> | **Uyarı blokları / sessiz-bozulma kalıpları** | ⭐ [`yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
-> | **Açık kalemler** | [`docs/open_questions.md`](docs/open_questions.md) |
+> | **Kararlar** (Kapı 0 sonucu · kafes · rejim eşleşmesi · Kapı 5) | [`TASARIM.md`](../../TASARIM.md) · ADR-0027…0038 |
+> | **CP0-CP3 sonuçları** | [`research_log` #39](../record/research_log/2026-07-24-cp0-base-dogrulama-kapisi.md) |
+> | **CP4 sonuçları** | [`research_log` #40](../record/research_log/2026-07-25-cp4-fla-core-ve-hiz-kaldiraclari.md) |
+> | **CP5-CP6 sonuçları** | [`research_log` #41](../record/research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
+> | **CP7 (rakip önizleme)** | [`cp7-gemini-onizleme.md`](../record/sprint1/cp7-gemini-onizleme.md) |
+> | **Üçlü sonuç tablosu** (base ↔ Gemini ↔ `τ_g`) | ⭐ [`sprint1-sonuc-tablosu.md`](../record/sprint1/sprint1-sonuc-tablosu.md) |
+> | **Uyarı blokları / sessiz-bozulma kalıpları** | ⭐ [`yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) |
+> | **Açık kalemler** | [`docs/open_questions.md`](../open_questions.md) |
 > | **Sprint 2'ye devreden iş** | aşağıda §"Sprint 1 dışında kalanlar" — Sprint 2 planının girdisi |
 >
 > ### Sprint 1 çıkışı — üç soru cevaplandı
@@ -33,18 +33,18 @@
 >
 > ### 🔴 Sprint 2 başlamadan kapanması gereken karar
 >
-> [`open_questions.md` §13.8](docs/open_questions.md) — RAFT meta-iddia artefaktı. Kafesin 8 eval
+> [`open_questions.md` §13.8](../open_questions.md) — RAFT meta-iddia artefaktı. Kafesin 8 eval
 > koşusunun hepsini etkiler; `τ_g` içeren her hücre ceza alır, `τ_a` tekili almaz → **Kapı 5'in
 > iç-iddia kıyası taraflanır.**
 
 ---
 
-> **Otorite:** [`TASARIM.md`](TASARIM.md) · **kararlar:** ADR-0027, ADR-0028 · **tam iş listesi:** [`TODO.md`](TODO.md)
+> **Otorite:** [`TASARIM.md`](../../TASARIM.md) · **kararlar:** ADR-0027, ADR-0028 · **tam iş listesi:** [`TODO.md`](../../TODO.md)
 > **Bu belge neden vardı:** `TODO.md` tüm tezin haritası (7 bölüm, 40+ madde). Sprint 1 onun ilk
 > dilimini **yürütülebilir** hâle getirdi: sıra, kapı, komut, ve *"burada ne patlar."*
 >
 > **Kaynak:** sıralama ve uyarılar **Gemma 4 12B hattının 5 turundan** çıkarıldı
-> ([kronoloji](docs/record/gemma4-12b-kronoloji.md) · [dersler](docs/adr/gemma4-12b-dersler.md)).
+> ([kronoloji](../record/gemma4-12b-kronoloji.md) · [dersler](../adr/gemma4-12b-dersler.md)).
 > ⚠️ Buradaki 12B sayıları **kalibrasyon çıpası**, hedef değil.
 
 ---
@@ -345,7 +345,7 @@ CP0 biter bitmez üç aileyi yaz; harcama Sprint 3'e kalsın.
 >
 > #39 ile artefakt arasındaki 1 örneklik fark **açıklanmadı** (muhtemel sebep: red-regex kalibrasyonundan
 > sonra `rescore_answered.py`'nin yeniden koşması — **doğrulanmadı**). CP6 kıyas tablosu artefakt
-> JSON'larından üretildi: [`docs/record/sprint1/cp6-tablo.md`](docs/record/sprint1/cp6-tablo.md).
+> JSON'larından üretildi: [`docs/record/sprint1/cp6-tablo.md`](../record/sprint1/cp6-tablo.md).
 >
 > ⚠️ **Regex kalibrasyonu YAPILDI — kendi base'imizde (#39).** Eski regex, base'in **baskın red kalıbı**
 > olan `bulunmuyor`u görmüyordu → kalibrasyonsuz **M3 0.000** (gerçek 1.000) ve **M2b 0.662** (gerçek 0.938)
@@ -533,7 +533,7 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 > ℹ️ **Artefakt adları 2026-07-29'da versiyonlandı** (`tg` → `tg_v1`); koşu o gün `tg` adıyla
 > yapılmıştı, **aynı artefakttır**. Eval etiketleri (`*_tg`) tarihsel olarak **değiştirilmedi** —
 > Sprint 1 tablolarının her satırı onlara atıf veriyor. Kol kaydı:
-> [`docs/record/kollar.md`](docs/record/kollar.md).
+> [`docs/record/kollar.md`](../record/kollar.md).
 > `merge_lora.py` **akıtmalı** (tensör-tensör, `PeftModel.merge_and_unload()` değil) — CLAUDE.md
 > merge doktrini ve Sprint 3'ün k-yollu TIES'i aynı raydan geçer. `setup_llamacpp.sh` artık HF
 > repo-id'nin yanında **yerel dizin** de alıyor.
@@ -585,7 +585,7 @@ olmadan `train_sft.py` durur) · replay havuzu karışımda · `save_steps` + ot
 > İki teyit kapısı geçti: `‖merged−base‖ = 10.4966` vs `‖τ_g‖ = 10.4589` (+%0.36 bf16) ·
 > GGUF **2.59 GiB = base**. Görüntü kulesi / `mtp` / embed Δ = **tam 0**.
 >
-> **Üç sorunun cevabı** (tam tablo: [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md)):
+> **Üç sorunun cevabı** (tam tablo: [`sprint1-sonuc-tablosu.md`](../record/sprint1/sprint1-sonuc-tablosu.md)):
 >
 > | soru | cevap |
 > | :--- | :--- |
@@ -637,7 +637,7 @@ sinyali. Base çıpaları (CP2) çıktığına göre, tek komutla bir rakibin ay
 
 **Kayıt:** `docs/record/sprint1/` altında — metrik + n + hakem + **rakip snapshot** + seed + çıktı dosyası.
 
-> ### ✅ GERÇEKLEŞEN (2026-07-24/25) — **kayıt: [`docs/record/sprint1/cp7-gemini-onizleme.md`](docs/record/sprint1/cp7-gemini-onizleme.md)**
+> ### ✅ GERÇEKLEŞEN (2026-07-24/25) — **kayıt: [`docs/record/sprint1/cp7-gemini-onizleme.md`](../record/sprint1/cp7-gemini-onizleme.md)**
 >
 > 6-mod × 2 özne **DEV** havuzunda koşuldu (470 cevap/özne, seed 3407, hakem `gpt-4o-mini`
 > OpenAI-direct, harness KAPALI). **Aile-dışlama sağlandı** (Google özne ↔ OpenAI hakem, ADR-0032).

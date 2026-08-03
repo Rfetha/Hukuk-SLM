@@ -191,6 +191,6 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
 | Model kartı ve sınırlar | [`MODEL_CARD.md`](MODEL_CARD.md) |
 | Artefakt kimlikleri | ⭐ [`docs/record/kollar.md`](docs/record/kollar.md) |
 | Mevzuat API sözleşmesi | [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md) |
-| Sprint 2 kapanışı | [`sprint2.md`](sprint2.md) · [`defter.md`](docs/record/sprint2/defter.md) |
-| Ertelenen iddia katmanı | [`sprint2b.md`](sprint2b.md) — arxiv'e karar verilirse |
+| Sprint 2 kapanışı | [`sprint2.md`](docs/_arsiv/sprint2.md) · [`defter.md`](docs/record/sprint2/defter.md) |
+| Ertelenen iddia katmanı | [`sprint2b.md`](docs/_arsiv/sprint2b.md) — arxiv'e karar verilirse |
 | **Koşu öncesi tuzaklar** | ⭐ [`yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
