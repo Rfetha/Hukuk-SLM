@@ -44,63 +44,81 @@ CP'yi tekrar koşar, tetiklenmiş bir kapıyı görmez.
 
 ---
 
+## 🔴 ARA KAPI'DAYIZ — KAPATILAMADI, İNSAN KARARI BEKLENİYOR (2026-08-03 13:30)
+
+```
+1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅   GEÇERLİ koşu (kesik %0,4)
+           muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅   ⚠️ ama kütle %41,2 (base %56,7)
+2. GÖZLEM  merge      M2b            = ÖLÇÜLEMEDİ 🛑  KOŞU GEÇERSİZ (kesik %5,2 > %5)
+```
+
+**Karar tablosu iki gözlem ister; ikincisi yok.** Ön-kayıtlı kural: DUR, insana sor.
+**CP4-CP5'e para HARCANMADI.**
+
+### Ölçülen tablo (merge satırı VOID)
+
+```
+özne            M1 kütle   M2 Rej   M2b Rej    koşu geçerli mi
+base              56,7%     0,814    0,986     ✅ (kesik %3,6)
+Gemini 3.1 FL     72,9%     0,930    1,000     ✅ (kesik %3,6)
+τ_g               71,4%     0,873    0,607     ✅ (kesik %0,0)
+τ_a               41,2%     0,984    0,987     ✅ (kesik %0,4)
+τ_g+τ_a merge      —          —        —       🛑 GEÇERSİZ (kesik %5,2)
+```
+
+### Neden geçersiz — ve neden kapının reçetesi işlemiyor
+
+12 kesiğin **tamamı** `forced_close`, tam bütçe (1536 tok), içerik **tekrarlama döngüsü**:
+*"madde 53 madde 53 madde 53…"* · *"ilgili hükmün temini için ilgili hükmün temini için…"*.
+
+Yani kesiklik **bütçe darlığı değil model hasarı**. Kapının önerdiği `MAXTOK` büyütmesi (a) daha
+uzun döngü üretir, (b) **ADR-0043 rejim değişmezini kırar** — merge'i farklı bütçede ölçmek onu
+çıpalarla kıyaslanamaz kılar, tüm çıpaları yeniden koşmak gerekir (5 koşu ~5 saat).
+
+### ⭐ Teşhis — norm dengeleme *yükseltme* yapıyor (künye aritmetiği, ölçüme bağlı DEĞİL)
+
+```
+katsayı_g = 1/10,472 = 0,0955     katsayı_a = 1/1,181 = 0,8470
+geri ölçek = ortalama(10,472 · 1,181) = 5,826
+```
+
+`τ_a`'nın eğitilmiş genliği **1,181**; merge onu **5,826** genlikle uyguluyor → yönü kendi
+büyüklüğünün **~4,9 katına** çıkıyor. Model dağılımın dışına itiliyor (#42'deki sonlanmama
+kalıbı yeniden beliriyor). ADR-0036 doğru problemi teşhis etti (dengelenmezse `τ_a` silinir)
+ama **geri-ölçek kuralı normlar çok eşitsizken küçük kolu aşırı büyütüyor** (8,87× asimetride
+ortalama, küçük kolun 4,9 katı).
+
+**Bu iç iddiayı çürütmüyor — hiperparametre kusuru.** Merge'in eğitim maliyeti yok; DEV tam
+olarak bunun için var.
+
+### İnsana sunulan seçenekler
+
+| # | seçenek | bedel | not |
+| :-: | :--- | :--- | :--- |
+| **A** | DEV'de merge süpürmesi: geri ölçek kuralı (`min(‖τ‖)` / `‖τ_g‖` / λ) · `--trim-k` · norm kapsamı (global ↔ modül-başına) | GPU **$0**, hakem ~$0,2/deneme, ~1 sa/deneme | **önerilen** — merge eğitim gerektirmiyor |
+| B | `MAXTOK` büyüt, TÜM çıpaları yeni bütçede yeniden koş | ~5 sa yerel, hakem ~$0,5 | rejim değişmezi değişir, Sprint 1/CP0.9 kıyasları kopar |
+| C | ham TIES (`--no-norm-balance`) koş | ~1 sa | ablasyon zaten planda; artık *kontrol* değil **karşı-uç** |
+| D | `τ_a` rejimini düzelt (epoch/lr/λ) ve yeniden eğit | Modal ~$2 | kolun kendisi kapıyı geçti; sorun merge'de |
+
+---
+
 ## ▶ SIRADAKİ İŞ
 
 ```
-CP   : CP3 · 3a — τ_a ORPO eğitimi — 🟡 KOŞUYOR (2026-08-03 10:49 başladı)
-       app ap-80DlzMmkEwTjerjwJlh1sO · fc-01KZ39K0CWEPPJRE41GK7S2V8N
-       veri /data/orpo_abstain_cp2c (726 çift + 145 replay = 871; train 845)
-       rejim 5 epoch · lr 1e-5 · beta 0.1 · grad-accum 64 · --fresh-adapter · 11 modül
-       → **65 optimizer adımı** (845÷64=13 × 5) · ön-kayıtlı ~73'ün %89'u
-       ⛔ KAPI (log yerine ARTEFAKT üzerinden — daha güçlü): ta_v1 indiğinde
-          adapter_model.safetensors → 448 tensör · 29.908.992 parametre
-          adapter_config.json      → r=16 · alpha=32 · dropout=0.05 · 11 modül
-          (τ_g'de ölçüldü, birebir aynı olmalı; tutmazsa DUR — merge edilemez)
-       çıktı hukuk-outputs:/ta_v1
+🛑 İNSAN KARARI BEKLENİYOR — yukarıdaki A/B/C/D
+   Karar gelene kadar CP3 ilerlemez, CP4-CP5 açılmaz.
 
-✅ CP2-c KAPANDI — **728 temiz negatif** (hedef 750'nin %97'si) · hakem toplam $7,97
-      1. tur 362 (m2 272 · m2b 90)  +  ek tur 366 (m2 266 · m2b 100)
-      iki turun huni oranları örtüşüyor → kapı değişikliği sayıyı kaydırmadı (#48 §15)
-
-SONRA (3b-3e, hepsi YEREL, GPU parası $0):
-  3b  τ_a TEKİL materyalize  ⚠️ merge_ties.py DEĞİL — o en az 2 kol ister ve tek kol için
-                             merge_lora.py'ye yönlendirir (çökerek, sessiz değil):
-        modal volume get hukuk-outputs /ta_v1 outputs/
-        python scripts/merge_lora.py --base Qwen/Qwen3.5-4B \
-               --adapter outputs/ta_v1 --out models/merged/ta_v1
-        QUANT=Q4_K_M PURE=0 bash scripts/setup_llamacpp.sh models/merged/ta_v1 ta_v1
-        → models/gguf/ta_v1-q4_k_m.gguf   (⚠️ tekil kol da GGUF'tan ölçülür — tuzak 1.7)
-  3c  τ_a tekil eval          M2 Rej ≥ 0.923 · muhafız M1 A1 ≥ 0.880
-                              🛑 kesik oranı > %5 → KOŞU GEÇERSİZ
-  3d  τ_g+τ_a merge           merge_ties.py --adapter tg=… --adapter ta=… (norm-dengeli, k=2)
-  3e  merge eval              M2b ≥ 0.854
-  →   🔴 ARA KAPI — DUR, iki gözlemi insana sun. CP4-CP5'e para HARCANMAZ.
-
-YAZ  : 📌 canlı belge kuralı — durum tablosu + #48 aynı gün
+Elde HAZIR duran artefaktlar (yeniden üretilmesi gerekmez):
+  outputs/ta_v1/                        τ_a adapteri (448 tensör · 29.908.992 param)
+  models/merged/ta_v1/                  τ_a tekil bf16
+  models/gguf/ta_v1-q4_k_m.gguf         τ_a tekil GGUF (2,59 GiB)
+  models/merged/tg_ta_normdengeli/      merge bf16 (norm-dengeli)
+  models/gguf/tg_ta_nb-q4_k_m.gguf      merge GGUF (2,59 GiB)
+  outputs/eval/cp3c-ta-v1/              τ_a tekil eval — GEÇERLİ, puanlandı
+  outputs/eval/cp3d-merge/KUNYE_ties.json   merge künyesi (normlar, TIES istatistikleri)
+  outputs/eval/cp3e-merge/              merge eval — GEÇERSİZ, puanlanmadı (para yanmadı)
+  data/train/orpo_abstain_cp2c/         726 çift + 145 replay
 ```
-
-<details><summary>CP2-c'nin tam huni tablosu (2026-08-02 → 08-03)</summary>
-
-```
-              regex   →  mini        →  teyit       →  kör damga
-1. tur  m2     1226      430 (%35,1)    295 (%68,6)    272
-        m2b     718      305 (%42,5)     90 (%29,5)     90    = 362   $5,11
-ek tur  m2     1192      401 (%33,6)    293 (%73,1)    266
-        m2b     731      326 (%44,6)    105 (%32,2)    100    = 366   $2,86
-                                                     ────────────────
-                                                       TOPLAM  728    $7,97
-```
-
-Yol boyunca çıkanlar — hepsi #48'de:
-- §11 kabul huni + ⭐ ADR-0048 lehine kanıt (teyit ∧ kör damga güçlü örtüşüyor)
-- §12 ek tur kararı (insan: A) + **4. eksik köprü** `--skip-first` (tuzak 6.12)
-- §13 ek tur sonucu + `--skip-first` SIFIR çakışmayla doğrulandı (tuzak 6.11 onarıldı)
-- §14 OpenAI kredisi bitti → kapı **OpenRouter**, sağlayıcı `OpenAI` **pinli**
-      (pinsizken gpt-4o'yu Azure servis ediyordu) · kör damga teyitten geçenlerle
-      sınırlandı → $5,00 → $2,86
-- §15 CP2-c kapanışı · iki turun oranları örtüşüyor · 🔴 "hazır komut"taki yerel yol tuzağı
-
-</details>
 
 **CP3 komutu — ateşe hazır** (arayüz `--help` ile doğrulandı; base ADR-0030, modül listesi ADR-0031):
 
