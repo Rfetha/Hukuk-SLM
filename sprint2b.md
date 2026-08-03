@@ -17,7 +17,7 @@ koşul     : CP4 ve CP5 eğitildi, aynı protokolde ölçüldü ve Kapı 5 karar
             · ⛔ AŞAĞIDAKİ AÇIK KARAR çözülmeden CP4 BAŞLATILMAZ
 kapsam    : CP4 (karışık) · CP5 (ardışık + on-policy kontrol) · Kapı 5 okuması
             Sprint 3'ün 8 hücreli kafesi bu hedefin DIŞINDA
-bedel     : Modal ~$12,2 · hakem ~$0,5 · ~12 saat
+bedel     : ⚠️ Modal'da KALAN $9,81 — plan bu rakama göre kurulur (bütçe bölümü)
 ```
 
 **Neden bu sprint var:** ARA KAPI *"bu yola para harcamaya değer"* dedi, **iddiayı kanıtlamadı**.
@@ -43,7 +43,7 @@ hiç görmez. O zaman kıyas **yöntemi** (merge ↔ karışık) değil **hedefi
 
 | # | seçenek | ne olur | bedel |
 | :-: | :--- | :--- | :--- |
-| **A** | CP4 = **karışık ORPO** — grounding satırları `is_pref=0`, çekinme çiftleri `is_pref=1`, **tek koşu** | Hedef kollarla **eşleşir**; fark yalnız *"ayrı eğit+merge"* ↔ *"birlikte eğit"* olur. `MaskedORPOTrainer` bunu **zaten destekliyor** (is_pref=0 → saf SFT kaybı) | ~$6 |
+| **A** | CP4 = **karışık ORPO** — grounding satırları `is_pref=0`, çekinme çiftleri `is_pref=1`, **tek koşu** | Hedef kollarla **eşleşir**; fark yalnız *"ayrı eğit+merge"* ↔ *"birlikte eğit"* olur. `MaskedORPOTrainer` bunu **zaten destekliyor** (is_pref=0 → saf SFT kaybı) | **$5,45** (1 ep) → **$27,26** (5 ep) ⚠️ epoch kararı bütçe bölümünde |
 | B | CP4 = saf SFT (ön-kayıtlı metne harfi harfine sadık) | Hedef karışır, iddia savunulamaz | ~$5,7 |
 | C | İkisini de koş | Kusursuz ama +$5,7 ve +4 saat | ~$11,7 |
 
@@ -60,8 +60,8 @@ ADR'ye yazılır. B, ucuz görünüp sonucu değersiz kılar.
 0) AÇIK KARAR çözülür → ADR yazılır (numaralandırma 0053'ten devam)
 1) CP4 veri seti kurulur   → doğrulanır → volume'a yüklenir
 2) CP4 eğitilir            → artefakt kapısı → materyalize → GGUF → 3 eksen eval
-3) CP5 FT-5 eğitilir       → FT-6 üstüne eğitilir → aynı zincir
-4) CP5 FT-6 on-policy kontrol koşusu (~$0,65)
+3) CP5 FT-6 → τ_g v1'in ÜSTÜNE eğitilir (FT-5 zaten var) → aynı zincir
+4) CP5 FT-6 on-policy kontrol koşusu (~$1,5)
 5) Kapı 5 okunur ve raporlanır → 🛑 DUR, insana sun
 ```
 
@@ -89,10 +89,17 @@ rejim    ⚠️ τ_g ve τ_a ile EŞLEŞMELİ (aşağıdaki değişmezler)
 ## CP5 — Taban B: **ardışık** + on-policy kontrol
 
 ```
-FT-5   aşama 1: grounding, HAM BASE'den    → hukuk-outputs:/base_b1_v1
+FT-5   aşama 1: grounding, HAM BASE'den    → ✅ ZATEN VAR: τ_g v1 (outputs/tg_v1)
+       tarifi birebir aynı (raft · ham base · SFT · 11 modül · seed 3407)
+       yeniden eğitmek ~$4,4 yakmak olurdu — ve aynı şeyi üretirdi
 FT-6   aşama 2: çekinme, FT-5'in ÜSTÜNE    → hukuk-outputs:/base_b2_v1
-       ⚠️ --adapter <FT-5> VERİLİR (τ kolu DEĞİL, kasten ardışık)
+       --adapter outputs/tg_v1  VERİLİR    (τ kolu DEĞİL — kasten ardışık SFT)
 ```
+
+> ⭐ **FT-5 = `τ_g v1` olması kıyası GÜÇLENDİRİYOR.** Ardışık tabanın birinci aşaması ile
+> merge'in `τ_g` kolu **birebir aynı artefakt** olur; tek fark ikinci aşamada *"üstüne eğit"*
+> ↔ *"ayrı eğit ve birleştir"*. Kıyas böylece tam olarak **yöntemi** ölçer, eğitim
+> gürültüsünü değil.
 
 | koşu | `rejected` kaynağı | nerede raporlanır |
 | :--- | :--- | :--- |
@@ -175,7 +182,7 @@ tek komut, kapı düşerse zincir kırılır.
 özne          M1 kütle   M2 Rej   M2b Rej
 τ_g v1          71,4%     0,873    0,607
 τ_a v1          41,2%     0,984    0,987
-tgta_v1 ⭐      71,6%     0,893    0,877     ← iddianın öznesi
+tgta_v1 ⭐      71,6%     0,893    0,877     ← iddianın öznesi = HakHukuk-4B-v0.1
 Taban A            ?        ?        ?      ← CP4
 Taban B            ?        ?        ?      ← CP5
 ```
@@ -184,17 +191,67 @@ Taban B            ?        ?        ?      ← CP5
 
 ---
 
-## Bütçe — İKİ CÜZDAN, karıştırılmaz (tuzak 6.3)
+## 🛑 BÜTÇE — panelden okundu, **CP4-CP5 OLDUĞU GİBİ SIĞMIYOR**
 
-| cüzdan | durum | not |
-| :--- | :--- | :--- |
-| **Modal GPU** | ⚠️ **panelden okunacak** | Sprint 2 sonunda ~$9-10 kalmıştı; CP4-CP5 ~$12,2 ister → **muhtemelen YETMEZ**, koşudan önce panele bakılır |
-| **OpenAI** | **$0** — kredi tükendi | 2026-08-03 09:37 |
-| **OpenRouter** | ~$1,4 | eval hakemi buradan · sağlayıcı `OpenAI` pinli |
+```
+Modal    KALAN $9,81   (kullanılan $20,19 / $30,00 kredi · workspace $22,31 / $42,50)
+         ✅ panelden okundu 2026-08-03, henüz koşu YOK
+OpenAI   $0 — kredi tükendi (2026-08-03 09:37)
+OpenRouter ~$1,4 — eval hakemi buradan · sağlayıcı `OpenAI` PİNLİ
+```
 
-🛑 **İlk iş panele bakmak.** Bütçe yetmiyorsa CP4-CP5 başlatılmaz, insana sorulur.
+⚠️ Krediler **aylık yenilenmiyor**, sabit havuz. Beklemek yardım etmez; ya sığdırılır ya yüklenir.
 
----
+### Ölçülen maliyetler — tahmin değil, `τ_a` koşusundan türetildi
+
+`τ_a`: 845 örnek × 5 epoch = 4.225 geçiş, `train_runtime` **2.188 s** → **0,518 s/örnek-geçiş**.
+
+| iş | geçiş | süre | ~$ | $9,81'e sığar mı |
+| :--- | ---: | ---: | ---: | :-: |
+| CP4 karışık ORPO · **5 epoch** | 90.245 | 12,98 sa | **27,26** | ❌ |
+| CP4 karışık ORPO · **2 epoch** | 36.098 | 5,19 sa | **10,90** | ❌ |
+| CP4 karışık ORPO · **1 epoch** | 18.049 | 2,60 sa | **5,45** | ✅ |
+| CP5 FT-6 (`τ_g` üstüne) | 4.225 | 0,61 sa | **1,28** | ✅ |
+| CP5c on-policy kontrol (hasat + eğitim) | — | ~1 sa | ~1,5 | ✅ |
+
+### ⭐ İki bulgu maliyeti düşürüyor
+
+**1. CP5'in FT-5'i zaten elimizde — `τ_g v1`'in ta kendisi.** FT-5'in tarifi *"aşama 1:
+grounding, ham base'den"*; `τ_g v1` **tam olarak budur** (raft verisi, ham base, SFT, aynı 11
+modül, seed 3407). Yeniden eğitmek ~$4,4 yakmak olurdu.
+
+Üstelik bu **daha temiz bilim**: ardışık taban ile merge'in **birinci aşaması birebir aynı**
+olur, tek fark *"üstüne eğit"* ↔ *"ayrı eğit ve birleştir"*. Kıyas tam olarak yöntemi ölçer.
+→ **CP5 = yalnız FT-6**, `--adapter outputs/tg_v1` ile.
+
+**2. Karışık ORPO'nun epoch sayısı bütçeyi belirliyor.** 5 epoch $27, 1 epoch $5,45.
+⚠️ Epoch **rejim değişmezi DEĞİL** — o kural birleştirilecek *kollar* içindir (TASARIM §4.1.1);
+tabanlar birleştirilmiyor. Sabit tutulması gereken **veri**dir (ADR-0042 tek havuz) ve
+**seçim prosedürü**dür (ADR-0037).
+
+### Sığan plan (~$8,2, $1,6 pay)
+
+```
+CP4   karışık ORPO · 1 epoch          ~$5,45
+CP5   FT-6 (τ_g üstüne) · 5 epoch     ~$1,28
+CP5c  on-policy kontrol               ~$1,50
+                                      ───────
+                                       ~$8,23   ·  kalan pay ~$1,58
+```
+
+🛑 **Ama 1 epoch'un adilliği kararı insanındır:** taban 1 epoch, kollarımız 1.083 + 70 adım
+gördü. *"Tabanı az eğittiniz"* itirazı Kapı 5'i çürütebilir — CP5c kontrol koşusunun
+varlık sebebiyle **aynı** itiraz. Seçenekler:
+
+| # | plan | bedel | itiraza karşı |
+| :-: | :--- | ---: | :--- |
+| **i** | CP4 1 epoch + CP5 + kontrol | ~$8,2 | zayıf — *"taban az eğitildi"* açık kalır |
+| **ii** | CP4 2 epoch + CP5, kontrol **ertelenir** | ~$12,2 | ❌ **sığmıyor** |
+| **iii** | Modal'a kredi yükle, CP4 5 epoch | ~$30 | güçlü — taban tam eğitilir |
+| **iv** | CP4'ü **eşit ADIM** sayısında koş (kollar toplamı ≈ 1.153 adım) | ölçülmeli | en savunulabilir: *"aynı hesap bütçesi"* |
+
+**Önerim iv** — eşit hesap bütçesi, hem adil hem ölçülebilir bir kıyas ekseni. Ama epoch/adım
+dönüşümü hesaplanmalı ve insana sunulmalı.
 
 ## Koşu öncesi kısa liste — Sprint 2'nin ısırdığı yerler
 
@@ -228,7 +285,7 @@ Taban B            ?        ?        ?      ← CP5
 | :--- | :--- | ---: | :--- |
 | **0** açık karar (A/B/C) | 🛑 **İNSAN BEKLENİYOR** | 0 | → ADR-0053 |
 | **CP4** Taban A (karışık) | ⏳ | ~6 | `hukuk-outputs:/base_a_v1` |
-| **CP5a** FT-5 (grounding) | ⏳ | ~3 | `hukuk-outputs:/base_b1_v1` |
+| ~~**CP5a** FT-5~~ | ✅ **GEREKMİYOR** — `τ_g v1` bunun ta kendisi | **0** *(~$4,4 tasarruf)* | `outputs/tg_v1` |
 | **CP5b** FT-6 (çekinme, üstüne) | ⏳ | ~3 | `hukuk-outputs:/base_b2_v1` |
 | **CP5c** FT-6 on-policy kontrol | ⏳ | ~0.65 | robustluk satırı |
 | **Kapı 5** karar | ⏳ | ~0.5 hakem | 🛑 **DUR, insana sun** |

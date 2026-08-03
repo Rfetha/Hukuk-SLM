@@ -44,7 +44,7 @@ açılmaz — aynı artefakttır.
 | :--- | :-- | :--- | :--- | :--- | ---: | :--- | :--- |
 | `τ_grounding` | **v1** | 2026-07-28 | 🟢 aktif | 1.083 adım · lr 1e-4 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · seed 3407 · veri `train/raft/` | **10.4589** | `*_tg` *(Sprint 1; v1 demektir)* | [#41](research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
 | `τ_abstention` | **v1** | 2026-08-03 | 🟢 aktif | **70 adım (5 epoch)** · lr 1e-5 · beta 0.1 · etkin batch 64 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · `--fresh-adapter` · seed 3407 · veri `data/train/orpo_abstain_cp2c/` (726 çift + 145 replay) | **1.1806** | `*_ta_v1_th` | [#48 §16](research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **`τ_g+τ_a` merge** | **v1** | 2026-08-03 | 🟢 **ANA SONUÇ** | `tg_v1` + `ta_v1` · **ham TIES** (norm dengeleme **KAPALI**, [ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)) · trim_k 0,2 · λ 1,0 · eşzamanlı 2-yollu · 224/224 tensör | — *(merge, kol değil)* | `*_tg_ta_ham_th` ⚠️ | [#48 §24](research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **`τ_g+τ_a` merge**<br>`HakHukuk-4B-v0.1` | **v1** | 2026-08-03 | 🟢 **ANA SONUÇ** | `tg_v1` + `ta_v1` · **ham TIES** (norm dengeleme **KAPALI**, [ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)) · trim_k 0,2 · λ 1,0 · eşzamanlı 2-yollu · 224/224 tensör | — *(merge, kol değil)* | `*_tg_ta_ham_th` ⚠️ | [#48 §24](research_log/2026-08-02-cp2c-modal-koprusu.md) |
 
 ### `τ_grounding` v1 — açık kalemler *(2026-07-29 gecesi, bütçeli kipte YENİDEN YAZILDI)*
 
@@ -89,6 +89,20 @@ ailesinde **476**, yani orada rakipten ucuz.
 ---
 
 ## `τ_g+τ_a` merge v1 — künye
+
+**Ürün adı: `HakHukuk-4B-v0.1`** (insan kararı, 2026-08-03)
+
+```
+HakHukuk-4B-v0.1  ==  tgta_v1  ==  tg_v1 + ta_v1, ham TIES
+```
+
+İki ad **ayrı iş görür ve ikisi de kalır**: `tgta_v1` **iç izlenebilirlik** içindir (dosya
+adından *"bu sayı hangi kolun, hangi sürümün"* sorusu cevaplanabilsin — bu belgenin varlık
+sebebi); `HakHukuk-4B-v0.1` **dışa dönük** addır (model kartı · makale · anlatım).
+
+⚠️ **Neden `v0.1`, `v1.0` değil:** bu yapılandırma **DEV'de 3 varyant arasından seçildi** ve
+**tabanlara karşı henüz sınanmadı**. `v1.0` Kapı 5 geçildikten sonra açılır — geçilmezse zaten
+açılmaz.
 
 **Artefakt kimliği** (`tgta_v1`):
 
