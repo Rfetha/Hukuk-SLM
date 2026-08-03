@@ -937,3 +937,75 @@ güçlü tabana karşı kazanmamız gerekir.
 
 2 kol (`τ_g` v1 + `τ_a`) · 2 taban (karışık + ardışık, + on-policy kontrol) · hepsi aynı
 protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulabilir.**
+
+---
+
+# 🟢 SPRINT 2 KAPANIŞI — 2026-08-03
+
+## ARA KAPI: GÜÇLÜ YEŞİL
+
+```
+1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅
+           muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅
+2. GÖZLEM  tgta_v1    M2b    = 0,877  ≥ 0,854   ✅   geçerli koşu (kesik %0,4)
+§20 şartı  merge cevaplamayı bıraktı mı?         ❌   HAYIR (71,6% ↔ τ_g 71,4%)
+```
+
+🛑 **CP4-CP5 koşulmadı** — insan başka bir zamana erteledi. Yeni `/goal` gerektirir.
+
+## Ölçülen tablo — hepsi aynı protokol, hepsi geçerli koşu
+
+```
+özne          cevaplanan  aşırı-red      A1   M1 kütle   M2 Rej   M2b Rej   tok/cevap
+base             46/80       0,425   0,9864     56,7%    0,814    0,986       1192
+Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,930    1,000         —
+τ_g v1           66/80       0,175   0,8658     71,4%    0,873    0,607 🔴      —
+τ_a v1           34/80       0,575   0,9697     41,2% 🔴 0,984    0,987       ~1084
+tgta_v1 ⭐       63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅      714
+```
+
+## Sprint 2'nin dört ana bulgusu
+
+**1. Grounding-Abstention paradoksu simetrik.** Defterde #07 *"grounding eğitimi çekinmeyi
+öldürür"* vardı; bu sprint eşini ölçtü — `τ_a` grounding'i çıplak base'in **altına** indirdi
+(41,2% ↔ 56,7%). İç iddianın öncülü artık varsayım değil **veri**.
+
+**2. Merge çatışan becerileri birlikte taşıyor.** `tgta_v1`, `τ_g`'nin grounding'ini **tamamen**
+koruyup (71,4% → 71,6%) onun M2b çöküşünün **%71'ini** onardı (0,607 → 0,877).
+
+**3. ADR-0036'nın hükmü tersine döndü → [ADR-0052](../../adr/0052-merge-norm-dengeleme-hukmu-tersine.md).**
+Norm dengeleme *gerekli* diye yazılmıştı; ölçüm `τ_g`'yi ezdiğini (71,4% → 53,4%) ve yüksek
+ölçekte modeli **dejenere** ettiğini gösterdi. Gerekçesi (8,87× asimetri) ayakta, çıkarımı
+(*"dengelenmezse `τ_a` silinir"*) çürütüldü. **Ana sonuç artık ham TIES.**
+
+**4. Ön-kayıt dört kez tuttu.** #48 §16 (`rewards/accuracies` yanıltıcı olabilir) · §17 (A1
+cevaplanan-only olduğu için coverage çöküşünü gizler) · §20 (aynı kör nokta merge tarafında da
+var) — üçü de sayı görülmeden yazıldı, üçü de doğrulandı. Dördüncüsü: ADR-0040 geçerlilik
+kapısı, bozuk bir modelin sayılarına güvenilmeden önce yakaladı.
+
+## Yeni yürütme tuzakları
+
+| # | özet |
+| :-- | :--- |
+| **6.10** | iki detached iş aynı çıktı dizinine yazar |
+| **6.11** | devam mekanizması yalnız KABUL edilenleri hatırlar → ek tur sessizce boşa gider |
+| **6.12** | bayrak script'e eklenir, çağrı zincirine eklenmez (bu turda **dört kez** çıktı) |
+
+## Bedel
+
+```
+Modal GPU     ~$9-10   (hasat 2 tur + τ_a eğitimi)   ⚠️ panelden okunacak
+OpenAI hakem   $5,11   (kredi TÜKENDİ 2026-08-03 09:37)
+OpenRouter     $2,97   (ek tur kabul zinciri + tüm CP3 evalleri + süpürme)
+merge süpürme  GPU $0 · hakem $0,11 · ~2 saat        (3 varyant, DEV)
+```
+
+## Sprint 3'e devredilen
+
+- **`tgta_v1`** — ana sonuç merge, kimliği [`kollar.md`](../kollar.md)'de
+- **`τ_a` v1** — 70 adım, `‖τ_a‖_F` = 1,1806, 726 çift
+- **`scripts/cp3_merge_dene.sh`** — varyant → GGUF → 3 eksen eval → puanlama, tek komut
+- **`merge_ties.py --geri-olcek {ortalama|min|max|<kol>}`** + künyede `geri_olcek_kurali`
+- **Açık soru:** modül-başına normalleştirme denenmedi (`open_questions.md`) — ham TIES'in
+  `τ_a`'yı seyreltmesini (0,987 → 0,877) telafi edebilir
+- **Açık iş:** CP4 (karışık SFT) + CP5 (ardışık SFT) — iç iddianın **gerçek** sınavı

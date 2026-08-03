@@ -16,7 +16,7 @@
 > | sprint | kapsam | koşan FT | TODO bölümleri |
 > | :--- | :--- | :--- | :--- |
 > | **[1](sprint1.md)** ✅ **KAPANDI** | **Faz A** hazırlık (base kapısı · **DEV havuzu** · base baseline + Kapı 0 · veri) → **Faz B** ilk FT · **+ CP7 Gemini 3.1 Flash-Lite erken önizleme** | **FT-1** ✅ | §0 · §1 (kısmi) · §2 (kısmi) · §3 (ilk hücre) |
-> | **[2](sprint2.md)** ← *aktif* | ✅ düşünce modu (CP0 → **thinking AÇIK, bütçeli**, ADR-0043) · ✅ **çıpalar bütçeli kipte koşuldu (CP0.9)** + ADR-0044 + ADR-0040 hükmü **🟡** · ⏭️ hakem düzeltmesi · `rejected` hasat · `τ_a` + **ARA KAPI** · tabanlar | **FT-2 · FT-4 · FT-5/6** | §1 · §2 |
+> | **[2](sprint2.md)** ✅ *kapandı 08-03* 🟢 | ✅ düşünce modu (CP0 → **thinking AÇIK, bütçeli**, ADR-0043) · ✅ **çıpalar bütçeli kipte koşuldu (CP0.9)** + ADR-0044 + ADR-0040 hükmü **🟡** · ⏭️ hakem düzeltmesi · `rejected` hasat · `τ_a` + **ARA KAPI** · tabanlar | **FT-2 · FT-4 · FT-5/6** | §1 · §2 |
 > | 3 | merge + 7 hücreli kafes → **🎯 hedef model doğuyor** + iç iddia kararı | — *(merge bedava)* | §3 |
 > | 4 | harness (retriever · graf · doğrulayıcı · kapı) + Kapı 3 — **2-3 ile paralel yürüyebilir** | — *(eğitim yok)* | §4 · §6 |
 > | 5 | dış parite matrisi + Kapı 1/2 + eşdeğerlik + başabaş N\* + kapanış ölçümleri (eval≠dağıtım · gerçek VRAM) — **tez burada biter** | — *(rakipler API)* | §5 · §6 |

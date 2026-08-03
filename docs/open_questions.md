@@ -183,10 +183,24 @@ Yeni tuzaklar kayda geçti: `yurutme-tuzaklari.md` **4.7** (kabul ölçütü ≠
 3.101 tadil-kanunu maddesi. **Eğitim ve eval temiz** (sızıntı ölçüldü: %0.06 / sıfır) →
 **yeniden eğitim gerektirmez**; risk yalnız retriever indeksinde.
 
+### Modül-başına normalleştirme — AÇIK (2026-08-03)
+
+`merge_ties.py` normalizasyonu **global** yapıyor (tüm `τ` için tek `‖τ‖_F`). Ölçüldü: iki kolun
+da en büyük normu **aynı MLP yüzeyinde** yoğunlaşıyor (`gate_proj` τ_g 6,150 ↔ τ_a 0,621 ·
+`up_proj` 5,047 ↔ 0,628), yani çatışma rastgele dağılmıyor.
+
+ADR-0052 ham TIES'i ana yol yaptığı için **acil değil** — hedefe global kapsamla ulaşıldı. Ama
+modül-başına dengeleme, ham TIES'in `τ_a`'yı seyreltmesini (M2b 0,987 → 0,877) telafi edebilir.
+Denenmedi. Bedeli: `merge_ties.py`'de ~20 satır + bir süpürme turu (~1 sa, GPU $0).
+
 ### Merge doğrulama birim testi — Sprint 3 öncesi
 
 ADR-0036'daki 5 parametreli örnek birim testine çevrilecek (ham TIES → p1 = 0.80 · norm-dengeli →
 p1 = 0.739, p3 = 0.547). **Zorunlu şart**, `TASARIM.md` §4.2'de kayıtlı.
+
+⚠️ **Test hâlâ gerekli, rolleri değişti** ([ADR-0052](adr/0052-merge-norm-dengeleme-hukmu-tersine.md)):
+artık **ham TIES ana yol**, norm-dengeli ablasyon. Test ikisini de doğrulamalı — hangisinin
+"ana" olduğu testin kapsamını değiştirmiyor, yalnız hangi sayının manşete gireceğini.
 
 ---
 
@@ -200,7 +214,7 @@ p1 = 0.739, p3 = 0.547). **Zorunlu şart**, `TASARIM.md` §4.2'de kayıtlı.
 | **#9** iç iddianın karar kuralı | **Kapı 5** — `min` bileşik, simetrik %90, iki tabanı da geç | [ADR-0037](adr/0037-ic-iddia-karar-kurali-kapi-5.md) · `TASARIM.md` §7 |
 | **#10** merge kütüphanesi | **kendi kodumuz** + zorunlu birim testi + `mergekit` çapraz kontrol 🔄 | `TASARIM.md` §4.2 |
 | **#11** `τ_reasoning` / RS-FT | **kapsam dışı** — biçim zaten `τ_g`'de (%76), zincirleme harness'ın işi. ⚠️ **§13.10 ile şartlı yeniden açıldı** (CP0-a YEŞİL çıkarsa) | [ADR-0035](adr/0035-tau-reasoning-rs-ft-kapsam-disi.md) · [ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) · `TASARIM.md` §2 (satır 13), §10.2 |
-| **#12** ΔW norm asimetrisi | **norm-dengeli ana**, ham TIES ablasyon · `‖τ‖` koşulsuz ölçülür | [ADR-0036](adr/0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md) · `TASARIM.md` §4.2 |
+| **#12** ΔW norm asimetrisi | ⚠️ **HÜKÜM TERSİNE (2026-08-03)** — **ham TIES ana**, norm-dengeli ablasyon. Asimetri **ölçüldü** (8,87×: ‖τ_g‖ 10,47 ↔ ‖τ_a‖ 1,18) ve `‖τ‖` koşulsuz ölçülmeye devam eder; çürütülen şey *"dengelenmezse küçük kol silinir"* çıkarımı — ham TIES'te `τ_a` silinmedi (M2b 0,607→0,877), tersine dengeleme `τ_g`'yi ezdi (grounding 71,4%→53,4%) | [**ADR-0052**](adr/0052-merge-norm-dengeleme-hukmu-tersine.md) ADR-0036'yı tadil eder · [#48 §24](record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
 | **#13** rejim eşleşmesi | precision/dropout/modül/uzunluk **eşleşti** · lr/batch **serbest** + tetik · ORPO **epochs 3** | `TASARIM.md` **§4.1.1** |
 | **§13.2** red kapısı eşiği | **katı** — tek doğrulanamayan atıf tüm cevabı reddettirir | [ADR-0038](adr/0038-red-kapisi-esigi-kati.md) |
 | **§13.4** zamansal eksen | **kapsam dışı** — sebep tercih değil, korpusta metadata yok | `TASARIM.md` §10.2 · ön koşul §5.3 |

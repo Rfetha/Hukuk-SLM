@@ -309,9 +309,27 @@ OOM ederse · uygulanmamış bir tekniğe ihtiyaç doğarsa → `mergekit`'e ge�
 - **⚠️ Norm-dengeli ön-adım (ADR-0036).** Her `τ_t` merge'den önce `τ_t/‖τ_t‖` ile ölçeklenir.
   Why: kollar farklı ölçekte eğitiliyor (`τ_g` 1.083 adım/lr 1e-4 · `τ_a` 82 adım/lr 1e-5) ve
   TIES'ın işaret-seçimi + ayrık-ortalaması **kütle ağırlıklı** — müdahale etmezsek küçük normlu
-  kol her gerçek çatışmada silinir ve "çatışma korunmadı" diye okunur. **Ana sonuç norm-dengeli,
-  ham TIES ablasyon olarak yanında raporlanır.** DARE bunu çözmez (beklenen değeri koruduğu için
+  kol her gerçek çatışmada silinir ve "çatışma korunmadı" diye okunur. ~~**Ana sonuç norm-dengeli,
+  ham TIES ablasyon olarak yanında raporlanır.**~~ DARE bunu çözmez (beklenen değeri koruduğu için
   oranı da korur). Kafes bu yüzden **× 2 ayarda** koşulur; merge bedava olduğu için bedel yalnız eval'de.
+
+  > ### ⚠️⚠️ HÜKÜM TERSİNE ÇEVRİLDİ — [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md) (2026-08-03)
+  > **Ana sonuç artık HAM TIES; norm-dengeli varyant ablasyondur.** Üstü çizili cümle tarihî
+  > kayıt olarak duruyor.
+  >
+  > Bu paragrafın **gerekçesi ayakta ve ölçüldü**: asimetri gerçek — `‖τ_g‖` **10,4722** ↔
+  > `‖τ_a‖` **1,1806** = **8,87×**. Çürütülen şey **çıkarımı**: *"küçük normlu kol her gerçek
+  > çatışmada silinir"* — ham TIES'te `τ_a` **silinmedi** (M2b 0,607 → **0,877**). Tersine,
+  > norm dengeleme `τ_g`'yi ezdi (grounding 71,4% → 53,4%) ve yüksek geri ölçekte model
+  > **dejenere** oldu (tekrarlama döngüleri, koşu geçersiz).
+  >
+  > Mekanizma düzeltmesi: kütle-ağırlıklılık **işaret seçiminde** değil **ayrık ortalamada**
+  > işliyor (norm dengeleme çatışan parametrelerin kimliğini %0,009 puan değiştiriyor, ağırlığını
+  > tamamen). Ve **norm, etkinin iyi bir vekili değil** — `τ_a` yalnız 1,18 normla M1 reddini
+  > %42,5 → %57,5 çıkarabiliyor.
+  >
+  > `‖τ‖` **koşulsuz ölçülmeye devam eder** (ADR-0036'nın bu maddesi korundu). Ölçüm:
+  > [`research_log` #48 §22-§24](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md).
 - **Host RAM'de koşar, GPU VRAM'e girmez.** Ve **akış hâlinde (tensör tensör)** yapılır: base
   tensörü + her kolun karşılık gelen ΔW'si yüklenir, TIES uygulanır, yazılır, bellek boşaltılır.
   Tam materyalizasyon (base + 3 kol aynı anda bf16'da) 4B'de bile onlarca GB'a çıkar; akış
@@ -565,7 +583,7 @@ kalite kıyaslanabilir."* Jüri için somut; "sıfır maliyet" ifadesinden çok 
 | **Kapı 2 — iş bölümü** | harness ablasyonu sonrası | **D** vs **E** | `D ≈ E` → *"bu domainde scaffolding ince-ayarı ikame ediyor"* — **kötü haber değil, yayımlanabilir bulgu.** `D > E` → iş bölümü doğrulandı |
 | **Kapı 3 — hibrit kol** | getirme ölçümü sonrası | recall@k + MRR (± kavram kenarı) | İyileştirmiyorsa kol kapanır, negatif bulgu raporlanır |
 
-| **Kapı 5 — iç iddia** ([ADR-0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md)) | kafes DEV ölçümü sonrası | **norm-dengeli** ayarda `τg+τa` | **Üçü birden:** (a) M1/M4 ≥ **0.90 ×** (`τg` tek) · (b) M2/M2b ≥ **0.90 ×** (`τa` tek) · (c) **bileşik = `min`(grounding, abstention)** ve bu bileşikte **Taban A ve B'nin İKİSİ de** geçilmeli. ~~(d) M5~~ → **Kapı 6'ya taşındı** (ADR-0039). *Referans = tekil hücreler (#8 gereği aynı hattan). Seçim: DEV'de bileşiği maksimize eden **tek** konfigürasyon TEST'e gider, tüm tarama eklerde; **aynı prosedür tabanlara da uygulanır**.* ⚠️ Güç analizi yok — karar kuralıdır, istatistiksel test değil |
+| **Kapı 5 — iç iddia** ([ADR-0037](docs/adr/0037-ic-iddia-karar-kurali-kapi-5.md)) | kafes DEV ölçümü sonrası | ~~**norm-dengeli**~~ → **ham TIES** ayarında `τg+τa` ([ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md)) | **Üçü birden:** (a) M1/M4 ≥ **0.90 ×** (`τg` tek) · (b) M2/M2b ≥ **0.90 ×** (`τa` tek) · (c) **bileşik = `min`(grounding, abstention)** ve bu bileşikte **Taban A ve B'nin İKİSİ de** geçilmeli. ~~(d) M5~~ → **Kapı 6'ya taşındı** (ADR-0039). *Referans = tekil hücreler (#8 gereği aynı hattan). Seçim: DEV'de bileşiği maksimize eden **tek** konfigürasyon TEST'e gider, tüm tarama eklerde; **aynı prosedür tabanlara da uygulanır**.* ⚠️ Güç analizi yok — karar kuralıdır, istatistiksel test değil |
 | **Kapı 6 — parametrik sızıntı** ([ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md)) | kafes DEV ölçümü sonrası | M5 (kaynaksız mod) | **İkisi de base'i geçmeyecek:** M5 **coverage** ≤ **%97.5** · M5 **ezber kütlesi** (`coverage × A1`) ≤ **%42.5** *(base, bütçeli kip — [ADR-0044](docs/adr/0044-mod-duyarli-feragat-kurali.md); eski %37.5/%10.7 kırık red sayımındandı)*. *Hedef coverage → sıfıra yakın. Çıpa **base**, rakip değil — modeli aldığımız noktadan kötüye götürmemek. Her hücre üç sayıyı da (coverage · A1 · kütle) base farkıyla yayımlar.* Kalınca ön-kayıtlı merdiven: `τ_a` → merge ağırlığı → harness → `τ_g` v2 |
 | ~~**CP0 düşünce kuralı**~~ ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) | ✅ **KOŞULDU** CP0.9, 2026-07-29 | base bütçeli kip, DEV | **🟡 SARI** — M2 eşiği **geçti** (0.633 → **0.814** ≥ 0.78), M1 kütlesi 0.9 puan kaldı (%56.7 < %57.6), **M5 muhafızı İHLAL** (%36.9 → %42.5, [ADR-0044](docs/adr/0044-mod-duyarli-feragat-kurali.md) sayılarıyla). → **RS-FT kapsam dışı kalır**, ADR-0035 açılmaz, plan değişmez; thinking **raporlanan bir eksen** olur. Kayıt: `research_log` #43 |
 

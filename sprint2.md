@@ -9,38 +9,40 @@
 
 ---
 
-## 🎯 HEDEF  (`/goal sprint2.md` bunu okur)
+## ✅ HEDEF SAĞLANDI  (`/goal sprint2.md` bunu okur)
 
 ```
 koşul     : ARA KAPI'ya ulaşıldı ve iki gözlem ölçülüp raporlandı
-🛑 DURMA  : 🔴 ARA KAPI · herhangi bir kırmızı kapı · bütçe aşımı → İNSANA SOR, geçme
-kapsam    : CP2-c → kabul zinciri → CP3 → ARA KAPI.  CP4-CP5 bu hedefin DIŞINDA
-            (kapı yeşilse ikinci bir /goal ile açılır)
+durum     : ✅ SAĞLANDI — 2026-08-03 18:14
+sonuç     : 🟢 GÜÇLÜ YEŞİL (1. gözlem 0,984 ≥ 0,923 · 2. gözlem 0,877 ≥ 0,854)
+kapsam    : CP2-c → kabul zinciri → CP3 → ARA KAPI   ✅ hepsi kapandı
 ```
 
-⚠️ `/goal` semantiği *"koşul sağlanana kadar çalışmaya devam et"*tir. Sprint 2'nin **ortasında
-durması gereken** 🔴 ARA KAPI var ve hemen altında ~**$12**'lik iş duruyor. Bu yüzden HEDEF
-Sprint 2'nin tamamını değil, **ARA KAPI'ya kadarki kısmı** kapsar.
+> ### 🛑 CP4-CP5 KOŞULMAYACAK — insan kararı (2026-08-03)
+> ARA KAPI yeşil, yani ön-kayıtlı kural CP4-CP5'e izin veriyor. **İnsan bunları başka bir
+> zamana erteledi.** Açılmaları için **yeni bir `/goal`** gerekir; bu belge kendi başına
+> onları tetiklemez.
+>
+> ⚠️ **Bu belge artık otonom bir hedef tanımlamıyor.** `/goal sprint2.md` çağrılırsa koşul
+> zaten sağlanmış durumdadır. Yeni iş için yeni bir hedef belgesi yazılmalıdır.
 
-> ⏸️ **2026-08-02 ~22:30 — oturum kapandı, hedef İPTAL DEĞİL.** İnsan PC'yi kapattı; Modal'daki
-> ek tur hasadı `--detach` ile koşmaya devam ediyor. Yeniden başlarken **▶ SIRADAKİ İŞ'teki
-> DEVAM NOKTASI bloğu** ilk okunacak yerdir — orası "iş bitmiş mi, yarıda mı ölmüş" ayrımını
-> ve her iki hâlin komutunu taşıyor. Yerelde koşan hiçbir süreç kalmadı.
+## 📌 BELGE DURUMU — sprint kapandı, kayıt donduruldu
 
----
+Bu belge sprint akarken **canlı tutuldu** (her CP başlarken 🟡 + app id, biterken ✅/🔴 + fiili
+sayılar). Sprint kapandığı için artık **kayıt belgesidir**: aşağısı 2026-08-03 18:14 itibarıyla
+ölçülen gerçektir, değiştirilmez.
 
-## 📌 BU BELGE CANLI TUTULUR — sprint akarken güncellenir, sonunda değil
+Yeni iş başlarsa **yeni bir icra belgesi** açılır; buradaki numaralar ve app id'ler tarihîdir.
 
-**Niçin:** bu belge `/goal` ile **otonom** koşuluyor; bir sonraki ajanın tek gerçeklik kaynağı
-burası. Güncellenmezse ajan **geçmiş bir duruma göre** iş yapar — yanlış app'i bekler, biten bir
-CP'yi tekrar koşar, tetiklenmiş bir kapıyı görmez.
+**Kayıtların kalıcı adresleri:**
 
-- **CP başlarken:** durum tablosundaki satır → 🟡 **KOŞUYOR** + **app id** + **başlangıç saati**.
-- **CP biterken:** durum ✅/🔴 · **fiili sayılar** (tahmin değil) · çıktının **nerede** olduğu ·
-  hangi **`research_log` girdisine** yazıldığı.
-- **Kapı tetiklendiğinde / karar insana gittiğinde:** karar ve gerekçesi **aynı gün** ilgili
-  **ADR + `research_log`**'a yazılır, `sprint2.md`'de **tek satırla** işaretlenir.
-  *Sohbette kalan bulgu, kaybolmuş bulgudur* (CLAUDE.md, sert kural).
+| ne | nerede |
+| :--- | :--- |
+| Bu sprint'in tam kronolojisi ve her sayı | [`research_log` #42-#48](docs/record/research_log/) — CP2-c/CP3'ün tamamı **#48 §1-§24** |
+| Kararlar | ADR-**0039**…**0052** ([register](docs/adr/README.md)) |
+| Artefakt kimlikleri (`tg_v1` · `ta_v1` · **`tgta_v1`**) | ⭐ [`docs/record/kollar.md`](docs/record/kollar.md) |
+| Sayılar · elenen seçenekler · eşik türetmeleri | [`defter.md`](docs/record/sprint2/defter.md) |
+| Koşu öncesi tuzak listesi (bu sprint **6.10-6.12**'yi ekledi) | [`yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
 
 ---
 

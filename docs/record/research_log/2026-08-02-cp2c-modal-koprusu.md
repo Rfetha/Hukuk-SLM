@@ -1554,3 +1554,19 @@ GPU        $0 (hepsi yerel RTX 5070 Ti)
 hakem      ~$0,11  (min 3 eksen + ham 3 eksen)
 süre       ~2 saat
 ```
+
+### Artefakt kimliği — `tgta_v1`
+
+Bu bölümün ürettiği merge, [`kollar.md`](../kollar.md)'de **`tgta_v1`** olarak kayıtlıdır:
+
+```
+models/merged/tgta_v1/                      merge edilmiş bf16
+models/gguf/tgta_v1-q4_k_m.gguf             taşıyıcı (2,59 GiB)
+outputs/eval/cp3d-merge/KUNYE_tgta_v1.json  merge künyesi
+```
+
+⚠️ **Eval çıktıları `*_tg_ta_ham_th` etiketiyle bırakıldı** (`outputs/eval/cp3-supurme-ham/`).
+Dosyaların içinde `"label"` alanları var ve ölçüm o etiketle koşuldu; sonradan düzeltmek,
+koşulan şeyi daha derli toplu göstermek için **ölçüm kaydını yeniden yazmak** olurdu.
+Bağlayıcı eşleme `kollar.md`'de.
+
