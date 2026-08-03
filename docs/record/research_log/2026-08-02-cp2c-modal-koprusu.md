@@ -1182,3 +1182,31 @@ dağılmıyor, aynı alt-uzayda yoğunlaşıyor.
 
 ⚠️ Norm kapsamı **global** (tek `‖τ‖_F`); modül-başına normalleştirme alınmadı —
 `docs/open_questions.md`'ye açık soru olarak duruyor.
+
+---
+
+## 20. ⚠️ ÖN-KAYIT (2026-08-03 12:40, sayı görülmeden) — ARA KAPI'nın 2. gözleminde M1 boşluğu
+
+3e üretiminin ilk 15 M2b kaleminde merge **15/15 çekiniyor**, medyan cevap uzunluğu **58
+karakter** — `τ_a`'nın ADR-0051 şablonu. Kapı (M2b ≥ 0,854) büyük olasılıkla geçecek.
+
+**Bu, ön-kayıtlı kapıda bir boşluğu açığa çıkarıyor:**
+
+ARA KAPI'nın 2. gözlemi **yalnız M2b'ye** bakar. 1. gözlemin M1 A1 muhafızı `τ_a` **tekiline**
+uygulanır, merge'e uygulanmaz. Dolayısıyla merge M2b'yi geçip M1'de `τ_a` gibi çökerse, karar
+tablosu **✅✅ → "güçlü yeşil → CP4-CP5 koşulur"** çıktısını verir — oysa merge de kullanılamaz
+hâlde olur ve rakip yöntemlere ~$12 harcanır.
+
+Bu, §17'de `τ_a` tekili için işaretlenen kör noktanın **merge tarafındaki eşidir**. Aynı kusur,
+aynı sebep: *cevaplanan-only / tek-eksen metrik, çekinerek kazanmayı ödüllendirir.*
+
+**Alınan önlem:** 3e'ye M2b'nin yanında **M1 ve M2 de** dahil edildi (`MODES="m2b m1 m2"`).
+Kapı okumasında merge'in **M1 sadık-cevap kütlesi** zorunlu olarak raporlanacak.
+
+⚠️ **Ön-kayıtlı eşikler DEĞİŞMİYOR** (M2 ≥ 0,923 · M2b ≥ 0,854). Eklenen tek şey: merge ✅✅
+alsa bile M1 kütlesi `τ_g`'nin **%71,4**'ünden belirgin düşükse, bu **kapı sonucunun yanında
+açık uyarı** olarak insana sunulur ve karar insana bırakılır. Kapıyı geçersiz saymak ya da
+eşiği oynatmak DEĞİL — ölçümü tamamlamak.
+
+*Bugün ön-kayıt üçüncü kez kuruluyor: §16 (`accuracies` yanıltıcı olabilir → doğrulandı),
+§17 (A1 kör noktası → doğrulandı), §20 (merge tarafında aynı kör nokta → sonuç bekleniyor).*
