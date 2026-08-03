@@ -1412,3 +1412,54 @@ güçlü**. Norm, etkinin iyi bir vekili değil.
 Bu, ADR-0036'nın gerekçesini zayıflatmıyor (asimetri gerçek, 8,87×) ama **çıkarımını** sorgulatıyor:
 *"küçük normlu kol silinir"* varsayımı ölçülmedi, varsayıldı. Ham TIES artık ablasyon değil,
 **doğrudan sınanan hipotez**.
+
+### min-varyantının M2 ekseni de ölçüldü — tablo tamamlandı
+
+Süpürme koşusu ilk turda `MODES="m2b m1"` ile koşulmuştu (M2 kapıda yok, süre kazanmak için
+düşürülmüştü). **Eksikti ve dolduruldu** — tek eksenle çekinme okumak bu turda iki kez yanılttı
+(§18 A1 kör noktası, §21 merge kör noktası).
+
+```
+M2 Rej (tuzak madde verilen mod)
+base 0,814 · Gemini 0,930 · τ_g 0,873 · τ_a 0,984 · MERGE(min) 0,934
+```
+
+**Merge her iki çekinme ekseninde de `τ_g`'yi geçiyor:** M2 0,873 → **0,934** · M2b 0,607 →
+**0,987**. M2'de Gemini'nin de (0,930) üstünde.
+
+```
+özne          M1 kütle   M2 Rej   M2b Rej
+base            56,7%     0,814    0,986
+Gemini 3.1 FL   72,9%     0,930    1,000
+τ_g             71,4%     0,873    0,607
+τ_a             41,2%     0,984    0,987
+MERGE(min)      53,4%     0,934    0,987     ← çekinme ✅✅ · grounding açık
+```
+
+`cp3_merge_dene.sh` kalıcı olarak `m2b m1 m2` üçlüsüne çevrildi; gerekçe betiğe yazıldı.
+
+---
+
+## 23. 🟡 SÜPÜRME DENEY 2 — ham TIES (`--no-norm-balance`) KOŞUYOR
+
+§22'nin geometri bulgusu, deney 2'nin **ne olması gerektiğini değiştirdi**: geri ölçek toplam
+gücü ayarlıyor, oranı değil. Oranı değiştiren tek şey norm dengelemeyi **kapatmak**.
+
+```
+varyant    norm katsayıları        geri ölçek   TIES istatistikleri
+ortalama   tg 0,0955 · ta 0,8470      5,826     çatışan %2,2451 · sıfır %64,558
+min        tg 0,0955 · ta 0,8470      1,181     çatışan %2,2451 · sıfır %64,558
+ham        tg 1,0    · ta 1,0         1,000     çatışan %2,2541 · sıfır %64,580
+```
+
+⭐ **Dikkat çeken:** norm dengeleme, çatışan parametrelerin **kimliğini** neredeyse hiç
+değiştirmiyor (%2,2451 ↔ %2,2541 — 0,009 puan). Değiştirdiği şey **ayrık ortalamanın ağırlığı**:
+dengelenmişte `τ_a`'nın normalize değeri `τ_g`'ninkiyle kıyaslanabilir olduğu için ortalama
+`τ_a`'ya doğru çekiliyor; dengelenmemişte `τ_g` ortalamaya hâkim.
+
+Yani ADR-0036'nın *"küçük normlu kol silinir"* ifadesi mekanizma olarak **işaret seçiminde**
+değil **ayrık ortalamada** işliyor. Bu ayrım ADR'de yoktu; ölçümle ortaya çıktı.
+
+**Sınanan hipotez:** `τ_a` ham TIES'te siliniyor mu? §22'nin kanıtı aksini düşündürüyor —
+`τ_a` yalnız 1,18 normla M1 reddini %42,5 → %57,5 çıkarabiliyor, yani **etkisi normundan çok
+daha güçlü** ve norm, etkinin iyi bir vekili değil.
