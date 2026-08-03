@@ -984,3 +984,50 @@ cümlesinden yüksek olasılık veriyor (`logps` −0,95 ↔ −1,28). Marj kapa
 ⚠️ **Ön-kayıt niteliğinde:** ARA KAPI'nın 1. gözlemi (M2 Rej ≥ 0,923) **düşerse**, bu tablo
 "kol öğrenmedi mi, yoksa yeterince mi öğrenmedi" sorusunun kanıtı olacak — ve okuma (1) ise
 çare rejimdir (epoch/lr), veri değil. Sayı görülmeden bu yorum yapılmayacak.
+
+---
+
+## 17. ⚠️ 3c ÜRETİMİ SIRASINDA — `τ_a` ŞABLON EZBERLEMİŞ GÖRÜNÜYOR (ön-kayıt, 2026-08-03 11:47)
+
+**Bu bölüm hakem koşmadan, üretim sürerken (n=42/80) yazıldı.** Amaç: sayı görüldükten sonra
+hikâye uydurulmasın. Sayı geldiğinde bu bölüm **doğrulanacak ya da çürütülecek**, silinmeyecek.
+
+M1 — modelin **cevaplaması beklenen** mod (kaynak verilir, doğru maddeyi bulup cevaplamalı):
+
+```
+kaba red işareti taşıyan : 22/42  (%52,4)
+cevap uzunluğu medyanı   : 58 karakter        ← ADR-0051 şablon cümlesinin uzunluğu
+```
+
+Örnek 1 — şablonun birebir kendisi:
+> SORU: *Mahkeme benim lehime bir karar verirse ne olur?*
+> CEVAP: *Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor.*
+
+Örnek 2 — **kalıp ezberinin kanıtı**:
+> CEVAP: *Verilen kaynaklarda bu konuyu düzenleyen madde **bulunuyor**.* / İlgili kaynak:
+> [KAYNAK 4] İŞ KANUNU Madde 21 …
+
+Model şablon cümlesini **çekimleyerek** kullanıyor (`bulunmuyor` → `bulunuyor`), yani cümleyi
+bir *muhakeme sonucu* olarak değil bir *kalıp* olarak öğrenmiş.
+
+Bu, ADR-0051'in **ön-kayıtlı riski**nin aynen gerçekleşmesi: *"metin fazla kalıplı olursa kol
+üslup öğrenir, muhakeme değil → M2b şişer"*. Ön-kayıtlı geri dönüş: **B** (`chosen`'ı hakemle
+üret).
+
+### 🚨 MUHAFIZIN KENDİSİNDE KUSUR — A1 bunu yakalamayabilir
+
+Ön-kayıtlı muhafız **M1 A1 ≥ 0,880**. Ama **A1 = cevaplanan-only makro** (ADR-0011). Model
+M1'de %52 çekinip kalan %48'i doğru cevaplarsa **A1 yüksek çıkar ve muhafız GEÇER** — oysa kol
+kullanılamaz hâldedir. Çekinmenin bedelini taşıyan metrik **coverage**'tır.
+
+**Sonuç: kapı okumasında A1 tek başına alınmayacak, `coverage` yanında raporlanacak.** Skorlama
+kontrol listesindeki *"coverage yanında mı"* maddesinin niçin orada olduğu tam olarak budur.
+
+⚠️ Bu, ön-kayıtlı eşiğin *değiştirilmesi* değildir — eşik 0,880 aynı kalır. Eklenen şey, aynı
+gözlemin **ikinci bir eksende** de raporlanması zorunluluğudur (ADR-0044'ün mod-duyarlı red
+kuralıyla aynı ruh: tek sayı davranışı tarif etmiyorsa iki sayı raporlanır).
+
+### Koşu DURDURULMADI
+
+Tuzak **6.8**: ara çıktıya bakıp koşuyu iptal etmek, sağlıklı bir koşuyu öldürür ve parayı iki
+kez yakar. Üretim sonuna kadar koşacak, puanlanacak, sayı öyle okunacak.
