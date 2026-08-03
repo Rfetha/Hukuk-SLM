@@ -66,6 +66,13 @@ def parse_args():
                    help="TIES kırpma: her τ'da büyüklüğe göre üstteki oran korunur (Yadav ve ark.)")
     p.add_argument("--lam", type=float, default=1.0,
                    help="birleştirilmiş vektöre uygulanan λ ölçeği")
+    p.add_argument("--geri-olcek", default="ortalama",
+                   help="norm dengelemeden sonra birleşik vektörün geri ölçeklendiği kural: "
+                        "`ortalama` (varsayılan) · `min` · `max` · bir kol adı (ör. `tg`). "
+                        "⚠️ Why: her τ birim norma iniyor ve sonuç bu ölçekle geri büyütülüyor. "
+                        "Normlar çok eşitsizse `ortalama` KÜÇÜK kolu kendi eğitim genliğinin "
+                        "çok üstüne çıkarır — ölçüldü: ‖τ_a‖=1,18 iken ortalama 5,83, yani "
+                        "4,9× aşırı yükseltme; model dejenere oldu (research_log #48 §21).")
     p.add_argument("--no-norm-balance", action="store_true",
                    help="HAM TIES ablasyonu (ADR-0036) — norm-dengeleme uygulanmaz")
     return p.parse_args()
@@ -174,9 +181,20 @@ def main():
         geri_olcek = 1.0
     else:
         katsayi = {ad: 1.0 / normlar[ad] for ad in adapters}
-        geri_olcek = sum(normlar.values()) / len(normlar)
+        kural = a.geri_olcek
+        if kural == "ortalama":
+            geri_olcek = sum(normlar.values()) / len(normlar)
+        elif kural == "min":
+            geri_olcek = min(normlar.values())
+        elif kural == "max":
+            geri_olcek = max(normlar.values())
+        elif kural in normlar:
+            geri_olcek = normlar[kural]
+        else:
+            raise SystemExit(f"[ties] 🚫 --geri-olcek {kural!r} tanınmadı — "
+                             f"`ortalama` · `min` · `max` ya da kol adı: {sorted(normlar)}")
     print(f"[ties] norm katsayıları: { {k: round(v, 6) for k, v in katsayi.items()} } · "
-          f"geri ölçek={geri_olcek:.6f}")
+          f"geri ölçek={geri_olcek:.6f} (kural={a.geri_olcek})")
 
     index = json.load(open(os.path.join(base_dir, "model.safetensors.index.json")))
     weight_map: dict[str, str] = index["weight_map"]
@@ -235,7 +253,9 @@ def main():
         "tau_norm_fro": {k: round(v, 6) for k, v in normlar.items()},
         "tau_norm_modul_kirilimi": kirilim,
         "norm_katsayilari": {k: round(v, 8) for k, v in katsayi.items()},
-        "geri_olcek": round(geri_olcek, 6), "trim_k": a.trim_k, "lam": a.lam,
+        "geri_olcek": round(geri_olcek, 6),
+        "geri_olcek_kurali": (None if a.no_norm_balance else a.geri_olcek),
+        "trim_k": a.trim_k, "lam": a.lam,
         "birlesik_tensor": applied, "ortak_lora_hedefi": len(ortak),
         "ties_istatistikleri": {k: round(sum(v) / len(v), 6) for k, v in ist_toplam.items() if v},
         "out": a.out,
