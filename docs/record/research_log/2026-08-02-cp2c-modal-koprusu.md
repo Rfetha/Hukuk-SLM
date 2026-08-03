@@ -843,3 +843,67 @@ kör    ~360 kalem    $0,55      ← 1.923 değil
 kabul adaylarınınki. O oran 1. turda **n=1.944** ile zaten ölçüldü (m2 %82,5 · m2b %79,5) ve
 §11'de duruyor. Künyeye `sadece_teyitten_gecenler` alanı yazılıyor ki oranın **neden yok**
 olduğu sonradan cevapsız kalmasın.
+
+---
+
+## 15. ✅ CP2-c KAPANDI — **728 temiz negatif**, hedefin %97'si
+
+```
+              regex   →  mini        →  teyit       →  kör damga
+1. tur  m2     1226      430 (%35,1)    295 (%68,6)    272
+        m2b     718      305 (%42,5)     90 (%29,5)     90    = 362   $5,11
+ek tur  m2     1192      401 (%33,6)    293 (%73,1)    266
+        m2b     731      326 (%44,6)    105 (%32,2)    100    = 366   $2,86
+                                                     ────────────────
+                                                       TOPLAM  728    $7,97
+```
+
+Dosyalar: `outputs/eval/cp2c-kabul/kabul_huni.json` · `outputs/eval/cp2c-kabul-ek1/kabul_huni.json`
+
+### İki turun huni oranları **örtüşüyor** — kapı değişikliği sayıyı kaydırmadı
+
+Ek tur farklı bir kapıdan (OpenRouter, sağlayıcı `OpenAI` pinli) koştu. Kaygı, huninin
+kaymasıydı; ölçüm aksini söylüyor:
+
+| aşama | 1. tur | ek tur | fark |
+| :--- | ---: | ---: | ---: |
+| m2 mini kabul | %35,1 | %33,6 | −1,5 puan |
+| m2b mini kabul | %42,5 | %44,6 | +2,1 puan |
+| m2 kör damga geçerliliği (teyit sonrası) | %92,2 | %90,8 | −1,4 puan |
+| m2b kör damga geçerliliği (teyit sonrası) | %100 | %95,2 | −4,8 puan |
+| mini maliyeti (m2) | $0,147 | $0,142 | — |
+
+Teyit adımında m2b lehine bir kayma var (%29,5 → %32,2) ama yön ve büyüklük, iki turun
+**farklı havuz dilimlerinden** gelmesiyle de açıklanabilir (aynı seed, farklı sıra aralığı).
+Kapıya atfedilemez; `judge_providers` her iki koşuda tek kaynak (`['OpenAI']`).
+
+### Kör damga daraltmasının ölçülen bedeli
+
+Ek turda damga **398** kaleme koşuldu (1.923 yerine): **$0,570**. 1. turda aynı iş 1.944 kalem
+için $2,849'du. Kesilen israf ~**$2,28**, ölçülmüş. Kaybedilen bilgi: ek turun *havuz geneli*
+geçerlilik oranı (1. turda n=1.944 ile ölçüldü, §11).
+
+### CP3'ün girdisi — 726 çift, **65 ORPO adımı**
+
+```
+abstain_pairs 726 · grounding_replay 145 · total 871 · train 845 / validation 26
+skipped: dev_excluded 2 · no_chosen 0 · abstained_no_contrast 0
+mod karışımı:    m2 538 · m2b 188
+hasat kaynağı:   cp2c-64 357 · cp2c-ek1 366 · cp2c 3
+```
+
+**65 adım** (845 ÷ grad-accum 64 = 13 adım/epoch × 5 epoch) — ADR-0047'nin ön-kayıtlı ~73
+adımının **%89'u**, reddettiği 29-adım bölgesinden uzak. `no_chosen: 0`: her m2 kalemi havuzda
+eşini buldu, ADR-0051'in m2b şablonu 188 kalemin tamamında çalıştı.
+
+### 🔴 Bir tuzak daha — `sprint2.md`'deki hazır komutta yol yereldi
+
+Belgede aylardır *"ateşe hazır"* diye duran CP3 komutu `--data data/train/orpo_abstain_cp2c`
+diyordu; oysa `train_orpo` **konteyner yolu** bekliyor (`/data/<set>`, tuzak 3.6 — `hukuk-data`
+volume'ü `/data`'ya bağlanır). Veri önce `modal volume put` ile yüklenmeliydi. Yakalandığı yer:
+komut ateşlenmeden önce `spawn_orpo`/`train_orpo` imzalarının okunması. Yakalanmasaydı GPU
+ayrıldıktan sonra patlardı. Komut düzeltildi ve veri `hukuk-data:/orpo_abstain_cp2c` altına
+yüklendi.
+
+*Ders (tuzak 6.12'nin kardeşi): "hazır komut" bloğu, **koşulmadığı sürece doğrulanmamış**
+koddur. Belgede durması onu sınanmış yapmaz.*
