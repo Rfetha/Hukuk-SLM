@@ -18,6 +18,10 @@ sonuç     : 🟢 GÜÇLÜ YEŞİL (1. gözlem 0,984 ≥ 0,923 · 2. gözlem 0,8
 kapsam    : CP2-c → kabul zinciri → CP3 → ARA KAPI   ✅ hepsi kapandı
 ```
 
+> ### 🛑 CP4-CP5 BU BELGEDE DEĞİL → [`sprint2b.md`](sprint2b.md) (2026-08-03)
+> Devamı ayrı bir hedef belgesine taşındı: **`/goal sprint2b.md`**. Orada bir **açık karar**
+> insan onayı bekliyor (CP4 karışık **ORPO** mu saf **SFT** mi — hedef eşleşmesi sorunu).
+>
 > ### 🛑 CP4-CP5 KOŞULMAYACAK — insan kararı (2026-08-03)
 > ARA KAPI yeşil, yani ön-kayıtlı kural CP4-CP5'e izin veriyor. **İnsan bunları başka bir
 > zamana erteledi.** Açılmaları için **yeni bir `/goal`** gerekir; bu belge kendi başına
