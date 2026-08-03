@@ -9,6 +9,15 @@
 
 ---
 
+> ## ⏸️ ERTELENDİ (2026-08-03) — aktif hedef [`sprint3.md`](sprint3.md)
+>
+> Proje tez olmaktan çıkıp OSS ürün oldu. CP4-CP5 **iddiayı kanıtlamak** için vardı
+> (*"merge, karışık ve ardışık SFT'den iyi korur"*) — bu **arxiv sorusu**, ürün sorusu
+> değil. Ürün için gereken *"daha iyi mi"* sorusunu ölçüm zaten cevaplıyor.
+>
+> **Artefaktlar bozulmuyor** (`τ_g` · `τ_a` · veri · protokol); arxiv'e karar
+> verilirse bu belge olduğu gibi koşulur (~$19,64). Aşağısı hazır durumda.
+
 ## 🎯 HEDEF
 
 ```
