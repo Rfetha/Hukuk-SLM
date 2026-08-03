@@ -47,67 +47,72 @@ CP'yi tekrar koşar, tetiklenmiş bir kapıyı görmez.
 ## ▶ SIRADAKİ İŞ
 
 ```
-CP   : CP2-c kabul zinciri (EK TUR) — 🟡 KOŞUYOR (2026-08-03 09:36 başladı)
-       girdi  data/_ham_ve_ara/cp2c_ek1  (1.923 YENİ kalem: m2 1.192 · m2b 731)
-       çıktı  outputs/eval/cp2c-kabul-ek1/
-       ⚠️ 1. turun 1.944 kalemi ZİNCİRE SOKULMADI — aynı hakem/istem/temp 0 ile zaten
-          yargılandı, yeniden ödemek ~$2,26 boşa gider. İki koşunun kabul dosyaları
-          build_orpo_v3.py --rejected çoklu-dosya arayüzünde birleşir; id kümeleri
-          AYRIK (ölçüldü: ek turun 1.923 kaydının tamamı yeni) → birleşim tek koşuya denk.
-       beklenti ~360 temiz · ~$4,5 · ~1,5 sa
+CP   : CP3 · 3a — τ_a ORPO eğitimi — 🟡 KOŞUYOR (2026-08-03 10:49 başladı)
+       app ap-80DlzMmkEwTjerjwJlh1sO · fc-01KZ39K0CWEPPJRE41GK7S2V8N
+       veri /data/orpo_abstain_cp2c (726 çift + 145 replay = 871; train 845)
+       rejim 5 epoch · lr 1e-5 · beta 0.1 · grad-accum 64 · --fresh-adapter · 11 modül
+       → **65 optimizer adımı** (845÷64=13 × 5) · ön-kayıtlı ~73'ün %89'u
+       ⛔ İLK LOGDA 29.908.992 (%0,65) EĞİTİLEBİLİR ÇIKMAZSA DURDUR
+       çıktı hukuk-outputs:/ta_v1
 
-✅ EK TUR HASAT KAPANDI (00:53) — /cp2c-ek1 · m2 1.192 (%31,3) · m2b 731 (%19,2)
-      kararlı 1,37 / 1,54 s/üretim · iki tipte de kapı GEÇİLDİ · taşıyıcı 1. turla birebir
-      ⭐ --skip-first DOĞRULANDI: üç dizin birleşiminde SIFIR çakışma (3.867 tekil,
-         atılan 82 yinelenen tümüyle 1. turun kendi iki dizini arasında) → tuzak 6.11 onarıldı
-✅ KABUL ZİNCİRİ 1. TUR (02-08 22:00) — 362 temiz (m2 272 · m2b 90) · $5,11
+✅ CP2-c KAPANDI — **728 temiz negatif** (hedef 750'nin %97'si) · hakem toplam $7,97
+      1. tur 362 (m2 272 · m2b 90)  +  ek tur 366 (m2 266 · m2b 100)
+      iki turun huni oranları örtüşüyor → kapı değişikliği sayıyı kaydırmadı (#48 §15)
 
-SONRA: (1) HUNİYİ OKU  outputs/eval/cp2c-kabul-ek1/kabul_huni.json → toplam_kabul
-       (2) TOPLA       1. tur 362 + ek tur ?  =  ?
-            ≥ 550 → CP3'e geç, ARA KAPI'ya kadar durma
-            < 550 → 🛑 DUR, insana sor (ADR-0047 m.1) · 3. tur --skip-first = 7626
-       (3) CP3 ÇİFTLERİ — dört dosya birden (iki koşunun birleşimi):
-           python scripts/build_orpo_v3.py \
-             --rejected outputs/eval/cp2c-kabul/cp2c_kabul_m2.jsonl \
-                        outputs/eval/cp2c-kabul/cp2c_kabul_m2b.jsonl \
-                        outputs/eval/cp2c-kabul-ek1/cp2c_kabul_m2.jsonl \
-                        outputs/eval/cp2c-kabul-ek1/cp2c_kabul_m2b.jsonl \
-             --out-dir data/train/orpo_abstain_cp2c
-       (4) CP3 3a-3e (aşağıda) → 🔴 ARA KAPI'da DUR, insana sun
+SONRA (3b-3e, hepsi YEREL, GPU parası $0):
+  3b  τ_a TEKİL materyalize   python scripts/merge_ties.py --adapter ta=<indirilen ta_v1> (k=1)
+                              → bf16 → GGUF Q4_K_M   (⚠️ tekil kol da GGUF'tan ölçülür)
+  3c  τ_a tekil eval          M2 Rej ≥ 0.923 · muhafız M1 A1 ≥ 0.880
+                              🛑 kesik oranı > %5 → KOŞU GEÇERSİZ
+  3d  τ_g+τ_a merge           merge_ties.py --adapter tg=… --adapter ta=… (norm-dengeli, k=2)
+  3e  merge eval              M2b ≥ 0.854
+  →   🔴 ARA KAPI — DUR, iki gözlemi insana sun. CP4-CP5'e para HARCANMAZ.
+
 YAZ  : 📌 canlı belge kuralı — durum tablosu + #48 aynı gün
 ```
 
-<details><summary>Buraya nasıl gelindi (2026-08-02 özeti)</summary>
+<details><summary>CP2-c'nin tam huni tablosu (2026-08-02 → 08-03)</summary>
 
 ```
-✅ 1. TUR HASAT (16:47→20:09) — 1.944 tekil aday
-✅ KABUL ZİNCİRİ 1. TUR (→22:00) — regex 1944 → mini 735 → teyit 385 → kör damga 362 TEMİZ
-      🔴 hedef 750'nin %48'i, insan çizgisi 550'nin de ALTINDA → DURULDU, insana soruldu
-      → insan kararı **A: ek tur koş** (elenen B = 35 adım riski, C = grad-accum değişimi)
-      ölçülen gerçek verim (planlama birimi): temiz/ÜRETİM m2 %7,13 · m2b %2,36
-      ⚠️ ders: kapasite planı `regex kabul` sayısıyla yapılamaz — o hakem huninin GİRDİSİ
-🟡 EK TUR (21:44→00:53) app ap-NpNr0GD8A1xO0Ywnrbz1nk · /data/cp2c-ek1/
-      --skip-first 3813/tip · --limit 3750/tip · -np 64 · seed 3407 · sha 214826aa…
-      ⚠️ yol boyunca 4. eksik köprü: --skip-first Modal tarafına hiç geçmemişti (tuzak 6.12)
-      02-08 ~22:30 insan PC'yi kapattı; iş --detach olduğu için etkilenmedi
-detay: #48 §11 (huni + ADR-0048 lehine kanıt) · §12 (ek tur kararı + köprü) · §13 (ek tur sonucu)
+              regex   →  mini        →  teyit       →  kör damga
+1. tur  m2     1226      430 (%35,1)    295 (%68,6)    272
+        m2b     718      305 (%42,5)     90 (%29,5)     90    = 362   $5,11
+ek tur  m2     1192      401 (%33,6)    293 (%73,1)    266
+        m2b     731      326 (%44,6)    105 (%32,2)    100    = 366   $2,86
+                                                     ────────────────
+                                                       TOPLAM  728    $7,97
 ```
+
+Yol boyunca çıkanlar — hepsi #48'de:
+- §11 kabul huni + ⭐ ADR-0048 lehine kanıt (teyit ∧ kör damga güçlü örtüşüyor)
+- §12 ek tur kararı (insan: A) + **4. eksik köprü** `--skip-first` (tuzak 6.12)
+- §13 ek tur sonucu + `--skip-first` SIFIR çakışmayla doğrulandı (tuzak 6.11 onarıldı)
+- §14 OpenAI kredisi bitti → kapı **OpenRouter**, sağlayıcı `OpenAI` **pinli**
+      (pinsizken gpt-4o'yu Azure servis ediyordu) · kör damga teyitten geçenlerle
+      sınırlandı → $5,00 → $2,86
+- §15 CP2-c kapanışı · iki turun oranları örtüşüyor · 🔴 "hazır komut"taki yerel yol tuzağı
 
 </details>
 
 **CP3 komutu — ateşe hazır** (arayüz `--help` ile doğrulandı; base ADR-0030, modül listesi ADR-0031):
 
 ```bash
-# 1) çiftleri kur — ⚠️ EK TUR sonrası dizin: cp2c-kabul2 (1. tur cp2c-kabul'de kaldı)
+# 1) çiftleri kur — DÖRT dosya (iki kabul koşusunun birleşimi; id kümeleri ayrık)
 python scripts/build_orpo_v3.py \
-  --rejected outputs/eval/cp2c-kabul2/cp2c_kabul_m2.jsonl \
-             outputs/eval/cp2c-kabul2/cp2c_kabul_m2b.jsonl \
+  --rejected outputs/eval/cp2c-kabul/cp2c_kabul_m2.jsonl \
+             outputs/eval/cp2c-kabul/cp2c_kabul_m2b.jsonl \
+             outputs/eval/cp2c-kabul-ek1/cp2c_kabul_m2.jsonl \
+             outputs/eval/cp2c-kabul-ek1/cp2c_kabul_m2b.jsonl \
   --out-dir data/train/orpo_abstain_cp2c
+
+# 1.5) ⚠️ VOLUME'A YÜKLE — `--data` KONTEYNER yoludur (tuzak 3.6). Bu adım belgede
+#      EKSİKTİ ve komut yerel yol gösteriyordu; yakalanmasaydı GPU ayrıldıktan sonra patlardı.
+modal volume put hukuk-data data/train/orpo_abstain_cp2c /orpo_abstain_cp2c --force
 
 # 2) τ_a — TAZE adapter (--adapter VERİLMEZ ⇒ spawn_orpo --fresh-adapter'a çevirir)
 modal run --detach modal_train.py::spawn_orpo \
   --model Qwen/Qwen3.5-4B \
-  --data data/train/orpo_abstain_cp2c --run-name ta_v1 \
+  --data /data/orpo_abstain_cp2c --run-name ta_v1 \
   --epochs 5 --lr 1e-5 --beta 0.1 --grad-accum 64 --bf16-base --lora-dropout 0.05 \
   --target-modules "q_proj k_proj v_proj o_proj in_proj_qkv in_proj_z in_proj_a in_proj_b gate_proj up_proj down_proj"
 ```
@@ -217,9 +222,10 @@ beklentisinin **%39 üstünde**; fark kör damganın 1.944 kalemde $2,85'i). O a
 | **CP2-c** `-np 32` denemesi | 🔴 **VERİM KAPISI TETİKLENDİ** 16:19-16:46 (m2 `2,97>2,88` · m2b `2,95>2,88`) — kapı *yanlı tahmin ediciyle* ölçüyordu (gerçek kararlı hız m2 ~2,4), **tahmin edici düzeltildi, eşiğe DOKUNULMADI** → [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md) · **113 kabul kaydı korundu** | ~1.2 ⚠️**beklenti** — fiilisi **panelden** okunacak (tuzak 6.3) | app `ap-5f6rLHHFohhupMGvhkla9I` → `hukuk-data:/cp2c/` · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
 | **CP2-c hasat** | ✅ **BİTTİ** 16:47→**20:09** (3,4 sa), `-np 64`, A100-40GB. **m2** denenen 3.813 · kabul **1.205 (%31,6)** · kararlı **1,43** — **m2b** denenen 3.813 · kabul **708 (%18,6)** · kararlı **1,59**. **İki tipte de kapı "geçildi"** (hak edilmiş: `--limit`'ten önce bakıldı) · hata **0** · zorunlu kapatma m2 3.810/3.813 · m2b **3.813/3.813**. Birleştirme: **1.944 tekil aday** (m2 1.226 · m2b 718), 82 yinelenen atıldı, **yarım satır yok** → durdurulan ikinci işin (`ap-5d1ss…`) kalıcı izi **çıkmadı** | ~7.8 ⚠️beklenti (+~0.8 çift iş) | app `ap-LHKDDasU1MD6b4xG10WK8W` → `hukuk-data:/cp2c-64/` · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
 | **CP2-c kabul (1. tur)** | ✅ **BİTTİ** 20:1x→**22:00**, `cp2c_kabul.sh` tasarım B (ADR-0049 m.5). Huni: regex **1.944** → mini **735** → teyit **385** → kör damga **362 TEMİZ** (m2 272 · m2b 90). 🔴 hedef 750'nin **%48**'i, insan çizgisi 550'nin de altında → **DURULDU, insana soruldu**. Ölçülen gerçek verim: temiz/üretim m2 **%7,13** · m2b **%2,36**. ⭐ Kör damga teyitten geçmiş uydurmalarda m2 %92,2 · m2b **%100** — ADR-0048 lehine kanıt | **5.11** ✅fiili (mini 0,30 · teyit 1,96 · kör damga 2,85) | `outputs/eval/cp2c-kabul/kabul_huni.json` · [#48 §11](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c ek tur** | 🟡 **KOŞUYOR** 21:44→, insan kararı **A**. `--skip-first 3813/tip` · `--limit 3750/tip` · -np 64 · seed 3407 · taşıyıcı 1. turla birebir (sha `214826aa…`). Ölçülen kararlı **1,45** · kabul **%32** — 1. turla tutarlı. ⚠️ Yol boyunca **4. eksik köprü**: `--skip-first` Modal tarafına hiç geçmemişti (tuzak **6.12**) | ~6.6 ⚠️beklenti + hakem ~5.5 | app `ap-NpNr0GD8A1xO0Ywnrbz1nk` → `hukuk-data:/cp2c-ek1/` · [#48 §12](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c kabul (2. tur)** | ▶ **SIRADAKİ** — üç dizin birleşimi → `cp2c_kabul.sh`. Beklenti **~718 temiz ≈ 70 ORPO adımı** | ~5.5 ⚠️beklenti | `outputs/eval/cp2c-kabul2/` |
-| **CP3** `τ_a` + merge | ⏳ ADR-0047 rejimi (~73 adım / 5 epoch) · **`--fresh-adapter` ZORUNLU** | ~3.20 + 0.15 | → 🔴 **ARA KAPI** |
+| **CP2-c ek tur** | ✅ **BİTTİ** 21:44→**00:53** (3,15 sa), insan kararı **A**. m2 denenen 3.813 · kabul **1.192 (%31,3)** · kararlı **1,37** — m2b denenen 3.813 · kabul **731 (%19,2)** · kararlı **1,54**. İki tipte de kapı **geçildi** · taşıyıcı 1. turla birebir. ⭐ Üç dizin birleşiminde **SIFIR çakışma** (3.867 tekil) → `--skip-first` ölçüm seviyesinde doğrulandı, tuzak **6.11** onarıldı. ⚠️ 4. eksik köprü: bayrak Modal tarafına hiç geçmemişti (tuzak **6.12**) | ~6.6 ⚠️beklenti | `hukuk-data:/cp2c-ek1/` · [#48 §13](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c kabul (ek tur)** | ✅ **BİTTİ** 09:43→**10:48**. Yalnız **1.923 YENİ** kaleme koşuldu (1. turun 1.944'ü zaten yargılanmıştı, id kümeleri ayrık → ~$2,26 tasarruf). Huni: m2 1192→401→293→**266** · m2b 731→326→105→**100** = **366**. 🔴 OpenAI kredisi bitince kapı **OpenRouter**'a alındı, sağlayıcı **`OpenAI` pinlendi** (pinsizken gpt-4o'yu Azure servis ediyordu). Kör damga **teyitten geçen 398** kaleme daraltıldı → $2,85 yerine **$0,57**. İki turun huni oranları **örtüşüyor** | **2.86** ✅fiili | `outputs/eval/cp2c-kabul-ek1/` · [#48 §14-15](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c TOPLAM** | ✅ **728 TEMİZ NEGATİF** (hedef 750'nin **%97**'si · insan çizgisi 550'nin çok üstünde) → **726 çift + 145 replay = 871**, train 845 → **65 ORPO adımı** · `no_chosen 0` · m2 538 / m2b 188 | **7.97** hakem | `data/train/orpo_abstain_cp2c/` |
+| **CP3** `τ_a` + merge | 🟡 **3a KOŞUYOR** 10:49→ · app `ap-80DlzMmkEwTjerjwJlh1sO` · 5 epoch · lr 1e-5 · beta 0.1 · ga 64 · `--fresh-adapter` ✅ · 11 modül ✅ · **65 adım** · ⛔ ilk logda 29.908.992 (%0,65) çıkmazsa DUR. 3b-3e yerel ($0) | ~2 + 0.15 | `hukuk-outputs:/ta_v1` → 🔴 **ARA KAPI** |
 | ~~CP4 · CP5~~ | 🔒 **BU HEDEFİN DIŞINDA** — ARA KAPI yeşilse ikinci `/goal` | ~12.2 | spec: [`defter.md`](docs/record/sprint2/defter.md) |
 
 **Bütçe — İKİ CÜZDAN, karıştırılmaz (tuzak 6.3).** Modal sayısı **panelden** okunur, defterden
@@ -228,7 +234,8 @@ türetilmez. Tam tablolar defterde.
 | cüzdan | harcanan | **kalan** | okuma |
 | :--- | ---: | ---: | :--- |
 | **Modal GPU** | **$11,85** | **$18,15** | ✅ **panelden** 2026-08-02 22:1x (workspace cap: $30,65 / $42,50). Ek turun ilk ~45 dk'sı bu sayının **içinde** |
-| **OpenAI hakem** | **$5,11** (CP2-c kabul 1. tur) | — | ✅ fiili, zincir çıktısından: mini 0,30 · teyit 1,96 · kör damga 2,85 |
+| **OpenAI hakem** (kredi **TÜKENDİ**) | **$5,11** | **$0** | 1. tur kabul zinciri. 2026-08-03 09:37'de 429 `credit_balance_exhausted` |
+| **OpenRouter** (yeni kapı) | **$2,86** | ~**$1,6** | ek tur kabul zinciri · sağlayıcı `OpenAI` pinli · $4,43 ile başlandı |
 
 > ⚠️ Durum tablosundaki GPU sayıları **BEKLENTİ**; toplamı ($7,8 + $1,2 + $0,8 ≈ $9,8) panelin
 > $11,85'inin altında kalıyor — **defter GPU'yu eksik sayıyor**, tam da 6.3'ün uyardığı yön.
