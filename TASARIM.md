@@ -1,5 +1,20 @@
 # Law-FT / HakHukuk — Tasarım Belgesi
 
+> ## 📁 TARİHÎ BELGE — TEZ ÇERÇEVESİ (2026-08-03'te aşıldı)
+>
+> Proje **yüksek lisans tezi** olmaktan çıkıp **açık kaynak ürün** oldu
+> ([`README.md`](README.md) · [`ROADMAP.md`](ROADMAP.md)). Bu belge o dönemin
+> tasarımıdır ve **silinmedi** — içindeki ölçüm protokolü, kapılar ve elenen
+> alternatifler hâlâ geçerli ve değerli.
+>
+> **Ne değişti:** iddia katmanı (Kapı 5, CP4-CP5 tabanları, parite matrisi) artık
+> **opsiyonel** — arxiv yazılırsa koşulur. Tezin dayattığı kısıtlar **kalktı**:
+> tek boyut noktası (ADR-0028) ve graph-RAG'in kapsam dışılığı (ADR-0019).
+>
+> **Ne kalmadı:** ölçüm disiplini. Gerekçesi değişti — hakemi ikna etmek değil,
+> kendimizi kandırmamak.
+
+
 > **Statü:** YÜRÜRLÜKTE — bu hattın otorite tasarım belgesi
 > **Tarih:** 2026-07-24
 > **Kaynak:** `referans-design-doc.md` (kullanıcı taslağı) + repo kaydı (26 ADR + 38 `research_log` girdisi — ikisi de 2026-07-24'te birleştirildi: [`docs/adr/gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md) · [`docs/record/gemma4-12b-kronoloji.md`](docs/record/gemma4-12b-kronoloji.md))

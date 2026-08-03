@@ -1,5 +1,20 @@
 # PAPER TARGET — Akademik Hedef Tasarımı
 
+> ## 📁 TARİHÎ BELGE — TEZ ÇERÇEVESİ (2026-08-03'te aşıldı)
+>
+> Proje **yüksek lisans tezi** olmaktan çıkıp **açık kaynak ürün** oldu
+> ([`README.md`](README.md) · [`ROADMAP.md`](ROADMAP.md)). Bu belge o dönemin
+> tasarımıdır ve **silinmedi** — içindeki ölçüm protokolü, kapılar ve elenen
+> alternatifler hâlâ geçerli ve değerli.
+>
+> **Ne değişti:** iddia katmanı (Kapı 5, CP4-CP5 tabanları, parite matrisi) artık
+> **opsiyonel** — arxiv yazılırsa koşulur. Tezin dayattığı kısıtlar **kalktı**:
+> tek boyut noktası (ADR-0028) ve graph-RAG'in kapsam dışılığı (ADR-0019).
+>
+> **Ne kalmadı:** ölçüm disiplini. Gerekçesi değişti — hakemi ikna etmek değil,
+> kendimizi kandırmamak.
+
+
 > **⚠️ KISMEN SÜPERSED — TEZ YENİDEN ÇERÇEVELENDİ (2026-07-17).** Bu belge **içeri-dönük** çerçeveyi
 > (sistem paper'ı; ana iddia = "doğru VE anlaşılır tek model"; benchmark = yan iş) yansıtır. Yeni tez
 > çerçevesi **dışarı-dönük**: *dar bir domainde (TR hukuku) SLM+harness, kapalı ticari modellerin

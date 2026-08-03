@@ -7,12 +7,30 @@
 > sayısı"* sorusu **dosya adından** cevaplanabilmeli — o yüzden versiyon zincirin her halkasında
 > taşınır: adaptör → merge → GGUF → eval etiketi.
 >
-> **Kural (2026-07-29):** repo dışı artefakt **yok**. Her şey `/home/ersoy/code/Hukuk-SLM` altında.
+> **Kural (2026-07-29):** repo dışı artefakt **yok**. Her şey repo kökü altında.
 > Adaptörler git'te **değil** (`.gitignore: outputs/**/*.safetensors`, ayrıca 114 MB > GitHub'ın
 > 100 MB dosya sınırı) ve **yedeklenmiyor** — bilinçli karar: adaptör veri + reçete + seed sabitken
 > yeniden üretilebilir, yeri doldurulamaz varlıklar (veri · belgeler · eval çıktıları) zaten metin
 > ve git'te. *(12B hattının adaptörleri bu kararın bedelini gösterdi: repo dışı devir paketi
 > silindi, adaptörler kalıcı kayıp — kasıtlı, çünkü o hat emekli.)*
+
+---
+
+## ♻️ Yeniden üretilebilir artefaktlar — diskte tutulmaz (2026-08-03)
+
+`models/merged/<ad>/` (bf16, ~8,8 GB/adet) **adaptör + base'den yeniden üretilir**:
+
+```bash
+python scripts/merge_lora.py --base Qwen/Qwen3.5-4B --adapter outputs/<kol> --out models/merged/<kol>
+python scripts/merge_ties.py --base Qwen/Qwen3.5-4B --adapter tg=outputs/tg_v1 --adapter ta=outputs/ta_v1 \
+       --no-norm-balance --out models/merged/tgta_v1     # ham TIES, ADR-0052
+```
+
+OSS geçişinde silinenler (~26 GB): `ta_v1` · `tg_ta_min` · `tg_ta_normdengeli` bf16
+dizinleri. **GGUF'ları ve künyeleri duruyor** — ölçüm kaydı etkilenmedi.
+Diskte tutulan: `tgta_v1` (yayımlanacak) · `tg_v1` (aktif kol).
+
+**Asıl artefakt adaptördür** (`outputs/<kol>/`, ~114 MB) — o silinmez.
 
 ---
 
