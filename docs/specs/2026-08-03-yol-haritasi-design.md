@@ -7,6 +7,18 @@
 
 ---
 
+> ## 📐 BU BELGE BİR YOL HARİTASI, UYGULAMA SPEC'İ DEĞİL
+>
+> Kapsamı S3a'dan S6+'ya uzanıyor (A → B → C) — **tek bir uygulama planına sığmaz** ve
+> sığdırılmaya çalışılmamalı. Her halka kendi spec → plan → uygulama döngüsünü hak ediyor.
+>
+> **İlk uygulanabilir birim: S3a + S3** (ön-prob + harness) — tarifi
+> [`../../sprint3.md`](../../sprint3.md)'de. Uygulama planı **oraya** yazılır.
+>
+> S4 ve sonrası burada **niyet ve çıkış ölçütü** düzeyinde duruyor; sırası gelince kendi
+> spec'ini alacak. Bu bilinçli: aralıklı ritimde uzak halkaların ayrıntısını şimdi yazmak,
+> yanlış varsayımları belgeye çivilemek olur.
+
 ## Bağlam
 
 Proje 2026-08-03'te **yüksek lisans tezi** olmaktan çıkıp **açık kaynak ürüne** döndü. Elde
@@ -111,6 +123,20 @@ Değişmişse: retriever statik korpusla sürer, ama **güncellik iddiası düş
 
 ## S3 — HARNESS
 
+### Adım 0 — modül-başına normalleştirme *(harness'tan bağımsız, önce yapılır)*
+
+Merge'in **bilinen** kusuru: `τ_a` seyreliyor (tekil M2b 0,987 → merge 0,877). Normalleştirme
+şu an **global** (tek `‖τ‖_F`). Ölçüldü: iki kolun da en büyük normu **aynı MLP yüzeyinde** —
+`gate_proj` (τ_g 6,150 ↔ τ_a 0,621) · `up_proj` (5,047 ↔ 0,628). Global norm bunu göremiyor.
+
+```
+~20 satır (merge_ties.py) · 1 saat · GPU $0
+kabul: M2b > 0,877 VE M1 kütlesi ≥ %71,6  (ikisi birden — tek eksen yeter değil)
+tutmazsa v0.1 yerinde kalır, kayıp 1 saat
+```
+
+Kazanan yapılandırma S4'ün yeniden merge'inde kullanılır.
+
 ### Bileşenler
 
 **1. Retriever** — çevrimdışı indeks (CPU) → soru → top-k madde. İki arka uç, tek arayüz:
@@ -146,6 +172,7 @@ ADR-0051'de büyük/küçük harfe duyarlı regex 45 kalemin 15'ini sessizce dü
 ### Çıkış ölçütü
 
 ```
+✅ Adım 0 sonuçlandı (modül-başına norm kabul edildi ya da reddedildi)
 ✅ recall@k ölçüldü ve raporlandı
 ✅ doğrulayıcı kendi test setiyle geçiyor
 ✅ kapı çalışıyor ve BEDELİ ölçülü (aşırı-red + kütle)
@@ -164,8 +191,9 @@ ADR-0051'de büyük/küçük harfe duyarlı regex 45 kalemin 15'ini sessizce dü
 2. **Türkçe muhakeme** — iz şu an İngilizce (8/8). Vatandaşa *"okunabilir muhakeme"* vaat eden
    ürün için **ürün açığı**. Üç yol: (a) eğitim verisine Türkçe iz · (b) mevcut izleri çevir ·
    (c) istem katmanında zorla. ⭐ **Önce (c) bedavaya denenir** — tutarsa eğitime hiç girilmez.
-3. **Yeniden merge** — yeni `τ_a` eski merge'i geçersiz kılar. Süpürme yeniden koşar
-   (ham TIES ↔ modül-başına). GPU $0, ~2 saat. *Unutulursa S4 yarım kalır.*
+3. **Yeniden merge** — yeni `τ_a` eski merge'i geçersiz kılar. **S3 Adım 0'da kazanan
+   yapılandırmayla** yeniden merge edilir ve doğrulanır. GPU $0, ~2 saat.
+   *Unutulursa S4 yarım kalır.*
 
 ### ⛔ v1.0 kabul ölçütü — TEST harcanmadan ÖNCE yazıldı
 
