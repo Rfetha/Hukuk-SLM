@@ -27,6 +27,11 @@ RUN="${2:-outputs/eval/cp2c-kabul}"
 JUDGE_MINI="${JUDGE_MINI:-gpt-4o-mini}"
 JUDGE_4O="${JUDGE_4O:-gpt-4o}"
 ONBELLEK="${ONBELLEK:-}"
+# Kör damgayı yalnız teyitten geçenlere uygula (varsayılan: AÇIK). Kabul ölçütü `teyit ∧ kör`
+# olduğu için teyitten düşen kalemin damgası hiçbir yerde kullanılmıyor. Havuz geneli
+# geçerlilik oranı gerekiyorsa: KOR_TAM=1
+KOR_TAM="${KOR_TAM:-}"
+KOR_SINIR=""; [ -z "$KOR_TAM" ] && KOR_SINIR="--sadece-teyit $RUN"
 
 [ -d "$HASAT" ] || die "hasat dizini yok: $HASAT"
 mkdir -p "$RUN"
@@ -37,7 +42,7 @@ export LLM_GATEWAY="${LLM_GATEWAY:-openai}"
 [ -n "${OPENAI_API_KEY:-}" ] || die "OPENAI_API_KEY yok (.env yüklendi mi?)"
 
 echo "### CP2-c kabul zinciri · hasat=$HASAT · koşu=$RUN"
-echo "### hakem: ön-filtre=$JUDGE_MINI · teyit+kör damga=$JUDGE_4O · kapı=$LLM_GATEWAY"
+echo "### hakem: ön-filtre=$JUDGE_MINI · teyit+kör damga=$JUDGE_4O · kapı=$LLM_GATEWAY · sağlayıcı pin=${LLM_PROVIDER_ORDER:-YOK}"
 
 for TIP in m2 m2b; do
   H="$HASAT/cp2c_${TIP}.jsonl"
@@ -78,7 +83,7 @@ done
 echo; echo "==================== kör geçerlilik damgası ===================="
 python -u scripts/valid_trap_cache.py --run-dir "$RUN" --tags cp2c --modes m2 m2b \
     --judge-model "$JUDGE_4O" --out "$RUN/valid_trap_cache.json" \
-    ${ONBELLEK:+--onceki-onbellek $ONBELLEK} || die "kör damga"
+    ${ONBELLEK:+--onceki-onbellek $ONBELLEK} $KOR_SINIR || die "kör damga"
 
 # 5) Havuzu birleştir: teyit FABRICATE **ve** kör damga geçerli
 python -u - "$HASAT" "$RUN" <<'PY' || die "birleştirme"

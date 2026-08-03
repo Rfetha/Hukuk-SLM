@@ -73,6 +73,12 @@ def parse_args():
                         "{mod}:{id} kalemleri YENİDEN HAKEME GİTMEZ. Geçerlilik kalemin "
                         "özelliği olduğu için (ADR-0048) bu meşru; ek turlarda 1. turun "
                         "bedeli tekrar ödenmez.")
+    p.add_argument("--sadece-teyit", default=None,
+                   help="koşu dizini — yalnız `abst_{mod}_{tag}_teyit.jsonl` içinde verdict="
+                        "FABRICATE olan id'ler damgalanır. Gerekçe: kabul ölçütü `teyit ∧ kör`, "
+                        "yani teyitten düşen kalemin damgası HİÇBİR yerde kullanılmıyor. "
+                        "⚠️ Bedeli: havuz geneli geçerlilik oranı ölçülmez (yalnız kabul "
+                        "adaylarınınki). O oran gerekiyorsa bu bayrak VERİLMEZ.")
     p.add_argument("--judge-model", default="gpt-4o")
     p.add_argument("--budget-usd", type=float,
                    default=float(os.environ.get("OPENAI_BUDGET_USD", "5") or "5"))
@@ -162,6 +168,17 @@ def main():
         first = load_detail(a.run_dir, mode, a.tags[0]) or \
             load_detail(a.run_dir, mode, next(t for t in a.tags if load_detail(a.run_dir, mode, t)))
 
+        if a.sadece_teyit:
+            tp = f"{a.sadece_teyit}/abst_{mode}_{a.tags[0]}_teyit.jsonl"
+            if not os.path.exists(tp):
+                raise SystemExit(f"🚨 --sadece-teyit verildi ama {tp} yok. Teyit adımı koştu mu?")
+            tut = {r["id"] for r in json.load(open(tp, encoding="utf-8"))
+                   if r.get("verdict") == "FABRICATE"}
+            n0 = len(items)
+            items = {i: v for i, v in items.items() if i in tut}
+            print(f"[kör-payda] {mode}: --sadece-teyit → {n0} kalemden {len(items)}'i "
+                  f"damgalanacak ({n0 - len(items)} kalem teyitten düştü, damgası kullanılmayacak)")
+
         if cfg["sabit"] is not None:
             for i in items:
                 cache[f"{mode}:{i}"] = {"gecerli": cfg["sabit"], "kaynak": "TANIM",
@@ -210,6 +227,7 @@ def main():
         "judge_providers": seen_providers(), "temperature": 0, "clip": CLIP,
         "baglam_ayniligi_dogrulandi": True,
         "devralinan_onbellekler": a.onceki_onbellek or None,
+        "sadece_teyitten_gecenler": a.sadece_teyit or None,
         "mod_ozet": meta, "toplam_maliyet_usd": round(spent, 4),
         "not": "Skorlama hakemi gpt-4o-mini OLARAK KALIR; bu bir kürasyon etiketi. "
                "verdict yeniden hesaplanmaz — cevaba bağlılığı meşrudur.",

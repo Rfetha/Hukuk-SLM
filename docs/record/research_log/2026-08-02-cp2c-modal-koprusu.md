@@ -711,3 +711,135 @@ değmemiş. Aynı seed → aynı karışım sırası → 1. turla çakışma yok
 **Genel ders (üç kez tekrarlandı, artık kalıp):** bu hatta bir bayrak *script'e* eklendiğinde iş
 bitmiyor; **çağrı zinciri uçtan uca izlenmeden** ekleme tamamlanmış sayılmaz. Üçü de aynı
 sessiz-yanlışlık sınıfı: hata vermez, yanlış sayı üretir.
+
+---
+
+## 13. ✅ EK TUR KAPANDI — 21:44 → **00:53** (3,15 sa), iki tipte de kapı geçildi
+
+```
+                1. TUR              EK TUR             fark
+m2   denenen    3.813               3.813              —
+     kabul      1.205 (%31,6)       1.192 (%31,3)      −0,3 puan
+     kararlı    1,43 s/üretim       1,37 s/üretim      %4 hızlı
+     kapatma    3.810/3.813         3.811/3.813        —
+m2b  denenen    3.813               3.813              —
+     kabul        708 (%18,6)         731 (%19,2)      +0,6 puan
+     kararlı    1,59 s/üretim       1,54 s/üretim      %3 hızlı
+     kapatma    3.813/3.813         3.813/3.813        —
+kapı            geçildi             geçildi
+```
+
+Taşıyıcı **birebir** korundu: `gguf sha256 214826aa…` · Q4_K_M · `-np 64` ·
+`A100-SXM4-40GB` · seed 3407 · künyede `uretim_butcesi.skip_first: 3813`.
+
+### ⭐ `--skip-first` DOĞRULANDI — sıfır çakışma
+
+Üç dizin birleştirildiğinde (`cp2c-ek1` + `cp2c-64` + `cp2c`):
+
+```
+m2   1192 yeni + 1205 yeni + 21 yeni  = 2.418 tekil  · 47 yinelenen atıldı
+m2b   731 yeni +  708 yeni + 10 yeni  = 1.449 tekil  · 35 yinelenen atıldı
+                                        ─────────────
+                                        3.867 tekil  · yarım satır 0
+```
+
+**Ek turun 1.923 kaydının tamamı yeni** — atılan 82 yinelenen tümüyle 1. turun kendi iki
+dizini arasındaki bilinen çakışma (§10). Yani tuzak **6.11**'in onarımı çalıştı: aynı seed ile
+kurulan deterministik havuz sırasında 3.813 kalem atlanınca ek tur gerçekten **kaldığı yerden**
+devam etti. Bu, bayrağın *"kabul edildi"* değil *"ölçüldü"* seviyesinde doğrulanmasıdır.
+
+### Kabul zinciri ek turda **yalnız yeni kalemlere** koşuldu
+
+1. turun 1.944 kalemi aynı hakemle, aynı istemle, `temperature 0`'da zaten yargılanmıştı;
+yeniden ödemek ~**$2,26** boşa gider. Zincir `data/_ham_ve_ara/cp2c_ek1` (1.923 kalem) üzerine
+koşuldu, çıktı `outputs/eval/cp2c-kabul-ek1/`. İki koşunun kabul dosyaları
+`build_orpo_v3.py --rejected` çoklu-dosya arayüzünde birleşiyor; **id kümeleri ayrık** olduğu
+için birleşim tek koşuya denk (yukarıdaki sıfır-çakışma ölçümü bunun kanıtı).
+
+⚠️ Bu, kör damga önbelleğinin (`--onceki-onbellek`) tasarrufuna **ek**tir, onun yerine geçmez:
+orada aynı kalemin damgası devralınıyor, burada aynı kalem zinciri hiç görmüyor.
+
+---
+
+## 14. OpenAI kredisi tükendi → **kapı OpenRouter'a alındı** (2026-08-03 09:37→09:43)
+
+```
+openai.RateLimitError: 429 — 'You have no credits remaining'
+                              code: 'credit_balance_exhausted'
+scripts/score_abstention.py:101 · m2 mini verdict'in İLK çağrısı
+```
+
+Ek turun kabul zinciri **başlayamadı**. Yanan para **$0**: hakemsiz dönüştürme adımı
+(`m2_cp2c_detail.jsonl`) tamamlanmıştı, ilk hakem çağrısında düşüldü. Süreç durduruldu,
+kilit dosyası yok, yarım çıktı yok.
+
+**Kaybolan hiçbir şey yok:** ek turun 1.923 adayı diskte (`data/_ham_ve_ara/cp2c_ek1`),
+Modal parası zaten harcanmıştı ve adaylar bozulmaz. 1. turun 362 temiz negatifi
+`outputs/eval/cp2c-kabul/` altında duruyor.
+
+**Gereken:** ~$5 hakem bütçesi (mini 1.923 ≈ $0,30 · teyit ~720 ≈ $1,90 · kör damga
+1.923 ≈ $2,80). Modal cüzdanı ayrı ve dolu ($18,15) — bu bir GPU sorunu değil.
+
+### Beklerken bedelsiz doğrulandı — CP3'ün çift kurma adımı hazır
+
+`build_orpo_v3.py` 1. turun 362'siyle prova koşuldu (çıktı geçici dizine):
+
+```
+abstain_pairs 360 · grounding_replay 72 · total 432 · train 420 / validation 12
+skipped: dev_excluded 2 · no_chosen 0 · abstained_no_contrast 0
+karışım: m2 272 · m2b 88      hasat kaynağı: cp2c-64 357 · cp2c 3
+```
+
+`no_chosen: 0` — her m2 kaleminin eşi havuzda bulundu, ADR-0051'in m2b şablonu 88 kalemin
+tamamında çalıştı. Çoklu `--rejected` arayüzü doğrulandı; ek turun dosyaları geldiğinde
+dört dosya birlikte verilecek.
+
+⚠️ Bu prova **B seçeneğinin bedelini de kesinleştiriyor**: 362 temiz → 432 kalem → `grad-accum
+64` ile **~30 ORPO adımı**, yani ADR-0047'nin reddettiği 29-adım bölgesinin tam içi. Kredi
+beklemek, azıyla eğitmekten ucuz.
+
+### ✅ Çözüm — kapı değiştirildi, **sağlayıcı pinlendi**
+
+İnsan OpenRouter bakiyesini gösterdi ($4,43). `llm_client.py` OpenRouter'ı zaten destekliyordu
+ve anahtar `.env`'deydi; kod değişikliği gerekmedi. Ama ilk sınamada **sessiz bir sapma** çıktı:
+
+```
+LLM_GATEWAY=openrouter            gpt-4o-mini → sağlayıcı OpenAI
+                                  gpt-4o      → sağlayıcı **Azure**     ← 1. tur OpenAI'ydi
+LLM_GATEWAY=openrouter
+LLM_PROVIDER_ORDER=OpenAI         gpt-4o-mini → OpenAI
+                                  gpt-4o      → OpenAI · seen_providers ['OpenAI']
+```
+
+OpenRouter'ın yönlendirmesi pinlenmezse aynı model adı farklı servis yığınından gelir. Pin
+mekanizması `llm_client.request_kwargs` içinde zaten vardı (`provider.order` +
+`allow_fallbacks: false`), yalnız kullanılmamıştı. Ek tur **pinli** koşuyor.
+
+⚠️ **Kayda geçen sapma:** 1. tur doğrudan OpenAI kapısından, ek tur OpenRouter üzerinden
+koşuldu. Model ve servis eden kurum aynı; değişen **faturalama yolu**. Bu bir küratörlük
+etiketi olduğu için (raporlanan metrik değil) risk sınırlı, ama huni oranları iki tur arasında
+karşılaştırılırken bu fark anılmalıdır. `seen_providers` her koşuda künyeye yazılıyor.
+
+### 💰 Kör damga daralttıldı — ölçülen bir israf kesildi
+
+Bütçe $4,43, zincir tahmini $5,00'dı. Açık, gerçek bir israf kesilerek kapatıldı:
+
+**Kabul ölçütü `teyit ∧ kör`** — teyitten düşen kalemin kör damgası **hiçbir yerde
+kullanılmıyor**. Oysa `valid_trap_cache.py` havuzun tamamını damgalıyordu. 1. turda ölçülen
+bedel: **1.944 damga, gereken 385** → $2,85'in ~**$2,25'i boşa**.
+
+`--sadece-teyit <koşu-dizini>` eklendi (zincirde varsayılan **açık**, `KOR_TAM=1` ile eski
+davranış). Ek turun tahmini:
+
+```
+mini   1.923 kalem   $0,30
+teyit  ~720 kalem    $1,90
+kör    ~360 kalem    $0,55      ← 1.923 değil
+                     ─────
+                     ~$2,75
+```
+
+**Bedeli ve nereye yazıldığı:** ek turun *havuz geneli* geçerlilik oranı ölçülmez, yalnız
+kabul adaylarınınki. O oran 1. turda **n=1.944** ile zaten ölçüldü (m2 %82,5 · m2b %79,5) ve
+§11'de duruyor. Künyeye `sadece_teyitten_gecenler` alanı yazılıyor ki oranın **neden yok**
+olduğu sonradan cevapsız kalmasın.

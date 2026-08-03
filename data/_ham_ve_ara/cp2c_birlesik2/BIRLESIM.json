@@ -1,0 +1,30 @@
+{
+  "dizinler_oncelik_sirasi": [
+    "outputs/_indirilen/cp2c-ek1",
+    "outputs/_indirilen/cp2c-64",
+    "outputs/_indirilen/cp2c"
+  ],
+  "tipler": {
+    "m2": {
+      "tekil_kayit": 2418,
+      "karisim": {
+        "cp2c-ek1": 1192,
+        "cp2c-64": 1205,
+        "cp2c": 21
+      },
+      "yinelenen_atilan": 47,
+      "yarim_satir_atilan": 0
+    },
+    "m2b": {
+      "tekil_kayit": 1449,
+      "karisim": {
+        "cp2c-ek1": 731,
+        "cp2c-64": 708,
+        "cp2c": 10
+      },
+      "yinelenen_atilan": 35,
+      "yarim_satir_atilan": 0
+    }
+  },
+  "toplam_tekil": 3867
+}

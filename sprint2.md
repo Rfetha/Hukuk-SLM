@@ -46,81 +46,51 @@ CP'yi tekrar koşar, tetiklenmiş bir kapıyı görmez.
 
 ## ▶ SIRADAKİ İŞ
 
-### ⏸️ OTURUM KAPANDI — 2026-08-02 ~22:30, insan PC'yi kapattı
-
-**Kapatma güvenliydi ve bilinçliydi.** Hasat Modal'ın A100'ünde koşuyor, yerel makinede değil;
-`modal run --detach` verildiği için iş terminale bağlı değil (`modal app list` → `ephemeral
-(detached)`) ve çıktı `hukuk-data:/cp2c-ek1/` volume'una periyodik commit'leniyor. PC kapanınca
-**yalnız yerel izleyiciler** öldü — veri değil, iş değil. Devam eden hiçbir yerel süreç yok.
-
-⚠️ **Kabul zinciri PC kapalıyken koşamaz** (OpenAI hakem çağrıları yerelden gider). Sırası
-zaten hasattan sonra, dolayısıyla kayıp yok.
-
 ```
-DEVAM NOKTASI — bu belge /goal ile okunduğunda İLK İŞ bu blok
-```
+CP   : CP2-c kabul zinciri (EK TUR) — 🟡 KOŞUYOR (2026-08-03 09:36 başladı)
+       girdi  data/_ham_ve_ara/cp2c_ek1  (1.923 YENİ kalem: m2 1.192 · m2b 731)
+       çıktı  outputs/eval/cp2c-kabul-ek1/
+       ⚠️ 1. turun 1.944 kalemi ZİNCİRE SOKULMADI — aynı hakem/istem/temp 0 ile zaten
+          yargılandı, yeniden ödemek ~$2,26 boşa gider. İki koşunun kabul dosyaları
+          build_orpo_v3.py --rejected çoklu-dosya arayüzünde birleşir; id kümeleri
+          AYRIK (ölçüldü: ek turun 1.923 kaydının tamamı yeni) → birleşim tek koşuya denk.
+       beklenti ~360 temiz · ~$4,5 · ~1,5 sa
 
-**1️⃣ Hasat bitti mi?**
+✅ EK TUR HASAT KAPANDI (00:53) — /cp2c-ek1 · m2 1.192 (%31,3) · m2b 731 (%19,2)
+      kararlı 1,37 / 1,54 s/üretim · iki tipte de kapı GEÇİLDİ · taşıyıcı 1. turla birebir
+      ⭐ --skip-first DOĞRULANDI: üç dizin birleşiminde SIFIR çakışma (3.867 tekil,
+         atılan 82 yinelenen tümüyle 1. turun kendi iki dizini arasında) → tuzak 6.11 onarıldı
+✅ KABUL ZİNCİRİ 1. TUR (02-08 22:00) — 362 temiz (m2 272 · m2b 90) · $5,11
 
-```bash
-modal app list | grep ap-NpNr0GD8A1xO0Ywnrbz1nk     # canlı mı, bitti mi
-modal volume ls hukuk-data /cp2c-ek1                # KUNYE.json VARSA temiz bitti
-```
-
-| gördüğün | anlamı | ne yap |
-| :--- | :--- | :--- |
-| `KUNYE.json` var | ✅ temiz bitti | **2️⃣**'ye geç |
-| app canlı, künye yok | 🟡 hâlâ koşuyor | bitmesini bekle (kalan süreyi logdaki `denenen=`den kestir) |
-| app yok **ve** künye yok | 🔴 yarıda öldü | `cp2c_m2.jsonl`/`cp2c_m2b.jsonl` yine de **kullanılabilir** (120 sn'de bir commit'lendi). Kabul zinciri kısmi hasatla koşar; sayı 550'nin altında kalırsa 3. tur `--skip-first` = **3813 + o turun `denenen`i**. Künye yoksa `denenen` bilinmez → logdan son `denenen=` satırı okunur, **yoksa 3. tur koşulmaz, insana sorulur** |
-
-**2️⃣ İndir → birleştir → kabul zinciri**
-
-```bash
-modal volume get hukuk-data /cp2c-ek1 outputs/_indirilen/
-
-python scripts/cp2c_birlestir.py --out data/_ham_ve_ara/cp2c_birlesik2 \
-       outputs/_indirilen/cp2c-ek1 outputs/_indirilen/cp2c-64 outputs/_indirilen/cp2c
-       # üç dizin · id bazlı tekilleştirme · karışım künyesi BIRLESIM.json
-       # ⚠️ ortadaki bozuk satırda ÇÖKER (bilinen kesilme kalıbı değil) — bu kasıtlı
-
-ONBELLEK=outputs/eval/cp2c-kabul/valid_trap_cache.json \
-bash scripts/cp2c_kabul.sh data/_ham_ve_ara/cp2c_birlesik2 outputs/eval/cp2c-kabul2
-       # 1. turun 1.944 kalemi yeniden hakeme GİTMEZ → ~$2,85 kurtarır (ADR-0048)
-       # kaynak parmak izi tutmazsa ÇÖKER — devralma ve çökme yolu ikisi de sınandı
+SONRA: (1) HUNİYİ OKU  outputs/eval/cp2c-kabul-ek1/kabul_huni.json → toplam_kabul
+       (2) TOPLA       1. tur 362 + ek tur ?  =  ?
+            ≥ 550 → CP3'e geç, ARA KAPI'ya kadar durma
+            < 550 → 🛑 DUR, insana sor (ADR-0047 m.1) · 3. tur --skip-first = 7626
+       (3) CP3 ÇİFTLERİ — dört dosya birden (iki koşunun birleşimi):
+           python scripts/build_orpo_v3.py \
+             --rejected outputs/eval/cp2c-kabul/cp2c_kabul_m2.jsonl \
+                        outputs/eval/cp2c-kabul/cp2c_kabul_m2b.jsonl \
+                        outputs/eval/cp2c-kabul-ek1/cp2c_kabul_m2.jsonl \
+                        outputs/eval/cp2c-kabul-ek1/cp2c_kabul_m2b.jsonl \
+             --out-dir data/train/orpo_abstain_cp2c
+       (4) CP3 3a-3e (aşağıda) → 🔴 ARA KAPI'da DUR, insana sun
+YAZ  : 📌 canlı belge kuralı — durum tablosu + #48 aynı gün
 ```
 
-**3️⃣ Karar noktası — `outputs/eval/cp2c-kabul2/kabul_huni.json` → `toplam_kabul`**
+<details><summary>Buraya nasıl gelindi (2026-08-02 özeti)</summary>
 
 ```
-≥ 550  → CP3'e geç, ARA KAPI'ya kadar durma
-< 550  → 🛑 DUR, insana sor (ADR-0047 m.1) — 3. tur mu, azıyla mı devam
-```
-
-Beklenti **~718** (1. tur 362 + ek tur ~356) ≈ **~70 ORPO adımı**.
-
-**4️⃣ Sonra:** aşağıdaki CP3 komutu → 3a-3e → 🔴 **ARA KAPI'da DUR, insana sun.**
-
-**5️⃣ Her adımda:** 📌 canlı belge kuralı — durum tablosunu ve #48'i **aynı gün** güncelle.
-
----
-
-<details><summary>Bu noktaya nasıl gelindi (2026-08-02 özeti)</summary>
-
-```
-✅ 1. TUR HASAT (16:47→20:09) — /cp2c-64 + /cp2c → 1.944 tekil aday
-✅ KABUL ZİNCİRİ 1. TUR (→22:00) — outputs/eval/cp2c-kabul/kabul_huni.json
-      regex 1944 → mini 735 → teyit 385 → kör damga **362 TEMİZ NEGATİF** · hakem $5,11
-      m2 272 (1226'dan) · m2b 90 (718'den)
+✅ 1. TUR HASAT (16:47→20:09) — 1.944 tekil aday
+✅ KABUL ZİNCİRİ 1. TUR (→22:00) — regex 1944 → mini 735 → teyit 385 → kör damga 362 TEMİZ
       🔴 hedef 750'nin %48'i, insan çizgisi 550'nin de ALTINDA → DURULDU, insana soruldu
       → insan kararı **A: ek tur koş** (elenen B = 35 adım riski, C = grad-accum değişimi)
       ölçülen gerçek verim (planlama birimi): temiz/ÜRETİM m2 %7,13 · m2b %2,36
       ⚠️ ders: kapasite planı `regex kabul` sayısıyla yapılamaz — o hakem huninin GİRDİSİ
-🟡 EK TUR (21:44→) app ap-NpNr0GD8A1xO0Ywnrbz1nk · fc-01KZ1WN4FVKA6JFP9TXGBWKQ81
-      /data/cp2c-ek1/ · --skip-first 3813/tip · --limit 3750/tip · -np 64 · seed 3407
-      taşıyıcı 1. turla BİREBİR (gguf sha 214826aa… · A100-SXM4-40GB)
-      22:30 itibarıyla: m2 ~1.100/3.750 · kabul %33 · kararlı 1,42 s/üretim · hata 0
-      ⚠️ yol boyunca 4. eksik köprü: `--skip-first` Modal tarafına hiç geçmemişti (tuzak 6.12)
-      ayrıntı: #48 §11 (huni + ADR-0048 lehine kanıt) · §12 (ek tur kararı + köprü)
+🟡 EK TUR (21:44→00:53) app ap-NpNr0GD8A1xO0Ywnrbz1nk · /data/cp2c-ek1/
+      --skip-first 3813/tip · --limit 3750/tip · -np 64 · seed 3407 · sha 214826aa…
+      ⚠️ yol boyunca 4. eksik köprü: --skip-first Modal tarafına hiç geçmemişti (tuzak 6.12)
+      02-08 ~22:30 insan PC'yi kapattı; iş --detach olduğu için etkilenmedi
+detay: #48 §11 (huni + ADR-0048 lehine kanıt) · §12 (ek tur kararı + köprü) · §13 (ek tur sonucu)
 ```
 
 </details>
