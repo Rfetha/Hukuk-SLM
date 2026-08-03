@@ -1,5 +1,18 @@
 # HakHukuk — Veri Planı (Faz 1)
 
+> ## ⚠️ ÇERÇEVE GÜNCELLENDİ (2026-08-03)
+>
+> Bu belge **tez** döneminde yazıldı. Veri kaynakları, EDA kararları ve *"lisans-temiz"*
+> kuralı **aynen geçerli** — hatta OSS'e geçiş bu kural sayesinde sonradan temizlik
+> gerektirmedi. Değişenler:
+>
+> | | eski | yeni |
+> | :--- | :--- | :--- |
+> | proje | tez, private+proprietary | **OSS, Apache-2.0** ([`../ROADMAP.md`](../ROADMAP.md)) |
+> | `TEKNIK_PLAN.md` atıfları | aktif plan | **arşivde** → [`_arsiv/`](_arsiv/) |
+> | hedef kitle | uzman (ADR-0010) | **vatandaş** — ama ADR-0010 **hâlâ yürürlükte**: sade dille *eğitmek* doğruluğu düşürdü, sadeleştirme **istem katmanında** yapılır |
+> | "tez kapsamı dışı" ibareleri | tez sınırı | artık **kapsam kararı** — graph-RAG ve içtihat katmanı yeniden açılabilir (ADR-0019 kilidi kalktı) |
+
 > Faz 1 SFT verisinin **ne**, **nereden**, **nasıl** sorularının cevabı. `TEKNIK_PLAN.md` Adım 3-4'ün detaylandırılmış hali.
 >
 > **Altın kural (acı tecrübeyle sabit):** Hiçbir hazır veri setine bakmadan güvenme. Kullanmadan önce örnek çekip **EDA (göz denetimi)** yap. Asıl güvenilir zemin = **otoriter/resmi kaynak** (Mevzuat.gov.tr güncel kanunlar). Kapsam: **güncel Türkiye Cumhuriyeti mevzuatı** — Osmanlı/mülga/eski-dil metinler dışarıda.

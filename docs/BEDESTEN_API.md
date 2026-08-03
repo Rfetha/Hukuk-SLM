@@ -1,5 +1,16 @@
 # Bedesten API — Reverse-Engineered Referans
 
+> ## 🚨 SÖZLEŞME 2026-06-07'DEN BERİ DOĞRULANMADI
+>
+> **Güncellik iddiamızın tek dayanağı bu API.** *"Kapalı ağırlıklı rakiplerin yapamadığı şey"*
+> cümlesi buraya bağlı — ve sözleşme iki aydır sınanmadı.
+>
+> Sprint 3'ün **ön-probunda** `recall@k` ile birlikte sınanacak (`scripts/bedesten_probe.py`,
+> maliyet sıfır). ⚠️ **Türk IP gerekiyor** — gov firewall yurtdışı/VPN'i engelliyor.
+>
+> Değişmişse: retriever statik korpusla çalışmaya devam eder, ama **güncellik iddiası düşer**
+> ve [`ROADMAP.md`](../ROADMAP.md) ile [`MODEL_CARD.md`](../MODEL_CARD.md) düzeltilir.
+
 > `saidsurucu/mevzuat-mcp` (MIT) reposundan çıkarıldı + canlı test edildi (2026-05-29, çalışıyor).
 > **Amaç:** MCP'yi kurmadan, mevzuat (ve ileride içtihat) verisini doğrudan bu temiz JSON API'den çekmek.
 > Çalışan minimal istemci: `scripts/bedesten_probe.py`.

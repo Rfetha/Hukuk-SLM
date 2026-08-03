@@ -48,7 +48,7 @@ Bu, **ne inşa edeceğimizin ve neyi ölçeceğimizin** belgesidir. Üç şeyi b
 | [`docs/record/research_log/`](docs/record/research_log/) | yeni hattın canlı günlüğü (#39'dan devam) |
 | [`docs/open_questions.md`](docs/open_questions.md) | *neyi henüz bilmiyoruz* — canlı açık soru sicili (§13'ün 8'den devamı) |
 | [`docs/model-soyagaci.mmd`](docs/model-soyagaci.mmd) | *ne neden doğar* — artefakt soyağacı: ham base → kollar → kafes → final |
-| [`docs/ft-is-akisi.mmd`](docs/ft-is-akisi.mmd) | *ne zaman ne koşulur* — uçtan uca sıra ⚠️ **TASLAK**, RS-FT kolu kararlaşmadı (bkz. sicil #11) |
+| [`docs/_arsiv/ft-is-akisi.mmd`](docs/_arsiv/ft-is-akisi.mmd) | *ne zaman ne koşulur* — uçtan uca sıra ⚠️ **TASLAK**, RS-FT kolu kararlaşmadı (bkz. sicil #11) |
 | [`docs/record/kollar.md`](docs/record/kollar.md) | *hangi artefakt hangi koşunun* — kol kaydı: `τ_X` versiyonları, rejim künyesi, `‖τ‖`, adlandırma şeması |
 | ~~`~/code/hukuk-devir/`~~ | ⚠️ **2026-07-29'da silindi** (kasıtlı) — 12B adaptörleri kalıcı kayıp. **Repo dışı artefakt YOK.** Emekli hattın metinleri: `git show a19fc25^:old-version-gemma4-12b/<yol>` |
 

@@ -1,80 +1,58 @@
-%% Hukuk-SLM — MODEL SOYAĞACI: ham base → FT hedefleri → final model
-%% Tarih: 2026-07-28 · Statü: TASLAK — ADR'ye bağlanmadı
-%% Kardeş belge: ft-is-akisi.mmd (SIRA — ne zaman ne koşulur). Bu belge: ARTEFAKT — ne neden doğar.
+%% HakHukuk — MODEL SOYAĞACI: ham base → kollar → yayımlanan model
+%% Güncellendi: 2026-08-03 · Statü: ÖLÇÜLMÜŞ (artık taslak değil)
+%% Künyeler: record/kollar.md · sıra: ../ROADMAP.md · ölçüm: record/research_log/
 %%
-%% ⚠️ BU BİR ZAMAN ÇİZELGESİ DEĞİL. Üç yerde doğrusallık YOK:
-%%    (1) hedefler birbirinden bağımsız — hiçbiri diğerinin üstüne eğitilmez
-%%    (2) kafes hücreleri zincir değil, iç içe ALT KÜMELER — üçlü, ikilinin üstüne kurulmaz
-%%    (3) tabanlar ölü uç — yalnız kıyas için var, asla final olamaz
+%% ⚠️ BU BİR ZAMAN ÇİZELGESİ DEĞİL. Doğrusallık YOK:
+%%    (1) kollar birbirinden BAĞIMSIZ — hiçbiri diğerinin üstüne eğitilmez
+%%        (τ = θ_ft − θ_base tanımı bunu ŞART koşar; üstüne eğitmek ardışık SFT olur)
+%%    (2) merge varyantları ALTERNATİF, zincir değil
+%%    (3) tabanlar ölü uç — yalnız kıyas için, asla final olamaz
 %%
-%% Ok dili: ==> ağırlık üretir (eğitim) · --> artefakt akışı · -.-> etkiler ama ağırlığa girmez
+%% Ok dili: ==> ağırlık üretir (eğitim) · --> artefakt akışı · -.-> etkiler, ağırlığa girmez
 
 flowchart TD
-    BASE(["<b>HAM BASE</b> — Qwen3.5-4B, sha pinli<br/>θ_base · her task-vector'ün TEK referansı"])
+    BASE(["<b>HAM BASE</b> — Qwen/Qwen3.5-4B<br/>sha 851bf6e8 · Apache-2.0<br/>θ_base — her task-vector'ün TEK referansı"])
 
-    subgraph HED["① FT HEDEFLERİ — her biri HAM base'den, bağımsız · τ = θ_ft − θ_base"]
-        H1["<b>Hedef 1 · τ_grounding</b> 🟢<br/>SFT · RAFT 17.323 satır<br/><i>verilen kaynaktan doğru atıf</i>"]
-        H2["<b>Hedef 2 · τ_abstention</b> 🟢<br/>ORPO · 1.741 çift<br/><i>kaynak yoksa REDDET</i>"]
-        H3["Hedef 3 · τ_reasoning ⬛<br/>❌ KAPSAM DIŞI — ADR-0035<br/>biçim zaten τ_grounding'de (%76)<br/>zincirleme = harness'ın işi (§5)<br/><i>future work</i>"]
-        H4["Hedef 4 · τ_register ⬛<br/>❌ DÜŞTÜ — Kapı 0 (#39)<br/>base zaten 0.96-0.98"]
-    end
+    %% ── KOLLAR — ikisi de HAM BASE'den, bağımsız ──────────────────────
+    BASE ==>|"SFT · RAFT 17.323 satır<br/>1.083 adım · lr 1e-4"| TG["<b>τ_grounding v1</b> 🟢<br/>‖τ‖ = 10,4722<br/>M1 kütle 71,4% · M2b <b>0,607</b> 🔴"]
+    BASE ==>|"ORPO · 726 çift<br/>70 adım · lr 1e-5"| TA["<b>τ_abstention v1</b> 🟢<br/>‖τ‖ = 1,1806<br/>M2 <b>0,984</b> · M1 kütle 41,2% 🔴"]
 
-    BASE ==> H1
-    BASE ==> H2
-    BASE ==> H3
-    BASE -.-> H4
-    H1 -.->|"yalnız İZ ÜRETİR (gen-k)<br/>eğitim YİNE ham base'den"| H3
+    %% ── ÇATIŞMA — iç iddianın öncülü, ÖLÇÜLDÜ ─────────────────────────
+    TG -.->|"grounding eğitimi<br/>çekinmeyi çökertti"| CAT{{"<b>ÇATIŞMA GERÇEK</b><br/>hiçbir kol tek başına kullanılabilir değil<br/>norm oranı <b>8,87×</b> · çatışan parametre <b>%2,245</b>"}}
+    TA -.->|"çekinme eğitimi<br/>grounding'i çökertti"| CAT
 
-    subgraph KAFES["② KAFES — merge · eğitim maliyeti SIFIR · harness KAPALI ölçülür"]
-        S1["τg tek"]
-        S2["τa tek"]
-        S3["τr tek"]
-        P1["<b>τg + τa</b><br/>ÇATIŞAN ÇİFT<br/>iç iddianın kalbi"]
-        P2["τg + τr"]
-        P3["τa + τr"]
-        TR["<b>τg + τa + τr</b><br/>amiral gemisi"]
-    end
+    %% ── MERGE VARYANTLARI — alternatif, DEV'de seçildi ────────────────
+    TG & TA --> M1["norm-dengeli<br/>geri ölçek <b>ortalama</b> 5,826"]
+    TG & TA --> M2["norm-dengeli<br/>geri ölçek <b>min</b> 1,181"]
+    TG & TA --> M3["<b>HAM TIES</b><br/>norm dengeleme KAPALI"]
 
-    H1 --> S1
-    H2 --> S2
-    H3 --> S3
-    H1 & H2 --> P1
-    H1 & H3 --> P2
-    H2 & H3 --> P3
-    H1 & H2 & H3 --> TR
+    M1 --> R1["🛑 <b>DEJENERE</b><br/>tekrarlama döngüsü · kesik %5,2<br/>KOŞU GEÇERSİZ — τ_a 4,9× şişmiş"]
+    M2 --> R2["⚪ ablasyon<br/>M2b 0,987 ✅ · M1 kütle 53,4% 🔴<br/>çekinmeyi aldı, cevaplamayı alamadı"]
+    M3 --> FIN(["<b>🟦 HakHukuk-4B-v0.1</b> · tgta_v1<br/>M1 kütle <b>71,6%</b> · M2 0,893 · M2b <b>0,877</b><br/>GGUF Q4_K_M · 2,59 GiB · ADR-0052"])
 
-    subgraph TAB["③ TABANLAR — yalnız KIYAS · ÖLÜ UÇ, final olamaz"]
-        TA["Taban A · tek-aşamalı KARIŞIK SFT<br/>1 koşu"]
-        TB["Taban B · ARDIŞIK SFT<br/>2 koşu · referans belgenin kurgusu"]
-    end
+    %% ── DÜŞENLER ─────────────────────────────────────────────────────
+    BASE -.-> DUS["τ_register ⬛ DÜŞTÜ — Kapı 0/#39 (base zaten 0,96-0,98)<br/>τ_reasoning ⬛ KAPSAM DIŞI — ADR-0035"]
 
-    BASE ==> TA
-    BASE ==> TB
+    %% ── TABANLAR — ölü uç, ertelendi ─────────────────────────────────
+    BASE -.->|"⏸️ ERTELENDİ — yalnız arxiv'e karar verilirse"| TAB["Taban A · karışık<br/>Taban B · ardışık<br/><i>ölü uç, kıyas için</i>"]
 
-    DEC{"④ SEÇİM — CANON <b>DEV</b><br/>λ · density · drop-rate taraması<br/><b>iç iddia: kafes > tabanlar ?</b>"}
-
-    S1 & S2 & S3 & P1 & P2 & P3 & TR --> DEC
-    TA & TB --> DEC
-    DEC -- "hayır · yeniden ayarla" --> KAFES
-
-    DEC -- evet --> WIN(["⑤ <b>KAZANAN AĞIRLIK</b> = aday final model<br/>bf16 · henüz kuantize DEĞİL"])
-    WIN --> QNT["⑥ kuantizasyon <b>EN SON</b><br/>Q4_K_M → GGUF"]
-
-    HARN["<b>HARNESS</b> — retriever + atıf doğrulayıcı + red kapısı<br/>CPU'da · Sprint 4 · ağırlıktan BAĞIMSIZ, paralel yürür"]
-
-    QNT --> SYS(["⑦ <b>FİNAL SİSTEM</b> = GGUF + harness<br/>harness ağırlığa GİRMEZ — dışarıda sarar"])
-    HARN -.-> SYS
-
-    SYS --> TEST["⑧ CANON <b>TEST</b> — donmuş 40+35<br/><b>BİR KEZ</b> görülür"]
-    TEST --> FIN(["<b>NİHAİ RAPOR + MODEL KARTI</b>"])
+    %% ── SIRADAKİ — henüz YOK ─────────────────────────────────────────
+    FIN --> HARN["<b>HARNESS</b> — retriever + atıf doğrulayıcı + red kapısı<br/>CPU'da · ağırlığa GİRMEZ, dışarıdan sarar<br/>⏳ Sprint 3 · henüz YOK"]
+    HARN --> TEST["donmuş TEST — 40+35<br/><b>BİR KEZ</b>, v1.0 kabul testi"]
+    TEST --> V1(["<b>v1.0</b> → HF · 🟦 DROP A"])
 
     classDef origin fill:#1d3a4a,stroke:#4f9fc9,color:#fff
+    classDef kol fill:#1d3a5c,stroke:#5b8fd6,color:#fff
     classDef dead fill:#2e2e2e,stroke:#777,color:#999
-    classDef gate fill:#4a1d1d,stroke:#c94f4f,color:#fff
-    classDef frozen fill:#4a3a1d,stroke:#c9a04f,color:#fff
+    classDef bad fill:#4a1d1d,stroke:#c94f4f,color:#fff
+    classDef gate fill:#4a3a1d,stroke:#c9a04f,color:#fff
     classDef star fill:#1d4a2e,stroke:#4fc97a,color:#fff
+    classDef todo fill:#3a2e4a,stroke:#9a7fc9,color:#fff
+
     class BASE origin
-    class H3,H4,TA,TB dead
-    class DEC gate
-    class TEST frozen
-    class P1,WIN,SYS star
+    class TG,TA kol
+    class DUS,TAB,R2,M1,M2,M3 dead
+    class R1 bad
+    class CAT,TEST gate
+    class FIN,V1 star
+    class HARN todo

@@ -11,6 +11,7 @@ gerekçeler hâlâ değerli. Ama artık **yürürlükte değiller**.
 | [`V2_PLAN.md`](V2_PLAN.md) | 12B hattının v2 reçetesi | hat emekli (ADR-0027) |
 | [`TEKNIK_PLAN.md`](TEKNIK_PLAN.md) | eski icra planı | yerini `sprint*.md` + `ROADMAP.md` aldı |
 | [`superpowers/`](superpowers/) | 12B dönemi planları + tez çerçevesi speci | çerçeve 2026-08-03'te aşıldı |
+| [`ft-is-akisi.mmd`](ft-is-akisi.mmd) | uçtan uca iş akışı şeması | kendini SÜPERSEDED ilan etmişti (ADR-0035); tez kafesine göre çizilmiş. Güncel artefakt şeması: [`../model-soyagaci.mmd`](../model-soyagaci.mmd) |
 
 **Güncel yön:** [`ROADMAP.md`](../../ROADMAP.md) · aktif icra:
 [`sprint3.md`](../../sprint3.md) · artefakt kimlikleri:
