@@ -106,7 +106,8 @@ CP5  ardışık SFT tabanı      ⏳  τ_g üstüne çekinme SFT'si (task-vector
 outputs/ta_v1/                         τ_a adapteri (448 tensör · 29.908.992 param)
 models/gguf/ta_v1-q4_k_m.gguf          τ_a tekil        · eval: outputs/eval/cp3c-ta-v1/
 models/gguf/tg_ta_min-q4_k_m.gguf      merge min        · eval: outputs/eval/cp3-supurme-min/
-models/gguf/tg_ta_ham-q4_k_m.gguf      merge ham ⭐ANA   · eval: outputs/eval/cp3-supurme-ham/
+models/gguf/tgta_v1-q4_k_m.gguf        ⭐ANA SONUÇ (ham TIES) · eval: outputs/eval/cp3-supurme-ham/
+                                       künye: kollar.md · KUNYE_tgta_v1.json
 models/gguf/tg_ta_nb-q4_k_m.gguf       merge ortalama (dejenere, kayıt için)
 outputs/eval/cp3d-merge/KUNYE_ties{,_min,_ham}.json     üç varyantın künyesi
 data/train/orpo_abstain_cp2c/          726 çift + 145 replay

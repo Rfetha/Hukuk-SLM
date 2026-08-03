@@ -43,7 +43,8 @@ açılmaz — aynı artefakttır.
 | kol | ver | tarih | durum | rejim | `‖τ‖_F` | eval etiketi | kayıt |
 | :--- | :-- | :--- | :--- | :--- | ---: | :--- | :--- |
 | `τ_grounding` | **v1** | 2026-07-28 | 🟢 aktif | 1.083 adım · lr 1e-4 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · seed 3407 · veri `train/raft/` | **10.4589** | `*_tg` *(Sprint 1; v1 demektir)* | [#41](research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
-| `τ_abstention` | — | — | ⏳ CP3'te eğitilecek | **~73 adım (5 epoch)** · lr 1e-5 · etkin batch 64 · `--fresh-adapter` — ⚠️ [ADR-0047](../adr/0047-cp2-hedef-750-modal-hasat.md) ile değişti (eski: 82 adım / 3 epoch / 1.495 negatif; yeni: **750 negatif ~937 çift**). Epoch 3→5 aşırı-uyum riski: `‖τ_a‖_F` koşulsuz raporlanır, belirti görülürse epoch 3'e dönülür (adım 44) | — | — | `sprint2.md` CP3 |
+| `τ_abstention` | **v1** | 2026-08-03 | 🟢 aktif | **70 adım (5 epoch)** · lr 1e-5 · beta 0.1 · etkin batch 64 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · `--fresh-adapter` · seed 3407 · veri `data/train/orpo_abstain_cp2c/` (726 çift + 145 replay) | **1.1806** | `*_ta_v1_th` | [#48 §16](research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **`τ_g+τ_a` merge** | **v1** | 2026-08-03 | 🟢 **ANA SONUÇ** | `tg_v1` + `ta_v1` · **ham TIES** (norm dengeleme **KAPALI**, [ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)) · trim_k 0,2 · λ 1,0 · eşzamanlı 2-yollu · 224/224 tensör | — *(merge, kol değil)* | `*_tg_ta_ham_th` ⚠️ | [#48 §24](research_log/2026-08-02-cp2c-modal-koprusu.md) |
 
 ### `τ_grounding` v1 — açık kalemler *(2026-07-29 gecesi, bütçeli kipte YENİDEN YAZILDI)*
 
@@ -84,3 +85,58 @@ CP0'ın örneklemi o aileden geldiği için genel görünmüştü. Ayrıntı: `r
 
 **Maliyet ekseni:** `τ_g` toplamda **772 tok/cevap** (base 1135, Gemini 543) — kendi istem
 ailesinde **476**, yani orada rakipten ucuz.
+
+---
+
+## `τ_g+τ_a` merge v1 — künye
+
+**Artefakt kimliği** (`tgta_v1`):
+
+```
+models/merged/tgta_v1/                   merge edilmiş bf16 (8,8 GB)
+models/gguf/tgta_v1-q4_k_m.gguf          taşıyıcı, 2,59 GiB (base ile aynı boyut)
+outputs/eval/cp3d-merge/KUNYE_tgta_v1.json   merge künyesi (normlar, TIES istatistikleri)
+```
+
+⚠️ **Eval çıktıları `*_tg_ta_ham_th` etiketiyle duruyor** (`outputs/eval/cp3-supurme-ham/`).
+Yeniden adlandırılmadı: dosyaların içinde `"label"` alanları var ve ölçüm o etiketle koşuldu.
+Sonradan düzeltmek, koşulan şeyi daha derli toplu göstermek için **ölçüm kaydını yeniden
+yazmak** olurdu. Eşleme burada kayıtlı ve bağlayıcı olan budur:
+
+```
+tgta_v1  ==  outputs/eval/cp3-supurme-ham/*_tg_ta_ham_th_*
+```
+
+**Neden `v1` = ham TIES:** üç varyant DEV'de denendi, kazanan bu ([ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)).
+Diğer ikisi **ablasyon**, versiyon numarası almazlar:
+
+| varyant | geri ölçek | artefakt | M1 kütle | M2 Rej | M2b Rej | durum |
+| :--- | ---: | :--- | ---: | ---: | ---: | :--- |
+| **ham TIES** | — | `tgta_v1` | **71,6%** | 0,893 | **0,877** | 🟢 **ANA SONUÇ** |
+| norm-dengeli `min` | 1,181 | `tg_ta_min` | 53,4% | 0,934 | 0,987 | ablasyon |
+| norm-dengeli `ortalama` | 5,826 | `tg_ta_nb` | — | — | — | 🛑 dejenere, koşu geçersiz |
+
+**Ölçülen — hepsi aynı protokol, hepsi geçerli koşu** (thinking on · 1024+512 · seed 3407 ·
+chunk 900 · Q4_K_M + llama-server · DEV havuzu · hakem gpt-4o-mini, kapı openrouter/`OpenAI` pinli):
+
+```
+                 M1 kütle  aşırı-red      A1   M2 Rej  M2b Rej   tok/cevap (M1)
+çıplak base        56,7%      0,425   0,9864   0,814    0,986        1192
+tgta_v1 (BİZ)      71,6%      0,212   0,9087   0,893    0,877         714
+Gemini 3.1 FL      72,9%      0,237   0,9561   0,930    1,000           —
+τ_g v1             71,4%      0,175   0,8658   0,873    0,607           —
+τ_a v1             41,2%      0,575   0,9697   0,984    0,987          ~1084
+```
+
+**Ne başardı:** `τ_g`'nin grounding'ini **tamamen** korurken (71,4% → 71,6%) onun M2b
+çöküşünün **%71'ini onardı** (0,607 → 0,877). Ayrıca öz-sonlandırma geri geldi (M1'de 25/80
+zorunlu kapatma, base 80/80) ve cevap başına maliyet base'e göre **%40 düştü**.
+
+> 🛑 **Bu bir PARİTE İDDİASI DEĞİLDİR.** Gemini sütunu **çıpa**dır: harness KAPALI (retriever ·
+> atıf doğrulayıcı · red kapısı yok — ADR-0019 bunları teze dahil ediyor), maliyet normalize
+> edilmedi, ölçüm **DEV** havuzunda ve **merge yapılandırması DEV'de 3 varyant arasından
+> seçildi**. Frozen TEST (`data/eval/canon/`) görülmedi. Aynı disiplin:
+> [`sprint1-sonuc-tablosu.md`](sprint1/sprint1-sonuc-tablosu.md).
+>
+> ⚠️ Açıkça geride olduğumuz eksen **M2b: 0,877 ↔ 1,000**. Raporda böyle geçer.
+
