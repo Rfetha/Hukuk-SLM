@@ -1213,7 +1213,7 @@ eşiği oynatmak DEĞİL — ölçümü tamamlamak.
 
 ---
 
-## 21. 🔴 CP3 · 3e — MERGE: **her iki kapı geçti, model kullanılamaz**
+## 21. 🛑 CP3 · 3e — MERGE KOŞUSU **GEÇERSİZ** (kesik %5,2 > %5) + teşhis
 
 Koşu: `outputs/eval/cp3e-merge/` · taşıyıcı `tg_ta_nb-q4_k_m.gguf` + llama-server
 · rejim değişmezleri birebir · hakem `gpt-4o-mini`, kapı openrouter, sağlayıcı `OpenAI` pinli.
@@ -1289,3 +1289,55 @@ başına ters yöne saptığı ölçüldü, yani ham TIES **kontrol değil, kar�
 *Ders: cevaplanan-only metrikler çekinerek kazanmayı ödüllendirir. Bir kapı bu ailedense,
 yanında mutlaka bir kütle/coverage ekseni taşımalıdır — yoksa kapı, ölçmek için kurulduğu şeyin
 tam tersini onaylar.*
+
+### 🛑 DÜZELTME — bu bölümün sayıları GEÇERSİZ bir koşudan geliyor
+
+Üretim bittiğinde ADR-0040'ın geçerlilik ön şartı **tetiklendi**:
+
+```
+mod      n  kesik      %      TOPLAM n=230 kesik=12 (%5,2) > %5
+m2b     80      5   6,2%
+m1      80      6   7,5%      🚨 KOŞU GEÇERSİZ — Sonuç OKUNMAZ
+m2      70      1   1,4%
+```
+
+Çıpaların kesik oranları: base %3,6 · Gemini %3,6 · `τ_g` %0,0 · `τ_a` %0,4 · **merge %5,2** —
+eşiği aşan ilk özne. **Yukarıda raporlanan M2b 1,000 · M1 A1 1,0 · kütle %2,5 rakamları
+void'dir** ve kapı geçilene kadar hiçbir yerde alıntılanmaz.
+
+Bölüm silinmedi: teşhis kısmı (geri-ölçek yükseltmesi) geçerliliğini koruyor, çünkü ölçüm
+değil **künye aritmetiğine** dayanıyor.
+
+### ⭐⭐ KESİKLER "UZUN CEVAP" DEĞİL — MODEL DEJENERE OLUYOR
+
+12 kesiğin **tamamı** `forced_close=True`, `completion_tokens=1536` (tam bütçe):
+
+```
+m1  : "İlgili madde madde 53 madde 53 madde 53 madde 53 madde 53 madde 53 ..."
+m2b : "İlgili hükmün temini için ilgili hükmün temini için ilgili hükmün temini için ..."
+```
+
+Tekrarlama döngüsü. Bu, kapının reçetesini **geçersiz kılar**:
+
+1. **`MAXTOK` büyütmek çözmez** — daha uzun döngü üretir. Kesiklik bütçe darlığının değil
+   **model hasarının** belirtisi.
+2. `MAXTOK` büyütmek **ADR-0043 rejim değişmezini kırar** (1024+512, seed ve clip ile aynı
+   statüde). Merge'i farklı bütçede ölçmek onu çıpalarla **kıyaslanamaz** kılar. Tüm çıpaları
+   yeni bütçede yeniden koşmak gerekirdi — 5 koşu, ~5 saat.
+3. Bu, **#42'deki çıplak base'in sonlanmama kalıbının merge'de yeniden belirmesi** — ve
+   aşırı-yükseltme teşhisiyle **tutarlı**: `τ_a`'nın yönü eğitildiği genliğin ~4,9 katına
+   çıkarılınca model dağılımın dışına itilmiş.
+
+**Kapı işini yaptı:** bozuk bir modelin sayılarına güvenilmeden önce yakaladı. Doğru yanıt
+bütçeyi büyütmek değil, **merge'i düzeltmek** (DEV süpürmesi, §21'deki tablo).
+
+### 🔴 ARA KAPI kapatılamıyor
+
+```
+1. GÖZLEM  τ_a tekil M2 Rej = 0,984 ≥ 0,923   ✅  GEÇERLİ koşu (kesik %0,4)
+           muhafız M1 A1    = 0,9697 ≥ 0,880  ✅  ama kütle %41,2 (base %56,7) ⚠️
+2. GÖZLEM  merge M2b        = ÖLÇÜLEMEDİ      🛑  koşu geçersiz (kesik %5,2)
+```
+
+Karar tablosu iki gözlem ister; ikincisi **yok**. Ön-kayıtlı kural gereği **DUR, insana sor**.
+CP4-CP5'e para harcanmaz.
