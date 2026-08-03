@@ -1,0 +1,24 @@
+{
+  "dizinler_oncelik_sirasi": [
+    "outputs/_indirilen/cp2c-ek1"
+  ],
+  "tipler": {
+    "m2": {
+      "tekil_kayit": 1192,
+      "karisim": {
+        "cp2c-ek1": 1192
+      },
+      "yinelenen_atilan": 0,
+      "yarim_satir_atilan": 0
+    },
+    "m2b": {
+      "tekil_kayit": 731,
+      "karisim": {
+        "cp2c-ek1": 731
+      },
+      "yinelenen_atilan": 0,
+      "yarim_satir_atilan": 0
+    }
+  },
+  "toplam_tekil": 1923
+}
