@@ -1463,3 +1463,94 @@ değil **ayrık ortalamada** işliyor. Bu ayrım ADR'de yoktu; ölçümle ortaya
 **Sınanan hipotez:** `τ_a` ham TIES'te siliniyor mu? §22'nin kanıtı aksini düşündürüyor —
 `τ_a` yalnız 1,18 normla M1 reddini %42,5 → %57,5 çıkarabiliyor, yani **etkisi normundan çok
 daha güçlü** ve norm, etkinin iyi bir vekili değil.
+
+---
+
+## 24. 🟢 SÜPÜRME DENEY 2 — **ham TIES iki kazanımı BİRDEN taşıdı**
+
+Koşu: `outputs/eval/cp3-supurme-ham/` · geçerlilik kapısı **kesik %0,4** ✅ ·
+künye `outputs/eval/cp3d-merge/KUNYE_ties_ham.json` · üç eksen (m2b · m1 · m2).
+
+```
+özne          cevaplanan  aşırı-red      A1   M1 kütle   M2 Rej   M2b Rej
+base             46/80       0,425   0,9864     56,7%    0,814    0,986
+Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,930    1,000
+τ_g              66/80       0,175   0,8658     71,4%    0,873    0,607 🔴
+τ_a              34/80       0,575   0,9697     41,2% 🔴 0,984    0,987
+MERGE ortalama     —           —        —         —        —        —   🛑 dejenere
+MERGE min        43/80       0,463   0,9940     53,4%    0,934    0,987
+MERGE ham        63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅
+```
+
+### Sonuç
+
+```
+GROUNDING     τ_g 71,4%  →  merge 71,6%     TAMAMEN korundu (%100,3)
+ÇEKİNME M2b   τ_g 0,607  →  merge 0,877     çöküşün %71'i ONARILDI
+ÇEKİNME M2    τ_g 0,873  →  merge 0,893     +0,020
+```
+
+`τ_g` tek başına M2b'de çökmüştü (0,607). Merge **grounding'den hiçbir şey kaybetmeden** o
+çöküşün %71'ini geri aldı. İç iddianın öncülü (§18: çatışma gerçek) ve sonucu (merge çatışan
+becerileri birlikte taşıyor) artık **aynı protokolde ölçülü**.
+
+### Yan kazanımlar — ADR-0017 maliyet ekseni
+
+```
+                zorunlu kapatma   ort token/cevap
+τ_a                  230/230           1084
+MERGE min            160/160           1076
+MERGE ham            115/230 ✅          784      ← öz-sonlandırma GERİ GELDİ
+```
+
+`τ_g` düşünceyi kendi kapatıyordu (35/36 — #42); `τ_a` hiç kapatmıyordu (230/230 zorunlu).
+Ham TIES bunu **yarı yarıya geri getirdi** ve cevap başına maliyeti **%27 düşürdü**. Parite
+muhasebesine doğrudan giriyor.
+
+### 🔴🟢 ARA KAPI — KAPATILABİLİR
+
+```
+1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅
+           muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅
+2. GÖZLEM  merge      M2b    = 0,877  ≥ 0,854   ✅  (GEÇERLİ koşu, kesik %0,4)
+§20 şartı  merge M1 kütlesi τ_g'den belirgin düşük mü?   ❌ HAYIR (71,6% ↔ 71,4%)
+```
+
+Karar tablosu: **✅✅ → güçlü yeşil → CP4-CP5 koşulabilir.** §20'nin ön-kayıtlı uyarısı da
+karşılanıyor: merge bir *"her şeye hayır diyen"* model değil.
+
+### ⚠️⚠️ ADR-0036'NIN HÜKMÜ TERSİNE DÖNÜYOR — yeni ADR gerekiyor
+
+Yeşil hücre, tasarımın **ablasyon** dediği varyanttan geldi. ADR-0036 *"ana sonuç norm-dengeli,
+ham TIES kontrol"* diyordu. Ölçüm bunun tersini söylüyor:
+
+| ADR-0036'nın öncülü | durum |
+| :--- | :--- |
+| Kollar çok farklı ölçekte eğitiliyor | ✅ **DOĞRULANDI** — 8,87× (‖τ_g‖ 10,47 ↔ ‖τ_a‖ 1,18) |
+| TIES kütle-ağırlıklı | ✅ **DOĞRULANDI** — ama işaret seçiminde değil, **ayrık ortalamada** (§23) |
+| Dengelenmezse küçük kol **silinir** | ❌ **ÇÜRÜTÜLDÜ** — ham TIES'te `τ_a` silinmedi: M2b 0,607 → 0,877 |
+| Bu yüzden dengeleme **gerekli** | ❌ **TERSİ** — dengeleme `τ_g`'yi eziyor, grounding 71,4% → 53,4% |
+
+**Mekanizma:** norm, etkinin iyi bir vekili değil. `τ_a` yalnız 1,18 normla M1 reddini
+%42,5 → %57,5 çıkarabiliyor; dengeleme onu `τ_g` ile **eşit ağırlığa** getirince aşırı
+temsil ediliyor ve grounding eziliyor.
+
+**Kayıt için:** ADR-0036'nın *gerekçesi* (asimetri gerçek ve ölçüldü) ayakta; çürütülen şey
+*çıkarımı*. Yeni ADR bunu böyle yazmalı — eski ADR silinmez, hükmü tadil edilir (ADR-0050
+kalıbı).
+
+### ⚠️ Seçim DEV'de yapıldı — raporda böyle geçmeli
+
+Üç merge varyantı denendi (`ortalama` · `min` · `ham`) ve en iyisi seçildi. Bu **meşru**
+(TASARIM: *"sweep on DEV, never on the frozen CANON test set"*) ve frozen TEST'e
+dokunulmadı — ama makalede **"merge yapılandırması DEV'de 3 varyant arasından seçildi"**
+diye açıkça yazılmalıdır. Süpürmenin tamamı kayıtlı: `KUNYE_ties{,_min,_ham}.json` +
+`outputs/eval/cp3-supurme-{min,ham}/`.
+
+### Süpürmenin toplam bedeli
+
+```
+GPU        $0 (hepsi yerel RTX 5070 Ti)
+hakem      ~$0,11  (min 3 eksen + ham 3 eksen)
+süre       ~2 saat
+```

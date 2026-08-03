@@ -44,80 +44,73 @@ CP'yi tekrar koşar, tetiklenmiş bir kapıyı görmez.
 
 ---
 
-## 🔴 ARA KAPI'DAYIZ — KAPATILAMADI, İNSAN KARARI BEKLENİYOR (2026-08-03 13:30)
+## 🟢 ARA KAPI KAPANDI — GÜÇLÜ YEŞİL (2026-08-03 18:14)
 
 ```
-1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅   GEÇERLİ koşu (kesik %0,4)
-           muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅   ⚠️ ama kütle %41,2 (base %56,7)
-2. GÖZLEM  merge      M2b            = ÖLÇÜLEMEDİ 🛑  KOŞU GEÇERSİZ (kesik %5,2 > %5)
+1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅
+           muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅
+2. GÖZLEM  merge(ham) M2b    = 0,877  ≥ 0,854   ✅   GEÇERLİ koşu (kesik %0,4)
+§20 şartı  merge M1 kütlesi τ_g'den belirgin düşük mü?  ❌ HAYIR (71,6% ↔ 71,4%)
 ```
 
-**Karar tablosu iki gözlem ister; ikincisi yok.** Ön-kayıtlı kural: DUR, insana sor.
-**CP4-CP5'e para HARCANMADI.**
+**Karar tablosu: ✅✅ → CP4-CP5 koşulabilir.** 🛑 Ama para insan onayıyla harcanır.
 
-### Ölçülen tablo (merge satırı VOID)
-
-```
-özne            M1 kütle   M2 Rej   M2b Rej    koşu geçerli mi
-base              56,7%     0,814    0,986     ✅ (kesik %3,6)
-Gemini 3.1 FL     72,9%     0,930    1,000     ✅ (kesik %3,6)
-τ_g               71,4%     0,873    0,607     ✅ (kesik %0,0)
-τ_a               41,2%     0,984    0,987     ✅ (kesik %0,4)
-τ_g+τ_a merge      —          —        —       🛑 GEÇERSİZ (kesik %5,2)
-```
-
-### Neden geçersiz — ve neden kapının reçetesi işlemiyor
-
-12 kesiğin **tamamı** `forced_close`, tam bütçe (1536 tok), içerik **tekrarlama döngüsü**:
-*"madde 53 madde 53 madde 53…"* · *"ilgili hükmün temini için ilgili hükmün temini için…"*.
-
-Yani kesiklik **bütçe darlığı değil model hasarı**. Kapının önerdiği `MAXTOK` büyütmesi (a) daha
-uzun döngü üretir, (b) **ADR-0043 rejim değişmezini kırar** — merge'i farklı bütçede ölçmek onu
-çıpalarla kıyaslanamaz kılar, tüm çıpaları yeniden koşmak gerekir (5 koşu ~5 saat).
-
-### ⭐ Teşhis — norm dengeleme *yükseltme* yapıyor (künye aritmetiği, ölçüme bağlı DEĞİL)
+### Ölçülen tablo — hepsi aynı protokol, hepsi geçerli koşu
 
 ```
-katsayı_g = 1/10,472 = 0,0955     katsayı_a = 1/1,181 = 0,8470
-geri ölçek = ortalama(10,472 · 1,181) = 5,826
+özne          cevaplanan  aşırı-red      A1   M1 kütle   M2 Rej   M2b Rej
+base             46/80       0,425   0,9864     56,7%    0,814    0,986
+Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,930    1,000
+τ_g              66/80       0,175   0,8658     71,4%    0,873    0,607 🔴
+τ_a              34/80       0,575   0,9697     41,2% 🔴 0,984    0,987
+MERGE ortalama     —           —        —         —        —        —   🛑 dejenere
+MERGE min        43/80       0,463   0,9940     53,4%    0,934    0,987
+MERGE ham        63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅
 ```
 
-`τ_a`'nın eğitilmiş genliği **1,181**; merge onu **5,826** genlikle uyguluyor → yönü kendi
-büyüklüğünün **~4,9 katına** çıkıyor. Model dağılımın dışına itiliyor (#42'deki sonlanmama
-kalıbı yeniden beliriyor). ADR-0036 doğru problemi teşhis etti (dengelenmezse `τ_a` silinir)
-ama **geri-ölçek kuralı normlar çok eşitsizken küçük kolu aşırı büyütüyor** (8,87× asimetride
-ortalama, küçük kolun 4,9 katı).
+```
+GROUNDING     τ_g 71,4%  →  merge 71,6%     TAMAMEN korundu
+ÇEKİNME M2b   τ_g 0,607  →  merge 0,877     çöküşün %71'i ONARILDI
+ÇEKİNME M2    τ_g 0,873  →  merge 0,893     +0,020
+maliyet       1084 tok   →  784 tok/cevap   öz-sonlandırma geri geldi (115/230 zorunlu)
+```
 
-**Bu iç iddiayı çürütmüyor — hiperparametre kusuru.** Merge'in eğitim maliyeti yok; DEV tam
-olarak bunun için var.
+### ⚠️⚠️ [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md) — ADR-0036'nın hükmü TERSİNE
 
-### İnsana sunulan seçenekler
+Yeşil hücre, tasarımın **ablasyon** dediği varyanttan geldi. ADR-0036'nın *gerekçesi* ayakta
+(asimetri gerçek: **8,87×**), *çıkarımı* çürütüldü (*"dengelenmezse `τ_a` silinir"* — silinmedi).
+Ana sonuç artık **ham TIES**, norm-dengeli varyant **ablasyon**. Roller yer değiştirdi.
 
-| # | seçenek | bedel | not |
-| :-: | :--- | :--- | :--- |
-| **A** | DEV'de merge süpürmesi: geri ölçek kuralı (`min(‖τ‖)` / `‖τ_g‖` / λ) · `--trim-k` · norm kapsamı (global ↔ modül-başına) | GPU **$0**, hakem ~$0,2/deneme, ~1 sa/deneme | **önerilen** — merge eğitim gerektirmiyor |
-| B | `MAXTOK` büyüt, TÜM çıpaları yeni bütçede yeniden koş | ~5 sa yerel, hakem ~$0,5 | rejim değişmezi değişir, Sprint 1/CP0.9 kıyasları kopar |
-| C | ham TIES (`--no-norm-balance`) koş | ~1 sa | ablasyon zaten planda; artık *kontrol* değil **karşı-uç** |
-| D | `τ_a` rejimini düzelt (epoch/lr/λ) ve yeniden eğit | Modal ~$2 | kolun kendisi kapıyı geçti; sorun merge'de |
+⚠️ Merge yapılandırması **DEV'de 3 varyant arasından seçildi** — makalede böyle beyan edilir.
+Frozen TEST'e dokunulmadı.
 
 ---
 
 ## ▶ SIRADAKİ İŞ
 
 ```
-🛑 İNSAN KARARI BEKLENİYOR — yukarıdaki A/B/C/D
-   Karar gelene kadar CP3 ilerlemez, CP4-CP5 açılmaz.
+🛑 İNSAN KARARI: CP4-CP5 açılsın mı? (~$12, ~12 saat)
+   ARA KAPI yeşil → ön-kayıtlı kural gereği koşulabilir, ama para insan onayıyla harcanır.
 
-Elde HAZIR duran artefaktlar (yeniden üretilmesi gerekmez):
-  outputs/ta_v1/                        τ_a adapteri (448 tensör · 29.908.992 param)
-  models/merged/ta_v1/                  τ_a tekil bf16
-  models/gguf/ta_v1-q4_k_m.gguf         τ_a tekil GGUF (2,59 GiB)
-  models/merged/tg_ta_normdengeli/      merge bf16 (norm-dengeli)
-  models/gguf/tg_ta_nb-q4_k_m.gguf      merge GGUF (2,59 GiB)
-  outputs/eval/cp3c-ta-v1/              τ_a tekil eval — GEÇERLİ, puanlandı
-  outputs/eval/cp3d-merge/KUNYE_ties.json   merge künyesi (normlar, TIES istatistikleri)
-  outputs/eval/cp3e-merge/              merge eval — GEÇERSİZ, puanlanmadı (para yanmadı)
-  data/train/orpo_abstain_cp2c/         726 çift + 145 replay
+CP4  karışık SFT tabanı      ⏳  aynı 728 negatif + grounding verisi TEK aşamada
+CP5  ardışık SFT tabanı      ⏳  τ_g üstüne çekinme SFT'si (task-vector DEĞİL)
+     → iç iddianın GERÇEK sınavı: merge > karışık ve merge > ardışık mı?
+
+⚠️ ARA KAPI iddianın KANITI DEĞİL — iddia karşılaştırmalı. Bugünkü sonuç yalnız
+   "bu yola para harcamaya değer" diyor.
+```
+
+### Elde hazır artefaktlar
+
+```
+outputs/ta_v1/                         τ_a adapteri (448 tensör · 29.908.992 param)
+models/gguf/ta_v1-q4_k_m.gguf          τ_a tekil        · eval: outputs/eval/cp3c-ta-v1/
+models/gguf/tg_ta_min-q4_k_m.gguf      merge min        · eval: outputs/eval/cp3-supurme-min/
+models/gguf/tg_ta_ham-q4_k_m.gguf      merge ham ⭐ANA   · eval: outputs/eval/cp3-supurme-ham/
+models/gguf/tg_ta_nb-q4_k_m.gguf       merge ortalama (dejenere, kayıt için)
+outputs/eval/cp3d-merge/KUNYE_ties{,_min,_ham}.json     üç varyantın künyesi
+data/train/orpo_abstain_cp2c/          726 çift + 145 replay
+scripts/cp3_merge_dene.sh              varyant → GGUF → 3 eksen eval → puanlama
 ```
 
 **CP3 komutu — ateşe hazır** (arayüz `--help` ile doğrulandı; base ADR-0030, modül listesi ADR-0031):
