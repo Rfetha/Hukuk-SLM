@@ -1210,3 +1210,82 @@ eşiği oynatmak DEĞİL — ölçümü tamamlamak.
 
 *Bugün ön-kayıt üçüncü kez kuruluyor: §16 (`accuracies` yanıltıcı olabilir → doğrulandı),
 §17 (A1 kör noktası → doğrulandı), §20 (merge tarafında aynı kör nokta → sonuç bekleniyor).*
+
+---
+
+## 21. 🔴 CP3 · 3e — MERGE: **her iki kapı geçti, model kullanılamaz**
+
+Koşu: `outputs/eval/cp3e-merge/` · taşıyıcı `tg_ta_nb-q4_k_m.gguf` + llama-server
+· rejim değişmezleri birebir · hakem `gpt-4o-mini`, kapı openrouter, sağlayıcı `OpenAI` pinli.
+
+```
+2. GÖZLEM  M2b Rej = 1,000  ≥ 0,854   ✅  (τ_g'nin 0,607'si → 1,000)
+1. GÖZLEM  M2  Rej = 0,984  ≥ 0,923   ✅  (τ_a tekil, §18)
+           M1  A1  = 1,0000 ≥ 0,880   ✅  ← TEORİK TAVAN
+```
+
+Ön-kayıtlı karar tablosu bu üç satırla **✅✅ "güçlü yeşil → CP4-CP5 koşulur"** der.
+
+### 🚨 Ama merge 80 sorudan 2'sini cevaplıyor
+
+```
+M1: n_answered = 2/80 · over_refusal_rate = 0,975 · A1 = 1,0 · KÜTLE = %2,5
+```
+
+A1 **tam 1,0** çünkü model neredeyse hiç konuşmuyor; konuştuğu iki soruyu doğru cevaplamış.
+**Muhafız metriği tavanda, model çöp.** §17 ve §20'de sayı görülmeden yazılan kör nokta, en uç
+hâliyle gerçekleşti.
+
+```
+özne            M1 kütle   M2 Rej   M2b Rej
+base              56,7%     0,814    0,986
+Gemini 3.1 FL     72,9%     0,930    1,000
+τ_g               71,4%     0,873    0,607
+τ_a               41,2%     0,984    0,987
+τ_g+τ_a merge      2,5% 🔴    —       1,000
+```
+
+### ⭐ TEŞHİS — geri ölçek, dengeleme değil YÜKSELTME yapıyor
+
+Merge, `τ_a`'dan **bile daha kötü** çekiniyor (%97,5 ↔ %57,5). Yani "τ_a kazandı" değil;
+**kombinasyon her iki koldan da kötü**. Sebep künyede açık:
+
+```
+katsayı_g = 1/10,472 = 0,0955      katsayı_a = 1/1,181 = 0,8470
+geri ölçek = ortalama(10,472 · 1,181) = 5,826
+```
+
+Her `τ` birim norma iniyor, TIES'ten sonra **5,826** ile geri ölçekleniyor. Ama `τ_a`'nın
+eğitilmiş genliği **1,181**. Yani `τ_a`'nın yönü kendi eğitildiği büyüklüğün **~4,9 katına**
+çıkarılıyor. Bu *dengeleme* değil, **yükseltme**.
+
+ADR-0036 doğru problemi teşhis etmişti (dengelenmezse `τ_a` silinir) ama **geri-ölçek kuralı
+(normların ortalaması) normlar çok eşitsizken küçük kolu aşırı büyütüyor**. 8,87× asimetride
+ortalama, küçük kolun 4,9 katı.
+
+### Bu iç iddiayı ÇÜRÜTMÜYOR — hiperparametre kusuru
+
+Merge'in **eğitim maliyeti yok**; süpürmek ucuz ve DEV tam olarak bunun için var
+(TASARIM: *"sweep on DEV, never on the frozen CANON test set"*). Süpürülecekler:
+
+| parametre | şu an | alternatif |
+| :--- | :--- | :--- |
+| geri ölçek kuralı | `ortalama(‖τ‖)` = 5,826 | `min(‖τ‖)` = 1,181 · `‖τ_g‖` = 10,472 · λ ile ayarlanan |
+| `--lam` (λ) | 1,0 | <1,0 (birleşik vektörü küçült) |
+| norm kapsamı | global tek `‖τ‖_F` | modül-başına (künyede açık soru olarak duruyordu) |
+| `--trim-k` | 0,2 (sıfır kalan %64,6) | 0,1 / 0,3 |
+
+⚠️ **Ham TIES ablasyonu (`--no-norm-balance`) da artık ayrı bir bilgi taşıyor:** ADR-0036
+dengelemenin gerekçesini *"aksi hâlde τ_a silinir"* diye kuruyordu. Şimdi dengelemenin kendi
+başına ters yöne saptığı ölçüldü, yani ham TIES **kontrol değil, karşı-uç** olarak okunmalı.
+
+### Ön-kayıt üçüncü kez tuttu
+
+- §16: *"`rewards/accuracies` yanıltıcı olabilir"* → M2 0,984 ile **doğrulandı**
+- §17: *"A1 kör noktası, coverage çökebilir"* → `τ_a` A1 0,9697 / kütle %41,2 ile **doğrulandı**
+- §20: *"aynı kör nokta merge tarafında da var"* → merge A1 **1,0** / kütle **%2,5** ile
+  **doğrulandı**, hem de en uç hâliyle
+
+*Ders: cevaplanan-only metrikler çekinerek kazanmayı ödüllendirir. Bir kapı bu ailedense,
+yanında mutlaka bir kütle/coverage ekseni taşımalıdır — yoksa kapı, ölçmek için kurulduğu şeyin
+tam tersini onaylar.*
