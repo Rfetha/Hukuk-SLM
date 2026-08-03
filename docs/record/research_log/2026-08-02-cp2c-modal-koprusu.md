@@ -1068,3 +1068,61 @@ Ayrıca `τ_a` düşünceyi kendi kapatmıyor: **80/80 zorunlu kapatma**, ort **
 **Asıl test 3d/3e'de:** merge, `τ_g`'nin cevaplamasını korurken `τ_a`'nın çekinmesini
 taşıyabiliyor mu? Tekil kolların ikisi de tek başına yetersiz — iddia tam olarak bunun
 üzerine kurulu.
+
+---
+
+## 18. ✅ CP3 · 3c — `τ_a` TEKİL EVAL: **iki ölçüt de geçti, kol yine de bozuk**
+
+Koşu: `outputs/eval/cp3c-ta-v1/` · taşıyıcı `ta_v1-q4_k_m.gguf` + llama-server (yerel RTX 5070 Ti)
+· rejim değişmezleri birebir (thinking on · 1024+512 · seed 3407 · chunk 900 · KV q8_0)
+· hakem `gpt-4o-mini`, kapı **openrouter**, sağlayıcı **`OpenAI` pinli**.
+
+```
+M2 Rej   = 0,984   ≥ 0,923   ✅   (çıpa cevaba-kör base 0,803 → +18,1 puan; gereken +12)
+M1 A1    = 0,9697  ≥ 0,880   ✅
+kesik    = %1,4              ✅   (kapı %5; m1 %0,0 · m2 %1,4)
+```
+
+### 🚨 Ama muhafız §17'nin işaret ettiği kör noktaya düştü
+
+```
+M1 — sadık-cevap kütlesi = coverage × A1
+özne       cevaplanan  coverage  aşırı-red      A1    kütle
+base           46/80     57,5%      0,425   0,9864   56,7%
+Gemini 3.1FL   61/80     76,2%      0,237   0,9561   72,9%
+τ_g            66/80     82,5%      0,175   0,8658   71,4%
+τ_a            34/80     42,5%      0,575   0,9697   41,2%   ← kütle EN DÜŞÜK, A1 EN YÜKSEK
+```
+
+`τ_a`'nın A1'i **tüm öznelerin en yükseği** — çünkü yalnız emin olduğunda konuşuyor. Aynı anda
+%57,5 çekiniyor ve sadık-cevap kütlesi **çıplak base'in bile altına** düşüyor (41,2% ↔ 56,7%).
+
+**Kapı geçti, kol bozuldu.** Tek sayıya bakılsaydı görünmezdi. §17 bunu sayı görülmeden yazmıştı;
+kayıt ön-kayıt olarak duruyor.
+
+⚠️ **Ön-kayıtlı eşik DEĞİŞTİRİLMEDİ** (0,880 aynı). Değişen tek şey, aynı gözlemin ikinci bir
+eksende (`coverage` / kütle) **zorunlu raporlanması**. ADR-0044'ün mod-duyarlı red kuralıyla
+aynı ruh: tek sayı davranışı tarif etmiyorsa iki sayı raporlanır.
+
+### ⭐ §16'nın ön-kaydı da doğrulandı — `rewards/accuracies` yanıltıcıymış
+
+§16'da iki okuma yazılmıştı: (1) yetersiz eğitim, (2) metrik yanıltıcı. **Ölçüm (2)'yi seçti:**
+eğitim boyunca `accuracies` 0,14-0,20'de kaldı ve işaret hiç dönmedi, ama **davranışsal çekinme
+0,803 → 0,984'e çıktı**. ORPO düşük-olasılıklı cümleyi *seçtirmemiş*, uydurmanın olasılığını
+**bastırmış** — `log_odds_chosen`'ın −1,573 → −0,626 (%60) iyileşmesi bunu gösteriyormuş.
+
+*Ders: ORPO'da `rewards/accuracies`, davranışsal çekinmenin vekili DEĞİLDİR. Token-olasılığı
+sıralamasını ölçer; hedeflenen davranış sıralama değil bastırmadır.*
+
+### ⭐⭐ İki kol da tek başına sakat — iddianın tam kurulduğu yer
+
+```
+              M1 kütle          M2 Rej
+base            56,7%            0,803
+τ_g             71,4%  ↑          ~     ← çekinme tarafı zayıf (CP0.9)
+τ_a             41,2%  ↓         0,984  ↑
+```
+
+`τ_g` cevaplıyor ama çekinmiyor; `τ_a` çekiniyor ama cevaplamıyor. **Hiçbiri tek başına
+kullanılabilir değil.** İç iddia tam olarak bunun üzerine kurulu: task-vector merge iki
+kolun kazanımını aynı anda taşıyabiliyor mu? 3d/3e bunu ölçecek.
