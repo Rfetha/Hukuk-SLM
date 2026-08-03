@@ -1,5 +1,13 @@
 # NEXT SESSION — Sprint 2 başladı (2026-07-29)
 
+> ## 🗑️ GÖREVİ BİTTİ (2026-08-03)
+>
+> Bu bir **oturumlar arası devir notu**ydu; anlattığı Sprint 2 **kapandı** (ARA KAPI 🟢).
+> Tarihî kayıt olarak duruyor, **yönlendirme olarak geçersiz**.
+>
+> Güncel devir: [`../../../sprint3.md`](../../../sprint3.md) (`/goal sprint3.md`) ·
+> yol haritası [`../../../ROADMAP.md`](../../../ROADMAP.md)
+
 > **Bu belge ne:** oturumlar arası devir notu.
 > ⚠️ Önceki içerik (Sprint 1 kapanış notu) **değiştirildi** — Sprint 2 planlandı ve yazıldı.
 

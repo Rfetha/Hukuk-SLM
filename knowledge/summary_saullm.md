@@ -1,5 +1,7 @@
 # SaulLM-7B: A pioneering LLM for Law (arXiv 2403.03883)
 
+> ⚠️ **LİTERATÜR ÖZETİ — tez döneminde alındı.** Kaynak makalelerin bulguları geçerli; bunlardan çıkarılan **proje kararları** [`../docs/adr/`](../docs/adr/) ve [`../ROADMAP.md`](../ROADMAP.md)'de olabilir ve **değişmiş olabilir** (ör. base artık Qwen3.5-4B, proje OSS).
+
 **Okundu:** 2026-06-14 · TeX kaynak · Equall.ai, ACL formatı · MIT lisans.
 
 ## TL;DR
