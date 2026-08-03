@@ -73,7 +73,7 @@ tersi taşınmaz.
 ## Opsiyonel: iddia katmanı (arxiv)
 
 *"Merge, karışık ve ardışık SFT'den daha iyi korur"* iddiasını kanıtlayan
-karşılaştırma — [`sprint2b.md`](sprint2b.md)'de tarifi hazır, **ertelendi**.
+karşılaştırma — [`sprint2b.md`](docs/_arsiv/sprint2b.md)'de tarifi hazır, **ertelendi**.
 
 Artefaktlar (`τ_g`, `τ_a`, veri, protokol) bozulmuyor; arxiv'e karar verilirse
 istenen zaman koşulur (~$19,64).

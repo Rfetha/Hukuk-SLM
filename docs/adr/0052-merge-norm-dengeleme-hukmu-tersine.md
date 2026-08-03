@@ -2,7 +2,7 @@
 
 - **Tarih:** 2026-08-03
 - **Durum:** kabul edildi
-- **Tadil eder:** [ADR-0036](0036-*.md) (metnine dokunulmadı, hükmü değişti)
+- **Tadil eder:** [ADR-0036](0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md) (metnine dokunulmadı, hükmü değişti)
 - **Kaynak ölçüm:** [research_log #48 §22-§24](../record/research_log/2026-08-02-cp2c-modal-koprusu.md)
 
 ## Bağlam

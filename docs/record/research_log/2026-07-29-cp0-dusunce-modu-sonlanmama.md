@@ -1,7 +1,7 @@
 # #42 — CP0: düşünce modu ölçülemedi, çünkü model **durmuyor** — ve bunu kol çözüyor
 
 **Tarih:** 2026-07-29 · **CP:** Sprint 2 / CP0 · **Otorite:** [`TASARIM.md`](../../../TASARIM.md) ·
-**Yürütme:** [`sprint2.md`](../../../sprint2.md) CP0 · **Karar belgeleri:** [ADR-0040](../../adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)
+**Yürütme:** [`sprint2.md`](../../_arsiv/sprint2.md) CP0 · **Karar belgeleri:** [ADR-0040](../../adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)
 (ön-kayıtlı kural) → [ADR-0043](../../adr/0043-dusunce-modu-acik-butceli-kapatma.md) (sonuç)
 
 > **Bir cümlede:** `--thinking on` altında çıplak base **6 moddan 3'ünde hiç cevap üretmiyor** —

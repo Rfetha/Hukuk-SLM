@@ -6,7 +6,7 @@
 >
 > **Tez artık iki katmanlı:** *dış* = maliyet-normalize parite (ADR-0017 teyit edildi) · *iç (YENİ)* = beceri başına bağımsız eğitilmiş LoRA kolları + task-vector merge, **çatışan becerileri** (grounding ↔ abstention) ardışık SFT'den daha iyi koruyor mu?
 >
-> **Çerçeve (2026-05-29):** Repo şimdilik **private + proprietary** (ticari haklar sahibinde). Model kartı + ağırlıklar ileride HF'te yayınlanabilir (opsiyonel); akademik makale kapısı kapalı değil — bu yüzden tekrarlanabilirlik (sabit seed, loglu koşu, temiz ablation) baştan yerinde. Erişilebilirlik (consumer-grade donanımda çalışabilme) temel kısıt olduğundan model SLM-sınıfı tutulur — ~~seçilen baz: Gemma 4 12B~~ → **base bir PARAMETRE** (ADR-0026); çalışma varsayımı ~4B sınıfı instruct model, 6 maddelik doğrulama kapısına bağlı (`TASARIM.md` §8).
+> **Çerçeve (2026-08-03, GÜNCEL):** Proje **tamamen açık kaynak** — **Apache-2.0**, ağırlıklar + kod + veri + araştırma kaydı. Yüksek lisans tezi çerçevesi **bırakıldı**; arxiv yazılabilir ama hedef **daha iyi model** ([`ROADMAP.md`](../ROADMAP.md)). Erişilebilirlik temel kısıt olduğundan model SLM-sınıfı tutulur — base bir **PARAMETRE** (ADR-0026); mevcut sürüm **`HakHukuk-4B-v0.1`** (Qwen3.5-4B üzerine). ⚠️ Tezin dayattığı **tek-boyut kilidi (ADR-0028) ve graph-RAG'in kapsam dışılığı (ADR-0019) KALKTI**. *(Eski çerçeve: private + proprietary — 2026-08-03'te aşıldı.)*
 >
 > **⚠️ TEZ ÇERÇEVESİ (2026-07-17, otorite: `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md` + ADR-0017):** Tezin **birincil katkısı** artık tek başına benchmark değil → **maliyet-normalize parite + iş bölümü**: *dar bir domainde SLM+harness, kapalı ticari modellerin dağıtım sınıfına (Gemini 3 Flash / Claude Sonnet / GPT-5-mini) maliyet-normalize paritede ne kadar yaklaşır, ve bunun ne kadarını FT ne kadarını harness sağlar?* 6-mod CANON benchmark bu iddianın **altyapısı** (eşdeğerlik testi için gereken ölçüm zemini), tek başına ana katkı değil. v0→v3 = proof-of-concept / FT kolu.
 
@@ -19,7 +19,7 @@
 | **Erişilebilirlik > Devasa Performans** | Model, sıradan bir GPU'da (hatta CPU/edge) çalışabilmeli. Bu yüzden SLM. |
 | **Kitle: Uzman (birincil) + Vatandaş (app-layer)** | **REVİZE (2026-06-13) → RESMİLEŞTİ (ADR-0010, Yürürlükte):** birincil kitle = **uzman (hukukçu)**; çıktı hassas + atıflı. Vatandaş sadeleştirmesi = **app-layer prompt modu**, model eğitim hedefi değil. Eski "default sade dil" ifadesi descoped — bkz [`docs/adr/gemma4-12b-dersler.md#adr-0010`](adr/gemma4-12b-dersler.md#adr-0010) + `docs/record/research_log/README.md` (2026-06-13). |
 | **Güncellik Modelin Beyninde Değil, Kütüphanesinde** | Yasalar değişir; model değişmez. Güncellik RAG katmanında çözülür. |
-| **Lisans-temiz & Tekrarlanabilir** | Sadece açık/kamu veri kaynakları (ticari kaynak yasak). Repo private/proprietary; ağırlıklar + model kartı ileride opsiyonel açılabilir. Seed/log/ablation baştan temiz. |
+| **Lisans-temiz & Tekrarlanabilir** | Sadece açık/kamu veri kaynakları (ticari kaynak yasak). **Repo Apache-2.0, tamamen açık** — ağırlıklar, kod, veri ve araştırma kaydı dahil. Seed/log/ablation baştan temiz; bu sayede OSS'e geçiş sonradan temizlik gerektirmedi. |
 | **Genelden Nişe** | Önce genel hukuk yetkinliği, sonra dikey nişler (kira, iş, tüketici) için agentic workflow'lar. |
 
 ---

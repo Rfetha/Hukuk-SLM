@@ -1,7 +1,7 @@
 # #41 — CP6: `τ_grounding` ölçümü — kör red kırıldı, bedeli cevap başına sadakat
 
 **Tarih:** 2026-07-29 · **CP:** Sprint 1 / CP6 (son iş) · **Otorite:** [`TASARIM.md`](../../../TASARIM.md) ·
-**Yürütme:** [`sprint1.md`](../../../sprint1.md) CP6
+**Yürütme:** [`sprint1.md`](../../_arsiv/sprint1.md) CP6
 
 > **Bir cümlede:** `τ_grounding` base'in kör reddini kırdı (M1 coverage **%43.8 → %85.0**) ve teslim
 > edilen sadık cevap kütlesini **%42.6 → %72.0** çıkardı — Gemini 3.1 Flash-Lite'ın (%74.2) 2 puan

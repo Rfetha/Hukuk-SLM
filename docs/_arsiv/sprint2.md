@@ -1,10 +1,10 @@
 # Sprint 2 — ikinci kol, tabanlar ve zeminin düzeltilmesi
 
 > **Bu belge icra dokümanıdır.** Sayılar, elenen seçenekler, eşik türetmeleri ve biten CP'lerin tam
-> sonuç metinleri **[`docs/record/sprint2/defter.md`](docs/record/sprint2/defter.md)**'de.
+> sonuç metinleri **[`docs/record/sprint2/defter.md`](../record/sprint2/defter.md)**'de.
 >
 > ### ⭐ HER KOŞUDAN ÖNCE OKU
-> [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) — *"hata vermeden yanlış
+> [`docs/record/yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) — *"hata vermeden yanlış
 > sonuç üreten"* kalıpların tek listesi. Bu hattın hata sınıfı **çökme değil, sessiz yanlışlık**.
 
 ---
@@ -42,11 +42,11 @@ Yeni iş başlarsa **yeni bir icra belgesi** açılır; buradaki numaralar ve ap
 
 | ne | nerede |
 | :--- | :--- |
-| Bu sprint'in tam kronolojisi ve her sayı | [`research_log` #42-#48](docs/record/research_log/) — CP2-c/CP3'ün tamamı **#48 §1-§24** |
-| Kararlar | ADR-**0039**…**0052** ([register](docs/adr/README.md)) |
-| Artefakt kimlikleri (`tg_v1` · `ta_v1` · **`tgta_v1`**) | ⭐ [`docs/record/kollar.md`](docs/record/kollar.md) |
-| Sayılar · elenen seçenekler · eşik türetmeleri | [`defter.md`](docs/record/sprint2/defter.md) |
-| Koşu öncesi tuzak listesi (bu sprint **6.10-6.12**'yi ekledi) | [`yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
+| Bu sprint'in tam kronolojisi ve her sayı | [`research_log` #42-#48](../record/research_log/) — CP2-c/CP3'ün tamamı **#48 §1-§24** |
+| Kararlar | ADR-**0039**…**0052** ([register](../adr/README.md)) |
+| Artefakt kimlikleri (`tg_v1` · `ta_v1` · **`tgta_v1`**) | ⭐ [`docs/record/kollar.md`](../record/kollar.md) |
+| Sayılar · elenen seçenekler · eşik türetmeleri | [`defter.md`](../record/sprint2/defter.md) |
+| Koşu öncesi tuzak listesi (bu sprint **6.10-6.12**'yi ekledi) | [`yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) |
 
 ---
 
@@ -81,7 +81,7 @@ GROUNDING     τ_g 71,4%  →  merge 71,6%     TAMAMEN korundu
 maliyet       1084 tok   →  784 tok/cevap   öz-sonlandırma geri geldi (115/230 zorunlu)
 ```
 
-### ⚠️⚠️ [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md) — ADR-0036'nın hükmü TERSİNE
+### ⚠️⚠️ [ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md) — ADR-0036'nın hükmü TERSİNE
 
 Yeşil hücre, tasarımın **ablasyon** dediği varyanttan geldi. ADR-0036'nın *gerekçesi* ayakta
 (asimetri gerçek: **8,87×**), *çıkarımı* çürütüldü (*"dengelenmezse `τ_a` silinir"* — silinmedi).
@@ -177,7 +177,7 @@ hakem    : gpt-4o-mini · LLM_GATEWAY=openai PİNLİ · red kuralı mod-duyarlı
 🛑 geçerlilik kapısı: kesik oranı > %5 → KOŞU GEÇERSİZ (çıpalar %3,6 / %3,6 / %0,0)
 ```
 
-### ✅ ÇÖZÜLDÜ (2026-08-02, insan) — m2b çiftinin `chosen` tarafı → **şablon** ([ADR-0051](docs/adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md))
+### ✅ ÇÖZÜLDÜ (2026-08-02, insan) — m2b çiftinin `chosen` tarafı → **şablon** ([ADR-0051](../adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md))
 
 > **Onaylanan: A.** Hedef cümleyi sistem isteminin kendisi tarif ediyor; dış model (B) yeni bilgi
 > üretmeden üslup kirliliği ekliyordu, C hasadın yarısını çöpe atıyordu. Ölçülen **45/45 tekil**
@@ -199,7 +199,7 @@ Hasat koşarken CP3'ün girdi zinciri önden denetlendi (tuzak 6.2). `build_orpo
 yok** (4 çeldirici, gold hiç yok). Sayıldı: mevcut `τ_a` setindeki **1.449 çekinme çiftinin
 tamamı M2 kalıbı**; RAG_MULTI kalıbı yalnız `is_pref=0` replay'de var. Yani **`τ_a` bugüne dek
 M2b kalıbında tek bir çekinme çifti görmedi** — oysa defterdeki negatif #4'e göre `τ_a`'nın
-**gerçek hedefi** orası ve **ARA KAPI'nın 2. gözlemi** o eksende okunuyor. Ayrıntı: [#48 §7](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md).
+**gerçek hedefi** orası ve **ARA KAPI'nın 2. gözlemi** o eksende okunuyor. Ayrıntı: [#48 §7](../record/research_log/2026-08-02-cp2c-modal-koprusu.md).
 
 *Alan adı uyumsuzluğu (`rejected`↔`model_answer`, `context_shown`↔`trap_text`) ve m2b kalıbının
 `RAG_MULTI` olması **karar değil, zorunluluk** — eval-ayna kuralı belirliyor, cevap gelince
@@ -233,27 +233,27 @@ beklentisinin **%39 üstünde**; fark kör damganın 1.944 kalemde $2,85'i). O a
 
 ## Durum tablosu
 
-*(tek satırlık; tam sonuç metinleri ve sayılar [`defter.md`](docs/record/sprint2/defter.md)'de)*
+*(tek satırlık; tam sonuç metinleri ve sayılar [`defter.md`](../record/sprint2/defter.md)'de)*
 
 | CP | durum | $ | çıktı nerede |
 | :--- | :--- | ---: | :--- |
-| **CP0** düşünce modu | ✅ base sonlanmıyor → thinking AÇIK, bütçeli (ADR-0043) | 0 | `outputs/eval/cp0-*` · [#42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md) |
-| **CP0.9** üç çıpa | ✅ 1.410 cevap · ADR-0044 · ADR-0040 hükmü **🟡 SARI** | 0.49 | `outputs/eval/cp09-butceli-1024-512/` · [#43](docs/record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md) |
-| **CP0.5** `causal-conv1d` | ✅ **kapı KALDI** (tavan 1.254× < 2.0×) → eklenmedi | 0 | `outputs/eval/_artefakt/` · [#44](docs/record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md) |
-| **CP1** hakem istemi | ✅ `τ_g`'nin A1 açığının **%59'u artefaktmış** (ADR-0041) | 0.15 | `outputs/eval/cp1-hakem-meta-iddia/` · [#44](docs/record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md) |
-| **CP2 pilot** | ✅ kusur buldu: kabul ölçütü ≠ raporlanan metrik → ADR-0046 | 0.01 | `outputs/eval/cp2-rejected-hasat/` · [#44](docs/record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md) |
-| **CP2-a** uyum kapısı | ✅ **kapı KALDI** · `valid_trap` özneye bağlı çıktı → ADR-0048/0049 | 0.121 | `outputs/eval/cp2-on-eleme/` · [#45](docs/record/research_log/2026-07-30-cp2a-hakem-capalanmasi.md) |
+| **CP0** düşünce modu | ✅ base sonlanmıyor → thinking AÇIK, bütçeli (ADR-0043) | 0 | `outputs/eval/cp0-*` · [#42](../record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md) |
+| **CP0.9** üç çıpa | ✅ 1.410 cevap · ADR-0044 · ADR-0040 hükmü **🟡 SARI** | 0.49 | `outputs/eval/cp09-butceli-1024-512/` · [#43](../record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md) |
+| **CP0.5** `causal-conv1d` | ✅ **kapı KALDI** (tavan 1.254× < 2.0×) → eklenmedi | 0 | `outputs/eval/_artefakt/` · [#44](../record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md) |
+| **CP1** hakem istemi | ✅ `τ_g`'nin A1 açığının **%59'u artefaktmış** (ADR-0041) | 0.15 | `outputs/eval/cp1-hakem-meta-iddia/` · [#44](../record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md) |
+| **CP2 pilot** | ✅ kusur buldu: kabul ölçütü ≠ raporlanan metrik → ADR-0046 | 0.01 | `outputs/eval/cp2-rejected-hasat/` · [#44](../record/research_log/2026-07-30-cp05-cp1-cp2-zemin.md) |
+| **CP2-a** uyum kapısı | ✅ **kapı KALDI** · `valid_trap` özneye bağlı çıktı → ADR-0048/0049 | 0.121 | `outputs/eval/cp2-on-eleme/` · [#45](../record/research_log/2026-07-30-cp2a-hakem-capalanmasi.md) |
 | ~~**CP2-b**~~ | ❌ **İPTAL** — ön-eleme net zararlı (isabet 0,14), ADR-0048 m.4 | 0 | — |
-| **CP2-r** | ✅ cevaba-kör payda · **eşikler türetildi 0.923 / 0.880 / 0.854** | 0.23 | `outputs/eval/cp2-r-kor-payda/` · [#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md) |
-| **CP2-s** | ✅ boru hattı 4/4 · 🔴 TIES kodu yoktu → `merge_ties.py` yazıldı | ~0.35 | `outputs/eval/cp2-s-boru-hatti-smoke/` · [#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md) |
-| **CP2-c** `-np 32` denemesi | 🔴 **VERİM KAPISI TETİKLENDİ** 16:19-16:46 (m2 `2,97>2,88` · m2b `2,95>2,88`) — kapı *yanlı tahmin ediciyle* ölçüyordu (gerçek kararlı hız m2 ~2,4), **tahmin edici düzeltildi, eşiğe DOKUNULMADI** → [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md) · **113 kabul kaydı korundu** | ~1.2 ⚠️**beklenti** — fiilisi **panelden** okunacak (tuzak 6.3) | app `ap-5f6rLHHFohhupMGvhkla9I` → `hukuk-data:/cp2c/` · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c hasat** | ✅ **BİTTİ** 16:47→**20:09** (3,4 sa), `-np 64`, A100-40GB. **m2** denenen 3.813 · kabul **1.205 (%31,6)** · kararlı **1,43** — **m2b** denenen 3.813 · kabul **708 (%18,6)** · kararlı **1,59**. **İki tipte de kapı "geçildi"** (hak edilmiş: `--limit`'ten önce bakıldı) · hata **0** · zorunlu kapatma m2 3.810/3.813 · m2b **3.813/3.813**. Birleştirme: **1.944 tekil aday** (m2 1.226 · m2b 718), 82 yinelenen atıldı, **yarım satır yok** → durdurulan ikinci işin (`ap-5d1ss…`) kalıcı izi **çıkmadı** | ~7.8 ⚠️beklenti (+~0.8 çift iş) | app `ap-LHKDDasU1MD6b4xG10WK8W` → `hukuk-data:/cp2c-64/` · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c kabul (1. tur)** | ✅ **BİTTİ** 20:1x→**22:00**, `cp2c_kabul.sh` tasarım B (ADR-0049 m.5). Huni: regex **1.944** → mini **735** → teyit **385** → kör damga **362 TEMİZ** (m2 272 · m2b 90). 🔴 hedef 750'nin **%48**'i, insan çizgisi 550'nin de altında → **DURULDU, insana soruldu**. Ölçülen gerçek verim: temiz/üretim m2 **%7,13** · m2b **%2,36**. ⭐ Kör damga teyitten geçmiş uydurmalarda m2 %92,2 · m2b **%100** — ADR-0048 lehine kanıt | **5.11** ✅fiili (mini 0,30 · teyit 1,96 · kör damga 2,85) | `outputs/eval/cp2c-kabul/kabul_huni.json` · [#48 §11](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c ek tur** | ✅ **BİTTİ** 21:44→**00:53** (3,15 sa), insan kararı **A**. m2 denenen 3.813 · kabul **1.192 (%31,3)** · kararlı **1,37** — m2b denenen 3.813 · kabul **731 (%19,2)** · kararlı **1,54**. İki tipte de kapı **geçildi** · taşıyıcı 1. turla birebir. ⭐ Üç dizin birleşiminde **SIFIR çakışma** (3.867 tekil) → `--skip-first` ölçüm seviyesinde doğrulandı, tuzak **6.11** onarıldı. ⚠️ 4. eksik köprü: bayrak Modal tarafına hiç geçmemişti (tuzak **6.12**) | ~6.6 ⚠️beklenti | `hukuk-data:/cp2c-ek1/` · [#48 §13](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
-| **CP2-c kabul (ek tur)** | ✅ **BİTTİ** 09:43→**10:48**. Yalnız **1.923 YENİ** kaleme koşuldu (1. turun 1.944'ü zaten yargılanmıştı, id kümeleri ayrık → ~$2,26 tasarruf). Huni: m2 1192→401→293→**266** · m2b 731→326→105→**100** = **366**. 🔴 OpenAI kredisi bitince kapı **OpenRouter**'a alındı, sağlayıcı **`OpenAI` pinlendi** (pinsizken gpt-4o'yu Azure servis ediyordu). Kör damga **teyitten geçen 398** kaleme daraltıldı → $2,85 yerine **$0,57**. İki turun huni oranları **örtüşüyor** | **2.86** ✅fiili | `outputs/eval/cp2c-kabul-ek1/` · [#48 §14-15](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-r** | ✅ cevaba-kör payda · **eşikler türetildi 0.923 / 0.880 / 0.854** | 0.23 | `outputs/eval/cp2-r-kor-payda/` · [#46](../record/research_log/2026-07-30-cp2r-kor-payda.md) |
+| **CP2-s** | ✅ boru hattı 4/4 · 🔴 TIES kodu yoktu → `merge_ties.py` yazıldı | ~0.35 | `outputs/eval/cp2-s-boru-hatti-smoke/` · [#47](../record/research_log/2026-07-30-cp2s-boru-hatti.md) |
+| **CP2-c** `-np 32` denemesi | 🔴 **VERİM KAPISI TETİKLENDİ** 16:19-16:46 (m2 `2,97>2,88` · m2b `2,95>2,88`) — kapı *yanlı tahmin ediciyle* ölçüyordu (gerçek kararlı hız m2 ~2,4), **tahmin edici düzeltildi, eşiğe DOKUNULMADI** → [ADR-0050](../adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md) · **113 kabul kaydı korundu** | ~1.2 ⚠️**beklenti** — fiilisi **panelden** okunacak (tuzak 6.3) | app `ap-5f6rLHHFohhupMGvhkla9I` → `hukuk-data:/cp2c/` · [#48](../record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c hasat** | ✅ **BİTTİ** 16:47→**20:09** (3,4 sa), `-np 64`, A100-40GB. **m2** denenen 3.813 · kabul **1.205 (%31,6)** · kararlı **1,43** — **m2b** denenen 3.813 · kabul **708 (%18,6)** · kararlı **1,59**. **İki tipte de kapı "geçildi"** (hak edilmiş: `--limit`'ten önce bakıldı) · hata **0** · zorunlu kapatma m2 3.810/3.813 · m2b **3.813/3.813**. Birleştirme: **1.944 tekil aday** (m2 1.226 · m2b 718), 82 yinelenen atıldı, **yarım satır yok** → durdurulan ikinci işin (`ap-5d1ss…`) kalıcı izi **çıkmadı** | ~7.8 ⚠️beklenti (+~0.8 çift iş) | app `ap-LHKDDasU1MD6b4xG10WK8W` → `hukuk-data:/cp2c-64/` · [#48](../record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c kabul (1. tur)** | ✅ **BİTTİ** 20:1x→**22:00**, `cp2c_kabul.sh` tasarım B (ADR-0049 m.5). Huni: regex **1.944** → mini **735** → teyit **385** → kör damga **362 TEMİZ** (m2 272 · m2b 90). 🔴 hedef 750'nin **%48**'i, insan çizgisi 550'nin de altında → **DURULDU, insana soruldu**. Ölçülen gerçek verim: temiz/üretim m2 **%7,13** · m2b **%2,36**. ⭐ Kör damga teyitten geçmiş uydurmalarda m2 %92,2 · m2b **%100** — ADR-0048 lehine kanıt | **5.11** ✅fiili (mini 0,30 · teyit 1,96 · kör damga 2,85) | `outputs/eval/cp2c-kabul/kabul_huni.json` · [#48 §11](../record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c ek tur** | ✅ **BİTTİ** 21:44→**00:53** (3,15 sa), insan kararı **A**. m2 denenen 3.813 · kabul **1.192 (%31,3)** · kararlı **1,37** — m2b denenen 3.813 · kabul **731 (%19,2)** · kararlı **1,54**. İki tipte de kapı **geçildi** · taşıyıcı 1. turla birebir. ⭐ Üç dizin birleşiminde **SIFIR çakışma** (3.867 tekil) → `--skip-first` ölçüm seviyesinde doğrulandı, tuzak **6.11** onarıldı. ⚠️ 4. eksik köprü: bayrak Modal tarafına hiç geçmemişti (tuzak **6.12**) | ~6.6 ⚠️beklenti | `hukuk-data:/cp2c-ek1/` · [#48 §13](../record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **CP2-c kabul (ek tur)** | ✅ **BİTTİ** 09:43→**10:48**. Yalnız **1.923 YENİ** kaleme koşuldu (1. turun 1.944'ü zaten yargılanmıştı, id kümeleri ayrık → ~$2,26 tasarruf). Huni: m2 1192→401→293→**266** · m2b 731→326→105→**100** = **366**. 🔴 OpenAI kredisi bitince kapı **OpenRouter**'a alındı, sağlayıcı **`OpenAI` pinlendi** (pinsizken gpt-4o'yu Azure servis ediyordu). Kör damga **teyitten geçen 398** kaleme daraltıldı → $2,85 yerine **$0,57**. İki turun huni oranları **örtüşüyor** | **2.86** ✅fiili | `outputs/eval/cp2c-kabul-ek1/` · [#48 §14-15](../record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
 | **CP2-c TOPLAM** | ✅ **728 TEMİZ NEGATİF** (hedef 750'nin **%97**'si · insan çizgisi 550'nin çok üstünde) → **726 çift + 145 replay = 871**, train 845 → **65 ORPO adımı** · `no_chosen 0` · m2 538 / m2b 188 | **7.97** hakem | `data/train/orpo_abstain_cp2c/` |
 | **CP3** `τ_a` + merge | 🟡 **3a KOŞUYOR** 10:49→ · app `ap-80DlzMmkEwTjerjwJlh1sO` · 5 epoch · lr 1e-5 · beta 0.1 · ga 64 · `--fresh-adapter` ✅ · 11 modül ✅ · **65 adım** · ⛔ ilk logda 29.908.992 (%0,65) çıkmazsa DUR. 3b-3e yerel ($0) | ~2 + 0.15 | `hukuk-outputs:/ta_v1` → 🔴 **ARA KAPI** |
-| ~~CP4 · CP5~~ | 🔒 **BU HEDEFİN DIŞINDA** — ARA KAPI yeşilse ikinci `/goal` | ~12.2 | spec: [`defter.md`](docs/record/sprint2/defter.md) |
+| ~~CP4 · CP5~~ | 🔒 **BU HEDEFİN DIŞINDA** — ARA KAPI yeşilse ikinci `/goal` | ~12.2 | spec: [`defter.md`](../record/sprint2/defter.md) |
 
 **Bütçe — İKİ CÜZDAN, karıştırılmaz (tuzak 6.3).** Modal sayısı **panelden** okunur, defterden
 türetilmez. Tam tablolar defterde.
@@ -277,8 +277,8 @@ türetilmez. Tam tablolar defterde.
 
 ## 🔴 ARA KAPI — rakip yöntemlere geçmeden önce
 
-**İki gözlem** ([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
-[ADR-0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.1). Eşikler CP2-r'de
+**İki gözlem** ([ADR-0045](../adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
+[ADR-0049](../adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.1). Eşikler CP2-r'de
 **türetildi**; ön-kayıtlı olan **formül**, sayı değil.
 
 ```
@@ -324,8 +324,8 @@ verim kapısı: KARARLI hız okunur (açılış geçicisi hariç) · eşik 2,88 
 > her kaleme paylaştırıyordu. Kanıt: 600. sn `2,97` ile durdurdu, **aynı koşu 673. sn'de 2,89**'daydı.
 > Reddedilenler: **B** eşiği 3,2'ye gevşetmek (çıpalama) · **C** CP2-c'yi negatif bulgu sayarak
 > kapatmak (teşhis yanlış: taşıyıcı değil **alet** hatalıydı). Uygulanan: **A**.
-> Karar → [**ADR-0050**](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md) · tuzak **6.9** ·
-> detay [`defter.md`](docs/record/sprint2/defter.md) 16:19-16:47 kaydı · [#48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md)
+> Karar → [**ADR-0050**](../adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md) · tuzak **6.9** ·
+> detay [`defter.md`](../record/sprint2/defter.md) 16:19-16:47 kaydı · [#48](../record/research_log/2026-08-02-cp2c-modal-koprusu.md)
 
 ---
 
@@ -333,19 +333,19 @@ verim kapısı: KARARLI hız okunur (açılış geçicisi hariç) · eşik 2,88 
 
 | ne | nerede |
 | :--- | :--- |
-| **Sayılar · elenen seçenekler · eşik türetmeleri · biten CP'ler** | ⭐ [`docs/record/sprint2/defter.md`](docs/record/sprint2/defter.md) |
-| Otorite tasarım | [`TASARIM.md`](TASARIM.md) · canlı karar defteri [`docs/open_questions.md`](docs/open_questions.md) |
-| Bu sprint'in kararları | ADR-[0039](docs/adr/0039-kapi-6-parametrik-sizinti.md) · [0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) · [0041](docs/adr/0041-raft-meta-iddia-hakem-kurali.md) · [0042](docs/adr/0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md) · [0043](docs/adr/0043-dusunce-modu-acik-butceli-kapatma.md) · [0044](docs/adr/0044-mod-duyarli-feragat-kurali.md) · [0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) · [0046](docs/adr/0046-cp2-kabul-olcutu-hakem-ve-havuz-on-elemesi.md) · [0047](docs/adr/0047-cp2-hedef-750-modal-hasat.md) · [0048](docs/adr/0048-cevaba-kor-tuzak-gecerliligi.md) · [0049](docs/adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) · **[0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)** (verim kapısı: kararlı hız, eşik 2,88 aynı) · **[0051](docs/adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md)** (m2b çifti: eval-ayna kalıbı + şablon `chosen`) |
-| Kronolojik kayıt | [`research_log`](docs/record/research_log/README.md) — bu sprint: #42-#48 |
-| **Koşu öncesi tuzak listesi** | ⭐ [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
-| Kol künyeleri | [`docs/record/kollar.md`](docs/record/kollar.md) |
-| Önceki sprint | [`sprint1.md`](sprint1.md) 🔒 · sonuçları [`sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md) |
-| Tam iş listesi | [`TODO.md`](TODO.md) |
+| **Sayılar · elenen seçenekler · eşik türetmeleri · biten CP'ler** | ⭐ [`docs/record/sprint2/defter.md`](../record/sprint2/defter.md) |
+| Otorite tasarım | [`TASARIM.md`](../../TASARIM.md) · canlı karar defteri [`docs/open_questions.md`](../open_questions.md) |
+| Bu sprint'in kararları | ADR-[0039](../adr/0039-kapi-6-parametrik-sizinti.md) · [0040](../adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) · [0041](../adr/0041-raft-meta-iddia-hakem-kurali.md) · [0042](../adr/0042-rejected-havuzu-tek-kaynak-ve-on-policy-kontrol.md) · [0043](../adr/0043-dusunce-modu-acik-butceli-kapatma.md) · [0044](../adr/0044-mod-duyarli-feragat-kurali.md) · [0045](../adr/0045-ara-kapi-merge-onarim-kontrolu.md) · [0046](../adr/0046-cp2-kabul-olcutu-hakem-ve-havuz-on-elemesi.md) · [0047](../adr/0047-cp2-hedef-750-modal-hasat.md) · [0048](../adr/0048-cevaba-kor-tuzak-gecerliligi.md) · [0049](../adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) · **[0050](../adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)** (verim kapısı: kararlı hız, eşik 2,88 aynı) · **[0051](../adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md)** (m2b çifti: eval-ayna kalıbı + şablon `chosen`) |
+| Kronolojik kayıt | [`research_log`](../record/research_log/README.md) — bu sprint: #42-#48 |
+| **Koşu öncesi tuzak listesi** | ⭐ [`docs/record/yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) |
+| Kol künyeleri | [`docs/record/kollar.md`](../record/kollar.md) |
+| Önceki sprint | [`sprint1.md`](sprint1.md) 🔒 · sonuçları [`sprint1-sonuc-tablosu.md`](../record/sprint1/sprint1-sonuc-tablosu.md) |
+| Tam iş listesi | [`TODO.md`](../../TODO.md) |
 
 ---
 
 > ### 🗑️ `DEVIR-1-AGUSTOS.md` silindi (2026-08-02)
 > Geçici devir notuydu, görevi bitti (Modal fatura dönemi yenilendi, CP2-c koşmaya başladı).
-> İçeriği [`research_log` #48](docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md) ·
-> [`defter.md`](docs/record/sprint2/defter.md) · bu belgeye taşındı; hiçbir sayı kaybolmadı.
+> İçeriği [`research_log` #48](../record/research_log/2026-08-02-cp2c-modal-koprusu.md) ·
+> [`defter.md`](../record/sprint2/defter.md) · bu belgeye taşındı; hiçbir sayı kaybolmadı.
 > Silmeden önce her kalemi #48/ADR/defter'de kayıtlı olduğu **teyit edildi**.

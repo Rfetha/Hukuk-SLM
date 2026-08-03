@@ -9,8 +9,8 @@
 
 | | durum |
 | :--- | :--- |
-| Sprint 1 (CP0-CP7) | ✅ **KAPANDI** — [`sprint1.md`](../../../sprint1.md) arşiv |
-| Sprint 2 | 🟢 **PLANLANDI** — ⭐ yürütme belgesi [`sprint2.md`](../../../sprint2.md), **hiçbir CP koşulmadı** |
+| Sprint 1 (CP0-CP7) | ✅ **KAPANDI** — [`sprint1.md`](../../_arsiv/sprint1.md) arşiv |
+| Sprint 2 | 🟢 **PLANLANDI** — ⭐ yürütme belgesi [`sprint2.md`](../../_arsiv/sprint2.md), **hiçbir CP koşulmadı** |
 
 ## Sıradaki iş — `sprint2.md` **CP0**
 
