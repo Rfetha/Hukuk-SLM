@@ -62,21 +62,38 @@ kaba kuvvet arama **8,2 ms** / indeks **83 MB** fp16 → **vektör veritabanı g
 
 ⚠️ **Sayılar bu soru kümesinin tavanı, retriever'ın değil** — aşağıya bak (S3a sonucu).
 
-### K2. Chunk birimi
+### K2. Chunk birimi — ✅ **ÇÖZÜLDÜ** ([ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md))
 
-Korpus **40.496 madde**, doğal chunk = madde. Ama uzun maddeler var ve **eval-ayna
-kuralı 900 karakter** kırpıyor (ADR-0011). Kırpma retriever'da da mı uygulanacak,
-yoksa tam madde mi getirilecek — **karar gerektirir**, sessizce seçilmez.
+**Tam madde indekslenir; 900 karakter kırpması yalnız bağlam modele verilirken uygulanır**
+— yani bugünkü eval'de uygulandığı noktada. Eval-ayna kuralının öznesi **modelin girdisi**,
+indeks değil; indeksi de kırpmak uzun maddelerin sonundaki hükümleri **aranamaz** yapardı.
 
-### K3. Statik korpus mu, canlı API mi
+**Bedel (kabul edildi, ölçülecek):** retriever'ın eşleştiği metin ≠ modelin gördüğü metin.
+*"Getirildi ama cevap kırpılan kısımdaydı"* vakası harness-AÇIK tablosunda **ayrı sayılır**.
+**Yan sonuç:** S3a sayıları tam madde üzerinde ölçüldü → aynen geçerli.
 
-`data/corpus/mevzuat_maddeler.jsonl` **29 Temmuz anlık görüntüsü**. Canlı
-`bedesten` API'si güncelliği verir ama gecikme + erişilebilirlik getirir
-(⚠️ **Türk IP gerekir**, yurtdışı/VPN engelli).
+### K3. Statik korpus mu, canlı API mi — ✅ **ÇÖZÜLDÜ** (statikle başla)
 
-**Öneri:** statikle başla (ölçüm tekrarlanabilir olsun), canlı katmanı sonra ekle.
+Harness `data/corpus/mevzuat_maddeler.jsonl` üzerine kurulur; canlı `bedesten` katmanı
+S3'ten **sonra**. Gerekçe ölçüm tekrarlanabilirliği — canlı içerik koşular arasında
+değişirse harness-AÇIK sayıları kıyaslanamaz. S3a sözleşmenin geçerli olduğunu doğruladı,
+yani bu bir **risk** değil **sıralama** kararı.
 
-### K4. ⭐ HARNESS AÇIK ölçüm protokolü — en önemli karar
+### K4. ⭐ HARNESS AÇIK ölçüm protokolü — ✅ **ÇÖZÜLDÜ** ([ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md))
+
+**`core_hard.jsonl` DEĞİŞTİRİLMEZ.** Her soruya *"kendi başına ayırt edici mi"* etiketi
+eklenir, harness sayıları **iki alt kümede ayrı** raporlanır. Etiket **erişim sonucundan
+kör** bir hakemle atanır (hakem soruyu görür, altın maddeyi ve retriever'ın onu bulup
+bulmadığını görmez); istem etiketleme koşulmadan önce yazılır.
+
+Neden küme değiştirilmiyor: sayı görüldükten sonra küme değiştirmek *"cilaladılar"* diye
+okunur — tuzak 6.9'un veri tarafındaki karşılığı: **sonucu gördükten sonra ölçüt değil
+alet düzeltilir.** Etiket kümeyi değiştirmeden aleti keskinleştiriyor.
+
+⚠️ **Kaydedilen çekince:** bu ekseni ölçme fikri sonuçtan doğdu (kaçan sorular görülerek).
+Ayrım korunuyor: ölçülen büyüklük ön-kayıtlı değil, ama **alet sonuca göre ayarlanmadı**.
+
+Aşağıdaki ölçüm tasarımı yürürlükte:
 
 Mevcut modlar modele bağlamı **doğrudan** veriyor: m1 altın madde · m2 yanlış madde ·
 m2b çeldiriciler. Harness açıkken bağlamı **retriever** belirler. Bu **yeni bir
@@ -310,7 +327,7 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
 | adım | durum | çıktı |
 | :--- | :--- | :--- |
 | **K1** gömme modeli | ✅ **çözüldü** | `bge-m3` + BM25 hibriti (RRF) — research_log #49 |
-| **K2-K5** tasarım kararları | 🛑 **çözülecek** | ADR-0053+ · ⚠️ K4'e S3a'dan yeni girdi var |
+| **K2-K5** tasarım kararları | ✅ **KİLİTLENDİ** 2026-08-04 | [ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md) — ⛔ kilidi açıldı, Adım 1-4 kodlanabilir |
 | **S3a** ön-prob (recall@k + bedesten) | ✅ **KAPANDI** 2026-08-04 | hibrit `recall@10` **0,875** · bedesten ✅ GEÇERLİ · `outputs/eval/s3a-on-prob/` · research_log #49 |
 | **0** modül-başına norm | 🔴 **REDDEDİLDİ** 2026-08-04 | kütle ≤ %56,2 < %71,6 · hakem **$0** · [ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50 |
 | **1** retriever | ⏳ | `scripts/` + recall@k |
