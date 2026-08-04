@@ -19,9 +19,18 @@
 
 ```
 🛑 DURMA : geçerlilik kapısı düşerse · kütle DÜŞERSE (aşağıdaki ön-kayıtlı eşikler)
-           · korpusa yazmadan önce (S1) yedek yoksa · bütçe: hakem toplam ≤ $2
-kapsam   : S1-S4.  Graph-RAG, ajanlar, vatandaş kipi HÂLÂ DIŞINDA (gerekçe: B7 notu)
+           · korpusa yazmadan önce (S2) yedek yoksa · bütçe: hakem toplam ≤ $2
+kapsam   : S1-S4.  Graph-RAG, ajanlar, vatandaş kipi HÂLÂ DIŞINDA
+           graf gerekçesi ve ön-kayıtlı tahmini: ROADMAP.md §5.2 — ayrı yetenek,
+           ayrı soru kümesiyle ölçülür; bu kümede ölçmek haksız yere başarısız gösterir
 ```
+
+> ### ⚠️ SIRA BAĞLAYICI — S1 mutlaka S2'den ÖNCE
+> **S2 korpusu değiştiriyor.** Sonucu: (a) `retriever.py`'nin bayat-indeks kapısı patlar
+> ve indeks yeniden kurulur (~10 dk), (b) daha önemlisi — k=5 sayısı **eski** korpusta
+> ölçüldü; k=10'u **yeni** korpusta ölçersek `k` farkıyla **korpus** farkı birbirine
+> karışır ve hiçbir yerde hata çıkmaz. Bu, tam olarak bu hattın hata sınıfı.
+> **S1 bitmeden korpusa dokunulmaz.**
 
 ### S1 — `k` süpürmesi *(borç B3)* · en ucuz kazanç, önce bu
 
