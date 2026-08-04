@@ -60,16 +60,25 @@ mode_args() {
     m2b) echo "--data $DEV/core_hard.jsonl --distractors 4 --no-gold --n ${N_OVERRIDE:-80}" ;;
     m3)  echo "--data $DEV/core_hard.jsonl --empty-context --n ${N_OVERRIDE:-80}" ;;
     m5)  echo "--data $DEV/core_hard.jsonl                 --n ${N_OVERRIDE:-80}" ;;   # kör
+    # HARNESS AÇIK (sprint3 Adım 4): bağlamı distractor kurgusu değil RETRIEVER seçer.
+    # m1 ile tek farkı bu; kırpma, sistem promptu ve üretim rejimi AYNI kalır.
+    h1)  echo "--data $DEV/core_hard.jsonl --harness-indeks $HARNESS_INDEKS --harness-k ${HARNESS_K:-5} --n ${N_OVERRIDE:-80}" ;;
     *)   return 1 ;;
   esac
 }
+
+# 🚨 Veri kapısı: h1 istendi ama indeks verilmediyse, model yüklenmeden dur (tuzak 6.2).
+case " $MODES " in
+  *" h1 "*) [ -n "${HARNESS_INDEKS:-}" ] || die "h1 modu HARNESS_INDEKS ister (ör. data/index/mevzuat_bge_m3)";;
+esac
 
 echo "### künye"
 echo "  gguf      : $GGUF"
 echo "  etiket    : *_${TAG}"
 echo "  modlar    : $MODES"
 echo "  thinking  : on   | cevap bütçesi: $MAXTOK | düşünce bütçesi: ${THINK_BUDGET:-—} | max_chunk_chars: 900 | seed: 3407"
-echo "  sunucu    : ctx=$CTX  -ngl $NGL -fa on  KV q8_0/q8_0  port=$PORT"
+echo "  sunucu    : ctx=$CTX  -ngl $NGL -fa on  KV q8_0/q8_0  port=$PORT
+  harness   : ${HARNESS_INDEKS:-KAPALI}${HARNESS_INDEKS:+ · k=${HARNESS_K:-5}}"
 echo "  güç       : $(cat /sys/class/power_supply/AC*/online 2>/dev/null | head -1 | sed 's/1/ŞARJDA/;s/0/PİLDE ⚠️/')"  # tuzak 1.6
 echo
 

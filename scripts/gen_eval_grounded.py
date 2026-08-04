@@ -61,6 +61,8 @@ SYSTEM_PROMPT_RAG_MULTI = raft_pack.SYSTEM_PROMPT_RAG_MULTI
 # birebir aynı fonksiyon → dağılım garantili eşleşir. (build_sft_v2b saf stdlib, torch/unsloth yok.)
 from build_sft_v2b import clip_sources_block
 
+from madde_anahtar import madde_anahtari  # harness izi: altın getirildi mi, kaçıncı sırada
+
 import runlock  # aynı label'a paralel yazım = sessiz bozulma (bkz. runlock.py)
 
 MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
@@ -93,6 +95,13 @@ def parse_args():
                         "context uzunluğuyla ölçmek için ŞART (ADR-0013). Sadece --distractors modunda etkin.")
     p.add_argument("--empty-context", action="store_true",
                    help="M3 (E-set): hiç kaynak verme (boş bağlam) → doğru davranış=abstention")
+    p.add_argument("--harness-indeks", default="", metavar="DIZIN",
+                   help="HARNESS AÇIK (sprint3 Adım 4): bağlamı distractor kurgusu değil "
+                        "RETRIEVER belirler. Kaynak bloğu, kırpma, sistem promptu ve üretim "
+                        "rejimi M1 ile AYNI kalır — tek değişen bağlamın NEREDEN geldiği.")
+    p.add_argument("--harness-k", type=int, default=5, metavar="N",
+                   help="retriever'dan alınacak parça sayısı (S3a eğrisi: recall@5 0,750 · "
+                        "@10 0,875 · @20 0,925). 900 char kırpma her parçaya ayrı uygulanır.")
     p.add_argument("--completion-fewshot", action="store_true",
                    help="chat-template YERİNE few-shot completion (foundation rakip: Mecellem CPT)")
     p.add_argument("--server-url", default=os.environ.get("LLAMA_SERVER_URL"),
@@ -404,6 +413,15 @@ def main():
     # 🚨 YARIŞ KAPISI: aynı label'a yazan ikinci bir üretim süreci varsa modeli yüklemeden dur.
     runlock.acquire(os.path.join(a.out_dir, f"{a.label}_detail.jsonl"), tag=f"gen {a.label}")
 
+    _retriever = None
+    if a.harness_indeks:
+        # Veri kapısı model yüklenmeden ÖNCE (tuzak 6.2) — bayat/eksik indeks burada patlar.
+        from retriever import Retriever
+        _retriever = Retriever.yukle(a.harness_indeks)
+        print(f"[gen-eval] HARNESS AÇIK · indeks={a.harness_indeks} · k={a.harness_k} · "
+              f"model={_retriever._kunye['model']} · korpus n={_retriever._kunye['n']:,}",
+              flush=True)
+
     if a.think_budget and not (a.thinking == "on" and a.server_url):
         raise SystemExit("[gen-eval] 🚫 --think-budget yalnız `--thinking on` + `--server-url` ile "
                          "anlamlı (zorunlu kapatma /apply-template + /completions gerektirir).")
@@ -470,7 +488,35 @@ def main():
             sources_block = None
             context_shown = ""
             mode = "blind"
-            if a.empty_context:                         # M3 (E-set): hiç kaynak
+            harness_izi = None
+            if a.harness_indeks:                        # HARNESS AÇIK: bağlamı retriever seçer
+                parcalar = _retriever.getir(soru, a.harness_k)
+                sources_block = raft_pack.format_sources_block(
+                    [f"{p.get('kanun_adi','')} {p.get('madde_no','')}\n{p.get('text','')}"
+                     for p in parcalar])
+                if a.max_chunk_chars > 0:               # EVAL-MIRROR: M1 ile AYNI kırpma
+                    gold_label = f"{rec.get('kanun_adi','')} {rec.get('madde_no','')}"
+                    ref_msgs = rec.get("messages") or []
+                    ref_answer = next(
+                        (m.get("content", "") for m in ref_msgs
+                         if m.get("role") in ("assistant", "model")), "")
+                    sources_block = clip_sources_block(
+                        sources_block, ref_answer, gold_label, a.max_chunk_chars)
+                context_shown = sources_block
+                mode = "harness"
+                # Why kayda geçiyor: harness-AÇIK tablosunun ayırt etmesi gereken üç hâl
+                # var — altın getirilmedi · getirildi ve cevaplandı · getirildi ama cevap
+                # 900-char kırpmasının ötesindeydi (ADR-0054/K2'nin kabul edilen bedeli).
+                altin = madde_anahtari(rec.get("kanun_no"), rec.get("madde_no"))
+                harness_izi = {
+                    "k": a.harness_k,
+                    "altin_sirasi": next(
+                        (p["sira"] for p in parcalar
+                         if madde_anahtari(p.get("kanun_no"), p.get("madde_no")) == altin), None),
+                    "getirilen": [f"{p.get('kanun_adi','')}|{p.get('madde_no','')}"
+                                  for p in parcalar],
+                }
+            elif a.empty_context:                       # M3 (E-set): hiç kaynak
                 sources_block = "(İlgili kaynak bulunamadı.)"
                 context_shown = ""
                 mode = "empty"
@@ -543,6 +589,8 @@ def main():
                 "madde_no": rec.get("madde_no"),
                 "kanun_no": rec.get("kanun_no"),
             }
+            if harness_izi is not None:
+                out["harness"] = harness_izi
             f.write(json.dumps(out, ensure_ascii=False) + "\n")
             if finish_reason == "length":
                 n_truncated += 1
