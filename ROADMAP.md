@@ -75,6 +75,31 @@ tersi taşınmaz.
   Ders: *sadelik, doğru cevabın sunum katmanıdır.*
 - Model kartı ve sürüm akışı (`v0.1` → `v1.0`, kabul testiyle)
 
+## 5. Korpus yürürlüğü — ve graph-RAG'in yeri *(2026-08-04'te ölçüldü)*
+
+🚨 **Önce veri, sonra graf.** Ölçüldü: `"İŞ KANUNU Madde 15"` atfı doğrulamayı ve **katı
+kapıyı geçiyor**, oysa o madde **mülga** (*"110- (Mülga: 22/5/2003/4857/120 md.)"*).
+Korpusta yürürlük alanı **yok** — 4 alan var, ilga bilgisi serbest metnin içinde. Aynı ad
+iki kanuna ait olabiliyor (`İŞ KANUNU` = **4857** yürürlükte **ve** **1475** mülga).
+*"Denetlenebilir"* vaadindeki en somut açık bu ([`sprint3.md`](sprint3.md) borç **B7**).
+
+- **5.1 Yürürlük alanı** — `mulga` + ilga eden kanun/madde; doğrulayıcı mülga atıfı
+  **ayrı hüküm** olarak işaretler. Veri işi, ucuz, tek başına B7'yi kapatır.
+- **5.2 Graph-RAG** — kısıtı 2026-08-03'te **kalktı**, planı **yok**. Bugün ilk kez
+  **ölçülmüş** gerekçe kazandı, ama beklenen yerde değil:
+
+  | graf ne için | ölçüm ne diyor |
+  | :--- | :--- |
+  | erişim kalitesi | ❌ gerekmiyor — `recall@5` 0,750 → `@20` **0,925**, açığın çoğu **k** ile kapanıyor |
+  | cevap kalitesi | ❌ gerekmiyor — altın getirildiğinde A1 zaten **0,934** |
+  | belirsiz sorgu | ❌ çözmüyor — soruların ~%25'i konusunu hiç belirtmiyor |
+  | **yürürlük · ilga · tadil · atıf zincirleri** | ✅ **düz vektör benzerliğinden okunamaz** |
+
+  **Sıra:** B7 (veri) → B3 (k süpürmesi) → B1 (isabet denetimi) → **graf**. Graf, 5.1
+  yapıldıktan sonra *atıf zincirleri ve çapraz referans* için hak eder; erişim darboğazını
+  çözmek için değil. ⚠️ [`VISION.md`](docs/VISION.md) Faz 2'deki *"hukuk ilişkiseldir"*
+  gerekçesi **varsayımdı**; ölçülmüş hâli bu tablodur.
+
 ---
 
 ## Opsiyonel: iddia katmanı (arxiv)
