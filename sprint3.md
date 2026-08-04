@@ -222,7 +222,7 @@ bash scripts/cp3_merge_dene.sh models/merged/<yeni> modul
 Tutmazsa `v0.1` yerinde kalır, kayıp 1 saat. `open_questions.md`'de açık soru olarak
 duruyor.
 
-#### 🟡 KOŞUYOR (2026-08-04) — durum ve iki ön bulgu
+#### 🔴 KAPANDI (2026-08-04) — reddedildi · [ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50
 
 `--norm-kapsam {global,modul}` **yazıldı** (`scripts/merge_ties.py`), merge koştu (224/224).
 
@@ -241,12 +241,24 @@ seçimi. Bu yüzden eval **koşuluyor** — akıl yürütmeyle değil ölçümle
 beklenen eksen **kütle**. Bu yüzden önce **yalnız m1** koşuluyor; kütle düşerse m2b/m2
 üretimi ve hakem parası harcanmıyor.
 
-⚠️ Karşılaştırma çıpası (mevcut kayıtlardan, `outputs/eval/cp3-supurme-*`):
+**③ SONUÇ 🔴 — kabul ölçütü düştü, hakem hiç çağrılmadı.** Geçerlilik kapısı geçildi
+(kesik %1,2). Cevaplanan **45/80** → coverage **%56,2**. Kütle = coverage × A1 olduğundan,
+**A1 = 1,000 olsa bile** kütle ≤ %56,2 < gereken **%71,6**. A1'i ölçmek sonucu
+değiştiremezdi → m2b/m2 koşulmadı, **hakem maliyeti $0**.
 
 | varyant | cevaplanan | A1 | **kütle** | M2b red |
 | :--- | ---: | ---: | ---: | ---: |
 | `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | 0,877 |
 | `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 |
+| **`modulmin`** (bu adım) | **45/80** | ölçülmedi | **≤ %56,2** | ölçülmedi |
+
+Modül-başına kapsam global `min`'i **tekrarladı**. %27'lik yön farkı aşırı-reddi
+kurtarmadı — çünkü aşırı-reddi yaratan **yön değil genlik**: her iki kapsamda da `τ_g`
+kendi eğitim genliğinin ~1/9'una iniyor ve zeminleme zayıflıyor.
+
+**`v0.1` yerinde kalıyor.** `--norm-kapsam` bayrağı kodda kaldı (varsayılan `global`).
+⚠️ `τ_a`'nın merge'de seyrelmesi **hâlâ açık** — çözüm merge parametresinde değil,
+muhtemelen `τ_a`'nın **eğitim genliğinde** (82 adım @1e-5 çok kısaydı).
 
 ---
 
@@ -300,7 +312,7 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
 | **K1** gömme modeli | ✅ **çözüldü** | `bge-m3` + BM25 hibriti (RRF) — research_log #49 |
 | **K2-K5** tasarım kararları | 🛑 **çözülecek** | ADR-0053+ · ⚠️ K4'e S3a'dan yeni girdi var |
 | **S3a** ön-prob (recall@k + bedesten) | ✅ **KAPANDI** 2026-08-04 | hibrit `recall@10` **0,875** · bedesten ✅ GEÇERLİ · `outputs/eval/s3a-on-prob/` · research_log #49 |
-| **0** modül-başına norm | 🟡 **sırada** | `models/gguf/` + `outputs/eval/` |
+| **0** modül-başına norm | 🔴 **REDDEDİLDİ** 2026-08-04 | kütle ≤ %56,2 < %71,6 · hakem **$0** · [ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50 |
 | **1** retriever | ⏳ | `scripts/` + recall@k |
 | **2** atıf doğrulayıcı | ⏳ | `scripts/` |
 | **3** red kapısı | ⏳ | `scripts/` |
