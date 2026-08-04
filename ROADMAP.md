@@ -11,6 +11,13 @@
 
 DEV, **harness kapalı**, hakem `gpt-4o-mini` (protokol: [MODEL_CARD](MODEL_CARD.md))
 
+> ⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Harness AÇIK ürün sayısı
+> 2026-08-04'te ilk kez ölçüldü: **sadık-cevap kütlesi %58,7** (kapalıda %71,6) — düşüşün
+> tamamı erişimden. ⭐ Ama retriever altın maddeyi bulduğunda **A1 0,934 > 0,909**, yani
+> **darboğaz model değil erişim**. Rakip harness açıkken **hâlâ ölçülmedi**.
+> [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+> [`sprint3.md`](sprint3.md)
+
 ```
                   BİZ 4B   Gemini FL    açık
 M1 sadık-cevap    71,6%     72,9%     ~kapandı  ✅
