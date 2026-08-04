@@ -48,11 +48,14 @@ body = post("/searchDocuments", {
 meta = body.get("metadata", {})
 print("FMTY:", meta.get("FMTY"), "| total:", (body.get("data") or {}).get("total"))
 docs = (body.get("data") or {}).get("mevzuatList", [])
+# Why: alan adı `mevzuatId` (BEDESTEN_API.md §48). Eski kod `documentId`/`id`
+# arıyordu; arama SUCCESS dönerken id None kalıyor ve prob, API çalışırken
+# "bozuk" raporluyordu — sessiz yanlışlık, 2026-08-04'te yakalandı.
 for d in docs[:3]:
-    print("  id:", d.get("documentId") or d.get("id"), "| ad:", str(d.get("mevzuatAdi"))[:50], "| tur:", d.get("mevzuatTur"))
+    print("  id:", d.get("mevzuatId"), "| ad:", str(d.get("mevzuatAdi"))[:50], "| tur:", d.get("mevzuatTur"))
 
 if docs:
-    did = docs[0].get("documentId") or docs[0].get("id")
+    did = docs[0].get("mevzuatId")
     print(f"\n=== 2) getDocumentContent (id={did}) ===")
     c = post("/getDocumentContent", {"documentType": "MEVZUAT", "id": did})
     cmeta = c.get("metadata", {})
@@ -61,3 +64,27 @@ if docs:
     decoded = base64.b64decode(data.get("content", "")).decode("utf-8", "replace")
     txt = strip_html(decoded) if "html" in (data.get("mimeType") or "") else "(PDF/binary)"
     print("içerik (ilk 400 karakter):\n", txt[:400])
+
+    print(f"\n=== 3) mevzuatMaddeTree (mevzuatId={did}) ===")
+    t = post("/mevzuatMaddeTree", {"mevzuatId": did})
+    print("FMTY:", t.get("metadata", {}).get("FMTY"))
+    kok = (t.get("data") or {}).get("children") or []
+    yigin, maddeler = list(kok), []
+    while yigin:
+        n = yigin.pop()
+        yigin.extend(n.get("children") or [])
+        if n.get("maddeNo") is not None:
+            maddeler.append(n)
+    print(f"madde sayısı: {len(maddeler)}")
+    for m in maddeler[:3]:
+        print("  maddeId:", m.get("maddeId"), "| no:", m.get("maddeNo"),
+              "| başlık:", m.get("title"), "| güncelleme:", m.get("guncellemeTarihi"))
+
+    if maddeler:
+        mid = maddeler[0]["maddeId"]
+        print(f"\n=== 4) getDocumentContent MADDE (id={mid}) — retriever'ın kullanacağı yol ===")
+        cm = post("/getDocumentContent", {"documentType": "MADDE", "id": mid})
+        dm = cm.get("data") or {}
+        print("FMTY:", cm.get("metadata", {}).get("FMTY"), "| mime:", dm.get("mimeType"))
+        mtxt = base64.b64decode(dm.get("content", "")).decode("utf-8", "replace")
+        print("madde metni (ilk 300):\n", strip_html(mtxt)[:300])
