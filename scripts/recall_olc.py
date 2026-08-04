@@ -185,7 +185,9 @@ def main():
 
     sonuc = {
         "yontem": etiket, "n": len(sorular), "korpus": len(kayitlar),
-        "cihaz": a.cihaz if a.yontem == "yogun" else "cpu",
+        # Why: hibrit de gömme koşturur. Koşul `== "yogun"` iken hibrit künyeye
+        # `cpu` yazıyordu — künyeye yanlış yazılan parametre, koşulmamış sayılır (6.12).
+        "cihaz": "cpu" if a.yontem == "bm25" else a.cihaz,
         "recall": {f"recall@{k}": round(recall_at_k(siralar, k), 4) for k in KLER},
         "kanun_recall": {f"kanun_recall@{k}": round(recall_at_k(kanun_siralari, k), 4)
                          for k in KLER},
