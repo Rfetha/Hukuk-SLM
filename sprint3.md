@@ -32,6 +32,33 @@ bedel     : GPU $0 (harness CPU'da) · hakem ~$1 · gömme modeli indirme
 
 ## Neden harness — karar gerekçesi (insan, 2026-08-03)
 
+> ### ⚠️ 2026-08-04 — bu dört gerekçe ÖLÇÜLDÜ, ikisi ayakta değil
+>
+> Metin **olduğu gibi bırakıldı** (karar o gün bu gerekçelerle verildi, kayıt bu).
+> Ölçümün hükmü:
+>
+> | # | gerekçe | hüküm |
+> | :-- | :--- | :--- |
+> | 1 | ortada ürün yok | ✅ **doğruydu** — retriever kuruldu, kullanıcı artık madde yapıştırmıyor |
+> | 2 | iki açığı **kod** kapatır | ❌ **A1 ayağı ÇÜRÜDÜ** · ⏸ **M2b ayağı sınanmadı** |
+> | 3 | şimdi eğitmek yanlış dağılıma eğitmek olur | ❌ **ZAYIFLADI** — retriever bağlamı daha *az* tuzaklı çıktı |
+> | 4 | canlı mevzuat = kategori farkı | ⏸ **SINANMADI** — canlı katman kurulmadı (borç B6) |
+>
+> **2 neden çürüdü:** *"A1 0,909 → atıf doğrulayıcı uydurulan madde numarası yakalar"*
+> diyordu. Ölçüldü: **uydurulmuş madde numarası SIFIR** (harness açık 89/89 doğrulandı,
+> kapalı 87/89 — kalan 2'si "ayrıştırılamadı", uydurma değil). Doğrulayıcının yakalayacağı
+> bir şey yoktu; model numara uydurmuyor, bağlamdaki etiketi kopyalıyor. A1'in açığı
+> fabrikasyondan **gelmiyormuş** — **14/80** soruda altın gelmeden *başka bir gerçek*
+> maddeden cevaplanmasından geliyor. O atıf doğrulanır, kapıdan geçer, soruya uymaz
+> → **borç B1**. `M2b` ayağı ise çürümedi, **harness açık m2b hiç koşulmadı**.
+>
+> **3 neden zayıfladı:** *"gerçek retriever ~5 gürültülü parça verecek"* deniyordu.
+> Ölçüldü: retriever bağlamında A1 **0,9344**, elle kurulmuş çeldiricili m1 bağlamında
+> **0,9087**. m1'in 4 hard-negative çeldiricisi retriever'ın 5 konusal maddesinden
+> **daha** tuzaklıymış. *"Önce harness, sonra eğitim"* sıralamasının bu dayanağı düştü.
+>
+> Kaynak: [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md)
+
 **1. Şu an ortada ürün yok.** Model çalışsın diye kullanıcının **mevzuat metnini
 kendisi yapıştırması** gerekiyor. Vatandaş bunu yapamaz — hangi maddeyi arayacağını
 bilse zaten asistana ihtiyacı olmazdı.
@@ -196,6 +223,13 @@ Saf bilgi-erişim ölçümü.
 > **BM25 neden ilk:** hukuk metni ayırt edici terimlerle dolu (kanun adları, madde numaraları).
 > Sözlüksel arama burada beklenenden güçlü olabilir ve **taban çizgisi** kurar. Yoğun gömme
 > BM25'i geçemiyorsa gömme modeli seçmenin anlamı yok. *(Bu aynı zamanda K1'i çözer.)*
+>
+> ⚠️ **2026-08-04 — öngörü tersine çıktı.** BM25 *"beklenenden güçlü"* değil, **en zayıf**
+> yöntem oldu: `recall@10` **0,625** — ön-kayıtlı **"<%70 → DUR"** bölgesinde. Yoğun gömme
+> onu her k'da geçti (bge-m3 0,800). **Ama merdivenin mantığı yine de işe yaradı:** BM25 tek
+> başına zayıfken hibritte bge-m3'e **+0,075** ekledi (0,800 → **0,875**) — iki yöntem
+> **farklı** soruları kaçırıyor. Yani *"taban çizgisi kur"* gerekçesi tuttu, *"tek başına
+> yetebilir"* öngörüsü tutmadı.
 
 **⛔ ÖN-KAYITLI KARAR EŞİKLERİ — sayı görülmeden yazıldı:**
 

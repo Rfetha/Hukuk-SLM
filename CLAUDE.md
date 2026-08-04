@@ -53,7 +53,7 @@ Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: [`docs/record/kollar.md`](do
 M1 faithful mass    71.6%      72.9%
 M2 Rej              0.893      0.930
 A1                  0.909      0.956
-M2b Rej             0.877      1.000   ← widest gap; the harness closes it in code
+M2b Rej             0.877      1.000   ← widest gap; "the harness closes it in code" ⏸ UNTESTED
 ```
 
 ⚠️ **The table above is measured with the harness OFF.** `v0.1` because the config was
@@ -68,6 +68,12 @@ faithful-answer mass       71.6%          58.7%     ← the honest product numbe
 A1, gold retrieved         0.909          0.934     ← ⭐ better when retrieval hits
 fabricated citations         0              0
 ```
+
+⚠️ **Sprint 3 was justified on "deterministic code closes two of our three gaps." Measured,
+that claim is half-dead:** the **A1** half is **refuted** — fabricated article numbers are
+**zero**, so the citation verifier had nothing to catch; A1's gap comes from answering out of
+a *different real* article when retrieval misses (14/80). The **M2b** half is **untested** —
+m2b was never run with the harness on. See [`sprint3.md`](sprint3.md) debt **B1**.
 
 Read it this way: the drop is **entirely retrieval** — in 25% of questions the gold
 article is not in the top 5. When it *is*, the model is **more** faithful than under the
