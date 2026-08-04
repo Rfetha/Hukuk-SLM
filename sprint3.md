@@ -44,19 +44,23 @@ elde edilemeyecek üstünlük.
 
 ## ⛔ TASARIM KARARLARI — kod yazılmadan çözülür
 
-### K1. Gömme modeli (embedder) — ✅ **S3a ön-probunda çözülüyor**
+### K1. Gömme modeli (embedder) — ✅ **ÇÖZÜLDÜ 2026-08-04** (S3a ön-probu)
 
-Türkçe hukuk metni · **CPU'da** koşacak (harness GPU'ya girmez — bu, sığar/sığmaz
-farkı). Adaylar ölçülmeli, seçilmemeli:
+**Karar: `BAAI/bge-m3`, BM25 ile RRF hibriti içinde.** Ölçümle seçildi, etiketle değil.
 
-| aday | not |
-| :--- | :--- |
-| `intfloat/multilingual-e5-*` | güçlü çok-dilli taban, yaygın |
-| `BAAI/bge-m3` | uzun bağlam, çok-dilli |
-| Türkçe-özel modeller | varsa ölçülür — "Türkçe" etiketi tek başına kanıt değil |
+| yöntem | recall@10 | recall@20 | kaçan (80'de) |
+| :--- | ---: | ---: | ---: |
+| BM25 | 0,625 | 0,750 | 20 |
+| `intfloat/multilingual-e5-base` | 0,700 | 0,750 | 20 |
+| `BAAI/bge-m3` | 0,800 | 0,863 | 11 |
+| ⭐ **hibrit** (BM25 + bge-m3, RRF) | **0,875** | **0,925** | **6** |
 
-**Ölçüt:** DEV sorularında **recall@k** — altın madde ilk k içinde mi. Bu bedava
-ölçülür (etiket zaten elimizde), model çağrısı gerekmez.
+BM25 tek başına en zayıf ama hibritte bge-m3'e **+0,075** ekliyor — iki yöntem farklı
+soruları kaçırıyor. Maliyet: bge-m3 CPU'da indeksleme ~2-3 sa (bir kerelik), sorgu anında
+kaba kuvvet arama **8,2 ms** / indeks **83 MB** fp16 → **vektör veritabanı gerekmiyor**
+(bu ölçekte ANN bile gereksiz; gerekçe research_log #49 §7).
+
+⚠️ **Sayılar bu soru kümesinin tavanı, retriever'ın değil** — aşağıya bak (S3a sonucu).
 
 ### K2. Chunk birimi
 
@@ -165,14 +169,38 @@ recall sessizce şişiyor — test olarak çivilendi.)*
 ⚠️ **S3'ün planı YAZILMADI, bilinçli.** S3a'nın sonucu S3'ün şeklini belirliyor; probu
 koşmadan S3 planı yazmak, probun engellemek için var olduğu şeyi yapmak olur.
 
-#### S3a çıkış ölçütü
+#### S3a çıkış ölçütü — ✅ **KAPANDI 2026-08-04**
 
 ```
 ✅ recall@1/5/10/20 eğrisi ölçüldü, en iyi yöntem seçildi (K1 çözüldü)
 ✅ eşik kararı verildi ve S3'ün boyutu buna göre kesinleşti
 ✅ bedesten sözleşmesi sınandı, sonucu kayda geçti
-→ research_log #49
+→ research_log #49 · çıktılar outputs/eval/s3a-on-prob/
 ```
+
+**Eşik kararı: `recall@10` = 0,875 → %70-90 bandı → 🟡 HİBRİT, S3 büyür.**
+Merdivenin 4. basamağı S3a içinde koşulduğu için "S3 büyür" = **retriever hibrit olur**,
+ayrı bir keşif turu değil.
+
+**Bedesten: ✅ GEÇERLİ** (4/4 çağrı `SUCCESS`, İş Kanunu M1 `guncellemeTarihi` 2026-05-07)
+→ güncellik iddiası ayakta, `ROADMAP.md`/`MODEL_CARD.md` düzeltmesi **gerekmiyor**.
+⚠️ Prob betiğinin kendisi bozuktu (`documentId` arıyordu, alan `mevzuatId`) ve API
+çalışırken *"sözleşme bozuk"* raporluyordu — düzeltildi, **tuzak 7.1**.
+
+#### ⭐ S3a'nın planlanmamış bulgusu — insana
+
+**DEV soru kümesi erişim ölçümü için yetersiz belirlenmiş.** Kaçırılan soruların hemen
+tamamı hangi kanuna ait olduğunu söylemiyor (*"Başvurum kabul edilirse ne olur?"*,
+*"El konulan gönderilerim ne olacak?"*). Ölçüldü: aynı BM25, aday havuzu altının **kendi
+kanunuyla** sınırlanınca `recall@10` **0,625 → 0,875**.
+
+`core_hard.jsonl` altın madde elde tutularak üretildi — **grounded QA kümesi, retrieval
+kümesi değil.** Sonuç: `recall@k` sayılarımız retriever kabiliyetinin değil **bu kümenin**
+tavanı. → **tuzak 7.4**, ve **K4'ü (harness-AÇIK protokolü) doğrudan etkiliyor**:
+protokol bu kümeyle mi kurulacak, yoksa ayırt edici sorulardan oluşan bir alt küme mi
+gerekiyor? ⚠️ Sayı görüldükten sonra küme değiştirmek dışarıdan *"cilaladılar"* diye
+okunur — **karar insanın, ADR'ye yazılır.** Öneri: küme **değiştirilmez**, yanına
+"kendi başına ayırt edici mi" etiketi eklenir, sayılar iki alt kümede **ayrı** raporlanır.
 
 ---
 
@@ -243,9 +271,10 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
 
 | adım | durum | çıktı |
 | :--- | :--- | :--- |
-| **K1-K5** tasarım kararları | 🛑 **çözülecek** | ADR-0053+ |
-| **S3a** ön-prob (recall@k + bedesten) | ⏳ ⭐ **ÖNCE BU** | `outputs/eval/` + research_log #49 |
-| **0** modül-başına norm | ⏳ | `models/gguf/` + `outputs/eval/` |
+| **K1** gömme modeli | ✅ **çözüldü** | `bge-m3` + BM25 hibriti (RRF) — research_log #49 |
+| **K2-K5** tasarım kararları | 🛑 **çözülecek** | ADR-0053+ · ⚠️ K4'e S3a'dan yeni girdi var |
+| **S3a** ön-prob (recall@k + bedesten) | ✅ **KAPANDI** 2026-08-04 | hibrit `recall@10` **0,875** · bedesten ✅ GEÇERLİ · `outputs/eval/s3a-on-prob/` · research_log #49 |
+| **0** modül-başına norm | 🟡 **sırada** | `models/gguf/` + `outputs/eval/` |
 | **1** retriever | ⏳ | `scripts/` + recall@k |
 | **2** atıf doğrulayıcı | ⏳ | `scripts/` |
 | **3** red kapısı | ⏳ | `scripts/` |
