@@ -222,6 +222,32 @@ bash scripts/cp3_merge_dene.sh models/merged/<yeni> modul
 Tutmazsa `v0.1` yerinde kalır, kayıp 1 saat. `open_questions.md`'de açık soru olarak
 duruyor.
 
+#### 🟡 KOŞUYOR (2026-08-04) — durum ve iki ön bulgu
+
+`--norm-kapsam {global,modul}` **yazıldı** (`scripts/merge_ties.py`), merge koştu (224/224).
+
+**① Adım 0'ın gerekçesi ölçümde durmuyor.** *"İki kolun da en büyük normu aynı MLP
+yüzeyinde, global norm bunu göremiyor"* — ölçüldü: kolların modül profilleri neredeyse
+**orantılı**, τ_g/τ_a oranı 11 yüzeyin hepsinde **7,2–10,1**. Global normalleştirmeden
+sonra payları zaten eşitleniyor (τ̂_a/τ̂_g = **0,88–1,24**). Yani `τ_a` bir **kapsam
+artefaktı** yüzünden silinmiyor.
+
+**② Ama modül-başına kapsam yine de no-op değil** — ölçüldü, ağırlık uzayında:
+`‖W_modül − W_global‖ / ‖W_global − base‖` = **0,272**. Yön %27 değişiyor, **genlik
+değişmiyor** (‖Δ‖ 1,3835 ↔ 1,3865). Farkın kaynağı TIES'in doğrusal-olmayan işaret
+seçimi. Bu yüzden eval **koşuluyor** — akıl yürütmeyle değil ölçümle kapanacak.
+
+**Bütçe sırası:** kabul bir **VE** koşulu ve genlik `min`'le aynı olduğu için düşmesi
+beklenen eksen **kütle**. Bu yüzden önce **yalnız m1** koşuluyor; kütle düşerse m2b/m2
+üretimi ve hakem parası harcanmıyor.
+
+⚠️ Karşılaştırma çıpası (mevcut kayıtlardan, `outputs/eval/cp3-supurme-*`):
+
+| varyant | cevaplanan | A1 | **kütle** | M2b red |
+| :--- | ---: | ---: | ---: | ---: |
+| `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | 0,877 |
+| `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 |
+
 ---
 
 ## Değişmezler
