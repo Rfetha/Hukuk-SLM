@@ -68,6 +68,22 @@ O atıf **gerçek** — korpusta var, doğrulanır, kapıdan geçer. Yani atıf 
 *"uydurulmuş atıf"*ı çözüyor ama *"gerçek ama soruya uymayan madde"*yi çözmüyor. Bu
 **tasarımın sınırı**, hatası değil — ve S3'ün asıl açığı olarak kayda geçiyor.
 
+⛔ **Bu, Sprint 3'ün varlık gerekçesinin yarısını çürütüyor.** `sprint3.md` §"Neden harness"
+madde 2 şunu diyordu:
+
+```
+A1  0,909 → atıf doğrulayıcı  uydurulan madde numarası yakalanır  deterministik
+```
+
+Uydurulan madde numarası **yok**. Doğrulayıcının yakalayacağı bir şey olmadığı için A1'e
+katkısı **ölçülebilir biçimde sıfır**. A1'in açığı fabrikasyondan değil **isabetsizlikten**
+geliyor ve o deterministik kodla çözülmüyor. Aynı maddenin `M2b` ayağı **çürümedi,
+sınanmadı** — harness açık m2b hiç koşulmadı. Hüküm `sprint3.md`'ye de işlendi (çelişki
+iki yerde birden işaretlenir kuralı).
+
+Aynı bölümün 3. maddesi (*"gerçek retriever ~5 gürültülü parça verecek"*) de **zayıfladı**
+— yukarıdaki 2. okuma ölçtü: retriever bağlamı m1'in çeldiricili bağlamından daha az tuzaklı.
+
 ## Doğrulayıcı kalibrasyonu — ADR-0038'in adını koyduğu borç ödendi
 
 Katı kapıda **her yanlış negatif doğrudan coverage kaybıdır**. İlk koşuda 5 `KANUN_YOK`
