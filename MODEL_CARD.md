@@ -61,8 +61,45 @@ refuse · A1 = faithfulness of claims, **computed over answered items only** ·
   and **refuse less often than it does** — but we are behind on A1 (0.909 vs
   0.956), M2 (0.893 vs 0.930) and clearly behind on **M2b (0.877 vs 1.000)**.
 - **This is not a parity claim.** The harness is off, cost is not normalized, and
-  the merge configuration was **selected on DEV over 3 variants**. A comparison
-  with the harness on has never been run.
+  the merge configuration was **selected on DEV over 3 variants**. The competitor
+  comparison has still never been run with the harness on.
+
+### With the harness ON (first measured 2026-08-04)
+
+Same artifact, same regime, DEV; the only change is that a retriever — not a
+hand-built context — decides what the model sees. Retriever: hybrid BM25 +
+`BAAI/bge-m3` (RRF), 40,496-article index, k=5.
+Full record: [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md).
+
+| | harness OFF | harness ON (k=5) |
+| :--- | ---: | ---: |
+| gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 |
+| coverage | 0.788 | 0.750 |
+| A1 (answered-only) | 0.909 | 0.782 |
+| **faithful-answer mass** | **71.6%** | **58.7%** |
+| ⭐ A1, **gold-retrieved subset** | 0.909 | **0.934** |
+| verified citations | 87/89 | **89/89** |
+| **fabricated article numbers** | 0 | **0** |
+| strict-gate rejections | 2/80 | 1/80 |
+
+**58.7% is the honest product number.** The whole drop is retrieval: in 25% of
+questions the gold article is not in the top 5. Where retrieval succeeds the model
+is **more** faithful than in the OFF setting (0.934 vs 0.909) — the assumption that
+a real retriever supplies *noisier* context did not hold, because the OFF setting
+packs four hard negatives while the retriever returns five topically related real
+articles.
+
+⚠️ **Known limit of the citation verifier.** The model does not fabricate article
+numbers — it copies the label from its context. In 14/80 questions the gold was not
+retrieved and it answered from a *different real* article: the citation verifies,
+the gate passes it, and the answer still does not fit the question. Deterministic
+citation checking solves fabrication, **not** off-target grounding.
+
+⚠️ A1 is scored against a **single** gold article, so an answer correctly sourced
+from another article counts as unfaithful — the comparable figure across ON/OFF is
+the **gold-retrieved subset** row. And the DEV questions were written with the gold
+article in hand: ~25% do not identify their subject on their own, so recall@5 = 0.750
+is a ceiling of *this question set*, not of the retriever.
 
 ### Why `v0.1` and not `v1.0`
 

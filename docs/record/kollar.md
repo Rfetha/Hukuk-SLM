@@ -136,7 +136,22 @@ Sonradan düzeltmek, koşulan şeyi daha derli toplu göstermek için **ölçüm
 yazmak** olurdu. Eşleme burada kayıtlı ve bağlayıcı olan budur:
 
 ```
-tgta_v1  ==  outputs/eval/cp3-supurme-ham/*_tg_ta_ham_th_*
+tgta_v1  ==  outputs/eval/cp3-supurme-ham/*_tg_ta_ham_th_*          harness KAPALI
+tgta_v1  ==  outputs/eval/s3-harness-acik/*_tgta_v1_h1_*            harness AÇIK (2026-08-04)
+```
+
+⚠️ **Aynı artefaktın iki ölçümü var, karıştırma.** `cp3-supurme-ham` harness KAPALI
+(bağlam elle kuruluyor), `s3-harness-acik` harness AÇIK (bağlamı retriever seçiyor,
+k=5). Rejim değişmezleri ikisinde de aynı; **tek fark bağlamın nereden geldiği** —
+kıyas bu yüzden kurulabiliyor. Sayılar:
+[research_log #51](research_log/2026-08-04-harness-acik-ilk-olcum.md) · kütle
+**%71,6 (kapalı) ↔ %58,7 (açık)**, altın getirilen alt kümede A1 **0,934 > 0,909**.
+
+**Harness artefaktı** (modelin parçası değil, ama ölçümün parçası):
+
+```
+data/index/mevzuat_bge_m3/               hibrit indeks · BAAI/bge-m3 · 40.496 madde · 83 MB
+data/index/mevzuat_bge_m3/KUNYE.json     yöntem · model · pencere · korpus imzası
 ```
 
 **Neden `v1` = ham TIES:** üç varyant DEV'de denendi, kazanan bu ([ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)).

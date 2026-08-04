@@ -35,22 +35,25 @@ Tasarım: [`docs/specs/2026-08-03-yol-haritasi-design.md`](docs/specs/2026-08-03
 Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
 
 - [ ] **Tasarım kararları** → ADR-0053+ *(kod yazılmadan çözülür)*
-  - [x] **K2** chunk birimi → **madde** (atıf birimi olduğu için); uzun maddeler
-        gömme için örtüşen pencerelere bölünür, madde kimliğiyle tekilleştirilir
-  - [x] **K3** korpus → **canlı API şart**; ölçüm donmuş anlık görüntüde kalır
-        (tekrarlanabilirlik) — iki mod, tek arayüz
-  - [x] **K5** red kapısı → [ADR-0038](docs/adr/0038-red-kapisi-esigi-kati.md) **katı**; aşırı-red ölçülecek
-  - [ ] **K1** gömme modeli → adaylar **recall@k** ile **ölçülür**, seçilmez
-  - [ ] **K4** ⭐ harness AÇIK ölçüm protokolü → tasarlanıp ADR olarak sunulur
-- [ ] ⭐ **S3a ön-prob** — `recall@k` (BM25 önce) + bedesten sözleşmesi · $0 · ~1 gün
-      ⛔ ön-kayıtlı eşik: `recall@10` ≥%90 plan aynen · %70-90 hibrit · <%70 **DUR**
-- [ ] **Adım 0** — modül-başına normalleştirme *(1 sa · $0)*
-      kabul: M2b > 0,877 **ve** M1 kütlesi ≥ %71,6 *(ikisi birden)*
-- [ ] **Adım 1** — retriever: indeks + `recall@k`
-- [ ] **Adım 2** — atıf doğrulayıcı *(deterministik, hakem gerekmez)*
-- [ ] **Adım 3** — red kapısı
-- [ ] **Adım 4** — ⭐ **harness AÇIK ölçüm** — gerçek ürün sayımız, **hiç görülmedi**
-      → 🛑 DUR, açık/kapalı tabloyu insana sun
+  - [x] **K1** gömme modeli → **`BAAI/bge-m3` + BM25, RRF hibriti** — ölçümle seçildi
+        (`recall@10`: BM25 0,625 · e5-base 0,700 · bge-m3 0,800 · **hibrit 0,875**)
+  - [x] **K2** chunk birimi → **TAM MADDE indekslenir**, 900 karakter kırpması yalnız
+        bağlam **modele verilirken** ([ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md))
+        ⚠️ *önceki satır "örtüşen pencerelere bölünür" diyordu — o karar alınmadı, ADR-0054 bunu değiştirdi*
+  - [x] **K3** korpus → **statikle başla**, canlı `bedesten` katmanı S3'ten sonra
+        (ölçüm tekrarlanabilirliği). Sözleşme S3a'da sınandı: **4/4 GEÇERLİ**
+  - [x] **K4** ⭐ harness AÇIK protokolü → küme **değişmez**, ayırt-edicilik etiketi eklenir,
+        sayılar iki alt kümede ayrı raporlanır (ADR-0054) — ⚠️ **etiket turu henüz koşulmadı (borç B2)**
+  - [x] **K5** red kapısı → [ADR-0038](docs/adr/0038-red-kapisi-esigi-kati.md) **katı**; aşırı-red ölçüldü
+- [x] ⭐ **S3a ön-prob** — hibrit `recall@10` **0,875** · bedesten **GEÇERLİ** → research_log #49
+- [x] **Adım 0** — modül-başına normalleştirme → 🔴 **REDDEDİLDİ**, kütle ≤ %56,2 < %71,6,
+      hakem **$0** ([ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · #50)
+- [x] **Adım 1** — retriever: `scripts/retriever.py` + indeks (40.496 madde) · `recall@10` **0,8750**
+- [x] **Adım 2** — atıf doğrulayıcı: `scripts/atif_dogrula.py`, deterministik, **hakemsiz**
+- [x] **Adım 3** — red kapısı: `scripts/red_kapisi.py`, ADR-0038 katı + 2 ablasyon
+- [x] **Adım 4** — ⭐ **harness AÇIK ölçüm KOŞULDU** → kütle **%71,6 → %58,7**,
+      ⭐ altın getirilince A1 **0,934 > 0,909**, uydurulmuş atıf **0/89** → research_log #51
+      🛑 **insana sunuldu; sıradaki kararlar için [`sprint3.md`](sprint3.md) açık borçlar (B1-B6)**
 
 ---
 

@@ -56,9 +56,25 @@ A1                  0.909      0.956
 M2b Rej             0.877      1.000   ← widest gap; the harness closes it in code
 ```
 
-⚠️ **All of it measured with the harness OFF** — the real product number has never
-been run. `v0.1` because the config was selected on DEV and is not validated against
-baselines.
+⚠️ **The table above is measured with the harness OFF.** `v0.1` because the config was
+selected on DEV and is not validated against baselines.
+
+**The harness-ON number now exists — first run 2026-08-04**
+([research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md)):
+
+```
+                        harness OFF   harness ON (k=5)
+faithful-answer mass       71.6%          58.7%     ← the honest product number
+A1, gold retrieved         0.909          0.934     ← ⭐ better when retrieval hits
+fabricated citations         0              0
+```
+
+Read it this way: the drop is **entirely retrieval** — in 25% of questions the gold
+article is not in the top 5. When it *is*, the model is **more** faithful than under the
+distractor-packed OFF setting, so the bottleneck is **retrieval, not the model**. And the
+harness's known limit: the model does not fabricate article numbers, it answers from a
+*different real* article — a citation that verifies and passes the gate but does not fit
+the question (14/80). That is Sprint 3's open debt B1, in [`sprint3.md`](sprint3.md).
 
 ### Target audience: the CITIZEN — but read the trap
 

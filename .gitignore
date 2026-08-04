@@ -160,3 +160,7 @@ scratchpad/
 
 # Ara/ham çalışma verisi — üretilebilir, provenansı outputs/ künyelerinde (OSS temizliği 2026-08-03)
 data/_ham_ve_ara/
+
+# Retriever indeksi — türetilmiş artefakt (korpus + gömme modelinden ~10 dk'da yeniden kurulur).
+# KUNYE.json kalır (ölçüm künyesi), gömme matrisi git'e girmez.
+data/index/**/*.npy
