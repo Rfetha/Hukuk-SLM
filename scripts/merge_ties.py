@@ -21,10 +21,11 @@ Bu yüzden her `τ` **birim Frobenius normuna** indirilir, TIES uygulanır, sonu
 **ortalamasıyla** yeniden ölçeklenir (tek bir kolla kıyaslanabilir büyüklükte kalsın).
 `--no-norm-balance` ham TIES ablasyonunu koşar (ADR-0036 gereği ikisi de raporlanır).
 
-⚠️ **Normalizasyon KAPSAMI global** (tüm τ için tek `‖τ‖_F`) — ADR-0036'nın metnindeki `τ/‖τ‖`
-ifadesinin birebir okunuşu. Modül-başına normalizasyon **alınmamış bir alternatif**; kolların
-modül dağılımı farklıysa (`tau_norm_tg.json`: `gate_proj` 6.14 ↔ `in_proj_a` 0.31) sonucu
-değiştirebilir. Karara bağlanmadı, `docs/open_questions.md`'ye yazıldı.
+⚠️ **Normalizasyon KAPSAMI seçilebilir** (`--norm-kapsam`): `global` tüm τ için tek `‖τ‖_F`
+(ADR-0036'nın birebir okunuşu, varsayılan) · `modul` her modül yüzeyi ayrı normalize edilir.
+Modül-başına kapsam sprint3 Adım 0'da ölçülüyor: iki kolun da en büyük normu **aynı MLP
+yüzeyinde** (`gate_proj` τ_g 6,150 ↔ τ_a 0,621 · `up_proj` 5,047 ↔ 0,628) ve global norm bunu
+göremiyor — `τ_a` tam becerilerin çakıştığı yerde siliniyor olabilir.
 
 ## Değişmezler
 
@@ -75,7 +76,32 @@ def parse_args():
                         "4,9× aşırı yükseltme; model dejenere oldu (research_log #48 §21).")
     p.add_argument("--no-norm-balance", action="store_true",
                    help="HAM TIES ablasyonu (ADR-0036) — norm-dengeleme uygulanmaz")
+    p.add_argument("--norm-kapsam", default="global", choices=["global", "modul"],
+                   help="normalleştirmenin KAPSAMI: `global` tek ‖τ‖_F (ADR-0036'nın birebir "
+                        "okunuşu) · `modul` her modül yüzeyi (gate_proj, up_proj, ...) ayrı "
+                        "normalize edilir. Why: iki kolun da en büyük normu AYNI MLP yüzeyinde "
+                        "(τ_g gate_proj 6,150 ↔ τ_a 0,621) ve global norm bunu göremiyor — "
+                        "τ_a tam çakışma noktasında siliniyor olabilir.")
     return p.parse_args()
+
+
+def olcek_kurali(kural: str, degerler: dict) -> float:
+    """Geri ölçek: `ortalama` · `min` · `max` ya da bir kol adı."""
+    if kural == "ortalama":
+        return sum(degerler.values()) / len(degerler)
+    if kural == "min":
+        return min(degerler.values())
+    if kural == "max":
+        return max(degerler.values())
+    if kural in degerler:
+        return degerler[kural]
+    raise SystemExit(f"[ties] 🚫 --geri-olcek {kural!r} tanınmadı — "
+                     f"`ortalama` · `min` · `max` ya da kol adı: {sorted(degerler)}")
+
+
+def modul_adi(tensor_adi: str) -> str:
+    """`model.layers.0.mlp.gate_proj.weight` → `gate_proj`. kol_normlari ile AYNI kural."""
+    return tensor_adi.split(".")[-2]
 
 
 def dw(A: torch.Tensor, B: torch.Tensor, scale: float) -> torch.Tensor:
@@ -175,26 +201,30 @@ def main():
         raise SystemExit(f"[ties] 🚫 kolların LoRA hedefleri AYNI DEĞİL. Eksikler: {fark}\n"
                          "   → --target-modules rejimleri ayrışmış (bkz. TASARIM §4.1.1)")
 
-    # Norm-dengeleme katsayıları: her τ birim norma iner, sonuç normların ORTALAMASIYLA ölçeklenir.
+    # Norm-dengeleme katsayıları — modül bazında tutulur; `global` kapsamda her modüle
+    # aynı skaler yazılır. Tek temsil, merge döngüsünde tek arama yolu.
+    moduller = sorted({modul_adi(n) for n in ortak})
     if a.no_norm_balance:
-        katsayi = {ad: 1.0 for ad in adapters}
-        geri_olcek = 1.0
+        katsayi = {ad: {m: 1.0 for m in moduller} for ad in adapters}
+        geri_olcek = {m: 1.0 for m in moduller}
+    elif a.norm_kapsam == "modul":
+        for ad in adapters:
+            for m in moduller:
+                if kirilim[ad].get(m, 0.0) <= 0:
+                    raise SystemExit(f"[ties] 🚫 ‖τ_{ad}‖ modülü {m!r} için 0 — bölme tanımsız. "
+                                     f"Kol bu yüzeyde hiç eğitilmemiş demektir (sessiz tek-kolluluk)")
+        katsayi = {ad: {m: 1.0 / kirilim[ad][m] for m in moduller} for ad in adapters}
+        geri_olcek = {m: olcek_kurali(a.geri_olcek, {ad: kirilim[ad][m] for ad in adapters})
+                      for m in moduller}
     else:
-        katsayi = {ad: 1.0 / normlar[ad] for ad in adapters}
-        kural = a.geri_olcek
-        if kural == "ortalama":
-            geri_olcek = sum(normlar.values()) / len(normlar)
-        elif kural == "min":
-            geri_olcek = min(normlar.values())
-        elif kural == "max":
-            geri_olcek = max(normlar.values())
-        elif kural in normlar:
-            geri_olcek = normlar[kural]
-        else:
-            raise SystemExit(f"[ties] 🚫 --geri-olcek {kural!r} tanınmadı — "
-                             f"`ortalama` · `min` · `max` ya da kol adı: {sorted(normlar)}")
-    print(f"[ties] norm katsayıları: { {k: round(v, 6) for k, v in katsayi.items()} } · "
-          f"geri ölçek={geri_olcek:.6f} (kural={a.geri_olcek})")
+        g = olcek_kurali(a.geri_olcek, normlar)
+        katsayi = {ad: {m: 1.0 / normlar[ad] for m in moduller} for ad in adapters}
+        geri_olcek = {m: g for m in moduller}
+
+    print(f"[ties] norm kapsamı={a.norm_kapsam} · geri ölçek kuralı={a.geri_olcek}")
+    for m in moduller:
+        kats = {ad: round(katsayi[ad][m], 6) for ad in adapters}
+        print(f"[ties]   {m:14} katsayı={kats} geri_ölçek={geri_olcek[m]:.6f}")
 
     index = json.load(open(os.path.join(base_dir, "model.safetensors.index.json")))
     weight_map: dict[str, str] = index["weight_map"]
@@ -210,6 +240,7 @@ def main():
             for name in names:
                 w = f.get_tensor(name)
                 if name in ortak:
+                    mod = modul_adi(name)
                     yigin = []
                     for ad in adapters:
                         A, B = delta_setleri[ad][name]
@@ -217,10 +248,10 @@ def main():
                             raise SystemExit(
                                 f"[ties] 🚫 şekil uyuşmazlığı {name} kol={ad}: W{tuple(w.shape)} "
                                 f"vs B{tuple(B.shape)}@A{tuple(A.shape)}")
-                        yigin.append(dw(A, B, olcekler[ad]) * katsayi[ad])
+                        yigin.append(dw(A, B, olcekler[ad]) * katsayi[ad][mod])
                     merged, ist = ties(torch.stack(yigin), a.trim_k)
                     del yigin
-                    w = (w.float() + merged.float() * geri_olcek * a.lam).to(w.dtype)
+                    w = (w.float() + merged.float() * geri_olcek[mod] * a.lam).to(w.dtype)
                     applied += 1
                     for kk in ist_toplam:
                         ist_toplam[kk].append(ist[kk])
@@ -249,11 +280,12 @@ def main():
         "karar_belgeleri": ["ADR-0027", "ADR-0036", "ADR-0031 (bf16 ΔW)"],
         "base": base_dir, "kollar": adapters,
         "norm_dengeleme": not a.no_norm_balance,
-        "norm_kapsami": "global (tek ‖τ‖_F) — modül-başına alternatifi alınmadı, bkz. open_questions",
+        "norm_kapsami": a.norm_kapsam,
         "tau_norm_fro": {k: round(v, 6) for k, v in normlar.items()},
         "tau_norm_modul_kirilimi": kirilim,
-        "norm_katsayilari": {k: round(v, 8) for k, v in katsayi.items()},
-        "geri_olcek": round(geri_olcek, 6),
+        "norm_katsayilari": {ad: {m: round(v, 8) for m, v in d.items()}
+                             for ad, d in katsayi.items()},
+        "geri_olcek": {m: round(v, 6) for m, v in geri_olcek.items()},
         "geri_olcek_kurali": (None if a.no_norm_balance else a.geri_olcek),
         "trim_k": a.trim_k, "lam": a.lam,
         "birlesik_tensor": applied, "ortak_lora_hedefi": len(ortak),
