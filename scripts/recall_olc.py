@@ -79,6 +79,33 @@ def skorla_yogun(metinler, sorular, model_adi, cihaz="cpu"):
     return [S[i] @ K.T for i in range(len(sorular))]
 
 
+def skorla_hibrit(metinler, sorular, model_adi, cihaz="cpu", rrf_k=60):
+    """BM25 + yoğun füzyon, Reciprocal Rank Fusion.
+
+    RRF seçildi çünkü BM25 skorları (sınırsız) ile kosinüs benzerliği (-1..1)
+    aynı ölçekte değil; ham toplam BM25'e ağırlık verir ve bu ağırlık hiçbir
+    yerde görünmez. RRF yalnız SIRAYI kullanır, ölçek sorununu ortadan kaldırır.
+    """
+    bm = skorla_bm25(metinler, sorular)
+    yg = skorla_yogun(metinler, sorular, model_adi, cihaz)
+    return [rrf_birlestir([bm[i], yg[i]], rrf_k) for i in range(len(sorular))]
+
+
+def rrf_birlestir(skor_listeleri, rrf_k=60):
+    """Tek soru için RRF: her skor dizisini sıraya çevir, 1/(k+sıra) topla.
+
+    ⚠️ Sıra hesabı sessizce ters dönebilir — testle çivilendi.
+    """
+    import numpy as np
+    n = len(skor_listeleri[0])
+    toplam = np.zeros(n, dtype=np.float32)
+    for s in skor_listeleri:
+        sira = np.empty(n, dtype=np.int64)
+        sira[np.argsort(s)[::-1]] = np.arange(n)  # en yüksek skor → sıra 0
+        toplam += 1.0 / (rrf_k + sira + 1)
+    return toplam
+
+
 def en_iyiler(skorlar, adaylar, en_fazla):
     """Skorlardan ilk `en_fazla` aday indeksi. `adaylar=None` → tüm korpus.
 
@@ -94,7 +121,7 @@ def en_iyiler(skorlar, adaylar, en_fazla):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--yontem", choices=["bm25", "yogun"], required=True)
+    p.add_argument("--yontem", choices=["bm25", "yogun", "hibrit"], required=True)
     p.add_argument("--model", default="intfloat/multilingual-e5-base",
                    help="yalnız --yontem yogun için")
     p.add_argument("--cihaz", default="cpu", choices=["cpu", "cuda"],
@@ -115,6 +142,9 @@ def main():
     if a.yontem == "bm25":
         skorlar = skorla_bm25(metinler, sorular)
         etiket = "bm25"
+    elif a.yontem == "hibrit":
+        skorlar = skorla_hibrit(metinler, sorular, a.model, a.cihaz)
+        etiket = "hibrit_bm25+" + a.model.replace("/", "_")
     else:
         skorlar = skorla_yogun(metinler, sorular, a.model, a.cihaz)
         etiket = a.model.replace("/", "_")
@@ -141,10 +171,24 @@ def main():
                 break
         siralar.append(sira)
 
+    # Kanun-düzeyi recall: ilk k maddenin KANUNLARI arasında altının kanunu var mı.
+    # İki aşamalı retriever (kanun seç → madde seç) uygulanabilir mi sorusunu bu
+    # yanıtlıyor; madde-düzeyi recall'un neyi kaçırdığını ayırır.
+    kanun_siralari = []
+    for i, altin in enumerate(altinlar):
+        sira = None
+        for yer, ix in enumerate(sirali[i]):
+            if str(kayitlar[ix]["kanun_no"]).strip() == altin[0]:
+                sira = yer
+                break
+        kanun_siralari.append(sira)
+
     sonuc = {
         "yontem": etiket, "n": len(sorular), "korpus": len(kayitlar),
         "cihaz": a.cihaz if a.yontem == "yogun" else "cpu",
         "recall": {f"recall@{k}": round(recall_at_k(siralar, k), 4) for k in KLER},
+        "kanun_recall": {f"kanun_recall@{k}": round(recall_at_k(kanun_siralari, k), 4)
+                         for k in KLER},
         "hic_bulunmayan": sum(1 for s in siralar if s is None),
         "gecen_sure_s": round(gecen, 1),
         "esik_karari": None,  # aşağıda dolduruluyor
