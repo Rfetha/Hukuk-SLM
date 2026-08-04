@@ -18,6 +18,7 @@ import json
 import os
 import sys
 import time
+from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from madde_anahtar import madde_anahtari, korpus_indeksi  # noqa: E402,F401
@@ -49,19 +50,46 @@ def dev_yukle():
     return sorular, altinlar
 
 
-def sirala_bm25(metinler, sorular, en_fazla):
+def skorla_bm25(metinler, sorular):
     from rank_bm25 import BM25Okapi
     bm25 = BM25Okapi([m.lower().split() for m in metinler])
-    return [bm25.get_scores(s.lower().split()).argsort()[::-1][:en_fazla] for s in sorular]
+    return [bm25.get_scores(s.lower().split()) for s in sorular]
 
 
-def sirala_yogun(metinler, sorular, en_fazla, model_adi):
+def skorla_yogun(metinler, sorular, model_adi, cihaz="cpu"):
     from sentence_transformers import SentenceTransformer
-    model = SentenceTransformer(model_adi, device="cpu")
-    K = model.encode(metinler, batch_size=64, normalize_embeddings=True,
+    # Why: recall@k CİHAZDAN BAĞIMSIZ bir sayı; --cihaz yalnız indeksleme süresini
+    # değiştirir. "Harness CPU'da" değişmezi SERVİS anını korur (GPU'da model durur),
+    # bir kerelik çevrimdışı indeks kurmayı değil. Ölçüldü: CPU ~4,1 madde/sn →
+    # 40.496 madde ≈ 2s45d/model; GPU'da dakikalar.
+    model = SentenceTransformer(model_adi, device=cihaz)
+    # Why: karşılaştırma değişmezi. e5 doğal olarak 512 token, bge-m3 8192 —
+    # sabitlemezsek "hangi model daha iyi" ile "hangisi daha çok metin gördü"
+    # karışır ve fark hiçbir yerde görünmez. 512 token, eval-ayna 900 karakter
+    # kırpmasını (ADR-0011) rahatça kapsıyor.
+    model.max_seq_length = 512
+    # Why: e5 ailesi `query:`/`passage:` önekiyle EĞİTİLDİ. Öneksiz koşmak hata
+    # vermez, yalnızca e5'i sistematik olarak düşük gösterir — K1 kararı bu
+    # sayıyla veriliyor. bge-m3 önek istemez.
+    q_on, p_on = ("query: ", "passage: ") if "e5" in model_adi.lower() else ("", "")
+    K = model.encode([p_on + m for m in metinler], batch_size=32, normalize_embeddings=True,
                      show_progress_bar=True, convert_to_numpy=True)
-    S = model.encode(sorular, normalize_embeddings=True, convert_to_numpy=True)
-    return [(S[i] @ K.T).argsort()[::-1][:en_fazla] for i in range(len(sorular))]
+    S = model.encode([q_on + s for s in sorular], normalize_embeddings=True,
+                     convert_to_numpy=True)
+    return [S[i] @ K.T for i in range(len(sorular))]
+
+
+def en_iyiler(skorlar, adaylar, en_fazla):
+    """Skorlardan ilk `en_fazla` aday indeksi. `adaylar=None` → tüm korpus.
+
+    Kapsam daraltma burada yapılır, skorlamada değil: oracle-kanun ölçümü
+    aynı skorları farklı aday havuzunda okur, yeniden skorlamaz.
+    """
+    import numpy as np
+    if adaylar is None:
+        return np.argsort(skorlar)[::-1][:en_fazla]
+    adaylar = np.asarray(adaylar)
+    return adaylar[np.argsort(skorlar[adaylar])[::-1][:en_fazla]]
 
 
 def main():
@@ -69,24 +97,38 @@ def main():
     p.add_argument("--yontem", choices=["bm25", "yogun"], required=True)
     p.add_argument("--model", default="intfloat/multilingual-e5-base",
                    help="yalnız --yontem yogun için")
+    p.add_argument("--cihaz", default="cpu", choices=["cpu", "cuda"],
+                   help="yalnız indeksleme hızını değiştirir; recall cihazdan bağımsız")
+    p.add_argument("--kapsam", default="korpus", choices=["korpus", "kanun"],
+                   help="kanun = aday havuzu altının kendi kanunuyla sınırlı (oracle-kanun tanısı)")
     p.add_argument("--out", required=True)
     a = p.parse_args()
 
     os.makedirs(a.out, exist_ok=True)
     kayitlar, anahtarlar, metinler = korpus_yukle()
     sorular, altinlar = dev_yukle()
-    print(f"[s3a] korpus {len(kayitlar):,} madde · DEV {len(sorular)} soru · yöntem={a.yontem}",
-          flush=True)
+    print(f"[s3a] korpus {len(kayitlar):,} madde · DEV {len(sorular)} soru · "
+          f"yöntem={a.yontem} · kapsam={a.kapsam}", flush=True)
 
     en_fazla = max(KLER)
     t0 = time.time()
     if a.yontem == "bm25":
-        sirali = sirala_bm25(metinler, sorular, en_fazla)
+        skorlar = skorla_bm25(metinler, sorular)
         etiket = "bm25"
     else:
-        sirali = sirala_yogun(metinler, sorular, en_fazla, a.model)
+        skorlar = skorla_yogun(metinler, sorular, a.model, a.cihaz)
         etiket = a.model.replace("/", "_")
     gecen = time.time() - t0
+
+    if a.kapsam == "kanun":
+        etiket += "_kanunkapsam"
+        kanun_adaylari = defaultdict(list)
+        for ix, r in enumerate(kayitlar):
+            kanun_adaylari[str(r["kanun_no"]).strip()].append(ix)
+        sirali = [en_iyiler(skorlar[i], kanun_adaylari[altinlar[i][0]], en_fazla)
+                  for i in range(len(sorular))]
+    else:
+        sirali = [en_iyiler(skorlar[i], None, en_fazla) for i in range(len(sorular))]
 
     # Altının kaçıncı sırada geldiği. Aynı anahtarda birden çok kayıt olabilir
     # (mükerrer/tadil) — HERHANGİ birine isabet sayılır.
@@ -101,6 +143,7 @@ def main():
 
     sonuc = {
         "yontem": etiket, "n": len(sorular), "korpus": len(kayitlar),
+        "cihaz": a.cihaz if a.yontem == "yogun" else "cpu",
         "recall": {f"recall@{k}": round(recall_at_k(siralar, k), 4) for k in KLER},
         "hic_bulunmayan": sum(1 for s in siralar if s is None),
         "gecen_sure_s": round(gecen, 1),
