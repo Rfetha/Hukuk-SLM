@@ -183,15 +183,26 @@ Yeni tuzaklar kayda geçti: `yurutme-tuzaklari.md` **4.7** (kabul ölçütü ≠
 3.101 tadil-kanunu maddesi. **Eğitim ve eval temiz** (sızıntı ölçüldü: %0.06 / sıfır) →
 **yeniden eğitim gerektirmez**; risk yalnız retriever indeksinde.
 
-### Modül-başına normalleştirme — AÇIK (2026-08-03)
+### ~~Modül-başına normalleştirme~~ — ✅ **KAPANDI 2026-08-04, REDDEDİLDİ**
 
-`merge_ties.py` normalizasyonu **global** yapıyor (tüm `τ` için tek `‖τ‖_F`). Ölçüldü: iki kolun
-da en büyük normu **aynı MLP yüzeyinde** yoğunlaşıyor (`gate_proj` τ_g 6,150 ↔ τ_a 0,621 ·
-`up_proj` 5,047 ↔ 0,628), yani çatışma rastgele dağılmıyor.
+[ADR-0053](adr/0053-modul-basina-norm-kapsami-reddedildi.md) · [research_log #50](record/research_log/2026-08-04-modul-basina-norm.md)
 
-ADR-0052 ham TIES'i ana yol yaptığı için **acil değil** — hedefe global kapsamla ulaşıldı. Ama
-modül-başına dengeleme, ham TIES'in `τ_a`'yı seyreltmesini (M2b 0,987 → 0,877) telafi edebilir.
-Denenmedi. Bedeli: `merge_ties.py`'de ~20 satır + bir süpürme turu (~1 sa, GPU $0).
+Ölçüldü, iki kere düştü:
+
+1. **Gerekçesi çürüdü.** *"Çatışma rastgele dağılmıyor"* doğru ama **kapsam sorunu
+   kanıtlamıyor** — kolların modül profilleri neredeyse **orantılı** (τ_g/τ_a oranı 11
+   yüzeyin hepsinde 7,18-10,08), dolayısıyla global norm payları **zaten eşitliyor**
+   (τ̂_a/τ̂_g = 0,88-1,24). Ayırt eden sütun **oran**dı ve o ölçülmemişti.
+2. **Ölçüm de geçmedi.** Kapsam değişikliği no-op değil (ağırlık uzayında yön farkı
+   **%27,2**, genlik aynı) ama kabul ölçütü düştü: cevaplanan **45/80** → kütle
+   ≤ **%56,2** < gereken %71,6. Hakem maliyeti **$0** (bileşik ölçütte önce regexle
+   ölçülen kütle ayağı koşuldu).
+
+⚠️ **Yerine geçen açık soru:** `τ_a`'nın merge'de seyrelmesi (M2b 0,987 → 0,877) **hâlâ
+açık**. Bu tur onu norm *kapsamının* çözmediğini gösterdi; aşırı-reddi yaratan **yön değil
+genlik**. Kalan adaylar: `--trim-k` · λ · farklı operatör · ve en olası doğru yer —
+**`τ_a`'nın eğitim genliği** (82 adım @1e-5 çok kısa, ‖τ_a‖ = 1,18 bu yüzden küçük).
+Yani çözüm bir **merge** parametresi değil, muhtemelen bir **eğitim** parametresi.
 
 ### Merge doğrulama birim testi — Sprint 3 öncesi
 
