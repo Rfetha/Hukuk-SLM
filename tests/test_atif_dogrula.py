@@ -129,3 +129,23 @@ def test_dogrula_gercekten_olmayan_kanunu_hala_yakalar():
     korpus = [{"kanun_no": "6098", "kanun_adi": "TÜRK BORÇLAR KANUNU",
                "madde_no": "Madde 6", "text": "x"}]
     assert dogrula(atiflari_ayikla("UZAY HUKUKU KANUNU Madde 6")[0], korpus).hukum == KANUN_YOK
+
+
+def test_dogrula_resmi_adin_kisa_halini_taniyor():
+    # ⚠️ Ölçüldü (harness AÇIK koşusu): 5 KANUN_YOK'un TAMAMI yanlış negatifti —
+    # model resmî adın yaygın kısa hâlini yazıyor ve bu ad, resmî adın SONEKİ:
+    #   "İflas Kanunu"            ⊂ "İCRA VE İFLAS KANUNU" (2004)
+    #   "Teknik Düzenlemeler K."  ⊂ "ÜRÜN GÜVENLİĞİ VE TEKNİK DÜZENLEMELER KANUNU"
+    # Katı kapıda her yanlış negatif doğrudan coverage kaybıdır (ADR-0038).
+    korpus = [{"kanun_no": "2004", "kanun_adi": "İCRA VE İFLAS KANUNU",
+               "madde_no": "Madde 85", "text": "haciz"}]
+    h = dogrula(atiflari_ayikla("İflas Kanunu Madde 85")[0], korpus)
+    assert h.hukum == DOGRULANDI and h.kanun_no == "2004"
+
+
+def test_dogrula_tek_sozcuklu_sonek_her_kanuna_uymaz():
+    # ⚠️ Sonek gevşetmesinin sınırı: "Kanunu" tek başına HER kanuna uyar ve
+    # doğrulayıcıyı işe yaramaz hale getirirdi.
+    korpus = [{"kanun_no": "2004", "kanun_adi": "İCRA VE İFLAS KANUNU",
+               "madde_no": "Madde 85", "text": "haciz"}]
+    assert dogrula(atiflari_ayikla("Kanunu Madde 85")[0], korpus).hukum == KANUN_YOK
