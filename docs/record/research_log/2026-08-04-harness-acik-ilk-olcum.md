@@ -106,6 +106,35 @@ yani hakemsiz güvenilemezdi: ad çakışması (`İŞ KANUNU` = 4857 **ve** 1475
 harfli adı tanıma · Python `upper()`'ın Türkçe olmaması (`Medeni` → `MEDENI` ≠ `MEDENİ`) ·
 ada kaçan önceki sözcük (`Ayrıca TÜRK BORÇLAR KANUNU`).
 
+## 🚨 Koşu sonrası bulunan açık — mülga maddeye atıf kapıdan geçiyor (borç B7)
+
+Doğrulayıcı incelenirken çıktı, ölçüldü:
+
+```
+cevap : "İşçinin hakları İŞ KANUNU Madde 15 hükmüne göre belirlenir."
+atıf  : DOGRULANDI  (kanun_no = 1475)
+kapı  : GEÇTİ ✅
+korpustaki metin: "110- (Mülga: 22/5/2003/4857/120 md.) Ek"
+```
+
+Yani sistem, **yürürlükten kalkmış** bir hükme yapılan atıfı **doğrulanmış** damgalıyor.
+Sebep yapısal: korpusta **yürürlük alanı yok** — dört alan var (`kanun_adi · kanun_no ·
+madde_no · text`) ve ilga bilgisi yalnız **serbest metnin içinde**. Üstüne, aynı ad iki
+kanuna ait olabiliyor (`İŞ KANUNU` = **4857** yürürlükte **ve** **1475** mülga; 1475'ten
+korpusta 9 madde duruyor, m.14 hâlâ yürürlükte — kıdem tazminatı).
+
+⚠️ Bu, *"denetlenebilir"* ürün vaadindeki **en somut açık** ve **B1'den farklı bir sınıf**:
+B1'de atıf gerçek ama soruya uymuyor; burada atıf soruya uyabilir ama **hüküm yürürlükte
+değil**.
+
+**Ve bu, graph-RAG'in ilk ÖLÇÜLMÜŞ gerekçesi.** Bugüne kadar *"hukuk ilişkiseldir"*
+varsayımıyla savunuluyordu ([`VISION.md`](../../VISION.md) Faz 2). Ölçüm graf'ı beklenen
+yerlerde **gereksiz** buluyor — erişim (`recall@20` 0,925, k ile kapanıyor) ve cevap
+kalitesi (altın getirildiğinde A1 0,934) — ama **yürürlük/ilga/tadil/atıf zinciri**
+sınıfında düz vektör benzerliğinin okuyamayacağı bir boşluk açık. ⚠️ Acil çözüm yine de
+graf değil: korpusa **yürürlük alanı** eklemek tek başına B7'yi kapatır ve bir **veri**
+işidir. Sıra: **B7 (veri) → B3 (k) → B1 (isabet) → graf** ([`ROADMAP.md`](../../../ROADMAP.md) §5).
+
 ## Şerhler
 
 - ⚠️ **A1 tek-altın yer-gerçeğine göre.** `groundedness --mode data` yalnız altın maddeyi

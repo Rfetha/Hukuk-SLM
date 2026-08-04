@@ -424,6 +424,27 @@ Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'�
 | **B4** | **`τ_a` merge'de seyreliyor** (0,987 → 0,877). Adım 0 bunun norm *kapsamı* olmadığını gösterdi. | Çözüm merge parametresinde değil, muhtemelen `τ_a`'nın **eğitim genliğinde** (82 adım @1e-5 kısa, ‖τ_a‖ = 1,18). Yani bir S4 eğitim işi. |
 | **B5** | **K2'nin bedeli ölçülmedi**: *"getirildi ama cevap 900 karakter kırpmasının ötesindeydi"* vakası. İz kaydediliyor ama sayılmadı. | ADR-0054 bunu ayrı vaka sınıfı olarak saymayı şart koşmuştu. |
 | **B6** | **Canlı `bedesten` katmanı** eklenmedi (K3: bilinçli erteleme). | Güncellik iddiası ayakta ama **kanıtlanmış değil** — S3a sözleşmenin çalıştığını doğruladı, ürün onu henüz kullanmıyor. |
+| **B7** 🚨 | **MÜLGA maddeye yapılan atıf doğrulamayı ve katı kapıyı GEÇİYOR.** Ölçüldü 2026-08-04: `"İŞ KANUNU Madde 15"` → `DOGRULANDI` (kanun_no **1475**) → kapı ✅. Oysa korpustaki metni: *"110- (Mülga: 22/5/2003/4857/120 md.)"*. | **Ürün-güvenliği açığı, akademik değil.** Vaadimiz *"denetlenebilir"*; burada sistem **yürürlükten kalkmış** bir hükme yapılan atıfı **doğrulanmış** damgalıyor. Korpusta yürürlük alanı **yok** — 4 alan var (`kanun_adi · kanun_no · madde_no · text`) ve ilga bilgisi yalnız **serbest metnin içinde**. Aynı ad iki kanuna ait olabildiği için (`İŞ KANUNU` = 4857 yürürlükte **ve** 1475 mülga) doğrulayıcı ayırt edemiyor. |
+
+### 🚨 B7 hakkında — bu, graph-RAG'in ölçülmüş gerekçesi
+
+Bugüne kadar graph-RAG *"hukuk ilişkiseldir"* diye **varsayımla** savunuluyordu
+([`VISION.md`](docs/VISION.md) Faz 2). Bugün ilk kez **ölçülmüş** bir gerekçe çıktı ve
+beklenen yerde değil:
+
+- ❌ **Erişim kalitesi için değil.** Recall eğrisi `@5` 0,750 → `@10` 0,875 → `@20` 0,925
+  diyor; kalan açığın çoğu **k'yı büyütmekle** kapanıyor (borç B3, bedeli ~0). Ayrıca
+  soruların ~%25'i konusunu hiç belirtmiyor — graf, belirsiz sorguyu düzeltemez.
+- ❌ **Cevap kalitesi için de değil.** Altın getirildiğinde A1 zaten **0,934**; model
+  ilişki çıkarımına ihtiyaç duymuyor.
+- ✅ **Yürürlük ve atıf zincirleri için.** İlga/tadil ilişkisi, aynı adı taşıyan mülga
+  kanunlar, *"yerine işlenmiştir"* kabuk maddeleri — **bunların hiçbiri düz vektör
+  benzerliğinden okunamaz.** B7 tam bu sınıf.
+
+⚠️ **Ama acil çözüm graf değil.** B7'nin ucuz çaresi korpusa **yürürlük alanı** eklemek
+(`mulga: true/false` + ilga eden kanun/madde) — bu bir **veri** işi, graf değil. Graf, o
+alan varken **atıf zincirleri** ve **çapraz referans** için hak eder. Sıralama:
+**B7 (veri) → B3 (k) → B1 (isabet) → graf**.
 
 ## Bağlantılar
 
