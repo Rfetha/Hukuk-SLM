@@ -1,5 +1,16 @@
 # Sprint 3 — HARNESS: modeli ürüne çevirmek
 
+> ## 🛑 DURUM 2026-08-04 — hedefe ulaşıldı, insan kontrol noktasında
+>
+> **S3a ✅ · Adım 0 🔴 · Adım 1-3 ✅ · Adım 4 🛑 ölçüldü.** Harness kuruldu ve
+> **harness AÇIK ölçüm ilk kez yapıldı** — sprint'in koşulu buydu.
+> **Manşet: kütle %71,6 → %58,7**, ama **retriever altını bulduğunda A1 0,9344 > 0,9087**.
+> Tablo ve üç okuma [aşağıda](#-adım-4-sonucu--harness-açık--kapalı-aynı-model-tgta_v1).
+>
+> **Bedel:** GPU **$0** (hepsi yerel) · hakem **$0,038**.
+>
+> **Sıradaki kararlar insanda** — [açık borçlar](#-sprint-3ün-açık-borçları) bölümüne bak.
+
 > **Bu belge icra dokümanıdır ve `/goal sprint3.md` ile otonom koşulur.**
 >
 > ### ⭐ HER KOŞUDAN ÖNCE OKU
@@ -122,13 +133,45 @@ yaratmadığı ölçülecek (kütle ekseni).
 ## ▶ ADIMLAR
 
 ```
-S3a) ÖN-PROB                $0 · ~1 gün ← ⭐ PLANIN TEMELİNİ SINAR, önce koşar
-0) MODÜL-BAŞINA NORM        1 sa · $0   ← bedava, harness'tan bağımsız
-1) RETRIEVER                indeks + recall@k ölçümü
-2) ATIF DOĞRULAYICI         deterministik, hakem gerekmez
-3) RED KAPISI               ADR-0038 katı
-4) HARNESS AÇIK ÖLÇÜM       ⭐ gerçek ürün sayımız — hiç görülmedi
-   → 🛑 DUR, harness açık/kapalı tabloyu insana sun
+S3a) ÖN-PROB                ✅ KAPANDI  hibrit recall@10 0,875 · bedesten GEÇERLİ
+0) MODÜL-BAŞINA NORM        🔴 REDDEDİLDİ  kütle ≤ %56,2 < %71,6 · hakem $0
+1) RETRIEVER                ✅ BİTTİ    bileşen + indeks, recall@10 0,8750 birebir
+2) ATIF DOĞRULAYICI         ✅ BİTTİ    deterministik, hakemsiz · 4+1 sessiz hata düzeltildi
+3) RED KAPISI               ✅ BİTTİ    ADR-0038 katı + 2 ablasyon
+4) HARNESS AÇIK ÖLÇÜM       🛑 ÖLÇÜLDÜ  ürün sayısı ilk kez görüldü → İNSANA SUNULDU
+```
+
+### 🛑 Adım 4 sonucu — harness AÇIK ↔ KAPALI, aynı model (`tgta_v1`)
+
+| eksen | harness **KAPALI** (m1) | harness **AÇIK** (h1, k=5) |
+| :--- | ---: | ---: |
+| altın madde bağlamda | **garanti** (kurgu) | **60/80** — `recall@5` 0,750 |
+| coverage | 0,7875 | **0,7500** |
+| A1 (cevaplanan-only) | 0,9087 | **0,7823** |
+| **kütle = coverage × A1** | **%71,6** | **%58,7** |
+| ⭐ A1 · **altın getirilen** alt küme | 0,9087 | **0,9344** |
+| doğrulanan atıf | 87/89 | **89/89** |
+| **uydurulmuş madde numarası** | 0 | **0** |
+| katı kapı reddi | 2/80 | **1/80** |
+
+**Üç okuma** (tamamı [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md)):
+
+1. **Ürün sayısı oracle sayısından düşük — ve olması gereken bu.** Düşüşün tamamı erişimden:
+   soruların %25'inde altın madde ilk 5'e girmiyor. Ölçüm dürüstleşti.
+2. ⭐ **Retriever doğru maddeyi bulduğunda model DAHA sadık** (A1 0,9344 > 0,9087). Yani
+   *"gerçek retriever daha gürültülü bağlam verir"* varsayımı — S3'e girerken yazdığımız
+   gerekçelerden biri — **bu ölçümde doğrulanmadı**. Darboğaz model değil **erişim**.
+3. ⚠️ **Kapının sınırı.** Model madde numarası **uydurmuyor** (0/89), bağlamdaki etiketi
+   kopyalıyor; bu yüzden katı kapı yalnız 1 cevap reddetti. Asıl hata şurada: **14/80**
+   soruda altın gelmeden cevaplandı — atıf **gerçek**, doğrulanır, kapıdan geçer, ama
+   soruya uymuyor. Atıf doğrulayıcısı *"uydurulmuş atıf"*ı çözüyor, *"gerçek ama soruya
+   uymayan madde"*yi çözmüyor. **S3'ün asıl açığı bu.**
+
+```
+altın geldi   → cevapladı   46
+altın geldi   → çekindi     14
+altın GELMEDİ → cevapladı   14   ← A1'i düşüren sınıf
+altın GELMEDİ → çekindi      6
 ```
 
 ### S3a — ÖN-PROB · $0 · ~1 gün · ⭐ ÖNCE BU
@@ -333,7 +376,20 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
 | **1** retriever | ✅ **BİTTİ** 2026-08-04 | `scripts/retriever.py` + `data/index/mevzuat_bge_m3/` (40.496 madde, 83 MB) · bileşen S3a sayısını birebir üretti: **recall@10 0,8750 · @20 0,9250** · 759 ms/sorgu (CPU) |
 | **2** atıf doğrulayıcı | ✅ **BİTTİ** 2026-08-04 | `scripts/atif_dogrula.py` — hakemsiz. Gerçek çıktıda 56 atıf · 53 doğrulandı · **0 yanlış alarm** · pozitif kontrol geçti. Gözle denetim **dört** yanlış-alarm hatası buldu (ad çakışması · başlık biçimi · Türkçe `upper()` · ada kaçan sözcük) |
 | **3** red kapısı | ✅ **BİTTİ** 2026-08-04 | `scripts/red_kapisi.py` — ADR-0038 katı + `cogunluk`/`cerrahi` ablasyonları, üçü post-hoc aynı kümede |
-| **4** harness AÇIK ölçüm | ⏳ | 🛑 **DUR, insana sun** |
+| **4** harness AÇIK ölçüm | 🛑 **ÖLÇÜLDÜ 2026-08-04 — insana sunuldu** | kütle **%71,6 → %58,7** · ⭐ altın getirilince A1 **0,9344 > 0,9087** · uydurulmuş atıf **0/89** · `outputs/eval/s3-harness-acik/` · research_log **#51** |
+
+## 📌 Sprint 3'ün açık borçları — karar insanda
+
+Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'ün şeklini belirliyor.
+
+| # | borç | neden önemli |
+| :--- | :--- | :--- |
+| **B1** ⭐ | **"Gerçek ama soruya uymayan madde"** — atıf doğrulayıcısı bunu yakalayamıyor. 14/80 soruda model altın gelmeden başka bir gerçek maddeden cevapladı; atıf doğrulanıyor, kapıdan geçiyor. | Ürün vaadi *"denetlenebilir"*. Bugün fabrikasyona karşı denetlenebilir, **isabetsizliğe karşı değil**. A1 düşüşünün tamamı burada. |
+| **B2** | **Ayırt-edicilik etiketi koşulmadı** (K4 kararı, ADR-0054). Sayılar hâlâ tek küme üzerinde. | `recall@5` 0,750 bu kümenin tavanı, retriever'ın değil (tuzak 7.4). Etiketsiz her harness sayısı bu yanlılığı taşıyor. |
+| **B3** | **k süpürülmedi** — k=5 seçildi. S3a eğrisi `@10` 0,875 · `@20` 0,925 diyor. | Erişim darboğaz (Adım 4'ün 2. okuması). k büyütmek en ucuz kazanç adayı; ama bağlamı uzatıyor ve 900 karakter kırpmasıyla etkileşiyor. |
+| **B4** | **`τ_a` merge'de seyreliyor** (0,987 → 0,877). Adım 0 bunun norm *kapsamı* olmadığını gösterdi. | Çözüm merge parametresinde değil, muhtemelen `τ_a`'nın **eğitim genliğinde** (82 adım @1e-5 kısa, ‖τ_a‖ = 1,18). Yani bir S4 eğitim işi. |
+| **B5** | **K2'nin bedeli ölçülmedi**: *"getirildi ama cevap 900 karakter kırpmasının ötesindeydi"* vakası. İz kaydediliyor ama sayılmadı. | ADR-0054 bunu ayrı vaka sınıfı olarak saymayı şart koşmuştu. |
+| **B6** | **Canlı `bedesten` katmanı** eklenmedi (K3: bilinçli erteleme). | Güncellik iddiası ayakta ama **kanıtlanmış değil** — S3a sözleşmenin çalıştığını doğruladı, ürün onu henüz kullanmıyor. |
 
 ## Bağlantılar
 

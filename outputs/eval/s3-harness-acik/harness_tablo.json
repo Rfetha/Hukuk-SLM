@@ -9,9 +9,9 @@
   },
   "kutle_ekseni": {
     "coverage": 0.75,
-    "A1_tum": null,
-    "A1_altin_getirilen_alt_kume": null,
-    "kutle_tum": null
+    "A1_tum": 0.7823,
+    "A1_altin_getirilen_alt_kume": 0.9344,
+    "kutle_tum": 0.5867
   },
   "kapi": {
     "kati": {
