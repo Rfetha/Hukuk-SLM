@@ -513,6 +513,11 @@ beklenen yerde değil:
 alan varken **atıf zincirleri** ve **çapraz referans** için hak eder. Sıralama:
 **B7 (veri) → B3 (k) → B1 (isabet) → graf**.
 
+📌 **Graf'ın mimari farkı, ön-kayıtlı tahmini ve gerçekten kazanacağı üç yer
+[`ROADMAP.md` §5.2](ROADMAP.md)'de.** Özeti: bugünkü kümede graf **ölçülemez** bir
+iyileşme üretirdi (sorular tek-madde, çok-hop yok, n=80'de ±2 soru gürültü) — bu yüzden
+bugün koşulmadı; kurulursa **kendi soru kümesiyle** ölçülür.
+
 ## Bağlantılar
 
 | ne | nerede |

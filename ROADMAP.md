@@ -100,6 +100,50 @@ iki kanuna ait olabiliyor (`İŞ KANUNU` = **4857** yürürlükte **ve** **1475*
   çözmek için değil. ⚠️ [`VISION.md`](docs/VISION.md) Faz 2'deki *"hukuk ilişkiseldir"*
   gerekçesi **varsayımdı**; ölçülmüş hâli bu tablodur.
 
+#### Mimari fark — bugün kurulan katman ↔ graf
+
+⚠️ Graph-RAG top-k'nın **yerine geçmez, üstüne biner**: önce aday maddeleri bulman gerekir,
+bugün kurulan katman tam olarak odur. Graf'la başlamak, **ölçülmemiş bir tabanın** üstüne
+katman koymak olurdu.
+
+| eksen | **bu (hibrit düz erişim)** | **graph-RAG** |
+| :--- | :--- | :--- |
+| birim | 40.496 bağımsız madde chunk'ı | düğüm + **kenar** (atıf · ilga · tadil · hiyerarşi) |
+| sorgu | tek atış top-k (BM25 + bge-m3, RRF) | top-k **+ komşuluk gezinme** (1-2 hop) |
+| kurulum | 10 dk indeks · 83 MB | yapı çıkarımı + ontoloji + Neo4j/Memgraph · **haftalar** |
+| sorgu maliyeti | **759 ms**, CPU, GPU'ya girmiyor | + graf sorgusu; LLM-indeksliyse **~3× çıkarım** (VISION Faz 2) |
+| çözdüğü | *"konuya en yakın madde hangisi"* | *"buna bağlı / bunu değiştiren / buna atıf yapan madde hangisi"* |
+| **çözmediği** | ilişki · yürürlük · zincir | **belirsiz sorgu** ve **konusal yakınlık** — onun için yine vektör gerekir |
+
+#### ⛔ ÖN-KAYITLI TAHMİN — graf bugünkü kümede ne yapardı *(2026-08-04, koşulmadan yazıldı)*
+
+Bu tahmin **sınanabilsin** diye kaydediliyor. Graf bir gün kurulursa, `core_hard.jsonl`
+üzerinde beklenen sonuç:
+
+| eksen | tahmin | gerekçe |
+| :--- | :--- | :--- |
+| `recall@k` | **+0 … +2 puan** → n=80'de **ölçülemez** | sorular **madde başına** üretildi, altın **tek** madde. Graf gezinmesi *"A → atıf yaptığı B"* gerektiren **çok-hop** soruda kazanır; kümede o tip soru neredeyse yok. ±2 soru = **%2,5**, zaten gürültü |
+| A1 | **değişmez, hafif düşebilir** | altın getirildiğinde A1 zaten **0,934**; model ilişki çıkarımına ihtiyaç duymuyor. Graf daha çok komşu getirir → bağlam uzar → dikkat dağılır |
+| *"altın gelmedi ama cevapladı"* (14/80) | **hiç değişmez** | o sorular konusunu söylemiyor; graf **sorulmamış** olanı bulamaz |
+| B7 (mülga atıf) | **çözer** | ama `mulga` boolean alanı da çözüyor — **1/20 maliyetle** (§5.1) |
+
+**Yani graf bugün koşulsaydı, muhtemelen ölçülemez bir iyileşme üretirdi** — bu repo'nun
+disiplininde en kötü mühendislik türü: işe yarayıp yaramadığını söyleyemediğin iş.
+Karşılaştır: **`k`'yı 5→10 yapmak bir bayrak** ve kütleyi %58,7 → **~%65**'e taşıması
+bekleniyor ([`sprint3.md`](sprint3.md) S1, ön-kayıtlı).
+
+#### Graf gerçekten nerede kazanır — üçü de bugün ÖLÇÜLEMİYOR
+
+1. **Çok-hop sorular** — *"kira artışında geçici madde var mı?"* → TBK 344 **+** geçici madde.
+   DEV kümemizde yok; ölçmek için **ayrı soru kümesi** gerekir.
+2. **Yürürlük zincirleri** — B7'nin büyük hâli: hangi hüküm neyi ilga etti, hangi tadil
+   sırası geçerli.
+3. **İçtihat ↔ mevzuat bağı** — Yargıtay kararları maddelere bağlanınca. Faz 2'nin asıl
+   vaadi; `bedesten` aynı backend'den içtihadı da veriyor ([`BEDESTEN_API.md`](docs/BEDESTEN_API.md)).
+
+⚠️ **Sonuç:** graf, *"retriever'ı iyileştirme"* işi değil — **ayrı bir yetenek**. Kurulursa
+**kendi soru kümesiyle** ölçülür; bugünkü kümede ölçmek onu haksız yere başarısız gösterir.
+
 ---
 
 ## Opsiyonel: iddia katmanı (arxiv)
