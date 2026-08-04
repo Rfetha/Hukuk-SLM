@@ -9,7 +9,71 @@
 >
 > **Bedel:** GPU **$0** (hepsi yerel) · hakem **$0,038**.
 >
-> **Sıradaki kararlar insanda** — [açık borçlar](#-sprint-3ün-açık-borçları) bölümüne bak.
+---
+
+# ▶ SIRADAKİ — `/goal sprint3.md` BUNU KOŞAR
+
+> **Adım 0-4 kapandı. Bu belgenin canlı kısmı artık aşağısı.** Sıra **ölçülmüş**
+> borçlardan türetildi (tam gerekçe: [açık borçlar](#-sprint-3ün-açık-borçları)).
+> Her iş **doğrulanabilir hedef** olarak yazıldı; tahminler **sayı görülmeden** kaydedildi.
+
+```
+🛑 DURMA : geçerlilik kapısı düşerse · kütle DÜŞERSE (aşağıdaki ön-kayıtlı eşikler)
+           · korpusa yazmadan önce (S1) yedek yoksa · bütçe: hakem toplam ≤ $2
+kapsam   : S1-S4.  Graph-RAG, ajanlar, vatandaş kipi HÂLÂ DIŞINDA (gerekçe: B7 notu)
+```
+
+### S1 — `k` süpürmesi *(borç B3)* · en ucuz kazanç, önce bu
+
+```
+1. k ∈ {5, 10} için harness AÇIK koş (k=5 zaten var, yalnız k=10 koşulacak)
+   → verify: geçerlilik kapısı geçiyor (kesik ≤ %5) ve bağlam CTX 8192'ye sığıyor
+2. harness_tablo.py ile iki k'yı yan yana koy
+   → verify: erişim/davranış çapraz tablosu k=10'da altın-getirildi sayısını yükseltiyor
+3. kütleyi karşılaştır
+```
+
+**⛔ ÖN-KAYITLI TAHMİN (2026-08-04, sayı görülmeden):** bugünkü çapraz tablodan türetildi —
+altın getirildiğinde cevaplama oranı 46/60 = **0,767**, altın getirilenlerde A1 **0,934**,
+getirilmeyenlerde A1 **0,284** *(0,7823×60 − 0,934×46)/14 ile türetildi)*.
+
+| k | beklenen altın getirilen | beklenen coverage | beklenen A1 | **beklenen kütle** |
+| ---: | ---: | ---: | ---: | ---: |
+| 5 *(ölçüldü)* | 60/80 | 0,750 | 0,782 | **%58,7** |
+| **10** | ~70/80 | ~0,76 | ~0,86 | **~%65** |
+| 20 | ~74/80 | ~0,76 | ~0,89 | ~%68 · ⚠️ 20×900 kar ≈ 6K token, düşünce bütçesiyle CTX'e sığmaz |
+
+**Kabul:** k=10 kütlesi **> %58,7**. **Ret:** kütle düşerse → k=5 kalır, sebebi
+(bağlam uzunluğu mu, dikkat dağılması mı) **gözle okunur**, uydurulmaz.
+
+### S2 — Yürürlük alanı *(borç B7)* 🚨 ürün-güvenliği
+
+```
+1. Korpustaki "(Mülga: ...)" kalıbını ayrıştır → `mulga` + ilga eden kanun/madde alanı
+   → verify: 1475/15 mulga=true, 1475/14 mulga=false (kıdem tazminatı yürürlükte)
+2. atif_dogrula.py: mülga maddeye atıf ayrı hüküm (MULGA), DOGRULANDI değil
+   → verify: "İŞ KANUNU Madde 15" → MULGA · red kapısı REDDEDER
+3. Harness AÇIK koşuyu YENİDEN puanlama — kaç cevap etkileniyor, sayılır
+```
+
+⚠️ **Korpusa yazmadan önce yedek.** Ve `retriever.py`'nin bayat-indeks kapısı korpus
+değişince **patlar** — indeks yeniden kurulur (~10 dk, GPU'da).
+**Kabul:** en az bir gerçek mülga atıf yakalanıyor **ve** yanlış-pozitif sıfır (gözle).
+
+### S3 — Ayırt-edicilik etiketi *(borç B2)* · sayıları dürüstleştirir
+
+ADR-0054'ün şart koştuğu, **henüz koşulmayan** tur. Kör hakem, istem önceden yazılır,
+sayılar iki alt kümede ayrı raporlanır. **Bedel ~$0,02.**
+**Kabul:** etiket dağılımı + iki alt kümenin `recall@5`'i ayrı raporlandı.
+
+### S4 — İsabet denetimi tasarımı *(borç B1)* ⭐ en zor, en değerli
+
+Bugünkü açığın **tamamı** burada: atıf gerçek, doğrulanır, kapıdan geçer, **soruya uymaz**
+(14/80). Bu tur **kod değil tasarım** işidir — ≥2 alternatif trade-off'uyla sunulur, ADR
+yazılır, sonra kodlanır. *(Aday eksen: getirilen parça ile cevabın örtüşmesi · kaynak-yeterliliği
+sinyali · ikinci geçiş yeniden-sıralama.)*
+
+---
 
 > **Bu belge icra dokümanıdır ve `/goal sprint3.md` ile otonom koşulur.**
 >
@@ -19,7 +83,7 @@
 
 ---
 
-## 🎯 HEDEF
+## 🎯 HEDEF — ✅ **SAĞLANDI 2026-08-04** *(kayıt; canlı iş yukarıdaki ▶ SIRADAKİ)*
 
 ```
 koşul     : harness kuruldu (retriever + atıf doğrulayıcı + red kapısı) ve
@@ -392,6 +456,9 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
       **0053**'ten, `research_log` **#49**'dan devam)
 
 ## 📌 BU BELGE CANLI TUTULUR
+
+⚠️ **Canlı kısım artık başlıktaki [▶ SIRADAKİ](#-sıradaki--goal-sprint3md-bunu-koşar)
+bölümü.** Adım 0-4 kapandı; onların metinleri **kayıt** olarak duruyor, üzerine yazılmaz.
 
 - **Adım başlarken:** 🟡 KOŞUYOR + ne koşuyor
 - **Adım biterken:** ✅/🔴 · **fiili sayılar** · çıktı nerede · hangi kayıt
