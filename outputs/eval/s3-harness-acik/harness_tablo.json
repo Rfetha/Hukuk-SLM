@@ -1,0 +1,49 @@
+{
+  "kaynak": "outputs/eval/s3-harness-acik/h1_tgta_v1_h1_detail.jsonl",
+  "n": 80,
+  "harness_k": 5,
+  "erisim": {
+    "recall@1": 0.45,
+    "recall@3": 0.65,
+    "recall@5": 0.75
+  },
+  "kutle_ekseni": {
+    "coverage": 0.75,
+    "A1_tum": null,
+    "A1_altin_getirilen_alt_kume": null,
+    "kutle_tum": null
+  },
+  "kapi": {
+    "kati": {
+      "gecen": 79,
+      "reddedilen": 1,
+      "atifsiz_gecen": 11,
+      "kapi_sonrasi_coverage": 0.7375
+    },
+    "cogunluk": {
+      "gecen": 79,
+      "reddedilen": 1,
+      "atifsiz_gecen": 11,
+      "kapi_sonrasi_coverage": 0.7375
+    },
+    "cerrahi": {
+      "gecen": 80,
+      "reddedilen": 0,
+      "atifsiz_gecen": 11,
+      "kapi_sonrasi_coverage": 0.75
+    }
+  },
+  "atif_dagilimi": {
+    "DOGRULANDI": 89,
+    "MADDE_YOK": 0,
+    "KANUN_YOK": 0,
+    "AYRISTIRILAMADI": 1
+  },
+  "erisim_davranis_caprazi": {
+    "altin_geldi_cevapladi": 46,
+    "altin_geldi_cekindi": 14,
+    "altin_gelmedi_cevapladi": 14,
+    "altin_gelmedi_cekindi": 6
+  },
+  "not": "A1 tek-altın yer-gerçeğine göre; harness AÇIK'ta model BAŞKA bir maddeden doğru cevaplasa da sadakatsiz sayılır → ON/OFF kıyası için A1_altin_getirilen_alt_kume kullanılır."
+}

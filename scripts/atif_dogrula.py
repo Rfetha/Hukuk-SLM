@@ -79,16 +79,28 @@ def atiflari_ayikla(cevap: str) -> list[Atif]:
     return atiflar
 
 
+ASGARI_SONEK_SOZCUK = 2   # "KANUNU" tek başına her kanuna uyar — doğrulayıcıyı öldürür
+
+
 def _kanun_adlari(kayitlar) -> dict[str, set]:
-    """Kanun adı → kanun_no **KÜMESİ**.
+    """Kanun adı ve ≥2 sözcüklü SONEKLERİ → kanun_no **KÜMESİ**.
 
     ⚠️ Why küme: bir ad birden çok kanuna ait olabilir. Ölçüldü — `İŞ KANUNU` hem
     **4857** (yürürlükte) hem **1475** (mülga) için geçerli. Ad→tek no eşlemesi
     sözlükte sessizce sonuncuyu tutuyor ve GERÇEK atıfları `MADDE_YOK` sayıyordu.
+
+    ⚠️ Why sonek: model resmî adın yaygın **kısa hâlini** yazıyor ve bu hâl resmî
+    adın sonekidir — *"İflas Kanunu"* ⊂ `İCRA VE İFLAS KANUNU`, *"Teknik Düzenlemeler
+    Kanunu"* ⊂ `ÜRÜN GÜVENLİĞİ VE TEKNİK DÜZENLEMELER KANUNU`. Ölçüldü (harness AÇIK):
+    5 `KANUN_YOK`'un **tamamı** bu yüzden yanlış negatifti ve katı kapıda her yanlış
+    negatif **doğrudan coverage kaybıdır** (ADR-0038'in adını koyduğu kalibrasyon borcu).
     """
     adlar: dict[str, set] = {}
     for r in kayitlar:
-        adlar.setdefault(_ad_normal(r["kanun_adi"]), set()).add(str(r["kanun_no"]).strip())
+        no = str(r["kanun_no"]).strip()
+        sozcukler = _ad_normal(r["kanun_adi"]).split()
+        for i in range(len(sozcukler) - ASGARI_SONEK_SOZCUK + 1):
+            adlar.setdefault(" ".join(sozcukler[i:]), set()).add(no)
     return adlar
 
 
