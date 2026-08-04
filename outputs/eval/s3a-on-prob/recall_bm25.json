@@ -1,0 +1,14 @@
+{
+  "yontem": "bm25",
+  "n": 80,
+  "korpus": 40496,
+  "recall": {
+    "recall@1": 0.275,
+    "recall@5": 0.5375,
+    "recall@10": 0.625,
+    "recall@20": 0.75
+  },
+  "hic_bulunmayan": 20,
+  "gecen_sure_s": 10.3,
+  "esik_karari": "DUR — INSANA SOR"
+}
