@@ -54,6 +54,16 @@ def _istem(soru: str, metin_a: str, metin_b: str) -> list[dict]:
     ]
 
 
+def _soru_anahtari(soru: str) -> str:
+    """Koşudan bağımsız eşleme anahtarı — `id` örneklem sırasına bağlı, soru metni değil."""
+    return " ".join(soru.split()).lower()
+
+
+def _eval_sorusu(kayit: dict) -> str:
+    """Eval kaleminin soru metni: ilk `user` turu."""
+    return next((m["content"] for m in kayit["messages"] if m["role"] == "user"), "")
+
+
 def supheli_kalemler(kayitlar: list[dict], korpus: list[dict]) -> list[dict]:
     """Altın anahtarın sonekli bir kardeşi varsa kalem şüphelidir. Kural, seçim değil."""
     idx = collections.defaultdict(list)
@@ -83,6 +93,10 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--uygula", help="eval jsonl — verilirse etiketler DÜZELTİLİR")
     ap.add_argument("--judge-model", default=os.environ.get("GND_JUDGE", "gpt-4o-mini"))
+    # ⭐ KONUM YANLILIĞI KONTROLÜ. Hakem içeriğe değil KONUMA bakıyorsa (hep "A" diyorsa)
+    # hükümler değersizdir. Bu bayrak A/B'yi ters çevirir; iki koşunun hükmü AYNI kalmalı.
+    # Kalmıyorsa yanlılık ölçülmüştür ve etiketlere DOKUNULMAZ.
+    ap.add_argument("--konum-ters", action="store_true", help="A/B yerlerini ters çevir (kontrol koşusu)")
     a = ap.parse_args()
 
     kayitlar = [json.loads(l) for l in open(a.details, encoding="utf-8") if l.strip()]
@@ -96,8 +110,8 @@ def main() -> None:
     gin, gout = price(a.judge_model)
     sonuc, maliyet = [], 0.0
     for s in supheli:
-        # Konum yanlılığına karşı: tek id'de altın A'da, çift id'de B'de.
-        altin_a = s["id"] % 2 == 1
+        # Konum yanlılığına karşı: tek id'de altın A'da, çift id'de B'de. --konum-ters tersler.
+        altin_a = (s["id"] % 2 == 1) != a.konum_ters
         m_a, m_b = (s["metin_altin"], s["metin_aday"]) if altin_a else (s["metin_aday"], s["metin_altin"])
         resp = client.chat.completions.create(
             model=model, temperature=0, **request_kwargs(model),
@@ -134,12 +148,17 @@ def main() -> None:
         print("🔸 --uygula verilmedi: eval kümesi DEĞİŞMEDİ")
         return
     ev = [json.loads(l) for l in open(a.uygula, encoding="utf-8") if l.strip()]
-    hedef = {(r["kanun_no"], r["altin_madde_no"]): r["aday_madde_no"] for r in duzelt}
+    # ⚠️ Eşleme SORU metnine göre yapılır, madde anahtarına göre DEĞİL: aynı anahtarı
+    # paylaşan iki kalem farklı maddelerden üretilmiş olabiliyor (id 0 → 31/a, id 41 → 31).
+    # Anahtara göre eşlemek ikisini birden bozardı.
+    hedef = {_soru_anahtari(r["soru"]): r["aday_madde_no"] for r in duzelt}
     n = 0
     for r in ev:
-        yeni = hedef.get((r["kanun_no"], r["madde_no"]))
+        yeni = hedef.get(_soru_anahtari(_eval_sorusu(r)))
         if yeni:
             r["madde_no"], n = yeni, n + 1
+    if n != len(duzelt):
+        sys.exit(f"❌ {len(duzelt)} düzeltme bekleniyordu, {n} kalem eşleşti — eval kümesi DEĞİŞMEDİ")
     gecici = a.uygula + ".tmp"
     with open(gecici, "w", encoding="utf-8") as f:
         for r in ev:

@@ -167,3 +167,4 @@ data/index/**/*.npy
 
 # S2 korpus yedeği — tek seferlik, git tarihçesi zaten yedek
 data/corpus/*.yedek-*
+data/eval/**/*.yedek-*
