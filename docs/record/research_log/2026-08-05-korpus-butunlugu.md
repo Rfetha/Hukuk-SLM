@@ -126,16 +126,57 @@ Yakalanma sebebi aritmetik tutarsızlık: 22 + 5 ≠ 60. Hata vermedi, uyarı ve
 
 → **tuzak 7.5** olarak kaydedildi.
 
-## 7. Hüküm ve sıra
+## 7. ⭐ Kapsam ölçümü — *"bozuk satırlar modele fiilen ULAŞIYOR mu?"* (2026-08-05, sonradan)
 
-- **S1 etkilenmiyor**, ölçüldü (§3) — k süpürmesi planlandığı gibi koşuyor.
-- **S2 büyüyor.** *"`mulga` alanı ekle"* B7'nin yarısını kapatıyor. Diğer yarısı **madde
-  kimliği**: alt-madde soneki (`309/a`) `madde_no`'ya taşınmalı ve tablo-parçası satırları
-  (sınıf A) korpustan **elenmeli**. İkisi de veri işi, graf değil.
-- ⚠️ **İndeks yeniden kurulacak** (korpus değişiyor) — retriever'ın bayat-indeks kapısı zaten
-  patlar. Sınıf A elenirse indeks **~1.166 satır küçülür** ve `recall@k` **değişebilir**;
-  o yüzden S1'in k süpürmesi **eski korpusta** bitmeden korpusa dokunulmuyor
-  (sprint3.md'nin sıra kısıtı, şimdi ikinci bir gerekçeyle daha).
+§6'ya kadar olan kısım korpusu **kendi başına** ölçüyordu. Ama S2'nin kapsam kararı bunu
+sormaz; şunu sorar: **modelin gördüğü bağlamda çöp var mı?** Ölçüldü — k=10 koşusunun
+`context_shown` alanı ayrıştırılarak, yani **modele giden metnin kendisi** üzerinde.
+
+| bozulma sınıfı | korpusta | **modele ulaşan blok** | altın etiketi bozuyor mu |
+| :--- | ---: | :--- | :--- |
+| **A — tablo/cetvel parçası** | ~7.966 satır | **0 / 800** ❌ | hayır |
+| **B — alt-madde soneki kaybı** | **98 satır** | **7 / 800 · 6 soru** ✅ | ✅ **3/80 soru** |
+
+⚠️ **Anahtar üzerinden saymak yanılttı.** `(kanun_adi\|madde_no)` eşleşmesiyle sayınca k=10'da
+*"26/80 soru bozuk parça görüyor"* çıkıyordu; `context_shown`'a bakınca **6/80**. Fark şu:
+anahtar yinelenmiş olsa bile retriever o anahtarın **doğru** satırını getiriyor. Yani
+**yinelenme ≠ kirlenme** — biri korpusun, diğeri bağlamın özelliği. Sayının hangi nesne
+üzerinde ölçüldüğü, sayının kendisinden önemli.
+
+**Sınıf A neden ulaşmıyor:** parçalar çok kısa (`", Ek"` = 4 karakter, `"7/8/2003 5162 4, Ek"`
+= 19). Ne BM25 ne yoğun vektör onları üste çıkarıyor; RRF de çıkaramıyor. Korpusu şişiriyorlar
+ama **ölçülmüş erişim etkileri sıfır**.
+
+### 🚨 Sınıf B'nin asıl zararı: korpus, doğrulanabilir-ama-yanlış atıf ÜRETİYOR
+
+```
+id=41  altın "İCRA VE İFLAS KANUNU Madde 31"  → gerçekte Madde 31/a
+       model "Madde 31" diye atıf yaptı → atıf doğrulayıcı ONAYLADI → DOĞRU sayıldı
+id=74  altın "Madde 79" → gerçekte 79/…       → aynı
+id=0   altın "Madde 31" (=31/a) → hiç getirilemedi, ISKALANDI sayıldı
+```
+
+Model `Madde 31` diyor, doğrulayıcı *"Madde 31 var"* diyor, katı kapı geçiriyor — ama doğru
+numara **`31/a`**. **Ve metriğimiz bunu göremiyor, çünkü altın etiket de aynı yanlış numarayı
+taşıyor.** Bu, B7/B8 ile aynı aileden ama **kaynağı model değil korpus**: hata veri
+katmanında üretiliyor, ölçüm katmanında görünmez oluyor. Manşetteki *"0 uydurma madde no"*
+ifadesi ayakta kalıyor (model gerçekten uydurmuyor) ama **yanına bu şerh düşülmeli**.
+
+## 8. Hüküm ve sıra
+
+- **S1 etkilenmiyor**, ölçüldü (§3) — k süpürmesi planlandığı gibi koştu.
+- **S2'nin kapsamı ölçüme göre seçildi: `mulga` + sınıf B. Sınıf A ERTELENDİ.**
+  Gerekçe menüden değil sayıdan geldi: sınıf A'nın **ölçülmüş erişim etkisi sıfır**, tek
+  yapacağı indeksi değiştirip bugünkü k=5/k=10 sayılarını geçersiz kılmak olurdu — yani
+  **ölçülemez bir kazanç için ölçülmüş bir sayıyı harcamak**. Sınıf A → borç **B9** (indeks
+  hijyeni), kendi başına ve ayrıca ölçülerek yapılır.
+- ⚠️ **İndeks yine de yeniden kurulacak:** `_gomulecek_metin = kanun_adi + madde_no + text`,
+  yani `madde_no` düzeltilince **gömülen metin değişiyor**. Değişen satır 98/40.496 (%0,24),
+  ama kıyaslanabilirlik için harness AÇIK k=10 koşusu **yeniden koşulur** (GPU $0, ~40 dk).
+- ⚠️ **Eval altın etiketleri de düzelecek** — 3 sorunun `referans`/`madde_no` alanı bugün
+  yanlış. Bu, soru kümesini **değiştirmek değil**, etiketin korpustaki karşılığını
+  **doğrultmak** (ADR-0054/K4'ün *"küme değişmez"* kuralı ihlal edilmiyor: soru metinleri
+  aynı kalıyor).
 
 ## Paper eşlemesi
 
