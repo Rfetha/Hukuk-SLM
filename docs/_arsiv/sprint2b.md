@@ -9,7 +9,7 @@
 
 ---
 
-> ## ⏸️ ERTELENDİ (2026-08-03) — aktif hedef [`sprint3.md`](../../sprint3.md)
+> ## ⏸️ ERTELENDİ (2026-08-03) — aktif hedef [`sprint3-part1.md`](../../sprint3-part1.md)
 >
 > Proje tez olmaktan çıkıp OSS ürün oldu. CP4-CP5 **iddiayı kanıtlamak** için vardı
 > (*"merge, karışık ve ardışık SFT'den iyi korur"*) — bu **arxiv sorusu**, ürün sorusu

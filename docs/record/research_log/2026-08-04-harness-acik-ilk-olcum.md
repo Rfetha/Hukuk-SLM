@@ -1,6 +1,6 @@
 # #51 — ⭐ HARNESS AÇIK ilk ölçüm: ürün sayısı ilk kez görüldü
 
-**Tarih:** 2026-08-04 · **Sprint:** [`sprint3.md`](../../../sprint3.md) Adım 1-4
+**Tarih:** 2026-08-04 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) Adım 1-4
 **Özne:** `tgta_v1` = `HakHukuk-4B-v0.1` (ham TIES) — harness KAPALI çıpasıyla **aynı artefakt**
 ([`kollar.md`](../kollar.md): `tgta_v1 == cp3-supurme-ham/*_tg_ta_ham_th_*`)
 **Bedel:** GPU yerel $0 · **hakem $0,038** · **Çıktılar:** `outputs/eval/s3-harness-acik/`
@@ -87,7 +87,7 @@ O atıf **gerçek** — korpusta var, doğrulanır, kapıdan geçer. Yani atıf 
 *"uydurulmuş atıf"*ı çözüyor ama *"gerçek ama soruya uymayan madde"*yi çözmüyor. Bu
 **tasarımın sınırı**, hatası değil — ve S3'ün asıl açığı olarak kayda geçiyor.
 
-⛔ **Bu, Sprint 3'ün varlık gerekçesinin yarısını çürütüyor.** `sprint3.md` §"Neden harness"
+⛔ **Bu, Sprint 3'ün varlık gerekçesinin yarısını çürütüyor.** `sprint3-part1.md` §"Neden harness"
 madde 2 şunu diyordu:
 
 ```
@@ -97,7 +97,7 @@ A1  0,909 → atıf doğrulayıcı  uydurulan madde numarası yakalanır  determ
 Uydurulan madde numarası **yok**. Doğrulayıcının yakalayacağı bir şey olmadığı için A1'e
 katkısı **ölçülebilir biçimde sıfır**. A1'in açığı fabrikasyondan değil **isabetsizlikten**
 geliyor ve o deterministik kodla çözülmüyor. Aynı maddenin `M2b` ayağı **çürümedi,
-sınanmadı** — harness açık m2b hiç koşulmadı. Hüküm `sprint3.md`'ye de işlendi (çelişki
+sınanmadı** — harness açık m2b hiç koşulmadı. Hüküm `sprint3-part1.md`'ye de işlendi (çelişki
 iki yerde birden işaretlenir kuralı).
 
 Aynı bölümün 3. maddesi (*"gerçek retriever ~5 gürültülü parça verecek"*) de **zayıfladı**

@@ -55,6 +55,31 @@ flowchart LR
 
 ### Faz 2 — RAG + Knowledge Graph
 
+> ## ✅ **FAZ 2'NİN RETRIEVER DİLİMİ KURULDU ve ÖLÇÜLDÜ — 2026-08-05**
+>
+> Aşağıdaki tarif **planlanmış hâlidir**; bir kısmı artık **yapılmış** durumda.
+> Kayıt: [`sprint3-part1.md`](../sprint3-part1.md) · [#49](record/research_log/2026-08-04-s3a-on-prob.md)…[#55](record/research_log/2026-08-05-s2-yururluk-alani.md)
+>
+> | tarif | durum |
+> | :--- | :--- |
+> | hibrit retriever | ✅ **KURULDU** — BM25 + `bge-m3` (RRF), 40.496 madde, `recall@10` **0,8750**, **759 ms/sorgu, CPU'da** |
+> | atıf doğrulayıcı | ✅ **KURULDU** — deterministik, hakemsiz · ⚠️ **uydurulmuş madde no 0/118**: yakalayacağı sınıf **boş çıktı** |
+> | red kapısı | ✅ **KURULDU** (ADR-0038 katı + 2 ablasyon) · ⏸️ `m2b` ile **hiç sınanmadı** |
+> | mülga/yürürlük zinciri | ✅ **veri alanıyla** çözüldü (`mulga` + ilga eden kanun/madde, 2.547 satır) — **grafa gerek kalmadan** |
+> | yapısal graf · atıf ağı · hiyerarşi | ❌ **kurulmadı, planı yok** — gerekçesi ve ön-kayıtlı tahmini [`ROADMAP.md` §5.2](../ROADMAP.md)'de |
+>
+> 🚨 **Aşağıdaki *"Neden Graph DB?"* gerekçesi bir VARSAYIMDI ve ölçüm onu daralttı.** Graf,
+> *"retriever'ı iyileştirme"* işi değil — erişim açığının çoğu **`k`'yı büyütmekle** kapandı
+> (`recall@5` 0,750 → `@20` 0,925) ve altın madde getirildiğinde model zaten sadık. Graf'ın
+> ölçülmüş meşru alanı **yalnız ilişki eksenidir** (yürürlük · ilga · tadil · atıf zincirleri) —
+> ama onun **ucuz** kısmını bir boolean veri alanı çözdü. ⚠️ Ve graf'ın en büyük riski artık
+> ölçülmüş: bağlam uzadıkça sadakat düşüyor (`k` 5→10 ile A1 **0,9230 → 0,8426**), graf bağlamı
+> k=10'dan **çok daha fazla** uzatır.
+>
+> ⚠️ **Aşağıdaki "TEZ KAPSAMI" kutuları TARİHSEL.** Tez çerçevesi 2026-08-03'te bırakıldı;
+> *"teze girer/girmez"* ayrımının bugün hükmü yok (üstteki çerçeve notu). Kutular, o dönemin
+> kapsam gerekçesini okunabilir tutmak için silinmedi.
+
 > ⚠️ **TEZ KAPSAMI (ADR-0019 + ADR-0022, 2026-07-23):** Bu fazın bir **dilimi teze dahil**, geri kalanı ürün yol haritası.
 > ✅ **Teze giren:** hibrit retriever · **yapısal/deterministik graf** (hiyerarşi + atıf ağı + mülga/değişik zamansal zincirleri) · Bedesten atıf-doğrulayıcı · red kapısı.
 > ❌ **Tez dışı (ürün/future work):** çok-ajanlı veya LLM-indeksli GraphRAG (sorgu başına ~3× çıkarım → maliyet-normalize parite iddiasını kendi metriğinden zayıflatır); aşağıdaki "vanilla vs graph-RAG vs hybrid" akademik katkısı tez sonrasına atıldı.

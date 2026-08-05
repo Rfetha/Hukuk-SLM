@@ -1,6 +1,6 @@
 # #52 — Korpusun kendisi bozuk: satırların %22,7'si yinelenen anahtar · ve B7'nin mekanizması düzeltildi
 
-**Tarih:** 2026-08-05 · **Sprint:** [`sprint3.md`](../../../sprint3.md) **S2**'nin keşif turu
+**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) **S2**'nin keşif turu
 **Bedel:** $0 — tamamı salt-okunur korpus ölçümü, model/hakem/GPU yok
 **Kaynak:** `data/corpus/mevzuat_maddeler.jsonl` (40.496 satır, 4 alan)
 

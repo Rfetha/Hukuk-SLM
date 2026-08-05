@@ -1,7 +1,8 @@
 # TODO — HakHukuk
 
 > **Harita.** *Ne* yapılacağını burası, *hangi sırayla ve neye dikkat ederek*
-> yapılacağını aktif icra belgesi söyler: **[`sprint3.md`](sprint3.md)** (`/goal sprint3.md`).
+> yapılacağını aktif icra belgesi söyler: **[`sprint3-part2.md`](sprint3-part2.md)** (`/goal sprint3-part2.md`).
+> Part 1 kapandı ve **kayıt** oldu: [`sprint3-part1.md`](sprint3-part1.md).
 >
 > Gerekçeler ve ölçülmüş açıklar: **[`ROADMAP.md`](ROADMAP.md)**
 > Her koşudan önce: ⭐ [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md)
@@ -30,9 +31,14 @@ arşiv: [`docs/_arsiv/`](docs/_arsiv/)
 
 Tasarım: [`docs/specs/2026-08-03-yol-haritasi-design.md`](docs/specs/2026-08-03-yol-haritasi-design.md)
 
-## ▶ Şimdi — Sprint 3: HARNESS
+## ✅ Sprint 3 **PART 1** — HARNESS · **KAPANDI 2026-08-05**
 
-Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
+Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](sprint3-part1.md)'de.
+
+> **Ürünün dürüst sayısı: kütle %61,3** (harness AÇIK, `k=10`, onarılmış korpus) ↔ %71,6
+> (KAPALI = **tavan**, altın madde kurgu gereği verilir). Aradaki 10,2 puan **ayrıştırıldı**:
+> ≈5,1 erişim ıskası (harness'ın) + ≈4,5 dikkat dağılması (modelin).
+> GPU **$0** · hakem **$0,127** · 7 research_log · 3 ADR · 3 yeni tuzak.
 
 - [ ] **Tasarım kararları** → ADR-0053+ *(kod yazılmadan çözülür)*
   - [x] **K1** gömme modeli → **`BAAI/bge-m3` + BM25, RRF hibriti** — ölçümle seçildi
@@ -43,7 +49,7 @@ Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
   - [x] **K3** korpus → **statikle başla**, canlı `bedesten` katmanı S3'ten sonra
         (ölçüm tekrarlanabilirliği). Sözleşme S3a'da sınandı: **4/4 GEÇERLİ**
   - [x] **K4** ⭐ harness AÇIK protokolü → küme **değişmez**, ayırt-edicilik etiketi eklenir,
-        sayılar iki alt kümede ayrı raporlanır (ADR-0054) — ⚠️ **etiket turu henüz koşulmadı (borç B2)**
+        sayılar iki alt kümede ayrı raporlanır (ADR-0054) — ✅ **etiket turu koşuldu (S3, borç B2 kapandı)**
   - [x] **K5** red kapısı → [ADR-0038](docs/adr/0038-red-kapisi-esigi-kati.md) **katı**; aşırı-red ölçüldü
 - [x] ⭐ **S3a ön-prob** — hibrit `recall@10` **0,875** · bedesten **GEÇERLİ** → research_log #49
 - [x] **Adım 0** — modül-başına normalleştirme → 🔴 **REDDEDİLDİ**, kütle ≤ %56,2 < %71,6,
@@ -58,8 +64,22 @@ Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
 - [x] **S3** — ayırt-edicilik etiketi (B2): **62/18**, `recall@5` **0,8226 ↔ 0,5000**;
       ⭐⭐ ters çekinme kalibrasyonu bulundu → #53
 - [x] **S2 keşif** — korpusun **%22,7'si yinelenen anahtar**; mülga aday kuralı doğrulandı → #52
-- [ ] **S2 kodlama** — `mulga` alanı + alt-madde soneki + tablo-parçası eleme, sonra **indeks yeniden kurulur**
-- [ ] **S4** — isabet denetimi tasarımı (B1 + aşırı-red), ≥2 alternatif + ADR
+- [x] **S2 kodlama** — `mulga`+ilga alanı **2.547 satır**, alt-madde kimliği **485 satır**,
+      doğrulayıcıya **`MULGA`** hükmü, indeks yeni dizine kuruldu → **B7 kapandı**;
+      kütle **%59,5 → %61,3**, A1 **+3,6 puan** → #52 + #55
+      ⚠️ tablo-parçası eleme **kasten yapılmadı**: sınıf A modele **0/800** ulaşıyor
+      → ölçülemez kazanç için ölçülmüş sayı harcanmaz (**borç B9**)
+- [x] **S4** — isabet denetimi tasarımı (B1): [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md),
+      eksen = **kaynak-yeterliliği (cevap ÖNCESİ)**; cevap↔kaynak örtüşmesi **reddedildi**
+      (B1'in çekirdek vakasında kör, sınıfı zaten boş) · **kod kasten açılmadı**
+
+### 📌 Part 1'in bıraktığı — Part 2'nin girdisi
+
+- **6 açık borç:** B10 (aşırı-red 16/80) · B1 (7/80) · B4 · B5 · B8 · B9 · B6
+- **2 ölçüm boşluğu:** `m2b` harness AÇIK **hiç koşulmadı** · rakip harness AÇIK **hiç ölçülmedi**
+
+Sıra ve ölçüm bağlamları: [`sprint3-part1.md`](sprint3-part1.md#post-sprint-3-sırası) ·
+karar ve ön-kayıtlı kabuller: [`sprint3-part2.md`](sprint3-part2.md)
 
 ---
 

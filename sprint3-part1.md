@@ -1,6 +1,10 @@
-# Sprint 3 — HARNESS: modeli ürüne çevirmek
+# Sprint 3 **PART 1** — HARNESS: modeli ürüne çevirmek
 
-> # ✅ SPRINT 3 KAPANDI — 2026-08-05
+> 📁 **Bu belge KAPANDI ve KAYITTIR.** Devamı: [`sprint3-part2.md`](sprint3-part2.md) —
+> Part 1'in **ölçerek açtığı** borçları kapatan tur. Buradaki hiçbir satır artık koşulmaz;
+> sayılar ve gerekçeler **kaynak** olarak durur.
+>
+> # ✅ SPRINT 3 PART 1 KAPANDI — 2026-08-05
 >
 > **Adım 0 🔴 · Adım 1-4 ✅ · S3a ✅ · S1 ✅ · S3 ✅ · S2 ✅ · S4 ✅** — dört işin dördü bitti.
 >
@@ -74,16 +78,15 @@
 >
 ---
 
-# ▶ SIRADAKİ — ⛔ **`/goal sprint3.md` KOŞACAK İŞ KALMADI**
+# ▶ SIRADAKİ — ⛔ **BU BELGEDE KOŞACAK İŞ KALMADI**
 
-> **Sprint 3'ün dört işi de kapandı.** Bu belge artık **kayıt**; canlı iş yok.
-> Sıradaki tur [post-sprint 3 sırasından](#post-sprint-3-sırası) seçilir ve **yeni bir
-> `/goal` ister** — hangisinin koşulacağı insan kararıdır.
+> **Part 1'in dört işi de kapandı.** Bu belge artık **kayıt**; canlı iş yok.
+> Canlı icra belgesi: **[`sprint3-part2.md`](sprint3-part2.md)** (`/goal sprint3-part2.md`).
 >
-> **Sıradaki tek aday (bedeli $0, en yüksek getirili):**
-> **B-i deneyi** — [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)'in kaynak-yeterliliği
-> önsözü. Bayrak (`--sufficiency-preamble`) **zaten var**, ön-kayıtlı kabul **yazılı**, ve
-> tek deney **B1 (7/80) ile B10 (16/80)** açıklarına **birden** dokunuyor.
+> Part 1'in ölçerek bıraktığı borçlar ve sıraları aşağıdaki
+> [post-sprint 3 sırasında](#post-sprint-3-sırası) duruyor — **ölçüm bağlamlarıyla birlikte**,
+> çünkü bir borcun büyüklüğü onu üreten koşudan koparılınca yorumlanamaz hâle gelir.
+> Part 2 o sıradan hangisini aldığını ve **neden** aldığını kendi belgesinde yazar.
 
 <details><summary>Sprint boyunca geçerli olan koşu kısıtları (kayıt)</summary>
 

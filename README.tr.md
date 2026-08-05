@@ -16,8 +16,9 @@ Q4_K_M): cevabı verilen mevzuata dayandır, mevzuat soruyu kapsamıyorsa çekin
 
 > ### ⚠️ Hukuki tavsiye değildir
 > Bu bir araştırma çıktısıdır. Avukat değildir, ürettiği metin hukuki tavsiye
-> değildir. Mevzuat değişir, ağırlıklar değişmez. **Henüz bir erişim (retrieval)
-> katmanı yok** — model bugünkü mevzuatı söyleyemez. Ürettiği her madde numarasını
+> değildir. Mevzuat değişir, ağırlıklar değişmez. **Erişim (retrieval) katmanı var
+> ve ölçüldü, ama aşağıdaki servis yoluna henüz paketlenmedi** — mevzuat metnini
+> hâlâ siz veriyorsunuz. Ürettiği her madde numarasını
 > [mevzuat.gov.tr](https://www.mevzuat.gov.tr) üzerinden doğrulayın.
 
 ## Nerede duruyor
@@ -32,12 +33,37 @@ DEV kümesi, harness kapalı, hakem `gpt-4o-mini`. Tam protokol [model kartında
 
 Flash-Lite'ın sadık-cevap kütlesinin **%98'ine ulaşıyoruz ve ondan daha az
 reddediyoruz** — 2,59 GiB'lık bir modelle ve ~sıfır marjinal maliyetle. Yalnız
-çeldirici kaynaklar verildiğinde reddetme ekseninde hâlâ geride kalıyoruz; bu açık
-[yol haritasının](ROADMAP.md) ilk maddesi ve planlanan çözüm daha çok eğitim değil,
-**deterministik kod**.
+çeldirici kaynaklar verildiğinde reddetme ekseninde hâlâ geride kalıyoruz.
 
 **Bu bir parite iddiası değildir:** harness kapalı, maliyet normalize edilmedi ve
 merge yapılandırması DEV'de seçildi.
+
+### Harness açıkken — ürünün dürüst sayısı
+
+Yukarıdaki tablo doğru maddeyi modelin eline veriyor. Gerçek kullanıcının böyle bir
+lüksü yok. Bağlamı bir retriever seçtiğinde (hibrit BM25 + `bge-m3`, 40.496 maddelik
+indeks, `k=10`, tamamı CPU'da):
+
+| | harness KAPALI | **harness AÇIK** |
+| :--- | ---: | ---: |
+| altın madde bağlamda | **kurgu gereği** garanti | **70/80 — `recall@10` 0,875** |
+| sadık-cevap kütlesi | %71,6 | **%61,3** |
+| A1 · altın getirilen alt küme | 0,909 | **0,862** |
+| **uydurulmuş madde numarası** | 0 | **0 / 118** |
+
+**Arkasında durduğumuz sayı %61,3.** Bu bir gerileme değil — iki ölçüm aynı şeyi
+ölçmüyor ve KAPALI sütunu bir rakip değil **tavan**. 10,2 puanlık açığı ayrıştırdık:
+**≈5,1 puan erişim ıskası** (harness'ın — 10/80 soruda altın madde hiç gelmiyor) +
+**≈4,5 puan dikkat dağılması** (modelin — altın getirildiğinde bile yanına dokuz madde
+konunca A1 0,909 → 0,862 düşüyor).
+
+🚨 **Ve ölçüm kendi planımızı çürüttü.** Atıf doğrulayıcıyı A1 açığını kapatmak için
+kurduk. **Sıfır** uydurulmuş madde numarası buldu — yakalamak için kurulduğu sınıf
+**boş**. Model numara uydurmuyor; erişim ıskaladığında *başka bir gerçek* maddeden
+cevaplıyor (7/80). Asıl büyük hata bunun tersi: **16/80** soruda model, altın madde
+**bağlamındayken** çekiniyor — ve bu sayı harness kapalıyken de aynı (17/80), yani bir
+**model** özelliği, erişim özelliği değil. Deterministik kod bunu kapatamaz.
+Ayrıntı ve tam kayıt: [yol haritası](ROADMAP.md) · [`sprint3-part1.md`](sprint3-part1.md).
 
 ## Nasıl kuruldu
 

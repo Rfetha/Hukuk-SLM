@@ -14,7 +14,7 @@ gerekçeler hâlâ değerli. Ama artık **yürürlükte değiller**.
 | [`ft-is-akisi.mmd`](ft-is-akisi.mmd) | uçtan uca iş akışı şeması | kendini SÜPERSEDED ilan etmişti (ADR-0035); tez kafesine göre çizilmiş. Güncel artefakt şeması: [`../model-soyagaci.mmd`](../model-soyagaci.mmd) |
 
 **Güncel yön:** [`ROADMAP.md`](../../ROADMAP.md) · aktif icra:
-[`sprint3.md`](../../sprint3.md) · artefakt kimlikleri:
+[`sprint3-part1.md`](../../sprint3-part1.md) · artefakt kimlikleri:
 [`kollar.md`](../record/kollar.md)
 
 ⚠️ **`docs/record/` ve `docs/adr/` arşiv DEĞİLDİR** — onlar yürürlükteki araştırma
