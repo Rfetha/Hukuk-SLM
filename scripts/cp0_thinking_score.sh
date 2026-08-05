@@ -24,9 +24,12 @@ MODES="${MODES:-m1 m4 m2 m2b m3 m5}"
 # --- hakem erişimi: .env kabuğa YÜKLENİR (tuzak 2.11) ------------------------
 if [ -f .env ]; then set -a; . ./.env; set +a; else die ".env yok — hakem anahtarı yüklenemez"; fi
 [ -n "${OPENAI_API_KEY:-}" ] || die "OPENAI_API_KEY boş (.env yüklendi ama anahtar yok)"
-export LLM_GATEWAY="${LLM_GATEWAY:-openai}"        # tuzak 2.7: sağlayıcı PİNLİ
-export GND_JUDGE="${GND_JUDGE:-gpt-4o-mini}"       # CP2/CP6 ile aynı hakem
-echo "### hakem: $GND_JUDGE · gateway=$LLM_GATEWAY · etiket=*_$TAG · modlar=$MODES"
+# Why openrouter: 2026-08-05'ten itibaren TEK geçit OpenRouter (insan kararı, bakiye orada).
+# Sağlayıcı yine pinli — geçit değişse de yığın aynı kalmalı (tuzak 2.7).
+export LLM_GATEWAY="${LLM_GATEWAY:-openrouter}"
+export GND_JUDGE="${GND_JUDGE:-openai/gpt-4o-mini}"          # CP2/CP6 ile aynı hakem
+export LLM_PROVIDER_ORDER="${LLM_PROVIDER_ORDER:-OpenAI}"    # tuzak 2.7: sağlayıcı PİNLİ
+echo "### hakem: $GND_JUDGE · gateway=$LLM_GATEWAY · sağlayıcı=$LLM_PROVIDER_ORDER · etiket=*_$TAG · modlar=$MODES"
 echo
 
 for M in $MODES; do
@@ -39,7 +42,7 @@ for M in $MODES; do
   L="${M}_${TAG}"
   echo "==================== $L ===================="
   case "$M" in
-    m1|m4|m5)   # groundedness hakemi (M5 = ANTİ-HEDEF, yükselmemeli)
+    m1|m4|m5|h1)   # groundedness hakemi (M5 = ANTİ-HEDEF, yükselmemeli; h1 = harness AÇIK M1)
       python scripts/groundedness.py --details "$D" --label "$L" --mode data --out-dir "$OUT_DIR" \
         || die "$L groundedness başarısız"
       # A1 = cevaplanan-only (tuzak 2.3) — coverage ile birlikte okunur
@@ -54,6 +57,9 @@ for M in $MODES; do
       python scripts/score_abstention.py --details "$D" --label "$L" --out-dir "$OUT_DIR" \
         --source-field context_shown || die "$L abstention başarısız"
       ;;
+    # ⚠️ Tanınmayan mod SESSİZCE geçmez. `h1` tam bunu yaşadı: dalı yoktu, betik yalnız
+    # score_register koştu, hakemi HİÇ çağırmadı ve yine de 0 ile çıktı (tuzak sınıfı: sessiz yanlışlık).
+    *) die "tanınmayan mod: $M — puanlayıcı dalı yok, sessizce geçilmez" ;;
   esac
   python scripts/score_register.py --details "$D" --label "$L" --out-dir "$OUT_DIR" \
     || die "$L register başarısız"
