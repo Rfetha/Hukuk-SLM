@@ -59,17 +59,26 @@ M2b Rej             0.877      1.000   ← widest gap; "the harness closes it in
 ⚠️ **The table above is measured with the harness OFF.** `v0.1` because the config was
 selected on DEV and is not validated against baselines.
 
-**The harness-ON number now exists — first run 2026-08-04, corrected + swept 2026-08-05**
-([#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
-[#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)):
+**The harness-ON number now exists — first run 2026-08-04, corrected + swept 2026-08-05,
+corpus repaired 2026-08-05** ([#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+[#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
+[#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)):
 
 ```
-                        harness OFF   ON (k=5)      ON (k=10) ← product setting
-faithful-answer mass       71.6%      56.9%          59.5%    ← the honest product number
-A1 (answered-only)         0.909      0.759          0.768
-A1, gold retrieved         0.909      0.923          0.843    ← ⚠️ k costs faithfulness
-fabricated citations         0          0              0
+                        harness OFF   ON (k=5)   ON (k=10)   ON k=10 +S2 ← product setting
+faithful-answer mass       71.6%      56.9%       59.5%        61.3%    ← the honest number
+A1 (answered-only)         0.909      0.759       0.768        0.804
+A1, gold retrieved         0.909      0.923       0.843        0.862    ← ⚠️ k costs faithfulness
+fabricated citations         0          0           0            0
 ```
+
+**Sprint 3 closed 2026-08-05** — the `+S2` column is the corpus-repair round (validity field
++ sub-article identity, [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)),
+which lifted A1 **+3.6 points** through the *retrieval* channel, not the citation channel.
+⚠️ Two standing caveats on that column: three DEV gold labels were corrected **after seeing
+the numbers** (blind judge, pre-registered prompt, position-bias control, human approval —
+and the correction did **not** raise the headline), and the judge's **re-run noise floor was
+measured at ~0.3 A1 points** on identical inputs, so nothing smaller than that is read.
 
 🚨 **The first published ON numbers were wrong** (mass 58.7%, A1-gold 0.934):
 `harness_tablo.py` reported a macro over *all* scored items as `A1`, but `A1` is
@@ -92,17 +101,22 @@ is retrieval, not the model"* is **only true at k=5**, and only half-true even t
 - ⚠️ **k costs faithfulness.** On the same questions where gold *was* retrieved, A1 falls
   0.923 → **0.843** going k=5 → k=10. At k=5 the model beat the distractor-packed OFF
   setting (0.923 > 0.909); at k=10 it does not. Measured distraction, not speculation.
-- ⚠️ **Over-refusal is k-independent.** 14→15 questions are abstained on *while the gold
-  article is in context*. Retrieval cannot fix that half of the coverage loss — the model can.
+- 🚨 **Over-refusal is k-independent and it is the BIGGER half.** 14 → 15 → **16/80**
+  questions are abstained on *while the gold article is in context*. Retrieval cannot fix
+  this — the model can. At **16/80 it is twice B1's 7/80**, and it is the stated reason for
+  the next training round ([`sprint3.md`](sprint3.md) debt **B10**).
 - ⚠️ **Abstention is calibrated on the wrong signal.** On questions that do not identify
   their own legal domain, the model abstains **less** (5.6% vs 30.6% at k=5) precisely
   where retrieval fails most — it reads *topical fit*, not *sufficiency*. k=10 flips the
   ordering back to correct but does not close it
   ([#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)).
 
-And the harness's known limit: the model does not fabricate article numbers (0/120 at
-k=10), it answers from a *different real* article — a citation that verifies and passes
-the gate but does not fit the question. That is Sprint 3's open debt B1.
+And the harness's known limit: the model does not fabricate article numbers (**0/118**), it
+answers from a *different real* article — a citation that verifies and passes the gate but
+does not fit the question. That is Sprint 3's open debt B1, and
+[ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md) fixed the axis it will be attacked on:
+**source-sufficiency before answering**, not answer↔source overlap after — because the
+overlap check is blind to exactly this case and its own class is measurably empty.
 
 ### Target audience: the CITIZEN — but read the trap
 
