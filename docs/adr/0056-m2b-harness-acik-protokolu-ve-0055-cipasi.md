@@ -23,6 +23,13 @@ hard-negative (`--data core_hard.jsonl --distractors 4 --no-gold`). Harness AÇI
 
 ## Karar 1 — `m2b` harness-AÇIK = **altın ablasyonu**, korpus-dışı küme değil
 
+> 🔁 **`k` DEĞERİ TADİL EDİLDİ 2026-08-05 — [ADR-0057](0057-harness-rekabet-kapisi-esit-sinav.md).**
+> Aşağıda `k`, `h1`'in ürün ayarına (10) eşitlenmişti. Bu **yanlış çıpaya** eşitlemedir:
+> `m2b`'nin KAPALI hâli **4 kaynak** gösterir (`--distractors 4 --no-gold`, altın eklenmez).
+> 10 ↔ 4 kıyasından çıkan fark *"kapı mı yetersiz"* ile *"6 fazla madde mi"* arasında
+> **ayrılamaz**. Yürürlükteki hâli: `h2b` **k=4** *(eşleşmiş — kapının hükmü buradan)*
+> **ve** k=10 *(ürün ayarı — bilgi)*. Protokolün geri kalanı **aynen geçerli**.
+
 **Aynı 80 soru. Retriever `k+1` getirir; altın madde sonuçtaysa DÜŞÜRÜLÜR; ilk `k` kalır.**
 
 Böylece tek bir değişken oynar: **çeldiricileri kim seçti** — elle paketleyen insan mı,

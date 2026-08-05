@@ -38,10 +38,21 @@ değişirse kapı kararları değişir, ve hem Ö1 hem D1 farklı aletlerle üre
 ⚠️ **A1 her yerde cevaplanan-only** ve `rescore_answered.py` ile **çapraz doğrulanır**
 (tuzak **2.16** — bu hattın bir kapı hükmü zaten bir kez metrik hatasıyla tersine döndü).
 
+⚖️ **EŞİT SINAV İLKESİ ([ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md)).**
+AÇIK ↔ KAPALI kıyası yalnız **eşleşmiş** eksenlerde hüküm verir: aynı sorular · **aynı kaynak
+sayısı** · aynı altın koşulu · aynı rejim. Eşleşmeyen eksenler (M1 manşet kütle, M4, M3, M5,
+M2) **TAVAN/tanımsız** damgasıyla raporlanır — *"AÇIK burada geride"* cümlesi onlar için
+**kurulmaz**.
+
+🔒 **KAPALI kolu DONDURULMUŞTUR:** `--distractors 4`, `sample_distractors`'ın komşu-öncelikli
+seçimi ve `core_hard`/`trap` havuzları bu turda **değiştirilemez**. *"AÇIK öne geçsin"* şartını
+geçmenin en ucuz yolu KAPALI'yı kötüleştirmektir ve **hiçbir yerde hata çıkmaz**.
+
 🛑 **DURMA:** geçerlilik kapısı düşerse (kesik cevap > %5) → koşu **geçersiz**, sonuç
 okunmaz, hakem parası harcanmaz.
 
-**Kaynak kararlar:** [ADR-0056](../../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
+**Kaynak kararlar:** [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md) *(eşit sınav kapısı)* ·
+[ADR-0056](../../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
 [ADR-0055](../../adr/0055-isabet-denetimi-ekseni.md) ·
 borç bağlamları [`sprint3-part1.md`](../../../sprint3-part1.md#post-sprint-3-sırası)
 
@@ -643,7 +654,7 @@ git commit -m "h2b modu: m2b'nin harness-AÇIK karşılığı — altın ablasyo
 
 ---
 
-### Görev 4: Ö1 — `m2b` harness AÇIK koşulur *(üretim + hakem ~$0,04)*
+### Görev 4: Ö1 — `m2b` harness AÇIK, **iki `k`'da** *(üretim + hakem ~$0,08)*
 
 **Neden:** Sprint 3 Part 1'in iki gerekçesinden biri *"red kapısı M2b'yi kapatır"* idi ve
 **hiç sınanmadı**. Bu görev onu sınar.
@@ -657,40 +668,69 @@ Sayı görüldükten sonra tahmine bakmak, tahmini yok saymakla aynıdır.
 
 **Arayüzler:**
 - Kullanır: Görev 3'ün `h2b` modu · `harness_izi["altin_dusuruldu"]`
-- Üretir: `outputs/eval/olcum-h2b/h2b_<etiket>_detail.jsonl` — Görev 6 bunu kayda geçirir.
+- Üretir: `outputs/eval/olcum-h2b-k4/` ve `outputs/eval/olcum-h2b-k10/` — Görev 6 ikisini de
+  kayda geçirir.
 
-- [ ] **Adım 1: Üretimi koş**
+> ## ⚖️ İKİ KOŞU, TEK HÜKÜM — [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md)
+>
+> ```
+> KAPALI m2b  = --distractors 4 --no-gold  →  4 KAYNAK  (altın eklenmiyor)
+>
+> h2b @k=4    →  4 kaynak   ✅ EŞLEŞMİŞ — kapının HÜKMÜ yalnız buradan okunur
+> h2b @k=10   →  10 kaynak  ℹ️ ürünün gerçek ayarı — bilgi, hüküm DEĞİL
+> ```
+>
+> 🚨 **ADR-0056 bunu `k=10`'da tanımlamıştı ve YANLIŞ ÇIPAYA eşitliyordu** (ürüne, çıpaya
+> değil). 10 ↔ 4 kıyasından çıkacak fark *"kapı mı yetersiz"* ile *"6 fazla madde mi"*
+> arasında **ayrılamaz** — ve fazla bağlamın bedeli bu repoda **ölçülü** (A1 0,9230 → 0,8426).
+>
+> 🎁 Bonus: iki `k` arasındaki fark, `k` büyütmenin bedelini **çekinme ekseninde** de ölçer.
+> Bugüne dek yalnız **sadakat** ekseninde ölçülmüştü.
 
-Çalıştır:
+- [ ] **Adım 1: İKİ üretimi de koş**
+
+⚖️ **k=4 ÖNCE koşulur** — hüküm ondan okunacak; k=10 bilgi amaçlı.
+
 ```bash
-cd /home/ersoy/code/Hukuk-SLM && cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
-mkdir -p outputs/eval/olcum-h2b && \
-MODES="h2b" OUT_DIR="outputs/eval/olcum-h2b" \
-HARNESS_INDEKS="data/index/mevzuat_bge_m3_s2" HARNESS_K=10 \
-bash scripts/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf tgta_v1_h2b_k10 \
-  2>&1 | tee outputs/eval/olcum-h2b/kosu.log
+cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
+for K in 4 10; do
+  mkdir -p "outputs/eval/olcum-h2b-k$K"
+  MODES="h2b" OUT_DIR="outputs/eval/olcum-h2b-k$K" \
+  HARNESS_INDEKS="data/index/mevzuat_bge_m3_s2" HARNESS_K=$K \
+  bash scripts/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf "tgta_v1_h2b_k$K" \
+    2>&1 | tee "outputs/eval/olcum-h2b-k$K/kosu.log" || break
+done
 ```
-Beklenen: `80/80` üretim, `outputs/eval/olcum-h2b/h2b_tgta_v1_h2b_k10_detail.jsonl` oluşur.
+Beklenen: iki dizinde de `80/80` üretim ve
+`outputs/eval/olcum-h2b-k{4,10}/h2b_tgta_v1_h2b_k{4,10}_detail.jsonl` oluşur.
 
 - [ ] **Adım 2: 🛑 GEÇERLİLİK KAPISI — hakem parası harcanmadan ÖNCE**
 
 Çalıştır:
 ```bash
-source ~/code/global_venv/bin/activate && python - <<'PY'
+source ~/code/global_venv/bin/activate && python - <<'GATE'
 import json
-yol = "outputs/eval/olcum-h2b/h2b_tgta_v1_h2b_k10_detail.jsonl"
-k = [json.loads(s) for s in open(yol, encoding="utf-8") if s.strip()]
-kesik = sum(1 for r in k if r.get("finish_reason") == "length")
-altin_sizdi = sum(1 for r in k if (r.get("harness") or {}).get("altin_sirasi") is not None)
-print(f"n={len(k)}  kesik={kesik} (%{100*kesik/len(k):.1f})  ALTIN SIZAN={altin_sizdi}")
-assert len(k) == 80,        "🚫 n 80 değil — küme değişmez ihlali (ADR-0054 K4)"
-assert kesik / len(k) <= .05, "🚫 kesik > %5 → KOŞU GEÇERSİZ, hakem çağrılmaz"
-assert altin_sizdi == 0,     "🚫 ablasyon SIZDIRIYOR — altın hâlâ bağlamda, koşu anlamsız"
-print("✅ geçerlilik kapısı GEÇTİ — hakem çağrılabilir")
-PY
+for K in (4, 10):
+    yol = f"outputs/eval/olcum-h2b-k{K}/h2b_tgta_v1_h2b_k{K}_detail.jsonl"
+    kayit = [json.loads(x) for x in open(yol, encoding="utf-8") if x.strip()]
+    kesik = sum(1 for r in kayit if r.get("finish_reason") == "length")
+    sizan = sum(1 for r in kayit if (r.get("harness") or {}).get("altin_sirasi") is not None)
+    kaynak = {(r.get("context_shown") or "").count("[KAYNAK") for r in kayit}
+    print(f"k={K}: n={len(kayit)} kesik={kesik} (%{100*kesik/len(kayit):.1f}) "
+          f"ALTIN SIZAN={sizan} kaynak={sorted(kaynak)}")
+    assert len(kayit) == 80,          f"k={K}: n 80 degil - kume degismez ihlali (ADR-0054 K4)"
+    assert kesik / len(kayit) <= .05, f"k={K}: kesik > %5 - KOSU GECERSIZ, hakem cagrilmaz"
+    assert sizan == 0,                f"k={K}: ablasyon SIZDIRIYOR - altin hala baglamda"
+    assert kaynak == {K},             f"k={K}: kaynak sayisi {sorted(kaynak)} != {K} - ESIT SINAV BOZUK"
+print("OK: iki kosu da gecerlilik kapisini GECTI - hakem cagrilabilir")
+GATE
 ```
-Beklenen: `✅ geçerlilik kapısı GEÇTİ`.
-🚨 `ALTIN SIZAN > 0` çıkarsa **dur** — ablasyon çalışmıyor, Görev 3 Adım 4'e dön.
+Beklenen: `OK: iki koşu da geçerlilik kapısını GEÇTİ`.
+
+🚨 **Üç ayrı durma sebebi var, üçü de sessiz yanlışlık üretirdi:**
+`ALTIN SIZAN > 0` → ablasyon çalışmıyor, Görev 3 Adım 4'e dön ·
+`kaynak ≠ k` → **eşit sınav bozuk**, `k=4` koşusu 0,877 çıpasıyla kıyaslanamaz ·
+`kesik > %5` → koşu geçersiz, hakem parası harcanmaz.
 
 - [ ] **Adım 3: Hakemi koş**
 
@@ -698,35 +738,70 @@ Beklenen: `✅ geçerlilik kapısı GEÇTİ`.
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
 set -a && source .env && set +a && \
-MODES="h2b" OUT_DIR="outputs/eval/olcum-h2b" \
-bash scripts/cp0_thinking_score.sh tgta_v1_h2b_k10 \
-  2>&1 | tee outputs/eval/olcum-h2b/hakem.log
+for K in 4 10; do
+  MODES="h2b" OUT_DIR="outputs/eval/olcum-h2b-k$K" \
+  bash scripts/cp0_thinking_score.sh "tgta_v1_h2b_k$K" \
+    2>&1 | tee "outputs/eval/olcum-h2b-k$K/hakem.log" || break
+done
 ```
-Beklenen: `score_abstention.py` koşar, `outputs/eval/olcum-h2b/abstain_h2b_*.json` oluşur.
+Beklenen: `score_abstention.py` iki koşuda da koşar, `abstain_h2b_*.json` dosyaları oluşur.
 
-- [ ] **Adım 4: İki sayıyı AYRI çıkar**
+- [ ] **Adım 4: İki sayıyı AYRI çıkar — iki `k` için, zorluk kontrolüyle**
 
 Çalıştır:
 ```bash
-source ~/code/global_venv/bin/activate && python scripts/harness_tablo.py \
-  --details outputs/eval/olcum-h2b/h2b_tgta_v1_h2b_k10_detail.jsonl \
-  --korpus  data/corpus/mevzuat_maddeler.jsonl \
-  --out     outputs/eval/olcum-h2b/harness_tablo.json
+cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
+for K in 4 10; do
+  python scripts/harness_tablo.py \
+    --details "outputs/eval/olcum-h2b-k$K/h2b_tgta_v1_h2b_k${K}_detail.jsonl" \
+    --korpus  data/corpus/mevzuat_maddeler.jsonl \
+    --out     "outputs/eval/olcum-h2b-k$K/harness_tablo.json"
+done
 ```
 
-Sonra iki sayıyı oku:
+Sonra üç sayıyı birden oku — **`Rej_model`** · **kapının katkısı** · **zorluk**:
+
 ```bash
-source ~/code/global_venv/bin/activate && python - <<'PY'
-import json
-t = json.load(open("outputs/eval/olcum-h2b/harness_tablo.json", encoding="utf-8"))
-cov = t["kutle_ekseni"]["coverage"]
-kapi = t["kapi"]["kati"]
-rej_model = round(1 - cov, 4)
-katki = round((kapi["kapi_sonrasi_coverage"] and cov - kapi["kapi_sonrasi_coverage"]) or 0, 4)
-print(f"Rej_model        = {rej_model}    (çıpa: m2b KAPALI 0,877)")
-print(f"kapının KATKISI  = {katki}    ({kapi['reddedilen']}/80 reddedildi)")
-PY
+cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && python - <<'OKU'
+import json, re
+
+def zorluk(yol):
+    """Eşit-sınav kontrolü (ADR-0057): çeldiricilerin altınla AYNI KANUNDAN gelme oranı.
+    KAPALI'nın çeldiricileri kasten komşu seçiliyor (raft_pack.py:75-91) — eğer
+    AÇIK'ınki çok daha dağınıksa, AÇIK'ın galibiyeti KOLAY SINAVDAN gelmiş olabilir."""
+    toplam = ayni = 0
+    for x in open(yol, encoding="utf-8"):
+        if not x.strip():
+            continue
+        r = json.loads(x)
+        gold_ad = (r.get("kanun_adi") or "").strip().upper()
+        basliklar = re.findall(r"\[KAYNAK \d+\]\n([^\n]+)", r.get("context_shown") or "")
+        for b in basliklar:
+            toplam += 1
+            ayni += b.strip().upper().startswith(gold_ad[:20]) if gold_ad else 0
+    return round(ayni / toplam, 4) if toplam else None
+
+print(f"{'kol':22s} {'kaynak':>6s} {'Rej_model':>10s} {'kapi katkisi':>13s} {'zorluk':>8s}")
+print(f"{'KAPALI m2b (cipa)':22s} {4:>6d} {0.8770:>10.4f} {'-':>13s} {'(kom su)':>8s}")
+for K in (4, 10):
+    t = json.load(open(f"outputs/eval/olcum-h2b-k{K}/harness_tablo.json", encoding="utf-8"))
+    cov = t["kutle_ekseni"]["coverage"]
+    kapi = t["kapi"]["kati"]
+    rej = round(1 - cov, 4)
+    katki = round(cov - (kapi["kapi_sonrasi_coverage"] or cov), 4)
+    z = zorluk(f"outputs/eval/olcum-h2b-k{K}/h2b_tgta_v1_h2b_k{K}_detail.jsonl")
+    isaret = "<= HUKUM" if K == 4 else "   bilgi"
+    print(f"{'ACIK h2b k=' + str(K):22s} {K:>6d} {rej:>10.4f} {katki:>13.4f} {z:>8} {isaret}")
+OKU
 ```
+
+⚖️ **Hükmü YALNIZ `k=4` satırı verir** — tek eşleşmiş olan o (4 kaynak ↔ 4 kaynak).
+`k=10` satırı ürünün gerçek ayarını gösterir ve **kapı hükmü vermez**.
+
+⚠️ **Zorluk sütunu boşuna değil:** KAPALI'nın çeldiricileri **kasten komşu** seçiliyor
+(aynı kanun, madde no'ya göre en yakın — `raft_pack.py:75-91`), yani KAPALI'nın sınavı zor.
+AÇIK'ın zorluğu **belirgin biçimde düşükse**, AÇIK'ın galibiyeti *"daha iyi"*yi değil
+*"daha kolay sınav"*ı gösteriyor olabilir — o hâlde hüküm **şerhli** yazılır.
 
 - [ ] **Adım 5: 🚨 ÖN-KAYITLI TAHMİNE KARŞI HÜKMÜ YAZ**
 
@@ -744,8 +819,8 @@ diye oku — ADR-0056 B tahmininin yanlı bir alt kümeden türetildiğini **ken
 - [ ] **Adım 6: Commit**
 
 ```bash
-git add outputs/eval/olcum-h2b/
-git commit -m "Ö1: m2b harness AÇIK ilk kez ölçüldü — Part 1'in sınanmamış yarısı"
+git add outputs/eval/olcum-h2b-k4/ outputs/eval/olcum-h2b-k10/
+git commit -m "Ö1: m2b harness AÇIK ilk kez ölçüldü — eşleşmiş (k=4) + ürün (k=10)"
 ```
 
 ---
@@ -907,8 +982,10 @@ elverişli (tahminlerin ikisi de tutmayabilir).
 ```markdown
 # #56 — Ölçüm boşlukları: m2b harness AÇIK · B5 · B8 · B-i
 
-**Tarih:** 2026-08-05 · **Plan:** [`docs/superpowers/plans/2026-08-05-olcum-bosluklari.md`](...)
-**Kararlar:** [ADR-0056](...) · [ADR-0055](...)
+**Tarih:** 2026-08-05
+**Plan:** [`superpowers/plans/2026-08-05-olcum-bosluklari.md`](../../superpowers/plans/2026-08-05-olcum-bosluklari.md)
+**Kararlar:** [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md) *(eşit sınav kapısı)* ·
+[ADR-0056](../../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) · [ADR-0055](../../adr/0055-isabet-denetimi-ekseni.md)
 
 ## Künye
 model · indeks · k · seed · think-budget · hakem · geçit · koşu dizinleri · maliyet
@@ -937,7 +1014,25 @@ hangi borç kapandı, hangisi açık kaldı, yeni borç doğdu mu
 `docs/record/research_log/README.md` tablosuna `#56` satırını ekle — **sayılarla**,
 önceki satırların yoğunluğunda.
 
-- [ ] **Adım 3: Borç tablosunu güncelle**
+- [ ] **Adım 3: ⚖️ HARNESS KAZANÇ TABLOSU** — [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md)
+
+`research_log` girdisine **şu tabloyu** koy. Her satırda **adillik hükmü** zorunlu —
+olmadığı için bugüne kadar *"harness kötüleştirdi"* yanlış okuması kolaydı:
+
+```
+kademe  eksen                     kaynak   KAPALI   AÇIK    hüküm
+──────  ────────────────────────  ──────   ──────   ─────   ─────
+  1     kapi + dogrulayici        ayni     -        ?       TAM ESIT SINAV
+  2     A1 . altin getirilen      5 <-> 5  0,9087   0,9230  ESLESMIS  (k=5)
+  2     M2b Rej                   4 <-> 4  0,8770   ?       ESLESMIS  (k=4)
+  3     M1 manset kutle           5 <-> 10 %71,6    %61,3   TAVAN - hukum YOK
+  3     M4 / M3 / M5 / M2         -        -        -       TANIMSIZ
+```
+
+⚠️ **Kademe 3 satırları için *"AÇIK geride"* cümlesi KURULMAZ.** KAPALI orada altını
+**kurgu gereği** alıyor — rakip değil **tavan**. Bu ayrım yazılmazsa tablo yanıltır.
+
+- [ ] **Adım 4: Borç tablosunu güncelle**
 
 `sprint3-part1.md`'de: **B5** kapandıysa ✅ KAPANDI tablosuna taşı · **B8** eğrisi ölçüldü
 diye işaretle *(tolerans benimsenmediği için AÇIK kalır)* · **B1**'i B5'in düştüğü payla
@@ -947,13 +1042,13 @@ düzelt · **B10**'u D1'in sonucuyla güncelle.
 düzenlemek sayıyı tutarsız bırakır (bu hata Part 1'de bir kez oldu: B8 satırı tablonun
 **dışında** kalmıştı).
 
-- [ ] **Adım 4: Manşet sayı değiştiyse üç belgeye birden işle**
+- [ ] **Adım 5: Manşet sayı değiştiyse üç belgeye birden işle**
 
 Kütle değiştiyse `ROADMAP.md` · `MODEL_CARD.md` · `CLAUDE.md` **aynı commit'te** güncellenir.
 Biri atlanırsa repo kendi içinde çelişir — ve bu, `research_log/README.md`'de bir kez
 gerçekten oldu.
 
-- [ ] **Adım 5: Testleri son kez koş**
+- [ ] **Adım 6: Testleri son kez koş**
 
 Çalıştır:
 ```bash
@@ -961,7 +1056,7 @@ cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && pytho
 ```
 Beklenen: tüm testler geçer.
 
-- [ ] **Adım 6: Commit**
+- [ ] **Adım 7: Commit**
 
 ```bash
 git add docs/ sprint3-part1.md ROADMAP.md MODEL_CARD.md CLAUDE.md
