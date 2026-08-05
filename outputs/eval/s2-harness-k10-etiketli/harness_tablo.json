@@ -49,33 +49,12 @@
     "altin_gelmedi_cevapladi": 7,
     "altin_gelmedi_cekindi": 3
   },
-  "ayirt_edicilik_alt_kumeleri": {
-    "ayirt_edici": {
-      "n": 62,
-      "erisim": {
-        "recall@1": 0.5323,
-        "recall@3": 0.7419,
-        "recall@5": 0.8226,
-        "recall@10": 0.9355
-      },
-      "coverage": 0.7742,
-      "A1_tum": 0.8372,
-      "A1_altin_getirilen_alt_kume": 0.8784,
-      "kutle_tum": 0.6482
-    },
-    "belirsiz": {
-      "n": 18,
-      "erisim": {
-        "recall@1": 0.1667,
-        "recall@3": 0.3333,
-        "recall@5": 0.5,
-        "recall@10": 0.6667
-      },
-      "coverage": 0.7222,
-      "A1_tum": 0.6826,
-      "A1_altin_getirilen_alt_kume": 0.7874,
-      "kutle_tum": 0.493
-    }
+  "k2_bedeli": {
+    "ALTIN_GELMEDI": 10,
+    "TAM": 22,
+    "KIRPILDI": 46,
+    "KIRPILDI_CEVAP_DISI": 2
   },
+  "ayirt_edicilik_alt_kumeleri": null,
   "not": "A1 tek-altın yer-gerçeğine göre; harness AÇIK'ta model BAŞKA bir maddeden doğru cevaplasa da sadakatsiz sayılır → ON/OFF kıyası için A1_altin_getirilen_alt_kume kullanılır."
 }

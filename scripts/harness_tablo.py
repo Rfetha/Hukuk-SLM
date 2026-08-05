@@ -24,17 +24,63 @@ Kullanım:
 import argparse
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from atif_dogrula import (Dogrulayici, DOGRULANDI, MADDE_YOK, KANUN_YOK,  # noqa: E402
                           AYRISTIRILAMADI, MULGA)
 from red_kapisi import kapi, POLITIKALAR  # noqa: E402
+from madde_anahtar import madde_anahtari, korpus_indeksi  # noqa: E402
 from score_abstention import exact_reject  # noqa: E402
 
 
 def _oran(pay, payda):
     return round(pay / payda, 4) if payda else None
+
+
+def _icerik_kelimeleri(metin: str) -> set:
+    """≥5 harfli kelimeler — kaba ama deterministik bir içerik-kelime filtresi.
+    Türkçe durak kelimelerinin çoğu bu eşiğin altında kalır ve liste bakımı gerekmez."""
+    return {w for w in re.findall(r"\w+", (metin or "").lower()) if len(w) >= 5}
+
+
+def k2_bedeli(kayit, korpus_idx):
+    """ADR-0054/K2'nin kabul edilen bedelini SINIFLANDIR (borç B5).
+
+    Dört hâl var ve karıştırılmaları B1'i yanlış okutur:
+      ALTIN_GELMEDI        erişim ıskaladı — kırpmanın suçu değil
+      TAM                  altın maddenin tamamı bağlamda
+      KIRPILDI             kırpıldı ama referans cevabın dayandığı cümle İÇERİDE
+      KIRPILDI_CEVAP_DISI  🚨 B5'in çekirdeği: erişim başardı, kırpma cevabı KESTİ
+
+    ⚠️ Why 4 sınıf: "kırpıldı" tek başına bir şey söylemez — 40.496 maddenin çoğu
+    900 karakteri aşıyor. Anlamlı olan, kırpmanın CEVABI dışarıda bırakıp
+    bırakmadığı. Tek sınıfa indirmek B5'i sistematik olarak şişirir.
+    """
+    izi = kayit.get("harness") or {}
+    if izi.get("altin_sirasi") is None:
+        return "ALTIN_GELMEDI"
+
+    anahtar = madde_anahtari(kayit.get("kanun_no"), kayit.get("madde_no"))
+    kayitlar = korpus_idx.get(anahtar) or []
+    if not kayitlar:
+        return "ALTIN_GELMEDI"
+    tam_metin = max((r.get("text") or "" for r in kayitlar), key=len)
+
+    gosterilen = kayit.get("context_shown") or ""
+    if tam_metin and tam_metin in gosterilen:
+        return "TAM"
+
+    # Kırpıldı. Zararlı mı? Ölçüt: referans cevabın DAYANDIĞI kelimeler hâlâ
+    # gösteriliyor mu. ⚠️ Why kuyruk eşleştirmesi DEĞİL: "son 60 karakter duruyor mu"
+    # maddenin nerede bittiğini ölçer, cevabın nereye dayandığını değil — cevap
+    # maddenin ortasındaki bir fıkraya dayanıyorsa o ölçü yanlış suçlama üretir.
+    dayanak = _icerik_kelimeleri(kayit.get("referans") or "") & _icerik_kelimeleri(tam_metin)
+    if not dayanak:
+        return "KIRPILDI"          # dayanak çıkarılamadı → suçlanmaz (borç uydurulmaz)
+    kalan = {w for w in dayanak if w in gosterilen.lower()}
+    return "KIRPILDI" if len(kalan) / len(dayanak) >= 0.5 else "KIRPILDI_CEVAP_DISI"
 
 
 def main():
@@ -107,6 +153,7 @@ def main():
 
     # 3) Kapı (üç politika, post-hoc aynı küme — ADR-0038)
     d = Dogrulayici(a.korpus)
+    _korpus_idx = korpus_indeksi(a.korpus)
     hukumler = [d.cevabi_dogrula(r.get("cevap", "")) for r in kayitlar]
     kapilar = {}
     for pol in POLITIKALAR:
@@ -163,6 +210,10 @@ def main():
         "kapi": kapilar,
         "atif_dagilimi": dagilim,
         "erisim_davranis_caprazi": capraz,
+        "k2_bedeli": {
+            sinif: sum(1 for r in kayitlar if k2_bedeli(r, _korpus_idx) == sinif)
+            for sinif in ("ALTIN_GELMEDI", "TAM", "KIRPILDI", "KIRPILDI_CEVAP_DISI")
+        },
         "ayirt_edicilik_alt_kumeleri": alt_kumeler,
         "not": ("A1 tek-altın yer-gerçeğine göre; harness AÇIK'ta model BAŞKA bir maddeden "
                 "doğru cevaplasa da sadakatsiz sayılır → ON/OFF kıyası için "
