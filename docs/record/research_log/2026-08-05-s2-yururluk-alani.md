@@ -107,6 +107,23 @@ gömmesi değişti ve bayat-indeks kapısı **tasarlandığı gibi patladı**
 eskisi **silinmedi** — S2 öncesi sayıların yeniden üretilebilmesi için. Harness AÇIK k=10
 yeni indeksle **yeniden koşuluyor**.
 
+## 7. ⛔ ÖN-KAYITLI TAHMİN — S2 sonrası koşu *(sayı görülmeden yazıldı)*
+
+Korpus değişti, indeks yeniden kuruldu, harness k=10 yeniden koşuluyor. **Ne beklediğim,
+sonuç dosyası açılmadan:**
+
+| eksen | tahmin | gerekçe |
+| :--- | :--- | :--- |
+| `recall@10` | **0,875 ± 0,025** (±2 soru) — pratikte **değişmez ya da 1-2 soru DÜŞER** | Gömülen metni değişen satır **485/40.496 = %1,2**. Ama altın eşleşmesi **sıkılaştı**: eskiden `2004/Madde 31` altınını **`31/a` satırı da** karşılayabiliyordu, artık yalnız gerçek `Madde 31`. Bu **3 soruda** yer doğruluğu katılaştı → düşerse **ölçüm daha doğru olduğu için** düşer, retriever kötüleştiği için değil. |
+| kütle | **%59,5 ± 1 puan** | `recall` neredeyse sabitse coverage de sabit; A1'i etkileyecek bir şey değişmedi |
+| `MULGA` | **0** | zaten ölçüldü (§4) — bu küme mülga maddeye atıf yapmıyor |
+| bağlamdaki bozuk blok | **14/800 → 0/800** | sonek onarımı tam bu bloklara dokundu |
+
+⚠️ **Düşüş senaryosunun okunma kuralı önceden yazılıyor** (sonradan gerekçe uydurmamak için):
+`recall@10` düşer **ve** düşen sorular §7'de listelenen **id 0/41/74** arasındaysa → bu
+**ölçüm düzelmesidir**, gerileme değil; eski sayı yanlış satırla "bulundu" sayıyordu.
+Düşen sorular **başkalarıysa** → onarım erişimi bozmuştur, ayrıca incelenir.
+
 ## Paper eşlemesi
 
 **Methodology:** kapsam kararının *"veri ne kadar bozuk"* değil *"bozukluk modele ulaşıyor
