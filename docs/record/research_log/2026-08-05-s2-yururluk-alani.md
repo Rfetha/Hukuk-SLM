@@ -124,6 +124,70 @@ sonuç dosyası açılmadan:**
 **ölçüm düzelmesidir**, gerileme değil; eski sayı yanlış satırla "bulundu" sayıyordu.
 Düşen sorular **başkalarıysa** → onarım erişimi bozmuştur, ayrıca incelenir.
 
+## 8. 🚨 Kendi hatamın düzeltmesi — *"eval etiketleri düzeltilmedi, gerek kalmadı"* YANLIŞTI
+
+§5'te *"altın anahtarların hiçbiri kaybolmadı, havuz 80/80 korundu, gerek yok"* yazmıştım.
+Dayanak **doğru ama yetersizdi**: anahtar yaşıyor, ama **iki satırdan yanlış olanı**
+gösteriyor. Onarım öncesi `2004/Madde 97` anahtarı hem gerçek `Madde 97`'yi hem `97/a`'yı
+taşıyordu; eval kalemi `97/a`'dan üretilmiş olsa bile etiket `Madde 97` kalıyordu.
+
+`referans` alanının `/` ile başlamasına bakarak **3** kalem bulmuştum (id 0/41/74). Doğru
+kural — *"altın anahtarın sonekli bir kardeşi var mı"* — **5** buluyor: **0 · 41 · 45 · 74 · 76**.
+İkisini kaçırmamın sebebi: `referans` alanı çift satırlı anahtarda **diğer** satırı çözüyordu.
+
+### Kanıtlı vaka — id=76
+
+```
+soru      : "Borçlu ile başka birinin aynı taşınır malı elinde bulundurmaları
+             durumunda kim mal sahibi sayılır?"
+cevabı    : Madde 97/a — "Bir taşınır malı elinde bulunduran kimse onun maliki sayılır"
+altın     : Madde 97   ← BAYAT ETİKET (istihkak iddiasına itiraz usulü, başka konu)
+retriever : 97/a'yı 1. SIRAYA koydu · model doğru cevapladı
+puanlama  : hem "erişim ıskası" hem "sadakatsiz" sayıldı
+```
+
+Yani S2 sonrası `recall@10`'un 0,8750 → **0,8625** düşüşünün **tamamı bu tek kalem** ve
+sebebi retriever değil **etiket**.
+
+### ⛔ ÖN-KAYITLI DENETİM İSTEMİ — koşulmadan önce yazıldı
+
+⚠️ **Bu denetim sayı görüldükten sonra yapılıyor ve düzeltmesi bizim lehimize.** Tuzak
+**6.9**'un *"cilaladılar"* riski tam burada. Karar **insana soruldu** (2026-08-05: *"beşini de
+denetle ve düzelt"*), ve usul buna göre sıkılaştırıldı:
+
+- şüpheli kalemler **elle seçilmez** — kuralla bulunur (`supheli_kalemler`)
+- hakem **kördür**: madde numarası, kanun adı ve mevcut altın etiket yüke **girmez**
+- **konum yanlılığına karşı** altın, tek id'de A'ya çift id'de B'ye konur
+- hakem **"belirsiz"** diyebilir; belirsizde etiket **DEĞİŞMEZ**
+
+```
+[system]
+Sen Türk hukukunda deneyimli bir hukukçusun. Sana bir SORU ve iki KANUN METNİ
+verilecek. Görevin soruyu cevaplamak değil; soruyu HANGİ metnin karşıladığını söylemek.
+
+ÖLÇÜT: Soruda sorulan bilgi hangi metinde AÇIKÇA düzenlenmiştir?
+
+Kurallar:
+- Yalnız verilen iki metne bak. Dışarıdan bilgi ekleme.
+- İkisi de karşılıyorsa, soruyu DOĞRUDAN ve TAM karşılayanı seç.
+- Hiçbiri karşılamıyorsa ya da ayırt edemiyorsan "belirsiz" de. Emin değilsen "belirsiz".
+
+Yanıtı SADECE şu JSON ile ver:
+{"secim": "A" | "B" | "belirsiz", "gerekce": "<tek cümle>"}
+
+[user]
+SORU:
+{soru}
+
+[KAYNAK A]
+{metin_a}
+
+[KAYNAK B]
+{metin_b}
+```
+
+**Betik:** `scripts/altin_etiket_denetle.py` · **çıktı:** `outputs/eval/s2-etiket-denetimi/`
+
 ## Paper eşlemesi
 
 **Methodology:** kapsam kararının *"veri ne kadar bozuk"* değil *"bozukluk modele ulaşıyor
