@@ -5,7 +5,7 @@
 >
 > **Devamı (Part 2)** Part 1'in *ölçerek açtığı* borçları kapatır. Kararları verildi ve
 > [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)'da; **uygulama
-> planı** `docs/plans/` altına yazılır.
+> planı** `docs/superpowers/plans/` altına yazılır.
 >
 > # ✅ SPRINT 3 PART 1 KAPANDI — 2026-08-05
 >
@@ -85,7 +85,7 @@
 
 > **Part 1'in dört işi de kapandı.** Bu belge artık **kayıt**; canlı iş yok.
 > Part 2'nin kararları: **[ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)** ·
-> uygulama planı `docs/plans/` altına yazılacak.
+> uygulama planı `docs/superpowers/plans/` altına yazılacak.
 >
 > Part 1'in ölçerek bıraktığı borçlar ve sıraları aşağıdaki
 > [post-sprint 3 sırasında](#post-sprint-3-sırası) duruyor — **ölçüm bağlamlarıyla birlikte**,
@@ -633,7 +633,7 @@ Değişmişse: retriever statik korpusla sürer ama **güncellik iddiası DÜŞE
 
 #### 📋 Uygulama planı hazır
 
-[`docs/plans/2026-08-03-s3a-on-prob.md`](docs/plans/2026-08-03-s3a-on-prob.md) — 5 görev,
+[`docs/superpowers/plans/2026-08-03-s3a-on-prob.md`](docs/superpowers/plans/2026-08-03-s3a-on-prob.md) — 5 görev,
 TDD adımlarıyla, gerçek kodla. İlk görev **madde anahtarı normalleştirme**: altın etiketi
 korpusa bağlayan çekirdek, kendi testleriyle. *(Plan yazılırken burada bir hata bulundu:
 `Geçici Madde 1` ile `Madde 1` aynı sayılınca 40.496 madde 27.706 anahtara düşüyor ve

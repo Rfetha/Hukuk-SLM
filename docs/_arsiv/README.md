@@ -26,7 +26,8 @@ kaydı ve karar defteridir.
 | :--- | :--- | :--- |
 | **kayıt** | `docs/record/` | *ne oldu, sayı neydi* — geriye dönük, kutucuk yok |
 | **karar** | `docs/adr/` | *neden böyle, hangi alternatif elendi* |
-| **plan** | `docs/plans/` | *ne yapılacak* — `- [ ]` kutucuklu, uygulanınca üstüne ✅ kapanış kutusu konur |
+| **spec** | `docs/superpowers/specs/` | *ne kuracağız, hangi alternatif elendi* — `brainstorming`/`grill` çıktısı |
+| **plan** | `docs/superpowers/plans/` | *ne yapılacak* — `- [ ]` kutucuklu, uygulanınca üstüne ✅ kapanış kutusu konur |
 | **icra** | repo kökü `sprint*.md` | sprintin canlı belgesi; kapanınca **kayda** dönüşür |
 | **arşiv** | `docs/_arsiv/` | yürürlükten kalkmış her tür |
 

@@ -5,7 +5,7 @@
 >
 > **▶ Sıradaki tur (Part 2) — kararları verildi, planı henüz yazılmadı.**
 > Kararlar: [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
-> uygulama planı `docs/plans/` altına yazılacak.
+> uygulama planı `docs/superpowers/plans/` altına yazılacak.
 > Omurga: **ölçüm boşluklarını kapat** (GPU $0, hakem ~$0,15) — `m2b` harness-AÇIK ·
 > B5 post-hoc sayımı · B8 tolerans eğrisi · B-i deneyi.
 >
@@ -34,7 +34,7 @@ arşiv: [`docs/_arsiv/`](docs/_arsiv/)
 🟦 A  model+harness → HF   ·   🟩 B  kurulabilir web app   ·   🟪 C  vatandaş platformu
 ```
 
-Tasarım: [`docs/specs/2026-08-03-yol-haritasi-design.md`](docs/specs/2026-08-03-yol-haritasi-design.md)
+Tasarım: [`docs/superpowers/specs/2026-08-03-yol-haritasi-design.md`](docs/superpowers/specs/2026-08-03-yol-haritasi-design.md)
 
 ## ✅ Sprint 3 **PART 1** — HARNESS · **KAPANDI 2026-08-05**
 

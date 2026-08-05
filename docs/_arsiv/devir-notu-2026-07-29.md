@@ -6,7 +6,7 @@
 > Tarihî kayıt olarak duruyor, **yönlendirme olarak geçersiz**.
 >
 > **Neden taşındı:** `docs/record/sprint1/` altındaydı, ama bir **plan/devir** belgesiydi.
-> `record/` yalnız *ne olduğunu* tutar, *ne yapılacağını* değil — planlar `docs/plans/`'a,
+> `record/` yalnız *ne olduğunu* tutar, *ne yapılacağını* değil — planlar `docs/superpowers/plans/`'a,
 > biten planlar buraya. Kararları zaten [ADR-0039…0042](../adr/)'de yaşıyor; burada
 > **benzersiz bir kayıt yok**.
 >

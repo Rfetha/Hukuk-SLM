@@ -217,7 +217,7 @@ o karşılaştırma *"neden daha iyi"* sorusunu cevaplıyor.
 ```
 
 Her biri bir sonrakinin basamağı. Tam tasarım ve elenen seçenekler:
-[`docs/specs/2026-08-03-yol-haritasi-design.md`](docs/specs/2026-08-03-yol-haritasi-design.md)
+[`docs/superpowers/specs/2026-08-03-yol-haritasi-design.md`](docs/superpowers/specs/2026-08-03-yol-haritasi-design.md)
 
 ```
 S3a ön-prob → S3 harness → S4 model → 🟦 A → S5 servis → 🟩 B → S6+ → 🟪 C
@@ -264,7 +264,7 @@ dağılımını bilerek"* idi — yani bir **bilgi** gerekçesi. Bugün ona bir 
 eklendi: aşırı-red **16/80** ve harness'la kapanmıyor. Sıra aynı kaldı, ama artık *"sonra da
 yaparız"* değil **kütlenin büyük yarısı orada.**
 
-**Part 2'nin kararları verildi ve kayda geçti:** [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) — `m2b` harness-AÇIK protokolü (altın ablasyonu), iki-sayı raporlaması, ön-kayıtlı tahminler, ADR-0055'in çıpa düzeltmesi. **Uygulama planı** `docs/plans/` altına ayrıca yazılır.
+**Part 2'nin kararları verildi ve kayda geçti:** [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) — `m2b` harness-AÇIK protokolü (altın ablasyonu), iki-sayı raporlaması, ön-kayıtlı tahminler, ADR-0055'in çıpa düzeltmesi. **Uygulama planı** `docs/superpowers/plans/` altına ayrıca yazılır.
 
 **Gerekçe (2026-08-03):** üç açığımızdan ikisini (A1 · M2b) harness **deterministik kodla**
 kapatıyor; eğitim ancak kısmen. Ayrıca retriever modelin gördüğü girdi dağılımını
