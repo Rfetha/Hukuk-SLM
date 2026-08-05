@@ -128,5 +128,5 @@ dosyaları üzerinde post-hoc koşar.
   bu tur **iddia denetimi** yapıyor, ürün denetimi değil. Ayrım gizlenmiyor.
 - ⚠️ Karar 2'nin B tahmini **yanlı bir alt kümeden** türetildi ve bu, tahminin kendisinde
   yazılı. Tutmazsa *"tahmin kötüydü"* değil **"payda yanlıydı"** diye okunur.
-- Bu ADR bir **plan değildir** — Part 2'nin uygulama planı `docs/plans/` altına yazılır ve
+- Bu ADR bir **plan değildir** — Part 2'nin uygulama planı `docs/superpowers/plans/` altına yazılır ve
   sonuçları `docs/record/research_log/`'a düşer.

@@ -3,8 +3,8 @@
 - **Tarih:** 2026-08-03
 - **Statü:** onaylandı (insan)
 - **Kapsam:** `HakHukuk-4B-v0.1`'den vatandaş platformuna giden sprint zinciri
-- **Yürürlükteki özet:** [`../../ROADMAP.md`](../../ROADMAP.md)
-- **Zincirin durumu (2026-08-05):** S3a ✅ · S3 harness ✅ ([`sprint3-part1.md`](../../sprint3-part1.md), kapandı — ürün sayısı **%61,3**) · **S4 model** ▶ sırada
+- **Yürürlükteki özet:** [`../../ROADMAP.md`](../../../ROADMAP.md)
+- **Zincirin durumu (2026-08-05):** S3a ✅ · S3 harness ✅ ([`sprint3-part1.md`](../../../sprint3-part1.md), kapandı — ürün sayısı **%61,3**) · **S4 model** ▶ sırada
 
 ---
 
@@ -14,7 +14,7 @@
 > sığdırılmaya çalışılmamalı. Her halka kendi spec → plan → uygulama döngüsünü hak ediyor.
 >
 > **İlk uygulanabilir birim: S3a + S3** (ön-prob + harness) — tarifi
-> [`../../sprint3-part1.md`](../../sprint3-part1.md)'de. Uygulama planı **oraya** yazılır.
+> [`../../sprint3-part1.md`](../../../sprint3-part1.md)'de. Uygulama planı **oraya** yazılır.
 >
 > S4 ve sonrası burada **niyet ve çıkış ölçütü** düzeyinde duruyor; sırası gelince kendi
 > spec'ini alacak. Bu bilinçli: aralıklı ritimde uzak halkaların ayrıntısını şimdi yazmak,
@@ -187,7 +187,7 @@ ADR-0051'de büyük/küçük harfe duyarlı regex 45 kalemin 15'ini sessizce dü
 
 ### İşler
 
-1. **`τ_a` v2** — şablon ezberini kır ([ADR-0051](../adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md) B planı: `chosen`'ı hakemle üret) · ~$2
+1. **`τ_a` v2** — şablon ezberini kır ([ADR-0051](../../adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md) B planı: `chosen`'ı hakemle üret) · ~$2
    *kanıt: M1 medyan cevabı 58 karakter = şablonun kendisi; model cümleyi çekimliyor*
 2. **Türkçe muhakeme** — iz şu an İngilizce (8/8). Vatandaşa *"okunabilir muhakeme"* vaat eden
    ürün için **ürün açığı**. Üç yol: (a) eğitim verisine Türkçe iz · (b) mevcut izleri çevir ·
@@ -382,7 +382,7 @@ bakım      ~$7/tur
 | :--- | :--- |
 | K2 chunk birimi = **madde** | atıf birimi olduğu için |
 | K3 korpus | canlı API **şart**; ölçüm donmuş anlık görüntüde |
-| K5 red kapısı | [ADR-0038](../adr/0038-red-kapisi-esigi-kati.md) katı; aşırı-red ölçülür |
+| K5 red kapısı | [ADR-0038](../../adr/0038-red-kapisi-esigi-kati.md) katı; aşırı-red ölçülür |
 | donmuş TEST | v1.0'da harcanır, **v2.0 için yeni set üretilir** |
 | S5 veritabanı | SQLite |
 | belge katmanı | C'ye |

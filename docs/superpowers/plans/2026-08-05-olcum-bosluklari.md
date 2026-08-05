@@ -41,9 +41,9 @@ değişirse kapı kararları değişir, ve hem Ö1 hem D1 farklı aletlerle üre
 🛑 **DURMA:** geçerlilik kapısı düşerse (kesik cevap > %5) → koşu **geçersiz**, sonuç
 okunmaz, hakem parası harcanmaz.
 
-**Kaynak kararlar:** [ADR-0056](../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
-[ADR-0055](../adr/0055-isabet-denetimi-ekseni.md) ·
-borç bağlamları [`sprint3-part1.md`](../../sprint3-part1.md#post-sprint-3-sırası)
+**Kaynak kararlar:** [ADR-0056](../../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
+[ADR-0055](../../adr/0055-isabet-denetimi-ekseni.md) ·
+borç bağlamları [`sprint3-part1.md`](../../../sprint3-part1.md#post-sprint-3-sırası)
 
 **Çıpalar (hepsi `outputs/eval/s2-harness-k10-etiketli/`):**
 
@@ -907,7 +907,7 @@ elverişli (tahminlerin ikisi de tutmayabilir).
 ```markdown
 # #56 — Ölçüm boşlukları: m2b harness AÇIK · B5 · B8 · B-i
 
-**Tarih:** 2026-08-05 · **Plan:** [`docs/plans/2026-08-05-olcum-bosluklari.md`](...)
+**Tarih:** 2026-08-05 · **Plan:** [`docs/superpowers/plans/2026-08-05-olcum-bosluklari.md`](...)
 **Kararlar:** [ADR-0056](...) · [ADR-0055](...)
 
 ## Künye
