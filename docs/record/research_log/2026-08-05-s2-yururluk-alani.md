@@ -188,6 +188,83 @@ SORU:
 
 **Betik:** `scripts/altin_etiket_denetle.py` · **çıktı:** `outputs/eval/s2-etiket-denetimi/`
 
+### Denetimin sonucu — ve bir kırmızı bayrak
+
+```
+DÜZELT     id 0 → Madde 31/a · id 74 → Madde 79/a · id 76 → Madde 97/a
+DEĞİŞMEZ   id 41 (Madde 31) · id 45 (MADDE 73)
+```
+
+🚩 **İlk koşuda hakem BEŞİNDE DE "A" dedi.** Konum rastgeleleştirilmiş olmasına rağmen tek
+yönlü seçim, klasik **konum yanlılığı** işaretidir; bu hükümlere dayanıp eval kümesini
+değiştirmek olmazdı. Kontrol koşuldu (`--konum-ters`, koda **kalıcı** girdi): A/B ters
+çevrildi, hakem bu kez **beşinde de "B"** dedi ve **hükümler birebir aynı** kaldı → hakem
+konumu değil **içeriği** izliyor. Hep-A deseni, doğru olanın her seferinde A'ya düşmesindenmiş.
+
+🐞 Denetim ayrıca **kendi kodumda bir hata** buldu: id 0 ile id 41 **aynı altın anahtarı**
+paylaşıyor ama farklı maddelerden üretilmişler. `--uygula` anahtara göre eşliyordu, ikisini
+birden bozacaktı. Eşleme **soru metnine** çevrildi + *"beklenen düzeltme ≠ eşleşen kalem"*
+durumunda betik **eval'e dokunmadan ölüyor**. Hakem maliyeti koşu başına **$0,0009**.
+
+## 9. ⭐ SONUÇ — S2 sonrası, düzeltilmiş etiketlerle
+
+**Künye:** `tgta_v1` Q4_K_M · harness AÇIK · `k=10` · indeks `mevzuat_bge_m3_s2` ·
+thinking on · 1024+512 · seed 3407 · ctx 8192 · kesik **%2,5** (kapı ✅) ·
+hakem `openai/gpt-4o-mini` @ **openrouter**, sağlayıcı pin `OpenAI` · **$0,0398** ·
+`outputs/eval/s2-harness-k10-etiketli/`
+
+| eksen | S2 öncesi (k=10) | S2 sonrası, etiket düz. | Δ |
+| :--- | ---: | ---: | ---: |
+| `recall@10` | 0,8750 | **0,8750** | 0 |
+| coverage | 0,7750 | **0,7625** | −1 soru |
+| **A1** (cevaplanan) | 0,7681 | **0,8042** | **+3,6 p** |
+| A1 · altın getirilen | 0,8426 | **0,8616** | +1,9 p |
+| **kütle** | **%59,5** | **%61,3** | **+1,8 p** |
+| bozuk blok (bağlam) | 14/800 | **0/800** | −14 |
+| `MULGA` hükmü | — | **0** | — |
+| B1 sınıfı (altın gelmedi, cevapladı) | 7 | **7** | 0 |
+| aşırı-red (altın geldi, çekindi) | 15 | **16** | +1 |
+
+### ✅ Ön-kayıtlı tahminin denetimi
+
+| tahmin (§7) | gerçekleşen | hüküm |
+| :--- | :--- | :--- |
+| `recall@10` 0,875 ± 0,025 | **0,8750** | ✅ tuttu |
+| kütle %59,5 ± 1 puan | **%61,3** | ❌ **TUTMADI — bandın 0,8 puan ÜSTÜ** |
+| `MULGA` 0 | **0** | ✅ tuttu |
+| bozuk blok 14 → 0 | **0/800** | ✅ tuttu |
+
+⚠️ **Kütle tahmini neden tutmadı, ve gerekçesi neden yanlıştı.** *"A1'i etkileyecek bir şey
+değişmedi"* demiştim. Yanlış: gömülen metin değişince **getirilen bağlam da değişti**, A1 de
+bağlam üzerinden ölçülüyor. Onarım A1'i **atıf kanalından değil erişim kalitesi kanalından**
+iyileştirdi — model artık aynı soruda **daha isabetli metni** okuyor. §4'ün *"skor özelliği
+değil"* hükmü **atıf hükümleri için** ayakta (`MULGA` 0, hüküm değişimi 0/80); **erişim
+için ayakta değil**. İki kanal, iki ayrı sonuç.
+
+### 🚨 Etiket düzeltmesi manşet sayıyı YÜKSELTMEDİ
+
+Kullanıcıya *"kütle biraz daha artar"* demiştim — **yanlıştı ve mekanizması yanlıştı**.
+Altın etiket **A1'e de coverage'a da girmiyor** (A1 `context_shown`'a karşı ölçülüyor), bu
+yüzden düzeltmenin **kütleye etkisi tanımı gereği sıfır**. Etkisi yalnız iki yerde:
+**erişim metrikleri** (`recall@10` 0,8625 → **0,8750**) ve **teşhis çapraz tablosu**
+(B1 sınıfı 8 → **7**).
+
+### 🎁 Bedava ölçüm — hakemin yeniden-koşum gürültüsü
+
+İki koşunun cevapları **bit-birebir aynı** (80/80 cevap, 80/80 bağlam özdeş — üretim
+deterministik). Tek değişen altın etiketti. Dolayısıyla hakem yeniden koşulduğunda çıkan
+fark **saf hakem gürültüsüdür** ve ilk kez sayısı var:
+
+```
+iddia sayısı   276 → 268
+A1             0,8069 → 0,8042   (0,27 puan)
+kütle          %61,53 → %61,32   (0,21 puan)
+```
+
+**Kullanım kuralı:** `n=80`, `temperature=0`, aynı girdi ⇒ **A1'de ~0,3 puanlık hareket
+gürültüdür.** Bunun altındaki farklar yorumlanmaz. S2'nin +3,6 puanı bu tabanın **on katı**
+— gerçek. (⚠️ Tek gözlem, güven aralığı değil; alt sınır tahmini olarak okunur.)
+
 ## Paper eşlemesi
 
 **Methodology:** kapsam kararının *"veri ne kadar bozuk"* değil *"bozukluk modele ulaşıyor
@@ -195,4 +272,10 @@ mu"* diye ölçülmesi; aynı korpus için %29,4 (anahtar yinelenmesi) ve %1,8 (
 sayılarının ikisinin de doğru ama farklı nesneleri ölçmesi. **Limitations / Data:** yürürlük
 bilgisi korpusta yoktu; atıf doğrulayıcı *var mı* sorusunu yanıtlıyor, *geçerli mi* sorusunu
 yanıtlamıyordu. **Negatif bulgu:** ürün-güvenliği düzeltmesinin mevcut değerlendirme
-kümesinde ölçülen etkisi **sıfır** — güvenlik özellikleri skor üzerinden savunulamaz.
+kümesinde **atıf kanalından** ölçülen etkisi **sıfır** — güvenlik özellikleri skor üzerinden
+savunulamaz. (Erişim kanalından etkisi sıfır **değil**: A1 +3,6 puan — §9.)
+**Reproducibility:** aynı girdide hakem yeniden-koşum gürültüsü **A1'de ~0,3 puan** olarak
+ölçüldü (§9) — LLM-hakemli her tablonun altına yazılması gereken taban.
+**Threats to validity:** eval altın etiketleri **sayı görüldükten sonra** düzeltildi; usul
+sıkı tutuldu (kural-tabanlı seçim · kör hakem · ön-kayıtlı istem · konum-yanlılığı kontrolü ·
+insan onayı) ama şerh kalıcıdır — ve düzeltme manşet sayıyı **yükseltmedi**.
