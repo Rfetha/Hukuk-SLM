@@ -164,3 +164,6 @@ data/_ham_ve_ara/
 # Retriever indeksi — türetilmiş artefakt (korpus + gömme modelinden ~10 dk'da yeniden kurulur).
 # KUNYE.json kalır (ölçüm künyesi), gömme matrisi git'e girmez.
 data/index/**/*.npy
+
+# S2 korpus yedeği — tek seferlik, git tarihçesi zaten yedek
+data/corpus/*.yedek-*
