@@ -265,6 +265,45 @@ kütle          %61,53 → %61,32   (0,21 puan)
 gürültüdür.** Bunun altındaki farklar yorumlanmaz. S2'nin +3,6 puanı bu tabanın **on katı**
 — gerçek. (⚠️ Tek gözlem, güven aralığı değil; alt sınır tahmini olarak okunur.)
 
+## 10. ⭐ AÇIK ↔ KAPALI açığının ayrıştırması — *"suç modelde mi harness'ta mı"*
+
+Sprint boyunca *"harness açılınca kütle %71,6 → %61,3 düşüyor"* diye raporlandı ve bu, bir
+gerileme gibi okunabiliyor. **Değil** — iki ölçüm aynı şeyi ölçmüyor: KAPALI'da altın madde
+bağlama **kurgu gereği garanti** konuyor, AÇIK'ta **bulunması gerekiyor**. Açık, çapraz
+tablodan **ayrıştırılabilir**:
+
+```
+KAPALI sadık cevap  57,25/80 = %71,6      AÇIK  49,06/80 = %61,3      açık = 10,2 puan
+
+① ERİŞİM ISKASI    altın 10/80 soruda HİÇ gelmiyor            ≈ 5,1 puan  (yarısı)
+② ALTIN BAĞLAMDA   getirilen 70 soruda KAPALI'dan sapma       ≈ 4,5 puan  (yarısı)
+                     ├ çekinme  0,771 ↔ 0,787   → neredeyse AYNI
+                     └ sadakat  0,862 ↔ 0,909   → DİKKAT DAĞILMASI
+```
+
+**Hüküm: açığın yarısı harness'ın (erişim ıskası), yarısı modelin (dikkat dağılması).**
+Ne "model kötü" ne "harness kötü" — ikisi de ölçülmüş büyüklükte ve **ikisi de kapatılabilir**
+(① yeniden-sıralama → sıra 4 · ② daha iyi bağlam yönetimi).
+
+### 🚨 Ve bir çerçeve düzeltmesi: aşırı-red harness'ın SUÇU DEĞİL
+
+B10 *"aşırı-red 16/80"* diye açıldı ve örtük olarak bir harness kaybı gibi duruyordu.
+Ölçüm bunu **çürütüyor**:
+
+| | çekinme | koşul |
+| :--- | ---: | :--- |
+| harness **KAPALI** | **17/80 = %21,2** | altın madde **garanti** bağlamda |
+| harness **AÇIK** | **16/70 = %22,9** | altın getirilen alt küme |
+
+**İki oran neredeyse aynı.** Yani model, elinde doğru madde varken cevap vermemeyi
+**harness'tan önce de** yapıyordu; harness bunu ne yarattı ne büyüttü. B10 bir **model
+özelliğidir**, bir harness gerilemesi değil — ve bu, *"eğitimle kapanır, harness'la
+kapanmaz"* hükmünü **zayıflatmıyor, kanıtlıyor**.
+
+⚠️ Bunun sonucu şu: harness'ı ne kadar iyileştirirsek iyileştirelim, **%21'lik bir çekinme
+tabanı** duruyor ve tavanımız ondan geliyor. Kütlenin üst sınırı bugünkü modelle
+`0,79 × 0,91 ≈ **%71,6**` — yani **KAPALI sayısı bir tavan**, hedef değil.
+
 ## Paper eşlemesi
 
 **Methodology:** kapsam kararının *"veri ne kadar bozuk"* değil *"bozukluk modele ulaşıyor

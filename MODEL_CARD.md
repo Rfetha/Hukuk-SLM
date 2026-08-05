@@ -70,27 +70,36 @@ Same artifact, same regime, DEV; the only change is that a retriever — not a
 hand-built context — decides what the model sees. Retriever: hybrid BM25 +
 `BAAI/bge-m3` (RRF), 40,496-article index, **k=10** (swept 2026-08-05).
 Full record: [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
-**correction + k sweep: [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)**.
+**correction + k sweep: [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)** ·
+**corpus repair: [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)**.
 
 > 🚨 **Corrected 2026-08-05.** The first published ON numbers used the wrong metric —
 > `harness_tablo.py` reported a macro over *all* scored items as `A1`, while `A1` is
 > **answered-only** (ADR-0011). The OFF anchor used the correct metric, so the ON/OFF
 > comparison was apples-to-oranges. Both arms re-derived; old values struck through.
 
-| | harness OFF | harness ON (k=5) | **harness ON (k=10)** |
-| :--- | ---: | ---: | ---: |
-| gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 | **70/80 — recall@10 0.875** |
-| coverage | 0.788 | 0.750 | **0.775** |
-| A1 (answered-only) | 0.909 | ~~0.782~~ **0.759** | **0.768** |
-| **faithful-answer mass** | **71.6%** | ~~58.7%~~ **56.9%** | **59.5%** |
-| ⭐ A1, **gold-retrieved subset** | 0.909 | ~~0.934~~ **0.923** | **0.843** |
-| verified citations | 87/89 | **89/89** | **118/120** |
-| **fabricated article numbers** | 0 | **0** | **0** |
-| strict-gate rejections | 2/80 | 1/80 | 1/80 |
+| | harness OFF | ON (k=5) | ON (k=10) | ⭐ **ON k=10, repaired corpus** |
+| :--- | ---: | ---: | ---: | ---: |
+| gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 | 70/80 — recall@10 0.875 | **70/80 — recall@10 0.875** |
+| coverage | 0.788 | 0.750 | 0.775 | **0.763** |
+| A1 (answered-only) | 0.909 | ~~0.782~~ 0.759 | 0.768 | **0.804** |
+| **faithful-answer mass** | **71.6%** | ~~58.7%~~ 56.9% | 59.5% | **61.3%** |
+| ⭐ A1, **gold-retrieved subset** | 0.909 | ~~0.934~~ 0.923 | 0.843 | **0.862** |
+| verified citations | 87/89 | 89/89 | 118/120 | **116/118** |
+| **fabricated article numbers** | 0 | **0** | **0** | **0** |
+| strict-gate rejections | 2/80 | 1/80 | 1/80 | **1/80** |
 
-**59.5% is the honest product number** (k=10). Most of the drop from 71.6% is retrieval:
-at k=5 the gold article missed the top 5 in 25% of questions; raising k to 10 recovers
-10 of those and lifts mass by 2.6 points.
+**61.3% is the honest product number** (k=10, repaired corpus). Most of the drop from 71.6%
+is retrieval: at k=5 the gold article missed the top 5 in 25% of questions; raising k to 10
+recovers 10 of those (+2.6 points), and repairing sub-article identity in the corpus adds
+another **+1.8**.
+
+⚠️ **Two caveats travel with the last column, permanently.** (a) Three of the 80 DEV gold
+labels were corrected **after** the numbers were seen — the procedure was tightened (rule-based
+selection, blind judge, pre-registered prompt, position-bias control, human approval) and the
+correction **did not raise** the headline, but the ordering stands on the record. (b) The
+judge's **re-run noise floor was measured at ~0.3 A1 points** on bit-identical inputs; no
+difference smaller than that is interpreted here.
 
 ⚠️ **But more context costs faithfulness.** On the *same* questions where the gold article
 was retrieved, A1 falls **0.923 → 0.843** going from k=5 to k=10 — measured distraction.
@@ -104,10 +113,16 @@ rises 0.694 → 0.790 — the ordering flips from **wrong** to **right**
 ([#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)).
 
 ⚠️ **Known limit of the citation verifier.** The model does not fabricate article
-numbers — it copies the label from its context. In 14/80 questions the gold was not
-retrieved and it answered from a *different real* article: the citation verifies,
-the gate passes it, and the answer still does not fit the question. Deterministic
+numbers — it copies the label from its context. In **7/80** questions (14/80 at k=5) the
+gold was not retrieved and it answered from a *different real* article: the citation
+verifies, the gate passes it, and the answer still does not fit the question. Deterministic
 citation checking solves fabrication, **not** off-target grounding.
+
+🚨 **The larger gap is the opposite failure: over-refusal.** In **16/80** questions the
+model abstains *while the gold article is in its context* — twice the size of the
+off-target class above, and **independent of `k`** (14 → 15 → 16 across every setting
+measured). No amount of retrieval improvement closes it; it is a model-side gap and it is
+the stated reason for the next training round.
 
 ⚠️ A1 is scored against a **single** gold article, so an answer correctly sourced
 from another article counts as unfaithful — the comparable figure across ON/OFF is
