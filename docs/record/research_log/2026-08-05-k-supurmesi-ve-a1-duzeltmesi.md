@@ -109,6 +109,22 @@ gözle okunur"* diyordu. Kütle **düşmedi**, ama dikkat dağılması **yine de
 soruda altın madde bağlamda dururken, yanına 5 madde daha konunca sadakat **8 puan**
 düşüyor. Net kazanç, erişimin kazandırdığı 10 sorunun bu kaybı **aşmasından** geliyor.
 
+#### ⭐ Bu ölçüm, graph-RAG'in ön-kayıtlı tahminini sınadı — [`ROADMAP.md §5.2`](../../../ROADMAP.md)
+
+Bu bulgu `k` süpürmesinin yan ürünü ama **başka bir kararın dayanağı**, o yüzden iki yerde
+de işaretleniyor. 2026-08-04'te graph-RAG için yazılan ön-kayıtlı tahminin A1 satırı şuydu:
+
+> **A1: değişmez, hafif düşebilir** — *graf daha çok komşu getirir → bağlam uzar → **dikkat dağılır***
+
+Dün bu bir **varsayımdı**. Bugün `k` 5→10 yapılırken **tam olarak o mekanizma ölçüldü**
+(0,9230 → 0,8426). Yani graf'ın en büyük riski artık spekülasyon değil **bu repoda ölçülmüş
+bir sayı**, ve graf bağlamı k=10'dan **çok daha fazla** uzatır — bulgu graf'ın **aleyhine**.
+
+Aynı tahminin *"altın gelmedi ama cevapladı (14/80) **hiç değişmez**"* satırı ise **fazla
+karamsar** çıktı: salt `k` ile **7/80**'e indi, yani o sınıfın içinde erişimle kurtarılabilir
+bir pay varmış. **Tahminin tutanı da ıskalayanı da kayda geçiyor** — ön-kayıtlı tahminin
+değeri, sonradan haklı çıkmasında değil, sınanabilir olmasında.
+
 ### Erişim ↔ davranış çaprazı — B1'in sınıfı yarıya indi
 
 ```
