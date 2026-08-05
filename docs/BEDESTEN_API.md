@@ -1,3 +1,18 @@
+> ## ✅ SÖZLEŞME CANLI API'YE KARŞI DOĞRULANDI — 2026-08-04
+>
+> Üç çağrının **dördü de** (arama · `getDocumentContent` · `mevzuatMaddeTree`) **GEÇERLİ**
+> döndü ([#49](record/research_log/2026-08-04-s3a-on-prob.md) · `outputs/eval/s3a-on-prob/`).
+>
+> 🚨 **Ve bu belgeye güvenmek doğru çıktı.** Prob betiği önce *"sözleşme bozuk"* raporladı;
+> hata **API'de değil betikteydi** — belge kimliğini `documentId`/`id` ile arıyordu, oysa
+> API'nin alanı **`mevzuatId`** ve §48 en baştan doğruydu. Ters yöndeki bu yanlış, güncellik
+> iddiasını gereksiz yere düşürüp `ROADMAP`/`MODEL_CARD`'da yanlış düzeltme yaptıracaktı.
+> → **tuzak 7.1**: *"sözleşme bozuk" sonucu, ham yanıt gözle okunmadan kayda geçmez.*
+>
+> ⚠️ **Sözleşme çalışıyor, ürün onu HENÜZ KULLANMIYOR** — canlı katman bilinçli ertelendi
+> (ADR-0054 K3: ölçüm tekrarlanabilirliği). Güncellik iddiası **ayakta ama kanıtlanmamış**
+> (borç **B6**).
+
 # Bedesten API — Reverse-Engineered Referans
 
 > ## 🚨 SÖZLEŞME 2026-06-07'DEN BERİ DOĞRULANMADI
