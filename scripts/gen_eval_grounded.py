@@ -65,6 +65,22 @@ from madde_anahtar import madde_anahtari  # harness izi: altın getirildi mi, ka
 
 import runlock  # aynı label'a paralel yazım = sessiz bozulma (bkz. runlock.py)
 
+
+def altin_ablasyonu(parcalar, altin_anahtar, k):
+    """Altın maddeyi getirilen parçalardan DÜŞÜR, ilk k'yı döndür (ADR-0056 Karar 1).
+
+    `m2b`'nin harness-AÇIK karşılığı budur: aynı 80 soru, aynı retriever, ama altın
+    madde bağlamda YOK. Tek değişken "çeldiricileri kim seçti" olsun diye k+1 getirilip
+    biri düşürülür — bağlam uzunluğu normal k=10 koşusuyla AYNI kalır.
+
+    ⚠️ Why yeniden numaralama: `sira` 0-indeksli ve aşağı akıştaki recall hesabı onu
+    okuyor. Düşürme sonrası boşluk bırakmak sessiz kayma üretir (tuzak 7.5'in ikizi).
+    """
+    kalan = [p for p in parcalar
+             if madde_anahtari(p.get("kanun_no"), p.get("madde_no")) != altin_anahtar]
+    return [dict(p, sira=yer) for yer, p in enumerate(kalan[:k])]
+
+
 MADDE_PATH = "data/corpus/mevzuat_maddeler.jsonl"
 
 
@@ -142,6 +158,10 @@ def parse_args():
                         "cevaplayıp cevaplamadığını belirt' satırını ekle. Düşünce ile gelen "
                         "kazancın BİÇİMDEN mi muhakemeden mi geldiğini ayırmak için. "
                         "Ana tabloda KULLANILMAZ.")
+    p.add_argument("--harness-no-gold", action="store_true",
+                   help="ADR-0056 Karar 1 — `m2b`'nin harness-AÇIK karşılığı: retriever "
+                        "k+1 getirir, ALTIN madde düşürülür, ilk k kalır. Bağlam uzunluğu "
+                        "normal koşuyla AYNI. Yalnız --harness-indeks ile anlamlı.")
     p.add_argument("--no-gold", action="store_true",
                    help="M2 training-matched: --distractors ile gold'u ÇIKAR (sadece distractor, "
                         "RAG_MULTI prompt) → RAG-ıska abstention. v2b eğitim abstain dilimiyle AYNI mod.")
@@ -490,7 +510,12 @@ def main():
             mode = "blind"
             harness_izi = None
             if a.harness_indeks:                        # HARNESS AÇIK: bağlamı retriever seçer
-                parcalar = _retriever.getir(soru, a.harness_k)
+                altin = madde_anahtari(rec.get("kanun_no"), rec.get("madde_no"))
+                if a.harness_no_gold:                   # ADR-0056: m2b'nin AÇIK karşılığı
+                    parcalar = altin_ablasyonu(
+                        _retriever.getir(soru, a.harness_k + 1), altin, a.harness_k)
+                else:
+                    parcalar = _retriever.getir(soru, a.harness_k)
                 sources_block = raft_pack.format_sources_block(
                     [f"{p.get('kanun_adi','')} {p.get('madde_no','')}\n{p.get('text','')}"
                      for p in parcalar])
@@ -507,9 +532,9 @@ def main():
                 # Why kayda geçiyor: harness-AÇIK tablosunun ayırt etmesi gereken üç hâl
                 # var — altın getirilmedi · getirildi ve cevaplandı · getirildi ama cevap
                 # 900-char kırpmasının ötesindeydi (ADR-0054/K2'nin kabul edilen bedeli).
-                altin = madde_anahtari(rec.get("kanun_no"), rec.get("madde_no"))
                 harness_izi = {
                     "k": a.harness_k,
+                    "altin_dusuruldu": bool(a.harness_no_gold),
                     "altin_sirasi": next(
                         (p["sira"] for p in parcalar
                          if madde_anahtari(p.get("kanun_no"), p.get("madde_no")) == altin), None),

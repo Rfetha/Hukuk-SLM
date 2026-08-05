@@ -53,7 +53,7 @@ for M in $MODES; do
       python scripts/score_abstention.py --details "$D" --label "$L" --out-dir "$OUT_DIR" \
         || die "$L abstention başarısız"
       ;;
-    m2b)        # gold GÖSTERİLMEDİ → payda `context_shown` üzerinden
+    m2b|h2b)    # gold GÖSTERİLMEDİ → payda `context_shown` üzerinden
       python scripts/score_abstention.py --details "$D" --label "$L" --out-dir "$OUT_DIR" \
         --source-field context_shown || die "$L abstention başarısız"
       ;;
