@@ -5,6 +5,25 @@
 ([`kollar.md`](../kollar.md): `tgta_v1 == cp3-supurme-ham/*_tg_ta_ham_th_*`)
 **Bedel:** GPU yerel $0 · **hakem $0,038** · **Çıktılar:** `outputs/eval/s3-harness-acik/`
 
+> ## 🚨 DÜZELTME 2026-08-05 — bu girdinin A1 ve kütle sayıları YANLIŞ metrikle üretilmişti
+>
+> `harness_tablo.py` `A1` diye **cevaplanan-only** değil, **puanlanan tüm kalemlerin** makrosunu
+> yazıyordu (tuzak **2.16**; ADR-0011'in tanımı cevaplanan-only). Çekinmeler de hakemden puan
+> alıyor ve bu koşuda **0,9091** alarak makroyu yukarı çekmişler. Harness **KAPALI** çıpası
+> (%71,6) doğru metrikle üretildiği için buradaki ON/OFF kıyası **elmayla armuttu**.
+>
+> | eksen | bu girdide yazan | **doğrusu** |
+> | :--- | ---: | ---: |
+> | A1 (cevaplanan-only), harness AÇIK | 0,7823 | **0,7591** |
+> | kütle, harness AÇIK | %58,7 | **%56,9** |
+> | A1 · altın getirilen, harness AÇIK | 0,9344 | **0,9230** |
+>
+> **Aşağıdaki metin olduğu gibi bırakıldı** (kayıt bu). Üç okumanın **hükmü değişmedi**:
+> 1. düşüş daha da büyük (%71,6 → %56,9), 2. ⭐ manşet bulgu **ayakta** (0,9230 > 0,9087,
+> marj +2,6 → **+1,4** puan) ama **k'ya bağlı** — k=10'da 0,8426 ile **tersine dönüyor**,
+> 3. kapının sınırı aynen geçerli. Tam hesap: [#54](2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
+> Bölüm 1. Ayrıca **k=5 artık ürünün ayarı değil** — S1 `k=10`'u seçti (#54 Bölüm 2).
+
 > Bu sayı **hiç görülmemişti.** Bugüne kadarki her ölçüm harness KAPALI'ydı: modele altın
 > madde (m1'de çeldiricilerle birlikte) **elle** veriliyordu. Harness AÇIK'ta bağlamı
 > **retriever** seçiyor — yani ürünün gerçekte yapacağı şey.

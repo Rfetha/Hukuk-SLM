@@ -12,10 +12,13 @@
 DEV, **harness kapalı**, hakem `gpt-4o-mini` (protokol: [MODEL_CARD](MODEL_CARD.md))
 
 > ⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Harness AÇIK ürün sayısı
-> 2026-08-04'te ilk kez ölçüldü: **sadık-cevap kütlesi %58,7** (kapalıda %71,6) — düşüşün
-> tamamı erişimden. ⭐ Ama retriever altın maddeyi bulduğunda **A1 0,934 > 0,909**, yani
-> **darboğaz model değil erişim**. Rakip harness açıkken **hâlâ ölçülmedi**.
-> [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+> 2026-08-04'te ilk kez ölçüldü, **2026-08-05'te düzeltildi ve `k` süpürüldü**: sadık-cevap
+> kütlesi **%59,5** (`k=10`; kapalıda %71,6). ~~%58,7~~ yanlış metrikle üretilmişti (tuzak
+> 2.16 — `A1` diye ham makro); düzeltilmiş k=5 değeri **%56,9**. ⭐ Retriever altın maddeyi
+> bulduğunda k=5'te **A1 0,923 > 0,909** (darboğaz model değil **erişim**), ama k=10'da
+> **0,843** — bağlam uzadıkça sadakat düşüyor, ölçüldü. Rakip harness açıkken **hâlâ ölçülmedi**.
+> [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+> [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
 > [`sprint3.md`](sprint3.md)
 
 ```
@@ -123,14 +126,23 @@ Bu tahmin **sınanabilsin** diye kaydediliyor. Graf bir gün kurulursa, `core_ha
 | eksen | tahmin | gerekçe |
 | :--- | :--- | :--- |
 | `recall@k` | **+0 … +2 puan** → n=80'de **ölçülemez** | sorular **madde başına** üretildi, altın **tek** madde. Graf gezinmesi *"A → atıf yaptığı B"* gerektiren **çok-hop** soruda kazanır; kümede o tip soru neredeyse yok. ±2 soru = **%2,5**, zaten gürültü |
-| A1 | **değişmez, hafif düşebilir** | altın getirildiğinde A1 zaten **0,934**; model ilişki çıkarımına ihtiyaç duymuyor. Graf daha çok komşu getirir → bağlam uzar → dikkat dağılır |
+| A1 | **değişmez, hafif düşebilir** | altın getirildiğinde A1 zaten ~~0,934~~ **0,9230** (tuzak 2.16 düzeltmesi); model ilişki çıkarımına ihtiyaç duymuyor. Graf daha çok komşu getirir → bağlam uzar → dikkat dağılır |
 | *"altın gelmedi ama cevapladı"* (14/80) | **hiç değişmez** | o sorular konusunu söylemiyor; graf **sorulmamış** olanı bulamaz |
 | B7 (mülga atıf) | **çözer** | ama `mulga` boolean alanı da çözüyor — **1/20 maliyetle** (§5.1) |
 
+⭐ **2026-08-05 — tahminin A1 satırındaki mekanizma bağımsız olarak ölçüldü.** *"Bağlam uzar →
+dikkat dağılır"* dün bir **varsayımdı**. `k`'yı 5→10 yapmak tam olarak bunu yaptı ve altın
+madde bağlamdayken A1 **0,9230 → 0,8426** düştü (#54, S1). Yani graf'ın en büyük riski artık
+spekülasyon değil **bu repoda ölçülmüş bir sayı** — ve graf bağlamı k=10'dan **çok daha
+fazla** uzatır. Buna karşılık *"14/80 hiç değişmez"* satırı **fazla karamsar** çıktı: o sınıf
+salt `k` ile **7/80**'e indi, yani içinde erişimle kurtarılabilir bir pay varmış. Tahminin
+ikisi de kayda geçiyor — tutan da, ıskalayan da.
+
 **Yani graf bugün koşulsaydı, muhtemelen ölçülemez bir iyileşme üretirdi** — bu repo'nun
 disiplininde en kötü mühendislik türü: işe yarayıp yaramadığını söyleyemediğin iş.
-Karşılaştır: **`k`'yı 5→10 yapmak bir bayrak** ve kütleyi %58,7 → **~%65**'e taşıması
-bekleniyor ([`sprint3.md`](sprint3.md) S1, ön-kayıtlı).
+Karşılaştır: **`k`'yı 5→10 yapmak bir bayrak** — ön-kayıtlı tahmin kütleyi ~%65'e taşımaktı;
+**ölçüldü 2026-08-05: %56,9 → %59,5** (erişim tahmini birebir tuttu, A1 tahmini 9 puan
+ıskaladı; fark **dikkat dağılması**) ([`sprint3.md`](sprint3.md) S1 · #54).
 
 #### Graf gerçekten nerede kazanır — üçü de bugün ÖLÇÜLEMİYOR
 

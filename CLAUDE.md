@@ -59,28 +59,50 @@ M2b Rej             0.877      1.000   ← widest gap; "the harness closes it in
 ⚠️ **The table above is measured with the harness OFF.** `v0.1` because the config was
 selected on DEV and is not validated against baselines.
 
-**The harness-ON number now exists — first run 2026-08-04**
-([research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md)):
+**The harness-ON number now exists — first run 2026-08-04, corrected + swept 2026-08-05**
+([#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+[#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)):
 
 ```
-                        harness OFF   harness ON (k=5)
-faithful-answer mass       71.6%          58.7%     ← the honest product number
-A1, gold retrieved         0.909          0.934     ← ⭐ better when retrieval hits
-fabricated citations         0              0
+                        harness OFF   ON (k=5)      ON (k=10) ← product setting
+faithful-answer mass       71.6%      56.9%          59.5%    ← the honest product number
+A1 (answered-only)         0.909      0.759          0.768
+A1, gold retrieved         0.909      0.923          0.843    ← ⚠️ k costs faithfulness
+fabricated citations         0          0              0
 ```
+
+🚨 **The first published ON numbers were wrong** (mass 58.7%, A1-gold 0.934):
+`harness_tablo.py` reported a macro over *all* scored items as `A1`, but `A1` is
+**answered-only** (ADR-0011). The OFF anchor used the correct metric — so the headline
+ON/OFF comparison was apples-to-oranges. The bug's sign was **not constant** (it helped
+k=5, hurt k=10) and it **flipped the verdict of a pre-registered gate**. Fixed per
+ADR-0050's rule: correct the *estimator*, not the threshold; both arms re-derived.
 
 ⚠️ **Sprint 3 was justified on "deterministic code closes two of our three gaps." Measured,
 that claim is half-dead:** the **A1** half is **refuted** — fabricated article numbers are
 **zero**, so the citation verifier had nothing to catch; A1's gap comes from answering out of
-a *different real* article when retrieval misses (14/80). The **M2b** half is **untested** —
-m2b was never run with the harness on. See [`sprint3.md`](sprint3.md) debt **B1**.
+a *different real* article when retrieval misses (14/80 at k=5 → **7/80 at k=10**). The
+**M2b** half is **untested** — m2b was never run with the harness on. See
+[`sprint3.md`](sprint3.md) debt **B1**.
 
-Read it this way: the drop is **entirely retrieval** — in 25% of questions the gold
-article is not in the top 5. When it *is*, the model is **more** faithful than under the
-distractor-packed OFF setting, so the bottleneck is **retrieval, not the model**. And the
-harness's known limit: the model does not fabricate article numbers, it answers from a
-*different real* article — a citation that verifies and passes the gate but does not fit
-the question (14/80). That is Sprint 3's open debt B1, in [`sprint3.md`](sprint3.md).
+Read it this way: **most** of the drop is retrieval — at k=5 the gold article missed the
+top 5 in 25% of questions, and raising k to 10 recovers 10 of those. But *"the bottleneck
+is retrieval, not the model"* is **only true at k=5**, and only half-true even there:
+
+- ⚠️ **k costs faithfulness.** On the same questions where gold *was* retrieved, A1 falls
+  0.923 → **0.843** going k=5 → k=10. At k=5 the model beat the distractor-packed OFF
+  setting (0.923 > 0.909); at k=10 it does not. Measured distraction, not speculation.
+- ⚠️ **Over-refusal is k-independent.** 14→15 questions are abstained on *while the gold
+  article is in context*. Retrieval cannot fix that half of the coverage loss — the model can.
+- ⚠️ **Abstention is calibrated on the wrong signal.** On questions that do not identify
+  their own legal domain, the model abstains **less** (5.6% vs 30.6% at k=5) precisely
+  where retrieval fails most — it reads *topical fit*, not *sufficiency*. k=10 flips the
+  ordering back to correct but does not close it
+  ([#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)).
+
+And the harness's known limit: the model does not fabricate article numbers (0/120 at
+k=10), it answers from a *different real* article — a citation that verifies and passes
+the gate but does not fit the question. That is Sprint 3's open debt B1.
 
 ### Target audience: the CITIZEN — but read the trap
 

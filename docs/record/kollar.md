@@ -144,8 +144,12 @@ tgta_v1  ==  outputs/eval/s3-harness-acik/*_tgta_v1_h1_*            harness AÇI
 (bağlam elle kuruluyor), `s3-harness-acik` harness AÇIK (bağlamı retriever seçiyor,
 k=5). Rejim değişmezleri ikisinde de aynı; **tek fark bağlamın nereden geldiği** —
 kıyas bu yüzden kurulabiliyor. Sayılar:
-[research_log #51](research_log/2026-08-04-harness-acik-ilk-olcum.md) · kütle
-**%71,6 (kapalı) ↔ %58,7 (açık)**, altın getirilen alt kümede A1 **0,934 > 0,909**.
+[#51](research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+[#54](research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) · kütle
+**%71,6 (kapalı) ↔ ~~%58,7~~ %56,9 (açık, k=5) ↔ %59,5 (açık, k=10 — ürünün ayarı)**,
+altın getirilen alt kümede A1 **~~0,934~~ 0,923 > 0,909** (k=5) ama **0,843** (k=10).
+⚠️ Eski sayılar `A1` yerine ham makro kullanıyordu (tuzak 2.16).
+Harness AÇIK k=10 koşusu: `outputs/eval/s3-harness-k10/`.
 
 **Harness artefaktı** (modelin parçası değil, ama ölçümün parçası):
 
