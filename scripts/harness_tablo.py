@@ -27,7 +27,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from atif_dogrula import Dogrulayici, DOGRULANDI, MADDE_YOK, KANUN_YOK, AYRISTIRILAMADI  # noqa: E402
+from atif_dogrula import (Dogrulayici, DOGRULANDI, MADDE_YOK, KANUN_YOK,  # noqa: E402
+                          AYRISTIRILAMADI, MULGA)
 from red_kapisi import kapi, POLITIKALAR  # noqa: E402
 from score_abstention import exact_reject  # noqa: E402
 
@@ -119,7 +120,7 @@ def main():
         }
 
     # 4) Atıf dağılımı
-    dagilim = {x: 0 for x in (DOGRULANDI, MADDE_YOK, KANUN_YOK, AYRISTIRILAMADI)}
+    dagilim = {x: 0 for x in (DOGRULANDI, MADDE_YOK, KANUN_YOK, AYRISTIRILAMADI, MULGA)}
     for hs in hukumler:
         for h in hs:
             dagilim[h.hukum] += 1
