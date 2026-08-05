@@ -172,6 +172,51 @@ korpusun kendisinde aranmayan bir kusur çıktı:**
 `madde_no`'ya taşınır** · (3) **tablo-parçası satırları elenir**. ⚠️ (3) indeksi ~1.166 satır
 küçültür → `recall@k` **değişebilir**, bu yüzden S1'in eski korpusta bitmesi şarttı.
 
+#### ✅ S2 KAPANDI 2026-08-05 — kapsam **menüden değil ölçümden** seçildi
+
+Yukarıdaki (3) **yapılmadı**, ve bu bir atlama değil **ölçülmüş bir karar**. Kapsam sorusu
+*"korpus ne kadar bozuk"* değil, **"modelin GÖRDÜĞÜ bağlamda çöp var mı"** diye soruldu —
+k=10 koşusunun `context_shown` alanı, yani modele giden metnin kendisi ayrıştırıldı:
+
+| bozulma sınıfı | korpusta | **modele ulaşan blok** | karar |
+| :--- | ---: | :--- | :--- |
+| **A — tablo/cetvel parçası** | ~7.966 satır | **0 / 800** ❌ | **ertelendi → borç B9** |
+| **B — alt-madde soneki** | **485 satır** | **14 / 800 · 12 soru** ✅ | ✅ yapıldı |
+
+Sınıf A'yı elemek **ölçülemez bir kazanç için ölçülmüş bir sayıyı harcamak** olurdu: parçalar
+öylesine kısa (`", Ek"` = 4 karakter) ki ne BM25 ne yoğun vektör onları üste çıkarıyor.
+⚠️ Ayrıca *"anahtar yinelenmesi"* (%29,4) ile *"bağlam kirlenmesi"* (%1,8) **aynı şey değil** —
+retriever yinelenen anahtarın **doğru** satırını getiriyordu.
+
+**Yapılan** ([`scripts/korpus_yururluk.py`](scripts/korpus_yururluk.py), atomik yazma):
+`mulga` + ilga eden kanun/madde/tarih → **2.547 satır** (%99,6 kaynaklı) · alt-madde kimliği
+→ **485 satır** · `atif_dogrula.py`'ye **`MULGA`** hükmü (`red_kapisi` değişmedi — `DOGRULANDI`
+dışındaki her hükmü zaten reddediyor).
+
+**Kabul ölçütü geçti:** `1475/15` MULGA · `1475/14` yürürlükte · *"İş Kanunu Madde 15"* katı
+kapıda **REDDEDİLDİ** · yanlış-pozitif sıfır (3 örneklem turu, gözle).
+
+🐞 **İki kural doğrulama hedefine çarpıp düzeldi — ikisi de sessizce yanlış veri üretecekti:**
+1. **Sonek kuralı %80 eksikti.** Yalnız küçük harf aranıyordu; en sık sonek **büyük `/A`**
+   (249 satır). 98 sanılan sınıf gerçekte **485**.
+2. **İlga kaynağı tarihi kanun sanıyordu.** `"22/5/2003/4857/120 md."` içinden `2003/4857`
+   okunuyordu — tarihin son parçası kanun numarası oluyordu. `1475/15`'in ilga kaynağı
+   `4857 md.120` yerine `2003 md.4857` çıkmıştı. **Sprint'in kendi verify kalemi ele verdi.**
+
+⚠️ **DÜRÜST NEGATİF SONUÇ:** mevcut k=5 ve k=10 koşuları yeniden puanlandı → **hükmü değişen
+cevap 0/80**, MULGA sayısı **0**. Açık **mekanik olarak** kapandı, ama bu DEV kümesinde
+**ölçülen görülme sıklığı sıfır**. B7 bir **ürün-güvenliği** özelliği, bir skor özelliği
+değil — öyle raporlanıyor.
+
+✅ **Eval etiketleri düzeltilmedi, çünkü gerek kalmadı:** onarım öncesi altın `2004/Madde 31`
+anahtarını **`31/a` satırı da** karşılayabiliyordu; artık ikisi ayrı. Havuz iki eval kümesinde
+de **80/80** ve **40/40** korunuyor → yer doğruluğu **sıkılaştı**, kıyaslanabilirlik bozulmadı.
+
+⚠️ İndeks **yeni dizine** kuruldu (`data/index/mevzuat_bge_m3_s2`); eskisi yerinde bırakıldı
+ki S2 öncesi sayılar yeniden üretilebilsin. `madde_no` gömülen metnin parçası
+(`kanun_adi + madde_no + text`), o yüzden 485 satırın gömmesi değişti → **harness k=10
+yeniden koşuluyor**.
+
 ### S4 — İsabet denetimi tasarımı *(borç B1)* ⭐ en zor, en değerli
 
 Bugünkü açığın **tamamı** burada: atıf gerçek, doğrulanır, kapıdan geçer, **soruya uymaz**.
