@@ -68,26 +68,40 @@ refuse · A1 = faithfulness of claims, **computed over answered items only** ·
 
 Same artifact, same regime, DEV; the only change is that a retriever — not a
 hand-built context — decides what the model sees. Retriever: hybrid BM25 +
-`BAAI/bge-m3` (RRF), 40,496-article index, k=5.
-Full record: [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md).
+`BAAI/bge-m3` (RRF), 40,496-article index, **k=10** (swept 2026-08-05).
+Full record: [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+**correction + k sweep: [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)**.
 
-| | harness OFF | harness ON (k=5) |
-| :--- | ---: | ---: |
-| gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 |
-| coverage | 0.788 | 0.750 |
-| A1 (answered-only) | 0.909 | 0.782 |
-| **faithful-answer mass** | **71.6%** | **58.7%** |
-| ⭐ A1, **gold-retrieved subset** | 0.909 | **0.934** |
-| verified citations | 87/89 | **89/89** |
-| **fabricated article numbers** | 0 | **0** |
-| strict-gate rejections | 2/80 | 1/80 |
+> 🚨 **Corrected 2026-08-05.** The first published ON numbers used the wrong metric —
+> `harness_tablo.py` reported a macro over *all* scored items as `A1`, while `A1` is
+> **answered-only** (ADR-0011). The OFF anchor used the correct metric, so the ON/OFF
+> comparison was apples-to-oranges. Both arms re-derived; old values struck through.
 
-**58.7% is the honest product number.** The whole drop is retrieval: in 25% of
-questions the gold article is not in the top 5. Where retrieval succeeds the model
-is **more** faithful than in the OFF setting (0.934 vs 0.909) — the assumption that
-a real retriever supplies *noisier* context did not hold, because the OFF setting
-packs four hard negatives while the retriever returns five topically related real
-articles.
+| | harness OFF | harness ON (k=5) | **harness ON (k=10)** |
+| :--- | ---: | ---: | ---: |
+| gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 | **70/80 — recall@10 0.875** |
+| coverage | 0.788 | 0.750 | **0.775** |
+| A1 (answered-only) | 0.909 | ~~0.782~~ **0.759** | **0.768** |
+| **faithful-answer mass** | **71.6%** | ~~58.7%~~ **56.9%** | **59.5%** |
+| ⭐ A1, **gold-retrieved subset** | 0.909 | ~~0.934~~ **0.923** | **0.843** |
+| verified citations | 87/89 | **89/89** | **118/120** |
+| **fabricated article numbers** | 0 | **0** | **0** |
+| strict-gate rejections | 2/80 | 1/80 | 1/80 |
+
+**59.5% is the honest product number** (k=10). Most of the drop from 71.6% is retrieval:
+at k=5 the gold article missed the top 5 in 25% of questions; raising k to 10 recovers
+10 of those and lifts mass by 2.6 points.
+
+⚠️ **But more context costs faithfulness.** On the *same* questions where the gold article
+was retrieved, A1 falls **0.923 → 0.843** going from k=5 to k=10 — measured distraction.
+The net gain comes from retrieval outweighing that cost. At k=5 the model was *more*
+faithful on retrieved-gold questions than in the OFF setting (0.923 vs 0.909); **at k=10
+that reverses** (0.843).
+
+⭐ **k=10 also improves abstention calibration.** On questions that do not identify their
+own legal domain, coverage drops 0.944 → 0.722, while on self-identifying questions it
+rises 0.694 → 0.790 — the ordering flips from **wrong** to **right**
+([#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)).
 
 ⚠️ **Known limit of the citation verifier.** The model does not fabricate article
 numbers — it copies the label from its context. In 14/80 questions the gold was not

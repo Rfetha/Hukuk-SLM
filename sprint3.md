@@ -1,13 +1,29 @@
 # Sprint 3 — HARNESS: modeli ürüne çevirmek
 
-> ## 🛑 DURUM 2026-08-04 — hedefe ulaşıldı, insan kontrol noktasında
+> ## 📍 DURUM 2026-08-05 — **S1 ✅ · S3 ✅ · sırada S2**
 >
-> **S3a ✅ · Adım 0 🔴 · Adım 1-3 ✅ · Adım 4 🛑 ölçüldü.** Harness kuruldu ve
-> **harness AÇIK ölçüm ilk kez yapıldı** — sprint'in koşulu buydu.
-> **Manşet: kütle %71,6 → %58,7**, ama **retriever altını bulduğunda A1 0,9344 > 0,9087**.
-> Tablo ve üç okuma [aşağıda](#-adım-4-sonucu--harness-açık--kapalı-aynı-model-tgta_v1).
+> **S3a ✅ · Adım 0 🔴 · Adım 1-4 ✅ · S1 ✅ · S3 ✅.**
 >
-> **Bedel:** GPU **$0** (hepsi yerel) · hakem **$0,038**.
+> 🚨 **Bu sprintin manşet sayısı düzeltildi.** `harness_tablo.py` `A1` diye **cevaplanan-only**
+> değil **ham makro** yazıyordu (tuzak **2.16**) ve harness KAPALI çıpası doğru metrikteydi →
+> ON/OFF kıyası **elmayla armuttu**. Düzeltilmiş resmî sayılar:
+>
+> ```
+>                        KAPALI (m1)   AÇIK k=5        AÇIK k=10  ← ürünün ayarı
+> A1 (cevaplanan-only)      0,9087    0,7591          0,7681
+> KÜTLE                     %71,6     %56,9 (~~58,7~~) %59,5
+> A1 · altın getirilen      0,9087    0,9230 (~~9344~~) 0,8426
+> ```
+>
+> **S1: `k=10` kabul edildi** (+2,6 puan kütle) — ama tahminin (~%65) altında; sebebi ölçüldü:
+> **dikkat dağılması** altın getirilende A1'i 8 puan düşürüyor. **S3: 62/18 etiket** — model
+> erişimin en çok battığı yerde en az çekiniyor (k=10 bunu kısmen düzeltiyor).
+> Ayrıca **korpusun kendisi bozuk çıktı** (anahtarların %22,7'si yineleniyor) → S2 büyüdü.
+>
+> **Bugünün bedeli:** GPU **$0** (yerel) · hakem **$0,047** *(sprint toplamı $0,085 ≤ $2)*.
+> Kayıt: [#52](docs/record/research_log/2026-08-05-korpus-butunlugu.md) ·
+> [#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md) ·
+> [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
 >
 ---
 
@@ -32,7 +48,47 @@ kapsam   : S1-S4.  Graph-RAG, ajanlar, vatandaş kipi HÂLÂ DIŞINDA
 > karışır ve hiçbir yerde hata çıkmaz. Bu, tam olarak bu hattın hata sınıfı.
 > **S1 bitmeden korpusa dokunulmaz.**
 
-### S1 — `k` süpürmesi *(borç B3)* · en ucuz kazanç, önce bu
+### S1 — `k` süpürmesi *(borç B3)* — ✅ **KAPANDI 2026-08-05 · `k=10` KABUL** · [research_log #54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
+
+> **Bedel:** GPU **$0** (yerel, şarjda) · hakem **$0,0403**. Geçerlilik kapısı ✅ (kesik %2,5),
+> örneklem birebir aynı 80 soru ✅, CTX ✅ (en uzun istem 3.582 tok → 5.118 < 8.192).
+
+🚨 **Ama önce: bu sprintin yayınlanmış kütle sayısı YANLIŞ metrikle üretilmiş.**
+`harness_tablo.py` `A1` diye **cevaplanan-only** değil **ham makro** yazıyordu (tuzak **2.16**).
+Çekinmeler de hakemden puan alıyor ve **sapma yön değiştiriyor**: k=5'te makroyu yukarı
+(0,9091), k=10'da aşağı (0,6819) çekmiş. Harness KAPALI çıpası doğru metrikteydi → **ON/OFF
+kıyası elmayla armuttu.** [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)
+kuralı uygulandı: **eşik değil ALET** düzeltildi, iki kola **simetrik**, eşik aynı koşudan
+yeniden türetildi (%58,7 → **%56,9**).
+
+| eksen | KAPALI (m1) | AÇIK **k=5** | AÇIK **k=10** |
+| :--- | ---: | ---: | ---: |
+| altın getirilen | garanti | 60/80 | **70/80** |
+| coverage | 0,7875 | 0,7500 | **0,7750** |
+| **A1 (cevaplanan-only)** | 0,9087 | ~~0,7823~~ **0,7591** | **0,7681** |
+| A1 · altın getirilen | 0,9087 | ~~0,9344~~ **0,9230** | **0,8426** ⬇ |
+| **kütle** | **%71,6** | ~~%58,7~~ **%56,9** | **%59,5** |
+| katı kapı reddi | 2/80 | 1/80 | 1/80 |
+| uydurulmuş madde no | 0 | 0/89 | **0/120** |
+
+**Kabul karşılandı** (k=10 > k=5: +2,6 puan) ama **ön-kayıtlı tahminin (~%65) altında.**
+Sebep ölçüldü — ret şıkkının sorduğu soru cevaplandı: **dikkat dağılması.** Altın madde
+bağlamdayken bile, yanına 5 madde daha konunca A1 **8 puan** düşüyor (0,9230 → 0,8426).
+Net kazanç, erişimin kazandırdığı **+10 sorunun** bu bedeli aşmasından geliyor.
+→ **`k=20` için gerekçe zayıf:** `recall@20` yalnız +5 puan getirirken bağlam bir kat daha
+uzar ve bu bedel ölçülmüş biçimde büyür.
+
+**İki kazanç daha:**
+- **B1'in sınıfı yarıya indi** — *altın gelmeden cevapladı* **14 → 7**. Ama **aşırı-red
+  değişmedi** (14 → 15): altın bağlamdayken çekinilen soru sayısı k'dan **bağımsız**.
+- ⭐⭐ **Ters çekinme kalibrasyonu düzeliyor** (S3'ün bulduğu terslik): belirsiz alt kümede
+  coverage **0,944 → 0,722**, ayırt edicide **0,694 → 0,790** — sıralama ❌ tersten ✅ doğruya.
+
+**Yeni borç B8:** atıf doğrulayıcısı **ilk kez** bir şey yakaladı ve o bir **yazım hatası** —
+model bağlamdaki `FİKİR VE SANAT ESERLERİ KANUNU`'nu `…ESELERİ…` diye kopyalamış (bir harf),
+madde no'ları doğru. Katı kapı doğru bir cevabı **tek karakter** yüzünden reddediyor.
+
+<details><summary>S1'in ön-kayıtlı planı (kayıt, üzerine yazılmadı)</summary>
 
 ```
 1. k ∈ {5, 10} için harness AÇIK koş (k=5 zaten var, yalnız k=10 koşulacak)
@@ -55,7 +111,31 @@ getirilmeyenlerde A1 **0,284** *(0,7823×60 − 0,934×46)/14 ile türetildi)*.
 **Kabul:** k=10 kütlesi **> %58,7**. **Ret:** kütle düşerse → k=5 kalır, sebebi
 (bağlam uzunluğu mu, dikkat dağılması mı) **gözle okunur**, uydurulmaz.
 
-### S2 — Yürürlük alanı *(borç B7)* 🚨 ürün-güvenliği
+</details>
+
+### S3 — Ayırt-edicilik etiketi *(borç B2)* — ✅ **KAPANDI 2026-08-05** · [research_log #53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)
+
+> S1 koşarken paralel koşuldu (hakem API'si, GPU'ya ve korpusa dokunmuyor). Hakem **$0,0069**.
+> İstem koşudan **önce** kayda geçti; körlük çağrı imzasının kısıtı (`_istem(soru)`).
+
+**Etiket: 62 ayırt edici · 18 belirsiz (%22,5)** — S3a'nın gözle tahmini tuttu.
+
+| eksen (k=5) | ayırt edici (n=62) | belirsiz (n=18) |
+| :--- | ---: | ---: |
+| `recall@5` | **0,8226** | **0,5000** |
+| coverage | 0,6935 | 0,9444 |
+| A1 | 0,8651 | 0,4909 |
+| kütle | %60,0 | %46,4 |
+
+**Tuzak 7.4 sayıyla doğrulandı:** `recall@5` iki alt küme arasında **32,3 puan** ayrışıyor →
+*"recall@5 = 0,750"* retriever'ın değil **kümenin kompozisyonunun** sayısı.
+
+⭐⭐ **Beklenmedik:** model, erişimin **en çok battığı** yerde **en az** çekiniyor (belirsizde
+%5,6, ayırt edicide %30,6). B1'in 14 vakasının **8'i** kümenin %22,5'inde yoğunlaşmış.
+Mekanizma tahmini: çekinme sinyali bağlamın **konusal uyumundan** geliyor, **yeterliliğinden**
+değil → doğrudan **S4** girdisi. *(k=10 bu tersliğin yönünü düzeltiyor — S1'e bak.)*
+
+### S2 — Yürürlük alanı *(borç B7)* 🚨 ürün-güvenliği · 🟡 **SIRADAKİ**
 
 ```
 1. Korpustaki "(Mülga: ...)" kalıbını ayrıştır → `mulga` + ilga eden kanun/madde alanı
@@ -69,18 +149,45 @@ getirilmeyenlerde A1 **0,284** *(0,7823×60 − 0,934×46)/14 ile türetildi)*.
 değişince **patlar** — indeks yeniden kurulur (~10 dk, GPU'da).
 **Kabul:** en az bir gerçek mülga atıf yakalanıyor **ve** yanlış-pozitif sıfır (gözle).
 
-### S3 — Ayırt-edicilik etiketi *(borç B2)* · sayıları dürüstleştirir
+#### ⚠️ 2026-08-05 — S2'nin salt-okunur keşfi koşuldu, **S2 büyüyor** ([research_log #52](docs/record/research_log/2026-08-05-korpus-butunlugu.md))
 
-ADR-0054'ün şart koştuğu, **henüz koşulmayan** tur. Kör hakem, istem önceden yazılır,
-sayılar iki alt kümede ayrı raporlanır. **Bedel ~$0,02.**
-**Kabul:** etiket dağılımı + iki alt kümenin `recall@5`'i ayrı raporlandı.
+S1 koşarken korpus **okundu** (yazılmadı — sıra kısıtı korundu). Aday kural ölçüldü **ve
+korpusun kendisinde aranmayan bir kusur çıktı:**
+
+- ✅ **Aday kural sprint'in verify kalemini geçiyor.** Naif *"metinde `(Mülga` geçiyor"*
+  **3.652** madde yakalıyor; baştaki ayrıştırma artığı atıldıktan sonra *"`(Mülga` ile
+  **başlıyor**"* **2.496** → aradaki **1.156** yalnız bir **fıkrası** mülga olan maddeler,
+  yani naif kuralın **yanlış pozitifi**. Verify: `1475/15` ✅ mülga · `1475/14` ✅ yürürlükte
+  (kıdem tazminatı) · `4857/15` ✅ yürürlükte.
+- 🚨 **Ama `mulga` alanı B7'nin yalnız YARISINI kapatıyor.** `(kanun_no, madde_no)`
+  anahtarlarının **%22,7'si yineleniyor** (9.192 fazladan satır) — iki sebep: **(a)** `3520`
+  bir madde-numarası **tablosudur**, 1.166 hücresi "madde" diye indekslenmiş; **(b)**
+  alt-madde soneki `madde_no`'ya değil **metne** düşüyor (`2004/309` **27 kez**, çünkü
+  `309/a`, `309/b`… hepsi `Madde 309`). B7'nin `İŞ KANUNU Madde 15` vakasında `DOGRULANDI`
+  damgası **39 karakterlik yanlış ayrıştırılmış bir parçaya** basılmış.
+- ✅ **S1 bundan etkilenmedi, ölçüldü:** 5/80 soru yinelenen anahtarlı; temiz alt kümede
+  `recall@5` **0,7467** ↔ tüm küme **0,7500**.
+
+**S2'nin kapsamı güncellendi:** (1) `mulga` + ilga alanı · (2) **alt-madde soneki
+`madde_no`'ya taşınır** · (3) **tablo-parçası satırları elenir**. ⚠️ (3) indeksi ~1.166 satır
+küçültür → `recall@k` **değişebilir**, bu yüzden S1'in eski korpusta bitmesi şarttı.
 
 ### S4 — İsabet denetimi tasarımı *(borç B1)* ⭐ en zor, en değerli
 
-Bugünkü açığın **tamamı** burada: atıf gerçek, doğrulanır, kapıdan geçer, **soruya uymaz**
-(14/80). Bu tur **kod değil tasarım** işidir — ≥2 alternatif trade-off'uyla sunulur, ADR
-yazılır, sonra kodlanır. *(Aday eksen: getirilen parça ile cevabın örtüşmesi · kaynak-yeterliliği
+Bugünkü açığın **tamamı** burada: atıf gerçek, doğrulanır, kapıdan geçer, **soruya uymaz**.
+Bu tur **kod değil tasarım** işidir — ≥2 alternatif trade-off'uyla sunulur, ADR yazılır,
+sonra kodlanır. *(Aday eksen: getirilen parça ile cevabın örtüşmesi · kaynak-yeterliliği
 sinyali · ikinci geçiş yeniden-sıralama.)*
+
+**⚠️ 2026-08-05 — S1 ve S3 S4'ün girdisini değiştirdi:**
+- Sınıfın büyüklüğü **14/80 → 7/80** (k=10 ile). Yani S4 artık **daha küçük** bir açığı
+  hedefliyor; buna karşılık **aşırı-red** (altın bağlamdayken çekinme) **15/80** ile k'dan
+  bağımsız duruyor ve coverage kaybının **daha büyük** yarısı orada.
+- S3'ün mekanizma bulgusu doğrudan tasarım girdisi: çekinme sinyali bağlamın **konusal
+  uyumundan** geliyor, **soruyu cevaplamaya yeterliliğinden** değil. *"Kaynak-yeterliliği
+  sinyali"* aday ekseni bu yüzden **birinci sıraya** çıkıyor.
+- Yeni aday eksen: **soru-belirginliği sinyali** (S3'ün etiketi ürüne taşınır — belirsiz
+  soruda cevap yerine **açıklama iste**).
 
 ---
 
@@ -130,7 +237,15 @@ bedel     : GPU $0 (harness CPU'da) · hakem ~$1 · gömme modeli indirme
 > **0,9087**. m1'in 4 hard-negative çeldiricisi retriever'ın 5 konusal maddesinden
 > **daha** tuzaklıymış. *"Önce harness, sonra eğitim"* sıralamasının bu dayanağı düştü.
 >
+> > 🚨 **2026-08-05 — bu paragrafın sayısı iki kez düzeltildi.** (a) 0,9344 yanlış metrikle
+> > üretilmişti, doğrusu **0,9230** (tuzak 2.16). (b) Daha önemlisi: bulgu **k'ya bağlıymış**.
+> > `k=10`'da aynı sayı **0,8426 < 0,9087** — yani retriever bağlamı m1'in çeldiricili
+> > bağlamından **daha az tuzaklı değil**, yalnız **k=5'te** öyleydi. *"3 neden zayıfladı"*
+> > hükmü bu yüzden **geri alınıyor**: bağlam uzadıkça tuzaklılık artıyor ve bu ölçüldü
+> > ([#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)).
+>
 > Kaynak: [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md)
+> · düzeltme [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
 
 **1. Şu an ortada ürün yok.** Model çalışsın diye kullanıcının **mevzuat metnini
 kendisi yapıştırması** gerekiyor. Vatandaş bunu yapamaz — hangi maddeyi arayacağını
@@ -243,13 +358,17 @@ S3a) ÖN-PROB                ✅ KAPANDI  hibrit recall@10 0,875 · bedesten GE�
 
 ### 🛑 Adım 4 sonucu — harness AÇIK ↔ KAPALI, aynı model (`tgta_v1`)
 
+> 🚨 **2026-08-05 düzeltmesi:** aşağıdaki A1/kütle sayıları **yanlış metrikle** üretilmişti
+> (tuzak **2.16** — `A1` diye ham makro). Tablo **kayıt olarak duruyor**, doğruları üstü
+> çizili yanına yazıldı. Ürünün güncel ayarı **k=10** — güncel tablo [S1'de](#s1--k-süpürmesi-borç-b3--kapandı-2026-08-05--k10-kabul--research_log-54).
+
 | eksen | harness **KAPALI** (m1) | harness **AÇIK** (h1, k=5) |
 | :--- | ---: | ---: |
 | altın madde bağlamda | **garanti** (kurgu) | **60/80** — `recall@5` 0,750 |
 | coverage | 0,7875 | **0,7500** |
-| A1 (cevaplanan-only) | 0,9087 | **0,7823** |
-| **kütle = coverage × A1** | **%71,6** | **%58,7** |
-| ⭐ A1 · **altın getirilen** alt küme | 0,9087 | **0,9344** |
+| A1 (cevaplanan-only) | 0,9087 | ~~0,7823~~ → **0,7591** |
+| **kütle = coverage × A1** | **%71,6** | ~~%58,7~~ → **%56,9** |
+| ⭐ A1 · **altın getirilen** alt küme | 0,9087 | ~~0,9344~~ → **0,9230** |
 | doğrulanan atıf | 87/89 | **89/89** |
 | **uydurulmuş madde numarası** | 0 | **0** |
 | katı kapı reddi | 2/80 | **1/80** |
@@ -486,7 +605,10 @@ bölümü.** Adım 0-4 kapandı; onların metinleri **kayıt** olarak duruyor, �
 | **1** retriever | ✅ **BİTTİ** 2026-08-04 | `scripts/retriever.py` + `data/index/mevzuat_bge_m3/` (40.496 madde, 83 MB) · bileşen S3a sayısını birebir üretti: **recall@10 0,8750 · @20 0,9250** · 759 ms/sorgu (CPU) |
 | **2** atıf doğrulayıcı | ✅ **BİTTİ** 2026-08-04 | `scripts/atif_dogrula.py` — hakemsiz. Gerçek çıktıda 56 atıf · 53 doğrulandı · **0 yanlış alarm** · pozitif kontrol geçti. Gözle denetim **dört** yanlış-alarm hatası buldu (ad çakışması · başlık biçimi · Türkçe `upper()` · ada kaçan sözcük) |
 | **3** red kapısı | ✅ **BİTTİ** 2026-08-04 | `scripts/red_kapisi.py` — ADR-0038 katı + `cogunluk`/`cerrahi` ablasyonları, üçü post-hoc aynı kümede |
-| **4** harness AÇIK ölçüm | 🛑 **ÖLÇÜLDÜ 2026-08-04 — insana sunuldu** | kütle **%71,6 → %58,7** · ⭐ altın getirilince A1 **0,9344 > 0,9087** · uydurulmuş atıf **0/89** · `outputs/eval/s3-harness-acik/` · research_log **#51** |
+| **4** harness AÇIK ölçüm | ✅ **ÖLÇÜLDÜ 2026-08-04** ⚠️ sayıları 08-05'te düzeltildi | kütle **%71,6 → ~~%58,7~~ %56,9** · ⭐ altın getirilince A1 **~~0,9344~~ 0,9230 > 0,9087** · uydurulmuş atıf **0/89** · `outputs/eval/s3-harness-acik/` · research_log **#51** + düzeltme **#54** |
+| **S1** `k` süpürmesi (B3) | ✅ **KAPANDI 2026-08-05 — `k=10` KABUL** | kütle **%56,9 → %59,5** (+2,6) · `recall@10` **0,875** (70/80) · ⚠️ bedeli ölçüldü: altın getirilende A1 **0,9230 → 0,8426** (dikkat dağılması) · B1 sınıfı **14 → 7**, aşırı-red **14 → 15** (değişmedi) · 🚨 **tuzak 2.16** bulundu ve 8 belge düzeltildi · hakem **$0,0403** · `outputs/eval/s3-harness-k10/` · research_log **#54** |
+| **S3** ayırt-edicilik etiketi (B2) | ✅ **KAPANDI 2026-08-05** | kör hakem, istem ön-kayıtlı · **62 ayırt edici / 18 belirsiz (%22,5)** · `recall@5` **0,8226 ↔ 0,5000** (tuzak 7.4 doğrulandı) · ⭐⭐ **ters çekinme kalibrasyonu** bulundu (belirsizde %5,6, ayırt edicide %30,6 çekinme) · hakem **$0,0069** · `outputs/eval/s3-ayirt-edicilik/` · research_log **#53** |
+| **S2** yürürlük alanı (B7) | 🟡 **KEŞİF BİTTİ, kodlama SIRADA** | aday kural ölçüldü (naif 3.652 ↔ doğru **2.496**, **1.156** yanlış pozitif elenir; verify 3/3 ✅) · 🚨 **korpus anahtarlarının %22,7'si yineleniyor** → S2 büyüdü (3 iş) · S1 etkilenmedi (temiz altküme `recall@5` 0,7467 ↔ 0,7500) · research_log **#52** |
 
 ## 📌 Sprint 3'ün açık borçları — karar insanda
 
@@ -494,13 +616,15 @@ Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'�
 
 | # | borç | neden önemli |
 | :--- | :--- | :--- |
-| **B1** ⭐ | **"Gerçek ama soruya uymayan madde"** — atıf doğrulayıcısı bunu yakalayamıyor. 14/80 soruda model altın gelmeden başka bir gerçek maddeden cevapladı; atıf doğrulanıyor, kapıdan geçiyor. | Ürün vaadi *"denetlenebilir"*. Bugün fabrikasyona karşı denetlenebilir, **isabetsizliğe karşı değil**. A1 düşüşünün tamamı burada. |
-| **B2** | **Ayırt-edicilik etiketi koşulmadı** (K4 kararı, ADR-0054). Sayılar hâlâ tek küme üzerinde. | `recall@5` 0,750 bu kümenin tavanı, retriever'ın değil (tuzak 7.4). Etiketsiz her harness sayısı bu yanlılığı taşıyor. |
-| **B3** | **k süpürülmedi** — k=5 seçildi. S3a eğrisi `@10` 0,875 · `@20` 0,925 diyor. | Erişim darboğaz (Adım 4'ün 2. okuması). k büyütmek en ucuz kazanç adayı; ama bağlamı uzatıyor ve 900 karakter kırpmasıyla etkileşiyor. |
+| **B1** ⭐ | **"Gerçek ama soruya uymayan madde"** — atıf doğrulayıcısı bunu yakalayamıyor. ~~14/80~~ → **7/80** (k=10 ile yarıya indi). | Ürün vaadi *"denetlenebilir"*. Bugün fabrikasyona karşı denetlenebilir, **isabetsizliğe karşı değil**. ⚠️ **2026-08-05 güncelleme:** A1 düşüşünün *tamamı* burada **değil** — **aşırı-red** (altın bağlamdayken çekinme, **15/80**) k'dan bağımsız ve coverage kaybının daha büyük yarısı orada. S4 iki eksene birden bakmalı. |
+| ~~**B2**~~ ✅ | **KAPANDI 2026-08-05** — ayırt-edicilik etiketi koşuldu (kör hakem, ön-kayıtlı istem). **62/18**. | Tuzak 7.4 **sayıyla** doğrulandı: `recall@5` **0,8226 ↔ 0,5000** (32,3 puan). Bundan sonra hiçbir harness sayısı bu ayrım yapılmadan raporlanmaz. research_log **#53** |
+| ~~**B3**~~ ✅ | **KAPANDI 2026-08-05** — `k=10` süpürüldü ve **kabul edildi** (kütle %56,9 → **%59,5**). | Kazanç tahminin (~%65) **altında**; bedeli ölçüldü: dikkat dağılması A1'i **8 puan** düşürüyor. `k=20` için gerekçe **zayıf**. research_log **#54** |
 | **B4** | **`τ_a` merge'de seyreliyor** (0,987 → 0,877). Adım 0 bunun norm *kapsamı* olmadığını gösterdi. | Çözüm merge parametresinde değil, muhtemelen `τ_a`'nın **eğitim genliğinde** (82 adım @1e-5 kısa, ‖τ_a‖ = 1,18). Yani bir S4 eğitim işi. |
 | **B5** | **K2'nin bedeli ölçülmedi**: *"getirildi ama cevap 900 karakter kırpmasının ötesindeydi"* vakası. İz kaydediliyor ama sayılmadı. | ADR-0054 bunu ayrı vaka sınıfı olarak saymayı şart koşmuştu. |
 | **B6** | **Canlı `bedesten` katmanı** eklenmedi (K3: bilinçli erteleme). | Güncellik iddiası ayakta ama **kanıtlanmış değil** — S3a sözleşmenin çalıştığını doğruladı, ürün onu henüz kullanmıyor. |
 | **B7** 🚨 | **MÜLGA maddeye yapılan atıf doğrulamayı ve katı kapıyı GEÇİYOR.** Ölçüldü 2026-08-04: `"İŞ KANUNU Madde 15"` → `DOGRULANDI` (kanun_no **1475**) → kapı ✅. Oysa korpustaki metni: *"110- (Mülga: 22/5/2003/4857/120 md.)"*. | **Ürün-güvenliği açığı, akademik değil.** Vaadimiz *"denetlenebilir"*; burada sistem **yürürlükten kalkmış** bir hükme yapılan atıfı **doğrulanmış** damgalıyor. Korpusta yürürlük alanı **yok** — 4 alan var (`kanun_adi · kanun_no · madde_no · text`) ve ilga bilgisi yalnız **serbest metnin içinde**. Aynı ad iki kanuna ait olabildiği için (`İŞ KANUNU` = 4857 yürürlükte **ve** 1475 mülga) doğrulayıcı ayırt edemiyor. |
+
+| **B8** | **Katı kapı, tek karakterlik yazım hatasına takılıyor.** Ölçüldü 2026-08-05 (k=10): model bağlamdaki `FİKİR VE SANAT ESERLERİ KANUNU`'nu `…ESELERİ…` diye kopyaladı (bir harf düştü); madde no'ları **doğru**, kanun bağlamda **var** → `KANUN_YOK` → tüm cevap **reddedildi**. Ayrıştırıcı ayrıca adın başını düşürüyor (`Fikir ve` atılıp `Sanat Eseleri Kanunu`). | Doğrulayıcının **ilk gerçek yakalayışı** ve o bir fabrikasyon değil **transkripsiyon hatası**. ADR-0038 kalibrasyonu resmî adın *kısa hâlini* çözmüştü, **yazım hatasını** çözmüyor. Katı kapıda her yanlış negatif **doğrudan coverage kaybı**. ⚠️ Tolerans (düzenleme uzaklığı) kapıyı **gevşetir** — ölçülmeden karar verilmez. |
 
 ### 🚨 B7 hakkında — bu, graph-RAG'in ölçülmüş gerekçesi
 

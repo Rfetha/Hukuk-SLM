@@ -51,9 +51,15 @@ Ayrıntı, kapılar ve değişmezler [`sprint3.md`](sprint3.md)'de.
 - [x] **Adım 1** — retriever: `scripts/retriever.py` + indeks (40.496 madde) · `recall@10` **0,8750**
 - [x] **Adım 2** — atıf doğrulayıcı: `scripts/atif_dogrula.py`, deterministik, **hakemsiz**
 - [x] **Adım 3** — red kapısı: `scripts/red_kapisi.py`, ADR-0038 katı + 2 ablasyon
-- [x] **Adım 4** — ⭐ **harness AÇIK ölçüm KOŞULDU** → kütle **%71,6 → %58,7**,
-      ⭐ altın getirilince A1 **0,934 > 0,909**, uydurulmuş atıf **0/89** → research_log #51
-      🛑 **insana sunuldu; sıradaki kararlar için [`sprint3.md`](sprint3.md) açık borçlar (B1-B6)**
+- [x] **Adım 4** — ⭐ **harness AÇIK ölçüm KOŞULDU** → kütle **%71,6 → ~~%58,7~~ %56,9**,
+      ⭐ altın getirilince A1 **~~0,934~~ 0,923 > 0,909**, uydurulmuş atıf **0/89** → research_log #51
+- [x] **S1** — `k` süpürmesi (B3): **`k=10` KABUL**, kütle **%56,9 → %59,5**; bedeli ölçüldü
+      (altın getirilende A1 0,923 → 0,843) · 🚨 **tuzak 2.16** bulundu, 8 belge düzeltildi → #54
+- [x] **S3** — ayırt-edicilik etiketi (B2): **62/18**, `recall@5` **0,8226 ↔ 0,5000**;
+      ⭐⭐ ters çekinme kalibrasyonu bulundu → #53
+- [x] **S2 keşif** — korpusun **%22,7'si yinelenen anahtar**; mülga aday kuralı doğrulandı → #52
+- [ ] **S2 kodlama** — `mulga` alanı + alt-madde soneki + tablo-parçası eleme, sonra **indeks yeniden kurulur**
+- [ ] **S4** — isabet denetimi tasarımı (B1 + aşırı-red), ≥2 alternatif + ADR
 
 ---
 
