@@ -63,13 +63,16 @@ mode_args() {
     # HARNESS AÇIK (sprint3 Adım 4): bağlamı distractor kurgusu değil RETRIEVER seçer.
     # m1 ile tek farkı bu; kırpma, sistem promptu ve üretim rejimi AYNI kalır.
     h1)  echo "--data $DEV/core_hard.jsonl --harness-indeks $HARNESS_INDEKS --harness-k ${HARNESS_K:-5} --n ${N_OVERRIDE:-80}" ;;
+    # HARNESS AÇIK + ALTIN ABLASYONU (ADR-0056 Karar 1) = m2b'nin harness-AÇIK karşılığı.
+    # h1 ile tek farkı budur; k, kırpma, istem ve rejim AYNI kalır.
+    h2b) echo "--data $DEV/core_hard.jsonl --harness-indeks $HARNESS_INDEKS --harness-k ${HARNESS_K:-10} --harness-no-gold --n ${N_OVERRIDE:-80}" ;;
     *)   return 1 ;;
   esac
 }
 
 # 🚨 Veri kapısı: h1 istendi ama indeks verilmediyse, model yüklenmeden dur (tuzak 6.2).
 case " $MODES " in
-  *" h1 "*) [ -n "${HARNESS_INDEKS:-}" ] || die "h1 modu HARNESS_INDEKS ister (ör. data/index/mevzuat_bge_m3)";;
+  *" h1 "*|*" h2b "*) [ -n "${HARNESS_INDEKS:-}" ] || die "h1/h2b modu HARNESS_INDEKS ister (ör. data/index/mevzuat_bge_m3_s2)";;
 esac
 
 echo "### künye"

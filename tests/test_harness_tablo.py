@@ -59,3 +59,35 @@ def test_k2_bedeli_dayanak_cikarilamazsa_suclamaz():
     kayit = _kayit(f"[KAYNAK 1]\nİŞ KANUNU Madde 21\n{tam[:900]}")
     kayit["referans"] = "Tamamen alakasiz bambaska sozcukler burada."
     assert k2_bedeli(kayit, KORPUS_IDX) == "KIRPILDI"
+
+
+from gen_eval_grounded import altin_ablasyonu  # noqa: E402
+
+
+def test_altin_ablasyonu_altini_dusurur_ve_k_korur():
+    parcalar = [
+        {"kanun_no": "9999", "madde_no": "Madde 1", "sira": 0},
+        {"kanun_no": "4857", "madde_no": "Madde 21", "sira": 1},   # ← altın
+        {"kanun_no": "8888", "madde_no": "Madde 3", "sira": 2},
+    ]
+    kalan = altin_ablasyonu(parcalar, ("4857", "NORMAL", "21"), k=2)
+    assert len(kalan) == 2
+    assert all(p["kanun_no"] != "4857" for p in kalan)
+
+
+def test_altin_ablasyonu_altin_yoksa_ilk_k_doner():
+    parcalar = [{"kanun_no": str(i), "madde_no": "Madde 1", "sira": i} for i in range(3)]
+    kalan = altin_ablasyonu(parcalar, ("4857", "NORMAL", "21"), k=2)
+    assert len(kalan) == 2
+    assert [p["sira"] for p in kalan] == [0, 1]
+
+
+def test_altin_ablasyonu_sirayi_yeniden_numaralar():
+    """`sira` alanı 0'dan başlamalı — yoksa recall hesabı kayar (tuzak 7.5 ikizi)."""
+    parcalar = [
+        {"kanun_no": "4857", "madde_no": "Madde 21", "sira": 0},   # ← altın, ilk sırada
+        {"kanun_no": "9999", "madde_no": "Madde 1", "sira": 1},
+        {"kanun_no": "8888", "madde_no": "Madde 3", "sira": 2},
+    ]
+    kalan = altin_ablasyonu(parcalar, ("4857", "NORMAL", "21"), k=2)
+    assert [p["sira"] for p in kalan] == [0, 1]
