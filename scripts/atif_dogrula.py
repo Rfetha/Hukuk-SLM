@@ -32,6 +32,10 @@ DOGRULANDI = "DOGRULANDI"
 MADDE_YOK = "MADDE_YOK"
 KANUN_YOK = "KANUN_YOK"
 AYRISTIRILAMADI = "AYRISTIRILAMADI"
+# Madde korpusta VAR ama yürürlükte DEĞİL. DOGRULANDI'dan ayrı bir hüküm olması şart:
+# ölçüldü, "İŞ KANUNU Madde 15" (1475/15, 2003'te ilga) doğrulamayı ve katı kapıyı
+# geçiyordu — vatandaşa mülga hükmün cevabı veriliyordu (sprint3 borç B7).
+MULGA = "MULGA"
 
 # "İŞ KANUNU Madde 21" · "HUKUK MUHAKEMELERİ KANUNU MADDE 436'nun" ·
 # "(CEZA MUHAKEMESİ KANUNU, Madde 161)" · "KAT MÜLKİYETİ KANUNU Geçici Madde 1" ·
@@ -130,8 +134,12 @@ def _ad_adaylari(kanun: str, adlar: dict) -> set:
     return set()
 
 
-def _hukum(atif: Atif, adlar: dict, anahtarlar: set) -> Hukum:
-    """Tek atıf → hüküm. Doğrulama mantığının TEK kaynağı."""
+def _hukum(atif: Atif, adlar: dict, indeks: dict) -> Hukum:
+    """Tek atıf → hüküm. Doğrulama mantığının TEK kaynağı.
+
+    `indeks`: madde anahtarı → o anahtarı taşıyan korpus satırları (`korpus_indeksi`).
+    Set değil sözlük olması, maddenin VARLIĞI ile YÜRÜRLÜĞÜNÜ aynı aramada görmek içindir.
+    """
     if atif.tip == AYRISTIRILAMADI:
         return Hukum(atif, AYRISTIRILAMADI)
     adaylar = _ad_adaylari(atif.kanun, adlar)
@@ -139,15 +147,22 @@ def _hukum(atif: Atif, adlar: dict, anahtarlar: set) -> Hukum:
         return Hukum(atif, KANUN_YOK)
     # Ad çok anlamlıysa maddeyi TAŞIYAN kanun doğrular; hangisi olduğu hükme yazılır.
     for kn in sorted(adaylar):
-        if (kn, atif.tip, atif.madde) in anahtarlar:
-            return Hukum(atif, DOGRULANDI, kn)
+        satirlar = indeks.get((kn, atif.tip, atif.madde))
+        if satirlar:
+            # Why `all`: anahtar birden çok satıra düşebiliyor (korpusta madde kimliği
+            # yinelenebiliyor — research_log #52). Yürürlükte TEK bir satır bile varsa
+            # atıf mülga sayılmaz; aksi hâlde geçerli atıfları yanlışlıkla reddederiz.
+            hukum = MULGA if all(r.get("mulga") for r in satirlar) else DOGRULANDI
+            return Hukum(atif, hukum, kn)
     return Hukum(atif, MADDE_YOK, sorted(adaylar)[0])
 
 
 def dogrula(atif: Atif, kayitlar) -> Hukum:
     """Atfı korpus kayıt listesine karşı doğrula (tek atışlık; toplu iş için `Dogrulayici`)."""
-    return _hukum(atif, _kanun_adlari(kayitlar),
-                  {madde_anahtari(r["kanun_no"], r["madde_no"]) for r in kayitlar})
+    indeks: dict = {}
+    for r in kayitlar:
+        indeks.setdefault(madde_anahtari(r["kanun_no"], r["madde_no"]), []).append(r)
+    return _hukum(atif, _kanun_adlari(kayitlar), indeks)
 
 
 class Dogrulayici:
@@ -156,10 +171,10 @@ class Dogrulayici:
     def __init__(self, korpus_yolu: str = KORPUS):
         self._kayitlar = [json.loads(l) for l in open(korpus_yolu, encoding="utf-8") if l.strip()]
         self._adlar = _kanun_adlari(self._kayitlar)
-        self._anahtarlar = set(korpus_indeksi(korpus_yolu))
+        self._indeks = korpus_indeksi(korpus_yolu)
 
     def cevabi_dogrula(self, cevap: str) -> list[Hukum]:
-        return [_hukum(a, self._adlar, self._anahtarlar) for a in atiflari_ayikla(cevap)]
+        return [_hukum(a, self._adlar, self._indeks) for a in atiflari_ayikla(cevap)]
 
 
 def main():
@@ -171,7 +186,7 @@ def main():
 
     d = Dogrulayici(a.korpus)
     kayitlar = [json.loads(l) for l in open(a.details, encoding="utf-8") if l.strip()]
-    sayac = {DOGRULANDI: 0, MADDE_YOK: 0, KANUN_YOK: 0, AYRISTIRILAMADI: 0}
+    sayac = {DOGRULANDI: 0, MULGA: 0, MADDE_YOK: 0, KANUN_YOK: 0, AYRISTIRILAMADI: 0}
     atifsiz = 0
     for r in kayitlar:
         h = d.cevabi_dogrula(r.get(a.alan, ""))
