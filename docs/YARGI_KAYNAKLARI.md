@@ -1,3 +1,16 @@
+> ## 📌 DURUM 2026-08-05 — harita geçerli, **hiçbiri çekilmedi**
+>
+> Bu harita 2026-05-29'da çıkarıldı ve **hâlâ doğru**; ama Faz 2'de bugüne kadar kurulan
+> şey **mevzuat** tarafı: hibrit retriever + 40.496 maddelik indeks
+> ([`sprint3-part1.md`](../sprint3-part1.md)). **İçtihat tarafına hiç dokunulmadı.**
+>
+> ⚠️ Aynı `bedesten` backend'i içtihadı da veriyor ([`BEDESTEN_API.md`](BEDESTEN_API.md)) ve
+> sözleşmesi 2026-08-04'te doğrulandı — yani teknik yol açık, **iş yapılmadı**.
+>
+> İçtihadın grafa girip girmeyeceği hâlâ açık soru
+> ([`open_questions.md` §13.6](open_questions.md)); graf'ın ölçülmüş gerekçesi ve
+> **ölçülmüş riski** [`ROADMAP.md` §5.2](../ROADMAP.md)'de.
+
 # Yargı/İçtihat Veri Kaynakları — Reverse-Engineered Harita (Faz 2)
 
 > `saidsurucu/yargi-mcp` (MIT) reposu kaynak düzeyinde söküldü (2026-05-29). Her kurumun **gerçek veri kaynağı** çıkarıldı.
