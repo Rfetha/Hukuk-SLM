@@ -11,7 +11,7 @@ ADR-0028 (tek boyut noktası, *"yerelde $0"* gerekçesi) · ADR-0026 (parametre 
 
 ## Bağlam
 
-Faz B'nin kapısı bir hız sorunuydu. Devir notu (`docs/record/sprint1/NEXT-SESSION.md` §2)
+Faz B'nin kapısı bir hız sorunuydu. Devir notu (`docs/_arsiv/devir-notu-2026-07-29.md` §2)
 `τ_grounding` eğitimini A100-40GB'de **~36 s/it** ölçmüş, tam koşuyu ~11 saat / ~$25 diye
 projekte etmiş ve kabul edilemez bulmuştu. Aynı not kök nedeni şöyle koymuştu:
 

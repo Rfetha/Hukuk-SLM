@@ -3,7 +3,8 @@
 - **Tarih:** 2026-08-03
 - **Statü:** onaylandı (insan)
 - **Kapsam:** `HakHukuk-4B-v0.1`'den vatandaş platformuna giden sprint zinciri
-- **Yürürlükteki özet:** [`../../ROADMAP.md`](../../ROADMAP.md) · aktif icra: [`../../sprint3-part1.md`](../../sprint3-part1.md)
+- **Yürürlükteki özet:** [`../../ROADMAP.md`](../../ROADMAP.md)
+- **Zincirin durumu (2026-08-05):** S3a ✅ · S3 harness ✅ ([`sprint3-part1.md`](../../sprint3-part1.md), kapandı — ürün sayısı **%61,3**) · **S4 model** ▶ sırada
 
 ---
 

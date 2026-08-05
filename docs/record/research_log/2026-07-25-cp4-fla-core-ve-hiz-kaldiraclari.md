@@ -2,7 +2,7 @@
 
 **Tarih:** 2026-07-25 · **Faz:** Sprint 1 / Faz B / CP4 (smoke)
 **Karar:** [ADR-0033](../../adr/0033-egitim-hizi-fla-core-checkpointing-batch.md)
-**Önceki:** [#39](2026-07-24-cp0-base-dogrulama-kapisi.md) (Faz A) · devir notu `docs/record/sprint1/NEXT-SESSION.md`
+**Önceki:** [#39](2026-07-24-cp0-base-dogrulama-kapisi.md) (Faz A) · devir notu [`docs/_arsiv/devir-notu-2026-07-29.md`](../../_arsiv/devir-notu-2026-07-29.md) *(2026-08-05'te arşive taşındı — plan belgesiydi, kayıt değil)*
 **Paper eşlemesi:** *Methodology* (eğitim konfigürasyonu + reçetenin neden bozulmadığı) ·
 **negatif/şaşırtıcı bulgu** (yanlış teşhis + sessiz-bozulmanın yeni bir biçimi) ·
 *Reproducibility* (ölçülen s/it ve maliyet)

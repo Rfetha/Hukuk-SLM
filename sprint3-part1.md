@@ -1,8 +1,11 @@
 # Sprint 3 **PART 1** — HARNESS: modeli ürüne çevirmek
 
-> 📁 **Bu belge KAPANDI ve KAYITTIR.** Devamı: [`sprint3-part2.md`](sprint3-part2.md) —
-> Part 1'in **ölçerek açtığı** borçları kapatan tur. Buradaki hiçbir satır artık koşulmaz;
-> sayılar ve gerekçeler **kaynak** olarak durur.
+> 📁 **Bu belge KAPANDI ve KAYITTIR.** Buradaki hiçbir satır artık koşulmaz; sayılar ve
+> gerekçeler **kaynak** olarak durur.
+>
+> **Devamı (Part 2)** Part 1'in *ölçerek açtığı* borçları kapatır. Kararları verildi ve
+> [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)'da; **uygulama
+> planı** `docs/plans/` altına yazılır.
 >
 > # ✅ SPRINT 3 PART 1 KAPANDI — 2026-08-05
 >
@@ -81,7 +84,8 @@
 # ▶ SIRADAKİ — ⛔ **BU BELGEDE KOŞACAK İŞ KALMADI**
 
 > **Part 1'in dört işi de kapandı.** Bu belge artık **kayıt**; canlı iş yok.
-> Canlı icra belgesi: **[`sprint3-part2.md`](sprint3-part2.md)** (`/goal sprint3-part2.md`).
+> Part 2'nin kararları: **[ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)** ·
+> uygulama planı `docs/plans/` altına yazılacak.
 >
 > Part 1'in ölçerek bıraktığı borçlar ve sıraları aşağıdaki
 > [post-sprint 3 sırasında](#post-sprint-3-sırası) duruyor — **ölçüm bağlamlarıyla birlikte**,

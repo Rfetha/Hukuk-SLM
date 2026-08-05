@@ -21,7 +21,7 @@
 istatistiksel testin yerini tutmaz** — ADR-0037 bunu limitations'a yazıyor.
 
 ⚠️ Analiz için **varyans tahmini** gerekiyor; o da CP6'nın ilk gerçek ölçümünden gelecek.
-**Ne zaman:** CP6 sonrası, Sprint 3 öncesi.
+**Ne zaman:** ⏰ **geçti** — Sprint 3 Part 1 bu soru cevaplanmadan koşuldu. Güç analizi hâlâ yok; elde yalnız hakem gürültü tabanı var (aşağı bak).
 
 ⭐ **2026-08-05 — varyansın bir bileşeni artık ÖLÇÜLDÜ ve bu soruyu daraltıyor.**
 Aynı üretimin (80/80 cevap, 80/80 bağlam **bit-birebir**) iki kez puanlanması
@@ -35,7 +35,7 @@ yorumlanmaz** — soru kapanmadı ama artık bir **tabanı** var.
 ### §13.5 — Hakem panelinin üçüncü ailesi hangisi? 🔴
 
 ADR-0032 paneli **OpenAI · Anthropic · Google** olarak belirledi ve aile-dışlama haritasını çizdi.
-Kalan iş: **sürüm pinleme + harcama planı**. **Ne zaman:** Sprint 3.
+Kalan iş: **sürüm pinleme + harcama planı**. **Ne zaman:** ⏰ **geçti** — Sprint 3 Part 1 tek hakemle (`gpt-4o-mini`) koşuldu, panel kurulmadı. ⚠️ Bu, o turun bütün yargı-eksenli sayılarına (A1, Rej) **tek aile** damgası vurur; κ raporlanamadı.
 
 ---
 
@@ -49,11 +49,21 @@ Eğitim kolu olarak **değil**, yapısal graf düğümü olarak — içtihat→m
 taşıyor — Bedesten'den ham çekip kendimiz gömmeye göre kısayol olabilir. ⚠️ Ama **chunk
 uyumsuzluğu** hâlâ geçerli: hazır gömüler 3000 karakterde parçalanmış, bizim protokol 900
 (ADR-0011 değişmezi) → değeri *"hazır indeks"* değil, **veri kaynağı**.
-**Ne zaman:** Sprint 4.
+**Ne zaman:** erişim/doğruluk işleri bittikten sonra — graf'ın ölçülmüş gerekçesi ve sınırları [`ROADMAP.md` §5.2](../ROADMAP.md)'de.
 
 ---
 
-### §13.9 — `τ_g` reçetesi fazla sert miydi? ⏸️ *ölçüm bekliyor* — **CP0-b**
+### §13.9 — `τ_g` reçetesi fazla sert miydi? 🔽 **YARISI CEVAPLANDI** — **CP0-b**
+
+> ⭐ **Düşünme hipotezi ÇÜRÜDÜ (2026-07-29, [#42](record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)).**
+> `τ_g` `--thinking on`'da **kendi başına sonlanıyor** (35/36, medyan **452 token**) — üstelik
+> **çıplak base sonlanamıyor**. Yani ince-ayar muhakemeyi öldürmedi, **stabilize etti**.
+> Reçetenin sertliği bu eksende **kanıtlanmadı**.
+>
+> 🔴 **Açık kalan yarı:** cevap doğruluğu %2,7 → %17,4 (**sahipsiz negatif**). Ortak sebep
+> varsayımı düştüğüne göre bu artık **kendi başına** bir soru — ve bugün numaralı borcu var:
+> aşırı-red **B10** ([`sprint3-part1.md`](../sprint3-part1.md)). ⚠️ İkisi **birleştirilmedi**:
+> aynı kökten geldikleri **makul ama ölçülmemiş**.
 
 CP6 iki hasar bıraktı ve **ikisi de aynı sebepten olabilir**: cevap doğruluğu %2.7 → %17.4
 (**sahipsiz negatif** — hiçbir kolun görevi değil) ve *(varsayım)* düşünme yeteneğinin bastırılması.
@@ -63,19 +73,6 @@ Ortak şüpheli **reçete**: 1.083 adım · lr 1e-4 · `all-linear` · r=16.
 **Karar kuralı:** bozulmuşsa `τ_g` v2 (yumuşak reçete + `build_replay_tr.py` replay karışımı)
 masaya gelir — **ama CP0-a'nın sonucu beklenir**: a YEŞİL ise `τ_g` zaten RS-FT kapsamında
 yeniden doğar, ayrı v2 israf olur. Gerekçe: [ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) m.3.
-
----
-
-### §13.10 — RS-FT / düşünce modu tez kapsamına girecek mi? ⏸️ *ölçüm bekliyor* — **CP0-a**
-
-**Karar kuralı ön-kayıtlı ve yazılı** ([ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md));
-açık olan yalnız **sonuç**. 🟢 YEŞİL → RS-FT kapsama girer, ADR-0030 m.2 geri alınır, ADR-0035
-yeniden açılır, Sprint 1'in üç öznesi yeniden koşulur (~$0.5), takvim ~3-4 hafta uzar ·
-🟡 → thinking rapor edilen eksen olur · 🔴 → ADR-0030 m.2 kanıtla teyit, RS-FT future-work.
-
-⚠️ **YEŞİL sadece iyi haber değil:** base *hiç eğitilmeden* `τ_a`'nın işinin çoğunu yapıyorsa,
-dış iddiada üçüncü bir açıklama belirir (*ince-ayar mı, harness mı, **düşünme mi***) ve raporun/makalenin
-çerçevesi daralır. **Ne zaman:** Sprint 2'nin 1. günü.
 
 ---
 
@@ -215,6 +212,7 @@ artık **ham TIES ana yol**, norm-dengeli ablasyon. Test ikisini de doğrulamal�
 
 | soru | karar | kalıcı yer |
 | :--- | :--- | :--- |
+| **§13.10** RS-FT / düşünce modu | 🟡 **SARI — CP0-a koşuldu, RS-FT kapsama GİRMEDİ.** Ön-kayıtlı kural aynen uygulandı: M2 eşiği filtresiz de geçiliyor (0,786 ≥ 0,78) ama muhafız düştü → ADR-0035 **açılmadı**, ADR-0030 m.2 **geri alınmadı**. ⚠️ Ön okuma *"yanlış gerekçeyle doğru çıktı"* — 🟡 tahmin edilmişti ama **M2 bacağının** düşeceği beklenmiyordu; bu da kayda geçti. ⭐ Yan bulgu, kalıcı rejim değişikliği doğurdu: base `--thinking on`'da **hiç sonlanmıyor** → **bütçeli zorla kapatma** (1024+512) artık seed ve clip ile aynı statüde bir **değişmez** | [ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) · [ADR-0043](adr/0043-dusunce-modu-acik-butceli-kapatma.md) · [#42](record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md) · [#43](record/research_log/2026-07-29-cp09-butceli-dusunce-cipalari.md) |
 | **§13.1** TR gömme modeli | ✅ **ÖLÇÜMLE SEÇİLDİ 2026-08-04** — `BAAI/bge-m3` **+ BM25**, RRF hibriti. Tek başına hiçbiri değil: `recall@10` BM25 **0,625** · e5-base **0,700** · bge-m3 **0,800** · **hibrit 0,875**. ⚠️ Hazır gömü seti **kullanılmadı** (chunk uyumsuzluğu); model alınıp korpus kendi 900-karakter protokolümüzle gömüldü | [ADR-0054](adr/0054-harness-tasarim-kararlari-k2-k5.md) K1 · [#49](record/research_log/2026-08-04-s3a-on-prob.md) · `scripts/retriever.py` |
 | **#8** tekil hücreler | aynı hat + `τg` düz kontrol → **4 hücre** | [ADR-0036](adr/0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md) Ek · `TASARIM.md` §4.3 |
 | **#9** iç iddianın karar kuralı | **Kapı 5** — `min` bileşik, simetrik %90, iki tabanı da geç | [ADR-0037](adr/0037-ic-iddia-karar-kurali-kapi-5.md) · `TASARIM.md` §7 |

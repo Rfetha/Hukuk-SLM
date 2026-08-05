@@ -1,8 +1,13 @@
 # TODO — HakHukuk
 
-> **Harita.** *Ne* yapılacağını burası, *hangi sırayla ve neye dikkat ederek*
-> yapılacağını aktif icra belgesi söyler: **[`sprint3-part2.md`](sprint3-part2.md)** (`/goal sprint3-part2.md`).
-> Part 1 kapandı ve **kayıt** oldu: [`sprint3-part1.md`](sprint3-part1.md).
+> **Harita.** *Ne* yapılacağını burası tutar. Part 1 kapandı ve **kayıt** oldu:
+> [`sprint3-part1.md`](sprint3-part1.md).
+>
+> **▶ Sıradaki tur (Part 2) — kararları verildi, planı henüz yazılmadı.**
+> Kararlar: [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
+> uygulama planı `docs/plans/` altına yazılacak.
+> Omurga: **ölçüm boşluklarını kapat** (GPU $0, hakem ~$0,15) — `m2b` harness-AÇIK ·
+> B5 post-hoc sayımı · B8 tolerans eğrisi · B-i deneyi.
 >
 > Gerekçeler ve ölçülmüş açıklar: **[`ROADMAP.md`](ROADMAP.md)**
 > Her koşudan önce: ⭐ [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md)
@@ -79,7 +84,7 @@ Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](sprint3-part1.md)'de.
 - **2 ölçüm boşluğu:** `m2b` harness AÇIK **hiç koşulmadı** · rakip harness AÇIK **hiç ölçülmedi**
 
 Sıra ve ölçüm bağlamları: [`sprint3-part1.md`](sprint3-part1.md#post-sprint-3-sırası) ·
-karar ve ön-kayıtlı kabuller: [`sprint3-part2.md`](sprint3-part2.md)
+Part 2'nin kararları ve ön-kayıtlı tahminleri: [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)
 
 ---
 

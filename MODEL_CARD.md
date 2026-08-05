@@ -19,9 +19,10 @@ independently from the raw base and merging them as task vectors.
 > decisions about a real legal matter. Consult a qualified attorney.
 >
 > **Legislation changes; model weights do not.** This model's knowledge is frozen
-> at its training data. It has **no retrieval layer yet** (see [Roadmap](ROADMAP.md))
-> — it cannot tell you what the law says *today*. Treat every article number it
-> produces as a claim to verify against [mevzuat.gov.tr](https://www.mevzuat.gov.tr).
+> at its training data. A retrieval layer **exists and is measured** (see the
+> harness-ON section below), but it is **not packaged into the serving path** — the
+> quick-start below still expects you to supply the statute text. Treat every article
+> number it produces as a claim to verify against [mevzuat.gov.tr](https://www.mevzuat.gov.tr).
 
 ---
 
@@ -145,9 +146,10 @@ RAM     ~8 GB        the harness (embedder, index) runs on CPU by design
 disk    ~5 GB        model + corpus + index
 ```
 
-⚠️ These are **calculated, not measured**. A measured peak will replace them when the harness
-lands. The design rule behind them: **the harness never enters the GPU** — that is what makes
-the difference between fitting on a laptop and not.
+⚠️ These are **calculated, not measured** — still true. The harness has since landed and the
+design rule held in practice: it runs entirely on CPU (embedder + 40,496-article index, 759 ms
+per query) and **never enters the GPU**. That is what makes the difference between fitting on
+a laptop and not. A measured peak is still owed.
 
 ## Method
 
@@ -174,10 +176,15 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
 
 ## Known limitations
 
-1. **No currency.** Legislation is frozen in the weights. No retrieval layer yet.
-2. **M2b is our weakest axis (0.877).** When given only distractor articles, the
-   model still fabricates ~12% of the time. A rejection gate in the harness is the
-   planned fix — deterministic code, not more training.
+1. **No currency in the shipped path.** Legislation is frozen in the weights. The
+   retrieval layer is built and measured but not wired into serving.
+2. **M2b is our weakest axis (0.877) and the planned fix is now in doubt.** When
+   given only distractor articles, the model still answers ~12% of the time. The
+   rejection gate was built as the fix — but 🚨 **it has never been run on m2b**, and
+   the mechanism it depends on is measurably empty in the harness-ON regime
+   (fabricated article numbers **0/118**: the model copies labels from its context,
+   so its citations verify and the gate passes them). Whether deterministic code can
+   close M2b at all is an **open measurement**, not a plan.
 3. **Reasoning traces are in English.** Measured 8/8. For a citizen-facing product
    that promises readable reasoning, this is a real gap.
 4. **`τ_a` learned a template.** Its typical abstention is a fixed sentence
@@ -192,7 +199,7 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
 ## Reproducibility
 
 Everything is in this repository: the full chronological research log (including
-the negative results and the two invalidated runs), 52 ADRs, run manifests with
+the negative results and the two invalidated runs), 55 ADRs, run manifests with
 seeds and hashes, and the evaluation harness.
 
 ```
