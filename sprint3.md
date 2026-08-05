@@ -234,6 +234,30 @@ sinyali · ikinci geçiş yeniden-sıralama.)*
 - Yeni aday eksen: **soru-belirginliği sinyali** (S3'ün etiketi ürüne taşınır — belirsiz
   soruda cevap yerine **açıklama iste**).
 
+#### ✅ S4 KAPANDI 2026-08-05 — [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md) yazıldı, **kod açılmadı**
+
+**Karar: isabet denetimi cevap-SONRASI örtüşme ekseninde değil, cevap-ÖNCESİ
+KAYNAK-YETERLİLİĞİ ekseninde kurulur.**
+
+Gerekçe, S1+S3'ün birlikte ölçtüğü şeyden çıktı: **B1 ile aşırı-red aynı madalyonun iki
+yüzü** — biri yetersiz kaynakta cevaplıyor (7/80), diğeri yeterli kaynakta çekiniyor
+(15/80). Tek bir eksik sinyal iki hatayı birden üretiyor.
+
+❌ **Reddedilen (A) — cevap↔kaynak örtüşme denetimi:** B1'in **çekirdek vakasında kör**.
+B1'de model *başka bir gerçek maddeden* cevaplıyor ve cevabı gerçekten o maddede temelli →
+örtüşme **yüksek** çıkar, denetim yakalaması gereken 7 vakaya tam not verir. Üstelik
+uydurma madde no **0/120 ölçüldü**; bu denetimin sınıfı zaten **boş**. *Ölçülmüş boş bir
+sınıfa deterministik denetim yazmak, S2'de sınıf A'yı elemekle aynı hata olurdu.*
+
+🔁 **Ayrı tutulan (C) — ikinci geçiş yeniden-sıralama:** isabet denetimi değil **erişim
+iyileştirmesi**; ama dikkat dağılmasının (0,9230 → 0,8426) ölçülmüş çaresi olabilir. Kendi
+ön-kayıtlı tahminiyle **ayrı** ölçülür — B ile aynı turda ölçülürse hangisinin kazandırdığı
+ayrılamaz.
+
+**İlk deney bedeli sıfır:** `gen_eval_grounded.py`'de `--sufficiency-preamble` bayrağı
+**zaten var**. Ön-kayıtlı kabul: *kütle artar **ve** çekinme sıralaması belirsiz alt kümede
+ayırt ediciyi geçer*; düşerse B-i elenir, çapraz-kodlayıcıya geçilir.
+
 ---
 
 > **Bu belge icra dokümanıdır ve `/goal sprint3.md` ile otonom koşulur.**
