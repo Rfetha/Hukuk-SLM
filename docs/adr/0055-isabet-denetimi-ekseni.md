@@ -91,8 +91,13 @@ KAYNAK-YETERLİLİĞİ ekseninde kurulur (B).** İlk deney bedeli sıfır olan *
 
 **Ön-kayıtlı kabul ölçütü — sayı görülmeden yazıldı:**
 
+> 🔁 **ÇIPASI TADİL EDİLDİ 2026-08-05 — [ADR-0056](0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) Karar 3.**
+> Aşağıdaki `%59,5` **S2-öncesi korpustan**; B-i **S2 korpusunda** koşacak. Güncel çıpa
+> **%61,3**. Eşiğin kendisi (*"kütle ARTAR"*), yön ölçütü ve red şıkkı **değişmedi** — ve
+> eşik böylece **zorlaştı**, gevşemedi. Özgün metin üzerine yazılmadı.
+
 ```
-BAŞARILI  : kütle ARTAR  (bugünkü resmî: k=10 · %59,5)
+BAŞARILI  : kütle ARTAR  (bugünkü resmî: k=10 · %59,5 → 🔁 GÜNCEL ÇIPA: %61,3)
             VE çekinme sıralaması DOĞRU yönde: belirsiz alt kümede çekinme
             oranı ≥ ayırt edici alt kümede  (bugün k=10'da hâlâ ters yönde değil
             ama fark kapanmadı — #53 Okuma 2-b)

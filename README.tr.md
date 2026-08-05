@@ -106,7 +106,7 @@ takılıp **geçersiz sayılan iki koşu** ve ölçüm çeliştiği için **sonr
 | | |
 | :--- | :--- |
 | [`docs/record/research_log/`](docs/record/research_log/) | ne olduğu, kronolojik, her sayıyla |
-| [`docs/adr/`](docs/adr/) | 52 karar kaydı — bağlam, seçenekler, **elenenler** |
+| [`docs/adr/`](docs/adr/) | 55 karar kaydı — bağlam, seçenekler, **elenenler** |
 | [`docs/record/kollar.md`](docs/record/kollar.md) | artefakt kaydı: her kol ve merge, künyesiyle |
 | [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) | **hata vermeden yanlış sayı üreten** kalıplar — her biri fiilen ısırdı |
 | [`outputs/eval/`](outputs/eval/) | ham eval çıktıları ve koşu künyeleri |

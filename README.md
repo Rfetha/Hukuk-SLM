@@ -108,7 +108,7 @@ decision that was **reversed after measurement contradicted it**.
 | | |
 | :--- | :--- |
 | [`docs/record/research_log/`](docs/record/research_log/) | what happened, chronologically, with every number |
-| [`docs/adr/`](docs/adr/) | 52 decision records — context, options, what was rejected |
+| [`docs/adr/`](docs/adr/) | 55 decision records — context, options, what was rejected |
 | [`docs/record/kollar.md`](docs/record/kollar.md) | artifact registry: every branch and merge, with its manifest |
 | [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) | the traps that produce a **wrong number without erroring** — each one actually bit us |
 | [`outputs/eval/`](outputs/eval/) | raw evaluation outputs and run manifests |

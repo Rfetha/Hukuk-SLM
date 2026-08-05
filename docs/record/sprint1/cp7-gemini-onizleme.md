@@ -175,7 +175,7 @@ aynı `--mode data`). Üç `faithfulness_macro` okuması:
 
 | koşu | faith_macro | cit_precision | total_claims | kaynak |
 | :--- | ---: | ---: | ---: | :--- |
-| 1 (ilk tam koşu) | **0.9870** | — | — | NEXT-SESSION.md §4 kaydı (özet dosyası üzerine yazıldı) |
+| 1 (ilk tam koşu) | **0.9870** | — | — | devir notu §4 kaydı (`docs/_arsiv/devir-notu-2026-07-29.md`) (özet dosyası üzerine yazıldı) |
 | 2 | **0.9738** | 1.0 | 310 | `gnd_m4_gem_summary.run2-BOZUK-DETAY.json` |
 | 3 (güncel) | **0.9736** | 1.0 | 306 | `gnd_m4_gem_summary.json` |
 
@@ -351,7 +351,7 @@ ADR-0029 *"`gen_providers` / `judge_providers` tek eleman olmalı"* diyor.
   kaydını **kullanmıyor**. `.env`'de `LLM_PROVIDER_ORDER` **tanımlı değil.**
   → **Gemini üretiminin hangi upstream sağlayıcıda koştuğu artefaktlarda YOK.**
   "Google AI Studio" bilgisi yalnız `scripts/run_gemini_benchmark.sh`'in yorum satırında ve
-  `NEXT-SESSION.md`'de duruyor — **koşu anında gözlenmiş ama kayda geçmemiş.**
+  devir notunda duruyor (`docs/_arsiv/devir-notu-2026-07-29.md`) — **koşu anında gözlenmiş ama kayda geçmemiş.**
 
 > **Sonuç:** bu önizlemede **sağlayıcı pinlemesi doğrulanamıyor.** Önizleme için kabul edilebilir
 > (fark coverage/M2'de ve 30 puan bandında; sağlayıcı kuantizasyonu bunu açıklamaz), **Sprint 5

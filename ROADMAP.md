@@ -264,7 +264,7 @@ dağılımını bilerek"* idi — yani bir **bilgi** gerekçesi. Bugün ona bir 
 eklendi: aşırı-red **16/80** ve harness'la kapanmıyor. Sıra aynı kaldı, ama artık *"sonra da
 yaparız"* değil **kütlenin büyük yarısı orada.**
 
-Ne koşulacağı ve neyin ön-kayıtlı kabulle sınanacağı: **[`sprint3-part2.md`](sprint3-part2.md)**.
+**Part 2'nin kararları verildi ve kayda geçti:** [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) — `m2b` harness-AÇIK protokolü (altın ablasyonu), iki-sayı raporlaması, ön-kayıtlı tahminler, ADR-0055'in çıpa düzeltmesi. **Uygulama planı** `docs/plans/` altına ayrıca yazılır.
 
 **Gerekçe (2026-08-03):** üç açığımızdan ikisini (A1 · M2b) harness **deterministik kodla**
 kapatıyor; eğitim ancak kısmen. Ayrıca retriever modelin gördüğü girdi dağılımını
