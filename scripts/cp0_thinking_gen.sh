@@ -77,6 +77,9 @@ esac
 
 echo "### künye"
 echo "  gguf      : $GGUF"
+# Why künyeye: bayrağı elle koşuya gömmek bu hattın en pahalı tuzak sınıfıdır
+# (dropped flag) — künyede görünmeyen bayrak sessizce düşer, koşu geçerli görünür.
+echo "  ekstra    : ${EXTRA_ARGS:-<yok>}"
 echo "  etiket    : *_${TAG}"
 echo "  modlar    : $MODES"
 echo "  thinking  : on   | cevap bütçesi: $MAXTOK | düşünce bütçesi: ${THINK_BUDGET:-—} | max_chunk_chars: 900 | seed: 3407"
@@ -117,7 +120,7 @@ for M in $MODES; do
     --server-url "$SERVER_URL" --server-model local \
     --thinking on --max-new-tokens "$MAXTOK" --think-budget "$THINK_BUDGET" \
     --max-chunk-chars 900 --seed 3407 \
-    --label "${M}_${TAG}" --out-dir "$OUT_DIR" $ARGS \
+    --label "${M}_${TAG}" --out-dir "$OUT_DIR" $ARGS ${EXTRA_ARGS:-} \
     || die "$M üretimi başarısız — sonraki modlar KOŞULMADI"
   echo
 done
