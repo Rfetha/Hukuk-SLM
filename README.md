@@ -17,9 +17,10 @@ cover the question.
 
 > ### ⚠️ Not legal advice
 > This is a research artifact. It is not a lawyer and its output is not legal
-> advice. Legislation changes; weights do not. **There is no retrieval layer yet** —
-> the model cannot tell you what the law says today. Verify every article number
-> against [mevzuat.gov.tr](https://www.mevzuat.gov.tr).
+> advice. Legislation changes; weights do not. **The retrieval layer exists and is
+> measured, but it is not yet packaged into the serving path below** — you still
+> supply the statute text yourself. Verify every article number against
+> [mevzuat.gov.tr](https://www.mevzuat.gov.tr).
 
 ## Where it stands
 
@@ -33,11 +34,39 @@ DEV split, harness off, judge `gpt-4o-mini`. Full protocol in the [model card](M
 
 We reach **98% of Flash-Lite's faithful-answer mass and refuse less often than it
 does**, at 2.59 GiB and ~zero marginal cost. We are still behind it on refusing
-when only distractor sources are present — that gap is the top item on the
-[roadmap](ROADMAP.md), and the planned fix is deterministic code, not more training.
+when only distractor sources are present.
 
 **This is not a parity claim:** the harness is off, cost is not normalized, and
 the merge configuration was selected on DEV.
+
+### With the harness on — the honest product number
+
+The table above hands the model the right article. A real user has no such luxury.
+With a retriever choosing the context instead (hybrid BM25 + `bge-m3`, 40,496-article
+index, k=10, CPU-only):
+
+| | harness OFF | **harness ON** |
+| :--- | ---: | ---: |
+| gold article in context | guaranteed *by construction* | **70/80 — recall@10 0.875** |
+| faithful-answer mass | 71.6% | **61.3%** |
+| A1, gold-retrieved subset | 0.909 | **0.862** |
+| **fabricated article numbers** | 0 | **0 / 118** |
+
+**61.3% is the number we stand behind.** The drop is not a regression — the two
+settings do not measure the same thing, and the OFF column is a **ceiling, not a
+rival**. We decomposed the 10.2-point gap: **≈5.1 points retrieval miss** (the
+harness's — the gold article never arrives in 10/80 questions) and **≈4.5 points
+distraction** (the model's — even when the gold *is* retrieved, A1 falls 0.909 →
+0.862 because nine other articles sit beside it).
+
+🚨 **And the measurement refuted our own plan.** We built the citation verifier to
+close the A1 gap. It found **zero fabricated article numbers** — the class it was
+built to catch is empty. The model doesn't invent article numbers; it answers from a
+*different real* article when retrieval misses (7/80). The larger failure is the
+opposite one: in **16/80** questions the model abstains *while the gold article is
+in its context* — and that number is unchanged with the harness off (17/80), so it
+is a model property, not a retrieval one. Deterministic code cannot close it.
+Details and the full record: [roadmap](ROADMAP.md) · [`sprint3-part1.md`](sprint3-part1.md).
 
 ## How it was built
 

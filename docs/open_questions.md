@@ -14,35 +14,6 @@
 
 ## 🔴 AÇIK
 
-### §13.1 — TR embedding modeli hangisi olacak? ⏸️ *ölçüm bekliyor*
-
-Lisansı temiz, Türkçe hukuk metninde iyi çalışan bir gömü modeli lazım. **EDA-doğrulama kuralı
-burada da geçerli** — model denenmeden seçilemez. **Ne zaman:** Sprint 4.
-
-**Birinci aday: `BAAI/bge-m3`** *(kullanıcı işaret etti, 2026-07-28)*
-Kaynak: [`muhamparlak/turkish-law-bge-m3-embeddings`](https://huggingface.co/datasets/muhamparlak/turkish-law-bge-m3-embeddings)
-— ⚠️ bu bir **veri seti**, model değil: Türkçe hukuk metinlerinin `bge-m3` ile önceden hesaplanmış
-gömüleri.
-
-| künye (sayfadan) | değer |
-| :--- | :--- |
-| model | `BAAI/bge-m3`, çok dilli · **1024-dim** |
-| satır | **1.824.298** — 1.82M **içtihat** parçası + 4.69k **mevzuat** maddesi |
-| kaynak | Yargıtay + Danıştay · Anayasa, TMK, TCK ve diğer temel kanunlar |
-| chunk | içtihat **3000 char**, mevzuat chunk'sız |
-| lisans | **CC-BY-4.0** (atıf şartlı, temiz) |
-
-**⚠️ Üç uyarı, hiçbiri doğrulanmadı:**
-1. **Chunk uyumsuzluğu.** Hazır gömüler **3000 char**'da parçalanmış; bizim protokol **900 char
-   eval-mirror** (ADR-0011 değişmezi). Gömüler **olduğu gibi kullanılamaz** — model alınıp korpus
-   kendi clip'imizle yeniden gömülmeli. Değeri "hazır index" değil, **"model adayı"**.
-2. **Boyut bütçeyi değiştirir.** Önceki tahmin e5-base sınıfıydı (278M, 768-dim); `bge-m3` ~568M
-   ve 1024-dim → embedder RAM ~1.1 GB değil **~2.3 GB** (fp32), index 88 MB değil ~**236 MB**.
-   ≤8 GB tablosunun **CPU tarafı** yeniden kurulmalı (VRAM etkilenmez — embedder CPU'da).
-3. **EDA şart.** `newmindai/EuroHPC-Legal` de kâğıt üstünde kusursuzdu.
-
----
-
 ### §13.3 — DEV havuzunun `n`'i yeterli mi? ⏸️ *ölçüm bekliyor*
 
 **Güç analizi yapılmadı.** ADR-0037'nin Kapı 5 eşikleri (%90, `min` bileşik) yazıldı ama
@@ -51,6 +22,13 @@ istatistiksel testin yerini tutmaz** — ADR-0037 bunu limitations'a yazıyor.
 
 ⚠️ Analiz için **varyans tahmini** gerekiyor; o da CP6'nın ilk gerçek ölçümünden gelecek.
 **Ne zaman:** CP6 sonrası, Sprint 3 öncesi.
+
+⭐ **2026-08-05 — varyansın bir bileşeni artık ÖLÇÜLDÜ ve bu soruyu daraltıyor.**
+Aynı üretimin (80/80 cevap, 80/80 bağlam **bit-birebir**) iki kez puanlanması
+**A1'de ~0,3 puan**, kütlede ~0,2 puan fark verdi ([#55](record/research_log/2026-08-05-s2-yururluk-alani.md) §9).
+Yani `n=80`'de gözlenen farkın **hakemden gelen tabanı** biliniyor; bilinmeyen kısım
+**örneklem** varyansı. Bundan sonra bu repoda **0,3 A1 puanının altındaki hiçbir fark
+yorumlanmaz** — soru kapanmadı ama artık bir **tabanı** var.
 
 ---
 
@@ -67,8 +45,10 @@ Eğitim kolu olarak **değil**, yapısal graf düğümü olarak — içtihat→m
 `TASARIM.md` §10.2 zaten *"grafa girmeye aday"* diyor.
 
 **Ön koşullar:** TR IP + hacim/lisans/PII doğrulaması + EDA.
-**Not:** §13.1'deki `bge-m3` veri seti **1.82M içtihat gömüsü** taşıyor — Bedesten'den ham çekip
-kendimiz gömmeye göre kısayol olabilir, ama aynı üç uyarı geçerli.
+**Not:** `muhamparlak/turkish-law-bge-m3-embeddings` (CC-BY-4.0) **1.82M içtihat gömüsü**
+taşıyor — Bedesten'den ham çekip kendimiz gömmeye göre kısayol olabilir. ⚠️ Ama **chunk
+uyumsuzluğu** hâlâ geçerli: hazır gömüler 3000 karakterde parçalanmış, bizim protokol 900
+(ADR-0011 değişmezi) → değeri *"hazır indeks"* değil, **veri kaynağı**.
 **Ne zaman:** Sprint 4.
 
 ---
@@ -177,11 +157,25 @@ Düzeltilmiş verimle hedef **ulaşılamaz**: `1.495 ÷ 0.05 = 29.900 üretim > 
 Yeni tuzaklar kayda geçti: `yurutme-tuzaklari.md` **4.7** (kabul ölçütü ≠ raporlanan metrik) ·
 **4.8** (tuzak havuzunun kendisi geçersiz).
 
-### Korpus temizliği — Sprint 4 ön koşulu
+### Korpus temizliği — ⭐ **kısmen KAPANDI 2026-08-05 (S2), gerisi borç B9**
 
 Ölçüm ve gerekçe artık [`TASARIM.md` §5.3](../TASARIM.md)'te. Özet: **1.901 saf kabuk (%4.7)** +
 3.101 tadil-kanunu maddesi. **Eğitim ve eval temiz** (sızıntı ölçüldü: %0.06 / sıfır) →
 **yeniden eğitim gerektirmez**; risk yalnız retriever indeksinde.
+
+✅ **Yapıldı** ([#55](record/research_log/2026-08-05-s2-yururluk-alani.md)): `mulga` + ilga alanı
+**2.547 satır**, alt-madde kimliği **485 satır**, doğrulayıcıya `MULGA` hükmü → **B7 kapandı**.
+
+⭐ **Ve kapsam kararı bir menüden değil ÖLÇÜMDEN çıktı.** Sorulacak doğru soru *"korpus ne kadar
+bozuk"* değil **"modelin GÖRDÜĞÜ bağlamda çöp var mı"** idi. `context_shown` ayrıştırılınca:
+tablo/cetvel parçaları (**~7.966 satır**) modele **0/800 blok** ulaşıyor — parçalar `", Ek"`
+kadar kısa, ne BM25 ne vektör üste çıkarıyor. **Elenmedi, ertelendi (borç B9):** elemek
+*ölçülemez bir kazanç için ölçülmüş bir sayıyı harcamak* olurdu (indeks değişir → `recall@k`
+kayar → `k` kıyası geçersizleşir).
+
+⚠️ **Yinelenme ≠ kirlenme.** Aynı korpus için *"anahtar yinelenmesi %29,4"* ve *"bağlam
+kirlenmesi %1,8"* **ikisi de doğru** — farklı nesneleri ölçüyorlar. Retriever yinelenen
+anahtarın **doğru** satırını getiriyordu.
 
 ### ~~Modül-başına normalleştirme~~ — ✅ **KAPANDI 2026-08-04, REDDEDİLDİ**
 
@@ -221,6 +215,7 @@ artık **ham TIES ana yol**, norm-dengeli ablasyon. Test ikisini de doğrulamal�
 
 | soru | karar | kalıcı yer |
 | :--- | :--- | :--- |
+| **§13.1** TR gömme modeli | ✅ **ÖLÇÜMLE SEÇİLDİ 2026-08-04** — `BAAI/bge-m3` **+ BM25**, RRF hibriti. Tek başına hiçbiri değil: `recall@10` BM25 **0,625** · e5-base **0,700** · bge-m3 **0,800** · **hibrit 0,875**. ⚠️ Hazır gömü seti **kullanılmadı** (chunk uyumsuzluğu); model alınıp korpus kendi 900-karakter protokolümüzle gömüldü | [ADR-0054](adr/0054-harness-tasarim-kararlari-k2-k5.md) K1 · [#49](record/research_log/2026-08-04-s3a-on-prob.md) · `scripts/retriever.py` |
 | **#8** tekil hücreler | aynı hat + `τg` düz kontrol → **4 hücre** | [ADR-0036](adr/0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md) Ek · `TASARIM.md` §4.3 |
 | **#9** iç iddianın karar kuralı | **Kapı 5** — `min` bileşik, simetrik %90, iki tabanı da geç | [ADR-0037](adr/0037-ic-iddia-karar-kurali-kapi-5.md) · `TASARIM.md` §7 |
 | **#10** merge kütüphanesi | **kendi kodumuz** + zorunlu birim testi + `mergekit` çapraz kontrol 🔄 | `TASARIM.md` §4.2 |

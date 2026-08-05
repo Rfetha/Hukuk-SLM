@@ -1,6 +1,6 @@
 # #54 — S1: `k` süpürmesi (k=10) · 🚨 ve yayınlanmış kütle sayısı YANLIŞ metrikle üretilmiş
 
-**Tarih:** 2026-08-05 · **Sprint:** [`sprint3.md`](../../../sprint3.md) **S1** (borç B3)
+**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) **S1** (borç B3)
 **Özne:** `tgta_v1` = `HakHukuk-4B-v0.1` — k=5 koşusuyla **aynı artefakt, aynı 80 soru**
 **Bedel:** GPU **$0** (yerel, şarjda) · hakem **$0,0403** · **Çıktı:** `outputs/eval/s3-harness-k10/`
 
@@ -64,7 +64,7 @@ daha sadık"* — **0,9230 > 0,9087**, marj +2,6 puandan **+1,4 puana** indi. �
 
 ### Düzeltilen belgeler
 
-`sprint3.md` · `MODEL_CARD.md` · `CLAUDE.md` · `ROADMAP.md` · `TODO.md` ·
+`sprint3-part1.md` · `MODEL_CARD.md` · `CLAUDE.md` · `ROADMAP.md` · `TODO.md` ·
 [`kollar.md`](../kollar.md) · [research_log #51](2026-08-04-harness-acik-ilk-olcum.md) ·
 [#53](2026-08-05-ayirt-edicilik-etiketi.md). Eski sayı **silinmedi**, üstü çizilip yanına
 doğrusu yazıldı (çelişki iki yerde birden işaretlenir kuralı).
@@ -81,7 +81,7 @@ Alt küme kırılımları da aynı tanımı kullanıyor. → **tuzak 2.16**.
 
 ### Ön-kayıtlı tahmin ↔ ölçüm
 
-`sprint3.md`'de sayı görülmeden yazılan tahmin ve gerçekleşen:
+`sprint3-part1.md`'de sayı görülmeden yazılan tahmin ve gerçekleşen:
 
 | büyüklük | tahmin (k=10) | **ölçüldü** | hüküm |
 | :--- | ---: | ---: | :--- |
@@ -104,7 +104,7 @@ A1 (cevaplanan-only)        0,7591   0,7681  (+0,9 puan)
 KÜTLE                       %56,9    %59,5   (+2,6 puan)   ← net kazanç
 ```
 
-`sprint3.md`'nin ret şıkkı *"kütle düşerse sebebi (bağlam uzunluğu mu, dikkat dağılması mı)
+`sprint3-part1.md`'nin ret şıkkı *"kütle düşerse sebebi (bağlam uzunluğu mu, dikkat dağılması mı)
 gözle okunur"* diyordu. Kütle **düşmedi**, ama dikkat dağılması **yine de ölçüldü**: aynı
 soruda altın madde bağlamda dururken, yanına 5 madde daha konunca sadakat **8 puan**
 düşüyor. Net kazanç, erişimin kazandırdığı 10 sorunun bu kaybı **aşmasından** geliyor.

@@ -5,7 +5,7 @@
 - **İlgili:** [ADR-0036](0036-tau-norm-asimetrisi-ve-norm-dengeli-merge.md) ·
   [ADR-0052](0052-merge-norm-dengeleme-hukmu-tersine.md) (hüküm: ana sonuç **ham TIES**)
 - **Kaynak ölçüm:** [research_log #50](../record/research_log/2026-08-04-modul-basina-norm.md)
-- **Kapatır:** `sprint3.md` Adım 0 · `open_questions.md`'deki *"modül-başına normalizasyon"* açık sorusu
+- **Kapatır:** `sprint3-part1.md` Adım 0 · `open_questions.md`'deki *"modül-başına normalizasyon"* açık sorusu
 
 ## Bağlam
 
@@ -13,7 +13,7 @@
 ADR-0036 metnindeki `τ/‖τ‖` ifadesinin birebir okunuşuydu. Modül-başına kapsam
 **alınmamış bir alternatif** olarak açık soruda duruyordu.
 
-`sprint3.md` Adım 0'ın gerekçesi şuydu:
+`sprint3-part1.md` Adım 0'ın gerekçesi şuydu:
 
 > Merge'in bilinen kusuru: `τ_a` seyreliyor (tekil 0,987 → merge 0,877). İki kolun da en
 > büyük normu **aynı MLP yüzeyinde** — `gate_proj` (τ_g 6,150 ↔ τ_a 0,621) · `up_proj`
@@ -86,7 +86,7 @@ tekrar ölçülebilir olması bu repoda kayıt değeri taşıyor; varsayılan `g
 
 ## Sonuçlar
 
-- ✅ `sprint3.md` Adım 0 kapandı 🔴; sprint'in ağırlığı harness'a (Adım 1-4) kayıyor.
+- ✅ `sprint3-part1.md` Adım 0 kapandı 🔴; sprint'in ağırlığı harness'a (Adım 1-4) kayıyor.
 - ✅ `open_questions.md`'deki modül-başına sorusu **kapandı** — açık soru değil, ölçülmüş red.
 - ⚠️ `τ_a`'nın merge'de seyrelmesi (0,987 → 0,877) **hâlâ açık**. Bu ADR onu norm
   kapsamının çözmediğini gösteriyor; çözüm başka yerde (trim eşiği · λ · farklı operatör ·

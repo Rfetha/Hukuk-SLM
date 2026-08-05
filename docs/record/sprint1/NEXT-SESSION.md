@@ -5,7 +5,7 @@
 > Bu bir **oturumlar arası devir notu**ydu; anlattığı Sprint 2 **kapandı** (ARA KAPI 🟢).
 > Tarihî kayıt olarak duruyor, **yönlendirme olarak geçersiz**.
 >
-> Güncel devir: [`../../../sprint3.md`](../../../sprint3.md) (`/goal sprint3.md`) ·
+> Güncel devir: [`../../../sprint3-part1.md`](../../../sprint3-part1.md) (`/goal sprint3-part1.md`) ·
 > yol haritası [`../../../ROADMAP.md`](../../../ROADMAP.md)
 
 > **Bu belge ne:** oturumlar arası devir notu.

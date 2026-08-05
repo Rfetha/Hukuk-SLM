@@ -4,11 +4,11 @@
 - **Durum:** kabul edildi
 - **Karar veren:** insan (K2, K4) · S3a ölçümü (K3) · ADR-0038 yürürlükte (K5)
 - **Kaynak ölçüm:** [research_log #49](../record/research_log/2026-08-04-s3a-on-prob.md)
-- **Açar:** `sprint3.md` Adım 1-4 (bu ADR'siz kod yazılamıyordu — sprint'in ⛔ kuralı)
+- **Açar:** `sprint3-part1.md` Adım 1-4 (bu ADR'siz kod yazılamıyordu — sprint'in ⛔ kuralı)
 
 ## Bağlam
 
-`sprint3.md` beş tasarım kararını kod yazımının **önüne** koydu. K1 (gömme modeli) S3a
+`sprint3-part1.md` beş tasarım kararını kod yazımının **önüne** koydu. K1 (gömme modeli) S3a
 ön-probunda ölçümle kapandı (`BAAI/bge-m3` + BM25, RRF hibriti). Kalan dördü bu ADR'de.
 
 ---
@@ -93,7 +93,7 @@ kazanıyor görünüp kütlede düştü ve karar $0'a verildi ([ADR-0053](0053-m
 
 ## Sonuçlar
 
-- ✅ `sprint3.md`'nin ⛔ kilidi açıldı: Adım 1-4 kodlanabilir.
+- ✅ `sprint3-part1.md`'nin ⛔ kilidi açıldı: Adım 1-4 kodlanabilir.
 - ✅ S3a'nın recall sayıları K2 kararıyla **geçerli kalıyor** (tam madde üzerinde ölçüldü).
 - ⚠️ K2'nin bedeli (*retriever'ın gördüğü ≠ modelin gördüğü*) harness-AÇIK ölçümünde
   **ayrı bir vaka sınıfı** olarak sayılır, sessizce yutulmaz.

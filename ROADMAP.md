@@ -11,16 +11,6 @@
 
 DEV, **harness kapalı**, hakem `gpt-4o-mini` (protokol: [MODEL_CARD](MODEL_CARD.md))
 
-> ⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Harness AÇIK ürün sayısı
-> 2026-08-04'te ilk kez ölçüldü, **2026-08-05'te düzeltildi ve `k` süpürüldü**: sadık-cevap
-> kütlesi **%59,5** (`k=10`; kapalıda %71,6). ~~%58,7~~ yanlış metrikle üretilmişti (tuzak
-> 2.16 — `A1` diye ham makro); düzeltilmiş k=5 değeri **%56,9**. ⭐ Retriever altın maddeyi
-> bulduğunda k=5'te **A1 0,923 > 0,909** (darboğaz model değil **erişim**), ama k=10'da
-> **0,843** — bağlam uzadıkça sadakat düşüyor, ölçüldü. Rakip harness açıkken **hâlâ ölçülmedi**.
-> [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
-> [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
-> [`sprint3.md`](sprint3.md)
-
 ```
                   BİZ 4B   Gemini FL    açık
 M1 sadık-cevap    71,6%     72,9%     ~kapandı  ✅
@@ -29,19 +19,53 @@ A1                0,909     0,956      −0,047
 M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
 ```
 
-⚠️ **Bu sayılar bir elimiz bağlıyken alındı.** Harness (erişim + atıf doğrulama +
-red kapısı) hiç açılmadı — tez döneminde iç ablasyonun gereğiydi, artık değil.
-**Gerçek ürün sayımızı henüz hiç görmedik.**
+⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Rakip harness açıkken
+**hâlâ ölçülmedi** — o kıyas bugün de yok.
+
+### ⭐ Harness AÇIK — ürünün gerçek sayısı *(2026-08-05, [Part 1](sprint3-part1.md) kapanışı)*
+
+| eksen | KAPALI | AÇIK k=10 + onarılmış korpus ⭐ |
+| :--- | ---: | ---: |
+| `recall@10` | — *(altın **kurgu gereği** verilir)* | **0,8750** |
+| coverage | 0,7875 | **0,7625** |
+| A1 (cevaplanan-only) | 0,9087 | **0,8042** |
+| A1 · altın getirilen | 0,9087 | **0,8616** |
+| **KÜTLE** | **%71,6** | **%61,3** ← ürünün dürüst sayısı |
+| uydurulmuş madde no | 0 | **0/118** |
+
+`outputs/eval/s2-harness-k10-etiketli/` · [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+[#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
+[#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)
+
+**⛔ %71,6 → %61,3 bir gerileme DEĞİL** — iki ölçüm aynı şeyi ölçmüyor. KAPALI'da altın madde
+bağlama **kurgu gereği** konuyor; AÇIK'ta **bulunması gerekiyor**. KAPALI bir rakip değil,
+**tavan**. 10,2 puanlık açık ayrıştırıldı: **≈5,1 puan erişim ıskası** (harness'ın — altın 10/80
+soruda hiç gelmiyor) + **≈4,5 puan dikkat dağılması** (modelin — altın bağlamdayken bile
+A1 0,909 → 0,862). Çekinme **iki tarafta da aynı** (0,787 ↔ 0,771) → aşırı-red harness'ın
+suçu değil, **model özelliği**.
+
+⚠️ İki şerh bu sütunla **kalıcı** yolculuk eder: (a) 80 DEV altın etiketinin **3'ü** sayı
+görüldükten *sonra* düzeltildi (kör hakem + ön-kayıtlı istem + konum-yanlılığı kontrolü +
+insan onayı; manşeti **yükseltmedi**), (b) hakemin **yeniden-koşum gürültü tabanı ~0,3 A1
+puanı** ölçüldü — bundan küçük hiçbir fark yorumlanmaz.
 
 ---
 
-## 1. Harness — en büyük kazanç burada  ✅ **SEÇİLDİ (2026-08-03)** → [`sprint3.md`](sprint3.md)
+## 1. Harness — ✅ **KURULDU ve ÖLÇÜLDÜ (2026-08-05)** → [`sprint3-part1.md`](sprint3-part1.md)
 
-| bileşen | hangi açığı kapatır | nasıl |
+🚨 **Bu bölümün 2026-08-03'te yazılan gerekçesi ölçümle sınandı ve yarısı düştü.** Aşağıdaki
+tablo iddiayı ve **hükmü** yan yana tutuyor — çünkü sprintin gerekçesi buydu ve tutmadıysa
+kayda o şekilde geçer.
+
+| bileşen | 08-03'te iddia | **ölçülen hüküm (08-05)** |
 | :--- | :--- | :--- |
-| **atıf doğrulayıcı** | A1 0,909 → ~1,0 | uydurulmuş madde numarası **deterministik** yakalanır; hakem gerekmez |
-| **red kapısı** | **M2b 0,877 → ~1,0** | doğrulanamayan atıf varsa cevap reddedilir — **kod, model değil** |
-| **retriever** | M1 · M4 | gerçek kullanımda maddeyi kimse vermiyor; şu an eval veriyor |
+| **atıf doğrulayıcı** | A1 0,909 → ~1,0 | ❌ **ÇÜRÜDÜ.** Uydurulmuş madde no **0/118** — yakalayacak sınıf **zaten boştu**. A1 açığı fabrikasyondan değil, altın gelmeyince *başka bir gerçek maddeden* cevaplamaktan geliyor (**7/80**, borç B1) |
+| **red kapısı** | M2b 0,877 → ~1,0 | ⏸️ **SINANMADI.** `m2b` harness AÇIK **hiç koşulmadı** — bu, Part 1'in en büyük ölçüm boşluğu |
+| **retriever** | M1 · M4 | ✅ **KURULDU ve KAZANDIRDI.** `recall@10` **0,8750**, 759 ms/sorgu, CPU'da. Ama kendi bedelini de getirdi: bağlam uzadıkça sadakat düşüyor (**ölçüldü**, aşağı bak) |
+
+⭐ **Sprintin asıl getirisi sayı değil, dört mekanizma:** `k` büyütmenin **ölçülmüş bedeli** ·
+çekinmenin **yanlış sinyale** (konusal uyum, yeterlilik değil) kalibre olduğu · doğrulayıcının
+fabrikasyonu değil **transkripsiyonu** yakaladığı · hakem gürültüsünün **tabanı**.
 
 ⭐ **Ve kategorik bir üstünlük:** canlı mevzuat API'si (`bedesten.adalet.gov.tr`,
 çalışıyor, [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md)). Harness'lı bir model
@@ -54,12 +78,21 @@ Ayrıntılı faz tarifi: [`docs/VISION.md`](docs/VISION.md) Faz 2.
 
 | # | açık | kanıt | bedel |
 | :-: | :--- | :--- | :--- |
-| 2.1 | **merge `τ_a`'yı seyreltiyor** | M2b 0,987 (tekil) → 0,877 (merge) | modül-başına norm · **$0** · ~1 saat |
+| ~~2.1~~ | ~~**merge `τ_a`'yı seyreltiyor** → modül-başına norm~~ | 🔴 **ÖLÇÜLDÜ ve REDDEDİLDİ 2026-08-04** — kütle ≤ **%56,2** < gereken %71,6 ([ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · [#50](docs/record/research_log/2026-08-04-modul-basina-norm.md)) | hakem **$0** |
+| **2.1b** 🆕 | **`τ_a` seyrelmesi HÂLÂ AÇIK** (M2b 0,987 → 0,877) — ama çare merge'de değil | Norm *kapsamı* çürütüldü: kol profilleri **orantılı**. Kalan en olası yer **`τ_a`'nın eğitim genliği** (‖τ_a‖ = 1,18 · 82 adım @1e-5) | eğitim işi (borç **B4**) |
+| **2.1c** 🚨 ⭐ | **AŞIRI-RED — altın madde bağlamdayken çekinme** | **16/80** ve **`k`'dan bağımsız** (14 → 15 → 16). Harness KAPALI'da da aynı: **17/80**. Retriever ne kadar iyileşirse iyileşsin **kapanmıyor** | eğitim işi (borç **B10**) |
 | 2.2 | **`τ_a` şablon ezberledi** | M1 medyan cevabı **58 karakter** = şablonun kendisi; model cümleyi çekimliyor | [ADR-0051](docs/adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md) B planı · ~$2 |
 | 2.3 | **muhakeme izi İngilizce** | 8/8 ölçüldü ([`kollar.md`](docs/record/kollar.md) #4) | veri turu |
 | 2.4 | veri inceliği | 728 temiz negatif | hasat hattı kurulu, ucuz |
 
-**2.1 her hâlükârda yapılmalı** — bedava ve merge'in bilinen kusurunu kapatıyor.
+🚨 **2.1c model tarafının yeni birinci sırası — ve gerekçesi ölçülmüş.** Coverage kaybının
+**büyük yarısı** burada, B1'in (7/80) **iki katı**. Model, elinde doğru madde varken
+cevap vermiyor; bunu harness KAPALI'da da yapıyordu (**17/80**) → bir harness gerilemesi
+değil, **modelin kendi özelliği**. Bugünkü modelle kütlenin tavanı **~%71,6**.
+
+⚠️ 2.1c ile 2.1b **birleştirilmedi**: *"aşırı-red `τ_a` seyrelmesinden geliyor"* makul ama
+**ölçülmemiş bir varsayım**; birleştirmek onu kayıtta sessizce gerçeğe çevirirdi.
+
 **2.3 vatandaş kararıyla öne çıktı:** Türkçe düşünmeyen bir model, vatandaşa
 "okunabilir muhakeme" veremez.
 
@@ -84,19 +117,23 @@ tersi taşınmaz.
 kapıyı geçiyor**, oysa o madde **mülga** (*"110- (Mülga: 22/5/2003/4857/120 md.)"*).
 Korpusta yürürlük alanı **yok** — 4 alan var, ilga bilgisi serbest metnin içinde. Aynı ad
 iki kanuna ait olabiliyor (`İŞ KANUNU` = **4857** yürürlükte **ve** **1475** mülga).
-*"Denetlenebilir"* vaadindeki en somut açık bu ([`sprint3.md`](sprint3.md) borç **B7**).
+*"Denetlenebilir"* vaadindeki en somut açık bu ([`sprint3-part1.md`](sprint3-part1.md) borç **B7**).
 
-- **5.1 Yürürlük alanı** — `mulga` + ilga eden kanun/madde; doğrulayıcı mülga atıfı
-  **ayrı hüküm** olarak işaretler. Veri işi, ucuz, tek başına B7'yi kapatır.
-- **5.2 Graph-RAG** — kısıtı 2026-08-03'te **kalktı**, planı **yok**. Bugün ilk kez
-  **ölçülmüş** gerekçe kazandı, ama beklenen yerde değil:
+- **5.1 Yürürlük alanı** — ✅ **YAPILDI 2026-08-05** ([#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)):
+  `mulga` + `ilga_eden_kanun/madde/tarih` **2.547 satıra**, alt-madde kimliği **485 satıra**,
+  doğrulayıcıya **`MULGA`** hükmü. `"İş Kanunu Madde 15"` artık üç red politikasında da
+  **reddediliyor** → **B7 kapandı**. ⚠️ **Dürüst negatif:** bu DEV kümesinde `MULGA` **0 kez**
+  tetiklendi — bir **ürün-güvenliği** özelliği, skor özelliği değil. Skor kazancı (+3,6 A1 puanı)
+  aynı turun **alt-madde kimliği** kısmından, yani **erişim** kanalından geldi.
+- **5.2 Graph-RAG** — kısıtı 2026-08-03'te **kalktı**, planı **yok**. Ölçülmüş gerekçesi var,
+  ama beklenen yerde değil:
 
   | graf ne için | ölçüm ne diyor |
   | :--- | :--- |
   | erişim kalitesi | ❌ gerekmiyor — `recall@5` 0,750 → `@20` **0,925**, açığın çoğu **k** ile kapanıyor |
-  | cevap kalitesi | ❌ gerekmiyor — altın getirildiğinde A1 zaten **0,934** |
-  | belirsiz sorgu | ❌ çözmüyor — soruların ~%25'i konusunu hiç belirtmiyor |
-  | **yürürlük · ilga · tadil · atıf zincirleri** | ✅ **düz vektör benzerliğinden okunamaz** |
+  | cevap kalitesi | ❌ gerekmiyor — altın getirildiğinde A1 zaten **0,862** *(k=10; k=5'te 0,923)* |
+  | belirsiz sorgu | ❌ çözmüyor — soruların ~%25'i (ölçüldü: **18/80**) konusunu hiç belirtmiyor |
+  | **yürürlük · ilga · tadil · atıf zincirleri** | ✅ **düz vektör benzerliğinden okunamaz** — ama 5.1 bunun **ucuz** kısmını **bir veri alanıyla** çözdü |
 
   **Sıra:** B7 (veri) → B3 (k süpürmesi) → B1 (isabet denetimi) → **graf**. Graf, 5.1
   yapıldıktan sonra *atıf zincirleri ve çapraz referans* için hak eder; erişim darboğazını
@@ -142,7 +179,7 @@ ikisi de kayda geçiyor — tutan da, ıskalayan da.
 disiplininde en kötü mühendislik türü: işe yarayıp yaramadığını söyleyemediğin iş.
 Karşılaştır: **`k`'yı 5→10 yapmak bir bayrak** — ön-kayıtlı tahmin kütleyi ~%65'e taşımaktı;
 **ölçüldü 2026-08-05: %56,9 → %59,5** (erişim tahmini birebir tuttu, A1 tahmini 9 puan
-ıskaladı; fark **dikkat dağılması**) ([`sprint3.md`](sprint3.md) S1 · #54).
+ıskaladı; fark **dikkat dağılması**) ([`sprint3-part1.md`](sprint3-part1.md) S1 · #54).
 
 #### Graf gerçekten nerede kazanır — üçü de bugün ÖLÇÜLEMİYOR
 
@@ -212,21 +249,42 @@ mevzuat değişti → ⚠️ **İNDEKSİ tazele, modeli DEĞİL** (güncellik ha
 üstünlüğümüz bundan etkilenmiyor:** güncellik (kapalı ağırlık bugünün mevzuatını bilemez) ve
 mahremiyet (hukuki sorular kişiseldir). İkisi de zamanla **büyüyor**.
 
-## ✅ SIRA KARARA BAĞLANDI (2026-08-03)
+## ✅ SIRA KARARA BAĞLANDI (2026-08-03) — **ilk üçü bitti (2026-08-05)**
 
 ```
-0.  modül-başına norm (2.1)   1 sa · $0    ← bedava, harness'tan bağımsız
-1.  HARNESS                    asıl iş      → sprint3.md
-2.  harness AÇIK ölçüm         gerçek ürün sayımız — hiç görülmedi
-3.  τ_a v2 (2.2)               artık doğru girdi dağılımını bilerek
-4.  Türkçe muhakeme (2.3)      veri turu
+0.  modül-başına norm (2.1)   ✅ koşuldu → 🔴 REDDEDİLDİ (ADR-0053)
+1.  HARNESS                   ✅ KURULDU  → sprint3-part1.md
+2.  harness AÇIK ölçüm        ✅ ÖLÇÜLDÜ  → %61,3 (ürünün dürüst sayısı)
+3.  τ_a v2 (2.2)              ▶ sırada    — ve gerekçesi artık ölçülmüş: B10 (16/80)
+4.  Türkçe muhakeme (2.3)     veri turu
 ```
 
-**Gerekçe:** üç açığımızdan ikisini (A1 · M2b) harness **deterministik kodla**
+⚠️ **Sıranın gerekçesi ölçümle DEĞİŞTİ.** 08-03'te 3. sıranın gerekçesi *"artık doğru girdi
+dağılımını bilerek"* idi — yani bir **bilgi** gerekçesi. Bugün ona bir **büyüklük** gerekçesi
+eklendi: aşırı-red **16/80** ve harness'la kapanmıyor. Sıra aynı kaldı, ama artık *"sonra da
+yaparız"* değil **kütlenin büyük yarısı orada.**
+
+Ne koşulacağı ve neyin ön-kayıtlı kabulle sınanacağı: **[`sprint3-part2.md`](sprint3-part2.md)**.
+
+**Gerekçe (2026-08-03):** üç açığımızdan ikisini (A1 · M2b) harness **deterministik kodla**
 kapatıyor; eğitim ancak kısmen. Ayrıca retriever modelin gördüğü girdi dağılımını
 değiştiriyor — önce eğitmek, yanlış dağılıma optimize etmek olurdu. Ve en önemlisi:
 **retriever olmadan ortada ürün yok** — kullanıcının mevzuat metnini kendisi
 yapıştırması gerekiyor.
+
+> 🚨 **2026-08-05 — bu gerekçenin üç ayağı ölçüldü, ikisi düştü, biri ayakta:**
+>
+> | ayak | hüküm |
+> | :--- | :--- |
+> | *"A1'i kod kapatır"* | ❌ **ÇÜRÜDÜ** — uydurulmuş madde no **0/118**, doğrulayıcının yakalayacağı sınıf **boştu** |
+> | *"M2b'yi kod kapatır"* | ⏸️ **SINANMADI** — `m2b` harness AÇIK hiç koşulmadı |
+> | *"retriever olmadan ürün yok"* | ✅ **AYAKTA ve ölçüldü** — `recall@10` 0,8750, ürünün ilk gerçek sayısı çıktı |
+>
+> ⭐ **Sprint yine de doğru seçimdi, ama bildiğimiz sebepten değil.** Değerini *"iki açığı
+> kapatmasından"* değil, **hangi açıkların gerçek olduğunu ölçmesinden** aldı: A1 açığının
+> fabrikasyon olmadığını, asıl büyük kaybın **aşırı-red** olduğunu ve `k` büyütmenin bir
+> **bedeli** olduğunu ancak harness açılınca öğrendik. Yanlış gerekçeyle alınmış doğru karar,
+> kayda **öyle** geçer.
 
 ## Sırayı belirleyen argüman — ve nasıl çözüldü
 
