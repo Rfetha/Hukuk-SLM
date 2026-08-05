@@ -684,6 +684,28 @@ bölümü.** Adım 0-4 kapandı; onların metinleri **kayıt** olarak duruyor, �
 
 Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'ün şeklini belirliyor.
 
+> ### 📋 POST-SPRINT 3 SIRASI — karar 2026-08-05 *(bu bölüm CANLI, üstündeki tablo KAYIT)*
+>
+> Sıra **ölçülmüş büyüklük ÷ bedel** ile kuruldu. 1-4 harness tarafı ve **hepsi ucuz**;
+> üçü bir **ölçüm boşluğu** kapatıyor. 5 eğitim tarafı ve pahalı — ama ancak 1-4 bitince
+> *"geriye ne kaldı"* net olur. **Bugün B1'e eğitim atmak, henüz sayılmamış bir açığa para
+> harcamak olurdu.**
+>
+> | sıra | iş | bedel | neden burada |
+> | :--- | :--- | :--- | :--- |
+> | **1** | **B-i deneyi** ([ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)) — `--sufficiency-preamble` | **$0** | Bayrak **zaten var**. Tek deney **B1 ve B10'a birden** dokunuyor (yetersizde cevaplama ↔ yeterlide çekinme). Red şıkkı ön-kayıtlı. |
+> | **2** | **B5** — K2'nin bedeli | ~$0 | B1'in **7/80**'i sayılmadan **temiz değil**: içinde *"getirildi ama 900-karakter kırpmasının ötesindeydi"* vakası olabilir. |
+> | **3** | **B8** — yazım hatası toleransı | ~$0 | Tolerans **ölçülmeden seçilmez**: kaç doğru atıf kurtulur ↔ kaç yanlış içeri girer. |
+> | **4** | **C** ([ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)) — ikinci geçiş yeniden-sıralama | CPU | Dikkat dağılmasının (**0,9230 → 0,8426**) ölçülmüş çaresi. ⚠️ **B-i ile aynı turda değil.** |
+> | **5** | **B10 + B4** — aşırı-red / `τ_a` seyreltme | **GPU, eğitim** | Coverage kaybının **büyük yarısı**. Harness'la kapanmıyor. Kendi sprint'i. |
+> | **6** | **B9** — indeks hijyeni | ~10 dk + koşu | Ucuz ama **indeksi değiştirir** → indeksin zaten değişeceği bir turla **paketlenir**. |
+> | **7** | **B6** — canlı `bedesten` | ürün işi | Güncellik iddiası ayakta ama kanıtlanmamış. Doğruluk işleri bitince. |
+>
+> ⚠️ **Belge seçimi bilinçli sapmadır:** repo kuralı *"kapanan belge kayıttır, canlı tutulmaz"*
+> der; borç sırası yine de burada tutuluyor (insan kararı, 2026-08-05) — çünkü borçların
+> **ölçüm bağlamı** bu belgede ve ayrı bir belgeye taşımak gerekçeyi bağlamından koparıyordu.
+> Sapma gizlenmiyor.
+
 | # | borç | neden önemli |
 | :--- | :--- | :--- |
 | **B1** ⭐ | **"Gerçek ama soruya uymayan madde"** — atıf doğrulayıcısı bunu yakalayamıyor. ~~14/80~~ → **7/80** (k=10 ile yarıya indi). | Ürün vaadi *"denetlenebilir"*. Bugün fabrikasyona karşı denetlenebilir, **isabetsizliğe karşı değil**. ⚠️ **2026-08-05 güncelleme:** A1 düşüşünün *tamamı* burada **değil** — **aşırı-red** (altın bağlamdayken çekinme, **15/80**) k'dan bağımsız ve coverage kaybının daha büyük yarısı orada. S4 iki eksene birden bakmalı. |
@@ -693,6 +715,7 @@ Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'�
 | **B5** | **K2'nin bedeli ölçülmedi**: *"getirildi ama cevap 900 karakter kırpmasının ötesindeydi"* vakası. İz kaydediliyor ama sayılmadı. | ADR-0054 bunu ayrı vaka sınıfı olarak saymayı şart koşmuştu. |
 | **B6** | **Canlı `bedesten` katmanı** eklenmedi (K3: bilinçli erteleme). | Güncellik iddiası ayakta ama **kanıtlanmış değil** — S3a sözleşmenin çalıştığını doğruladı, ürün onu henüz kullanmıyor. |
 | ~~**B7**~~ ✅ | **KAPANDI 2026-08-05 (S2).** Korpusa `mulga` + ilga eden kanun/madde/tarih eklendi (**2.547 satır**), alt-madde kimliği onarıldı (**485 satır**), `atif_dogrula.py`'ye **`MULGA`** hükmü kondu. `"İş Kanunu Madde 15"` artık üç red politikasında da **REDDEDİLİYOR**. ⚠️ **Dürüst negatif:** iki koşu yeniden puanlandı → `MULGA` **0**, hükmü değişen cevap **0/80**; açık mekanik olarak kapandı ama bu DEV kümesinde **tetiklenmedi** (`core_hard` yürürlükteki maddelerden üretildi, beklenebilirdi). **B7 bir ürün-güvenliği özelliği, skor özelliği değil.** research_log **#55**. Özgün kayıt aşağıda duruyor. |
+| **B10** 🆕 ⭐ | **AŞIRI-RED: altın madde BAĞLAMDAYKEN çekinme — 15/80.** Ölçüldü 2026-08-05: k=5'te 14, k=10'da **15** → **`k`'dan bağımsız**. Yani retriever ne kadar iyileşirse iyileşsin bu kapanmıyor. | 🚨 **Coverage kaybının BÜYÜK yarısı burada ve B1'den (7/80) iki kat büyük** — ama bugüne kadar **numarası yoktu**, yalnız B1'in notunda geçiyordu; numarasız borç hiçbir listede görünmüyor. Mekanizması [#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)'te ölçüldü: çekinme sinyali **konusal uyuma** bakıyor, **yeterliliğe** değil. [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)'in B-i deneyi harness tarafından dokunuyor; kalanı **eğitim işi** (bkz. B4). ⚠️ B4 ile **birleştirilmedi**: *"aşırı-red `τ_a` seyrelmesinden geliyor"* makul ama **ölçülmemiş bir varsayım**; birleştirmek varsayımı kayıtta gerçeğe çevirirdi. |
 | **B9** 🆕 | **Korpusta madde kimliği bozuk — tablo/cetvel parçaları madde diye indeksli** (~7.966 satır, `3520`'de yoğun; `", Ek"` gibi 4 karakterlik hücreler). S2'de **kasten elenmedi**. | ⭐ **Ölçüldü: modele 0/800 blok ulaşıyor** — parçalar öylesine kısa ki ne BM25 ne yoğun vektör üste çıkarıyor. Elemek **ölçülemez bir kazanç için ölçülmüş bir sayıyı harcamak** olurdu (indeks değişir → `recall@k` kayar → k=5/k=10 kıyası geçersizleşir). İndeks hijyeni olarak **kendi başına ve ayrıca ölçülerek** yapılır. ⚠️ Not: *"anahtar yinelenmesi %29,4"* ile *"bağlam kirlenmesi %1,8"* **ikisi de doğru** — farklı nesneleri ölçüyorlar. research_log **#55** |
 | ~~**B7 özgün kayıt**~~ | **MÜLGA maddeye yapılan atıf doğrulamayı ve katı kapıyı GEÇİYOR.** Ölçüldü 2026-08-04: `"İŞ KANUNU Madde 15"` → `DOGRULANDI` (kanun_no **1475**) → kapı ✅. Oysa korpustaki metni: *"110- (Mülga: 22/5/2003/4857/120 md.)"*. | **Ürün-güvenliği açığı, akademik değil.** Vaadimiz *"denetlenebilir"*; burada sistem **yürürlükten kalkmış** bir hükme yapılan atıfı **doğrulanmış** damgalıyor. Korpusta yürürlük alanı **yok** — 4 alan var (`kanun_adi · kanun_no · madde_no · text`) ve ilga bilgisi yalnız **serbest metnin içinde**. Aynı ad iki kanuna ait olabildiği için (`İŞ KANUNU` = 4857 yürürlükte **ve** 1475 mülga) doğrulayıcı ayırt edemiyor. |
 
