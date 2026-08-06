@@ -33,7 +33,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | görev | durum | çıkan |
 | :--- | :--- | :--- |
 | **0** YB1 / ADR-0058 | ✅ ajan tarafı bitti — **insan kutucukları bekliyor** | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
-| **1** eşleştirilmiş A1 | 🔄 incelemede | `eslesmis_a1.py` + 3 test (`3 passed`) + üç kıyas · ⭐ **ham A1 açığının üçte ikisi coverage artefaktı çıktı** (aşağıda) |
+| **1** eşleştirilmiş A1 | ✅ tamam (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
 | **2** Gemini FL harness AÇIK | ⏸ | |
 | **3-4** hasat | ⏸ | |
 | **5** ORPO paketleme | ⏸ | |
@@ -43,8 +43,8 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | **9** 🛑 ürün kapısı | ⏸ | |
 | **10** kayıt | ⏸ | |
 
-**Maliyet (şimdiye):** GPU **$0** · hakem **$0** · rakip çıkarımı **$0** — Görev 0 tanımı gereği
-bedelsiz. Commit: `339d9b1` · `363dc8c` · `f1b6f27` (+ 3. dalga).
+**Maliyet (şimdiye):** GPU **$0** · hakem **$0,0745** · rakip çıkarımı **$0** — tavan $10.
+Commit: `339d9b1` → `b53eeb4` (10 commit).
 
 ### ⭐ Görev 0'dan doğan ÖLÇÜLMÜŞ bulgu — plan bunu öngörmemişti
 
@@ -68,54 +68,70 @@ ayrı ölçülü. Ama **kabul edilen bir bedeldir** ve ADR-0058 onu anmadan yaz�
 katkısı artık yalnız A1 ekseninde değil, **atıf yoğunluğu ekseninde de** okunacak.
 Kaynak: `outputs/eval/olcum-bi/harness_tablo.json` + `gnd_h1_tgta_v1_bi_k10_summary.json`.
 
-### ⭐ Görev 1'in bulgusu — ham A1 açığının üçte ikisi ARTEFAKTMIŞ
+### ⭐ Görev 1'in bulgusu — base'in A1 üstünlüğü ÇÜRÜDÜ
 
 Coverage kolları arasında çok ayrık: base **%57,5** · `gemini_fl` **%76,25** · `tgta_v1` **%78,75**.
-İkisinin de cevapladığı kesişimde A1 yeniden hesaplandı (harness KAPALI M1 koşuları):
+Aynı sınav, aynı 80 soru; A1 yalnız **cevaplanan** kalemlerde ölçülüyor → az cevaplayan kol
+**kendi seçtiği kolay dilimde** ölçülüyor (tuzak 2.4). Bu kontrol `tgta_v1` için **hiç yapılmamıştı**.
 
-| kıyas | ham A1 farkı | **eşleştirilmiş fark** | artefakt payı | n |
-| :--- | ---: | ---: | ---: | ---: |
-| base − `tgta_v1` | 7,77 p | **2,81 p** | **%64** | 40 |
-| `gemini_fl` − `tgta_v1` | 4,74 p | **3,33 p** | %30 | 51 |
-| base − `gemini_fl` | 3,03 p | **0,77 p** | **%75** | 45 |
+🚨 **İki geçerlilik kapısı icra sırasında açıldı ve ikisi de kapatıldı:**
 
-Ham A1: base 0,9864 · FL 0,9561 · `tgta_v1` 0,9087 (her kol **kendi** cevapladığı küme üzerinde).
-Kaynak: `outputs/eval/g1-eslesmis-a1/` · alet `scripts/eslesmis_a1.py`.
+**(a) Hakem yığını uyuşmuyordu** (tuzak 2.7 · ADR-0029). `base` ve `FL` **openai-doğrudan**
+kapıda + **ADR-0041 öncesi** hakem istemiyle puanlanmıştı; `tgta_v1` **openrouter** + muafiyet
+**sonrası**. Repo'nun kendi makine kapısı (`compare_runs.py:73-76`) bu tabloyu basmayı reddeder.
+**Düzeltildi:** `base` ve `FL` M1 koşuları güncel yığınla yeniden puanlandı (**$0,0745**), eski
+çıktılar `_openai_dogrudan` sonekiyle **silinmeden** saklandı.
 
-**Ne söylüyor:** base'in A1 üstünlüğü **yön olarak gerçek ama büyüklük olarak üçte bir**. Base,
-soruların yalnız %57,5'ini cevaplayarak kendi kolay dilimini seçiyor; o dilim eşitlendiğinde açık
-7,77 → **2,81 puana** iniyor. Base ile FL arasındaki fark ise neredeyse tamamen artefakt (**0,77 p**).
+**(b) `n_kesisim ≥ 30` yanlış büyüklüğü ölçüyordu** — tavan etkisi yüzünden. Alet artık
+`n_ayrisan` · `n_berabere` · `fark_sd` döndürüyor ve kapı ona bağlı.
 
-🛑 **Ama KALAN fark için hüküm KURULAMAZ — iki bağımsız sebeple.** İkisi de incelemeden çıktı:
+#### Yeniden puanlamanın kendisi bir ölçüm — repo bunu hiç yapmamıştı
 
-**(a) Hakem yığını uyuşmuyor (tuzak 2.7 · ADR-0029).** `base` ve `gemini_fl` **openai-doğrudan**
-gateway'de puanlanmış (`gpt-4o-mini`), `tgta_v1` ise **OpenRouter**'da (`openai/gpt-4o-mini`,
-`providers=["OpenAI"]`). Repo'nun kendi makine kapısı — `compare_runs.py:73-76` — bu durumda
-tabloyu basmayı **reddediyor** (`SystemExit`). Üç kıyastan **ikisi**, yani manşet olanlar, bu
-sınırı geçiyor; temiz olan tek kıyas `base − FL`.
-⭐ Bu, planın öngörmediği bir mirası da açığa çıkardı: **Görev 2** FL'ı OpenRouter hakemiyle
-puanlayacak, oysa `cp09`'daki FL sayıları openai-doğrudan — **aynı çelişki oraya da geçecekti**.
+Aynı cevaplar, aynı hakem modeli, **birebir aynı payda** — yalnız yığın değişti:
 
-**(b) Etkin n = 4.** Eşleşmiş kümede mutlak A1'ler **0,93-0,99**, yani **tavana yakın**:
+| kol | eski (openai-doğrudan, ADR-0041 öncesi) | güncel (openrouter pinli, muafiyet sonrası) | fark |
+| :--- | ---: | ---: | ---: |
+| `base` ham A1 | 0,9864 | **0,9587** | **−2,77 p** |
+| `gemini_fl` ham A1 | 0,9561 | **0,9592** | +0,31 p |
 
-| kıyas | n | berabere | ayrışan | dağılım | işaret testi |
-| :--- | ---: | ---: | ---: | :--- | ---: |
-| base − `tgta_v1` | 40 | **36** | **4** | 3 ↔ 1 | p ≈ 0,63 |
-| FL − `tgta_v1` | 51 | 41 | 10 | 6 ↔ 4 | p ≈ 1,0 |
-| base − FL | 45 | 40 | 5 | 4 ↔ 1 | p ≈ 0,38 |
+**3 puana kadar — gürültü tabanının (0,3 p) ~10 katı — ve kola göre ASİMETRİK**, dolayısıyla salt
+kapı gürültüsü diye yazılamaz. 🔴 **Kapı ↔ istem-sürümü ayrıştırması AÇIK KALEM:** eski yığın
+**kalıcı olarak erişilemez** (OpenAI hesabında kredi yok, `429 insufficient_quota`). Ayrıştırma
+denendi, yarım çıktı silindi, **$0** harcandı.
+*Olası mekanizma (hipotez, ölçülmedi):* ADR-0041 muafiyeti meta-cümleleri iddia saymayı bıraktı;
+base'in *"kaynaklarda şu var"* türü, önemsizce doğrulanan cümleleri paydadan düşünce geriye
+**asıl iddiaları** kaldı ve puanı düştü. Yani eski 0,9864 **şişmiş** olabilir.
 
-`n_kesisim = 40` sağlam görünüyor ama farkın **tamamı 4 kalemden** geliyor. Kontrol, seçim
-artefaktını kaldırıyor **ama ayırt ediciliği de daraltıyor**.
-🚨 Bunun aletsel sonucu: planın `n_kesisim ≥ 30` kabul eşiği **yanlış büyüklüğü ölçüyor** ve
-**Görev 9 aynı aleti aynı yanlış eşikle kullanacaktı**. Alet `n_ayrisan` döndürecek, kapı ona bağlanacak.
+#### Üç kıyas — İKİ İŞARET DÖNDÜ
 
-**Doğru hüküm:** *"Tuzak 2.4 gerçekti ve artefakt payı ölçüldü"* **kurulabilir** — aletin asıl işi
-buydu ve başarıldı. *"base cevapladığında da daha sadık"* **kurulamaz**.
+| kıyas | n | eski fark | **yeni fark** | ayrışan | berabere | işaret testi |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| base − `tgta_v1` | 40 | +0,0281 | **−0,0038** 🔄 | 7 | 33 | p = 1,000 |
+| FL − `tgta_v1` | 51 | +0,0333 | **+0,0261** | 11 | 40 | p = 1,000 |
+| base − FL | 45 | +0,0077 | **−0,0256** 🔄 | 6 | 39 | p = 0,688 |
 
-🚨 **Uygulayıcının yorumu iki dayanaktan da hatalıydı:** ham A1'leri hiç hesaplamamış (üç eşleşmiş
-sayıyı birbiriyle kıyaslamış), ve gürültü tabanını `0,3` **kesir** sanmış (doğrusu **0,3 puan =
-0,003**). Nihai cümlesi tesadüfen savunulabilir bir yere düştü ama **her iki gerekçesi de yanlıştı**.
-Ders: bu repo'da *"puan"* = **yüzde puanı**; sevk talimatlarına birim artık açıkça yazılıyor.
+**Tek paydada (k-yollu, n=40, üç yığın eşleşmiş):** base **0,9525** · `tgta_v1` **0,9563** ·
+`gemini_fl` **0,9813**. Kaynak: `outputs/eval/g1-eslesmis-a1/uc_kol_tek_payda.json`.
+
+#### Ne kurulabilir, ne kurulamaz
+
+✅ **KURULUR:** *"Tuzak 2.4 gerçekti."* base'in görünen A1 üstünlüğünün **%108'i** salt coverage
+seçiciliğiymiş — ortak paydada kayboluyor ve zayıfça tersine dönüyor. FL'ninki **%48**.
+❌ **DÜŞTÜ:** *"base cevapladığında da bizden daha sadık."* Eski raporun bu cümlesi **çürüdü**.
+❌ **KURULAMAZ:** *"biz base'i A1'de geçtik."* 40 kalemin **33'ü berabere**, fark 7 kalemden
+(3 ↔ 4), p = 1,000. A1 ekseni bu örneklemde base ile bizi **ayırmıyor**.
+
+⭐ **Turun tezini güçlendiriyor:** kapatılacak açık **kalite değil, KAPSAMA** — yani **B10**.
+Bu, planın hipotezinin bağımsız bir doğrulaması.
+
+⚠️ **Yayımlanmış tabloya dokundu:** `MODEL_CARD.md` ve `kollar.md` base A1'ini **0,9864** diye
+yayımlıyordu; ikisine de yığın-eşleşmesizlik damgası kondu. `kollar.md`'nin künye satırı
+*"kapı openrouter pinli"* diyordu — **yanlıştı**, düzeltildi.
+
+🚨 **Uygulayıcının ilk yorumu iki dayanaktan da hatalıydı:** ham A1'leri hiç hesaplamamış (üç
+eşleşmiş sayıyı birbiriyle kıyaslamış) ve gürültü tabanını `0,3` **kesir** sanmıştı (doğrusu
+**0,3 puan = 0,003**). Ders: bu repo'da *"puan"* = **yüzde puanı**; sevk talimatlarına birim
+artık açıkça yazılıyor.
 
 ### 🚨 Planda bulunan kusurlar (icra sırasında)
 
@@ -670,9 +686,10 @@ Beklenen: **3 passed**.
 
 → **verify:** çıktıda `3 passed`.
 
-- [ ] **Adım 1.6 — Üç kıyası koş** &nbsp; 🔄 *bir kez koştu, **yeniden koşuluyor**: hakem yığını
-  uyuşmazlığı (İCRA DURUMU §planda bulunan kusurlar #7) yüzünden `base`/`FL` kolları güncel
-  yığınla yeniden puanlanıyor. Eski çıktı `_openai_dogrudan` sonekiyle saklanıyor.*
+- [x] **Adım 1.6 — Üç kıyası koş** &nbsp; ✅ *iki kez koştu: birincisi hakem yığını uyuşmazlığı
+  yüzünden geçersizdi (İCRA DURUMU §kusur 7), `base`/`FL` güncel yığınla yeniden puanlandı
+  ($0,0745) ve kıyaslar yeniden üretildi. Eski çıktı `_openai_dogrudan` sonekiyle duruyor.
+  **İki kıyas işaret değiştirdi.**
 
 Yollar **doğrulandı** (2026-08-06). Üç çıpa kolu aynı künyeden (`cp09-butceli-1024-512`),
 `tgta_v1` ise harness KAPALI M1 koşusundan (`cp3-supurme-ham`).
