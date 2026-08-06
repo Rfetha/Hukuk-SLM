@@ -29,14 +29,31 @@ kütle = (1 − aşırı-red) × A1
 | M1 kütle | 56,7% | **71,6%** | 72,9% |
 | aşırı-red | 0,425 | **0,212** | 0,237 |
 | A1 | **0,9864** | 0,9087 | 0,9561 |
-| M2 Rej | 0,814 | **0,893** | 0,930 |
-| M2b Rej | 0,986 | 0,877 | **1,000** |
+| M2 Rej | 0,803 ᴷ⁴ ~~0,814~~ | 0,833 ᴷ⁴ ~~**0,893**~~ | **0,848** ᴷ⁴ ~~0,930~~ |
+| M2b Rej | **0,961** ᴷ³ ~~0,986~~ | 0,766 ᴷ³ ~~0,877~~ | 0,883 ᴷ³ ~~**1,000**~~ |
 | tok/cevap | 1192 | **714** | — |
 
 *(harness KAPALI · DEV · aynı protokol · [`kollar.md`](../../record/kollar.md) — parite iddiası DEĞİL)*
 
-**Base'in altında olduğumuz iki eksen: A1 (−7,8 p) ve M2b (−10,9 p).** FL karşısında beş
-eksenin dördünde geride, yalnız aşırı-red ve maliyette öndeyiz.
+> 🚨 **BİRİM DAMGASI 2026-08-06 (kusur Ö3-a).** Bu açılış tablosu **emekli birimde** yazılmıştı;
+> aynı belgenin eşik bölümü (§9, `:210` dolayı) 2. dalgada çevrilmişti — belge **kendi içinde iki
+> alete birden** aitti. Eski değerler silinmedi, `~~üstü çizili~~` duruyor.
+> **ᴷ³** = çekinme paydası cevaba **kör** yapıldı ([#57](../../record/research_log/2026-08-06-cekinme-aleti-onarimi.md), K3) ·
+> **ᴷ⁴** = M2 paydası özneye bağlı olmaktan çıkıp **66**'ya eşitlendi
+> ([#58](../../record/research_log/2026-08-06-payda-tekillesmesi.md) · KARAR-4).
+> Kaynak: ⭐ [`kollar.md`](../../record/kollar.md) — çıpa oradadır, burada yeniden türetilmez.
+> A1 ve kütle satırları **etkilenmedi** (A1 cevaplanan-only makro; payda onarımı çekinme
+> eksenindedir).
+
+**Base'in altında olduğumuz iki eksen — referans noktası ÇIPLAK BASE:
+A1 (−7,8 p) ve M2b (−19,5 p ᴷ³ ~~−10,9 p~~).** FL karşısında beş eksenin dördünde geride,
+yalnız aşırı-red ve maliyette öndeyiz.
+
+> 🚨 **TÜRETİLMİŞ NİCELİK DAMGASI (kusur Ö3-a, turun kendi kuralı).** `−10,9 p` emekli
+> girdilerden türemişti (`0,877 − 0,986`). Yürürlükteki girdilerle **`0,766 − 0,961 = −19,5 p`**.
+> Bu belge aşırı-red turunun **teşhis belgesi**: hedef ekseni M2b'deki açığı **8,6 puan eksik**
+> gösteriyordu. `τ_a` v2 kolu bu sayıdan kalibre edilirse **yetersiz** kalibre edilir.
+> ⚠️ FL'e göre açık ayrı bir okumadır ve karıştırılmamalıdır: `0,766 − 0,883 = −11,7 p`.
 
 ---
 
@@ -75,9 +92,14 @@ erişimin en çok battığı belirsiz sorularda **en az** çekiniyor (%5,6 ↔ %
 `τ_a` genliği tek bir kaldıraç ve **B4 ile B10 onun iki ucunda**:
 
 ```
-genlik ↑ :  M2b Rej 0,877 → 0,987  ✅ (B4'ün istediği)
+genlik ↑ :  M2b Rej 0,766 → 0,987  ✅ (B4'ün istediği)     [ᴷ³; eski birimde 0,877 → 0,987]
             aşırı-red 0,212 → 0,575 ❌ (B10'u yıkar)
 ```
+
+> 🚨 **DAMGA 2026-08-06 (Ö3-a).** Soldaki uç ᴷ³ ile çevrildi (`tgta_v1` 0,877 → **0,766**);
+> sağdaki uç (`τ_a` v1 = 0,987) **değişmedi** — kör payda o kolun oranını hareket ettirmedi
+> ([`kollar.md`](../../record/kollar.md)). Takasın **yönü** aynı, **genliği büyüdü**:
+> ~~+11,0 p~~ → **+22,1 p** (`tgta_v1`'e göre). Aşırı-red satırı payda onarımından etkilenmez.
 
 Genlik bir çare değil, bir **takas**. İkisini birden hareket ettirebilecek tek şey `τ_a`'nın
 **ne öğrendiği**. Bu, `sprint3-part1`'in *"birleştirmek ölçülmemiş varsayımı gerçeğe çevirir"*
