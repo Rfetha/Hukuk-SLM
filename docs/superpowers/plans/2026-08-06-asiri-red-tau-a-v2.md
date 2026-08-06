@@ -1579,8 +1579,15 @@ git commit -m "G7: KOL KAPISI — τ_a v2 tek başına (aşırı-red <x> · M2b 
 source ~/code/global_venv/bin/activate
 python scripts/merge_ties.py --base Qwen/Qwen3.5-4B \
   --adapter tg=outputs/tg_v1 --adapter ta=outputs/ta_v2 \
-  --no-norm-balance --out models/merged/tgta_v2
+  --no-norm-balance --trim-k 0.20 --lam 1.0 \
+  --out models/merged/tgta_v2 \
+  --kunye models/merged/tgta_v2/KUNYE_tgta_v2.json
 ```
+
+⚠️ **`--kunye` varsayılanı BOŞ** (imza satır 65) — verilmezse merge künyesi (kol normları, TIES
+istatistikleri) **hiç yazılmaz** ve `‖τ‖` kaydı kaybolur. `--trim-k`/`--lam` varsayılanları zaten
+0,20/1,0 ama **açıkça yazılır**: bunlar v1 ile eşleşmesi gereken merge parametreleri ve
+"varsayılan buydu" demek, künyeden okunabilir olmaktan zayıftır.
 
 ⚠️ `--no-norm-balance` = ham TIES ([ADR-0052](../../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)).
 trim_k 0,2 · λ 1,0 · eşzamanlı 2-yollu — **v1'in birebir aynısı**.
