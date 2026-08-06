@@ -9,6 +9,12 @@
 **Önceki halka:** [#57](2026-08-06-cekinme-aleti-onarimi.md) — K3, paydayı cevaba kör yapmıştı
 **Yeni tuzaklar:** **2.17** (farklı sınavlar aynı payda kaydını paylaşır) · **2.18** (aynı ölçümün ikinci aleti)
 
+> 🚨 **BU KAYDIN §1 REÇETESİ AYNI GÜN GERİ ALINDI.** "Anahtar tam kaynak metni üzerinde"
+> reçetesi KARAR-4 m.1 ve [ADR-0060](../../adr/0060-onbellek-anahtari-hakem-istemine-esitlendi.md)
+> ile **tersine çevrildi**; yürürlükteki reçete anahtarın **hakemin gördüğü** metne eşitlenmesidir.
+> Bu kaydı tuzak 2.17'nin kaynağı olarak açıyorsan §1 ve §10'daki damgaları **oku**: teşhis ayakta,
+> çare değişti. Eski metin silinmedi, üstü çizildi.
+
 ---
 
 ## Özet — bir cümlede
@@ -32,8 +38,22 @@ id=12:  k=4 uzunluk 4.461 · k=10 uzunluk 10.281 · ilk 3.500 AYNI · kaynak say
 
 Özet dosyası bunu gizlemiyordu, **övünüyordu**: `"gecerlilik_devralinan": 15`.
 
-**Onarım:** anahtar **tam** kaynak metni üzerinde; klip **yalnız hakeme giden istemi** kırpar.
-Kusuru kilitleyen test (`..._ayirt_etmez`) **tersine çevrildi**.
+~~**Onarım:** anahtar **tam** kaynak metni üzerinde; klip **yalnız hakeme giden istemi** kırpar.
+Kusuru kilitleyen test (`..._ayirt_etmez`) **tersine çevrildi**.~~
+
+> 🚨 **DAMGA 2026-08-06 — BU REÇETE AYNI GÜN TERSİNE ÇEVRİLDİ (KARAR-4 m.1 ·
+> [ADR-0060](../../adr/0060-onbellek-anahtari-hakem-istemine-esitlendi.md)).** Üstü çizili metin
+> **kayıt olarak durur, uygulanmaz.** Yürürlükteki reçete: anahtar **hakemin GÖRDÜĞÜ** metin
+> üzerinde — `sha256(soru ‖ kaynak[:SOURCE_CLIP])`, `score_abstention.hakem_kaynagi()`.
+> Gerekçe: tam-metin anahtarı tuzak 2.17'yi kapatırken **daha büyüğünü** açıyordu — hakemin
+> ayırt edemediği bir farka göre bölünen anahtar *aynı istem → aynı cevap* değişmezini kırar
+> (ölçüldü: 5.363 istemin 65'i >1 anahtara · 83 garantili gereksiz çağrı). Üstelik onarımın
+> sayısal karşılığı **yoktu**: 15 çakışan çift yeniden ödendi, **15/15 aynı hüküm**.
+> Tuzağın gerçek çaresi **klibi büyütmektir** (≈$0,30, `docs/open_questions.md`); ödenene kadar
+> `k=10`'un paydası **TANIMSIZ** damgasıyla taşınır (ADR-0057), hüküm kurulmaz.
+> Testler de tersine çevrildi: `test_gecerlilik_anahtari_HAKEM_ISTEMINE_ESIT` ·
+> `test_hakem_isteminden_TASAN_METIN_ANAHTARA_GIRMEZ`.
+> ⚠️ Çelişki **iki yerde** işaretli: burada ve `docs/record/yurutme-tuzaklari.md` tuzak **2.17**.
 
 **Önbellek göçü — sezgi değil, özdeşlik.** Hakem istemi `kaynak[:3500]` ve bu dalgada
 değişmedi; eski kayıt, o öneki paylaşan **her** tam metin için hakemin cevabının ta kendisi.
@@ -236,7 +256,7 @@ yanlış-pozitif üretir). Sınır bir **`xfail(strict=True)`** testiyle çizild
 
 | ne | niye |
 | :--- | :--- |
-| `gecerlilik_anahtari` → **tam** kaynak | tuzak 2.17 |
+| ~~`gecerlilik_anahtari` → **tam** kaynak~~ 🚨 **TERSİNE ÇEVRİLDİ aynı gün** → anahtar **hakemin gördüğü** metin (`kaynak[:SOURCE_CLIP]`) | ~~tuzak 2.17~~ → KARAR-4 m.1 · [ADR-0060](../../adr/0060-onbellek-anahtari-hakem-istemine-esitlendi.md); gerekçe §1'deki damgada. Tuzak 2.17'nin **teşhisi** ayakta, **çaresi** değişti |
 | `payda_tanimdan_gecerli(mode)` | ADR-0048 m.2 aletin **içinde**; TANIM kararı içerik-adresli önbelleğe **sızmaz** |
 | `--pay-kaynagi {hakem,onceki}` | paydanın etkisini payın gürültüsünden ayırmak (k-2) |
 | `--payda-kaynagi {hakem,onceki}` | yalnız dedektör değiştiğinde paydayı sabit tutup `reject_exact`i tazelemek; devralınan payda özette **damgalanır** |
