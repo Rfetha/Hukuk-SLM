@@ -89,7 +89,9 @@ raw base ──┬── LoRA SFT   (grounding)   → τ_g
 Two skills that **actively fight each other**: training for grounding collapses
 abstention (measured: 0.961 → 0.506 ᴷ³), and training for abstention collapses
 grounding (56.7% → 41.2%). Neither branch is usable alone. The merge restores
-both — grounding fully preserved, 71% of the abstention collapse repaired.
+both — grounding fully preserved, **57%** ~~71%~~ of the abstention collapse repaired
+*(ratio re-derived 2026-08-06 from the ᴷ³ denominators: `(0.766−0.506)/(0.961−0.506)`;
+[`MODEL_CARD.md`](MODEL_CARD.md) carries the note).*
 
 ## Quick start
 

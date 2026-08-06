@@ -202,9 +202,16 @@ We expected the small branch to be erased without normalization and pre-register
 norm balancing as the main setting. **The measurement said the opposite:**
 normalizing pushed `τ_a` to ~4.9× its trained amplitude, crushed grounding
 (71.4% → 53.4%) and at higher scale made the model degenerate into repetition
-loops. Raw TIES preserved grounding fully **and** repaired 71% of the branch's
+loops. Raw TIES preserved grounding fully **and** repaired **57%** ~~71%~~ of the branch's
 abstention collapse (0.506 → 0.766 ᴷ³; the jump is unchanged at +0.26). The prescription was reversed after
 measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md).
+
+> ⚠️ **Why the repair ratio moved but the jump did not** (corrected 2026-08-06, defect K2).
+> The ratio is `(merge − τ_g) / (base − τ_g)`, so it moves when *any* of the three inputs is
+> re-scored. The blind-denominator fix (ᴷ³) re-scored all three: old `(0.877−0.607)/(0.986−0.607)
+> = 71.2%` → current `(0.766−0.506)/(0.961−0.506) = **57.1%**`. The inputs above had been
+> updated in place; this **derived** figure had not — it stood 14 points **in our favour**
+> underneath a ᴷ³ stamp that certified it as reviewed. Harmful precisely because it was stamped.
 
 ## Known limitations
 

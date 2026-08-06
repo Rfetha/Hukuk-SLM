@@ -89,7 +89,16 @@ ve o protokol artık canlı değil (ADR-0043 m.4). Kaynak:
 | 2 | **A1 düşüşü** (cevapladığında hata) | 0.973 → 0.847 | 0.986 → **0.866** | 🟡 **duruyor** — ne kadarı meta-iddia artefaktı, CP1 söyleyecek |
 | 3 | **RAFT şablonunun meta-iddiaları** (desteksiz iddiaların %58'i) | — | — | 🟡 hakem tarafında (ADR-0041, CP1) |
 | 4 | **Akıl yürütme izi İngilizce** | 8/8 | 8/8 | 🟡 ürün vaadi *"okunabilir muhakeme"* karşılanmıyor; izli eğitim verisi gerektirir |
-| 5 | 🆕 **M2b çöküşü** — gold yokken distractor'lardan cevap uyduruyor | 1.000 ✅ | **0.607** (fabrikasyon 0.393) | 🔴 **EN GÜÇLÜ sebep** — üstelik tam kendi eğitim ailesinde (RAG_MULTI) |
+| 5 | 🆕 **M2b çöküşü** — gold yokken distractor'lardan cevap uyduruyor | 1.000 ✅ | **0.506** ᴷ³ (fabrikasyon **0.494**) ~~0.607 / 0.393~~ | 🔴 **EN GÜÇLÜ sebep** — üstelik tam kendi eğitim ailesinde (RAG_MULTI) |
+
+> ⚠️ **ᴷ³ 2026-08-06 (kusur Ö4) — bu satır aynı belgenin `τ_g v1` satırıyla ÇELİŞİYORDU.**
+> Burada `τ_g`'nin bütçeli M2b'si **0.607** (damgasız, eski alet), aşağıdaki kol tablosunda
+> **0.506ᴷ³**; aynı belge, aynı nicelik, iki alet. Artefakt sicili *"adı olmayan artefakt
+> kullanılamaz"* diyen belgedir — kendi içinde çelişemez. Yürürlükteki değer
+> `outputs/eval/cp09-butceli-1024-512/abst_m2b_tg_v1_th_summary.json`'dan okundu
+> (payda 77/80). Eski sayılar denetim izi olarak duruyor; çeviri tablosu :193'te.
+> ⚠️ **`thinking-off` sütununa DOKUNULMADI**: o ayrı bir rejim (ADR-0043 m.4 ile emekli) ve
+> yeniden puanlanmadı — ᴷ³ yalnız bütçeli sütunu kapsar.
 
 **Ne değişti:** eski tablonun *"en güçlü sebep"*i (M5 ihlali) bütçeli kipte **ortadan kalktı**;
 yerine M2b geldi. Yani `τ_g` v2'nin gerekçesi artık *"ezberi azalt"* değil **"kaynak yokken sus"**.
@@ -197,6 +206,13 @@ cevaba kör ve kollarda birebir aynı (`valid_traps` bu sınavda 61…80 → **7
 base `0,986 → 0,961` · biz `0,877 → 0,766` · Gemini FL `1,000 → 0,883`.
 ⚠ **M2/A1 sütunları yeniden puanlanmadı**, hâlâ modele bağımlı paydayı taşıyor.
 
+> 🚨 **ᴷ³ DAMGASININ KAPSAMI — TÜRETİLMİŞ NİCELİKLER DE DÂHİL** (netleştirildi 2026-08-06,
+> kusur K2). Damga *"bu sayı yeni aletle üretildi"* demektir ve **ondan hesaplanan her orana
+> da uzanır**. Kusur tam buradan çıktı: girdiler (0,986→0,961 · 0,607→0,506 · 0,877→0,766)
+> yerinde güncellenmiş, onlardan türeyen **onarım oranı** (%71,2 → %57,1) güncellenmemiş, ama
+> satır yine de ᴷ³ taşıyordu — yani "gözden geçirildi" diye tasdik edilmiş bir yanlış sayı.
+> **Kural: bir girdiye ᴷ³ vururken, o girdiden hesaplanan oran/fark/yüzdeleri `grep` ile tara.**
+
 **Ölçülen — hepsi aynı protokol, hepsi geçerli koşu** (thinking on · 1024+512 · seed 3407 ·
 chunk 900 · Q4_K_M + llama-server · DEV havuzu · hakem gpt-4o-mini):
 
@@ -220,7 +236,16 @@ Gemini 3.1 FL      72,9%      0,237   0,9561   0,930    1,000           —
 ```
 
 **Ne başardı:** `τ_g`'nin grounding'ini **tamamen** korurken (71,4% → 71,6%) onun M2b
-çöküşünün **%71'ini onardı** (0,506 → 0,766 ᴷ³; sıçrama **+0,26**, değişmedi). Ayrıca öz-sonlandırma geri geldi (M1'de 25/80
+çöküşünün **%57'sini** ~~%71'ini~~ onardı (0,506 → 0,766 ᴷ³; sıçrama **+0,26**, değişmedi).
+
+> ⚠️ **Onarım oranı neden oynadı ama sıçrama oynamadı** (düzeltildi 2026-08-06, kusur K2):
+> oran `(merge − τ_g) / (base − τ_g)`, yani **üç girdinin herhangi biri** yeniden puanlanınca
+> kayar. Kör-payda onarımı (ᴷ³) üçünü de yeniledi: eski `(0,877−0,607)/(0,986−0,607) = %71,2`
+> → yürürlükteki `(0,766−0,506)/(0,961−0,506) = **%57,1**`. Girdiler yerinde güncellenmişti,
+> bu **türetilmiş** nicelik güncellenmemişti — üstelik "gözden geçirildi" diye tasdik eden
+> ᴷ³ damgasının **altında** duruyordu. Damgasız olmaktan zararlıydı.
+
+Ayrıca öz-sonlandırma geri geldi (M1'de 25/80
 zorunlu kapatma, base 80/80) ve cevap başına maliyet base'e göre **%40 düştü**.
 
 > 🛑 **Bu bir PARİTE İDDİASI DEĞİLDİR.** Gemini sütunu **çıpa**dır: harness KAPALI (retriever ·
