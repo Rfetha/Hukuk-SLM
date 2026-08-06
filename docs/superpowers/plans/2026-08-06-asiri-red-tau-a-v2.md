@@ -166,6 +166,38 @@ artık açıkça yazılıyor.
    düzenlemeden sonra kaydı; ajan içerik eşleşmesiyle çalıştığı için sonuç etkilenmedi.
    **Ders:** sevklerde satır no değil **metin alıntısı** verilir.
 
+### 💰 İstem-önbelleği değerlendirildi — AÇILMADI (2026-08-06, insan sorusu)
+
+**Soru:** *"cache açabiliyorsan aç ki daha az masraf etsin."* **Cevap: bu turda hayır**, ve gerekçe
+maliyet değil.
+
+**Ölçüm** (`groundedness.py:148` + istem uzunlukları sayıldı):
+
+| çağrı | paylaşılan sistem istemi | değişken kullanıcı mesajı | toplam |
+| :--- | ---: | ---: | ---: |
+| `extract` | 528 tok | ~300 tok | **~828** |
+| `verify` | 668 tok | ~700 tok | ~1368 |
+
+🚨 **Eşik:** OpenAI otomatik istem-önbelleği yalnız **≥1024 token** istemlerde çalışır →
+`extract` çağrısı **hiç önbelleklenmiyor**. Yalnız `verify`'ın 640 token'lık ön eki
+önbelleklenebiliyor. Gerçekleşen tasarruf ≈ hakem faturasının **%11'i** → turun kalanında
+**~$0,03**.
+
+**Üretim yolunda (rakip çıkarımı) kazanç daha da küçük:** paylaşılan ön ek ~300 token, girdinin
+geri kalanı **soru + 10 kaynak parçası (~3000 token)** ve bunlar her kalemde farklı → ~%3.
+
+⛔ **Açmama sebebi maliyet değil, YASAK BÖLGE.** Panel zaten **%5,3 isabet** gösteriyor: otomatik
+önbellek kod değişmeden çalışıyor. Oranı yükseltmenin tek yolu **hakem isteminin yapısını
+değiştirmek** (iki çağrıyı birleştirmek / sistem istemini eşiğin üstüne çıkarmak). Hakem istemi bu
+repo'daki **her sayının tanımıdır** — bugün ölçtük: ADR-0041'in isteme eklenmesi base'in A1'ini
+**2,77 puan** oynattı. Dokunmak **tüm çıpaların yeniden türetilmesi** demek.
+
+**Ne zaman yapılır:** tur arası bile yetmez — **hakem isteminin zaten değiştiği** bir turda,
+çıpalar nasılsa yeniden türetilirken. Borç olarak kaydedilir.
+
+**Bugünkü gerçek tasarruf kalemi zaten $0:** eğitim dışındaki her çıkarım **yerel** (RTX 5070);
+OpenRouter'a giden yalnız hakem ve rakip.
+
 ### 🤔 Bilinçli bırakılan — gerekçesiyle
 
 `0/118` paydası üç yerde daha duruyor (`ROADMAP.md:298` · `docs/adr/README.md:99` · `CLAUDE.md`).
