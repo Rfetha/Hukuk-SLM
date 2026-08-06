@@ -195,8 +195,8 @@ Diğer ikisi **ablasyon**, versiyon numarası almazlar:
 
 | varyant | geri ölçek | artefakt | M1 kütle | M2 Rej | M2b Rej | durum |
 | :--- | ---: | :--- | ---: | ---: | ---: | :--- |
-| **ham TIES** | — | `tgta_v1` | **71,6%** | 0,893 ⚠ | **0,766** ᴷ³ | 🟢 **ANA SONUÇ** |
-| norm-dengeli `min` | 1,181 | `tg_ta_min` | 53,4% | 0,934 ⚠ | 0,987 ᴷ³ *(değişmedi)* | ablasyon |
+| **ham TIES** | — | `tgta_v1` | **71,6%** | **0,833** ᴷ⁴ ~~0,893~~ | **0,766** ᴷ³ | 🟢 **ANA SONUÇ** |
+| norm-dengeli `min` | 1,181 | `tg_ta_min` | 53,4% | **0,909** ᴷ⁴ ~~0,934~~ | 0,987 ᴷ³ *(değişmedi)* | ablasyon |
 | norm-dengeli `ortalama` | 5,826 | `tg_ta_nb` | — | — | — | 🛑 dejenere, koşu geçersiz |
 
 ᴷ³ **M2b 2026-08-06'da yeniden puanlandı.** Eski sayılar, hakemin **modelin cevabına bakarak**
@@ -204,7 +204,12 @@ verdiği bir paydayla üretilmişti — yani aynı sınav her modelde farklı pa
 cevaba kör ve kollarda birebir aynı (`valid_traps` bu sınavda 61…80 → **77**). Eski değerler
 [`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md)'de duruyor; çeviri tablosu orada:
 base `0,986 → 0,961` · biz `0,877 → 0,766` · Gemini FL `1,000 → 0,883`.
-⚠ **M2/A1 sütunları yeniden puanlanmadı**, hâlâ modele bağımlı paydayı taşıyor.
+ᴷ⁴ **M2 sütunu 2026-08-06'da yeniden puanlandı** (KARAR-3, hakem ≈$0,11): aynı 70 kalemlik
+sınavda on kol **55-63** arası payda gösteriyordu, artık hepsi **66/70**. ⚠️ **Düzeltme BİZİM
+LEHİMİZE ve öyle raporlanıyor** — en çok kayan özne RAKİP (Gemini −8,2 p ↔ biz −6,0 p),
+açıklık 3,7 → **1,5 puana** daralıyor. Kaynak:
+[`outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json`](../../outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json).
+⚠ **A1 sütunu yeniden puanlanmadı** — `valid_trap`ten etkilenmiyor, ayrı eksen.
 
 > 🚨 **ᴷ³ DAMGASININ KAPSAMI — TÜRETİLMİŞ NİCELİKLER DE DÂHİL** (netleştirildi 2026-08-06,
 > kusur K2). Damga *"bu sayı yeni aletle üretildi"* demektir ve **ondan hesaplanan her orana
@@ -228,11 +233,13 @@ chunk 900 · Q4_K_M + llama-server · DEV havuzu · hakem gpt-4o-mini):
 
 ```
                  M1 kütle  aşırı-red      A1   M2 Rej  M2b Rej   tok/cevap (M1)
-çıplak base        56,7%      0,425   0,9864   0,814    0,986        1192
-tgta_v1 (BİZ)      71,6%      0,212   0,9087   0,893⚠   0,766ᴷ³       714
-Gemini 3.1 FL      72,9%      0,237   0,9561   0,930    1,000           —
-τ_g v1             71,4%      0,175   0,8658   0,873⚠   0,506ᴷ³         —
-τ_a v1             41,2%      0,575   0,9697   0,984    0,987          ~1084
+çıplak base        56,7%      0,425   0,9864   0,803ᴷ⁴  0,961ᴷ³      1192
+tgta_v1 (BİZ)      71,6%      0,212   0,9087   0,833ᴷ⁴  0,766ᴷ³       714
+Gemini 3.1 FL      72,9%      0,237   0,9561   0,848ᴷ⁴  0,883ᴷ³         —
+τ_g v1             71,4%      0,175   0,8658   0,833ᴷ⁴  0,506ᴷ³         —
+τ_a v1             41,2%      0,575   0,9697   0,955ᴷ⁴  0,987          ~1084
+
+ᴷ⁴ eski (özneye bağlı payda 55-63): base 0,814 · biz 0,893 · Gemini 0,930 · τ_g 0,873 · τ_a 0,984
 ```
 
 **Ne başardı:** `τ_g`'nin grounding'ini **tamamen** korurken (71,4% → 71,6%) onun M2b

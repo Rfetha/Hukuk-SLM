@@ -86,13 +86,37 @@ biçimde yukarıda ve base'in 0.986'sının %90'ının üstünde** olmalı → *
 > Eski 0,887 eşiğine karşı da **düşüyor**. Paydalar eşit (77 ↔ 77) → kıyas geçerli.
 > Ortadaki satır emekli bir aletin sayısıdır (900 klipi kategori hatası — #46'daki damga).
 >
-> **Yorum kuralının uygulanması:** 1. gözlemin (`τ_a` tekil M2) paydası bu dalgada
-> **onarılmadı** — m2 hâlâ modele bağımlı, bedeli ≈$0,11. Yani satır ya `✅ ❌` ya `❌ ❌`;
-> **her iki hâlde de karar DUR.** *"Güçlü yeşil"* okuması bugünkü ölçümle **yoktur** ve
-> CP4-CP5 harcaması bu kapıdan **yetki almıyor**.
+> **Yorum kuralının uygulanması:** ~~1. gözlemin paydası bu dalgada onarılmadı → satır ya
+> `✅ ❌` ya `❌ ❌`~~ → **ÖDENDİ VE TÜRETİLDİ (KARAR-3, 2026-08-06, hakem $0,1054).**
+> *"Güçlü yeşil"* okuması bugünkü ölçümle **yoktur** ve CP4-CP5 harcaması bu kapıdan
+> **yetki almıyor**.
 >
 > Türetme: `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json` ·
-> [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md)
+> `outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json` ·
+> [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md) ·
+> [#59](../record/research_log/2026-08-06-m2-paydasi-ve-karar-4.md)
+
+> ## ✅ 1. GÖZLEMİN HÜKMÜ — TÜRETİLDİ, **GEÇTİ** (2026-08-06, KARAR-3)
+>
+> `m2` paydası on koşuda birden yeniden ödendi (aynı 70 kalemlik sınav; payda **55-63 → 66/70**,
+> her kolda **eşit** — kendi kendini doğrulayan sınav). Ön-kayıtlı olan **formül**; sayı bugünkü
+> base ölçümünden türer. ⛔ ADR-0050 gereği eşiğe/çarpana/formüle **hiç dokunulmadı**.
+>
+> | bacak | formül | çıpa | eşik | `τ_a` tekil | hüküm |
+> | :--- | :--- | ---: | ---: | ---: | :--- |
+> | M2 Rej | `base M2 + 0,12` | base **0,803** | **0,923** | **0,955** | ✅ **GEÇTİ** (+3,2 p) |
+> | muhafız M1 A1 | `0,90 × base A1` | base **0,9777** | **0,8799** | **0,9697** | ✅ **GEÇTİ** |
+> | *(ön-kayıtlı ham sayılara karşı)* | — | — | 0,934 · 0,888 | 0,955 · 0,9697 | ✅ **ikisi de** |
+>
+> 🚨 **Bu ✅ ilk kez BİRİM-TUTARLI.** Sprint 2 kapanışındaki `0,984 ≥ 0,923` kıyası **karışık
+> birimdeydi**: pay özneye bağlı paydadan (63/70), eşik [#46](../record/research_log/2026-07-30-cp2r-kor-payda.md)'nın
+> kör çıpasından geliyordu. Şimdi iki taraf da aynı aletten okunuyor.
+>
+> ### § 3'ün ön-kayıtlı tablosunda satır: **`✅ ❌` → DUR**
+> Tablonun kendi metniyle: *"Kol tek başına iyi ama birleşince taşımıyor; iç iddianın öncülü
+> sorunlu."* Türetme hükmü **değiştirmedi** (iki olası satırda da DUR'du) ama **hangi** satır
+> olduğunu belirledi — ve bu teşhis: sorun `τ_a`'nın kalitesi **değil**, merge'in onu
+> **taşımaması**. Kapının §Sonuç'ta vaat ettiği *"kaldı ama neden kaldı"* teşhisi tam bu.
 
 ### 4. CP2 hasadı **iki tipi birden** toplar
 

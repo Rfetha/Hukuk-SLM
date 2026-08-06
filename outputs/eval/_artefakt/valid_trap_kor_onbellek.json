@@ -1,8 +1,8 @@
 {
   "olcum": "cevaba KÖR valid_trap — içerik-adresli, kalem düzeyinde (ADR-0048 · K3)",
   "anahtar": "sha256(soru + NUL + kaynak[:SOURCE_CLIP])[:24]  — KARAR-4 m.1, 2026-08-06 (hakem istemine EŞİT; K-1'in TAM-metin anahtarı geri alındı)",
-  "goc_notu": "2026-08-06 KARAR-4 m.1: önbellek anahtarı hakem istemine geri eşitlendi (klipli). `.ONCEKI-KLIPLI-ANAHTAR` yedeği (250 kayıt) canlı dosyayla BİRLEŞTİRİLDİ — kesişim 162, değer uyuşmazlığı 0, kayıp 0. K-1 döneminin TAM-metin anahtarlı 103 kaydı yeni anahtarla erişilemez ama SİLİNMEDİ (kayıt tahrif edilmez).",
-  "n": 353,
+  "yigin": "her kayıt `hakem` + `kapi` taşır; okuma yolu uyuşmazlıkta DURUR (K1)",
+  "n": 423,
   "cache": {
     "ad5dcf18e59684cc7cf7a4c3": {
       "gecerli": true,
@@ -2121,8 +2121,426 @@
       "reason": "Kaynak 1, bilirkişilik görevinin kime verilebileceğini açıklıyor.",
       "hakem": "openai/gpt-4o",
       "kapi": "openrouter"
+    },
+    "dd72e3dcbf1a0957d5d33854": {
+      "gecerli": true,
+      "reason": "Kaynak metin işverenin yükümlülüğünün hangi durumlarda geçerli olduğunu açıkça belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "7d98c0644d9c4bded405032d": {
+      "gecerli": true,
+      "reason": "Kaynak metin ürün ayıpları veya kullanma amacıyla ilgili bir bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "5a8e884db8809a0906478ddc": {
+      "gecerli": true,
+      "reason": "Metin, ret kararına itiraz edilip edilemeyeceği hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "df58afb360aa54dff196b7f7": {
+      "gecerli": true,
+      "reason": "Kaynak metin evlendirme memurunun evlenme izni verme yetkisi hakkında bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "cbdb0adec12ff8b7c2853a08": {
+      "gecerli": true,
+      "reason": "Kaynak metin tebligat adresi bildirmenin zorunlu olduğu durumları açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "a5d5ea4aa6440aa4b00fdb57": {
+      "gecerli": true,
+      "reason": "Kaynak metin, mahkemenin yasal danışman atanması talebiyle ilgili bir bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "084e8e2831239c519f1d46ae": {
+      "gecerli": false,
+      "reason": "Metin, yargılamanın yenilenmesi için geçerli durumları açıkça listeliyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "597eed768c42dc7d1d93da3d": {
+      "gecerli": true,
+      "reason": "Metin, başkasının hayatını tehlikeye atmanın cezası hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "703e30de9dfaf62a9418e6a3": {
+      "gecerli": true,
+      "reason": "Kaynak metin müflisin mal satışı ve alıcının yapabilecekleri hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "152fb96352ae79ec4343b87d": {
+      "gecerli": true,
+      "reason": "Metin, işyerlerinin faaliyet konularının kanuna etkisi hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "179246c9bed4014ec941adc7": {
+      "gecerli": true,
+      "reason": "kaynak metin akademik unvan almanın suç olup olmadığını cevaplamıyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "34eb92729d27d309dae8820b": {
+      "gecerli": true,
+      "reason": "Metin, devlete ait yargılama giderlerinin neye göre yerine getirileceğini açıkça belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "c55360d30f172daccfdb9065": {
+      "gecerli": false,
+      "reason": "Metin, kazancın nasıl paylaşılacağını sözleşme hükümlerine göre açıklar.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "006cddc94fa6585d569a33e0": {
+      "gecerli": true,
+      "reason": "kaynak metin sorunun cevabını içermiyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "2e112a2f1aac12359345d0d3": {
+      "gecerli": true,
+      "reason": "Kaynak metin, mücbir sebep dışında ücretin ödenmemesi durumunda ne olacağına dair bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "849ae9053bb4341d6a3a9b86": {
+      "gecerli": true,
+      "reason": "Metin, kiracının icra takibinden ne zaman haberdar olacağına dair bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "bbc16031244fdc0257cb777f": {
+      "gecerli": true,
+      "reason": "Kaynak metin sigorta bedelinin bireysel olarak yaptırılması durumunu açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "91b9d296f03a32d89c3f715f": {
+      "gecerli": true,
+      "reason": "Metin müdafilik şartlarının nasıl belirlendiğini açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "faa378214becf55a950f339f": {
+      "gecerli": true,
+      "reason": "Kaynak, ticari defterlerin tamamının sunulup sunulmayacağına dair doğrudan bir cevap içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "235f054652fd0eaf50c6b927": {
+      "gecerli": true,
+      "reason": "Kaynak metin aile vakfı kurmak için yapılacak harcamalar hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "b28253461ea34e764da5d647": {
+      "gecerli": true,
+      "reason": "Kaynak metin vakıf yönetiminde değişiklik yapmak için gerekenleri açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "f82a02752958356b82df839d": {
+      "gecerli": true,
+      "reason": "Kaynak metin, borçlu olan eşin mal varlığına nasıl ulaşılacağına dair bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "b12b56b45bb1b29859b12502": {
+      "gecerli": true,
+      "reason": "Metin, mirası reddettikten sonra sorumluluk kalıp kalmadığını açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "a17afd9f3e78db4ed2d9af8e": {
+      "gecerli": true,
+      "reason": "Metin, borçlunun kimlik bilgilerini verme zorunluluğuna dair bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "3ad14d4dd33df861bb9d9516": {
+      "gecerli": true,
+      "reason": "Metin, kesin hüküm sayılma koşullarını açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "235328b047261acb8cbe4421": {
+      "gecerli": true,
+      "reason": "kaynak metin soruyla ilgili bilgi içermiyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "90db3a539df7973c289a8cf3": {
+      "gecerli": true,
+      "reason": "Kaynak metin yetkili makamın aldığı tedbirler hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "d210de25f01c42a01ffa3988": {
+      "gecerli": true,
+      "reason": "Metin, borçlu iflas ederse alacaklının ne yapması gerektiğini açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "031a87e44bf0f5b2f2088850": {
+      "gecerli": true,
+      "reason": "kaynak metin ödünç alınan paranın geri verilmesi için tarih belirleme gerekliliğini açıklamıyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "d4c13fa5e29ba52247e0d268": {
+      "gecerli": true,
+      "reason": "kaynak metin ayıplı parçaların diğer parçaları etkilemesi durumunu ele almıyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "96c49ca4784231ad1f7764fe": {
+      "gecerli": true,
+      "reason": "Kaynak metin, borçlunun borcunu zamanında yerine getirmesi durumunda ne olacağını açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "1be36f277a9f91a9e579489b": {
+      "gecerli": true,
+      "reason": "kaynak metin yapı ruhsatı olmadan konut satışı hakkında bilgi içermiyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "f5790c1875c5656efd9fdc53": {
+      "gecerli": true,
+      "reason": "metin, alacağın terkini hakkında dava kazanılması durumunda ne olacağına dair bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "340f3f586544ac3b6e5235a7": {
+      "gecerli": true,
+      "reason": "Kaynak metin mağdurun on iki yaşından küçük olması durumunda uygulanacak cezayı belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "37674df7f99393febf57ac9b": {
+      "gecerli": true,
+      "reason": "Kaynak metin, tüketicinin ölüm veya kazanç elde edememe durumunda sözleşmeden dönme hakkını ele almıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "5fabffbcdf605680064de53f": {
+      "gecerli": true,
+      "reason": "kaynak metin kefilin ne yapması gerektiğini doğrudan açıklamıyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "d46993626c15c83c8ede78bc": {
+      "gecerli": true,
+      "reason": "Metin, ortakların karar alırken nelere dikkat etmesi gerektiğini belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "7ee525129e1d9b7471f80da1": {
+      "gecerli": true,
+      "reason": "Metin, garanti belgesi olmadan mal satılıp satılamayacağı hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "fb502dd5d8c094803f0a948b": {
+      "gecerli": true,
+      "reason": "metin kovuşturma evresinde görevli mahkemeyi belirtmiyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "0d15d42e93cb2b4596b601fb": {
+      "gecerli": true,
+      "reason": "Kaynak metin malvarlığının terkini veya konkordatoda ne anlama geldiği hakkında bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "da5bab539285066c0532ffcf": {
+      "gecerli": true,
+      "reason": "metin koruma tedbirlerinin nasıl bir kanunla düzenlendiğini belirtmiyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "932aacd494b03f648a612f4f": {
+      "gecerli": true,
+      "reason": "metin faiz oranını kimin belirlediğini açıkça belirtmiyor",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "889c63d2b1de451cb3db2920": {
+      "gecerli": true,
+      "reason": "Metin, iş müfettişlerinin iş yerini durdurma yetkisine dair bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "b5a49bc2a14bfbd854000cd6": {
+      "gecerli": true,
+      "reason": "Kaynak metin adli yardım talebinin nereden yapılacağına dair bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "5a8bd0ade4cd0d4fe9421109": {
+      "gecerli": true,
+      "reason": "Kaynak metin, eşteki eksiklikler durumunda ne yapılması gerektiğini doğrudan cevaplamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "fedbd0f12acb3a3c90443848": {
+      "gecerli": true,
+      "reason": "Metin konfederasyon tüzüğünün işlevini açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "bc71eee643bb5ad65e8e845b": {
+      "gecerli": true,
+      "reason": "Metin, eski hâle getirme istemi kabul edilene kadar ne olacağı hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "1294cf2e7797677c775b14d3": {
+      "gecerli": false,
+      "reason": "Kaynak, vasiyetname ile yapılacak tasarrufun saklı paylar dışında kalan kısımda yapılabileceğini belirtiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "0991b5e9360a3420c185e04f": {
+      "gecerli": true,
+      "reason": "Kaynak metin yedek mirasçı atamanın zorunlu olup olmadığını açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "40564faf84b116d192793b32": {
+      "gecerli": true,
+      "reason": "Metin, sözleşmede ceza olmadığında ne yapılabileceğini doğrudan cevaplamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "f4ed3468102cdd731f2fd97a": {
+      "gecerli": true,
+      "reason": "Metin el koyma işlemi hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "852467395017b3867add5689": {
+      "gecerli": true,
+      "reason": "Metin konutta haciz yapılırken özel bir durumdan bahsetmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "51e2b3b263e7055326091aaa": {
+      "gecerli": true,
+      "reason": "Metin, hâkimin nasıl bir kural koyacağını açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "c61740966404bf75bb786d28": {
+      "gecerli": true,
+      "reason": "Metin, bir şirket müdürünün suç işlemesi durumunda kimin cezalandırılacağına dair bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "9a17dd2ff83ee47ac9be0548": {
+      "gecerli": true,
+      "reason": "Kaynak, gizli bilgileri neden elde ettiğini ispatlama konusunu ele almıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "db97a9429df49cd55ffe79e2": {
+      "gecerli": true,
+      "reason": "Metin, tüketici ödüllerinin kimlere verildiği hakkında bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "55dba5e59df23778df81f56f": {
+      "gecerli": true,
+      "reason": "Metin kamu görevlisinin tanımını içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "a532bf1d7315d4be0fa51f91": {
+      "gecerli": true,
+      "reason": "Kaynak metin konkordato dışında yapılan vaatlerin geçerliliği hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "514fb4f00412df258951aaed": {
+      "gecerli": true,
+      "reason": "Kaynak metin, ayıplı ürünlerin iadesi hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "191e067b4d38ef6ce12703bc": {
+      "gecerli": true,
+      "reason": "Kaynak metin çekinme kararının kesinliği hakkında bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "a3e15a0e151fd30bbe6e42b4": {
+      "gecerli": true,
+      "reason": "Kaynak metin kira bedelinin ödenip ödenmeyeceği konusunda doğrudan bilgi vermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "ca843a5a7657af2689e9c87f": {
+      "gecerli": true,
+      "reason": "Kaynak metin miras sözleşmesinin tanıklarının kimler olduğunu belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "dd1b245e1240276a4fa6995c": {
+      "gecerli": true,
+      "reason": "Kaynak metin konkordato komiseri hakkında şikayet edilmesi durumunda ne olacağını açıklamıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "00d7caa65c72fb3b2df4a7d2": {
+      "gecerli": true,
+      "reason": "Metin, aile yurdunun kurulmasına kimin izin verdiğini belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "4855086bb2b056b4ba053278": {
+      "gecerli": true,
+      "reason": "Kaynak metin harç ve masrafların kimin sorumluluğunda olduğunu belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "a849456c4b0f110ba6ec4a94": {
+      "gecerli": false,
+      "reason": "Metin, kira sözleşmesinin sona ermesi için bildirim gerekip gerekmediğini açıklıyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "add8d73614b1eedc0aebc12c": {
+      "gecerli": true,
+      "reason": "Kaynak metin, bir suçtan dolayı ceza alacak kişi açısından hangi unsurların dikkate alınacağını belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "e5371ed3a8a500d9713a5797": {
+      "gecerli": true,
+      "reason": "Metin, tutukluluğun devamı veya serbest bırakılması hakkında doğrudan bir bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "95f856943bf3f51ac8717431": {
+      "gecerli": true,
+      "reason": "Metin, 634 Sayılı Kanun'un yürürlüğe girmesinden önceki davaların sonuçlandırılacağı yeri belirtmiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
+    },
+    "6110e6955ffab715813420c1": {
+      "gecerli": true,
+      "reason": "Kaynak metin rekabet yasağının sona ermesiyle ilgili bilgi içermiyor.",
+      "hakem": "openai/gpt-4o",
+      "kapi": "openrouter"
     }
-  },
-  "yigin": "her kayıt `hakem` + `kapi` taşır; okuma yolu uyuşmazlıkta DURUR (K1, 2026-08-06)",
-  "yigin_damgasi_notu": "353 eski kayda `kapi: openrouter` damgası vuruldu. İki bağımsız kanıt: (a) bu önbelleğe kör hakem ÇAĞRISI yapmış her koşu özetinde `judge_gateway: openrouter`; (b) kayıtlı `hakem` değeri `openai/gpt-4o`, yani openrouter'ın çözümlediği ad — openai kapısında `resolve()` çıplak `gpt-4o` verir."
+  }
 }

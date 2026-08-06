@@ -1083,6 +1083,16 @@ M1 A1    = 0,9697  ≥ 0,880   ✅
 kesik    = %1,4              ✅   (kapı %5; m1 %0,0 · m2 %1,4)
 ```
 
+> 🚨 ᴷ⁴ **BU KIYAS KARIŞIK BİRİMDEYDİ — hüküm AYNI, gerekçesi onarıldı (2026-08-06, KARAR-3).**
+> `0,984`'ün paydası **özneye bağlıydı** (63/70, hakem cevabı görerek karar veriyordu), eşiğin
+> çıpası ise [#46](2026-07-30-cp2r-kor-payda.md)'nın **cevaba kör** ölçümünden geliyordu. İki
+> taraf iki ayrı aletten okunmuş; hata vermez, sayı yanlış çıkar.
+> Bugünkü alette **iki taraf da aynı yerden**: payda on koşuda **66/70**'e eşitlendi →
+> `τ_a` M2 **0,955** ≥ eşik **0,923** (base 0,803 + 0,12) → ✅ **hüküm AYAKTA**, marj
+> +18,1 → **+3,2 puan**. Muhafız da geçiyor (0,9697 ≥ 0,8799). Eski sayı silinmedi.
+> Kaynak: `outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json` ·
+> [#59](2026-08-06-m2-paydasi-ve-karar-4.md).
+
 ### 🚨 Ama muhafız §17'nin işaret ettiği kör noktaya düştü
 
 ```
