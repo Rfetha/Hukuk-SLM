@@ -1,5 +1,16 @@
 # Ölçüm Boşlukları Turu — Uygulama Planı
 
+> 📁 **KOŞULDU VE KAPANDI** — kayıt [#56](../../record/research_log/2026-08-05-olcum-bosluklari.md).
+>
+> 🚨 **BİRİM DAMGASI 2026-08-06 (kusur Ö3) — bu plandaki HER `M2b Rej` sayısı EMEKLİ BİRİMDE.**
+> `valid_trap` paydası cevaba **kör** yapıldı (**ᴷ³**,
+> [#57](../../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)). Çeviri:
+> KAPALI çıpa **0,877 → 0,766** · `h2b@k=4` **0,840 → 0,735** · `k=10` **0,784 → 0,723**.
+> **Hüküm ayakta** (`0,735 < 0,766`, işaret aynı) — ama `k=10` satırı ayrıca
+> **TANIMSIZ** damgalıdır (KARAR-4 m.2, ADR-0057: kör hakem k=10'da kaynakların %57'sini görüyor).
+> Plan **yeniden koşulmaz**; damga, sayılarının başka bir belgeye emekli birimde taşınmaması içindir.
+> ⛔ Eşiklere dokunulmadı (ADR-0050) — yalnız birim çevrildi, eski değerler silinmedi.
+
 > **Ajan işçiler için:** ZORUNLU ALT-SKILL: `superpowers:subagent-driven-development` (önerilen)
 > ya da `superpowers:executing-plans` ile görev görev uygula. Adımlar `- [ ]` kutucuklu.
 

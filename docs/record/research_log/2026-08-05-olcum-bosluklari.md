@@ -222,10 +222,12 @@ onsuz ürün yok). Geriye kalan bütün açık, modelin *"bu kaynak yetiyor mu"*
 **soramamasından** geliyor:
 
 - altın **bağlamdayken** çekiniyor (**16/80**),
-- altın **yokken** çekinmiyor (`Rej` 0,840 < 0,877),
-- bağlam **dağıldıkça** daha az çekiniyor (`k=4 → 10`: 0,840 → 0,784).
+- altın **yokken** çekinmiyor (`Rej` 0,840 < 0,877 — ᴷ³: **0,735 < 0,766**, işaret aynı),
+- ~~bağlam **dağıldıkça** daha az çekiniyor (`k=4 → 10`: 0,840 → 0,784).~~
+  🔴 **BU AYAK DÜŞTÜ** (KARAR-4 m.2): `k=10`'un paydası **TANIMSIZ** (yukarıdaki blok) →
+  ADR-0057 gereği hüküm kurulmaz. Kalan **iki** ayak ayakta; teşhis onlarla taşınıyor.
 
-Üçü aynı kusurun üç yüzü. Ve D1 bunu **istem katmanından** kısmen düzeltebildiğini gösterdi —
+~~Üçü~~ İkisi aynı kusurun ~~üç~~ iki yüzü. Ve D1 bunu **istem katmanından** kısmen düzeltebildiğini gösterdi —
 demek ki yetenek **mevcut ama tetiklenmiyor**, yok değil. Bu, eğitim turunun hedefini
 daraltıyor: *yeni bir yetenek öğretmek* değil, **var olan yeteneği varsayılan hâle getirmek**.
 
@@ -258,3 +260,8 @@ yapmıştı: çareyi ölçmeden gerekçe saydı)*:
 
 > *"Yeterlilik-etiketli negatiflerle yeniden eğitilmiş bir `τ_a`, B10'u 14/80'in altına ve
 > M2b `Rej`'i 0,877'nin üstüne çıkarır mı?"* — **bu bir tahmindir, ölçülmeden gerekçe sayılmaz.**
+>
+> 🚨 **BİRİM DAMGASI 2026-08-06 (Ö3).** Bu **ön-kayıtlı soru** aktif turun hedefini tanımlıyor
+> ve emekli birimdeydi. Yürürlükteki birimde eşik: **M2b `Rej` > 0,766** ᴷ³ ~~0,877~~
+> (KAPALI çıpa). ADR-0050: eşiğin **anlamı** korundu, yalnız **birimi** çevrildi.
+> ⚠️ Emekli `0,877`'ye bakan okuyucu **gerçek bir iyileşmeyi başarısızlık ilan eder**.

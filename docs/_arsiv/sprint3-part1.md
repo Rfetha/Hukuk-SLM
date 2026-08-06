@@ -3,6 +3,16 @@
 > 📁 **Bu belge KAPANDI ve KAYITTIR.** Buradaki hiçbir satır artık koşulmaz; sayılar ve
 > gerekçeler **kaynak** olarak durur.
 >
+> 🚨 **BİRİM DAMGASI 2026-08-06 (kusur Ö3) — buradaki HER `M2 Rej` / `M2b Rej` sayısı EMEKLİ
+> BİRİMDEDİR.** Hiçbiri silinmedi. Çeviri (**ᴷ³** çekinme paydası cevaba kör, payda 77 —
+> [#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md) · **ᴷ⁴** M2 paydası 66'ya
+> eşitlendi — [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md)):
+> `tgta_v1` M2b **0,877 → 0,766** · `τ_g` M2b **0,607 → 0,506** · base M2b **0,986 → 0,961** ·
+> `τ_a` M2b **0,987 (değişmedi)** · M2 sütununda `tgta_v1` **0,893 → 0,833** · base **0,814 → 0,803** ·
+> Gemini **0,930 → 0,848**. **Türetilenler de damgalı:** merge onarım oranı ~~%71~~ → **%57** ·
+> merge'in M2'ye katkısı ~~+0,020~~ → **+0,000**.
+> A1 · kütle · coverage · recall satırları **etkilenmedi**. ⭐ Yürürlükteki çıpa: [`kollar.md`](../record/kollar.md).
+>
 > **Devamı (Part 2)** Part 1'in *ölçerek açtığı* borçları kapatır. Kararları verildi ve
 > [ADR-0056](../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)'da; **uygulama
 > planı** `docs/superpowers/plans/` altına yazılır.
@@ -161,7 +171,7 @@ Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'�
 | :--- | :--- | :--- | :--- |
 | **B10** 🆕 ⭐ | **AŞIRI-RED — altın madde BAĞLAMDAYKEN çekinme.** | **16/80** · k=5'te 14, k=10'da 15, +S2'de 16 → **`k`'dan bağımsız** · ⭐ **08-05: ilk kez KIPIRDADI → 14/80** (D1 önsözü, [#56](../record/research_log/2026-08-05-olcum-bosluklari.md)) | 🚨 **Coverage kaybının BÜYÜK yarısı burada, B1'in (7/80) iki katı** — ama bugüne kadar **numarası yoktu**, yalnız B1'in notunda geçiyordu; numarasız borç hiçbir listede görünmez. Retriever ne kadar iyileşirse iyileşsin kapanmıyor. Mekanizması [#53](../record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)'te ölçüldü: çekinme sinyali **konusal uyuma** bakıyor, **yeterliliğe** değil. ⚠️ B4 ile **birleştirilmedi**: *"aşırı-red `τ_a` seyrelmesinden geliyor"* makul ama **ölçülmemiş bir varsayım**; birleştirmek varsayımı kayıtta gerçeğe çevirirdi. |
 | **B1** ⭐ | **"Gerçek ama soruya uymayan madde"** — doğrulayıcı bunu yakalayamıyor. | ~~14/80~~ → ~~7/80~~ → **5/80** (k=10 yarıya indirdi, D1 önsözü 2 daha aldı — [#56](../record/research_log/2026-08-05-olcum-bosluklari.md)) · ✅ **B5 ölçüldü: bu 7'nin içinde kırpma vakası YOK** (kümeler kesişemiyor), sayı **temiz** | Ürün vaadi *"denetlenebilir"*. Bugün **fabrikasyona karşı** denetlenebilir, **isabetsizliğe karşı değil**. [ADR-0055](../adr/0055-isabet-denetimi-ekseni.md) ekseni belirledi, kod açılmadı. |
-| **B4** | **`τ_a` merge'de seyreliyor** (0,987 → 0,877). Adım 0 bunun norm *kapsamı* olmadığını gösterdi. | ‖τ_a‖ = **1,18** (82 adım @1e-5) | Çözüm merge parametresinde değil, muhtemelen `τ_a`'nın **eğitim genliğinde**. Eğitim işi. |
+| **B4** | **`τ_a` merge'de seyreliyor** (0,987 → 0,877 🚨 **ᴷ³: 0,987 → 0,766**; seyrelme ~~−11,0 p~~ → **−22,1 p**, `τ_a` v1'e göre). Adım 0 bunun norm *kapsamı* olmadığını gösterdi. | ‖τ_a‖ = **1,18** (82 adım @1e-5) | Çözüm merge parametresinde değil, muhtemelen `τ_a`'nın **eğitim genliğinde**. Eğitim işi. |
 | **B8** | **Katı kapı tek karakterlik yazım hatasına takılıyor.** Model `FİKİR VE SANAT ESERLERİ KANUNU`'nu `…ESELERİ…` diye kopyaladı; madde no'ları **doğru**, kanun bağlamda **var** → `KANUN_YOK` → cevabın tamamı reddedildi. | **1/80** · eğri ölçüldü **08-05** | Doğrulayıcının **ilk gerçek yakalayışı** ve o bir fabrikasyon değil **transkripsiyon hatası**. ADR-0038 resmî adın *kısa hâlini* çözmüştü, **yazım hatasını** çözmüyor. ⚠️ **Eğri ölçüldü ama tolerans BENİMSENMEDİ ([#56](../record/research_log/2026-08-05-olcum-bosluklari.md)):** eşik 1-3'te 2 kurtarılan, 0 yanlış eşleme — ama üç koşuda toplam **4 atıf ve hepsi aynı hatanın tekrarı**, yani **risk tarafında sıfır gözlem**. Eğri *"eşik 3 güvenli"* demiyor, *"bu veriyle karar verilemez"* diyor. Borç **açık kalır**; kapı **katı**. |
 | **B9** 🆕 | **Tablo/cetvel parçaları madde diye indeksli** (~7.966 satır, `3520`'de yoğun; `", Ek"` gibi 4 karakterlik hücreler). S2'de **kasten elenmedi**. | modele **0/800** blok ulaşıyor | Elemek *ölçülemez bir kazanç için ölçülmüş bir sayıyı harcamak* olurdu (indeks değişir → `recall@k` kayar → k kıyası geçersizleşir). ⚠️ *"Anahtar yinelenmesi %29,4"* ile *"bağlam kirlenmesi %1,8"* **ikisi de doğru** — farklı nesneler. |
 | **B6** | **Canlı `bedesten` katmanı** eklenmedi (K3: bilinçli erteleme). | — | Güncellik iddiası ayakta ama **kanıtlanmış değil** — S3a sözleşmenin çalıştığını doğruladı, ürün onu henüz kullanmıyor. |
@@ -445,6 +455,11 @@ M2b 0,877 → red kapısı        doğrulanamayan atıf = cevap reddedilir   det
 A1  0,909 → atıf doğrulayıcı  uydurulan madde numarası yakalanır       deterministik
 ```
 
+🚨 **ᴷ³ + 2026-08-05 DAMGASI.** `M2b 0,877` → yürürlükte **0,766**. ⚠️ Bu bloğun *iddiası* da
+düştü: *"red kapısı M2b'yi kapatıyor"* 2026-08-05'te sınandı ve **kapı düştü**
+([#56](../record/research_log/2026-08-05-olcum-bosluklari.md)) — bu rejimde kapı **tetiklenemiyor
+bile**. M2b artık bir **eğitim** borcudur (CLAUDE.md).
+
 **3. Şimdi eğitmek yanlış dağılıma eğitmek olur.** Eval şu an modele temiz bir madde
 veriyor; gerçek retriever ~5 gürültülü parça verecek. Modeli bugünkü girdiye göre
 optimize edip yarın girdiyi değiştirmek işi iki kez yapmaktır.
@@ -679,7 +694,7 @@ okunur — **karar insanın, ADR'ye yazılır.** Öneri: küme **değiştirilmez
 
 ### Adım 0 — modül-başına normalleştirme *(harness'tan bağımsız, önce yapılır)*
 
-Merge'in **bilinen** kusuru: `τ_a` seyreliyor (tekil 0,987 → merge 0,877).
+Merge'in **bilinen** kusuru: `τ_a` seyreliyor (tekil 0,987 → merge 0,877 🚨 ᴷ³ **0,766**).
 Normalleştirme şu an **global** (tek `‖τ‖_F`). Ölçüldü: iki kolun da en büyük normu
 **aynı MLP yüzeyinde** — `gate_proj` (τ_g 6,150 ↔ τ_a 0,621) · `up_proj`
 (5,047 ↔ 0,628). Global norm bunu göremiyor.
@@ -694,6 +709,11 @@ bash scripts/cp3_merge_dene.sh models/merged/<yeni> modul
 **Kabul:** M2b > 0,877 **ve** M1 kütlesi ≥ %71,6 (ikisi birden — tek eksen yeter değil).
 Tutmazsa `v0.1` yerinde kalır, kayıp 1 saat. `open_questions.md`'de açık soru olarak
 duruyor.
+
+🚨 **BİRİM DAMGASI (Ö3).** Eşiğin **anlamı** *"v0.1'in M2b'sini aş"*; ADR-0050 gereği eşiğe
+değil **alete** dokunuldu. Yürürlükteki birimde: **M2b > 0,766** ᴷ³ ~~0,877~~.
+*(Bu adım zaten 2026-08-04'te reddedildi — aşağıya bak. Damga, ölçütün ileride emekli birimde
+okunmaması içindir.)*
 
 #### 🔴 KAPANDI (2026-08-04) — reddedildi · [ADR-0053](../adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50
 
@@ -721,8 +741,8 @@ değiştiremezdi → m2b/m2 koşulmadı, **hakem maliyeti $0**.
 
 | varyant | cevaplanan | A1 | **kütle** | M2b red |
 | :--- | ---: | ---: | ---: | ---: |
-| `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | 0,877 |
-| `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 |
+| `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | 0,877 🚨 ᴷ³ **0,766** |
+| `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 *(değişmedi)* |
 | **`modulmin`** (bu adım) | **45/80** | ölçülmedi | **≤ %56,2** | ölçülmedi |
 
 Modül-başına kapsam global `min`'i **tekrarladı**. %27'lik yön farkı aşırı-reddi
