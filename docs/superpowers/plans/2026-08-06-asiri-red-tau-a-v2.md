@@ -24,17 +24,18 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 ## 🔄 İCRA DURUMU — AÇIK (başladı 2026-08-06)
 
 > Bu blok *"nerede kaldık, ne yaşandı, plan nerede yanlıştı"* yazar. **Sayılar kayda gider**
-> (#57/#58); burada yalnız icra hikâyesi durur. Kutucukları **insan** işaretler — aşağıdaki
-> "durum" sütunu ajanın raporudur, kabul değildir.
+> (#57/#58); burada yalnız icra hikâyesi durur.
+> **Kutucuklar** (2026-08-06 kural değişikliği) ajan tarafından, **yalnız `→ verify:` çıktısı
+> gerçekten alındıktan sonra** işaretlenir. Aşağıdaki "durum" sütunu onların özetidir.
 >
 > **İcra kipi:** `superpowers:subagent-driven-development` — görev başına taze uygulayıcı ajan,
 > ardından bağımsız inceleme ajanı, bulgular kapanana dek döngü.
 
 | görev | durum | çıkan |
 | :--- | :--- | :--- |
-| **0** YB1 / ADR-0058 | ✅ ajan tarafı bitti — **insan kutucukları bekliyor** | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
-| **1** eşleştirilmiş A1 | ✅ tamam (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
-| **2** Gemini FL harness AÇIK | ⏸ | |
+| **0** YB1 / ADR-0058 | ✅ **KAPANDI** — 6/6 kutucuk | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
+| **1** eşleştirilmiş A1 | ✅ **KAPANDI** — 7/7 kutucuk (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
+| **2** Gemini FL harness AÇIK | ▶ **SIRADA** — turun ilk paralı adımı (~$0,90) | |
 | **3-4** hasat | ⏸ | |
 | **5** ORPO paketleme | ⏸ | |
 | **6** `τ_a` v2 eğitimi | ⏸ | |
@@ -44,7 +45,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | **10** kayıt | ⏸ | |
 
 **Maliyet (şimdiye):** GPU **$0** · hakem **$0,0745** · rakip çıkarımı **$0** — tavan $10.
-Commit: `339d9b1` → `b53eeb4` (10 commit).
+Commit: `339d9b1` → `c88ab81` (11 commit). **Kutucuk: 13 / 70.**
 
 ### ⭐ Görev 0'dan doğan ÖLÇÜLMÜŞ bulgu — plan bunu öngörmemişti
 
