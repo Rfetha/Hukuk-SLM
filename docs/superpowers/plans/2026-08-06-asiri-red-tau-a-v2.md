@@ -2310,8 +2310,15 @@ Bu dosyanın başına ✅ kapanış bloğu ekle: hüküm · üretilen artefaktla
 - [ ] **Adım 10.6 — `CLAUDE.md`'de yalnız İŞARETÇİLERİ güncelle**
 
 ⚠️ **SAYI YAZMA.** Güncellenecekler: "Current state" bloğundaki ürün sayısı ve artefakt adı ·
-research_log aralığı (#39-#58) · ADR aralığı (0059'a kadar) ·
+research_log aralığı ~~(#39-#58)~~ **(#39-#59, bu turun kaydı eklenince #60)** ·
+ADR aralığı ~~(0059'a kadar)~~ **(0060'a kadar; bu turun `τ_a` v2 ADR'si = REZERVE 0059,
+sıradaki serbest numara 0061)** ·
 *"Two things a new session must not get wrong"* bloğu (B10'un yeni durumu).
+
+> 🚨 **İŞARETÇİ DÜZELTMESİ 2026-08-06 (küçük k4).** Bu adım bayat aralıklar taşıyordu; plan o
+> hâliyle koşulsaydı `CLAUDE.md`'ye **bayat işaretçi** yazacaktı. Yürürlükteki durum
+> (`5d108ba` sonrası): defter **0060**'a kadar dolu · **0059 REZERVE** · sıradaki **0061** ·
+> research_log **#59**'a kadar yazıldı.
 
 ⚠️ **Adım 0.1b'nin işaretçisi geri alınır:** `TODO.md` ve `CLAUDE.md`'deki *"AKTİF PLAN: B10…"*
 satırı, tur kapandığı için *"aktif plan yok"* hâline döner ve kapanan plana **kayıt olarak**
@@ -2325,8 +2332,12 @@ ve tek-satırlık durum.
 
 ```bash
 git add docs/ CLAUDE.md
-git commit -m "#58: τ_a v2 turu kapandı — B10 <x>/80, ADR-0058/0059, tuzak 2.10 damgası düzeltildi"
+git commit -m "#60: τ_a v2 turu kapandı — B10 <x>/80, ADR-0059 (rezerve numara), tuzak 2.10 damgası düzeltildi"
 ```
+
+⚠️ **k4 düzeltmesi:** eski mesaj `#58:` diyordu — `#58` ve `#59` bu turdan **önce** yazıldı.
+Bu turun kaydı **#60**'tır; turun ADR'si **0059** (rezerve edilmiş numara, ADR-0058'in
+`ADR-0059 §sapma-1` atfı buna işaret ediyor).
 
 → **verify:** `git log --oneline -3` ve `git status` temiz.
 
