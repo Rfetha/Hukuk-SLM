@@ -21,6 +21,11 @@ ADR-0036 metnindeki `τ/‖τ‖` ifadesinin birebir okunuşuydu. Modül-başın
 
 **Kabul ölçütü (ön-kayıtlı):** M2b > 0,877 **ve** M1 kütlesi ≥ %71,6 — ikisi birden.
 
+> ᴷ³ **2026-08-06:** buradaki `0,877` ve `0,987` eski aletin birimindedir (payda modele bağlıydı,
+> [#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)). Yeni değerler: ham TIES
+> **0,766** · `tg_ta_min` **0,987 (değişmedi)**. **Bu ADR'nin reddi M1 KÜTLESİNE dayanıyordu
+> (%56,2 < %71,6), M2b'ye değil → hüküm etkilenmiyor.**
+
 ## Ölçüm
 
 ### 1. Gerekçe çürüdü (bedava, ağırlık okunmadan)

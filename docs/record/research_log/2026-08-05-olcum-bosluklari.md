@@ -31,6 +31,14 @@ AÇIK  h2b k=4          4   0,840    0,820     50       30        2       36    
 AÇIK  h2b k=10        10   0,784    0,706     51       29        4       34    0,4350    bilgi
 ```
 
+> 🚨 ᴷ³ **BU GİRİŞİN M2b SAYILARI ESKİ ALETİN BİRİMİNDEDİR (2026-08-06 tespiti).** `valid_trap`
+> paydası hakemin **modelin cevabını görerek** verdiği bir karardı. Yeniden puanlanmış değerler
+> ([#57](2026-08-06-cekinme-aleti-onarimi.md)): AÇIK `h2b@k=4` **0,840 → 0,735** · KAPALI çıpa
+> **0,877 → 0,766** · `k=10` **0,784 → 0,723**. ⭐ **BU GİRİŞİN HÜKMÜ AYAKTA:** `0,735 < 0,766`,
+> işaret aynı, kapı yine KALDI. Aşağıdaki eski sayılar bilerek silinmedi (denetim izi).
+> 🎁 Ve bu girişin *"geçersiz tuzak 30/80 ↔ 15/80"* gözlemi **aletin kusuruymuş**: aynı sınavda
+> payda artık üç kolda da **eşit** (68). O paragrafın mekanizma açıklaması **çürüdü**.
+
 ⚖️ **ADR-0057 Kademe 2 kapısı: KALDI** (0,840 < 0,877 + 0,003). İki bağımsız tahmin edici de
 aynı yönde (**−0,037** hakem · **−0,026** regex), ikisi de hakemin **~0,3 puanlık** yeniden-koşum
 gürültü tabanının üstünde.

@@ -28,13 +28,22 @@ DEV split, harness off, judge `gpt-4o-mini`. Full protocol in the [model card](M
 
 | | faithful-answer mass ↑ | over-refusal ↓ | refusal on missing sources ↑ | tok/answer ↓ |
 | :--- | ---: | ---: | ---: | ---: |
-| bare base | 56.7% | 0.425 | 0.986 | 1192 |
-| **HakHukuk-4B-v0.1** | **71.6%** | **0.212** | 0.877 | **714** |
-| Gemini 3.1 Flash-Lite | 72.9% | 0.237 | 1.000 | — |
+| bare base | 56.7% | 0.425 | 0.961 ᴷ³ | 1192 |
+| **HakHukuk-4B-v0.1** | **71.6%** | **0.212** | **0.766** ᴷ³ | **714** |
+| Gemini 3.1 Flash-Lite | 72.9% | 0.237 | 0.883 ᴷ³ | — |
+
+ᴷ³ **M2b re-scored 2026-08-06.** The old numbers were produced with a denominator the
+judge decided **while looking at the model's answer** — so the same exam yielded a different
+denominator per model. The denominator is now answer-blind and identical across arms
+(`valid_traps` 61…80 → **77** on this exam). Old values are kept in
+[`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md), which carries the full
+conversion table: base `0.986 → 0.961` · ours `0.877 → 0.766` · Gemini FL `1.000 → 0.883`.
+⚠ **The M2/A1 columns have NOT been re-scored** and still carry the model-dependent denominator.
 
 We reach **98% of Flash-Lite's faithful-answer mass and refuse less often than it
 does**, at 2.59 GiB and ~zero marginal cost. We are still behind it on refusing
-when only distractor sources are present.
+when only distractor sources are present (0.766 vs 0.883 — the gap narrowed
+from 12.3 to 11.7 points once the denominator was fixed, but the sign did not change).
 
 **This is not a parity claim:** the harness is off, cost is not normalized, and
 the merge configuration was selected on DEV.
@@ -78,7 +87,7 @@ raw base ──┬── LoRA SFT   (grounding)   → τ_g
 ```
 
 Two skills that **actively fight each other**: training for grounding collapses
-abstention (measured: 0.986 → 0.607), and training for abstention collapses
+abstention (measured: 0.961 → 0.506 ᴷ³), and training for abstention collapses
 grounding (56.7% → 41.2%). Neither branch is usable alone. The merge restores
 both — grounding fully preserved, 71% of the abstention collapse repaired.
 

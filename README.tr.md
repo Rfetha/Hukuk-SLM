@@ -27,13 +27,21 @@ DEV kümesi, harness kapalı, hakem `gpt-4o-mini`. Tam protokol [model kartında
 
 | | sadık-cevap kütlesi ↑ | aşırı-red ↓ | kaynak yokken red ↑ | tok/cevap ↓ |
 | :--- | ---: | ---: | ---: | ---: |
-| çıplak base | 56,7% | 0,425 | 0,986 | 1192 |
-| **HakHukuk-4B-v0.1** | **71,6%** | **0,212** | 0,877 | **714** |
-| Gemini 3.1 Flash-Lite | 72,9% | 0,237 | 1,000 | — |
+| çıplak base | 56,7% | 0,425 | 0,961 ᴷ³ | 1192 |
+| **HakHukuk-4B-v0.1** | **71,6%** | **0,212** | **0,766** ᴷ³ | **714** |
+| Gemini 3.1 Flash-Lite | 72,9% | 0,237 | 0,883 ᴷ³ | — |
+
+ᴷ³ **M2b 2026-08-06'da yeniden puanlandı.** Eski sayılar, hakemin **modelin cevabına bakarak**
+verdiği bir paydayla üretilmişti — yani aynı sınav her modelde farklı payda veriyordu. Payda artık
+cevaba kör ve kollarda birebir aynı (`valid_traps` bu sınavda 61…80 → **77**). Eski değerler
+[`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md)'de duruyor; çeviri tablosu orada:
+base `0,986 → 0,961` · biz `0,877 → 0,766` · Gemini FL `1,000 → 0,883`.
+⚠ **M2/A1 sütunları yeniden puanlanmadı**, hâlâ modele bağımlı paydayı taşıyor.
 
 Flash-Lite'ın sadık-cevap kütlesinin **%98'ine ulaşıyoruz ve ondan daha az
 reddediyoruz** — 2,59 GiB'lık bir modelle ve ~sıfır marjinal maliyetle. Yalnız
-çeldirici kaynaklar verildiğinde reddetme ekseninde hâlâ geride kalıyoruz.
+çeldirici kaynaklar verildiğinde reddetme ekseninde hâlâ geride kalıyoruz (0,766 ↔ 0,883 —
+payda onarılınca açıklık 12,3 → 11,7 puana daraldı, ama işaret değişmedi).
 
 **Bu bir parite iddiası değildir:** harness kapalı, maliyet normalize edilmedi ve
 merge yapılandırması DEV'de seçildi.
@@ -75,7 +83,7 @@ ham base ──┬── LoRA SFT   (dayanaklandırma) → τ_g
 ```
 
 Birbiriyle **fiilen çatışan** iki beceri: dayanaklandırma için eğitmek çekinmeyi
-çökertiyor (ölçüldü: 0,986 → 0,607), çekinme için eğitmek dayanaklandırmayı
+çökertiyor (ölçüldü: 0,961 → 0,506 ᴷ³), çekinme için eğitmek dayanaklandırmayı
 çökertiyor (%56,7 → %41,2). Hiçbir kol tek başına kullanılabilir değil. Merge
 ikisini de geri getiriyor — dayanaklandırma tamamen korunuyor, çekinme çöküşünün
 %71'i onarılıyor.

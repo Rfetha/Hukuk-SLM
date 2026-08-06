@@ -45,9 +45,10 @@ bağımsızdır, yani üç özne de **aynı bağlamı** gördü. Harness'ın ayn
 | **2** | **aşırı-red** (↓ iyi) | 10 ↔ 10 | **%23,75** | **%12,5** | **%12,5** | ✅ **EŞLEŞMİŞ** — 🚨 **iki rakibin de ~2 KATI. Turun ana borcu (B10) doğrulandı.** |
 | **2** | coverage (↑ iyi) | 10 ↔ 10 | 0,7625 | 0,8750 | 0,8750 | ✅ EŞLEŞMİŞ — aşırı-red'in aynası |
 | **2** | altın geldi ama çekindi | 10 ↔ 10 | **14/80** | 8/80 | 6/80 | ✅ EŞLEŞMİŞ — B10'un çekirdeği: bağlamda altın **var**, model yine susuyor |
-| **3** | **M2b Rej\*** (↑ iyi) | 4 ↔ 4 | **0,735** ~~0,840~~ | **0,809** ~~0,978~~ | **0,926** ~~0,982~~ | ⛔ **TANIMSIZ — hüküm YOK** (istem ekseni). ⚠️ Payda K3 ile onarıldı, aşağı bak. |
-| **3** | M2b fabrication (↓ iyi) | 4 ↔ 4 | **0,265** ~~0,160~~ | **0,191** ~~0,022~~ | **0,074** ~~0,018~~ | ⛔ **TANIMSIZ** — aynı sebep |
-| **3** | M2b Rej (regex) | 4 ↔ 4 | **0,647** ~~0,820~~ | **0,632** ~~0,911~~ | **0,662** ~~0,768~~ | ⛔ **TANIMSIZ** — aynı sebep |
+| **2** 🆕 | ⭐ **M2b Rej\*** — **ÖNSÖZLÜ, eksen EŞLEŞTİ** | 4 ↔ 4 | **0,809** | **0,809** | **0,926** | ✅ **EŞLEŞMİŞ** — 3.1 FL ile **BİREBİR EŞİT**; 3.5 FL **+11,7 puan** önde |
+| **3** | M2b Rej\* — önsöz**süz** çıpa | 4 ↔ 4 | **0,735** ~~0,840~~ | **0,809** ~~0,978~~ | **0,926** ~~0,982~~ | ⛔ **TANIMSIZ** (istem ekseni eşleşmiyor) — yalnız kayıt sürekliliği |
+| **3** | M2b fabrication (↓ iyi) | 4 ↔ 4 | **0,191** (önsözlü) · 0,265 (önsözsüz) | **0,191** ~~0,022~~ | **0,074** ~~0,018~~ | ✅ önsözlü satır EŞLEŞMİŞ |
+| **3** | M2b Rej (regex) | 4 ↔ 4 | **0,559** (önsözlü) · 0,647 (önsözsüz) | **0,632** ~~0,911~~ | **0,662** ~~0,768~~ | ⚠️ regex ekseni ayrı kalibrasyon taşır |
 | **—** | muhakeme (reasoning tok) | — | **ölçülemiyor** | **769,6** ort · **735** med ~~789,4~~ | **445,2** ort · **198** med ~~868,8~~ | ⛔ **TANIMSIZ (K1+K2).** Ortalamalar düzeltildi; **etkin bütçe EŞLEŞMİYOR** |
 | **—** | completion tok/cevap | 10 ↔ 10 | 803,9 | 970,5 | 573,6 | ⚠️ vekil eksen (düşünce iki tarafta da dâhil) |
 | **—** | kesik oranı | 10 ↔ 10 | %3,8 | %3,8 | **%10,0** | ⚠️ **sebebi K2'dir** (rejim), 3.5 FL'ın özelliği değil — aşağıdaki şerh |
@@ -78,13 +79,28 @@ birimiyle** yazılmıştı. ADR-0050 kuralı gereği sonucu gördükten sonra **
 düzeltilir — burada alet düzeltildi, dolayısıyla eşik **yeni çıpadan yeniden türetilmelidir.**
 Yeni çıpa yazıldı; **eşik değiştirilmedi, insan kararına bırakıldı.**
 
-### Kademe 3 satırları için hüküm kurulmadı
+### ✅ M2b ekseni EŞLEŞTİ — TANIMSIZ damgası KALKTI (Ö5)
 
-ADR-0057 gereği **"AÇIK burada geride" cümlesi kurulmamıştır.** Bizim M2b çıpamız
-`--sufficiency-preamble` **olmadan** koşuldu, FL kolları **önsözle**. Önsöz tam olarak
-*"kaynak yetersizse söyle"* diyen istemdir — ölçülen eksenin kendisini değiştirir.
-Eşleştirme koşusu **yapılmaktadır**: `outputs/eval/g2b-m2b-onsozlu` (önsözlü h2b@k=4, yerel, $0).
-O koşu inip skorlanana kadar satır **TANIMSIZ** kalır.
+Bizim M2b çıpamız `--sufficiency-preamble` **olmadan** koşulmuştu, FL kolları **önsözle**.
+Önsöz tam olarak *"kaynak yetersizse söyle"* diyen istemdir — ölçülen eksenin kendisini
+değiştirir, dolayısıyla satır ADR-0057 gereği **TANIMSIZ** damgalıydı.
+
+**Kapatıldı, $0:** `outputs/eval/g2b-m2b-onsozlu/` — önsözlü `h2b@k=4`, 80/80, **kesik %0,0**
+(geçerlilik kapısı geçildi), zorunlu kapanış 55/80, aynı hakem yığını, aynı kör payda.
+
+```
+BİZ önsözSÜZ   Rej* 0,735      ← eski çıpa, artık yalnız kayıt sürekliliği
+BİZ ÖNSÖZLÜ    Rej* 0,809      ← EŞLEŞMİŞ sayı  (valid_traps 68, Rej regex 0,559)
+3.1 FL         Rej* 0,809      ← BİREBİR EŞİT
+3.5 FL         Rej* 0,926
+```
+
+⭐ **İlk kez kurulabilen hüküm:** önsöz eklenince M2b'de **3.1 FL ile başa baş** geliyoruz
+(0,809 ↔ 0,809), 3.5 FL **11,7 puan** önde. Önsözün bize kazandırdığı **+7,4 puan**
+(0,735 → 0,809) — istem katmanının M2b'de ölçülmüş getirisi.
+
+⚠️ **Bu, planın Görev 9 kapısının (`M2b Rej ≥ 0,840`) yeniden türetileceği çıpadır.**
+Eşiğe **dokunulmadı** (insan kararı).
 
 ### ⚠️ 3.5 FL kesik şerhi — YÖNÜ ÖLÇÜLDÜ VE ŞERH TERSİNE ÇEVRİLDİ (Ö1)
 
