@@ -65,7 +65,7 @@ kayda o şekilde geçer.
 
 | bileşen | 08-03'te iddia | **ölçülen hüküm (08-05)** |
 | :--- | :--- | :--- |
-| **atıf doğrulayıcı** | A1 0,909 → ~1,0 | ❌ **ÇÜRÜDÜ.** Uydurulmuş madde no **0/118** — yakalayacak sınıf **zaten boştu**. A1 açığı fabrikasyondan değil, altın gelmeyince *başka bir gerçek maddeden* cevaplamaktan geliyor (**5/80** — önsözsüz ablasyon: 7/80, borç B1) |
+| **atıf doğrulayıcı** | A1 0,909 → ~1,0 | ❌ **ÇÜRÜDÜ.** Uydurulmuş madde no **0/83** (önsözsüz ablasyon: 0/118) — yakalayacak sınıf **zaten boştu**. A1 açığı fabrikasyondan değil, altın gelmeyince *başka bir gerçek maddeden* cevaplamaktan geliyor (**5/80** — önsözsüz ablasyon: 7/80, borç B1) |
 | **red kapısı** | M2b 0,877 → ~1,0 | ❌ **ÇÜRÜDÜ (08-05, [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)).** Eşleşmiş sınavda (`h2b@k=4`, 4 kaynak ↔ 4 kaynak) **0,840 < 0,877** — kapatmadı, **kötüleştirdi**. Kapı 2/80 reddetti; mekanizması ölçülmüş biçimde boş: `KANUN_YOK 0` ve **36/80 cevapta hiç atıf yok**. İddia *sınanmamış* değil, bu rejimde **ateşlenemez** |
 | **retriever** | M1 · M4 | ✅ **KURULDU ve KAZANDIRDI.** `recall@10` **0,8750**, 759 ms/sorgu, CPU'da. Ama kendi bedelini de getirdi: bağlam uzadıkça sadakat düşüyor (**ölçüldü**, aşağı bak) |
 
