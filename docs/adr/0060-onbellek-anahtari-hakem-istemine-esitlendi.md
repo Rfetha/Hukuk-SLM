@@ -1,4 +1,4 @@
-# ADR-0059 — Kör payda önbelleğinin anahtarı **hakem istemine eşitlendi**; `k=10`'un paydası TANIMSIZ
+# ADR-0060 — Kör payda önbelleğinin anahtarı **hakem istemine eşitlendi**; `k=10`'un paydası TANIMSIZ
 
 **Statü:** Yürürlükte · **Tarih:** 2026-08-06 · **Karar:** insan (KARAR-4)
 **Otorite belge:** `docs/record/yurutme-tuzaklari.md` 2.17 · `scripts/score_abstention.py`
