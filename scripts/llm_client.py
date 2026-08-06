@@ -107,15 +107,26 @@ _MAX_RETRIES = int(os.environ.get("LLM_MAX_RETRIES", "8"))
 _TIMEOUT_S = float(os.environ.get("LLM_TIMEOUT_S", "120"))
 
 
+def gateway_of():
+    """Hangi kapı kullanılacak — İSTEMCİ KURMADAN. `make_client()` de bunu çağırır.
+
+    Why ayrı: hiç çağrı yapmayacak bir koşu (ör. payda tanımdan geliyor + verdict önceki
+    skorlamadan okunuyor) kapının kimliğini istememeli, ama koşu kaydına yine de hangi
+    kapının geçerli olduğunu yazmalı. İki yerde ayrı ayrı türetilirse sessizce ayrışır.
+    """
+    want = (os.environ.get("LLM_GATEWAY") or "").strip().lower()
+    return want or ("openrouter" if os.environ.get("OPENROUTER_API_KEY", "").strip()
+                    else "openai")
+
+
 def make_client():
     """(client, gateway) döndürür. OpenRouter varsa onu, yoksa doğrudan OpenAI'ı kullanır.
     Client, timeout'larda otomatik retry+backoff yapacak şekilde kurulur (üstteki not)."""
     from openai import OpenAI
-    want = (os.environ.get("LLM_GATEWAY") or "").strip().lower()
     or_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     oa_key = os.environ.get("OPENAI_API_KEY", "").strip()
 
-    gateway = want or ("openrouter" if or_key else "openai")
+    gateway = gateway_of()
     if gateway == "openrouter":
         if not or_key:
             raise SystemExit("[llm] OPENROUTER_API_KEY yok (.env yükle)")

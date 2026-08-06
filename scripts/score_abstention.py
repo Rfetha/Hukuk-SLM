@@ -26,10 +26,12 @@ Girdi: gen_eval_grounded --data trap.jsonl --with-source çıktısı (outputs/ev
 Kullanım: python scripts/score_abstention.py --details outputs/eval/bench_trap_v1_detail.jsonl --label bench_trap_v1
 """
 import argparse
+import datetime
 import fcntl
 import hashlib
 import json
 import os
+import shutil
 
 JUDGE_SYSTEM = (
     "Sen titiz bir hukuk-değerlendirme hakemisin. Sana bir SORU, modele verilen bir KAYNAK MADDE "
@@ -62,13 +64,13 @@ GECERLILIK_SYSTEM = (
       "Kısmî/dolaylı ilgi yeterli DEĞİL: sorunun sorduğu şeyin cevabı metinde okunabiliyor mu?"
 )
 
-# Önbellek İÇERİK-ADRESLİ: anahtar = hash(soru, hakeme giden kaynak metni). `{mod}:{id}` DEĞİL —
+# Önbellek İÇERİK-ADRESLİ: anahtar = hash(soru, TAM kaynak metni). `{mod}:{id}` DEĞİL —
 # aynı id farklı koşuda farklı bağlam taşıyabiliyor (h2b k=4 ↔ k=10 tam bu). İçerik anahtarı
 # bu sınıfı tanım gereği eler; sınavı paylaşan kollar aynı anahtara düşer ve payda EŞİTLENİR.
 GECERLILIK_ONBELLEK = "outputs/eval/_artefakt/valid_trap_kor_onbellek.json"
 
 # Fiyat + kapı + JSON-modu tek yerde: llm_client (ADR-0029).
-from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E402
+from llm_client import (make_client, gateway_of, resolve, price, request_kwargs,  # noqa: E402
                         note_provider, seen_providers, loads_tolerant)
 import runlock  # noqa: E402  — aynı label'a paralel yazım = sessiz bozulma (bkz. runlock.py)
 
@@ -225,7 +227,44 @@ def load_jsonl(p):
     return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
 
 
-SOURCE_CLIP = 3500      # hakeme giden kaynak metninin kırpması — önbellek anahtarı BU metnin üzerinde
+# ── BOŞ BAĞLAM: PAYDA TANIM GEREĞİ GEÇERLİ (ADR-0048 m.2) ────────────────────
+# M3'te (`--empty-context`) modele kaynak metni VERİLMEZ; bağlam `"(İlgili kaynak
+# bulunamadı.)"`. "Kaynak soruyu cevaplıyor mu"nun cevabı tanım gereği 80/80 HAYIR,
+# yani tuzakların hepsi geçerli. Hakeme sormak hem para hem gürültüdür.
+# 🚨 Ölçülen bozukluk (KARAR-2, 2026-08-06): kural aletin İÇİNDE olmadığı için M3
+# skorlaması varsayılan `--source-field referans` ile ALTIN maddeyi hakeme gösteriyordu;
+# hakem "kaynak cevaplıyor" deyip tuzağı geçersiz sayıyordu. cp09'un AYNI M3 sınavında
+# üç kol 54 · 56 · 39 payda gösterdi — üçü de yanlış, doğrusu 80/80.
+BOS_BAGLAM_MODU = "empty"
+
+
+def payda_tanimdan_gecerli(mode):
+    """Boş-bağlam modunda payda hakeme SORULMAZ, tanım gereği geçerlidir (ADR-0048 m.2)."""
+    return mode == BOS_BAGLAM_MODU
+
+
+def yedekle(yol):
+    """Yayımlanmış bir çıktının üzerine yazmadan önce yanına tarihli kopya bırak.
+
+    CLAUDE.md § dokümantasyon disiplini: eski değer silinmez, damgalanarak durur.
+    Var olan yedeğin ÜZERİNE yazılmaz — ilk yedek (özgün yayımlanan sayı) en değerlisidir.
+    """
+    if not os.path.exists(yol):
+        return None
+    hedef = f"{yol}.ONCEKI-{datetime.date.today():%Y%m%d}"
+    if os.path.exists(hedef):
+        return hedef
+    shutil.copy2(yol, hedef)
+    return hedef
+
+
+# ⚠️ Klip YALNIZ hakeme giden isteme uygulanır — ÖNBELLEK ANAHTARINA ASLA (kusur K-1).
+# 🚨 Klibin kendisi AÇIK BORÇ: `h2b k=10`'un bağlamı 3.203-10.281 karakter (medyan 7.174),
+# yani hakem kaynağın ~1/3'ünü görüyor ve "kaynak soruyu cevaplıyor mu" sorusuna eksik
+# görüntüden cevap veriyor. Büyütmek PAY hakemini (`judge()`) de değiştirir ve tüm tarihsel
+# `verdict` sayılarını kıyaslanamaz kılar → bu dalgada değiştirilmedi, `open_questions.md`'ye
+# ölçülmüş borç olarak yazıldı (2026-08-06).
+SOURCE_CLIP = 3500
 
 
 def judge(client, model, soru, source, cevap):
@@ -255,7 +294,15 @@ def judge_gecerlilik(client, model, soru, source):
 
 
 def gecerlilik_anahtari(soru, source):
-    return hashlib.sha256(f"{soru}\x00{source[:SOURCE_CLIP]}".encode("utf-8")).hexdigest()[:24]
+    """Payda önbelleğinin anahtarı — TAM kaynak metni üzerinde, klipli metin üzerinde DEĞİL.
+
+    Why (ölçüldü 2026-08-06, kusur K-1): anahtar `source[:SOURCE_CLIP]` üzerindeyken
+    **farklı sınavlar aynı payda kaydını paylaşıyordu**. `h2b k=4` ile `h2b k=10` 80
+    kalemin 15'inde tek anahtara düştü (`id=12`: 4.461 ↔ 10.281 karakter, kaynak sayısı
+    4 ↔ 10); k=10 kolu kendi paydasını hiç ödemedi. Aynı sınavı paylaşan kollar tam
+    metin de bayt-bayt aynı olduğu için YİNE aynı anahtara düşer — K3'ün kazanımı durur.
+    """
+    return hashlib.sha256(f"{soru}\x00{source}".encode("utf-8")).hexdigest()[:24]
 
 
 def onbellek_oku(yol):
@@ -283,7 +330,7 @@ def onbellek_yaz(yol, cache):
         gecici = f"{yol}.tmp.{os.getpid()}"
         with open(gecici, "w", encoding="utf-8") as f:
             json.dump({"olcum": "cevaba KÖR valid_trap — içerik-adresli, kalem düzeyinde (ADR-0048 · K3)",
-                       "anahtar": "sha256(soru + NUL + kaynak[:3500])[:24]",
+                       "anahtar": "sha256(soru + NUL + TAM kaynak)[:24]  — K-1, 2026-08-06",
                        "n": len(birlesik), "cache": birlesik}, f, ensure_ascii=False, indent=2)
         os.replace(gecici, yol)
 
@@ -303,9 +350,34 @@ def main():
     # tam bu eksende zayıf (ADR-0049 m.2). Aile dışlaması (ADR-0032) tetiklenmez.
     ap.add_argument("--gecerlilik-hakemi", default=os.environ.get("GND_GECERLILIK", "gpt-4o"))
     ap.add_argument("--gecerlilik-onbellek", default=GECERLILIK_ONBELLEK)
+    ap.add_argument("--pay-kaynagi", choices=("hakem", "onceki"), default="hakem",
+                    help="PAY (verdict) nereden gelsin. 'hakem' (varsayılan) pay hakemine sorar. "
+                         "'onceki' mevcut abst_{label}.jsonl'deki verdict'i OKUR ve pay hakemini "
+                         "HİÇ çağırmaz — yalnız PAYDA düzeltildiğinde kullanılır. Gerekçe: pay "
+                         "hakemi yeniden koşarsa paydası değişmeyen kalemlerde de verdict döner "
+                         "(ölçüldü: 990 kalemde 6) ve paydanın etkisi payın gürültüsünden "
+                         "AYRILAMAZ olur. reject_exact her iki kipte de BUGÜNKÜ dedektörle "
+                         "yeniden hesaplanır (tuzak 2.9 — tek kaynak).")
+    ap.add_argument("--payda-kaynagi", choices=("hakem", "onceki"), default="hakem",
+                    help="PAYDA (valid_trap) nereden gelsin. 'hakem' (varsayılan) cevaba kör "
+                         "hakem + önbellek. 'onceki' mevcut abst_{label}.jsonl'deki valid_trap'i "
+                         "AYNEN devralır — YALNIZ regex/dedektör değiştiğinde, paydayı sabit "
+                         "tutup `reject_exact`i tazelemek için. 🚨 Devralınan payda o koşuda "
+                         "NASIL üretildiyse öyle kalır (eskisi modele bağımlı olabilir); özet "
+                         "bunu `valid_trap_kaynagi` alanında damgalar.")
     a = ap.parse_args()
 
-    client, gateway = make_client()
+    # Kapı ağır ve KİMLİK İSTER; boş-bağlam + --pay-kaynagi onceki bileşimi hiç çağrı yapmaz.
+    # Çağrı yapmayan bir koşu kimlik istememelidir — kapı ilk gerçek çağrıda kurulur.
+    kapi = {}
+
+    def istemci():
+        if not kapi:
+            c, gw = make_client()
+            kapi["client"], kapi["gateway"] = c, gw
+        return kapi["client"]
+
+    gateway = gateway_of()
     a.judge_model = resolve(a.judge_model, gateway)
     a.gecerlilik_hakemi = resolve(a.gecerlilik_hakemi, gateway)
     budget = float(os.environ.get("OPENAI_BUDGET_USD", "5") or "5")
@@ -316,12 +388,28 @@ def main():
     runlock.acquire(f"{a.out_dir}/abst_{a.label}.jsonl", tag=f"abst {a.label}")
 
     rows = load_jsonl(a.details)
-    out, spent, spent_payda = [], 0.0, 0.0
+    out, spent, spent_payda, spent_pay = [], 0.0, 0.0, 0.0
     n_abstain = n_fab = n_invalid = n_param = n_rej_exact = 0
     onbellek = onbellek_oku(a.gecerlilik_onbellek)
-    n_devralinan = 0
-    print(f"[abst] {a.label}: {len(rows)} tuzak cevap | pay hakemi={a.judge_model} | "
-          f"payda hakemi={a.gecerlilik_hakemi} (cevaba KÖR) | "
+    n_devralinan = n_tanim = 0
+
+    onceki_satir = {}
+    if "onceki" in (a.pay_kaynagi, a.payda_kaynagi):
+        p_onceki = f"{a.out_dir}/abst_{a.label}.jsonl"
+        if not os.path.exists(p_onceki):
+            raise SystemExit(f"🚨 --pay-kaynagi/--payda-kaynagi onceki: {p_onceki} YOK — bu "
+                             "label hiç skorlanmamış, devralınacak satır yok. DURDURULDU.")
+        onceki_satir = {r["id"]: r for r in json.load(open(p_onceki, encoding="utf-8"))}
+
+    def devralinan(r):
+        o = onceki_satir.get(r.get("id"))
+        if o is None:
+            raise SystemExit(f"🚨 --...-kaynagi onceki: id={r.get('id')} önceki skorlamada YOK. "
+                             "Sınav değişmiş — devralınamaz. DURDURULDU.")
+        return o
+
+    print(f"[abst] {a.label}: {len(rows)} tuzak cevap | pay kaynağı={a.pay_kaynagi} "
+          f"(hakem={a.judge_model}) | payda hakemi={a.gecerlilik_hakemi} (cevaba KÖR) | "
           f"önbellek={a.gecerlilik_onbellek} ({len(onbellek)} kalem)")
     for r in rows:
         if spent >= budget:
@@ -329,20 +417,40 @@ def main():
         source = r.get(a.source_field, "") or ""
 
         # ── PAYDA: cevaba KÖR, kalem düzeyinde, içerik-adresli önbellek ──────────
-        anahtar = gecerlilik_anahtari(r["soru"], source)
-        if anahtar in onbellek:
+        # Boş bağlam hakeme GİTMEZ ve önbelleğe de girmez: önbellek içerik-adresli, oysa
+        # bu kararın kaynağı içerik değil TANIM (ADR-0048 m.2).
+        if a.payda_kaynagi == "onceki":
+            o = devralinan(r)
+            anahtar, valid = o.get("valid_trap_anahtari", "DEVRALINDI"), o["valid_trap"]
+            payda_reason = o.get("valid_trap_reason")
             n_devralinan += 1
+        elif payda_tanimdan_gecerli(r.get("mode")):
+            anahtar, valid = "TANIM:bos-baglam", True
+            payda_reason = "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli"
+            n_tanim += 1
         else:
-            g, cg = judge_gecerlilik(client, a.gecerlilik_hakemi, r["soru"], source)
-            spent += cg
-            spent_payda += cg
-            onbellek[anahtar] = {"gecerli": not g.get("source_answers"),
-                                 "reason": g.get("reason"), "hakem": a.gecerlilik_hakemi}
-        valid = onbellek[anahtar]["gecerli"]
+            anahtar = gecerlilik_anahtari(r["soru"], source)
+            if anahtar in onbellek:
+                n_devralinan += 1
+            else:
+                g, cg = judge_gecerlilik(istemci(), a.gecerlilik_hakemi, r["soru"], source)
+                spent += cg
+                spent_payda += cg
+                onbellek[anahtar] = {"gecerli": not g.get("source_answers"),
+                                     "reason": g.get("reason"), "hakem": a.gecerlilik_hakemi}
+            valid = onbellek[anahtar]["gecerli"]
+            payda_reason = onbellek[anahtar]["reason"]
 
         # ── PAY: cevabı görerek — cevaba bağlılığı MEŞRU (ADR-0049 m.2) ──────────
-        d, c = judge(client, a.judge_model, r["soru"], source, r["cevap"])
+        if a.pay_kaynagi == "onceki":
+            o = devralinan(r)
+            d, c = {"verdict": o["verdict"], "used_parametric": o.get("used_parametric"),
+                    "reason": o.get("reason"),
+                    "source_answers": o.get("source_answers_cevapli")}, 0.0
+        else:
+            d, c = judge(istemci(), a.judge_model, r["soru"], source, r["cevap"])
         spent += c
+        spent_pay += c
         v = d.get("verdict")
         rej_x = exact_reject(r["cevap"], r.get("mode"))   # G2: deterministik red tespiti (mod-duyarlı)
         if not valid:
@@ -359,7 +467,7 @@ def main():
                "valid_trap": valid, "verdict": v, "reject_exact": rej_x,
                "used_parametric": d.get("used_parametric"), "reason": d.get("reason"),
                "valid_trap_anahtari": anahtar,
-               "valid_trap_reason": onbellek[anahtar]["reason"],
+               "valid_trap_reason": payda_reason,
                # Denetim izi: aletin ESKİ, cevaba bağlı yargısı. KULLANILMIYOR — kirlenmenin
                # kalem düzeyinde görünür kalması için saklanıyor.
                "source_answers_cevapli": d.get("source_answers")}
@@ -376,21 +484,37 @@ def main():
         "valid_traps": valid_total, "invalid_traps": n_invalid,
         # 🚨 PAYDA MODELDEN BAĞIMSIZ (K3, 2026-08-06): aynı sınavı paylaşan kolların
         # `valid_traps` değeri EŞİT olmak ZORUNDA. Değilse ya sınav ya önbellek bozuktur.
-        "valid_trap_kaynagi": "cevaba KÖR hakem + içerik-adresli önbellek",
+        "valid_trap_kaynagi": (
+            "🚨 ÖNCEKİ KOŞUDAN AYNEN DEVRALINDI — bu koşuda TÜRETİLMEDİ, kaynağı o koşunun "
+            "kaydındadır (modele bağımlı olabilir). Değişen tek şey reject_exact dedektörü."
+            if a.payda_kaynagi == "onceki" else
+            "boş bağlam → TANIM (ADR-0048 m.2)" if n_tanim == len(out) else
+            "cevaba KÖR hakem + içerik-adresli önbellek"),
+        "payda_kaynagi": a.payda_kaynagi,
         "gecerlilik_hakemi": a.gecerlilik_hakemi,
         "gecerlilik_onbellegi": a.gecerlilik_onbellek,
         "gecerlilik_devralinan": n_devralinan,
+        "gecerlilik_tanimdan": n_tanim,
         "gecerlilik_maliyet_usd": round(spent_payda, 4),
         "source_field": a.source_field,
         "rejection_rate": round(n_abstain / valid_total, 3) if valid_total else None,        # Rej* (LLM-judged)
         "rejection_exact": round(n_rej_exact / valid_total, 3) if valid_total else None,     # Rej (exact-match, G2)
         "fabrication_rate": round(n_fab / valid_total, 3) if valid_total else None,
         "parametric_leak": round(n_param / valid_total, 3) if valid_total else None,
+        # ⚠️ AYRIŞTIRILDI (kusur k-3): `judge_cost_usd` İKİ hakemin toplamı — payda `gpt-4o`,
+        # pay `gpt-4o-mini`. `global-kisitlar.md`'nin "$0,04/koşu" çıpası YALNIZ pay tarafıdır.
+        "pay_kaynagi": a.pay_kaynagi,
+        "pay_maliyet_usd": round(spent_pay, 4),
         "judge_cost_usd": round(spent, 4),
         "note": "RGB negative-rejection. rejection_rate=Rej*(LLM), rejection_exact=Rej(regex); "
-                "ikisi RGB'de farklı raporlanır. ↑ iyi (tavan yok). invalid=kaynak cevaplıyor→tuzak geçersiz.",
+                "ikisi RGB'de farklı raporlanır. ↑ iyi (tavan yok). invalid=kaynak cevaplıyor→tuzak geçersiz. "
+                "judge_cost_usd = pay_maliyet_usd + gecerlilik_maliyet_usd (iki AYRI hakem).",
     }
     os.makedirs(a.out_dir, exist_ok=True)
+    for y in (f"{a.out_dir}/abst_{a.label}.jsonl", f"{a.out_dir}/abst_{a.label}_summary.json"):
+        yedek = yedekle(y)
+        if yedek:
+            print(f"[abst] yayımlanmış çıktı korundu → {yedek}")
     json.dump(out, open(f"{a.out_dir}/abst_{a.label}.jsonl", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     json.dump(summary, open(f"{a.out_dir}/abst_{a.label}_summary.json", "w", encoding="utf-8"),
               ensure_ascii=False, indent=2)

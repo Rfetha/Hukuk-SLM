@@ -105,12 +105,94 @@ def test_gecerlilik_anahtari_cevaptan_bagimsiz():
             != gecerlilik_anahtari("Soru?", "BAŞKA kaynak"))
 
 
-def test_gecerlilik_anahtari_kaynak_klipinin_otesini_ayirt_etmez():
-    """Anahtar hakeme GİDEN metnin üzerinde: klip sonrası aynı olan iki kaynak aynı
-    kalemdir. Aksi hâlde önbellek, hakemin görmediği bir farka göre bölünürdü."""
+def test_gecerlilik_anahtari_kaynak_klipinin_OTESINI_AYIRT_EDER():
+    """🚨 K-1 — anahtar TAM bağlamı ayırt etmeli; klip yalnız hakeme giden metni kırpar.
+
+    Kuralın ilk hâli anahtarı `kaynak[:SOURCE_CLIP]` üzerine kuruyordu ve bu, **farklı
+    sınavları aynı payda kaydına** düşürüyordu. Ölçüldü (2026-08-06): `h2b k=4` ile
+    `h2b k=10` 80 kalemin **15'inde** aynı anahtara düşüyor; `id=12`'de k=4 bağlamı
+    4.461, k=10 bağlamı 10.281 karakter, ilk 3.500 karakter AYNI, kaynak sayısı 4 ↔ 10.
+    k=10 kolu kendi paydasını hiç ödemiyor, k=4'ünkini devralıyordu.
+    """
     from score_abstention import gecerlilik_anahtari, SOURCE_CLIP
-    uzun = "A" * SOURCE_CLIP
-    assert gecerlilik_anahtari("S", uzun) == gecerlilik_anahtari("S", uzun + "kuyruk")
+    onek = "A" * SOURCE_CLIP
+    assert gecerlilik_anahtari("S", onek) != gecerlilik_anahtari("S", onek + "kuyruk")
+    # Aynı sınavı paylaşan kollar YİNE aynı anahtara düşer — K3'ün kazanımı korunuyor.
+    assert gecerlilik_anahtari("S", onek + "kuyruk") == gecerlilik_anahtari("S", onek + "kuyruk")
+
+
+# ── KARAR-2: BOŞ BAĞLAMDA PAYDA TANIM GEREĞİ 80/80 (ADR-0048 m.2) ──────────
+# Ölçülen kusur: cp09'un AYNI M3 sınavında üç kol 54 · 56 · 39 payda gösterdi. Kural
+# aletin dışında (`valid_trap_cache.py`) durduğu için skorlama varsayılan
+# `--source-field referans` ile ALTIN maddeyi hakeme gösteriyor, hakem "kaynak
+# cevaplıyor" deyip tuzağı geçersiz sayıyordu. Üç sayı da yanlıştı.
+
+def test_payda_tanimdan_gecerli_yalniz_bos_baglam_modunda():
+    from score_abstention import payda_tanimdan_gecerli
+    assert payda_tanimdan_gecerli("empty") is True
+    assert payda_tanimdan_gecerli("oracle") is False
+    assert payda_tanimdan_gecerli("distractor_nogold") is False
+    assert payda_tanimdan_gecerli("harness") is False
+    assert payda_tanimdan_gecerli(None) is False
+
+
+def test_bos_baglam_kosusu_paydayi_HAKEMSIZ_ve_TAM_verir(tmp_path, monkeypatch):
+    """Uçtan uca: `mode=empty` + `--pay-kaynagi onceki` → SIFIR ağ çağrısı, payda n/n.
+
+    Bu test hem KARAR-2'yi (payda 80/80) hem `--pay-kaynagi onceki` sözleşmesini
+    kilitler. Ağ çağrısı olursa `make_client` kimlik ister ve test çöker — yani
+    "hakeme gitmedi" iddiası gerçekten sınanıyor, varsayılmıyor.
+    """
+    import json
+    import subprocess
+
+    d = tmp_path / "kosu"
+    d.mkdir()
+    # `referans` DOLU: eski kusurun tam koşulu — hakem görseydi "cevaplıyor" derdi.
+    detay = [{"id": i, "soru": f"Soru {i}?", "cevap": "Verilen kaynaklarda bu konu yok.",
+              "mode": "empty", "context_shown": "",
+              "referans": "Madde 1 — Bu madde soruyu tam olarak cevaplar."} for i in range(4)]
+    with open(d / "m3_test_detail.jsonl", "w", encoding="utf-8") as f:
+        for r in detay:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    json.dump([{"id": i, "verdict": "ABSTAIN", "used_parametric": False, "reason": "x"}
+               for i in range(4)],
+              open(d / "abst_m3_test.jsonl", "w", encoding="utf-8"))
+
+    ortam = {k: v for k, v in __import__("os").environ.items()
+             if k not in ("OPENAI_API_KEY", "OPENROUTER_API_KEY")}
+    ortam["OPENAI_BUDGET_USD"] = "0.01"
+    p = subprocess.run(
+        [sys.executable, "scripts/score_abstention.py",
+         "--details", str(d / "m3_test_detail.jsonl"), "--label", "m3_test",
+         "--out-dir", str(d), "--pay-kaynagi", "onceki",
+         "--gecerlilik-onbellek", str(tmp_path / "onbellek.json")],
+        capture_output=True, text=True, env=ortam)
+    assert p.returncode == 0, p.stdout + p.stderr
+    ozet = json.load(open(d / "abst_m3_test_summary.json", encoding="utf-8"))
+    assert ozet["valid_traps"] == 4, "boş bağlamda payda TANIM gereği n/n olmalı"
+    assert ozet["invalid_traps"] == 0
+    assert ozet["gecerlilik_tanimdan"] == 4
+    assert ozet["judge_cost_usd"] == 0.0, "hiçbir hakem çağrılmamalıydı"
+    assert not (tmp_path / "onbellek.json").exists() or \
+        json.load(open(tmp_path / "onbellek.json", encoding="utf-8"))["cache"] == {}, \
+        "TANIM kararı içerik-adresli önbelleğe SIZMAMALI"
+
+
+def test_pay_kaynagi_onceki_verdict_dosyasi_yoksa_ERKEN_PATLAR(tmp_path):
+    """Sessizce boş verdict'le devam etmek yerine dur (ADR-0026 ruhu)."""
+    import json
+    import subprocess
+    d = tmp_path / "kosu"
+    d.mkdir()
+    with open(d / "x_detail.jsonl", "w", encoding="utf-8") as f:
+        f.write(json.dumps({"id": 0, "soru": "S?", "cevap": "C", "mode": "empty"}) + "\n")
+    p = subprocess.run(
+        [sys.executable, "scripts/score_abstention.py", "--details", str(d / "x_detail.jsonl"),
+         "--label", "x", "--out-dir", str(d), "--pay-kaynagi", "onceki"],
+        capture_output=True, text=True)
+    assert p.returncode != 0
+    assert "abst_x.jsonl" in (p.stdout + p.stderr)
 
 
 def test_onbellek_yazimi_diskteki_kalemleri_silmez(tmp_path):
