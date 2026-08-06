@@ -1012,7 +1012,13 @@ tgta_v1 ⭐       63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅   
 (41,2% ↔ 56,7%). İç iddianın öncülü artık varsayım değil **veri**.
 
 **2. Merge çatışan becerileri birlikte taşıyor.** `tgta_v1`, `τ_g`'nin grounding'ini **tamamen**
-koruyup (71,4% → 71,6%) onun M2b çöküşünün **%71'ini** onardı (0,607 → 0,877).
+koruyup (71,4% → 71,6%) onun M2b çöküşünün **%57'sini** ~~%71'ini~~ onardı
+(**0,506 → 0,766** ᴷ³ ~~0,607 → 0,877~~).
+
+> 🚨 ᴷ³ **BU SATIRIN M2b SAYILARI ESKİ ALETİN BİRİMİNDEYDİ** (düzeltildi 2026-08-06, kusur K2).
+> Kör-payda onarımı üç girdiyi de yeniledi (base 0,986→0,961 · `τ_g` 0,607→0,506 · merge
+> 0,877→0,766), bu yüzden `(merge − τ_g)/(base − τ_g)` oranı da **%71,2 → %57,1** oldu.
+> Sıçramanın kendisi değişmedi (**+0,26**). Eski sayılar denetim izi olarak duruyor.
 
 **3. ADR-0036'nın hükmü tersine döndü → [ADR-0052](../../adr/0052-merge-norm-dengeleme-hukmu-tersine.md).**
 Norm dengeleme *gerekli* diye yazılmıştı; ölçüm `τ_g`'yi ezdiğini (71,4% → 53,4%) ve yüksek

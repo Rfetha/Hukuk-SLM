@@ -159,6 +159,13 @@ iki kanuna ait olabiliyor (`İŞ KANUNU` = **4857** yürürlükte **ve** **1475*
   | belirsiz sorgu | ❌ çözmüyor — soruların ~%25'i (ölçüldü: **18/80**) konusunu hiç belirtmiyor |
   | **yürürlük · ilga · tadil · atıf zincirleri** | ✅ **düz vektör benzerliğinden okunamaz** — ama 5.1 bunun **ucuz** kısmını **bir veri alanıyla** çözdü |
 
+  ⚠️ ᴷ⁴ **B3'ün (`k` süpürmesi) ÇEKİNME bacağı TANIMSIZ** (2026-08-06, KARAR-4 m.2):
+  *"`k` büyütmek çekinmeye de mal oluyor"* (`Rej` 0,840 → 0,784) bir **hüküm değil, borç** —
+  kör payda hakemi `k=10`'da kaynakların **%57'sini**, `k=4`'te %100'ünü görüyor, payda
+  ekseni eşleşmiyor ([ADR-0057](docs/adr/0057-harness-rekabet-kapisi-esit-sinav.md)).
+  Sadakat bacağı (A1 0,923 → 0,843, #54) **etkilenmiyor**; `k` süpürmesinin gerekçesi
+  bugün yalnız ona dayanır. Kapatan şey klip borcu (≈$0,30, `docs/open_questions.md`).
+
   **Sıra:** B7 (veri) → B3 (k süpürmesi) → B1 (isabet denetimi) → **graf**. Graf, 5.1
   yapıldıktan sonra *atıf zincirleri ve çapraz referans* için hak eder; erişim darboğazını
   çözmek için değil. ⚠️ [`VISION.md`](docs/VISION.md) Faz 2'deki *"hukuk ilişkiseldir"*

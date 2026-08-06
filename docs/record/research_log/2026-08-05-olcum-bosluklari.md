@@ -28,8 +28,18 @@ Sınandı.
 kol                kaynak   Rej*   Rej_rgx  payda  geçersiz  kapı_red  atıfsız  zorluk
 KAPALI m2b (çıpa)      4   0,877    0,846     65       15        -        -    1,0000
 AÇIK  h2b k=4          4   0,840    0,820     50       30        2       36    0,4750  ← HÜKÜM
-AÇIK  h2b k=10        10   0,784    0,706     51       29        4       34    0,4350    bilgi
+AÇIK  h2b k=10        10   0,784    0,706     51       29        4       34    0,4350    bilgi ⚠️TANIMSIZ
 ```
+
+> ## 🚨 TANIMSIZ ᴷ⁴ — `k=10` SATIRININ PAYDASI (2026-08-06, KARAR-4 m.2)
+> Kör payda hakemi kaynak metnini `SOURCE_CLIP = 3500` karakterle kırpılmış görüyor. Ölçüldü
+> (`[KAYNAK` sayımı, n=80): **k=4 → 320/320 kaynağın %100'ü** · **k=10 → 454/800, yani %57'si**
+> (bağlam medyanı 3.059 ↔ 7.200 karakter). Yani `k=10`'un tuzak-geçerliliği kaynakların
+> **yarısından biraz fazlası** görülerek kararlaştırılmış; `k=4`'ünki tamamı görülerek.
+> **Payda ekseni EŞLEŞMİYOR** → [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md)
+> gereği bu satır **TANIMSIZ** damgalıdır: sayı kayıtta kalır, ondan **hüküm kurulmaz**.
+> ⛔ Yumuşatılmaz — *"muhtemelen yine de geçerli"* denmez. Alet kuramadığı hükmü kurmaz.
+> Kapatan şey klibi büyütmek; reçete + fiyat (≈$0,30) `docs/open_questions.md`'de **açık borç**.
 
 > 🚨 ᴷ³ **BU GİRİŞİN M2b SAYILARI ESKİ ALETİN BİRİMİNDEDİR (2026-08-06 tespiti).** `valid_trap`
 > paydası hakemin **modelin cevabını görerek** verdiği bir karardı. Yeniden puanlanmış değerler
@@ -66,11 +76,18 @@ yanlıydı'** diye oku."* Tahmin, altın gelmeyen **10** sorudan türetilmişti;
 ağırlıkla "belirsiz" sınıfıydı ve model orada daha az çekiniyor. Gerçekte model tahmin edilenin
 **iki katından fazla** çekiniyor.
 
-### 🎁 `k`'nın bedeli ilk kez ÇEKİNME ekseninde sayıldı
+### ~~🎁 `k`'nın bedeli ilk kez ÇEKİNME ekseninde sayıldı~~ → 🔴 HÜKÜM DÜŞTÜ, **BORCA DÖNDÜ**
 
-`k=4 → k=10`: Rej **0,840 → 0,784** (**−5,6 puan**). Bugüne dek `k`'nın bedeli yalnız **sadakat**
+> 🚨 **ᴷ⁴ 2026-08-06 (KARAR-4 m.2) — BU BAŞLIK ARTIK HÜKÜM DEĞİL.** Aşağıdaki kıyasın iki
+> kolu **aynı paydayı ölçmüyor**: kör hakem `k=4`'te kaynakların %100'ünü, `k=10`'da
+> **%57'sini** görüyor (454/800, ölçüldü). ADR-0057'nin kendi mekanizması: eşleşmeyen
+> eksende **hüküm kurulmaz**. ⇒ *"`k` büyütmenin çekinme bedeli"* bir **BORÇ**tur — ölçülmüş
+> bir bulgu değil. Eski sayı silinmedi. Kapatan şey klip borcu (≈$0,30, `open_questions.md`);
+> sadakat eksenindeki bulgu (#54) bundan **etkilenmez**, o payda paylaşmıyor.
+
+~~`k=4 → k=10`: Rej **0,840 → 0,784** (**−5,6 puan**). Bugüne dek `k`'nın bedeli yalnız **sadakat**
 ekseninde ölçülmüştü (A1·altın getirilen 0,9230 → 0,8426, #54). **İki eksen aynı yöne bakıyor:**
-daha çok bağlam = hem daha az sadakat hem daha az çekinme.
+daha çok bağlam = hem daha az sadakat hem daha az çekinme.~~
 
 ### ⭐ Beklenmedik: geçersiz tuzak **30/80 ↔ 15/80**
 
@@ -234,7 +251,7 @@ daraltıyor: *yeni bir yetenek öğretmek* değil, **var olan yeteneği varsayı
 | :--- | :--- | :--- |
 | **YB1** | **B-i önsözü benimsensin mi?** Ölçüldü ve kazandırdı (+1,43 puan kütle), ama ana protokolü değiştirir → **tüm çıpalar yeniden türetilir** | Kabul edilirse `%61,3` çıpası ve ondan türeyen her kıyas yenilenir. **Kendi ADR'sini ister.** |
 | **YB2** | **M2b artık bir eğitim borcudur** — kapı yolu ölçülerek kapandı | Part 1'in gerekçesi öldü; hedef listesi [ROADMAP](../../../ROADMAP.md) 2.1c'ye taşınmalı |
-| **YB3** | **`k`'nın bedeli iki eksende birden ölçüldü** — `k` büyütmek artık ücretsiz değil | `k=20` gerekçesi bu turdan sonra **daha da zayıf** |
+| **YB3** ᴷ⁴ | ~~**`k`'nın bedeli iki eksende birden ölçüldü**~~ → **TEK eksende ölçüldü (sadakat).** Çekinme ekseni **TANIMSIZ** (2026-08-06, KARAR-4 m.2): kör hakem `k=10`'da kaynakların **%57'sini** görüyor, `k=4`'te %100'ünü → ADR-0057, hüküm kurulmaz | `k=20` gerekçesi yalnız **sadakat** bulgusuyla zayıflıyor. Çekinme bacağı **açık borç**: klip ≈$0,30 ödenmeden hüküm yok |
 
 **Sonraki tur için ön-kayıtlı soru** *(bu turun kendi dersinden doğdu — Part 1 tam burada hata
 yapmıştı: çareyi ölçmeden gerekçe saydı)*:

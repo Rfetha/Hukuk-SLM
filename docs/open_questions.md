@@ -31,14 +31,39 @@ olmalıydı, geçerli sayılıyor ve modelin o kaynaktan verdiği doğru cevap `
 
 **Neden bu dalgada büyütülmedi:** aynı sabit **pay hakemini** de besliyor; büyütmek tüm
 tarihsel `verdict` sayılarını kıyaslanamaz kılar (tuzak 2.16'nın kardeşi). Ayrıca `k=10`
-paydası ayrı bir kusurla (K-1, anahtar paylaşımı) karışmıştı; o **kapatıldı** ve ölçüldü ki
-**anahtar onarımı sayıyı kıpırdatmıyor** (15 kalem yeniden ödendi, 15/15 aynı hüküm) — yani
-`Rej* = 0,723`'te bir yanlılık varsa kaynağı **klip**tir.
+paydası ayrı bir kusurla (K-1, anahtar paylaşımı) karışmıştı; o dalga anahtarı tam metne
+taşıdı ve ölçtü ki **anahtar onarımı sayıyı kıpırdatmıyor** (15 kalem yeniden ödendi, 15/15
+aynı hüküm) — yani `Rej* = 0,723`'te bir yanlılık varsa kaynağı **klip**tir.
+
+> ### 🚨 KARAR-4 (insan kararı, 2026-08-06) — klibi büyütmek **BİLİNÇLE REDDEDİLDİ**
+> Bu turun **üçüncü** alet değişikliği olurdu ve pay hakemi aynı klibi kullandığı için
+> **tüm çekinme sayıları yeniden oynardı**. Aynı kararla K-1'in tam-metin anahtarı da
+> **geri alındı** (anahtar hakem istemine eşitlendi, `hakem_kaynagi()`), çünkü hakemin
+> ayırt edemediği bir farka göre bölünen anahtar *aynı istem → aynı cevap* değişmezini
+> kırıyordu (65 istem >1 anahtara · 83 gereksiz çağrı · `Rej*`'de ~1,5 p sahte oynama).
+>
+> **Bedeli açıkça ödendi:** `k=4` bağlamı `k=10`'unkinin öneki olduğu için ikisi tek payda
+> kaydına düşer → **`k=10`'un paydası TANIMSIZ damgalıdır** (ADR-0057) ve *"`k` büyütmenin
+> çekinme bedeli"* bir hüküm olmaktan çıkıp **borca** dönmüştür. Bu borcu kapatan tek şey
+> aşağıdaki reçetedir.
 
 **Kapatmak için gereken:** (a) payda klipi ile pay klipini **ayrı sabitlere** böl — payda
 klipi büyütülebilir, pay klipi tarihsel süreklilik için sabit kalır; (b) k=10 paydasını yeni
 klip ile yeniden öde (~80 kalem × `gpt-4o`, ölçülmüş birim maliyet **$0,0037/kalem** →
-**≈$0,30**); (c) eski/yeni paydayı yan yana raporla. **Karar insana ait.**
+**≈$0,30**); (c) eski/yeni paydayı yan yana raporla; (d) kapandığında `k=10`'un **TANIMSIZ**
+damgası kalkar ve `k`'nın çekinme bedeli ilk kez hüküm kurabilir. **Karar insana ait.**
+
+### `cp2c_kabul.sh` hangi hakem yığınıyla koşmalı? 🟡 *rejim kararı, kod hazır*
+
+`cp2c_kabul.sh:39` → `LLM_GATEWAY="${LLM_GATEWAY:-openai}"`, oysa ölçüm koşuları
+`openrouter` + sağlayıcı pini kullanıyor (global kısıt). Zincir 4. adımda **ortak**
+içerik-adresli önbelleğe **yazıyor**; kusur K1'e kadar bu, openai damgalarının sonraki
+openrouter ölçümlerine **sessizce** sızması demekti. Sızıntı **kapatıldı**
+(`onbellek_isabeti()` uyuşmazlıkta durur, iki yönde de), ama varsayılan **değiştirilmedi**:
+kabul ölçütünü hangi yığının ürettiği bir rejim kararıdır, sessiz bir düzeltme değil.
+**Seçenekler:** (a) varsayılanı `openrouter` yap — kabul havuzu ölçüm yığınıyla eşitlenir,
+ama geçmiş kabul koşularıyla kıyaslanamaz; (b) zincire ayrı `--gecerlilik-onbellek` ver —
+yalıtılır, paylaşımın kazandırdığı devralma kaybolur. **Karar insana ait.**
 
 ### M2'nin paydası hâlâ modele bağımlı — fiyatı ölçüldü 🔴 *$0,11, insan kararı bekliyor*
 
@@ -310,7 +335,7 @@ artık **ham TIES ana yol**, norm-dengeli ablasyon. Test ikisini de doğrulamal�
 | **#9** iç iddianın karar kuralı | **Kapı 5** — `min` bileşik, simetrik %90, iki tabanı da geç | [ADR-0037](adr/0037-ic-iddia-karar-kurali-kapi-5.md) · `TASARIM.md` §7 |
 | **#10** merge kütüphanesi | **kendi kodumuz** + zorunlu birim testi + `mergekit` çapraz kontrol 🔄 | `TASARIM.md` §4.2 |
 | **#11** `τ_reasoning` / RS-FT | **kapsam dışı** — biçim zaten `τ_g`'de (%76), zincirleme harness'ın işi. ⚠️ **§13.10 ile şartlı yeniden açıldı** (CP0-a YEŞİL çıkarsa) | [ADR-0035](adr/0035-tau-reasoning-rs-ft-kapsam-disi.md) · [ADR-0040](adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) · `TASARIM.md` §2 (satır 13), §10.2 |
-| **#12** ΔW norm asimetrisi | ⚠️ **HÜKÜM TERSİNE (2026-08-03)** — **ham TIES ana**, norm-dengeli ablasyon. Asimetri **ölçüldü** (8,87×: ‖τ_g‖ 10,47 ↔ ‖τ_a‖ 1,18) ve `‖τ‖` koşulsuz ölçülmeye devam eder; çürütülen şey *"dengelenmezse küçük kol silinir"* çıkarımı — ham TIES'te `τ_a` silinmedi (M2b 0,607→0,877), tersine dengeleme `τ_g`'yi ezdi (grounding 71,4%→53,4%) | [**ADR-0052**](adr/0052-merge-norm-dengeleme-hukmu-tersine.md) ADR-0036'yı tadil eder · [#48 §24](record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
+| **#12** ΔW norm asimetrisi | ⚠️ **HÜKÜM TERSİNE (2026-08-03)** — **ham TIES ana**, norm-dengeli ablasyon. Asimetri **ölçüldü** (8,87×: ‖τ_g‖ 10,47 ↔ ‖τ_a‖ 1,18) ve `‖τ‖` koşulsuz ölçülmeye devam eder; çürütülen şey *"dengelenmezse küçük kol silinir"* çıkarımı — ham TIES'te `τ_a` silinmedi (M2b **0,506→0,766** ᴷ³ ~~0,607→0,877~~; sıçrama +0,26 aynı, **onarım oranı %71→%57**), tersine dengeleme `τ_g`'yi ezdi (grounding 71,4%→53,4%). ⚠️ ᴷ³ damgası 2026-08-06'da eklendi (kusur Ö3): ADR-0052 ve `TASARIM.md`:337 damgalanırken aynı iddiayı taşıyan bu satır atlanmıştı | [**ADR-0052**](adr/0052-merge-norm-dengeleme-hukmu-tersine.md) ADR-0036'yı tadil eder · [#48 §24](record/research_log/2026-08-02-cp2c-modal-koprusu.md) |
 | **#13** rejim eşleşmesi | precision/dropout/modül/uzunluk **eşleşti** · lr/batch **serbest** + tetik · ORPO **epochs 3** | `TASARIM.md` **§4.1.1** |
 | **§13.2** red kapısı eşiği | **katı** — tek doğrulanamayan atıf tüm cevabı reddettirir | [ADR-0038](adr/0038-red-kapisi-esigi-kati.md) |
 | **§13.4** zamansal eksen | **kapsam dışı** — sebep tercih değil, korpusta metadata yok | `TASARIM.md` §10.2 · ön koşul §5.3 |

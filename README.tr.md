@@ -86,7 +86,8 @@ Birbiriyle **fiilen çatışan** iki beceri: dayanaklandırma için eğitmek çe
 çökertiyor (ölçüldü: 0,961 → 0,506 ᴷ³), çekinme için eğitmek dayanaklandırmayı
 çökertiyor (%56,7 → %41,2). Hiçbir kol tek başına kullanılabilir değil. Merge
 ikisini de geri getiriyor — dayanaklandırma tamamen korunuyor, çekinme çöküşünün
-%71'i onarılıyor.
+**%57'si** ~~%71'i~~ onarılıyor *(oran 2026-08-06'da ᴷ³ paydalarından yeniden türetildi:
+`(0,766−0,506)/(0,961−0,506)`; not [`MODEL_CARD.md`](MODEL_CARD.md)'de).*
 
 ## Hızlı başlangıç
 
