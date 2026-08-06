@@ -7,10 +7,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta işverenin yükümlülüğünün geçerli olduğu durumlar belirtilmemiştir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta işverenin yükümlülüğünün geçerli olduğu durumlar belirtilmemiştir."
   },
   {
     "id": 1,
@@ -20,10 +17,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "verilen kaynakta bu bilgi yok",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "verilen kaynakta bu bilgi yok"
   },
   {
     "id": 2,
@@ -33,10 +27,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Kaynak metin ret kararına itiraz hakkını düzenlemiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Kaynak metin ret kararına itiraz hakkını düzenlemiyor."
   },
   {
     "id": 3,
@@ -46,10 +37,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynakta evlendirme memurunun yetkisi hakkında bilgi yoktur.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta evlendirme memurunun yetkisi hakkında bilgi yoktur."
   },
   {
     "id": 4,
@@ -59,10 +47,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta tebligat adresinin bildirilmesi zorunlu olduğu durumlar belirtilmiş ancak bu durumlar dışında başka bir bilgi verilmemiştir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta tebligat adresinin bildirilmesi zorunlu olduğu durumlar belirtilmiş ancak bu durumlar dışında başka bir bilgi verilmemiştir."
   },
   {
     "id": 5,
@@ -72,10 +57,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 6,
@@ -85,10 +67,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynak, yargılamanın yenilenmesi için geçerli durumları açıkça düzenlemektedir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynak, yargılamanın yenilenmesi için geçerli durumları açıkça düzenlemektedir."
   },
   {
     "id": 7,
@@ -98,10 +77,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 8,
@@ -111,10 +87,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta alıcının yapabileceği haklar veya yükümlülükler belirtilmemiştir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta alıcının yapabileceği haklar veya yükümlülükler belirtilmemiştir."
   },
   {
     "id": 9,
@@ -124,10 +97,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta işyerlerinin faaliyet konularının etkisi hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta işyerlerinin faaliyet konularının etkisi hakkında bilgi yok."
   },
   {
     "id": 10,
@@ -137,10 +107,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "verilen kaynakta bu bilgi yok",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "verilen kaynakta bu bilgi yok"
   },
   {
     "id": 11,
@@ -150,10 +117,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde belirtilen durumu doğru yansıtsa da, 'devlete ait yargılama giderleri' ifadesi kaynakta geçmiyor ve ek bilgi içeriyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Model, kaynak metinde belirtilen durumu doğru yansıtsa da, 'devlete ait yargılama giderleri' ifadesi kaynakta geçmiyor ve ek bilgi içeriyor."
   },
   {
     "id": 12,
@@ -163,10 +127,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metni özetleyerek soruya net bir cevap vermiştir ancak ek bilgi ve atıf eklemiştir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Model, kaynak metni özetleyerek soruya net bir cevap vermiştir ancak ek bilgi ve atıf eklemiştir."
   },
   {
     "id": 13,
@@ -176,10 +137,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 14,
@@ -189,10 +147,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ücretin ödenmemesi durumuna dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta ücretin ödenmemesi durumuna dair bilgi yok."
   },
   {
     "id": 15,
@@ -202,10 +157,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta icra takibinin kiracıya ne zaman haberdar edileceğine dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta icra takibinin kiracıya ne zaman haberdar edileceğine dair bilgi yok."
   },
   {
     "id": 16,
@@ -215,10 +167,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta sigorta bedelinin kişisel kullanımına dair bir bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta sigorta bedelinin kişisel kullanımına dair bir bilgi yok."
   },
   {
     "id": 17,
@@ -228,10 +177,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta müdafilik şartını belirleyen bir bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta müdafilik şartını belirleyen bir bilgi yok."
   },
   {
     "id": 18,
@@ -241,10 +187,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ticari defterlerin tamamının sunulması gerektiğine dair bir bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta ticari defterlerin tamamının sunulması gerektiğine dair bir bilgi yok."
   },
   {
     "id": 19,
@@ -254,10 +197,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta aile vakfı kurmak için yapılabilecek harcamalarla ilgili bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta aile vakfı kurmak için yapılabilecek harcamalarla ilgili bilgi yok."
   },
   {
     "id": 20,
@@ -267,10 +207,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta vakıf yönetiminde değişiklik yapmak için gerekenler hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta vakıf yönetiminde değişiklik yapmak için gerekenler hakkında bilgi yok."
   },
   {
     "id": 21,
@@ -280,10 +217,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta borçlu eşin mal varlığına ulaşma yöntemi hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta borçlu eşin mal varlığına ulaşma yöntemi hakkında bilgi yok."
   },
   {
     "id": 22,
@@ -293,10 +227,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta miras reddettikten sonraki sorumluluklar hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta miras reddettikten sonraki sorumluluklar hakkında bilgi yok."
   },
   {
     "id": 23,
@@ -306,10 +237,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta borçlunun kimlik bilgilerini verme zorunluluğu hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta borçlunun kimlik bilgilerini verme zorunluluğu hakkında bilgi yok."
   },
   {
     "id": 24,
@@ -319,10 +247,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta hükümlerin kesin hüküm sayıldığı durumlar hakkında bilgi yoktur.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta hükümlerin kesin hüküm sayıldığı durumlar hakkında bilgi yoktur."
   },
   {
     "id": 25,
@@ -332,10 +257,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Bu madde, birine ait malların üzerinize bırakılması durumunu düzenlemiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Bu madde, birine ait malların üzerinize bırakılması durumunu düzenlemiyor."
   },
   {
     "id": 26,
@@ -345,10 +267,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer alan 'fevkalâde mühlet' ifadesini kullanarak yetkili makamın aldığı tedbirler hakkında bilgi vermektedir, ancak ek olarak kendi ezberinden madde numarası eklemiştir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Model, kaynak metinde yer alan 'fevkalâde mühlet' ifadesini kullanarak yetkili makamın aldığı tedbirler hakkında bilgi vermektedir, ancak ek olarak kendi ezberinden madde numarası eklemiştir."
   },
   {
     "id": 27,
@@ -358,10 +277,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta borçlunun iflası ile ilgili bilgi yoktur.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta borçlunun iflası ile ilgili bilgi yoktur."
   },
   {
     "id": 28,
@@ -371,10 +287,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynakta geri verme tarihi belirlemenin gerekliliği hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta geri verme tarihi belirlemenin gerekliliği hakkında bilgi yok."
   },
   {
     "id": 29,
@@ -384,10 +297,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 30,
@@ -397,10 +307,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Bu madde borçlunun borcunu zamanında yerine getirmesi durumunu düzenlemiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Bu madde borçlunun borcunu zamanında yerine getirmesi durumunu düzenlemiyor."
   },
   {
     "id": 31,
@@ -410,10 +317,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta yapı ruhsatı olmadan konut satışı hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta yapı ruhsatı olmadan konut satışı hakkında bilgi yok."
   },
   {
     "id": 32,
@@ -423,10 +327,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta alacağın terkini hakkında dava kazanmanın sonuçlarıyla ilgili bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta alacağın terkini hakkında dava kazanmanın sonuçlarıyla ilgili bilgi yok."
   },
   {
     "id": 33,
@@ -436,10 +337,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta mağdurun yaşına göre cezanın nasıl uygulanacağına dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta mağdurun yaşına göre cezanın nasıl uygulanacağına dair bilgi yok."
   },
   {
     "id": 34,
@@ -449,10 +347,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "verilen kaynakta bu bilgi yok",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "verilen kaynakta bu bilgi yok"
   },
   {
     "id": 35,
@@ -462,10 +357,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynak, kefilin ne yapması gerektiğini açıkça belirtmiyor, model ise net bir çözüm sunuyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynak, kefilin ne yapması gerektiğini açıkça belirtmiyor, model ise net bir çözüm sunuyor."
   },
   {
     "id": 36,
@@ -475,10 +367,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ortakların karar alırken dikkat etmesi gereken bir bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta ortakların karar alırken dikkat etmesi gereken bir bilgi yok."
   },
   {
     "id": 37,
@@ -488,10 +377,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin garanti belgesi olmadan mal satılabilirliğini doğrudan belirtmiyor, ancak model bu konuda kesin bir cevap veriyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Kaynak metin garanti belgesi olmadan mal satılabilirliğini doğrudan belirtmiyor, ancak model bu konuda kesin bir cevap veriyor."
   },
   {
     "id": 38,
@@ -501,10 +387,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Kaynak metin, kovuşturma evresinde görevli mahkemeyi belirtmiyor ve bu konuda bilgi vermiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Kaynak metin, kovuşturma evresinde görevli mahkemeyi belirtmiyor ve bu konuda bilgi vermiyor."
   },
   {
     "id": 39,
@@ -514,10 +397,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Kaynak metin, malvarlığının terki ile ilgili bir bilgi içermemektedir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Kaynak metin, malvarlığının terki ile ilgili bir bilgi içermemektedir."
   },
   {
     "id": 40,
@@ -527,10 +407,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Bu madde koruma tedbirlerini düzenlemiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Bu madde koruma tedbirlerini düzenlemiyor."
   },
   {
     "id": 41,
@@ -540,10 +417,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Cevap, kaynak metinde yer alan bilgileri doğru bir şekilde özetliyor ve ek bilgi içermiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Cevap, kaynak metinde yer alan bilgileri doğru bir şekilde özetliyor ve ek bilgi içermiyor."
   },
   {
     "id": 42,
@@ -553,10 +427,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta iş müfettişlerinin iş yerini durdurma yetkisi hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta iş müfettişlerinin iş yerini durdurma yetkisi hakkında bilgi yok."
   },
   {
     "id": 43,
@@ -566,10 +437,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta adli yardım talebinin nasıl yapılacağına dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta adli yardım talebinin nasıl yapılacağına dair bilgi yok."
   },
   {
     "id": 44,
@@ -579,10 +447,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu konuya dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu konuya dair bilgi yok."
   },
   {
     "id": 45,
@@ -592,10 +457,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta konfederasyonun tüzüğünün ne işe yaradığına dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta konfederasyonun tüzüğünün ne işe yaradığına dair bilgi yok."
   },
   {
     "id": 46,
@@ -605,10 +467,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta eski hâle getirme isteminin kabul edilene kadar ne olacağına dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta eski hâle getirme isteminin kabul edilene kadar ne olacağına dair bilgi yok."
   },
   {
     "id": 47,
@@ -618,10 +477,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde belirtilen bilgileri doğru bir şekilde özetlemiş ancak kaynakta yer almayan bir madde numarası eklemiştir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Model, kaynak metinde belirtilen bilgileri doğru bir şekilde özetlemiş ancak kaynakta yer almayan bir madde numarası eklemiştir."
   },
   {
     "id": 48,
@@ -631,10 +487,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta yedek mirasçı atamanın zorunlu olup olmadığına dair bir bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta yedek mirasçı atamanın zorunlu olup olmadığına dair bir bilgi yok."
   },
   {
     "id": 49,
@@ -644,10 +497,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ceza öngörülmemesi durumuna dair özel bir düzenleme bulunmamaktadır.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta ceza öngörülmemesi durumuna dair özel bir düzenleme bulunmamaktadır."
   },
   {
     "id": 50,
@@ -657,10 +507,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta el koyma işlemi hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta el koyma işlemi hakkında bilgi yok."
   },
   {
     "id": 51,
@@ -670,10 +517,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta konutta hacizle ilgili özel bir durum düzenlenmemiştir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta konutta hacizle ilgili özel bir durum düzenlenmemiştir."
   },
   {
     "id": 52,
@@ -683,10 +527,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta hâkimin kural koyma yetkisi veya usulü hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta hâkimin kural koyma yetkisi veya usulü hakkında bilgi yok."
   },
   {
     "id": 53,
@@ -694,12 +535,9 @@
     "cevap": "Verilen kaynak metni, bir şirket müdürünün suç işlediğinde kimin cezalandırılacağını doğrudan belirtmez.\n\nVerilen kaynak metni soruyu cevaplamaz.",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 54,
@@ -709,10 +547,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta gizli bilgilerin elde edilme nedenini ispatlama ile ilgili bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta gizli bilgilerin elde edilme nedenini ispatlama ile ilgili bilgi yok."
   },
   {
     "id": 55,
@@ -720,12 +555,9 @@
     "cevap": "Verilen kaynak metni, tüketici ödülleri kimlere verildiği sorusunu cevaplamaz.",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
-    "reason": "Bu madde tüketici ödüllerinin kimlere verileceğini düzenlemiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Bu madde tüketici ödüllerinin kimlere verileceğini düzenlemiyor."
   },
   {
     "id": 56,
@@ -735,10 +567,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Bu madde kamu görevlisini tanımlamıyor ve bu konuda bilgi vermiyor.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Bu madde kamu görevlisini tanımlamıyor ve bu konuda bilgi vermiyor."
   },
   {
     "id": 57,
@@ -748,10 +577,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Kaynak metin, konkordato dışında yapılan vaatlerin geçerliliği hakkında bilgi vermemektedir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Kaynak metin, konkordato dışında yapılan vaatlerin geçerliliği hakkında bilgi vermemektedir."
   },
   {
     "id": 58,
@@ -761,10 +587,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 59,
@@ -774,10 +597,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Kaynak metin çekinme kararının kesinliği hakkında bilgi vermemektedir.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Kaynak metin çekinme kararının kesinliği hakkında bilgi vermemektedir."
   },
   {
     "id": 60,
@@ -787,10 +607,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynakta kira bedelinin ödenip ödenmeyeceği konusunda net bir bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta kira bedelinin ödenip ödenmeyeceği konusunda net bir bilgi yok."
   },
   {
     "id": 61,
@@ -800,10 +617,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 62,
@@ -813,10 +627,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta konkordato komiseri hakkında şikayet edilmesi durumunda ne olacağına dair bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta konkordato komiseri hakkında şikayet edilmesi durumunda ne olacağına dair bilgi yok."
   },
   {
     "id": 63,
@@ -826,10 +637,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Verilen kaynakta aile yurdunun kurulmasına izin veren kişi hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta aile yurdunun kurulmasına izin veren kişi hakkında bilgi yok."
   },
   {
     "id": 64,
@@ -839,10 +647,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta harç ve masrafların sorumluluğu ile ilgili bir bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta harç ve masrafların sorumluluğu ile ilgili bir bilgi yok."
   },
   {
     "id": 65,
@@ -852,10 +657,7 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde belirtilen fesih bildirim süresini doğru bir şekilde yorumlamış ancak ek bilgi ekleyerek kendi ezberinden bir atıf yapmıştır.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Model, kaynak metinde belirtilen fesih bildirim süresini doğru bir şekilde yorumlamış ancak ek bilgi ekleyerek kendi ezberinden bir atıf yapmıştır."
   },
   {
     "id": 66,
@@ -865,10 +667,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ceza alacak kişinin kişisel unsurları hakkında bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta ceza alacak kişinin kişisel unsurları hakkında bilgi yok."
   },
   {
     "id": 67,
@@ -878,10 +677,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 68,
@@ -891,10 +687,7 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta bu bilgi yok."
   },
   {
     "id": 69,
@@ -904,9 +697,6 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta rekabet yasağı ve işverenin zararı ile ilgili bilgi yok.",
-    "valid_trap_anahtari": "DEVRALINDI",
-    "valid_trap_reason": null,
-    "source_answers_cevapli": null
+    "reason": "Verilen kaynakta rekabet yasağı ve işverenin zararı ile ilgili bilgi yok."
   }
 ]
