@@ -17,9 +17,10 @@ sonucu bilmeden düzeltiliyor; (b) düzeltme base'e, rakibe ve her hücreye **ay
 Ayrıca ADR-0049 m.3'ün ön-kayıtlı tabanını okur: m2b cevaba-kör geçerli tuzak **< 40/80** ise
 merge onarım kontrolü **tanımlayıcıya** iner ve ARA KAPI'nın 2. gözlemi olmaktan çıkar.
 
-⚠️ 2026-08-06 (K-3): girdi artık `rescore_abstention_cached.py`'nin `_KOR.json` yan
-dosyaları DEĞİL, `score_abstention.py`'nin **gerçek** `abst_*_summary.json` çıktısı.
-O betik emekli edildi — çekinme oranlarını ikinci bir yerde bölüyordu ve `reject_exact`i
+⚠️ 2026-08-06 (K-3): girdi artık `score_abstention.py`'nin **gerçek** `abst_*_summary.json`
+çıktısı. Önceki girdi `_KOR.json` yan dosyalarıydı; onları üreten betik **SİLİNDİ** (repoda
+yok, adı yalnız `docs/record/research_log/2026-08-06-payda-tekillesmesi.md` §K-3'te ve
+tuzak 2.18'de geçer) — çekinme oranlarını ikinci bir yerde bölüyordu ve `reject_exact`i
 satırda SAKLANMIŞ (bayat dedektör sürümüne ait) alandan okuyordu (tuzak 2.9).
 "ESKİ" sütunu, varsa `.ONCEKI-*` yedeğinden okunur; yoksa `—` basılır.
 

@@ -2195,6 +2195,14 @@ Ayrıca **hüküm üretmeyen ama zorunlu** üç okuma:
 | ölçüm | çıpa | ne söyler |
 | :--- | :--- | :--- |
 | M2b Rej (önsözlü AÇIK) | **0,809** ~~0,877~~ | ⭐ **mekanizma testi**: ≥0,809 yeterlilik korundu · <0,735 ~~<0,84~~ kör kayma. ⚠️ tasarımın bandı iki ayrı sınavı karıştırıyor (ADR-0057), tek geçerli çıpa **0,809** |
+
+> ⚠️ **`<0,735` SINIRI DA EŞLEŞMİYOR** (şerh eklendi 2026-08-06, kusur k1 — tasarımın
+> [§236-241](../specs/2026-08-06-asiri-red-turu-design.md) şerhinin plandaki karşılığı).
+> `0,735` **ÖNSÖZSÜZ** `h2b@k=4`'ün sayısı; bu turun ölçümü **ÖNSÖZLÜ**. Önsözün marjinal
+> katkısı ayrıca ölçülüyor (Δ = +1,43 p, aşağıdaki satır), yani iki sayı tanım gereği farklı
+> sınavdan. ⇒ **`<0,735` bir kapı sınırı değil, yalnız tarihsel süreklilik çıpasıdır**;
+> "kör kayma" hükmü **0,809** çıpasına göre kurulur. Bandın eşleşmeyen ucundan hüküm
+> çıkarılmaz (ADR-0057). ⛔ Sayıyı düzeltme — ölçümü doğru çıpaya bağla.
 | Δ(önsöz) = ana − ablasyon | +1,43 p | daralıyorsa yetenek **varsayılan** oldu |
 | harness KAPALI aşırı-red | 17/80 | tavan tarafı da hareket etti mi |
 
