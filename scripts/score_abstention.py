@@ -320,9 +320,40 @@ def gecerlilik_anahtari(soru, source):
 
     Değişmez: **aynı istem → aynı anahtar → aynı cevap.** Anahtarı istemden ince tutmak
     (K-1'in TAM metin anahtarı) bu değişmezi kırıyordu; gerekçe `hakem_kaynagi`'nda.
+    ⚠️ Anahtar hakem YIĞININI taşımaz — onun denetimi okuma yolunda (`onbellek_isabeti`).
     """
     return hashlib.sha256(
         f"{soru}\x00{hakem_kaynagi(source)}".encode("utf-8")).hexdigest()[:24]
+
+
+# ── ÖNBELLEK OKUMA YOLU: HAKEM YIĞINI DENETİMLİ (kusur K1, 2026-08-06) ───────
+# Anahtar yalnız (soru, kaynak) taşır — hakem modelini de kapıyı da taşımaz. Okuma yolunda
+# tek kontrol `if anahtar in onbellek` iken, `LLM_GATEWAY=openai` ile koşan `cp2c_kabul.sh`
+# ortak önbelleğe openai yığınının damgalarını yazıyordu; sonraki HERHANGİ bir openrouter
+# ölçümü aynı (soru, kaynak) çiftine düşerse o paydayı SESSİZCE devralır ve özetine
+# `judge_gateway: "openrouter"` + `gecerlilik_maliyet_usd: 0.0` yazar. Tuzak 2.7 / ADR-0029:
+# kıyaslanan kollarda hakem yığını (model + kapı) aynı olmalı. Uyuşmazlık = DUR, sessiz
+# düşme DEĞİL — bu hattın hata sınıfı çökme değil sessiz yanlışlıktır.
+def onbellek_isabeti(onbellek, anahtar, hakem, kapi):
+    """Önbellek kaydını yığın denetiminden geçirerek döndür. Yoksa None, uyuşmazsa DUR."""
+    kayit = onbellek.get(anahtar)
+    if kayit is None:
+        return None
+    kayitli = (kayit.get("hakem"), kayit.get("kapi"))
+    if kayitli != (hakem, kapi):
+        raise SystemExit(
+            f"🚨 ÖNBELLEK YIĞIN UYUŞMAZLIĞI (tuzak 2.7 / ADR-0029) — anahtar={anahtar}\n"
+            f"   kayıtta: hakem={kayitli[0]!r} kapı={kayitli[1]!r}\n"
+            f"   bugün  : hakem={hakem!r} kapı={kapi!r}\n"
+            "   Farklı yığından gelen payda devralınamaz; kıyaslanan kollar aynı hakem\n"
+            "   yığınını kullanmak zorunda. Ya kapıyı/hakemi eşitle ya ayrı önbellek ver\n"
+            "   (--gecerlilik-onbellek). DURDURULDU.")
+    return kayit
+
+
+def onbellek_kaydi(gecerli, reason, hakem, kapi):
+    """Önbellek kaydı — hakem yığını kimliği ZORUNLU alan (okuma yolu bunu denetler)."""
+    return {"gecerli": gecerli, "reason": reason, "hakem": hakem, "kapi": kapi}
 
 
 def onbellek_oku(yol):
@@ -352,6 +383,7 @@ def onbellek_yaz(yol, cache):
             json.dump({"olcum": "cevaba KÖR valid_trap — içerik-adresli, kalem düzeyinde (ADR-0048 · K3)",
                        "anahtar": "sha256(soru + NUL + kaynak[:SOURCE_CLIP])[:24]  — KARAR-4 m.1, "
                                   "2026-08-06 (hakem istemine EŞİT; K-1'in TAM-metin anahtarı geri alındı)",
+                       "yigin": "her kayıt `hakem` + `kapi` taşır; okuma yolu uyuşmazlıkta DURUR (K1)",
                        "n": len(birlesik), "cache": birlesik}, f, ensure_ascii=False, indent=2)
         os.replace(gecici, yol)
 
@@ -412,7 +444,11 @@ def main():
     out, spent, spent_payda, spent_pay = [], 0.0, 0.0, 0.0
     n_abstain = n_fab = n_invalid = n_param = n_rej_exact = 0
     onbellek = onbellek_oku(a.gecerlilik_onbellek)
-    n_devralinan = n_tanim = 0
+    # ⚠️ İKİ AYRI SAYAÇ (kusur Ö5): tek `gecerlilik_devralinan` iki taban tabana zıt olayı
+    # sayıyordu — kendi eski skorlamasından TOPTAN devralma ile BAŞKA bir koşuyla sınav
+    # paylaşımı. Tuzak 2.17'nin kontrolü ikincisine dayanıyor ve karışık sayaçla koşulamaz.
+    n_onbellekten = n_onceki_kosudan = n_tanim = 0
+    butce_kesildi = False
 
     onceki_satir = {}
     if "onceki" in (a.pay_kaynagi, a.payda_kaynagi):
@@ -434,7 +470,11 @@ def main():
           f"önbellek={a.gecerlilik_onbellek} ({len(onbellek)} kalem)")
     for r in rows:
         if spent >= budget:
-            print(f"[abst] BÜTÇE doldu (${spent:.3f}) — kalan atlandı"); break
+            # ⚠️ Damga ZORUNLU (kusur k-3): kesilme `n`i ve paydayı sessizce küçültür ve
+            # `--payda-kaynagi hakem` artık gerçek para harcadığı için erişilebilir bir dal.
+            butce_kesildi = True
+            print(f"[abst] 🚨 BÜTÇE doldu (${spent:.3f}) — kalan {len(rows)-len(out)} kalem "
+                  "ATLANDI, özet `butce_kesildi` ile damgalanıyor"); break
         source = r.get(a.source_field, "") or ""
 
         # ── PAYDA: cevaba KÖR, kalem düzeyinde, içerik-adresli önbellek ──────────
@@ -444,23 +484,23 @@ def main():
             o = devralinan(r)
             anahtar, valid = o.get("valid_trap_anahtari", "DEVRALINDI"), o["valid_trap"]
             payda_reason = o.get("valid_trap_reason")
-            n_devralinan += 1
+            n_onceki_kosudan += 1
         elif payda_tanimdan_gecerli(r.get("mode")):
             anahtar, valid = "TANIM:bos-baglam", True
             payda_reason = "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli"
             n_tanim += 1
         else:
             anahtar = gecerlilik_anahtari(r["soru"], source)
-            if anahtar in onbellek:
-                n_devralinan += 1
+            kayit = onbellek_isabeti(onbellek, anahtar, a.gecerlilik_hakemi, gateway)
+            if kayit is not None:
+                n_onbellekten += 1
             else:
                 g, cg = judge_gecerlilik(istemci(), a.gecerlilik_hakemi, r["soru"], source)
                 spent += cg
                 spent_payda += cg
-                onbellek[anahtar] = {"gecerli": not g.get("source_answers"),
-                                     "reason": g.get("reason"), "hakem": a.gecerlilik_hakemi}
-            valid = onbellek[anahtar]["gecerli"]
-            payda_reason = onbellek[anahtar]["reason"]
+                kayit = onbellek[anahtar] = onbellek_kaydi(
+                    not g.get("source_answers"), g.get("reason"), a.gecerlilik_hakemi, gateway)
+            valid, payda_reason = kayit["gecerli"], kayit["reason"]
 
         # ── PAY: cevabı görerek — cevaba bağlılığı MEŞRU (ADR-0049 m.2) ──────────
         if a.pay_kaynagi == "onceki":
@@ -514,8 +554,14 @@ def main():
         "payda_kaynagi": a.payda_kaynagi,
         "gecerlilik_hakemi": a.gecerlilik_hakemi,
         "gecerlilik_onbellegi": a.gecerlilik_onbellek,
-        "gecerlilik_devralinan": n_devralinan,
+        # ⚠️ İKİ AYRI SAYAÇ, birleştirilmez (kusur Ö5). `onbellekten` = BAŞKA bir koşuyla
+        # sınav paylaşımı (tuzak 2.17'nin kontrolü buna bakar) · `onceki_kosudan` = bu
+        # label'ın KENDİ eski skorlamasından toptan devralma. Zıt anlamlar.
+        "gecerlilik_onbellekten": n_onbellekten,
+        "gecerlilik_onceki_kosudan": n_onceki_kosudan,
         "gecerlilik_tanimdan": n_tanim,
+        # k-3: bütçe kesintisi `n`i ve paydayı sessizce küçültür — damgasız bırakılmaz.
+        "butce_kesildi": butce_kesildi,
         "gecerlilik_maliyet_usd": round(spent_payda, 4),
         "source_field": a.source_field,
         "rejection_rate": round(n_abstain / valid_total, 3) if valid_total else None,        # Rej* (LLM-judged)

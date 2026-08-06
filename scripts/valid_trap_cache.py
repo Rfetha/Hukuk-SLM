@@ -46,8 +46,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from llm_client import gateway_of, make_client, resolve, seen_providers  # noqa: E402
 # TEK KAYNAK (tuzak 2.9): kör istem, anahtar, klip ve hakem çağrısı — hepsi oradan.
 from score_abstention import (GECERLILIK_ONBELLEK, SOURCE_CLIP,  # noqa: E402
-                              gecerlilik_anahtari, judge_gecerlilik,
-                              onbellek_oku, onbellek_yaz)
+                              gecerlilik_anahtari, judge_gecerlilik, onbellek_isabeti,
+                              onbellek_kaydi, onbellek_oku, onbellek_yaz)
 
 # Hangi modun geçerliliği nereden okunur. `alan=None` → hakeme GİTMEZ, sabit.
 MOD_KAYNAK = {
@@ -162,19 +162,23 @@ def main():
         n_valid, cost0, devralinan = 0, spent, 0
         for k, i in enumerate(items, 1):
             anahtar = gecerlilik_anahtari(first[i]["soru"], items[i])
-            if anahtar in onbellek:
+            # 🚨 K1 (2026-08-06): bu betik ORTAK önbelleğe yazıyor ve `cp2c_kabul.sh` onu
+            # `LLM_GATEWAY=openai` ile koşuyordu. Yığın denetimi `score_abstention`'dan
+            # ithal ediliyor (tuzak 2.9 tek kaynak) — uyuşmazlıkta DUR, sessiz devralma yok.
+            kayit = onbellek_isabeti(onbellek, anahtar, a.judge_model, gateway)
+            if kayit is not None:
                 devralinan += 1
             else:
                 if spent >= a.budget_usd:
                     raise SystemExit(f"BÜTÇE doldu (${spent:.3f}) — görünüm YARIM, yazılmadı")
                 d, c = judge_gecerlilik(istemci(), a.judge_model, first[i]["soru"], items[i])
                 spent += c
-                onbellek[anahtar] = {"gecerli": not d.get("source_answers"),
-                                     "reason": d.get("reason"), "hakem": a.judge_model}
-            g = onbellek[anahtar]["gecerli"]
+                kayit = onbellek[anahtar] = onbellek_kaydi(
+                    not d.get("source_answers"), d.get("reason"), a.judge_model, gateway)
+            g = kayit["gecerli"]
             n_valid += 1 if g else 0
-            gorunum[f"{mode}:{i}"] = {"gecerli": g, "kaynak": onbellek[anahtar]["hakem"],
-                                      "reason": onbellek[anahtar]["reason"],
+            gorunum[f"{mode}:{i}"] = {"gecerli": g, "kaynak": kayit["hakem"],
+                                      "kapi": kayit["kapi"], "reason": kayit["reason"],
                                       "valid_trap_anahtari": anahtar}
             if k % 20 == 0:
                 print(f"  {mode} {k}/{len(items)} geçerli={n_valid} ${spent:.4f}", flush=True)
