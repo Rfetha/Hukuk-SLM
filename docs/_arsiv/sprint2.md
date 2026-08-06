@@ -18,6 +18,11 @@ sonuç     : 🟢 GÜÇLÜ YEŞİL (1. gözlem 0,984 ≥ 0,923 · 2. gözlem 0,8
 kapsam    : CP2-c → kabul zinciri → CP3 → ARA KAPI   ✅ hepsi kapandı
 ```
 
+> 🚨 **DAMGA 2026-08-06 (K-2):** 2. gözlem düzeltilmiş cevaba-kör paydayla yeniden türetildi
+> → `0,766 < 0,8649` **🔴 DÜŞTÜ (−9,9 puan)**. *"Güçlü yeşil"* bugünkü ölçümle geçerli değil.
+> Arşiv belgesi olduğu için içerik **değiştirilmedi**, yalnız damgalandı.
+> Bkz. [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md).
+
 > ### 🛑 CP4-CP5 BU BELGEDE DEĞİL → [`sprint2b.md`](sprint2b.md) (2026-08-03)
 > Devamı ayrı bir hedef belgesine taşındı: **`/goal sprint2b.md`**. Orada bir **açık karar**
 > insan onayı bekliyor (CP4 karışık **ORPO** mu saf **SFT** mi — hedef eşleşmesi sorunu).
@@ -60,6 +65,11 @@ Yeni iş başlarsa **yeni bir icra belgesi** açılır; buradaki numaralar ve ap
 ```
 
 **Karar tablosu: ✅✅ → CP4-CP5 koşulabilir.** 🛑 Ama para insan onayıyla harcanır.
+
+> 🚨 **DAMGA 2026-08-06 (K-2):** düzeltilmiş paydayla `merge = 0,766 < eşik 0,8649` →
+> **🔴 DÜŞTÜ (−9,9 puan)**. *"CP4-CP5 koşulabilir"* yetkisi bugünkü ölçümle **YOK**.
+> ⛔ ADR-0050: eşiğe/çarpana/formüle dokunulmadı.
+> Bkz. [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md).
 
 ### Ölçülen tablo — hepsi aynı protokol, hepsi geçerli koşu
 

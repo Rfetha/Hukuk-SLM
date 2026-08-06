@@ -334,7 +334,8 @@ OOM ederse · uygulanmamış bir tekniğe ihtiyaç doğarsa → `mergekit`'e ge�
   >
   > Bu paragrafın **gerekçesi ayakta ve ölçüldü**: asimetri gerçek — `‖τ_g‖` **10,4722** ↔
   > `‖τ_a‖` **1,1806** = **8,87×**. Çürütülen şey **çıkarımı**: *"küçük normlu kol her gerçek
-  > çatışmada silinir"* — ham TIES'te `τ_a` **silinmedi** (M2b 0,607 → **0,877**). Tersine,
+  > çatışmada silinir"* — ham TIES'te `τ_a` **silinmedi** (M2b 0,607 → **0,877**
+  > ᴷ³ **düzeltilmiş payda: 0,506 → 0,766**; sıçrama +0,26 aynı, hüküm ayakta). Tersine,
   > norm dengeleme `τ_g`'yi ezdi (grounding 71,4% → 53,4%) ve yüksek geri ölçekte model
   > **dejenere** oldu (tekrarlama döngüleri, koşu geçersiz).
   >
