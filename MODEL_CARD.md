@@ -45,9 +45,9 @@ budget, seed 3407, temperature 0.
 
 | | M1 faithful-answer mass ↑ | over-refusal ↓ | A1 ↑ | M2 Rej ↑ | M2b Rej ↑ | tok/answer ↓ |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| bare base (Qwen3.5-4B) | 56.7% | 0.425 | 0.9864 | 0.814 ⚠ | 0.961 ᴷ³ | 1192 |
-| **HakHukuk-4B-v0.1** | **71.6%** | **0.212** | 0.9087 | 0.893 ⚠ | **0.766** ᴷ³ | **714** |
-| Gemini 3.1 Flash-Lite | 72.9% | 0.237 | 0.9561 | 0.930 ⚠ | 0.883 ᴷ³ | — |
+| bare base (Qwen3.5-4B) | 56.7% | 0.425 | 0.9864 | 0.803 ᴷ⁴ | 0.961 ᴷ³ | 1192 |
+| **HakHukuk-4B-v0.1** | **71.6%** | **0.212** | 0.9087 | 0.833 ᴷ⁴ | **0.766** ᴷ³ | **714** |
+| Gemini 3.1 Flash-Lite | 72.9% | 0.237 | 0.9561 | 0.848 ᴷ⁴ | 0.883 ᴷ³ | — |
 
 ᴷ³ **M2b re-scored 2026-08-06.** The old numbers were produced with a denominator the
 judge decided **while looking at the model's answer** — so the same exam yielded a different
@@ -55,7 +55,19 @@ denominator per model. The denominator is now answer-blind and identical across 
 (`valid_traps` 61…80 → **77** on this exam). Old values are kept in
 [`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md), which carries the full
 conversion table: base `0.986 → 0.961` · ours `0.877 → 0.766` · Gemini FL `1.000 → 0.883`.
-⚠ **The M2/A1 columns have NOT been re-scored** and still carry the model-dependent denominator.
+
+ᴷ⁴ **M2 re-scored 2026-08-06** (same defect, same fix, paid separately — 10 runs share one
+70-item exam, so a single payment of **$0.1054** closed all of them). The denominator was
+**55–63 per arm** on an identical exam; it is now **66/70 in every arm** — a self-verifying
+check that is reported because it can fail. Conversion: base `0.814 → 0.803` · ours
+`0.893 → 0.833` · Gemini FL `0.930 → 0.848`.
+🚨 **This correction runs IN OUR FAVOUR and is reported as such.** The arm that moved most is
+the **competitor** (−8.2 pts vs our −6.0); the gap on M2 narrows from **3.7 to 1.5 points**.
+The dirty denominator was flattering Gemini more than us. *(The [#46](docs/record/research_log/2026-07-30-cp2r-kor-payda.md)
+correction of the same class went the other way — against us. Neither direction was chosen.)*
+Source: [`outputs/eval/karar3-m2-payda/`](outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json).
+⚠ **The A1 column has NOT been re-scored** — it is not a function of `valid_trap` (separate axis);
+its own stack caveat is in the box below.
 
 > 🚨 **The A1 column is not judge-stack matched (measured 2026-08-06).** The base and Gemini rows
 > were judged on the **openai-direct** gateway with a **pre-ADR-0041** judge prompt; our row was
@@ -79,7 +91,7 @@ refuse · A1 = faithfulness of claims, **computed over answered items only** ·
   per answer. The fine-tune did real work.
 - **vs. Gemini 3.1 Flash-Lite:** we reach **98.2%** of its faithful-answer mass
   and **refuse less often than it does** — but we are behind on A1 (0.909 vs
-  0.956), M2 (0.893 vs 0.930) and clearly behind on **M2b (0.766 vs 0.883)** ᴷ³.
+  0.956), M2 (0.833 vs 0.848) ᴷ⁴ and clearly behind on **M2b (0.766 vs 0.883)** ᴷ³.
 - **This is not a parity claim.** The harness is off, cost is not normalized, and
   the merge configuration was **selected on DEV over 3 variants**. The competitor
   comparison has still never been run with the harness on.

@@ -14,7 +14,7 @@ DEV, **harness kapalı**, hakem `gpt-4o-mini` (protokol: [MODEL_CARD](MODEL_CARD
 ```
                   BİZ 4B   Gemini FL    açık
 M1 sadık-cevap    71,6%     72,9%     ~kapandı  ✅
-M2 Rej            0,893     0,930      −0,037
+M2 Rej            0,833     0,848      −0,015   (ᴷ⁴ yeniden puanlandı; eski 0,893 ↔ 0,930)
 A1                0,909     0,956      −0,047
 M2b Rej           0,766     0,883      −0,117   ← EN BÜYÜK   (ᴷ³ yeniden puanlandı)
 ```
@@ -22,7 +22,13 @@ M2b Rej           0,766     0,883      −0,117   ← EN BÜYÜK   (ᴷ³ yenide
 > ᴷ³ **M2b sütunu 2026-08-06'da yeniden puanlandı** ([#57](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md)): eski payda hakemin **modelin
 > cevabına bakarak** verdiği bir karardı, aynı sınav her modelde farklı payda veriyordu. Eski
 > değerler `0,877 ↔ 1,000`. **İşaret ve sıralama değişmedi**, açıklık 12,3 → 11,7 puana daraldı.
-> ⚠️ `M2 Rej` ve `A1` satırları **yeniden puanlanmadı** — hâlâ modele bağımlı paydayı taşıyorlar.
+>
+> ᴷ⁴ **`M2 Rej` satırı da 2026-08-06'da yeniden puanlandı** (KARAR-3, ≈$0,11 · 10 koşu ·
+> payda 55-63'ten **66/70**'e eşitlendi). ⚠️ **Bu düzeltme BİZİM LEHİMİZE ve öyle raporlanıyor:**
+> en çok kayan özne **RAKİP** (Gemini −8,2 puan · biz −6,0), açıklık **3,7 → 1,5 puana daralıyor**.
+> Kirli paydadan en çok Gemini yararlanıyordu. Kaynak:
+> [`outputs/eval/karar3-m2-payda/`](outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json).
+> ⚠️ `A1` satırı **hâlâ yeniden puanlanmadı** (`valid_trap`ten etkilenmiyor; ayrı eksen).
 
 ⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Rakip harness açıkken
 **hâlâ ölçülmedi** — o kıyas bugün de yok.

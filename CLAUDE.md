@@ -63,10 +63,10 @@ not measure the same thing (OFF hands the model the gold article by construction
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#58** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#59** |
 | the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
 | what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0058** |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0059** |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -137,8 +137,8 @@ decision ledger.
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#59**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0059**.
+  record, **authoritative for "what happened."** New findings continue at **#60**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0060**.
 
 ### Direction and scope
 
