@@ -4,7 +4,7 @@
 > gerekçeler **kaynak** olarak durur.
 >
 > **Devamı (Part 2)** Part 1'in *ölçerek açtığı* borçları kapatır. Kararları verildi ve
-> [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)'da; **uygulama
+> [ADR-0056](../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)'da; **uygulama
 > planı** `docs/superpowers/plans/` altına yazılır.
 >
 > # ✅ SPRINT 3 PART 1 KAPANDI — 2026-08-05
@@ -61,16 +61,16 @@
 > ## Sprintin bedeli
 >
 > **GPU $0** (harness CPU'da, üretim yerelde) · **hakem $0,127** *(bütçe ≤ $2)* ·
-> **7 research_log** ([#49](docs/record/research_log/2026-08-04-s3a-on-prob.md) ·
-> [#50](docs/record/research_log/2026-08-04-modul-basina-norm.md) ·
-> [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
-> [#52](docs/record/research_log/2026-08-05-korpus-butunlugu.md) ·
-> [#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md) ·
-> [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
-> [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)) ·
-> **3 ADR** ([0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) ·
-> [0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md) ·
-> [0055](docs/adr/0055-isabet-denetimi-ekseni.md)) · **3 yeni tuzak** (2.16 · 7.5 · 7.6) ·
+> **7 research_log** ([#49](../record/research_log/2026-08-04-s3a-on-prob.md) ·
+> [#50](../record/research_log/2026-08-04-modul-basina-norm.md) ·
+> [#51](../record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+> [#52](../record/research_log/2026-08-05-korpus-butunlugu.md) ·
+> [#53](../record/research_log/2026-08-05-ayirt-edicilik-etiketi.md) ·
+> [#54](../record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
+> [#55](../record/research_log/2026-08-05-s2-yururluk-alani.md)) ·
+> **3 ADR** ([0053](../adr/0053-modul-basina-norm-kapsami-reddedildi.md) ·
+> [0054](../adr/0054-harness-tasarim-kararlari-k2-k5.md) ·
+> [0055](../adr/0055-isabet-denetimi-ekseni.md)) · **3 yeni tuzak** (2.16 · 7.5 · 7.6) ·
 > **3 yeni betik** (`retriever.py` · `atif_dogrula.py` · `red_kapisi.py`) + `korpus_yururluk.py`
 >
 > ## 🚨 Sprint 4'ün gerekçesi — bugün ölçüldü
@@ -84,7 +84,7 @@
 # ▶ SIRADAKİ — ⛔ **BU BELGEDE KOŞACAK İŞ KALMADI**
 
 > **Part 1'in dört işi de kapandı.** Bu belge artık **kayıt**; canlı iş yok.
-> Part 2'nin kararları: **[ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)** ·
+> Part 2'nin kararları: **[ADR-0056](../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)** ·
 > uygulama planı `docs/superpowers/plans/` altına yazılacak.
 >
 > Part 1'in ölçerek bıraktığı borçlar ve sıraları aşağıdaki
@@ -114,9 +114,9 @@ hiçbir yerde hata çıkmazdı. Bu, tam olarak bu hattın hata sınıfı.
 | adım | durum | çıktı |
 | :--- | :--- | :--- |
 | **K1** gömme modeli | ✅ **çözüldü** | `bge-m3` + BM25 hibriti (RRF) — research_log #49 |
-| **K2-K5** tasarım kararları | ✅ **KİLİTLENDİ** 2026-08-04 | [ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md) — ⛔ kilidi açıldı, Adım 1-4 kodlanabilir |
+| **K2-K5** tasarım kararları | ✅ **KİLİTLENDİ** 2026-08-04 | [ADR-0054](../adr/0054-harness-tasarim-kararlari-k2-k5.md) — ⛔ kilidi açıldı, Adım 1-4 kodlanabilir |
 | **S3a** ön-prob (recall@k + bedesten) | ✅ **KAPANDI** 2026-08-04 | hibrit `recall@10` **0,875** · bedesten ✅ GEÇERLİ · `outputs/eval/s3a-on-prob/` · research_log #49 |
-| **0** modül-başına norm | 🔴 **REDDEDİLDİ** 2026-08-04 | kütle ≤ %56,2 < %71,6 · hakem **$0** · [ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50 |
+| **0** modül-başına norm | 🔴 **REDDEDİLDİ** 2026-08-04 | kütle ≤ %56,2 < %71,6 · hakem **$0** · [ADR-0053](../adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50 |
 | **1** retriever | ✅ **BİTTİ** 2026-08-04 | `scripts/retriever.py` + `data/index/mevzuat_bge_m3/` (40.496 madde, 83 MB) · bileşen S3a sayısını birebir üretti: **recall@10 0,8750 · @20 0,9250** · 759 ms/sorgu (CPU) |
 | **2** atıf doğrulayıcı | ✅ **BİTTİ** 2026-08-04 | `scripts/atif_dogrula.py` — hakemsiz. Gerçek çıktıda 56 atıf · 53 doğrulandı · **0 yanlış alarm** · pozitif kontrol geçti. Gözle denetim **dört** yanlış-alarm hatası buldu (ad çakışması · başlık biçimi · Türkçe `upper()` · ada kaçan sözcük) |
 | **3** red kapısı | ✅ **BİTTİ** 2026-08-04 | `scripts/red_kapisi.py` — ADR-0038 katı + `cogunluk`/`cerrahi` ablasyonları, üçü post-hoc aynı kümede |
@@ -124,7 +124,7 @@ hiçbir yerde hata çıkmazdı. Bu, tam olarak bu hattın hata sınıfı.
 | **S1** `k` süpürmesi (B3) | ✅ **KAPANDI 2026-08-05 — `k=10` KABUL** | kütle **%56,9 → %59,5** (+2,6) · `recall@10` **0,875** (70/80) · ⚠️ bedeli ölçüldü: altın getirilende A1 **0,9230 → 0,8426** (dikkat dağılması) · B1 sınıfı **14 → 7**, aşırı-red **14 → 15** (değişmedi) · 🚨 **tuzak 2.16** bulundu ve 8 belge düzeltildi · hakem **$0,0403** · `outputs/eval/s3-harness-k10/` · research_log **#54** |
 | **S3** ayırt-edicilik etiketi (B2) | ✅ **KAPANDI 2026-08-05** | kör hakem, istem ön-kayıtlı · **62 ayırt edici / 18 belirsiz (%22,5)** · `recall@5` **0,8226 ↔ 0,5000** (tuzak 7.4 doğrulandı) · ⭐⭐ **ters çekinme kalibrasyonu** bulundu (belirsizde %5,6, ayırt edicide %30,6 çekinme) · hakem **$0,0069** · `outputs/eval/s3-ayirt-edicilik/` · research_log **#53** |
 | **S2** yürürlük alanı (B7) | ✅ **KAPANDI 2026-08-05 — B7 KAPANDI** | ⭐ **NİHAİ SAYI:** kütle **%59,5 → %61,3** · A1 **0,7681 → 0,8042** (+3,6 p) · `recall@10` **0,8750** · bozuk blok **14/800 → 0/800** · `outputs/eval/s2-harness-k10-etiketli/` · hakem **$0,0398** · `mulga`+ilga alanı **2.547 satır** (%99,6 kaynaklı) · alt-madde kimliği **485 satır** · **`MULGA`** hükmü (`red_kapisi` değişmedi) · kabul 3/3 ✅ · ⭐ **kapsam ölçümden seçildi:** sınıf A modele **0/800** ulaşıyor → elenmedi (**B9**) · 🐞 iki kural verify hedefine çarpıp düzeldi (sonek **%80 eksikti**: 98 → **485**; ilga kaynağı **tarihi kanun sanıyordu**) · ⚠️ **dürüst negatif (atıf kanalı):** `MULGA` **0**, hükmü değişen cevap **0/80** · ⚠️ **ön-kayıtlı kütle tahmini TUTMADI** (%59,5±1 dendi, %61,3 çıktı — kazanç erişim kanalından geldi) · 🚨 eval altın etiketi **3 kalemde** kör hakemle düzeltildi (insan onaylı; manşeti **yükseltmedi**) · 🎁 hakem yeniden-koşum gürültüsü ilk kez ölçüldü: **A1'de ~0,3 puan** · research_log **#52 + #55** |
-| **S4** isabet denetimi tasarımı (B1) | ✅ **KAPANDI 2026-08-05 — kod açılmadı** | [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md): denetim **kaynak-yeterliliği** ekseninde kurulur · ❌ cevap↔kaynak örtüşme **reddedildi** (B1'in çekirdek vakasında kör; sınıfı zaten boş — uydurma no **0/118**) · 🔁 yeniden-sıralama **ayrı tur** (dikkat dağılmasının çaresi, ama karıştırılırsa ikisi de yorumlanamaz) · ilk deney **$0** (`--sufficiency-preamble` bayrağı zaten var) · ön-kayıtlı kabul yazıldı |
+| **S4** isabet denetimi tasarımı (B1) | ✅ **KAPANDI 2026-08-05 — kod açılmadı** | [ADR-0055](../adr/0055-isabet-denetimi-ekseni.md): denetim **kaynak-yeterliliği** ekseninde kurulur · ❌ cevap↔kaynak örtüşme **reddedildi** (B1'in çekirdek vakasında kör; sınıfı zaten boş — uydurma no **0/118**) · 🔁 yeniden-sıralama **ayrı tur** (dikkat dağılmasının çaresi, ama karıştırılırsa ikisi de yorumlanamaz) · ilk deney **$0** (`--sufficiency-preamble` bayrağı zaten var) · ön-kayıtlı kabul yazıldı |
 | **araç onarımı** *(sprint sonu)* | ✅ **2026-08-05** | `cp0_thinking_score.sh`'ta **`h1` dalı yoktu** — harness modunda hakemi hiç çağırmadan `0` ile çıkıyordu; dal eklendi + tanınmayan mod artık **ölüyor** · geçit varsayılanı **OpenRouter**'a alındı (tek yol, insan kararı) · `harness_tablo.py` atıf sayacına **`MULGA`** anahtarı (yoksa `KeyError`) |
 
 ## 📌 Sprint 3'ün borçları — **6 açık · 3 kapandı**
@@ -142,10 +142,10 @@ Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'�
 >
 > | sıra | iş | bedel | neden burada |
 > | :--- | :--- | :--- | :--- |
-> | **1** | **B-i deneyi** ([ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)) — `--sufficiency-preamble` | **$0** | Bayrak **zaten var**. Tek deney **B1 ve B10'a birden** dokunuyor (yetersizde cevaplama ↔ yeterlide çekinme). Red şıkkı ön-kayıtlı. |
+> | **1** | **B-i deneyi** ([ADR-0055](../adr/0055-isabet-denetimi-ekseni.md)) — `--sufficiency-preamble` | **$0** | Bayrak **zaten var**. Tek deney **B1 ve B10'a birden** dokunuyor (yetersizde cevaplama ↔ yeterlide çekinme). Red şıkkı ön-kayıtlı. |
 > | **2** | **B5** — K2'nin bedeli | ~$0 | B1'in **7/80**'i sayılmadan **temiz değil**: içinde *"getirildi ama 900-karakter kırpmasının ötesindeydi"* vakası olabilir. |
 > | **3** | **B8** — yazım hatası toleransı | ~$0 | Tolerans **ölçülmeden seçilmez**: kaç doğru atıf kurtulur ↔ kaç yanlış içeri girer. |
-> | **4** | **C** ([ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)) — ikinci geçiş yeniden-sıralama | CPU | Dikkat dağılmasının (**0,9230 → 0,8426**) ölçülmüş çaresi. ⚠️ **B-i ile aynı turda değil.** |
+> | **4** | **C** ([ADR-0055](../adr/0055-isabet-denetimi-ekseni.md)) — ikinci geçiş yeniden-sıralama | CPU | Dikkat dağılmasının (**0,9230 → 0,8426**) ölçülmüş çaresi. ⚠️ **B-i ile aynı turda değil.** |
 > | **5** | **B10 + B4** — aşırı-red (**16/80**) / `τ_a` seyreltme | **GPU, eğitim** | Coverage kaybının **büyük yarısı**. Harness'la kapanmıyor. Kendi sprint'i. |
 > | **6** | **B9** — indeks hijyeni | ~10 dk + koşu | Ucuz ama **indeksi değiştirir** → indeksin zaten değişeceği bir turla **paketlenir**. |
 > | **7** | **B6** — canlı `bedesten` | ürün işi | Güncellik iddiası ayakta ama kanıtlanmamış. Doğruluk işleri bitince. |
@@ -159,10 +159,10 @@ Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'�
 
 | # | borç | ölçülen büyüklük | neden önemli |
 | :--- | :--- | :--- | :--- |
-| **B10** 🆕 ⭐ | **AŞIRI-RED — altın madde BAĞLAMDAYKEN çekinme.** | **16/80** · k=5'te 14, k=10'da 15, +S2'de 16 → **`k`'dan bağımsız** · ⭐ **08-05: ilk kez KIPIRDADI → 14/80** (D1 önsözü, [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)) | 🚨 **Coverage kaybının BÜYÜK yarısı burada, B1'in (7/80) iki katı** — ama bugüne kadar **numarası yoktu**, yalnız B1'in notunda geçiyordu; numarasız borç hiçbir listede görünmez. Retriever ne kadar iyileşirse iyileşsin kapanmıyor. Mekanizması [#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)'te ölçüldü: çekinme sinyali **konusal uyuma** bakıyor, **yeterliliğe** değil. ⚠️ B4 ile **birleştirilmedi**: *"aşırı-red `τ_a` seyrelmesinden geliyor"* makul ama **ölçülmemiş bir varsayım**; birleştirmek varsayımı kayıtta gerçeğe çevirirdi. |
-| **B1** ⭐ | **"Gerçek ama soruya uymayan madde"** — doğrulayıcı bunu yakalayamıyor. | ~~14/80~~ → ~~7/80~~ → **5/80** (k=10 yarıya indirdi, D1 önsözü 2 daha aldı — [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)) · ✅ **B5 ölçüldü: bu 7'nin içinde kırpma vakası YOK** (kümeler kesişemiyor), sayı **temiz** | Ürün vaadi *"denetlenebilir"*. Bugün **fabrikasyona karşı** denetlenebilir, **isabetsizliğe karşı değil**. [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md) ekseni belirledi, kod açılmadı. |
+| **B10** 🆕 ⭐ | **AŞIRI-RED — altın madde BAĞLAMDAYKEN çekinme.** | **16/80** · k=5'te 14, k=10'da 15, +S2'de 16 → **`k`'dan bağımsız** · ⭐ **08-05: ilk kez KIPIRDADI → 14/80** (D1 önsözü, [#56](../record/research_log/2026-08-05-olcum-bosluklari.md)) | 🚨 **Coverage kaybının BÜYÜK yarısı burada, B1'in (7/80) iki katı** — ama bugüne kadar **numarası yoktu**, yalnız B1'in notunda geçiyordu; numarasız borç hiçbir listede görünmez. Retriever ne kadar iyileşirse iyileşsin kapanmıyor. Mekanizması [#53](../record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)'te ölçüldü: çekinme sinyali **konusal uyuma** bakıyor, **yeterliliğe** değil. ⚠️ B4 ile **birleştirilmedi**: *"aşırı-red `τ_a` seyrelmesinden geliyor"* makul ama **ölçülmemiş bir varsayım**; birleştirmek varsayımı kayıtta gerçeğe çevirirdi. |
+| **B1** ⭐ | **"Gerçek ama soruya uymayan madde"** — doğrulayıcı bunu yakalayamıyor. | ~~14/80~~ → ~~7/80~~ → **5/80** (k=10 yarıya indirdi, D1 önsözü 2 daha aldı — [#56](../record/research_log/2026-08-05-olcum-bosluklari.md)) · ✅ **B5 ölçüldü: bu 7'nin içinde kırpma vakası YOK** (kümeler kesişemiyor), sayı **temiz** | Ürün vaadi *"denetlenebilir"*. Bugün **fabrikasyona karşı** denetlenebilir, **isabetsizliğe karşı değil**. [ADR-0055](../adr/0055-isabet-denetimi-ekseni.md) ekseni belirledi, kod açılmadı. |
 | **B4** | **`τ_a` merge'de seyreliyor** (0,987 → 0,877). Adım 0 bunun norm *kapsamı* olmadığını gösterdi. | ‖τ_a‖ = **1,18** (82 adım @1e-5) | Çözüm merge parametresinde değil, muhtemelen `τ_a`'nın **eğitim genliğinde**. Eğitim işi. |
-| **B8** | **Katı kapı tek karakterlik yazım hatasına takılıyor.** Model `FİKİR VE SANAT ESERLERİ KANUNU`'nu `…ESELERİ…` diye kopyaladı; madde no'ları **doğru**, kanun bağlamda **var** → `KANUN_YOK` → cevabın tamamı reddedildi. | **1/80** · eğri ölçüldü **08-05** | Doğrulayıcının **ilk gerçek yakalayışı** ve o bir fabrikasyon değil **transkripsiyon hatası**. ADR-0038 resmî adın *kısa hâlini* çözmüştü, **yazım hatasını** çözmüyor. ⚠️ **Eğri ölçüldü ama tolerans BENİMSENMEDİ ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)):** eşik 1-3'te 2 kurtarılan, 0 yanlış eşleme — ama üç koşuda toplam **4 atıf ve hepsi aynı hatanın tekrarı**, yani **risk tarafında sıfır gözlem**. Eğri *"eşik 3 güvenli"* demiyor, *"bu veriyle karar verilemez"* diyor. Borç **açık kalır**; kapı **katı**. |
+| **B8** | **Katı kapı tek karakterlik yazım hatasına takılıyor.** Model `FİKİR VE SANAT ESERLERİ KANUNU`'nu `…ESELERİ…` diye kopyaladı; madde no'ları **doğru**, kanun bağlamda **var** → `KANUN_YOK` → cevabın tamamı reddedildi. | **1/80** · eğri ölçüldü **08-05** | Doğrulayıcının **ilk gerçek yakalayışı** ve o bir fabrikasyon değil **transkripsiyon hatası**. ADR-0038 resmî adın *kısa hâlini* çözmüştü, **yazım hatasını** çözmüyor. ⚠️ **Eğri ölçüldü ama tolerans BENİMSENMEDİ ([#56](../record/research_log/2026-08-05-olcum-bosluklari.md)):** eşik 1-3'te 2 kurtarılan, 0 yanlış eşleme — ama üç koşuda toplam **4 atıf ve hepsi aynı hatanın tekrarı**, yani **risk tarafında sıfır gözlem**. Eğri *"eşik 3 güvenli"* demiyor, *"bu veriyle karar verilemez"* diyor. Borç **açık kalır**; kapı **katı**. |
 | **B9** 🆕 | **Tablo/cetvel parçaları madde diye indeksli** (~7.966 satır, `3520`'de yoğun; `", Ek"` gibi 4 karakterlik hücreler). S2'de **kasten elenmedi**. | modele **0/800** blok ulaşıyor | Elemek *ölçülemez bir kazanç için ölçülmüş bir sayıyı harcamak* olurdu (indeks değişir → `recall@k` kayar → k kıyası geçersizleşir). ⚠️ *"Anahtar yinelenmesi %29,4"* ile *"bağlam kirlenmesi %1,8"* **ikisi de doğru** — farklı nesneler. |
 | **B6** | **Canlı `bedesten` katmanı** eklenmedi (K3: bilinçli erteleme). | — | Güncellik iddiası ayakta ama **kanıtlanmış değil** — S3a sözleşmenin çalıştığını doğruladı, ürün onu henüz kullanmıyor. |
 
@@ -170,7 +170,7 @@ Hiçbiri Sprint 3'ü durdurmadı; hepsi **ölçülerek** ortaya çıktı ve S4'�
 
 | # | kapanış | sonuç |
 | :--- | :--- | :--- |
-| ~~**B5**~~ | **2026-08-05 (#56)** — `harness_tablo.py`'ye `k2_bedeli` ekseni, post-hoc, **$0**. | `ALTIN_GELMEDI 10 · TAM 22 · KIRPILDI 46 · **KIRPILDI_CEVAP_DISI 2**` (toplam 80 ✓). 🚨 **Ve borcun gerekçesi çürüdü:** *"B1'in 7/80'i bu sayılmadan temiz değil"* **yapısal olarak imkânsızdı** — altın gelmediyse sınıf `ALTIN_GELMEDI` olur, dolayısıyla `KIRPILDI_CEVAP_DISI` ancak altın **getirildiyse** çıkar; B1'in 7'si ise ters popülasyon, **iki küme kesişemez**. İki vaka da `altin_geldi_cevapladi` (54) kovasında, ikisi de **0. sırada** getirilmiş, biri sadakat kaybetmiş (0,75). ⇒ **B1 (7/80) ve B10 (16/80) el değmemiş.** [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) |
+| ~~**B5**~~ | **2026-08-05 (#56)** — `harness_tablo.py`'ye `k2_bedeli` ekseni, post-hoc, **$0**. | `ALTIN_GELMEDI 10 · TAM 22 · KIRPILDI 46 · **KIRPILDI_CEVAP_DISI 2**` (toplam 80 ✓). 🚨 **Ve borcun gerekçesi çürüdü:** *"B1'in 7/80'i bu sayılmadan temiz değil"* **yapısal olarak imkânsızdı** — altın gelmediyse sınıf `ALTIN_GELMEDI` olur, dolayısıyla `KIRPILDI_CEVAP_DISI` ancak altın **getirildiyse** çıkar; B1'in 7'si ise ters popülasyon, **iki küme kesişemez**. İki vaka da `altin_geldi_cevapladi` (54) kovasında, ikisi de **0. sırada** getirilmiş, biri sadakat kaybetmiş (0,75). ⇒ **B1 (7/80) ve B10 (16/80) el değmemiş.** [#56](../record/research_log/2026-08-05-olcum-bosluklari.md) |
 | ~~**B2**~~ | **2026-08-05 (S3)** — ayırt-edicilik etiketi, kör hakem + ön-kayıtlı istem. **62/18**. | Tuzak 7.4 **sayıyla** doğrulandı: `recall@5` **0,8226 ↔ 0,5000** (32,3 puan). Bundan sonra hiçbir harness sayısı bu ayrım yapılmadan raporlanmaz. **#53** |
 | ~~**B3**~~ | **2026-08-05 (S1)** — `k=10` süpürüldü ve **kabul edildi** (kütle %56,9 → **%59,5**). | Kazanç tahminin (~%65) **altında**; bedeli ölçüldü: dikkat dağılması A1'i **8 puan** düşürüyor. `k=20` gerekçesi **zayıf**. **#54** |
 | ~~**B7**~~ | **2026-08-05 (S2)** — korpusa `mulga` + ilga alanı (**2.547 satır**), alt-madde kimliği (**485 satır**), **`MULGA`** hükmü. `"İş Kanunu Madde 15"` artık üç red politikasında da **REDDEDİLİYOR**. | ⚠️ **Dürüst negatif:** `MULGA` **0**, hükmü değişen cevap **0/80** — mekanik kapandı, bu DEV kümesinde **tetiklenmedi** (`core_hard` yürürlükteki maddelerden üretildi). **B7 bir ürün-güvenliği özelliği, skor özelliği değil.** Erişim kanalından ayrıca **+3,6 puan A1**. **#55** · özgün kayıt aşağıda. |
@@ -192,7 +192,7 @@ yürürlükte **ve** 1475 mülga) doğrulayıcı ayırt edemiyor.
 ### 🚨 B7 hakkında — bu, graph-RAG'in ölçülmüş gerekçesi
 
 Bugüne kadar graph-RAG *"hukuk ilişkiseldir"* diye **varsayımla** savunuluyordu
-([`VISION.md`](docs/VISION.md) Faz 2). Bugün ilk kez **ölçülmüş** bir gerekçe çıktı ve
+([`VISION.md`](../VISION.md) Faz 2). Bugün ilk kez **ölçülmüş** bir gerekçe çıktı ve
 beklenen yerde değil:
 
 - ❌ **Erişim kalitesi için değil.** Recall eğrisi `@5` 0,750 → `@10` 0,875 → `@20` 0,925
@@ -210,7 +210,7 @@ alan varken **atıf zincirleri** ve **çapraz referans** için hak eder. Sırala
 **B7 (veri) → B3 (k) → B1 (isabet) → graf**.
 
 📌 **Graf'ın mimari farkı, ön-kayıtlı tahmini ve gerçekten kazanacağı üç yer
-[`ROADMAP.md` §5.2](ROADMAP.md)'de.** Özeti: bugünkü kümede graf **ölçülemez** bir
+[`ROADMAP.md` §5.2](../../ROADMAP.md)'de.** Özeti: bugünkü kümede graf **ölçülemez** bir
 iyileşme üretirdi (sorular tek-madde, çok-hop yok, n=80'de ±2 soru gürültü) — bu yüzden
 bugün koşulmadı; kurulursa **kendi soru kümesiyle** ölçülür.
 ---
@@ -219,7 +219,7 @@ bugün koşulmadı; kurulursa **kendi soru kümesiyle** ölçülür.
 
 > Tam kayıt `research_log`'da; burada **ne yapıldı, ne çıktı, ne öğrenildi** var.
 
-### ✅ S1 — `k` süpürmesi *(borç B3)* · **KAPANDI 2026-08-05 · `k=10` KABUL** · [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
+### ✅ S1 — `k` süpürmesi *(borç B3)* · **KAPANDI 2026-08-05 · `k=10` KABUL** · [#54](../record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
 
 > GPU **$0** · hakem **$0,0403** · geçerlilik kapısı ✅ (kesik %2,5) · örneklem birebir aynı 80 ✅
 
@@ -238,7 +238,7 @@ bağlam iki kat, bedel ölçülmüş biçimde büyür).
 🚨 **Bu sprintin yayınlanmış kütle sayısı yanlış metrikle üretilmişti** (tuzak **2.16**):
 `harness_tablo.py` `A1` diye **cevaplanan-only** değil **ham makro** yazıyordu; sapmanın
 **yönü sabit değil** (k=5'te yukarı, k=10'da aşağı) ve KAPALI çıpa doğru metrikteydi →
-ON/OFF kıyası **elmayla armuttu**. [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)
+ON/OFF kıyası **elmayla armuttu**. [ADR-0050](../adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)
 uygulandı: **eşik değil ALET** düzeltildi, iki kola simetrik, eşik yeniden türetildi
 (%58,7 → %56,9). 8 belge düzeltildi.
 
@@ -267,7 +267,7 @@ getirilmeyenlerde A1 **0,284** *(0,7823×60 − 0,934×46)/14 ile türetildi)*.
 
 </details>
 
-### ✅ S3 — Ayırt-edicilik etiketi *(borç B2)* · **KAPANDI 2026-08-05** · [#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)
+### ✅ S3 — Ayırt-edicilik etiketi *(borç B2)* · **KAPANDI 2026-08-05** · [#53](../record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)
 
 > S1 koşarken paralel koşuldu (hakem API'si; GPU'ya ve korpusa dokunmuyor) · hakem **$0,0069**
 > · istem koşudan **önce** kayda geçti · körlük çağrı imzasının kısıtı (`_istem(soru)`).
@@ -287,10 +287,10 @@ hiçbir harness sayısı bu ayrım yapılmadan raporlanmaz.
 ⭐⭐ **Sprintin en değerli bulgusu:** model, erişimin **en çok battığı** yerde **en az**
 çekiniyor (belirsizde %5,6, ayırt edicide %30,6). Mekanizma: çekinme sinyali bağlamın
 **konusal uyumundan** geliyor, **yeterliliğinden** değil → doğrudan
-[ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)'in ekseni oldu. *(k=10 tersliğin yönünü
+[ADR-0055](../adr/0055-isabet-denetimi-ekseni.md)'in ekseni oldu. *(k=10 tersliğin yönünü
 düzeltiyor ama kapatmıyor.)*
 
-### ✅ S2 — Yürürlük alanı *(borç B7)* · **KAPANDI 2026-08-05** 🚨 ürün-güvenliği · [#52](docs/record/research_log/2026-08-05-korpus-butunlugu.md) + [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)
+### ✅ S2 — Yürürlük alanı *(borç B7)* · **KAPANDI 2026-08-05** 🚨 ürün-güvenliği · [#52](../record/research_log/2026-08-05-korpus-butunlugu.md) + [#55](../record/research_log/2026-08-05-s2-yururluk-alani.md)
 
 > hakem **$0,0407** (yeniden koşu + etiket denetimi) · korpus yedeklendi · indeks **yeni
 > dizine** kuruldu (`mevzuat_bge_m3_s2`), eskisi duruyor ki S2 öncesi sayılar üretilebilsin.
@@ -307,7 +307,7 @@ Sınıf A'yı elemek *ölçülemez bir kazanç için ölçülmüş bir sayıyı 
 ⚠️ *"Anahtar yinelenmesi"* (%29,4) ile *"bağlam kirlenmesi"* (%1,8) **aynı şey değil** —
 retriever yinelenen anahtarın **doğru** satırını getiriyordu.
 
-**Yapılan** ([`korpus_yururluk.py`](scripts/korpus_yururluk.py), atomik yazma): `mulga` +
+**Yapılan** ([`korpus_yururluk.py`](../../scripts/korpus_yururluk.py), atomik yazma): `mulga` +
 ilga eden kanun/madde/tarih **2.547 satır** (%99,6 kaynaklı) · alt-madde kimliği **485
 satır** · `atif_dogrula.py`'ye **`MULGA`** hükmü (`red_kapisi` değişmedi).
 **Kabul 3/3 ✅:** `1475/15` MULGA · `1475/14` yürürlükte · *"İş Kanunu Madde 15"* katı kapıda
@@ -332,7 +332,7 @@ tarama **5** şüpheli buldu; kör hakem + konum-yanlılığı kontrolü **3'ün
 (id 0/74/76). İnsan onayıyla uygulandı. ⚠️ Düzeltme **manşeti yükseltmedi** (altın etiket
 A1'e girmiyor); yalnız `recall@10` 0,8625 → **0,8750** ve B1 sınıfı 8 → **7**.
 
-### ✅ S4 — İsabet denetimi tasarımı *(borç B1)* · **KAPANDI 2026-08-05 — kod açılmadı** · [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)
+### ✅ S4 — İsabet denetimi tasarımı *(borç B1)* · **KAPANDI 2026-08-05 — kod açılmadı** · [ADR-0055](../adr/0055-isabet-denetimi-ekseni.md)
 
 **Karar: isabet denetimi cevap-SONRASI örtüşme ekseninde değil, cevap-ÖNCESİ
 KAYNAK-YETERLİLİĞİ ekseninde kurulur.**
@@ -360,7 +360,7 @@ elenir, çapraz-kodlayıcıya geçilir.
 > hâliyle duruyor — kararların gerekçesi ve *o gün ne bilindiği* audit izidir.
 >
 > ### ⭐ HER KOŞUDAN ÖNCE OKU
-> [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) — bu hattın hata sınıfı
+> [`docs/record/yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) — bu hattın hata sınıfı
 > **çökme değil, sessiz yanlışlık**. Sprint 2 buraya **6.10 · 6.11 · 6.12**'yi,
 > **Sprint 3** ise **2.16 · 7.5 · 7.6**'yı ekledi.
 
@@ -429,10 +429,10 @@ bedel     : GPU $0 (harness CPU'da) · hakem ~$1 · gömme modeli indirme
 > > `k=10`'da aynı sayı **0,8426 < 0,9087** — yani retriever bağlamı m1'in çeldiricili
 > > bağlamından **daha az tuzaklı değil**, yalnız **k=5'te** öyleydi. *"3 neden zayıfladı"*
 > > hükmü bu yüzden **geri alınıyor**: bağlam uzadıkça tuzaklılık artıyor ve bu ölçüldü
-> > ([#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)).
+> > ([#54](../record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)).
 >
-> Kaynak: [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md)
-> · düzeltme [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
+> Kaynak: [research_log #51](../record/research_log/2026-08-04-harness-acik-ilk-olcum.md)
+> · düzeltme [#54](../record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
 
 **1. Şu an ortada ürün yok.** Model çalışsın diye kullanıcının **mevzuat metnini
 kendisi yapıştırması** gerekiyor. Vatandaş bunu yapamaz — hangi maddeyi arayacağını
@@ -475,7 +475,7 @@ kaba kuvvet arama **8,2 ms** / indeks **83 MB** fp16 → **vektör veritabanı g
 
 ⚠️ **Sayılar bu soru kümesinin tavanı, retriever'ın değil** — aşağıya bak (S3a sonucu).
 
-### K2. Chunk birimi — ✅ **ÇÖZÜLDÜ** ([ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md))
+### K2. Chunk birimi — ✅ **ÇÖZÜLDÜ** ([ADR-0054](../adr/0054-harness-tasarim-kararlari-k2-k5.md))
 
 **Tam madde indekslenir; 900 karakter kırpması yalnız bağlam modele verilirken uygulanır**
 — yani bugünkü eval'de uygulandığı noktada. Eval-ayna kuralının öznesi **modelin girdisi**,
@@ -492,7 +492,7 @@ S3'ten **sonra**. Gerekçe ölçüm tekrarlanabilirliği — canlı içerik koş
 değişirse harness-AÇIK sayıları kıyaslanamaz. S3a sözleşmenin geçerli olduğunu doğruladı,
 yani bu bir **risk** değil **sıralama** kararı.
 
-### K4. ⭐ HARNESS AÇIK ölçüm protokolü — ✅ **ÇÖZÜLDÜ** ([ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md))
+### K4. ⭐ HARNESS AÇIK ölçüm protokolü — ✅ **ÇÖZÜLDÜ** ([ADR-0054](../adr/0054-harness-tasarim-kararlari-k2-k5.md))
 
 **`core_hard.jsonl` DEĞİŞTİRİLMEZ.** Her soruya *"kendi başına ayırt edici mi"* etiketi
 eklenir, harness sayıları **iki alt kümede ayrı** raporlanır. Etiket **erişim sonucundan
@@ -526,7 +526,7 @@ tarihî çıpalarla (base · Gemini · `τ_g` · `τ_a`) kıyaslanabilirliği ko
 
 ### K5. Red kapısı eşiği
 
-[ADR-0038](docs/adr/0038-red-kapisi-esigi-kati.md): **katı** — tek doğrulanamayan
+[ADR-0038](../adr/0038-red-kapisi-esigi-kati.md): **katı** — tek doğrulanamayan
 atıf tüm cevabı reddettirir. Karar duruyor; harness açıkken **aşırı-red** yaratıp
 yaratmadığı ölçülecek (kütle ekseni).
 
@@ -560,7 +560,7 @@ S3a) ÖN-PROB                ✅ KAPANDI  hibrit recall@10 0,875 · bedesten GE�
 | **uydurulmuş madde numarası** | 0 | **0** |
 | katı kapı reddi | 2/80 | **1/80** |
 
-**Üç okuma** (tamamı [research_log #51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md)):
+**Üç okuma** (tamamı [research_log #51](../record/research_log/2026-08-04-harness-acik-ilk-olcum.md)):
 
 1. **Ürün sayısı oracle sayısından düşük — ve olması gereken bu.** Düşüşün tamamı erişimden:
    soruların %25'inde altın madde ilk 5'e girmiyor. Ölçüm dürüstleşti.
@@ -629,11 +629,11 @@ scripts/bedesten_probe.py  →  arama · tam metin · madde ağacı
 
 Güncellik iddiamızın **tek dayanağı** bu ve sözleşme 2026-06-07'den beri doğrulanmadı.
 Değişmişse: retriever statik korpusla sürer ama **güncellik iddiası DÜŞER** →
-[`ROADMAP.md`](ROADMAP.md) + [`MODEL_CARD.md`](MODEL_CARD.md) düzeltilir.
+[`ROADMAP.md`](../../ROADMAP.md) + [`MODEL_CARD.md`](../../MODEL_CARD.md) düzeltilir.
 
 #### 📋 Uygulama planı hazır
 
-[`docs/superpowers/plans/2026-08-03-s3a-on-prob.md`](docs/superpowers/plans/2026-08-03-s3a-on-prob.md) — 5 görev,
+[`docs/superpowers/plans/2026-08-03-s3a-on-prob.md`](../superpowers/plans/2026-08-03-s3a-on-prob.md) — 5 görev,
 TDD adımlarıyla, gerçek kodla. İlk görev **madde anahtarı normalleştirme**: altın etiketi
 korpusa bağlayan çekirdek, kendi testleriyle. *(Plan yazılırken burada bir hata bulundu:
 `Geçici Madde 1` ile `Madde 1` aynı sayılınca 40.496 madde 27.706 anahtara düşüyor ve
@@ -695,7 +695,7 @@ bash scripts/cp3_merge_dene.sh models/merged/<yeni> modul
 Tutmazsa `v0.1` yerinde kalır, kayıp 1 saat. `open_questions.md`'de açık soru olarak
 duruyor.
 
-#### 🔴 KAPANDI (2026-08-04) — reddedildi · [ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50
+#### 🔴 KAPANDI (2026-08-04) — reddedildi · [ADR-0053](../adr/0053-modul-basina-norm-kapsami-reddedildi.md) · research_log #50
 
 `--norm-kapsam {global,modul}` **yazıldı** (`scripts/merge_ties.py`), merge koştu (224/224).
 
@@ -776,10 +776,10 @@ harness   CPU'da — gömme, indeks, doğrulayıcı GPU'ya GİRMEZ (sığar/sı�
 
 | ne | nerede |
 | :--- | :--- |
-| Ürün yol haritası | [`ROADMAP.md`](ROADMAP.md) · [`docs/VISION.md`](docs/VISION.md) Faz 2 |
-| Model kartı ve sınırlar | [`MODEL_CARD.md`](MODEL_CARD.md) |
-| Artefakt kimlikleri | ⭐ [`docs/record/kollar.md`](docs/record/kollar.md) |
-| Mevzuat API sözleşmesi | [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md) |
-| Sprint 2 kapanışı | [`sprint2.md`](docs/_arsiv/sprint2.md) · [`defter.md`](docs/record/sprint2/defter.md) |
-| Ertelenen iddia katmanı | [`sprint2b.md`](docs/_arsiv/sprint2b.md) — arxiv'e karar verilirse |
-| **Koşu öncesi tuzaklar** | ⭐ [`yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) |
+| Ürün yol haritası | [`ROADMAP.md`](../../ROADMAP.md) · [`docs/VISION.md`](../VISION.md) Faz 2 |
+| Model kartı ve sınırlar | [`MODEL_CARD.md`](../../MODEL_CARD.md) |
+| Artefakt kimlikleri | ⭐ [`docs/record/kollar.md`](../record/kollar.md) |
+| Mevzuat API sözleşmesi | [`docs/BEDESTEN_API.md`](../BEDESTEN_API.md) |
+| Sprint 2 kapanışı | [`sprint2.md`](sprint2.md) · [`defter.md`](../record/sprint2/defter.md) |
+| Ertelenen iddia katmanı | [`sprint2b.md`](sprint2b.md) — arxiv'e karar verilirse |
+| **Koşu öncesi tuzaklar** | ⭐ [`yurutme-tuzaklari.md`](../record/yurutme-tuzaklari.md) |

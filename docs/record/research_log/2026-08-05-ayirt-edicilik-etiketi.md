@@ -1,6 +1,6 @@
 # #53 — S3: ayırt-edicilik etiketi (borç B2) · ADR-0054/K4'ün kör turu
 
-**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) **S3**
+**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../_arsiv/sprint3-part1.md) **S3**
 **Hakem:** `gpt-4o-mini` · kapı OpenRouter · `LLM_PROVIDER_ORDER=OpenAI` pinli · `temperature=0`
 **Çıktı:** `outputs/eval/s3-ayirt-edicilik/` · **Betik:** `scripts/ayirt_edicilik_etiketle.py`
 

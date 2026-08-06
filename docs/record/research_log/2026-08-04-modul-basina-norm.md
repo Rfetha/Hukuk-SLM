@@ -1,6 +1,6 @@
 # #50 — Adım 0: modül-başına norm kapsamı 🔴 · gerekçe çürüdü, kütle ekseni kararı $0'a verdi
 
-**Tarih:** 2026-08-04 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) Adım 0 ·
+**Tarih:** 2026-08-04 · **Sprint:** [`sprint3-part1.md`](../../_arsiv/sprint3-part1.md) Adım 0 ·
 **Karar:** [ADR-0053](../../adr/0053-modul-basina-norm-kapsami-reddedildi.md)
 **Bedel:** GPU yerel (bedava) · **hakem $0** · **Çıktılar:** `outputs/eval/cp3f-modul-norm/`
 

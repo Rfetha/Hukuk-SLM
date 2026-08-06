@@ -54,7 +54,7 @@ okunmaz, hakem parası harcanmaz.
 **Kaynak kararlar:** [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md) *(eşit sınav kapısı)* ·
 [ADR-0056](../../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
 [ADR-0055](../../adr/0055-isabet-denetimi-ekseni.md) ·
-borç bağlamları [`sprint3-part1.md`](../../../sprint3-part1.md#post-sprint-3-sırası)
+borç bağlamları [`sprint3-part1.md`](../../_arsiv/sprint3-part1.md#post-sprint-3-sırası)
 
 ---
 

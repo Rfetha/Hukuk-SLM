@@ -672,7 +672,7 @@ parite matrisi — **tek base** üzerinde koşar. ~4B sınıfı olması pratik b
 | :--- | ---: | :--- |
 | `corpus/mevzuat_maddeler.jsonl` | 40.496 | yer-gerçeği · graf kaynağı · her grounded üretimin zemini |
 | `train/grounded_qa/` | 19.305 / 1.131 / 1.022 | `τ_register` · soru↔madde eşleşmesinin tohumu |
-| `train/raft/` | 17.323 / 962 / 962 | `τ_grounding` (gold + hard-negative) |
+| `train/raft/` | 17.323 / 962 / 962 | `τ_grounding` (gold + hard-negative) — ⚠️ **fiilen eğitilen dizin `train/raft_scrubbed/`**, gerekçe [`kollar.md`](docs/record/kollar.md) dipnot ⁽¹⁾ |
 | `train/orpo_abstain/` | 1.741 / 53 / 80 | `τ_abstention` (⚠️ `rejected` yeniden hasat) |
 | `train/replay_tr.jsonl` | — | katastrofik unutmayı bastıran genel TR replay |
 | `eval/canon/` | 40 + 35 | 🔒 **TEST** |

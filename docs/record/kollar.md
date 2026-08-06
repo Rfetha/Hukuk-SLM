@@ -60,9 +60,22 @@ açılmaz — aynı artefakttır.
 
 | kol | ver | tarih | durum | rejim | `‖τ‖_F` | eval etiketi | kayıt |
 | :--- | :-- | :--- | :--- | :--- | ---: | :--- | :--- |
-| `τ_grounding` | **v1** | 2026-07-28 | 🟢 aktif | 1.083 adım · lr 1e-4 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · seed 3407 · veri `train/raft/` | **10.4589** | `*_tg` *(Sprint 1; v1 demektir)* | [#41](research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
+| `τ_grounding` | **v1** | 2026-07-28 | 🟢 aktif | 1.083 adım · lr 1e-4 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · seed 3407 · veri `train/raft_scrubbed/` ⁽¹⁾ | **10.4589** | `*_tg` *(Sprint 1; v1 demektir)* | [#41](research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
 | `τ_abstention` | **v1** | 2026-08-03 | 🟢 aktif | **70 adım (5 epoch)** · lr 1e-5 · beta 0.1 · etkin batch 64 · r=16/α=32 · dropout 0.05 · 224 LoRA çifti · `--fresh-adapter` · seed 3407 · veri `data/train/orpo_abstain_cp2c/` (726 çift + 145 replay) | **1.1806** | `*_ta_v1_th` | [#48 §16](research_log/2026-08-02-cp2c-modal-koprusu.md) |
 | **`τ_g+τ_a` merge**<br>`HakHukuk-4B-v0.1` | **v1** | 2026-08-03 | 🟢 **ANA SONUÇ** | `tg_v1` + `ta_v1` · **ham TIES** (norm dengeleme **KAPALI**, [ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md)) · trim_k 0,2 · λ 1,0 · eşzamanlı 2-yollu · 224/224 tensör | — *(merge, kol değil)* | `*_tg_ta_ham_th` ⚠️ | [#48 §24](research_log/2026-08-02-cp2c-modal-koprusu.md) |
+
+> ⁽¹⁾ **Düzeltme 2026-08-06 — bu hücre `train/raft/` yazıyordu.** Kayıt kendi içinde çelişiyordu:
+> [#47](research_log/2026-07-30-cp2s-boru-hatti.md) ve
+> [#48](research_log/2026-08-02-cp2c-modal-koprusu.md) `raft_scrubbed`, bu hücre ile
+> [`TASARIM.md`](../../TASARIM.md) §planlama tablosu ham `raft/` diyordu. **Adım aritmetiği ayırt
+> etmiyor** — iki dizin de 17.323 satır (17.323 ÷ 16 = 1.083 adım, ikisi için de doğru).
+> Ayırt eden **davranışsal kanıt:** ham `raft/`'ın eğitim hedeflerinin **%7,51'i** teacher etiketi
+> (`GOLD`/`DISTRACTOR`) taşıyor ([#39](research_log/2026-07-24-cp0-base-dogrulama-kapisi.md),
+> `scripts/scrub_teacher_jargon.py`); `τ_g`'nin **30 koşu dosyasındaki ≈2.000 üretiminde bu
+> etiketler 0 kez** geçiyor. Ham veriyle eğitilmiş olsaydı sıfır beklenmezdi → `raft_scrubbed`.
+> ⚠️ **Kesin değil, en iyi desteklenen okuma:** `tg_v1`'in eğitim koşusu KUNYE disiplininden
+> önce (2026-07-28) koştu, `--data` argümanını **birebir gösteren bir künye yok**. Ham `raft/`
+> silinmedi; iki dizin de duruyor.
 
 ### `τ_grounding` v1 — açık kalemler *(2026-07-29 gecesi, bütçeli kipte YENİDEN YAZILDI)*
 

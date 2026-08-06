@@ -1,6 +1,6 @@
 # #55 — S2: yürürlük alanı + madde kimliği (borç B7) · kapsam **menüden değil ölçümden**
 
-**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) **S2**
+**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../_arsiv/sprint3-part1.md) **S2**
 **Betikler:** `scripts/korpus_yururluk.py` (yeni) · `scripts/atif_dogrula.py` (MULGA hükmü)
 **Veri:** `data/corpus/mevzuat_maddeler.jsonl` (yazıldı, yedek alındı) ·
 **İndeks:** `data/index/mevzuat_bge_m3_s2` (yeni dizin; eskisi korundu)

@@ -12,7 +12,7 @@
 Sprint 3 Part 1 iki gerekçeyle açılmıştı: *"atıf doğrulayıcı A1'i kapatır"* ve *"red kapısı
 M2b'yi kapatır"*. Ölçüm sonunda **birincisi çürüdü** (uydurulmuş madde numarası **0/118** —
 yakalanacak sınıf boştu), **ikincisi hiç sınanmadı**: `m2b` harness AÇIK **bir kez bile
-koşulmadı** ([`sprint3-part1.md`](../../sprint3-part1.md) borç listesi).
+koşulmadı** ([`sprint3-part1.md`](../_arsiv/sprint3-part1.md) borç listesi).
 
 Sınamak için önce **tanımlamak** gerekti, çünkü `m2b` harness KAPALI'da bir **kurgu**dur:
 aynı 80 `core_hard` sorusu, altın madde **zorla çıkarılmış**, yerine 4 elle-paketlenmiş
