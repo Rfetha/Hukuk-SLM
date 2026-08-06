@@ -126,15 +126,22 @@ Değişmişse: retriever statik korpusla sürer, ama **güncellik iddiası düş
 
 ### Adım 0 — modül-başına normalleştirme *(harness'tan bağımsız, önce yapılır)*
 
-Merge'in **bilinen** kusuru: `τ_a` seyreliyor (tekil M2b 0,987 → merge 0,877). Normalleştirme
+Merge'in **bilinen** kusuru: `τ_a` seyreliyor (tekil M2b 0,987 → merge **0,766** ᴷ³ ~~0,877~~). Normalleştirme
 şu an **global** (tek `‖τ‖_F`). Ölçüldü: iki kolun da en büyük normu **aynı MLP yüzeyinde** —
 `gate_proj` (τ_g 6,150 ↔ τ_a 0,621) · `up_proj` (5,047 ↔ 0,628). Global norm bunu göremiyor.
 
 ```
 ~20 satır (merge_ties.py) · 1 saat · GPU $0
-kabul: M2b > 0,877 VE M1 kütlesi ≥ %71,6  (ikisi birden — tek eksen yeter değil)
+kabul: M2b > 0,766 ᴷ³ ~~0,877~~ VE M1 kütlesi ≥ %71,6  (ikisi birden — tek eksen yeter değil)
 tutmazsa v0.1 yerinde kalır, kayıp 1 saat
 ```
+
+> 🚨 **BİRİM DAMGASI 2026-08-06 (kusur Ö3-b).** Eşiğin **anlamı** değişmedi — *"v0.1'in
+> M2b'sini aş"*. Değişen **birim**: çekinme paydası cevaba kör yapıldı (**ᴷ³**,
+> [#57](../../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)) ve `tgta_v1`'in M2b'si
+> aynı davranış için `0,877 → 0,766` okundu. ADR-0050 gereği **eşiğe değil alete** dokunuldu;
+> eski değer silinmedi. Bu kabul ölçütünü emekli birimde okumak, **gerçek bir iyileşmeyi
+> reddetmeye** yol açar.
 
 Kazanan yapılandırma S4'ün yeniden merge'inde kullanılır.
 
@@ -201,13 +208,26 @@ ADR-0051'de büyük/küçük harfe duyarlı regex 45 kalemin 15'ini sessizce dü
 ```
 v1.0 ancak HEPSİ sağlanırsa:
   1. hiçbir eksende v0.1'e göre GERİLEME yok
-        M1 kütle ≥ 71,6%  ·  M2 ≥ 0,893  ·  M2b ≥ 0,877
-  2. bilinen zayıflık İYİLEŞMİŞ:  M2b > 0,877
+        M1 kütle ≥ 71,6%  ·  M2 ≥ 0,833 ᴷ⁴ ~~0,893~~  ·  M2b ≥ 0,766 ᴷ³ ~~0,877~~
+  2. bilinen zayıflık İYİLEŞMİŞ:  M2b > 0,766 ᴷ³ ~~0,877~~
   3. geçerlilik kapısı geçildi:   kesik ≤ %5
   4. harness açık/kapalı tablo yayımlandı
 
 Karşılanmazsa → v0.x kalır, DROP A OLMAZ.
 ```
+
+> 🚨 **BİRİM DAMGASI 2026-08-06 (kusur Ö3-b) — SÜRÜM KAPISI.** Bu blok emekli birimde yazılmıştı.
+> Eşiklerin **tanımı** *"v0.1'in kendi değeri"*; ADR-0050 gereği **eşik değil alet** düzeltildi ve
+> yalnız **birim** çevrildi. Eski değerler silinmedi.
+> **ᴷ³** = çekinme paydası cevaba kör ([#57](../../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)) ·
+> **ᴷ⁴** = M2 paydası **66**'ya eşitlendi ([#58](../../record/research_log/2026-08-06-payda-tekillesmesi.md) · KARAR-4).
+> Yürürlükteki `v0.1` çıpaları: M2 **0,833** · M2b **0,766** (⭐ [`kollar.md`](../../record/kollar.md)).
+> ⚠️ **Neden bu kritikti:** `τ_a` v2 M2b'yi `0,766 → 0,82`'ye çıkarırsa bu **gerçek bir
+> iyileşmedir**; emekli `> 0,877` okunursa **v1.0 haksız yere reddedilir**. Aynı gerekçe
+> `docs/adr/0053` ve `research_log/2026-08-04-modul-basina-norm.md` için de yazılmıştı — bu sefer
+> sürüm kapısında.
+> ⚠️ Madde 1'in M2 ayağı ayrıca **ADR-0057 (eşit sınav)** kapsamındadır: kıyas yalnız aynı payda
+> (**66**) üzerinde kurulur; farklı paydadaki bir M2 sayısıyla bu kapı **değerlendirilmez**.
 
 ### Donmuş TEST — karar (a)
 
