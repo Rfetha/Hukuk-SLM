@@ -28,7 +28,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 
 | görev | durum | çıkan |
 | :--- | :--- | :--- |
-| **0** YB1 / ADR-0058 | 🔄 inceleme döngüsünde (3. dalga) | ADR-0058 yazıldı · çıpalar repo geneline indi · tur AÇIK ilan edildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda) |
+| **0** YB1 / ADR-0058 | ✅ ajan tarafı bitti — **insan kutucukları bekliyor** | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
 | **1** eşleştirilmiş A1 | ⏸ sırada | |
 | **2** Gemini FL harness AÇIK | ⏸ | |
 | **3-4** hasat | ⏸ | |
@@ -91,6 +91,15 @@ Kaynak: `outputs/eval/olcum-bi/harness_tablo.json` + `gnd_h1_tgta_v1_bi_k10_summ
 4. **Satır numarası referansları kırılgan.** Sevk talimatındaki `dosya:satır` adresleri bir önceki
    düzenlemeden sonra kaydı; ajan içerik eşleşmesiyle çalıştığı için sonuç etkilenmedi.
    **Ders:** sevklerde satır no değil **metin alıntısı** verilir.
+
+### 🤔 Bilinçli bırakılan — gerekçesiyle
+
+`0/118` paydası üç yerde daha duruyor (`ROADMAP.md:298` · `docs/adr/README.md:99` · `CLAUDE.md`).
+**Dokunulmadı, çünkü:** üçü de *"atıf doğrulayıcı iddiası ÇÜRÜDÜ"* **hükmünü** yazıyor ve o hüküm
+**iki koşuda da geçerli** — uydurulmuş madde sınıfı hem 83'te hem 118'de **boş**. Değişen yalnız
+payda; iddia değişmiyor. Her paydayı kovalamak, bilgi eklemeyen bir çalkantı olurdu.
+⚠️ `ROADMAP.md:68` **istisnaydı ve düzeltildi** — orada aynı hücre B1'i resmî koşudan (5/80),
+paydayı ise ablasyondan (0/118) veriyordu; **kendi içinde** tutarsızdı.
 
 ### ✅ Yaşanan olumluluklar
 
