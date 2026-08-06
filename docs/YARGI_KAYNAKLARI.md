@@ -2,7 +2,7 @@
 >
 > Bu harita 2026-05-29'da çıkarıldı ve **hâlâ doğru**; ama Faz 2'de bugüne kadar kurulan
 > şey **mevzuat** tarafı: hibrit retriever + 40.496 maddelik indeks
-> ([`sprint3-part1.md`](../sprint3-part1.md)). **İçtihat tarafına hiç dokunulmadı.**
+> ([`sprint3-part1.md`](_arsiv/sprint3-part1.md)). **İçtihat tarafına hiç dokunulmadı.**
 >
 > ⚠️ Aynı `bedesten` backend'i içtihadı da veriyor ([`BEDESTEN_API.md`](BEDESTEN_API.md)) ve
 > sözleşmesi 2026-08-04'te doğrulandı — yani teknik yol açık, **iş yapılmadı**.

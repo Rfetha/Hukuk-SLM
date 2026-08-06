@@ -4,7 +4,7 @@
 - **Statü:** onaylandı (insan)
 - **Kapsam:** `HakHukuk-4B-v0.1`'den vatandaş platformuna giden sprint zinciri
 - **Yürürlükteki özet:** [`../../ROADMAP.md`](../../../ROADMAP.md)
-- **Zincirin durumu (2026-08-05):** S3a ✅ · S3 harness ✅ ([`sprint3-part1.md`](../../../sprint3-part1.md), kapandı — ürün sayısı **%61,3**) · **S4 model** ▶ sırada
+- **Zincirin durumu (2026-08-05):** S3a ✅ · S3 harness ✅ ([`sprint3-part1.md`](../../_arsiv/sprint3-part1.md), kapandı — ürün sayısı **%61,3**) · **S4 model** ▶ sırada
 
 ---
 
@@ -14,7 +14,7 @@
 > sığdırılmaya çalışılmamalı. Her halka kendi spec → plan → uygulama döngüsünü hak ediyor.
 >
 > **İlk uygulanabilir birim: S3a + S3** (ön-prob + harness) — tarifi
-> [`../../sprint3-part1.md`](../../../sprint3-part1.md)'de. Uygulama planı **oraya** yazılır.
+> [`../../sprint3-part1.md`](../../_arsiv/sprint3-part1.md)'de. Uygulama planı **oraya** yazılır.
 >
 > S4 ve sonrası burada **niyet ve çıkış ölçütü** düzeyinde duruyor; sırası gelince kendi
 > spec'ini alacak. Bu bilinçli: aralıklı ritimde uzak halkaların ayrıntısını şimdi yazmak,

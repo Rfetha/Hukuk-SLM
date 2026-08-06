@@ -1,6 +1,6 @@
 # ADR-0055 — İsabet denetimi hangi eksende kurulur (borç B1) · **yeterlilik sinyali**
 
-**Tarih:** 2026-08-05 · **Durum:** ✅ kabul (tasarım; kod açılmadı) · **Sprint:** [`sprint3-part1.md`](../../sprint3-part1.md) **S4**
+**Tarih:** 2026-08-05 · **Durum:** ✅ kabul (tasarım; kod açılmadı) · **Sprint:** [`sprint3-part1.md`](../_arsiv/sprint3-part1.md) **S4**
 **İlgili:** [ADR-0054](0054-harness-tasarim-kararlari-k2-k5.md) · [#53](../record/research_log/2026-08-05-ayirt-edicilik-etiketi.md) · [#54](../record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
 
 ## Bağlam — ölçülmüş açık

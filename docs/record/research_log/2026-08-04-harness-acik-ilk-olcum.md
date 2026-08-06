@@ -1,6 +1,6 @@
 # #51 — ⭐ HARNESS AÇIK ilk ölçüm: ürün sayısı ilk kez görüldü
 
-**Tarih:** 2026-08-04 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) Adım 1-4
+**Tarih:** 2026-08-04 · **Sprint:** [`sprint3-part1.md`](../../_arsiv/sprint3-part1.md) Adım 1-4
 **Özne:** `tgta_v1` = `HakHukuk-4B-v0.1` (ham TIES) — harness KAPALI çıpasıyla **aynı artefakt**
 ([`kollar.md`](../kollar.md): `tgta_v1 == cp3-supurme-ham/*_tg_ta_ham_th_*`)
 **Bedel:** GPU yerel $0 · **hakem $0,038** · **Çıktılar:** `outputs/eval/s3-harness-acik/`

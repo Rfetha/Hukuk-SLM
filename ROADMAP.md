@@ -22,7 +22,7 @@ M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
 ⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Rakip harness açıkken
 **hâlâ ölçülmedi** — o kıyas bugün de yok.
 
-### ⭐ Harness AÇIK — ürünün gerçek sayısı *(2026-08-05, [Part 1](sprint3-part1.md) kapanışı)*
+### ⭐ Harness AÇIK — ürünün gerçek sayısı *(2026-08-05, [Part 1](docs/_arsiv/sprint3-part1.md) kapanışı)*
 
 | eksen | KAPALI | AÇIK k=10 + onarılmış korpus ⭐ |
 | :--- | ---: | ---: |
@@ -51,7 +51,7 @@ puanı** ölçüldü — bundan küçük hiçbir fark yorumlanmaz.
 
 ---
 
-## 1. Harness — ✅ **KURULDU ve ÖLÇÜLDÜ (2026-08-05)** → [`sprint3-part1.md`](sprint3-part1.md)
+## 1. Harness — ✅ **KURULDU ve ÖLÇÜLDÜ (2026-08-05)** → [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md)
 
 🚨 **Bu bölümün 2026-08-03'te yazılan gerekçesi ölçümle sınandı ve yarısı düştü.** Aşağıdaki
 tablo iddiayı ve **hükmü** yan yana tutuyor — çünkü sprintin gerekçesi buydu ve tutmadıysa
@@ -128,7 +128,7 @@ tersi taşınmaz.
 kapıyı geçiyor**, oysa o madde **mülga** (*"110- (Mülga: 22/5/2003/4857/120 md.)"*).
 Korpusta yürürlük alanı **yok** — 4 alan var, ilga bilgisi serbest metnin içinde. Aynı ad
 iki kanuna ait olabiliyor (`İŞ KANUNU` = **4857** yürürlükte **ve** **1475** mülga).
-*"Denetlenebilir"* vaadindeki en somut açık bu ([`sprint3-part1.md`](sprint3-part1.md) borç **B7**).
+*"Denetlenebilir"* vaadindeki en somut açık bu ([`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) borç **B7**).
 
 - **5.1 Yürürlük alanı** — ✅ **YAPILDI 2026-08-05** ([#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)):
   `mulga` + `ilga_eden_kanun/madde/tarih` **2.547 satıra**, alt-madde kimliği **485 satıra**,
@@ -190,7 +190,7 @@ ikisi de kayda geçiyor — tutan da, ıskalayan da.
 disiplininde en kötü mühendislik türü: işe yarayıp yaramadığını söyleyemediğin iş.
 Karşılaştır: **`k`'yı 5→10 yapmak bir bayrak** — ön-kayıtlı tahmin kütleyi ~%65'e taşımaktı;
 **ölçüldü 2026-08-05: %56,9 → %59,5** (erişim tahmini birebir tuttu, A1 tahmini 9 puan
-ıskaladı; fark **dikkat dağılması**) ([`sprint3-part1.md`](sprint3-part1.md) S1 · #54).
+ıskaladı; fark **dikkat dağılması**) ([`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) S1 · #54).
 
 #### Graf gerçekten nerede kazanır — üçü de bugün ÖLÇÜLEMİYOR
 

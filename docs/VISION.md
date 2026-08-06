@@ -58,7 +58,7 @@ flowchart LR
 > ## ✅ **FAZ 2'NİN RETRIEVER DİLİMİ KURULDU ve ÖLÇÜLDÜ — 2026-08-05**
 >
 > Aşağıdaki tarif **planlanmış hâlidir**; bir kısmı artık **yapılmış** durumda.
-> Kayıt: [`sprint3-part1.md`](../sprint3-part1.md) · [#49](record/research_log/2026-08-04-s3a-on-prob.md)…[#55](record/research_log/2026-08-05-s2-yururluk-alani.md)
+> Kayıt: [`sprint3-part1.md`](_arsiv/sprint3-part1.md) · [#49](record/research_log/2026-08-04-s3a-on-prob.md)…[#55](record/research_log/2026-08-05-s2-yururluk-alani.md)
 >
 > | tarif | durum |
 > | :--- | :--- |

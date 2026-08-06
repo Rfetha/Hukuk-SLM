@@ -66,7 +66,7 @@ built to catch is empty. The model doesn't invent article numbers; it answers fr
 opposite one: in **16/80** questions the model abstains *while the gold article is
 in its context* — and that number is unchanged with the harness off (17/80), so it
 is a model property, not a retrieval one. Deterministic code cannot close it.
-Details and the full record: [roadmap](ROADMAP.md) · [`sprint3-part1.md`](sprint3-part1.md).
+Details and the full record: [roadmap](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
 
 ## How it was built
 

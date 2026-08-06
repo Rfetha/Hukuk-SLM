@@ -63,7 +63,7 @@ kurduk. **Sıfır** uydurulmuş madde numarası buldu — yakalamak için kuruld
 cevaplıyor (7/80). Asıl büyük hata bunun tersi: **16/80** soruda model, altın madde
 **bağlamındayken** çekiniyor — ve bu sayı harness kapalıyken de aynı (17/80), yani bir
 **model** özelliği, erişim özelliği değil. Deterministik kod bunu kapatamaz.
-Ayrıntı ve tam kayıt: [yol haritası](ROADMAP.md) · [`sprint3-part1.md`](sprint3-part1.md).
+Ayrıntı ve tam kayıt: [yol haritası](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
 
 ## Nasıl kuruldu
 

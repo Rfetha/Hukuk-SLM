@@ -1,13 +1,19 @@
 # TODO — HakHukuk
 
 > **Harita.** *Ne* yapılacağını burası tutar. Part 1 kapandı ve **kayıt** oldu:
-> [`sprint3-part1.md`](sprint3-part1.md).
+> [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
 >
-> **▶ Sıradaki tur (Part 2) — kararları verildi, planı henüz yazılmadı.**
-> Kararlar: [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) ·
-> uygulama planı `docs/superpowers/plans/` altına yazılacak.
-> Omurga: **ölçüm boşluklarını kapat** (GPU $0, hakem ~$0,15) — `m2b` harness-AÇIK ·
-> B5 post-hoc sayımı · B8 tolerans eğrisi · B-i deneyi.
+> **✅ Ölçüm boşlukları turu KAPANDI 2026-08-05** — `m2b` harness-AÇIK · B5 · B8 eğrisi ·
+> B-i deneyi. Plan:
+> [`2026-08-05-olcum-bosluklari.md`](docs/superpowers/plans/2026-08-05-olcum-bosluklari.md) ·
+> sonuçlar: [**#56**](docs/record/research_log/2026-08-05-olcum-bosluklari.md).
+> Çıkanlar: M2b iddiası **yapısal olarak öldü** (kapı bu rejimde ateşlenemiyor) → **eğitim borcu** ·
+> B-i önsözü **başarılı** ama benimsenmedi (**YB1**) · `k` büyütmenin bedeli **iki eksende** ölçüldü.
+>
+> **▶ AÇIK SPRINT YOK, AKTİF PLAN YOK. Sıradaki turun hangisi olacağı insan kararı** —
+> adaylar ve ölçülmüş gerekçeleri `ROADMAP.md`'de ve borç kuyruğunda
+> ([`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası): **B10 · B1 · B4 · B8 ·
+> B9 · B6** + **YB1 · YB2 · YB3**).
 >
 > Gerekçeler ve ölçülmüş açıklar: **[`ROADMAP.md`](ROADMAP.md)**
 > Her koşudan önce: ⭐ [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md)
@@ -38,7 +44,7 @@ Tasarım: [`docs/superpowers/specs/2026-08-03-yol-haritasi-design.md`](docs/supe
 
 ## ✅ Sprint 3 **PART 1** — HARNESS · **KAPANDI 2026-08-05**
 
-Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](sprint3-part1.md)'de.
+Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md)'de.
 
 > **Ürünün dürüst sayısı: kütle %61,3** (harness AÇIK, `k=10`, onarılmış korpus) ↔ %71,6
 > (KAPALI = **tavan**, altın madde kurgu gereği verilir). Aradaki 10,2 puan **ayrıştırıldı**:
@@ -83,7 +89,7 @@ Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](sprint3-part1.md)'de.
 - **6 açık borç:** B10 (aşırı-red 16/80) · B1 (7/80) · B4 · B5 · B8 · B9 · B6
 - **2 ölçüm boşluğu:** `m2b` harness AÇIK **hiç koşulmadı** · rakip harness AÇIK **hiç ölçülmedi**
 
-Sıra ve ölçüm bağlamları: [`sprint3-part1.md`](sprint3-part1.md#post-sprint-3-sırası) ·
+Sıra ve ölçüm bağlamları: [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası) ·
 Part 2'nin kararları ve ön-kayıtlı tahminleri: [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)
 
 ---

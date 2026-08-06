@@ -1,6 +1,6 @@
 # #54 — S1: `k` süpürmesi (k=10) · 🚨 ve yayınlanmış kütle sayısı YANLIŞ metrikle üretilmiş
 
-**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../../sprint3-part1.md) **S1** (borç B3)
+**Tarih:** 2026-08-05 · **Sprint:** [`sprint3-part1.md`](../../_arsiv/sprint3-part1.md) **S1** (borç B3)
 **Özne:** `tgta_v1` = `HakHukuk-4B-v0.1` — k=5 koşusuyla **aynı artefakt, aynı 80 soru**
 **Bedel:** GPU **$0** (yerel, şarjda) · hakem **$0,0403** · **Çıktı:** `outputs/eval/s3-harness-k10/`
 
