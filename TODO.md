@@ -58,7 +58,7 @@ Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](docs/_arsiv/sprint3-p
 > ⚠️ Bu ayrıştırma **önsözsüz** çıpayla (%61,3) yapılmıştır; ADR-0058 sonrası açık 8,8 puandır ve
 > yeniden ayrıştırılmamıştır.
 >
-> Aradaki 10,2 puan **ayrıştırıldı**:
+> %71,6 → %61,3 aradaki 10,2 puan **ayrıştırıldı**:
 > ≈5,1 erişim ıskası (harness'ın) + ≈4,5 dikkat dağılması (modelin).
 > GPU **$0** · hakem **$0,127** · 7 research_log · 3 ADR · 3 yeni tuzak.
 

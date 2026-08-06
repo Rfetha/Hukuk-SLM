@@ -156,7 +156,7 @@ def parse_args():
     p.add_argument("--sufficiency-preamble", action="store_true",
                    help="ANA PROTOKOL (ADR-0058): sistem istemine 'önce kaynağın soruyu "
                         "cevaplayıp cevaplamadığını belirt' satırını ekle. Ana tablodaki HER "
-                        "hücre bu bayrakla üretilir (çıpa: kütle %62,8 · A1 0,8229). "
+                        "hücre bu bayrakla üretilir (çıpa: kütle %%62,8 · A1 0,8229). "
                         "BAYRAKSIZ koşu ABLASYON koludur ve ana tabloya girmez.")
     p.add_argument("--harness-no-gold", action="store_true",
                    help="ADR-0056 Karar 1 — `m2b`'nin harness-AÇIK karşılığı: retriever "

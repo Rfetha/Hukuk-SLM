@@ -86,16 +86,16 @@ Full record: [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md
 > **answered-only** (ADR-0011). The OFF anchor used the correct metric, so the ON/OFF
 > comparison was apples-to-oranges. Both arms re-derived; old values struck through.
 
-| | harness OFF | ON (k=5) | ON (k=10) | ⭐ **ON k=10, repaired corpus** |
+| | harness OFF | ON (k=5) | ON (k=10) | ⭐ **ON k=10, repaired corpus + sufficiency preamble** |
 | :--- | ---: | ---: | ---: | ---: |
 | gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 | 70/80 — recall@10 0.875 | **70/80 — recall@10 0.875** |
 | coverage | 0.788 | 0.750 | 0.775 | **0.763** |
 | A1 (answered-only) | 0.909 | ~~0.782~~ 0.759 | 0.768 | **0.8229** (ablation, no preamble: 0.804) |
 | **faithful-answer mass** | **71.6%** | ~~58.7%~~ 56.9% | 59.5% | **62.8%** (no-preamble ablation: 61.3%) |
 | ⭐ A1, **gold-retrieved subset** | 0.909 | ~~0.934~~ 0.923 | 0.843 | **0.8705** (ablation, no preamble: 0.862) |
-| verified citations | 87/89 | 89/89 | 118/120 | **116/118** |
-| **fabricated article numbers** | 0 | **0** | **0** | **0** |
-| strict-gate rejections | 2/80 | 1/80 | 1/80 | **1/80** |
+| verified citations | 87/89 | 89/89 | 118/120 | **80/83** (ablation, no preamble: 116/118) |
+| **fabricated article numbers** | 0 | **0** | **0** | **0/83** (ablation, no preamble: 0/118) |
+| strict-gate rejections | 2/80 | 1/80 | 1/80 | **3/80** (ablation, no preamble: 1/80) |
 
 **62.8% is the honest product number** (k=10, repaired corpus, `--sufficiency-preamble` main
 protocol — ADR-0058; no-preamble ablation: 61.3%).
@@ -128,10 +128,9 @@ rises 0.694 → 0.790 — the ordering flips from **wrong** to **right**
 
 ⚠️ **Known limit of the citation verifier.** The model does not fabricate article
 numbers — it copies the label from its context. In **5/80** questions (ablation, no preamble:
-7/80; 14/80 at k=5) the
-gold was not retrieved and it answered from a *different real* article: the citation
-verifies, the gate passes it, and the answer still does not fit the question. Deterministic
-citation checking solves fabrication, **not** off-target grounding.
+7/80; 14/80 at k=5) the gold was not retrieved and it answered from a *different real*
+article: the citation verifies, the gate passes it, and the answer still does not fit the
+question. Deterministic citation checking solves fabrication, **not** off-target grounding.
 
 🚨 **The larger gap is the opposite failure: over-refusal.** In **14/80** (ablation, no preamble: 16/80) questions the
 model abstains *while the gold article is in its context* — **≈2.8× the size** of the
