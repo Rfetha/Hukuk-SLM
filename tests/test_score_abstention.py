@@ -121,3 +121,36 @@ def test_onbellek_yazimi_diskteki_kalemleri_silmez(tmp_path):
     onbellek_yaz(yol, {"b": {"gecerli": False}})
     okunan = onbellek_oku(yol)
     assert set(okunan) == {"a", "b"}
+
+
+def test_onbellek_es_zamanli_yazimda_kalem_KAYBETMEZ(tmp_path):
+    """🚨 KAYIP GÜNCELLEME kapısı — kilitsiz oku-birleştir-yaz'da bu test DÜŞER.
+
+    Sekiz süreç aynı önbelleğe farklı anahtar yazıyor; hepsi diskteki hâli kilitten ÖNCE
+    okumuş olsa bile hiçbiri diğerinin kalemini silmemeli. Ödenmiş hakem kaleminin sessizce
+    yok olması bu hattın en pahalı hata sınıfı."""
+    import json
+    import multiprocessing as mp
+    from score_abstention import onbellek_oku
+
+    yol = str(tmp_path / "onbellek.json")
+    json.dump({"n": 0, "cache": {}}, open(yol, "w", encoding="utf-8"))
+
+    def yaz(anahtar):
+        import sys
+        sys.path.insert(0, "scripts")
+        import time
+        from score_abstention import onbellek_yaz, onbellek_oku
+        onbellek_oku(yol)            # bayat kopya: herkes önce okusun
+        time.sleep(0.05)             # ...sonra hep birlikte yazsın
+        onbellek_yaz(yol, {anahtar: {"gecerli": True}})
+
+    ctx = mp.get_context("fork")
+    isciler = [ctx.Process(target=yaz, args=(f"k{i}",)) for i in range(8)]
+    for p in isciler:
+        p.start()
+    for p in isciler:
+        p.join(timeout=30)
+    assert all(p.exitcode == 0 for p in isciler)
+    assert set(onbellek_oku(yol)) == {f"k{i}" for i in range(8)}
+    assert not list(tmp_path.glob("*.tmp*")), "atomik replace sonrası geçici dosya kalmamalı"

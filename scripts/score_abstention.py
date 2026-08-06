@@ -26,6 +26,7 @@ Girdi: gen_eval_grounded --data trap.jsonl --with-source çıktısı (outputs/ev
 Kullanım: python scripts/score_abstention.py --details outputs/eval/bench_trap_v1_detail.jsonl --label bench_trap_v1
 """
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -264,14 +265,27 @@ def onbellek_oku(yol):
 
 
 def onbellek_yaz(yol, cache):
-    """Diskteki hâlle BİRLEŞTİREREK yaz — paralel skorlamalar birbirinin kalemini silmesin."""
+    """Diskteki hâlle KAYIPSIZ birleştirerek yaz.
+
+    İki koruma, ikisi de ayrı bir kayıp sınıfına karşı:
+    · `flock` (BLOKLAYAN) — oku-birleştir-yaz üçlüsü atomik olmazsa iki eşzamanlı skorlama
+      "son yazan kazanır"a düşer ve birinin ödediği hakem kalemleri SESSİZCE silinir. Bu
+      hattın en pahalı hata sınıfı tam olarak budur (bkz. `runlock.py` başlığı). Kilit
+      bloklar, `LOCK_NB` DEĞİL: burada doğru davranış beklemek, kaybetmek değil.
+    · `os.replace` — yazma yarıda kesilirse (SIGKILL, disk dolu) önbellek YARIM JSON olarak
+      kalmaz; ya eski hâli ya yeni hâli görünür.
+    """
     os.makedirs(os.path.dirname(yol) or ".", exist_ok=True)
-    birlesik = dict(onbellek_oku(yol))
-    birlesik.update(cache)
-    json.dump({"olcum": "cevaba KÖR valid_trap — içerik-adresli, kalem düzeyinde (ADR-0048 · K3)",
-               "anahtar": "sha256(soru + NUL + kaynak[:3500])[:24]",
-               "n": len(birlesik), "cache": birlesik},
-              open(yol, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    with open(yol + ".lock", "a+", encoding="utf-8") as kilit:
+        fcntl.flock(kilit.fileno(), fcntl.LOCK_EX)
+        birlesik = dict(onbellek_oku(yol))      # ⚠️ kilit ALTINDA yeniden oku — bayat kopya yazma
+        birlesik.update(cache)
+        gecici = f"{yol}.tmp.{os.getpid()}"
+        with open(gecici, "w", encoding="utf-8") as f:
+            json.dump({"olcum": "cevaba KÖR valid_trap — içerik-adresli, kalem düzeyinde (ADR-0048 · K3)",
+                       "anahtar": "sha256(soru + NUL + kaynak[:3500])[:24]",
+                       "n": len(birlesik), "cache": birlesik}, f, ensure_ascii=False, indent=2)
+        os.replace(gecici, yol)
 
 
 def main():
