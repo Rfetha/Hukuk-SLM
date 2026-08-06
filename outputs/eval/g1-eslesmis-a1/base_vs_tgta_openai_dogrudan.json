@@ -6,39 +6,39 @@
     "tgta_v1": 63
   },
   "a1_kollar": {
-    "base": 0.9524525,
+    "base": 0.984375,
     "tgta_v1": 0.95625
   },
   "farklar": {
-    "base−tgta_v1": -0.003797500000000009
+    "base−tgta_v1": 0.028124999999999956
   },
   "ayrisma": {
     "base−tgta_v1": {
-      "n_ayrisan": 7,
-      "n_berabere": 33,
+      "n_ayrisan": 4,
+      "n_berabere": 36,
       "a_lehine": 3,
-      "b_lehine": 4,
-      "fark_sd": 0.23043780904995514
+      "b_lehine": 1,
+      "fark_sd": 0.17787811838447135
     }
   },
   "hakem_yigini": {
     "base": [
-      "openai/gpt-4o-mini",
-      "openrouter"
+      "gpt-4o-mini",
+      "openai"
     ],
     "tgta_v1": [
       "openai/gpt-4o-mini",
       "openrouter"
     ]
   },
-  "hakem_yigini_uyusuyor": true,
+  "hakem_yigini_uyusuyor": false,
   "mode": [
     "distractor"
   ],
   "girdiler": {
     "base": {
       "detail": "outputs/eval/cp09-butceli-1024-512/m1_base_th_detail.jsonl",
-      "gnd": "outputs/eval/g1-eslesmis-a1/gnd_m1_base_th_or.jsonl"
+      "gnd": "outputs/eval/cp09-butceli-1024-512/gnd_m1_base_th.jsonl"
     },
     "tgta_v1": {
       "detail": "outputs/eval/cp3-supurme-ham/m1_tg_ta_ham_th_detail.jsonl",
@@ -46,7 +46,7 @@
     }
   },
   "git_sha": "9b9be30",
-  "uretildi": "2026-08-06T15:54:58",
+  "uretildi": "2026-08-06T15:54:57",
   "uyarilar": [],
   "id_listesi": [
     "2",
@@ -92,12 +92,12 @@
   ],
   "n_cevaplayan_a": 46,
   "n_cevaplayan_b": 63,
-  "a1_a": 0.9524525,
+  "a1_a": 0.984375,
   "a1_b": 0.95625,
-  "fark": -0.003797500000000009,
-  "n_ayrisan": 7,
-  "n_berabere": 33,
+  "fark": 0.028124999999999956,
+  "n_ayrisan": 4,
+  "n_berabere": 36,
   "a_lehine": 3,
-  "b_lehine": 4,
-  "fark_sd": 0.23043780904995514
+  "b_lehine": 1,
+  "fark_sd": 0.17787811838447135
 }

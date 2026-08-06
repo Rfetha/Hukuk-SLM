@@ -6,39 +6,39 @@
     "tgta_v1": 63
   },
   "a1_kollar": {
-    "gemini_fl": 0.9624196078431372,
+    "gemini_fl": 0.9695470588235294,
     "tgta_v1": 0.9362745098039216
   },
   "farklar": {
-    "gemini_fl−tgta_v1": 0.02614509803921561
+    "gemini_fl−tgta_v1": 0.033272549019607855
   },
   "ayrisma": {
     "gemini_fl−tgta_v1": {
-      "n_ayrisan": 11,
-      "n_berabere": 40,
+      "n_ayrisan": 10,
+      "n_berabere": 41,
       "a_lehine": 6,
-      "b_lehine": 5,
-      "fark_sd": 0.2524803321557745
+      "b_lehine": 4,
+      "fark_sd": 0.2337803551014767
     }
   },
   "hakem_yigini": {
     "gemini_fl": [
-      "openai/gpt-4o-mini",
-      "openrouter"
+      "gpt-4o-mini",
+      "openai"
     ],
     "tgta_v1": [
       "openai/gpt-4o-mini",
       "openrouter"
     ]
   },
-  "hakem_yigini_uyusuyor": true,
+  "hakem_yigini_uyusuyor": false,
   "mode": [
     "distractor"
   ],
   "girdiler": {
     "gemini_fl": {
       "detail": "outputs/eval/cp09-butceli-1024-512/m1_gem_th_detail.jsonl",
-      "gnd": "outputs/eval/g1-eslesmis-a1/gnd_m1_gem_th_or.jsonl"
+      "gnd": "outputs/eval/cp09-butceli-1024-512/gnd_m1_gem_th.jsonl"
     },
     "tgta_v1": {
       "detail": "outputs/eval/cp3-supurme-ham/m1_tg_ta_ham_th_detail.jsonl",
@@ -103,12 +103,12 @@
   ],
   "n_cevaplayan_a": 61,
   "n_cevaplayan_b": 63,
-  "a1_a": 0.9624196078431372,
+  "a1_a": 0.9695470588235294,
   "a1_b": 0.9362745098039216,
-  "fark": 0.02614509803921561,
-  "n_ayrisan": 11,
-  "n_berabere": 40,
+  "fark": 0.033272549019607855,
+  "n_ayrisan": 10,
+  "n_berabere": 41,
   "a_lehine": 6,
-  "b_lehine": 5,
-  "fark_sd": 0.2524803321557745
+  "b_lehine": 4,
+  "fark_sd": 0.2337803551014767
 }
