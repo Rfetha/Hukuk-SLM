@@ -962,7 +962,7 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 ## ARA KAPI: GÜÇLÜ YEŞİL
 
 ```
-1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅
+1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅   ← ᴷ⁴ (payda 66): 0,955 ≥ 0,923 ✅ AYAKTA
            muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅
 2. GÖZLEM  tgta_v1    M2b    = 0,877  ≥ 0,854   ✅   geçerli koşu (kesik %0,4)
 §20 şartı  merge cevaplamayı bıraktı mı?         ❌   HAYIR (71,6% ↔ τ_g 71,4%)
