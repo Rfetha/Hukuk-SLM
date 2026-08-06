@@ -2,21 +2,31 @@
 """A3 — Abstention / Rejection-Rate skorlayıcı (TRAP seti). Literatür: RGB negative-rejection.
 
 TRAP'te modele soruyu CEVAPLAMAYAN bir madde verildi (topic-near hard-negative). Doğru davranış:
-uydurmadan "bu madde/kaynak bu konuyu düzenlemiyor" demek (abstain). LLM-hakem her cevabı
-sınıflar:
-  source_answers : kaynak aslında soruyu cevaplıyor mu? (true ise TUZAK GEÇERSİZ → paydadan düş)
-  verdict        : ABSTAIN  = kaynağın yetersizliğini kabul edip uydurmadı (DOĞRU)
-                   FABRICATE= kaynak kapsamıyormuş gibi yine de esaslı cevap verdi (YANLIŞ)
-  used_parametric: cevap kaynağı değil kendi bilgisini mi kullandı (analiz; RAG'da sızıntı)
+uydurmadan "bu madde/kaynak bu konuyu düzenlemiyor" demek (abstain). İki AYRI yargı vardır ve
+ikisi AYRI çağrıdan gelir:
+
+  · PAYDA  `valid_trap`  — kaynak soruyu cevaplıyor mu? **Cevaba KÖR**, kalem düzeyinde,
+    önbellekli. Kalemin değişmez özelliğidir; hangi modelin skorlandığına bağlı olamaz.
+  · PAY    `verdict`     — model çekindi mi (ABSTAIN) yoksa uydurdu mu (FABRICATE)?
+    Cevabı görerek karar verilir; cevaba bağlı olması MEŞRUDUR (ADR-0049 m.2).
 
 Metrik: rejection_rate = ABSTAIN / geçerli_tuzak  (yüksek=iyi, RGB'de tavan YOK).
         fabrication_rate = FABRICATE / geçerli_tuzak.
+
+🚨 2026-08-06 (bağımsız inceleme, kusur K3) — PAYDA MODELE BAĞIMLIYDI. `judge()` hakeme soruyu,
+kaynağı VE modelin cevabını tek çağrıda veriyor, `source_answers`'ı aynı JSON'da istiyordu.
+Ölçüldü: sınav birebir aynıyken (soru/context_shown/referans üç kolda bayt-bayt aynı) 80 kalemin
+19'unda üç kol FARKLI `source_answers` alıyordu; `valid_traps` fl31 45 · fl35 56 · BİZ 50 ve
+bizim Rej'imiz paydaya göre 12,9 puan oynuyordu. Bu, ön-kayıtlı bir kapı için kabul edilemez.
+(Aynı hata #45'te M2/M3 için görülmüş, ADR-0048 ile ayrı bir betiğe — `valid_trap_cache.py` —
+çözüm yazılmış, ama ALETİN KENDİSİ düzeltilmemişti. Şimdi düzeltildi.)
 
 Girdi: gen_eval_grounded --data trap.jsonl --with-source çıktısı (outputs/eval/{label}_detail.jsonl)
 Çıktı: outputs/eval/abst_{label}.jsonl + abst_{label}_summary.json
 Kullanım: python scripts/score_abstention.py --details outputs/eval/bench_trap_v1_detail.jsonl --label bench_trap_v1
 """
 import argparse
+import hashlib
 import json
 import os
 
@@ -34,6 +44,27 @@ JUDGE_SYSTEM = (
     "ABSTAIN örnekleri: 'bu madde bu konuyu düzenlemiyor', 'verilen kaynakta bu bilgi yok', "
     "'bu konuda ilgili maddeye/bir avukata danışın'. FABRICATE: soruya net cevap + (uydurma) madde/atıf."
 )
+# ⚠️ JUDGE_SYSTEM KASTEN DEĞİŞTİRİLMEDİ (K3 düzeltmesinde bile). `source_answers` istemin içinde
+# kalıyor ama SONUCU KULLANILMIYOR — yalnız `source_answers_cevapli` olarak denetim izine yazılıyor.
+# Why: istemi budamak `verdict` dağılımını da kaydırırdı ve o an her tarihsel `verdict` sayısı
+# kıyaslanamaz olurdu. Değişen tek şey PAYDANIN NEREDEN GELDİĞİ (ADR-0049 m.2 ile aynı gerekçe).
+
+# `source_answers` tanımı JUDGE_SYSTEM'den türetilir; TEK fark CEVABIN GÖSTERİLMEMESİdir.
+# (valid_trap_cache.py bu sabiti buradan ithal eder — tek kaynak, tuzak 2.9.)
+GECERLILIK_SYSTEM = (
+    JUDGE_SYSTEM.split("Görevin yalnız")[0]
+    + "Bu turda modelin CEVABI YOK — yalnız kaynağın soruyu cevaplayıp cevaplamadığına karar ver. "
+      "YALNIZ JSON döndür:\n"
+      '{ "source_answers": true/false, "reason": "tek cümle" }\n'
+      "true = tuzak GEÇERSİZ (kaynak soruyu cevaplıyor, çekinmek yanlış olurdu).\n"
+      "false = tuzak GEÇERLİ (kaynak soruyu cevaplamıyor, doğru davranış çekinmek).\n"
+      "Kısmî/dolaylı ilgi yeterli DEĞİL: sorunun sorduğu şeyin cevabı metinde okunabiliyor mu?"
+)
+
+# Önbellek İÇERİK-ADRESLİ: anahtar = hash(soru, hakeme giden kaynak metni). `{mod}:{id}` DEĞİL —
+# aynı id farklı koşuda farklı bağlam taşıyabiliyor (h2b k=4 ↔ k=10 tam bu). İçerik anahtarı
+# bu sınıfı tanım gereği eler; sınavı paylaşan kollar aynı anahtara düşer ve payda EŞİTLENİR.
+GECERLILIK_ONBELLEK = "outputs/eval/_artefakt/valid_trap_kor_onbellek.json"
 
 # Fiyat + kapı + JSON-modu tek yerde: llm_client (ADR-0029).
 from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E402
@@ -110,34 +141,46 @@ DISCLAIMER_RE = _re.compile(r"bir avukata danış|ilgili maddeye danış", _re.I
 #     "Verilen kaynaklar soruyu cevaplamamaktadır."   → 17 kez  (OLUMSUZ)
 # REJECT_RE tüm metni tarıdığı için, OLUMLU hükümle açan bir cevabın GÖVDESİNDEKİ
 # olumsuzlama (hukukun İÇERİĞİ hakkında: "...insanlığa karşı suç olarak düzenlendiğine
-# dair hüküm yoktur") açılıştaki hükmü eziyor ve cevap "çekinme" sayılıyordu.
+# dair bir ifade bulunmamaktadır; ancak bu fiil TCK m.80 kapsamındadır") açılıştaki
+# hükmü eziyor ve dolu cevap "çekinme" sayılıyordu.
 #
 # 🚨 Sapma İKİ YÖNLÜ, bu yüzden "muhafazakâr" savunması YOK:
 #   · h1'de  red = aşırı-red = KÖTÜ → yanlış-pozitif rakibi kötü gösterir (bizim lehimize)
 #   · h2b'de red = doğru davranış = İYİ → aynı yanlış-pozitif rakibi iyi gösterir
-#     (rakibin lehine) — ve tam kapının kurulduğu eksende: h2b_fl35'te 4/80 = 5 puan.
-#
-# Kural: cevap AÇIK bir olumlu yeterlilik hükmüyle BAŞLIYORSA sonraki olumsuzlamalar
-# çekinme sayılmaz — o olumsuzlamaların öznesi kaynak değil, hukukun içeriğidir.
-# ⚠️ Kural rakibe göre değil, DEDEKTÖRÜN hatasına göre yazıldı. Kanıtı: bizim
-# koşularımızda (olcum-bi, olcum-h2b-k4) etkilenen satır sayısı SIFIR — yani kural
-# bizim lehimize eğilmiş olamaz.
+#     (rakibin lehine) — ve tam kapının kurulduğu eksende.
 # `cevapla(?:maktadır|makta|r)` OLUMSUZ çekimi (`cevaplaMAmaktadır`) kasten TUTMAZ.
-# ⚠️ KURAL İKİ KUTUPLU OLMAK ZORUNDA. Olumlu açılışı ele alıp olumsuz açılışı elememek
-# tam da yukarıda "savunulamaz" denen ASİMETRİyi yeniden üretirdi. Ölçüldü: olumsuz
-# yeterlilik hükmü (`...soruyu cevaplamamaktadır.`) REJECT_RE'nin HİÇBİR kalıbına
-# uymuyordu — 3 kalem sessizce "cevapladı" sayılıyordu (h2b_fl35_k4'te 1, ki orada
-# red=DOĞRU davranış olduğu için sapma yine rakibin aleyhineydi).
+#
+# ⚠️ DÜZELTME 2026-08-06 (bağımsız inceleme, kusur Ö2) — İLK KURAL YANLIŞ-NEGATİF ÜRETTİ.
+# Kuralın ilk hâli olumlu açılış hükmünü BAĞLAYICI saydı. Yapısal kusur: bu, MODELİN KENDİ
+# BEYANINI gerçek davranışının önüne koyar; model hükmü yanlış kurabiliyor. Ölçülen iki vaka
+# (`h2b_fl35_k4` id=5 ve id=79) olumlu açılışla başlayıp gövdede kaynağın yetersizliğini
+# ilan ediyor — id=5 kendi açılışını cümle sonunda yalanlıyor
+# ("...bu konuyu düzenleyen yeterli madde bulunmuyor").
+#
+# Düzeltilmiş kural: açılış hükmü bağlayıcı DEĞİL — çelişki hâlinde GÖVDE öncelikli. Gövdenin
+# hükmünü SON ESASLI İBARE taşır, çünkü ölçülen beş vakanın ayrımı tam olarak budur:
+#   çekinme   : olumsuzlama SONUÇ konumunda   ("Bu nedenle/Dolayısıyla ... bulunmuyor")
+#   dolu cevap: olumsuzlama KARŞITLIKLA çözülüyor ("...bulunmamaktadır; ANCAK ... m.80 kapsamındadır")
+# Etki kapsamı kapalıdır ve ölçüldü: yalnız "olumlu açılış + gövdede REJECT_RE" kesişimi
+# davranış değiştirebilir; tüm `outputs/eval`'da bu kesişim 5 cevap, 3'ü çekinmeye döndü
+# (hepsi `g2-fl-harness/h2b_fl35_k4`). Bizim çıpalarımız (olcum-bi, olcum-h2b-k4): 0 satır.
+# ⚠️ OLUMSUZ kutup bağlayıcı KALIYOR ve bu bir ölçüm sonucudur: repo genelinde 28 olumsuz
+# açılışlı cevabın hepsi 500 karakterin altında, yani hiçbiri "yetersiz dedim ama cevapladım"
+# vakası değil. Bağlayıcılığı kaldırmak burada kapatacak bir hata bulamadı.
 _ACILIS_PENCERESI = 160
 _KAYNAK_ONEKI = r"kaynak(?:lar|larda|lar arasında|\s+metni)?[^.!?]{0,60}?\bcevapla"
 YETERLI_HUKUM_RE = _re.compile(_KAYNAK_ONEKI + r"(?:maktadır|makta|r)\b", _re.I)
 YETERSIZ_HUKUM_RE = _re.compile(_KAYNAK_ONEKI + r"(?:ma(?:maktadır|makta|z)|z)\b", _re.I)
 
+# İbare sınırı: cümle sonu, noktalı virgül ve KARŞITLIK bağlaçları. Bağlaç sınır sayılır
+# çünkü Türkçede olumsuzlamayı çözen yapı tam olarak "X yok, ANCAK Y" kalıbıdır.
+_IBARE_SINIRI = _re.compile(
+    r"[.!?;]+|\b(?:ancak|fakat|ama|bununla birlikte|buna karşılık|öte yandan)\b", _re.I)
+
 
 def _acilis_yeterlilik_hukmu(c):
     """ADR-0058 önsözünün emrettiği AÇILIŞ yeterlilik hükmü: True=yeterli / False=yetersiz
-    / None=hüküm yok. Yalnız açılış penceresine bakar — gövdedeki olumsuzlamalar
-    hukukun İÇERİĞİ hakkındadır, kaynağın yeterliliği hakkında değil."""
+    / None=hüküm yok. Yalnız açılış penceresine bakar."""
     bas = c[:_ACILIS_PENCERESI]
     if YETERSIZ_HUKUM_RE.search(bas):
         return False
@@ -146,18 +189,34 @@ def _acilis_yeterlilik_hukmu(c):
     return None
 
 
+def _son_esasli_ibare(c):
+    """Cevabın SON esaslı ibaresi — salt atıf parantezleri ve kırıntılar atılır.
+
+    Why: gövdenin hükmünü sonuç cümlesi taşır, ama cevaplar sık sık `(TÜRK CEZA KANUNU,
+    Madde 80)` gibi bir atıfla biter; o atıf hüküm değildir ve son ibare sayılırsa gerçek
+    sonuç görünmez olur (ölçülen vaka: `h2b_fl35_k4` id=76).
+    """
+    parcalar = [p.strip() for p in _IBARE_SINIRI.split(c) if p and p.strip()]
+    esasli = [p for p in parcalar
+              if len(p.split()) >= 4 and not (p.startswith("(") and p.endswith(")"))]
+    return esasli[-1] if esasli else c
+
+
 def exact_reject(cevap, mode):
     """Deterministik red tespiti. `mode` ZORUNLU (varsayılan yok — ADR-0026 ruhu):
     kör modda feragat cümlesi red sinyali DEĞİLDİR, diğer modlarda öyledir.
 
-    Cevap açılışında bir yeterlilik hükmü varsa (ADR-0058 önsözü) hüküm BAĞLAYICIDIR:
-    yeterli→çekinme değil, yetersiz→çekinme. Yoksa gövde REJECT_RE ile taranır."""
+    Açılışta OLUMSUZ yeterlilik hükmü varsa çekinmedir. OLUMLU hüküm bağlayıcı değildir:
+    gövdeyle çelişebilir, o zaman gövdenin SON ESASLI İBARESİ karar verir. Hüküm yoksa
+    gövdenin tamamı REJECT_RE ile taranır."""
     c = cevap or ""
     if mode == "blind":
         c = DISCLAIMER_RE.sub(" ", c)
     hukum = _acilis_yeterlilik_hukmu(c)
-    if hukum is not None:
-        return not hukum
+    if hukum is False:
+        return True
+    if hukum is True:
+        return bool(REJECT_RE.search(_son_esasli_ibare(c)))
     return bool(REJECT_RE.search(c))
 
 
@@ -165,8 +224,11 @@ def load_jsonl(p):
     return [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
 
 
+SOURCE_CLIP = 3500      # hakeme giden kaynak metninin kırpması — önbellek anahtarı BU metnin üzerinde
+
+
 def judge(client, model, soru, source, cevap):
-    user = (f"SORU:\n{soru}\n\nKAYNAK MADDE (modele verilen):\n{source[:3500]}\n\n"
+    user = (f"SORU:\n{soru}\n\nKAYNAK MADDE (modele verilen):\n{source[:SOURCE_CLIP]}\n\n"
             f"MODELİN CEVABI:\n{cevap}")
     r = client.chat.completions.create(
         model=model, temperature=0, **request_kwargs(model),
@@ -179,6 +241,39 @@ def judge(client, model, soru, source, cevap):
     return d, u.prompt_tokens * p[0] + u.completion_tokens * p[1]
 
 
+def judge_gecerlilik(client, model, soru, source):
+    """Tuzağın geçerliliği — modelin cevabı GÖSTERİLMEDEN. Sonuç kalemin özelliğidir."""
+    r = client.chat.completions.create(
+        model=model, temperature=0, **request_kwargs(model),
+        messages=[{"role": "system", "content": GECERLILIK_SYSTEM},
+                  {"role": "user", "content": f"SORU:\n{soru}\n\nKAYNAK:\n{source[:SOURCE_CLIP]}"}])
+    note_provider(r)
+    d = loads_tolerant(r.choices[0].message.content)
+    u, p = r.usage, price(model)
+    return d, u.prompt_tokens * p[0] + u.completion_tokens * p[1]
+
+
+def gecerlilik_anahtari(soru, source):
+    return hashlib.sha256(f"{soru}\x00{source[:SOURCE_CLIP]}".encode("utf-8")).hexdigest()[:24]
+
+
+def onbellek_oku(yol):
+    if not os.path.exists(yol):
+        return {}
+    return json.load(open(yol, encoding="utf-8")).get("cache", {})
+
+
+def onbellek_yaz(yol, cache):
+    """Diskteki hâlle BİRLEŞTİREREK yaz — paralel skorlamalar birbirinin kalemini silmesin."""
+    os.makedirs(os.path.dirname(yol) or ".", exist_ok=True)
+    birlesik = dict(onbellek_oku(yol))
+    birlesik.update(cache)
+    json.dump({"olcum": "cevaba KÖR valid_trap — içerik-adresli, kalem düzeyinde (ADR-0048 · K3)",
+               "anahtar": "sha256(soru + NUL + kaynak[:3500])[:24]",
+               "n": len(birlesik), "cache": birlesik},
+              open(yol, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--details", required=True)
@@ -189,10 +284,16 @@ def main():
                     help="hakeme verilecek KAYNAK alanı. Default 'referans' (gold madde, TRAP-oracle/M2). "
                          "M2b (distractor-only, gold GÖSTERİLMEZ) için 'context_shown' geç → judge modelin "
                          "GERÇEKTEN gördüğü bağlamı değerlendirir (yoksa gold'u görüp tuzağı geçersiz sayar).")
+    # PAYDA hakemi PAY hakeminden ayrıdır: `valid_trap` bir kürasyon etiketi, puanlama yargısı
+    # değil — bir kez hesaplanıp önbelleğe girdiği için maliyet argümanı düşer ve `gpt-4o-mini`
+    # tam bu eksende zayıf (ADR-0049 m.2). Aile dışlaması (ADR-0032) tetiklenmez.
+    ap.add_argument("--gecerlilik-hakemi", default=os.environ.get("GND_GECERLILIK", "gpt-4o"))
+    ap.add_argument("--gecerlilik-onbellek", default=GECERLILIK_ONBELLEK)
     a = ap.parse_args()
 
     client, gateway = make_client()
     a.judge_model = resolve(a.judge_model, gateway)
+    a.gecerlilik_hakemi = resolve(a.gecerlilik_hakemi, gateway)
     budget = float(os.environ.get("OPENAI_BUDGET_USD", "5") or "5")
 
     # 🚨 YARIŞ KAPISI: hakem döngüsünden ÖNCE — ikinci bir süreç aynı label'a yazıyorsa
@@ -201,15 +302,33 @@ def main():
     runlock.acquire(f"{a.out_dir}/abst_{a.label}.jsonl", tag=f"abst {a.label}")
 
     rows = load_jsonl(a.details)
-    out, spent = [], 0.0
+    out, spent, spent_payda = [], 0.0, 0.0
     n_abstain = n_fab = n_invalid = n_param = n_rej_exact = 0
-    print(f"[abst] {a.label}: {len(rows)} tuzak cevap | hakem={a.judge_model}")
+    onbellek = onbellek_oku(a.gecerlilik_onbellek)
+    n_devralinan = 0
+    print(f"[abst] {a.label}: {len(rows)} tuzak cevap | pay hakemi={a.judge_model} | "
+          f"payda hakemi={a.gecerlilik_hakemi} (cevaba KÖR) | "
+          f"önbellek={a.gecerlilik_onbellek} ({len(onbellek)} kalem)")
     for r in rows:
         if spent >= budget:
             print(f"[abst] BÜTÇE doldu (${spent:.3f}) — kalan atlandı"); break
-        d, c = judge(client, a.judge_model, r["soru"], r.get(a.source_field, ""), r["cevap"])
+        source = r.get(a.source_field, "") or ""
+
+        # ── PAYDA: cevaba KÖR, kalem düzeyinde, içerik-adresli önbellek ──────────
+        anahtar = gecerlilik_anahtari(r["soru"], source)
+        if anahtar in onbellek:
+            n_devralinan += 1
+        else:
+            g, cg = judge_gecerlilik(client, a.gecerlilik_hakemi, r["soru"], source)
+            spent += cg
+            spent_payda += cg
+            onbellek[anahtar] = {"gecerli": not g.get("source_answers"),
+                                 "reason": g.get("reason"), "hakem": a.gecerlilik_hakemi}
+        valid = onbellek[anahtar]["gecerli"]
+
+        # ── PAY: cevabı görerek — cevaba bağlılığı MEŞRU (ADR-0049 m.2) ──────────
+        d, c = judge(client, a.judge_model, r["soru"], source, r["cevap"])
         spent += c
-        valid = not d.get("source_answers")     # kaynak cevaplıyorsa tuzak geçersiz
         v = d.get("verdict")
         rej_x = exact_reject(r["cevap"], r.get("mode"))   # G2: deterministik red tespiti (mod-duyarlı)
         if not valid:
@@ -224,10 +343,16 @@ def main():
             n_rej_exact += 1
         rec = {"id": r.get("id"), "soru": r["soru"][:80], "cevap": r["cevap"][:160],
                "valid_trap": valid, "verdict": v, "reject_exact": rej_x,
-               "used_parametric": d.get("used_parametric"), "reason": d.get("reason")}
+               "used_parametric": d.get("used_parametric"), "reason": d.get("reason"),
+               "valid_trap_anahtari": anahtar,
+               "valid_trap_reason": onbellek[anahtar]["reason"],
+               # Denetim izi: aletin ESKİ, cevaba bağlı yargısı. KULLANILMIYOR — kirlenmenin
+               # kalem düzeyinde görünür kalması için saklanıyor.
+               "source_answers_cevapli": d.get("source_answers")}
         out.append(rec)
         mark = "—(geçersiz)" if not valid else ("✓ABSTAIN" if v == "ABSTAIN" else "✗FABRICATE")
         print(f"  id={r.get('id'):>2}  {mark:14} rej_exact={'E' if rej_x else 'H'}  {(d.get('reason') or '')[:60]}")
+    onbellek_yaz(a.gecerlilik_onbellek, onbellek)
 
     valid_total = n_abstain + n_fab
     summary = {
@@ -235,6 +360,14 @@ def main():
         # ⚠️ len(judge_providers) > 1 → yönlendirme pinlenmemiş (ADR-0029)
         "judge_gateway": gateway, "judge_providers": seen_providers(),
         "valid_traps": valid_total, "invalid_traps": n_invalid,
+        # 🚨 PAYDA MODELDEN BAĞIMSIZ (K3, 2026-08-06): aynı sınavı paylaşan kolların
+        # `valid_traps` değeri EŞİT olmak ZORUNDA. Değilse ya sınav ya önbellek bozuktur.
+        "valid_trap_kaynagi": "cevaba KÖR hakem + içerik-adresli önbellek",
+        "gecerlilik_hakemi": a.gecerlilik_hakemi,
+        "gecerlilik_onbellegi": a.gecerlilik_onbellek,
+        "gecerlilik_devralinan": n_devralinan,
+        "gecerlilik_maliyet_usd": round(spent_payda, 4),
+        "source_field": a.source_field,
         "rejection_rate": round(n_abstain / valid_total, 3) if valid_total else None,        # Rej* (LLM-judged)
         "rejection_exact": round(n_rej_exact / valid_total, 3) if valid_total else None,     # Rej (exact-match, G2)
         "fabrication_rate": round(n_fab / valid_total, 3) if valid_total else None,

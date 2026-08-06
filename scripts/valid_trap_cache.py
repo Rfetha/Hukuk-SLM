@@ -38,7 +38,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from llm_client import (make_client, resolve, price, request_kwargs,  # noqa: E402
                         note_provider, seen_providers, loads_tolerant)
-from score_abstention import JUDGE_SYSTEM  # noqa: E402  — semantik kilit
+from score_abstention import GECERLILIK_SYSTEM as SYSTEM  # noqa: E402  — semantik kilit, TEK kaynak
 
 # Hangi modun geçerliliği nereden okunur. `alan=None` → hakeme GİTMEZ, sabit.
 MOD_KAYNAK = {
@@ -48,16 +48,9 @@ MOD_KAYNAK = {
 }
 CLIP = 900          # eval-ayna klipi (ADR-0011 değişmezi)
 
-# `source_answers` tanımı JUDGE_SYSTEM'den alınır; tek fark CEVABIN GÖSTERİLMEMESİ.
-SYSTEM = (
-    JUDGE_SYSTEM.split("Görevin yalnız")[0]
-    + "Bu turda modelin CEVABI YOK — yalnız kaynağın soruyu cevaplayıp cevaplamadığına karar ver. "
-      "YALNIZ JSON döndür:\n"
-      '{ "source_answers": true/false, "reason": "tek cümle" }\n'
-      "true = tuzak GEÇERSİZ (kaynak soruyu cevaplıyor, çekinmek yanlış olurdu).\n"
-      "false = tuzak GEÇERLİ (kaynak soruyu cevaplamıyor, doğru davranış çekinmek).\n"
-      "Kısmî/dolaylı ilgi yeterli DEĞİL: sorunun sorduğu şeyin cevabı metinde okunabiliyor mu?"
-)
+# ⚠️ 2026-08-06: kör yargı ARTIK `score_abstention.py`'nin kendisinde (kusur K3). Bu betik
+# `{mod}:{id}` anahtarlı tarihsel önbelleği (cp2-r) üretmiş olduğu için kayıt uğruna duruyor;
+# YENİ koşularda gerek yok — `score_abstention.py` paydayı kendi önbelleğinden okur/yazar.
 
 
 def parse_args():
