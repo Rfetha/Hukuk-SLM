@@ -30,7 +30,7 @@ M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
 | coverage | 0,7875 | **0,7625** |
 | A1 (cevaplanan-only) | 0,9087 | **0,8042** |
 | A1 · altın getirilen | 0,9087 | **0,8616** |
-| **KÜTLE** | **%71,6** | **%61,3** ← ürünün dürüst sayısı |
+| **KÜTLE** | **%71,6** | **%62,8** ← ürünün dürüst sayısı (önsözsüz ablasyon: %61,3) |
 | uydurulmuş madde no | 0 | **0/118** |
 
 `outputs/eval/s2-harness-k10-etiketli/` · [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
@@ -265,7 +265,7 @@ mahremiyet (hukuki sorular kişiseldir). İkisi de zamanla **büyüyor**.
 ```
 0.  modül-başına norm (2.1)   ✅ koşuldu → 🔴 REDDEDİLDİ (ADR-0053)
 1.  HARNESS                   ✅ KURULDU  → sprint3-part1.md
-2.  harness AÇIK ölçüm        ✅ ÖLÇÜLDÜ  → %61,3 (ürünün dürüst sayısı)
+2.  harness AÇIK ölçüm        ✅ ÖLÇÜLDÜ  → %62,8 (ürünün dürüst sayısı; önsözsüz ablasyon: %61,3)
 3.  τ_a v2 (2.2)              ▶ sırada    — ve gerekçesi artık ölçülmüş: B10 (16/80)
 4.  Türkçe muhakeme (2.3)     veri turu
 ```

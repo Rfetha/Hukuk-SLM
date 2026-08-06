@@ -10,7 +10,10 @@
 > Çıkanlar: M2b iddiası **yapısal olarak öldü** (kapı bu rejimde ateşlenemiyor) → **eğitim borcu** ·
 > B-i önsözü **başarılı** ama benimsenmedi (**YB1**) · `k` büyütmenin bedeli **iki eksende** ölçüldü.
 >
-> **▶ AÇIK SPRINT YOK, AKTİF PLAN YOK. Sıradaki turun hangisi olacağı insan kararı** —
+> **▶ AKTİF PLAN: B10 aşırı-red turu** — `τ_a` v2 simetrik yeterlilik çifti + rakip kıyası.
+> Plan (kutucuklar **tek durum kaynağıdır**):
+> [`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md) ·
+> tasarım: [`2026-08-06-asiri-red-turu-design.md`](docs/superpowers/specs/2026-08-06-asiri-red-turu-design.md)
 > adaylar ve ölçülmüş gerekçeleri `ROADMAP.md`'de ve borç kuyruğunda
 > ([`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası): **B10 · B1 · B4 · B8 ·
 > B9 · B6** + **YB1 · YB2 · YB3**).

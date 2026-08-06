@@ -78,10 +78,9 @@ not measure the same thing (OFF hands the model the gold article by construction
 - ⚠️ **The biggest single loss is over-refusal, and the model owns it** — the gold article is *in
   context* and the model abstains anyway. Retrieval cannot fix this. Debt **B10**.
 
-**Status of work: no sprint is open and no plan is active.** The last round
-([plan](docs/superpowers/plans/2026-08-05-olcum-bosluklari.md), closed 2026-08-05) shipped its
-findings to #56. **Which round comes next is an open human decision** — the candidates and their
-measured justifications are in `ROADMAP.md` and the debt queue.
+**Status of work: ACTIVE PLAN — B10 over-refusal round.** Plan (checkboxes are the single source
+of state): [`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md) ·
+design: [`2026-08-06-asiri-red-turu-design.md`](docs/superpowers/specs/2026-08-06-asiri-red-turu-design.md).
 
 ### Target audience: the CITIZEN — but read the trap
 

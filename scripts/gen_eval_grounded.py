@@ -292,7 +292,8 @@ def generate_completion(model, tokenizer, soru, max_new_tokens, source=None, sou
 # CP0.9 ikisini ayıramadı (70 örneğin 69'u zorla kapatıldı → kendi duran kontrol grubu yok).
 # Bu önsöz (B)'nin BİÇİM kısmını düşünce OLMADAN taklit eder: kazanç buradan geliyorsa aynı
 # sonuç 1× token'la alınır (ADR-0017 maliyet ekseninde doğrudan kaldıraç).
-# ⚠️ Bu bir PROTOKOL DEĞİL, ablasyon kolu — ana tablodaki hiçbir hücre bu bayrakla üretilmez.
+# ✅ ADR-0058 (2026-08-06): ANA PROTOKOL. Ana tablodaki her hücre bu bayrakla üretilir;
+#    bayraksız koşu artık ABLASYON kolu. Çıpa: kütle %62,8 · A1 0,8229.
 SUFFICIENCY_PREAMBLE = (
     "\nCevabına başlamadan ÖNCE, verilen kaynağın soruyu cevaplayıp cevaplamadığını "
     "tek cümleyle belirt. Kaynak soruyu cevaplamıyorsa bunu söyle ve cevap uydurma."
@@ -644,9 +645,10 @@ def main():
         print(f"[gen-eval] rakip düşünce bütçesi: reasoning.max_tokens={a.reasoning_budget} "
               f"(toplam {a.reasoning_budget + a.max_new_tokens}) | ort reasoning_tokens "
               f"{rt_sum / max(1, rt_n):.1f}/cevap (bildirilen n={rt_n}/{len(sample)}) — künyeye yazılır")
-    if a.sufficiency_preamble:
-        print("[gen-eval] ⚠️ ABLASYON: kaynak-yeterliliği önsözü AÇIK — sistem istemi "
-              "ana protokolden FARKLI, bu koşu ana tabloya girmez")
+    if not a.sufficiency_preamble:
+        print("[gen-eval] ⚠️ bu koşu artık ablasyon kolu (ADR-0058): kaynak-yeterliliği önsözü "
+              "KAPALI — sistem istemi ana protokolden FARKLI, bu koşu ana tabloya girmez "
+              "(çıpa: kütle %62,8)")
     print(f"[gen-eval] taşıyıcı={'http' if http_client else 'yerel'} | thinking={a.thinking} "
           f"| max_new_tokens={a.max_new_tokens} | seed={a.seed}")
     print(f"[gen-eval] detay → {detail}")
