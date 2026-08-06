@@ -35,7 +35,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | :--- | :--- | :--- |
 | **0** YB1 / ADR-0058 | ✅ **KAPANDI** — 6/6 kutucuk | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
 | **1** eşleştirilmiş A1 | ✅ **KAPANDI** — 7/7 kutucuk (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
-| **2** Gemini FL harness AÇIK | 🔄 **KOŞUYOR** — 2.1·2.1b·2.1c·2.2·2.4 bitti, 2.3·2.4b·2.5·2.6 kaldı | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı çıktı** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu (aşağıda) |
+| **2** Gemini FL harness AÇIK | ✅ ajan bitirdi — **incelemede** | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı çıktı** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu (aşağıda) |
 | **3-4** hasat | ⏸ | |
 | **5** ORPO paketleme | ⏸ | |
 | **6** `τ_a` v2 eğitimi | ⏸ | |
@@ -48,16 +48,22 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 
 | cüzdan | tutar | kaynak |
 | :--- | ---: | :--- |
-| **A+C birlikte** (OpenRouter: hakem + rakip çıkarımı) | **$1,03** | panel *"son 24 saat"* |
+| **A** hakem | **$0,1182** | `judge_cost_usd` toplamı |
+| **C** rakip çıkarımı | **≈$0,111** | panel deltası − hakem |
+| **A+C tur toplamı** | **$0,3042** | `total_usage` deltası |
 | **B** (Modal GPU) | **$0** | Görev 6'ya kadar harcanmıyor |
 | kalan bakiye | **$10,26** | `total_usage` 9,7403 |
 
-⚠️ **Planın bütçe defteri bir şeyi görmüyordu:** tavan $10 yazıyordu ama tur başlarken hesapta
-**$1,31** vardı. Gerçek sınır tavan değil **bakiyeydi**; 6 Ağustos 17:12'de $10 yüklendi.
+⚠️ **Planın bütçe defteri iki şeyi birden ıskalamış:**
+(a) **tavan yanlış kısıttı** — $10 yazıyordu ama Görev 2 başlarken hesapta yalnız **$0,489** vardı;
+gerçek sınır bakiyeydi (6 Ağustos 17:12'de $10 yüklendi).
+(b) **rakip çıkarımı 8 KAT fazla tahmin edilmişti** — plan $0,90 diyordu, gerçek **$0,111**.
+Sebep: 160 çağrı varsayımı ve FL'in liste fiyatı üzerinden kaba çarpım; gerçek jeton kullanımı
+çok daha düşük çıktı. **Turun kalan bütçe endişesi yok.**
 📌 Temel ölçüm alındı (`.superpowers/sdd/butce-temel.json`, `total_usage=9,7403`) — bundan sonraki
 her harcama **farktan ölçülecek**.
 
-Commit: `339d9b1` → `cf540ec` (15 commit). **Kutucuk: 13 / 70.**
+Commit: `339d9b1` → `0f65930` (18 commit). **Kutucuk: 13 / 70.**
 
 ### ⭐ Görev 0'dan doğan ÖLÇÜLMÜŞ bulgu — plan bunu öngörmemişti
 
