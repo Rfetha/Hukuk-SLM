@@ -64,7 +64,7 @@ GECERLILIK_SYSTEM = (
       "Kısmî/dolaylı ilgi yeterli DEĞİL: sorunun sorduğu şeyin cevabı metinde okunabiliyor mu?"
 )
 
-# Önbellek İÇERİK-ADRESLİ: anahtar = hash(soru, TAM kaynak metni). `{mod}:{id}` DEĞİL —
+# Önbellek İÇERİK-ADRESLİ: anahtar = hash(soru, HAKEMİN GÖRDÜĞÜ kaynak). `{mod}:{id}` DEĞİL —
 # aynı id farklı koşuda farklı bağlam taşıyabiliyor (h2b k=4 ↔ k=10 tam bu). İçerik anahtarı
 # bu sınıfı tanım gereği eler; sınavı paylaşan kollar aynı anahtara düşer ve payda EŞİTLENİR.
 GECERLILIK_ONBELLEK = "outputs/eval/_artefakt/valid_trap_kor_onbellek.json"
@@ -258,17 +258,34 @@ def yedekle(yol):
     return hedef
 
 
-# ⚠️ Klip YALNIZ hakeme giden isteme uygulanır — ÖNBELLEK ANAHTARINA ASLA (kusur K-1).
 # 🚨 Klibin kendisi AÇIK BORÇ: `h2b k=10`'un bağlamı 3.203-10.281 karakter (medyan 7.174),
 # yani hakem kaynağın ~1/3'ünü görüyor ve "kaynak soruyu cevaplıyor mu" sorusuna eksik
 # görüntüden cevap veriyor. Büyütmek PAY hakemini (`judge()`) de değiştirir ve tüm tarihsel
 # `verdict` sayılarını kıyaslanamaz kılar → bu dalgada değiştirilmedi, `open_questions.md`'ye
-# ölçülmüş borç olarak yazıldı (2026-08-06).
+# ölçülmüş borç olarak yazıldı (2026-08-06, reçete + ≈$0,30).
 SOURCE_CLIP = 3500
 
 
+def hakem_kaynagi(source):
+    """Hakemin GERÇEKTEN gördüğü kaynak metni — istemin de anahtarın da TEK girdisi.
+
+    Why (KARAR-4 m.1, 2026-08-06): K-1 önbellek anahtarını TAM metne taşımıştı. O onarımın
+    sayısal karşılığı ölçüldü ve YOKTU (çakışan 15 çiftte 15/15 aynı hüküm — klip sabitken
+    hakem istemi zaten bayt-bayt aynı), buna karşılık yeni bir gürültü yolu açtı: anahtar
+    hakemin AYIRT EDEMEDİĞİ bir farka göre bölününce *aynı istem → aynı cevap* değişmezi
+    kırılır. Ölçüldü: 5.363 ayrı istemin 65'i >1 anahtara düşüyor · 83 garantili gereksiz
+    çağrı · aynı istem iki kayda dönerse `Rej*` ~1,5 p oynar ve "k'nın çekinme bedeli" diye
+    okunur, oysa saf gürültüdür.
+
+    Bedeli TEK yerde ödeniyor: `k=4` bağlamı `k=10`'unkinin ÖNEKİ olduğu için ikisi aynı
+    kayda düşer → `k=10`'un paydası **TANIMSIZ** damgalıdır (ADR-0057, KARAR-4 m.2), hüküm
+    kurulmaz. Alet kuramadığı hükmü kurmaz; klibi büyütmek ayrı ve ödenmemiş bir borçtur.
+    """
+    return (source or "")[:SOURCE_CLIP]
+
+
 def judge(client, model, soru, source, cevap):
-    user = (f"SORU:\n{soru}\n\nKAYNAK MADDE (modele verilen):\n{source[:SOURCE_CLIP]}\n\n"
+    user = (f"SORU:\n{soru}\n\nKAYNAK MADDE (modele verilen):\n{hakem_kaynagi(source)}\n\n"
             f"MODELİN CEVABI:\n{cevap}")
     r = client.chat.completions.create(
         model=model, temperature=0, **request_kwargs(model),
@@ -281,12 +298,17 @@ def judge(client, model, soru, source, cevap):
     return d, u.prompt_tokens * p[0] + u.completion_tokens * p[1]
 
 
+def gecerlilik_istemi(soru, source):
+    """Kör payda hakemine giden KULLANICI mesajı. Anahtar da bunun bileşenlerinden kurulur."""
+    return f"SORU:\n{soru}\n\nKAYNAK:\n{hakem_kaynagi(source)}"
+
+
 def judge_gecerlilik(client, model, soru, source):
     """Tuzağın geçerliliği — modelin cevabı GÖSTERİLMEDEN. Sonuç kalemin özelliğidir."""
     r = client.chat.completions.create(
         model=model, temperature=0, **request_kwargs(model),
         messages=[{"role": "system", "content": GECERLILIK_SYSTEM},
-                  {"role": "user", "content": f"SORU:\n{soru}\n\nKAYNAK:\n{source[:SOURCE_CLIP]}"}])
+                  {"role": "user", "content": gecerlilik_istemi(soru, source)}])
     note_provider(r)
     d = loads_tolerant(r.choices[0].message.content)
     u, p = r.usage, price(model)
@@ -294,15 +316,13 @@ def judge_gecerlilik(client, model, soru, source):
 
 
 def gecerlilik_anahtari(soru, source):
-    """Payda önbelleğinin anahtarı — TAM kaynak metni üzerinde, klipli metin üzerinde DEĞİL.
+    """Payda önbelleğinin anahtarı — hakemin GÖRDÜĞÜ metin üzerinde (`hakem_kaynagi`).
 
-    Why (ölçüldü 2026-08-06, kusur K-1): anahtar `source[:SOURCE_CLIP]` üzerindeyken
-    **farklı sınavlar aynı payda kaydını paylaşıyordu**. `h2b k=4` ile `h2b k=10` 80
-    kalemin 15'inde tek anahtara düştü (`id=12`: 4.461 ↔ 10.281 karakter, kaynak sayısı
-    4 ↔ 10); k=10 kolu kendi paydasını hiç ödemedi. Aynı sınavı paylaşan kollar tam
-    metin de bayt-bayt aynı olduğu için YİNE aynı anahtara düşer — K3'ün kazanımı durur.
+    Değişmez: **aynı istem → aynı anahtar → aynı cevap.** Anahtarı istemden ince tutmak
+    (K-1'in TAM metin anahtarı) bu değişmezi kırıyordu; gerekçe `hakem_kaynagi`'nda.
     """
-    return hashlib.sha256(f"{soru}\x00{source}".encode("utf-8")).hexdigest()[:24]
+    return hashlib.sha256(
+        f"{soru}\x00{hakem_kaynagi(source)}".encode("utf-8")).hexdigest()[:24]
 
 
 def onbellek_oku(yol):
@@ -330,7 +350,8 @@ def onbellek_yaz(yol, cache):
         gecici = f"{yol}.tmp.{os.getpid()}"
         with open(gecici, "w", encoding="utf-8") as f:
             json.dump({"olcum": "cevaba KÖR valid_trap — içerik-adresli, kalem düzeyinde (ADR-0048 · K3)",
-                       "anahtar": "sha256(soru + NUL + TAM kaynak)[:24]  — K-1, 2026-08-06",
+                       "anahtar": "sha256(soru + NUL + kaynak[:SOURCE_CLIP])[:24]  — KARAR-4 m.1, "
+                                  "2026-08-06 (hakem istemine EŞİT; K-1'in TAM-metin anahtarı geri alındı)",
                        "n": len(birlesik), "cache": birlesik}, f, ensure_ascii=False, indent=2)
         os.replace(gecici, yol)
 
