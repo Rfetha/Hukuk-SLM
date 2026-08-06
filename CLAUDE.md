@@ -63,7 +63,7 @@ not measure the same thing (OFF hands the model the gold article by construction
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#56** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#58** |
 | the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
 | what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
 | why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0058** |
@@ -76,6 +76,14 @@ not measure the same thing (OFF hands the model the gold article by construction
   scored *below* the OFF anchor, and the gate cannot even fire in this regime
   ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)). What survived is *"without a
   retriever there is no product"* plus a set of measured mechanisms. M2b is now a **training** debt.
+- 🚨 **The ARA KAPI (mid-gate) verdict flipped on 2026-08-06 — it now FAILS.** The
+  pre-registered thing was the *formula* (`merge M2b ≥ 0,90 × base's answer-blind M2b`),
+  not the number. Re-derived with the single repaired tool: threshold **0,8649** ↔ merge
+  **0,766** → **fails by 9,9 points** (and fails the old 0,887 threshold too; denominators
+  are equal, 77 ↔ 77). ⛔ ADR-0050: the *tool* was fixed, the threshold was **not touched**.
+  This is the gate that authorized CP4-CP5 spending — **that authorization is gone.**
+  [ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
+  [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md).
 - ⚠️ **The biggest single loss is over-refusal, and the model owns it** — the gold article is *in
   context* and the model abstains anyway. Retrieval cannot fix this. Debt **B10**.
 
@@ -129,7 +137,7 @@ decision ledger.
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#57**.
+  record, **authoritative for "what happened."** New findings continue at **#59**.
 - [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0059**.
 
 ### Direction and scope

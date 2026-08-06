@@ -14,6 +14,79 @@
 
 ## 🔴 AÇIK
 
+### `SOURCE_CLIP = 3500` hakemi k=10'da bağlamın yarısına kör bırakıyor 🔴 *ölçüldü, kapatılmadı*
+
+`score_abstention.judge_gecerlilik()` (payda) **ve** `judge()` (pay) hakeme kaynak metnini
+`[:3500]` kırparak veriyor. Ölçüldü 2026-08-06 (`[KAYNAK` sayımı):
+
+| sınav | tam kaynak | klip 3500 ile görülen | oran |
+| :--- | ---: | ---: | ---: |
+| cp09 `m2b` (k=4 kurgusu, n=80) | 320 | 320 | **%100** ✅ |
+| `h2b_tgta_v1_h2b_k10` (n=80) | 800 | 454 | **%57** 🔴 |
+
+`h2b@k=10`'un bağlamı 3.203-10.281 karakter (medyan **7.174**), yani hakem *"kaynak soruyu
+cevaplıyor mu"* sorusuna **eksik görüntüden** cevap veriyor. Somut vaka: `id=12`'de 10.281
+karakterin 3.500'ü (4/10 kaynak) görülüyor; 7. kaynak soruyu cevaplıyorsa tuzak GEÇERSİZ
+olmalıydı, geçerli sayılıyor ve modelin o kaynaktan verdiği doğru cevap `FABRICATE` yazılıyor.
+
+**Neden bu dalgada büyütülmedi:** aynı sabit **pay hakemini** de besliyor; büyütmek tüm
+tarihsel `verdict` sayılarını kıyaslanamaz kılar (tuzak 2.16'nın kardeşi). Ayrıca `k=10`
+paydası ayrı bir kusurla (K-1, anahtar paylaşımı) karışmıştı; o **kapatıldı** ve ölçüldü ki
+**anahtar onarımı sayıyı kıpırdatmıyor** (15 kalem yeniden ödendi, 15/15 aynı hüküm) — yani
+`Rej* = 0,723`'te bir yanlılık varsa kaynağı **klip**tir.
+
+**Kapatmak için gereken:** (a) payda klipi ile pay klipini **ayrı sabitlere** böl — payda
+klipi büyütülebilir, pay klipi tarihsel süreklilik için sabit kalır; (b) k=10 paydasını yeni
+klip ile yeniden öde (~80 kalem × `gpt-4o`, ölçülmüş birim maliyet **$0,0037/kalem** →
+**≈$0,30**); (c) eski/yeni paydayı yan yana raporla. **Karar insana ait.**
+
+### M2'nin paydası hâlâ modele bağımlı — fiyatı ölçüldü 🔴 *$0,11, insan kararı bekliyor*
+
+K3/KARAR-2 `m2b`, `h2b` ve `m3`'ü kapattı. **`m2` kapanmadı:** cp09'da üç kol **59 · 57 · 55**
+payda gösteriyor (aynı sınav), yani `m2` oranları hâlâ kirli hakemden geliyor. Etkilenen
+**10 koşu** — cp09 ×3 · cp09-ab-ayrımı · cp3-supurme ×2 · cp3c · sprint1 ×3.
+
+⭐ **Tek ödemeyle onarılıyor:** on koşunun m2 sınavı **birebir aynı** (70 ayrık `(soru, referans)`
+anahtarı, kesişim 70/70 — ölçüldü). Önbellek içerik-adresli olduğu için **70 hakem çağrısı**
+hepsini kapatır: `referans` medyanı 586 karakter → **≈$0,11** (`gpt-4o`).
+
+⛔ **Bu dalgada harcanmadı:** dalga bütçesi ≈$0,05-0,15 idi ve K-1'in yeniden ödemesi $0,056
+tüketti; $0,11 daha eklemek tavanı aşardı → durup soruldu. Ayrıca bir kestirme **bilerek
+reddedildi**: `cp2-r-kor-payda/valid_trap_cache.json`'daki 66/70 damgası $0'a devralınabilirdi
+(52 kalemde metin ≤900 olduğu için hakem istemi bayt-bayt aynı, ispatlanabilir özdeşlik) —
+ama o damga **`gateway=openai`** ile üretildi, bugünkü ölçümler **`gateway=openrouter`**;
+ADR-0029/tuzak 2.7 hakem yığınının aynı olmasını şart koşuyor. Ucuz ama kirli.
+
+**Bağlı olan:** ARA KAPI'nın **1. gözlemi** (`τ_a` tekil M2 ≥ base + 0,12) bu paydadan türüyor
+ve bugün **askıda** — ne doğrulandı ne çürütüldü ([ADR-0045](adr/0045-ara-kapi-merge-onarim-kontrolu.md)).
+
+### Açılış-yeterlilik kuralının maruziyeti kollar arasında ~8 kat asimetrik 🟡 *ölçüldü, kural değişmedi*
+
+ADR-0058'in açılış hükmü kuralı (`score_abstention._acilis_yeterlilik_hukmu`) her kolda aynı
+sıklıkta **tetiklenmiyor**, çünkü modeller önsözü farklı sıklıkta uyguluyor. Ölçüldü 2026-08-06:
+
+| kol | kural kapsamındaki cevap | olumlu açılış | olumlu ∧ gövdede red |
+| :--- | ---: | ---: | ---: |
+| `h2b_fl35_k4` | **39/80** | 19 | **4** |
+| `h1_fl35` | **56/80** | 54 | 1 |
+| `h2b_fl31_k4` | 8/80 | 4 | 0 |
+| `h1_fl31` | 6/80 | 6 | 0 |
+| BİZ önsözlü (`h2b`) | **5/80** | 5 | 1 |
+| BİZ önsözsüz (`h2b`) | **0/80** | 0 | 0 |
+
+**39 ↔ 5 = ~8 kat.** Kaydın bugünkü savunması *"bizim çıpalarımızda 0 satır değişti"* — bu bir
+**gözlenen etki** argümanı, **maruziyet** argümanı değil: kuralın çevirdiği 3 satırın **üçü de**
+manşet hükmün kurulduğu kolda (`h2b_fl35_k4`). Kural yanlı olmasa bile, hatası olsaydı **yalnız
+o kolda** görünürdü. Kural bu dalgada **değiştirilmedi** (ADR-0050); asimetri kayda geçti.
+
+### 🐞 Gizil kusur — `harness_tablo.py:137` `id` ile liste indeksini karıştırıyor 🟡 *bugün çalışıyor*
+
+`cevaplandi[i]` ifadesinde `i`, `gnd` kaydının **`id`**'si; oysa `cevaplandi` **konum-indeksli**
+bir liste. Bugün doğru sonuç veriyor çünkü harness detay dosyalarında id'ler `0..n-1` sırayla
+gidiyor (doğrulandı). **Devam ettirilen** (`--resume`) ya da **seyrek id**'li bir koşuda
+`coverage` **sessizce yanlış** çıkar — hata vermez. Düzeltmek serbest; düzeltilirse **önce
+düşen test** yazılır (seyrek id'li fixture).
+
 ### Yeterlilik önsözünün atıf bedeli ürün açısından kabul edilebilir mi? 🔴 *ölçüm var, yorum yok*
 
 `--sufficiency-preamble` (ana protokol, [ADR-0058](adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md))

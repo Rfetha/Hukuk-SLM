@@ -45,7 +45,7 @@ bağımsızdır, yani üç özne de **aynı bağlamı** gördü. Harness'ın ayn
 | **2** | **aşırı-red** (↓ iyi) | 10 ↔ 10 | **%23,75** | **%12,5** | **%12,5** | ✅ **EŞLEŞMİŞ** — 🚨 **iki rakibin de ~2 KATI. Turun ana borcu (B10) doğrulandı.** |
 | **2** | coverage (↑ iyi) | 10 ↔ 10 | 0,7625 | 0,8750 | 0,8750 | ✅ EŞLEŞMİŞ — aşırı-red'in aynası |
 | **2** | altın geldi ama çekindi | 10 ↔ 10 | **14/80** | 8/80 | 6/80 | ✅ EŞLEŞMİŞ — B10'un çekirdeği: bağlamda altın **var**, model yine susuyor |
-| **2** 🆕 | ⭐ **M2b Rej\*** — **ÖNSÖZLÜ, eksen EŞLEŞTİ** | 4 ↔ 4 | **0,809** | **0,809** | **0,926** | ✅ **EŞLEŞMİŞ** — 3.1 FL ile **BİREBİR EŞİT**; 3.5 FL **+11,7 puan** önde |
+| **2** 🆕 | ⭐ **M2b Rej\*** — **ÖNSÖZLÜ, eksen EŞLEŞTİ** | 4 ↔ 4 | **0,809** | **0,809** | **0,926** | ✅ **EŞLEŞMİŞ** — 3.1 FL ile **BİREBİR EŞİT**; 3.5 FL **+11,7 puan** önde. 🚨 **KESİKLİK ŞERHİ (tuzak 1.9):** 3.5 FL bu koşuda **8/80 = %10,0** kesik (`finish_reason=length`), kapının **2 katı**; 3.1 FL ve BİZ **0/80**. Ortak kesiksiz geçerli alt kümede (**n=60**) BİZ **0,800** · 3.1 FL **0,817** · 3.5 FL **0,950** → açıklık **11,7 → 15,0 puana GENİŞLİYOR**, daralmıyor. **Hüküm sağlam**, ama kesiklik yazılmadan kurulamaz |
 | **3** | M2b Rej\* — önsöz**süz** çıpa | 4 ↔ 4 | **0,735** ~~0,840~~ | **0,809** ~~0,978~~ | **0,926** ~~0,982~~ | ⛔ **TANIMSIZ** (istem ekseni eşleşmiyor) — yalnız kayıt sürekliliği |
 | **3** | M2b fabrication (↓ iyi) | 4 ↔ 4 | **0,191** (önsözlü) · 0,265 (önsözsüz) | **0,191** ~~0,022~~ | **0,074** ~~0,018~~ | ✅ önsözlü satır EŞLEŞMİŞ |
 | **3** | M2b Rej (regex) | 4 ↔ 4 | **0,559** (önsözlü) · 0,647 (önsözsüz) | **0,632** ~~0,911~~ | **0,662** ~~0,768~~ | ⚠️ regex ekseni ayrı kalibrasyon taşır |
@@ -236,3 +236,34 @@ KAPALI üretilmişlerdir. Aşağıdaki satır **yalnız kayıt sürekliliği** i
 
 ⚠️ Harness KAPALI sayılar **TAVAN**dır, rakip değil: KAPALI'da altın madde bağlamda **garanti**
 verilir. AÇIK'ta erişim onu %87,5 oranında bulur. İki ayar **aynı şeyi ölçmez**.
+
+---
+
+## 🚨 Ö-C · Kesiklik kapısı SİMETRİK uygulandı (tuzak 1.9) — 2026-08-06
+
+Repo kendi `tg_ta_nb` varyantını **%5,2** kesiklikle *"koşu geçersiz"* saymıştı
+([#48](../../../docs/record/research_log/2026-08-02-cp2c-modal-koprusu.md)). Emsal ters
+yönde uygulanmamış: `h2b_fl35_k4` **%10,0** kesikle manşet hükmün kurulduğu koldur ve
+şerhi yoktu. Ölçüm (`finish_reason == "length"`, `forced_close` DEĞİL — o bizim bütçeli
+zorla kapatmamız, kesiklik değil):
+
+```
+h2b_fl31_k4          kesik 0/80  (%0,0)
+h2b_fl35_k4          kesik 8/80  (%10,0)   ← kapının 2 katı
+h2b_tgta_v1_onsozlu  kesik 0/80  (%0,0)
+```
+
+**Simetrik okuma — ortak kesiksiz ∧ geçerli alt küme (n=60 = 68 geçerli − 8 kesik):**
+
+| kol | tam (n=68) | alt küme (n=60) | fark |
+| :--- | ---: | ---: | ---: |
+| BİZ (önsözlü) | 0,809 | 0,800 | −0,009 |
+| 3.1 FL | 0,809 | 0,817 | +0,008 |
+| **3.5 FL** | **0,926** | **0,950** | **+0,024** |
+
+**Sonuç: açıklık daralmıyor, GENİŞLİYOR** (11,7 → 15,0 puan). 3.5 FL'ın üstünlüğü
+kesikliğin eseri **değil**; kesilen kalemler onun daha zayıf olduğu kalemlermiş.
+Hüküm **ayakta ve güçlenmiş** — ama şerh olmadan kurulamazdı.
+
+*(İnceleme n=59 · 0,949 demişti; buradaki yeniden hesap n=60 · 0,950 veriyor — fark
+kesiklik ölçütünün tanımından. Yön ve büyüklük aynı.)*
