@@ -35,7 +35,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | :--- | :--- | :--- |
 | **0** YB1 / ADR-0058 | ✅ **KAPANDI** — 6/6 kutucuk | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
 | **1** eşleştirilmiş A1 | ✅ **KAPANDI** — 7/7 kutucuk (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
-| **2** Gemini FL harness AÇIK | ▶ **SIRADA** — turun ilk paralı adımı (~$0,90) | |
+| **2** Gemini FL harness AÇIK | 🔄 **KOŞUYOR** — 2.1·2.1b·2.1c·2.2·2.4 bitti, 2.3·2.4b·2.5·2.6 kaldı | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı çıktı** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu (aşağıda) |
 | **3-4** hasat | ⏸ | |
 | **5** ORPO paketleme | ⏸ | |
 | **6** `τ_a` v2 eğitimi | ⏸ | |
@@ -44,8 +44,20 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | **9** 🛑 ürün kapısı | ⏸ | |
 | **10** kayıt | ⏸ | |
 
-**Maliyet (şimdiye):** GPU **$0** · hakem **$0,0745** · rakip çıkarımı **$0** — tavan $10.
-Commit: `339d9b1` → `c88ab81` (11 commit). **Kutucuk: 13 / 70.**
+**Maliyet — PANELDEN okundu, defterden türetilmedi (tuzak 6.3):**
+
+| cüzdan | tutar | kaynak |
+| :--- | ---: | :--- |
+| **A+C birlikte** (OpenRouter: hakem + rakip çıkarımı) | **$1,03** | panel *"son 24 saat"* |
+| **B** (Modal GPU) | **$0** | Görev 6'ya kadar harcanmıyor |
+| kalan bakiye | **$10,26** | `total_usage` 9,7403 |
+
+⚠️ **Planın bütçe defteri bir şeyi görmüyordu:** tavan $10 yazıyordu ama tur başlarken hesapta
+**$1,31** vardı. Gerçek sınır tavan değil **bakiyeydi**; 6 Ağustos 17:12'de $10 yüklendi.
+📌 Temel ölçüm alındı (`.superpowers/sdd/butce-temel.json`, `total_usage=9,7403`) — bundan sonraki
+her harcama **farktan ölçülecek**.
+
+Commit: `339d9b1` → `cf540ec` (15 commit). **Kutucuk: 13 / 70.**
 
 ### ⭐ Görev 0'dan doğan ÖLÇÜLMÜŞ bulgu — plan bunu öngörmemişti
 
@@ -134,6 +146,42 @@ eşleşmiş sayıyı birbiriyle kıyaslamış) ve gürültü tabanını `0,3` **
 **0,3 puan = 0,003**). Ders: bu repo'da *"puan"* = **yüzde puanı**; sevk talimatlarına birim
 artık açıkça yazılıyor.
 
+### ⭐ Görev 2 — turun İLK EŞİT-SINAV satırı (kısmi, inceleme bekliyor)
+
+Aynı sınav: harness AÇIK · k=10 · S2 · yeterlilik önsözü · seed 3407 · n=80 · hakem yığını eşleşmiş.
+
+| eksen | **BİZ** (`tgta_v1`) | **Gemini 3.1 FL** | |
+| :--- | ---: | ---: | :--- |
+| M1 kütle | **%62,8** | %61,7 | biz +1,1 p |
+| A1 (cevaplanan) | **0,8229** | 0,7054 | **biz +11,8 p** |
+| coverage | 0,7625 | **0,8750** | FL +11,3 p |
+| **aşırı-red** | 14/80 | **8/80** | **FL daha iyi** |
+
+**Okuma:** FL **daha çok cevaplıyor, daha az sadık**; biz **daha az cevaplıyor, daha sadık**.
+Kütle neredeyse eşitleniyor. ⭐ **Aşırı-redde FL bizden belirgin iyi (8 ↔ 14)** — turun kapatmak
+için kurulduğu tam eksen. Planın hipotezinin **üçüncü** bağımsız doğrulaması.
+Çapraz doğrulama geçti: `rescore_answered` A1 = `harness_tablo` A1 = 0,7054 (tuzak 2.16).
+
+🚩 **Açık kalem — 3.5 FL'in kesiklik oranı:** `h1_fl35` ve `h2b_fl35_k4` **%10** kesik
+(`finish_reason='length'`), oysa hattaki **her** koşu ≤%5: bizim çıpamız 3,8% · s2-harness 2,5% ·
+`cp3-supurme-ham` 1,2% · base 5,0% · 3.1 FL **3,8%**. Planın kendi kuralı (*"kesik > %5 → koşu
+geçersiz"*, tuzak 1.9) yalnız **bizim** koşularımız için yazılmış; ADR-0057 simetri istiyor.
+**Hüküm ölçüme bırakıldı:** `h1_fl35`'in A1'i yalnız kesilmemiş 72 kalemde yeniden hesaplanacak —
+sayı kıpırdamıyorsa damgalanıp raporlanır, oynuyorsa kol geçersiz sayılır.
+
+### 🐛 Harness'ta bulunan SESSİZ-ÖLÜM hatası (Görev 2, plan öngörmemişti)
+
+OpenRouter/Google AI Studio bazen **HTTP 200** dönerken `finish_reason='error'` + **boş içerik**
+veriyor. SDK'nın kendi retry'ı (`max_retries=8`) bunu **göremiyor** — HTTP katmanında hata yok.
+80 kalemlik ücretli koşu **22. ve 32. kalemde öldü** (iki kez, farklı kalemde).
+
+- **Düzeltme:** geri-çekilmeli retry (4 deneme); hak biterse boş metin döner ve çağıranın
+  *"boş cevap → koşuyu durdur"* kapısı devreye girer — **sessiz düşürme yok**.
+- **Doğrulandı:** dört koşunun hiçbirinde boş cevap ya da `finish_reason='error'` kaydı **yok**;
+  hepsi 80 satır, tekil id. Yani hata sessizce bozuk sayı üretmemiş, koşuyu **öldürmüş**.
+- **Kredi tükenmesi hipotezi elendi:** log'da 402/429 yok, koşular sonrasında devam edip bitti,
+  ve panel hesabı doğruladı (oturum başı bakiye $1,31, harcama $1,03).
+
 ### 🚨 Planda bulunan kusurlar (icra sırasında)
 
 | # | plan ne diyordu | gerçek | düzeltme |
@@ -145,6 +193,8 @@ artık açıkça yazılıyor.
 | 5 | **Adım 1.1** rejim kapısı yalnız `cp09-butceli-1024-512` künyesini okuyor | Kıyasların **ikisinde** `tgta_v1` kolu var ve o kol `cp3-supurme-ham/`'dan geliyor — orada **künye YOK**. Kapının yarısı açık kaldı: `seed` ve `max_chunk_chars` hiçbir yerden doğrulanamıyor | künyesiz kol için **"bilinmiyor ≠ uyuşuyor"** damgası; sayı damgasız raporlanmıyor |
 | 6 | **Adım 1.6** kabul ölçütü `n_kesisim ≥ 30` | Tavan etkisi yüzünden `n_kesisim` **ayırt edicilik hakkında hiçbir şey söylemiyor** — 40 kalemin 36'sı berabere, fark **4 kalemden**. Görev 9 aynı yanlış eşiği miras alacaktı | alet `n_ayrisan` · `n_berabere` · `fark_sd` döndürüyor; kapı **`n_ayrisan`'a** bağlandı |
 | 7 | **Adım 1.6** hiçbir yerde **hakem yığını** eşleşmesini istemiyor | `compare_runs.py:73-76` bu kapıyı taşıyor (`SystemExit`) ama yeni alet atlamıştı; üç kıyasın **ikisi** repo'nun kendi kuralına göre raporlanamaz | alete makine kapısı eklendi; `base`/`FL` M1 koşuları **güncel yığınla** yeniden puanlandı (~$0,08), eski sayılar silinmeden |
+| 9 | **Adım 2.1** kalibrasyonu *"kapanmayan artık"*ı **1/80** sanıyordu | Gerçek **6 vaka** ve **iki kutuplu**: yeterlilik önsözü yüzünden cevaplar bir hükümle açıyor, `REJECT_RE` tüm metni tarıdığı için gövdedeki olumsuzlama açılışı eziyordu. Ayrıca **olumsuz** hüküm (`cevaplaMAmaktadır`) hiçbir kalıba uymuyor, 3 kalem sessizce *"cevapladı"* sayılıyordu. Sapma **moda göre yön değiştiriyor** → "muhafazakâr" savunması yok | İki kutuplu açılış-hükmü kuralı eklendi. **Kanıt kuralın tarafsız olduğu:** bizim çıpalarımızda **0** satır değişti (19→19, 44→44); yalnız rakip düzeldi (`h1_fl35` 11→10, `h2b_fl35_k4` 46→43) |
+| 10 | **kesiklik kapısı** (`>%5 → geçersiz`) yalnız Görev 7/9'da, yani **bizim** koşularımız için yazılmış | ADR-0057 eşit sınav istiyor; 3.5 FL **%10** kesik, hattaki tek aykırı | Kapı simetrik uygulanacak; hüküm duyarlılık testine bağlandı |
 | 8 | plan Görev 9 Adım 9.5'te **üç kollu tek paydalı** eşleştirilmiş A1 satırı istiyor | Alet katı biçimde **ikili**; her çift kendi paydasını üretiyor (`base`'in A1'i bir dosyada 0,9844, ötekinde 0,9861). O satır bu aletle **kurulamazdı** | imza **k-yollu** genelleştirildi; ikili çağrı özel hâl, mevcut testlerin davranışı korundu |
 
 ### ⚠️ Yaşanan olumsuzluklar — ders çıkarılacak
