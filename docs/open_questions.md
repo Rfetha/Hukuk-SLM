@@ -207,7 +207,8 @@ anahtarın **doğru** satırını getiriyordu.
    ≤ **%56,2** < gereken %71,6. Hakem maliyeti **$0** (bileşik ölçütte önce regexle
    ölçülen kütle ayağı koşuldu).
 
-⚠️ **Yerine geçen açık soru:** `τ_a`'nın merge'de seyrelmesi (M2b 0,987 → 0,877) **hâlâ
+⚠️ **Yerine geçen açık soru:** `τ_a`'nın merge'de seyrelmesi (M2b 0,987 → **0,766** ᴷ³ —
+yeniden puanlandı 2026-08-06, [#57](record/research_log/2026-08-06-cekinme-aleti-onarimi.md); `τ_a`'nın kendi sayısı **değişmedi**) **hâlâ
 açık**. Bu tur onu norm *kapsamının* çözmediğini gösterdi; aşırı-reddi yaratan **yön değil
 genlik**. Kalan adaylar: `--trim-k` · λ · farklı operatör · ve en olası doğru yer —
 **`τ_a`'nın eğitim genliği** (82 adım @1e-5 çok kısa, ‖τ_a‖ = 1,18 bu yüzden küçük).

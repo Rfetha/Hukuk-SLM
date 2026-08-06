@@ -16,8 +16,13 @@ DEV, **harness kapalı**, hakem `gpt-4o-mini` (protokol: [MODEL_CARD](MODEL_CARD
 M1 sadık-cevap    71,6%     72,9%     ~kapandı  ✅
 M2 Rej            0,893     0,930      −0,037
 A1                0,909     0,956      −0,047
-M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
+M2b Rej           0,766     0,883      −0,117   ← EN BÜYÜK   (ᴷ³ yeniden puanlandı)
 ```
+
+> ᴷ³ **M2b sütunu 2026-08-06'da yeniden puanlandı** ([#57](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md)): eski payda hakemin **modelin
+> cevabına bakarak** verdiği bir karardı, aynı sınav her modelde farklı payda veriyordu. Eski
+> değerler `0,877 ↔ 1,000`. **İşaret ve sıralama değişmedi**, açıklık 12,3 → 11,7 puana daraldı.
+> ⚠️ `M2 Rej` ve `A1` satırları **yeniden puanlanmadı** — hâlâ modele bağımlı paydayı taşıyorlar.
 
 ⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Rakip harness açıkken
 **hâlâ ölçülmedi** — o kıyas bugün de yok.
@@ -66,7 +71,7 @@ kayda o şekilde geçer.
 | bileşen | 08-03'te iddia | **ölçülen hüküm (08-05)** |
 | :--- | :--- | :--- |
 | **atıf doğrulayıcı** | A1 0,909 → ~1,0 | ❌ **ÇÜRÜDÜ.** Uydurulmuş madde no **0/83** (önsözsüz ablasyon: 0/118) — yakalayacak sınıf **zaten boştu**. A1 açığı fabrikasyondan değil, altın gelmeyince *başka bir gerçek maddeden* cevaplamaktan geliyor (**5/80** — önsözsüz ablasyon: 7/80, borç B1) |
-| **red kapısı** | M2b 0,877 → ~1,0 | ❌ **ÇÜRÜDÜ (08-05, [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)).** Eşleşmiş sınavda (`h2b@k=4`, 4 kaynak ↔ 4 kaynak) **0,840 < 0,877** — kapatmadı, **kötüleştirdi**. Kapı 2/80 reddetti; mekanizması ölçülmüş biçimde boş: `KANUN_YOK 0` ve **36/80 cevapta hiç atıf yok**. İddia *sınanmamış* değil, bu rejimde **ateşlenemez** |
+| **red kapısı** | M2b 0,766 ᴷ³ → ~1,0 | ❌ **ÇÜRÜDÜ (08-05, [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)).** Eşleşmiş sınavda (`h2b@k=4`, 4 kaynak ↔ 4 kaynak) **0,735 < 0,766** ᴷ³ *(eski alet: 0,840 < 0,877 — işaret aynı)* — kapatmadı, **kötüleştirdi**. Kapı 2/80 reddetti; mekanizması ölçülmüş biçimde boş: `KANUN_YOK 0` ve **36/80 cevapta hiç atıf yok**. İddia *sınanmamış* değil, bu rejimde **ateşlenemez** |
 | **retriever** | M1 · M4 | ✅ **KURULDU ve KAZANDIRDI.** `recall@10` **0,8750**, 759 ms/sorgu, CPU'da. Ama kendi bedelini de getirdi: bağlam uzadıkça sadakat düşüyor (**ölçüldü**, aşağı bak) |
 
 ⭐ **Sprintin asıl getirisi sayı değil, dört mekanizma:** `k` büyütmenin **ölçülmüş bedeli** ·
@@ -97,7 +102,7 @@ Ayrıntılı faz tarifi: [`docs/VISION.md`](docs/VISION.md) Faz 2.
 | # | açık | kanıt | bedel |
 | :-: | :--- | :--- | :--- |
 | ~~2.1~~ | ~~**merge `τ_a`'yı seyreltiyor** → modül-başına norm~~ | 🔴 **ÖLÇÜLDÜ ve REDDEDİLDİ 2026-08-04** — kütle ≤ **%56,2** < gereken %71,6 ([ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · [#50](docs/record/research_log/2026-08-04-modul-basina-norm.md)) | hakem **$0** |
-| **2.1b** 🆕 | **`τ_a` seyrelmesi HÂLÂ AÇIK** (M2b 0,987 → 0,877) — ama çare merge'de değil | Norm *kapsamı* çürütüldü: kol profilleri **orantılı**. Kalan en olası yer **`τ_a`'nın eğitim genliği** (‖τ_a‖ = 1,18 · 82 adım @1e-5) | eğitim işi (borç **B4**) |
+| **2.1b** 🆕 | **`τ_a` seyrelmesi HÂLÂ AÇIK** (M2b 0,987 → 0,766 ᴷ³; `τ_a` sayısı yeniden puanlamada **değişmedi**) — ama çare merge'de değil | Norm *kapsamı* çürütüldü: kol profilleri **orantılı**. Kalan en olası yer **`τ_a`'nın eğitim genliği** (‖τ_a‖ = 1,18 · 82 adım @1e-5) | eğitim işi (borç **B4**) |
 | **2.1c** 🚨 ⭐ | **AŞIRI-RED — altın madde bağlamdayken çekinme** | **14/80** (önsözsüz ablasyon: 16/80) — önsözsüz koşuda **`k`'dan bağımsız** (14 → 15 → 16). Harness KAPALI'da da aynı: **17/80**. Retriever ne kadar iyileşirse iyileşsin **kapanmıyor** | eğitim işi (borç **B10**) |
 | 2.2 | **`τ_a` şablon ezberledi** | M1 medyan cevabı **58 karakter** = şablonun kendisi; model cümleyi çekimliyor | [ADR-0051](docs/adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md) B planı · ~$2 |
 | 2.3 | **muhakeme izi İngilizce** | 8/8 ölçüldü ([`kollar.md`](docs/record/kollar.md) #4) | veri turu |
@@ -296,7 +301,7 @@ yapıştırması gerekiyor.
 > | ayak | hüküm |
 > | :--- | :--- |
 > | *"A1'i kod kapatır"* | ❌ **ÇÜRÜDÜ** — uydurulmuş madde no **0/118**, doğrulayıcının yakalayacağı sınıf **boştu** |
-> | *"M2b'yi kod kapatır"* | ❌ **ÇÜRÜDÜ (08-05)** — eşleşmiş sınavda **0,840 < 0,877**; kapı ateşlenemiyor ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)) |
+> | *"M2b'yi kod kapatır"* | ❌ **ÇÜRÜDÜ (08-05)** — eşleşmiş sınavda **0,735 < 0,766** ᴷ³ *(eski alet 0,840 < 0,877)*; kapı ateşlenemiyor ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)) |
 > | *"retriever olmadan ürün yok"* | ✅ **AYAKTA ve ölçüldü** — `recall@10` 0,8750, ürünün ilk gerçek sayısı çıktı |
 >
 > 🚨 **08-05 itibarıyla iddianın İKİ ayağı da çürüdü, üçüncüsü ayakta.** Yani harness'ın

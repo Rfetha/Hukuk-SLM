@@ -45,9 +45,17 @@ budget, seed 3407, temperature 0.
 
 | | M1 faithful-answer mass ↑ | over-refusal ↓ | A1 ↑ | M2 Rej ↑ | M2b Rej ↑ | tok/answer ↓ |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
-| bare base (Qwen3.5-4B) | 56.7% | 0.425 | 0.9864 | 0.814 | 0.986 | 1192 |
-| **HakHukuk-4B-v0.1** | **71.6%** | **0.212** | 0.9087 | 0.893 | 0.877 | **714** |
-| Gemini 3.1 Flash-Lite | 72.9% | 0.237 | 0.9561 | 0.930 | 1.000 | — |
+| bare base (Qwen3.5-4B) | 56.7% | 0.425 | 0.9864 | 0.814 ⚠ | 0.961 ᴷ³ | 1192 |
+| **HakHukuk-4B-v0.1** | **71.6%** | **0.212** | 0.9087 | 0.893 ⚠ | **0.766** ᴷ³ | **714** |
+| Gemini 3.1 Flash-Lite | 72.9% | 0.237 | 0.9561 | 0.930 ⚠ | 0.883 ᴷ³ | — |
+
+ᴷ³ **M2b re-scored 2026-08-06.** The old numbers were produced with a denominator the
+judge decided **while looking at the model's answer** — so the same exam yielded a different
+denominator per model. The denominator is now answer-blind and identical across arms
+(`valid_traps` 61…80 → **77** on this exam). Old values are kept in
+[`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md), which carries the full
+conversion table: base `0.986 → 0.961` · ours `0.877 → 0.766` · Gemini FL `1.000 → 0.883`.
+⚠ **The M2/A1 columns have NOT been re-scored** and still carry the model-dependent denominator.
 
 > 🚨 **The A1 column is not judge-stack matched (measured 2026-08-06).** The base and Gemini rows
 > were judged on the **openai-direct** gateway with a **pre-ADR-0041** judge prompt; our row was
@@ -71,7 +79,7 @@ refuse · A1 = faithfulness of claims, **computed over answered items only** ·
   per answer. The fine-tune did real work.
 - **vs. Gemini 3.1 Flash-Lite:** we reach **98.2%** of its faithful-answer mass
   and **refuse less often than it does** — but we are behind on A1 (0.909 vs
-  0.956), M2 (0.893 vs 0.930) and clearly behind on **M2b (0.877 vs 1.000)**.
+  0.956), M2 (0.893 vs 0.930) and clearly behind on **M2b (0.766 vs 0.883)** ᴷ³.
 - **This is not a parity claim.** The harness is off, cost is not normalized, and
   the merge configuration was **selected on DEV over 3 variants**. The competitor
   comparison has still never been run with the harness on.
@@ -195,18 +203,18 @@ norm balancing as the main setting. **The measurement said the opposite:**
 normalizing pushed `τ_a` to ~4.9× its trained amplitude, crushed grounding
 (71.4% → 53.4%) and at higher scale made the model degenerate into repetition
 loops. Raw TIES preserved grounding fully **and** repaired 71% of the branch's
-abstention collapse (0.607 → 0.877). The prescription was reversed after
+abstention collapse (0.506 → 0.766 ᴷ³; the jump is unchanged at +0.26). The prescription was reversed after
 measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md).
 
 ## Known limitations
 
 1. **No currency in the shipped path.** Legislation is frozen in the weights. The
    retrieval layer is built and measured but not wired into serving.
-2. **M2b is our weakest axis (0.877) and the planned fix is now MEASURED DEAD.** When
+2. **M2b is our weakest axis (0.766 ᴷ³) and the planned fix is now MEASURED DEAD.** When
    given only distractor articles, the model still answers ~12% of the time. The
    rejection gate was built as the fix. It was run on 2026-08-05 in a **matched exam**
    (harness-ON with the gold article ablated, 4 sources ↔ 4 sources, same regime) and
-   🚨 **it made the axis worse, not better: 0.840 vs 0.877.** The gate rejected 2/80,
+   🚨 **it made the axis worse, not better: 0.735 vs 0.766 ᴷ³** (sign unchanged). The gate rejected 2/80,
    and the mechanism it depends on is measurably empty — `KANUN_YOK 0`, `MADDE_YOK 0`,
    and **36/80 answers carry no citation at all**, so there is nothing for the gate to
    fire on. The model copies labels from its context, so its citations verify and the

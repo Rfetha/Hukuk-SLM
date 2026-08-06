@@ -37,6 +37,13 @@ retriever mı. Bağlam uzunluğu `k=10` ile aynı kalır (Part 1 bağlam uzunlu�
 başına** sadakate mal olduğunu ölçtü: A1 0,9230 → 0,8426), soru kümesi ADR-0054 K4'ün
 **"küme değişmez"** değişmezini korur ve sayı **0,877** çıpasıyla doğrudan kıyaslanabilir.
 
+> ᴷ³ **ÇIPA YENİDEN PUANLANDI 2026-08-06** ([#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)): bu ADR'deki `0,877` çıpası ve ondan
+> türeyen `0,84` / `0,95` eşikleri **eski aletin birimindedir** — payda modele bağlıydı. Yeni
+> değerler: çıpa (harness KAPALI m2b) **0,766** · ölçülen `h2b@k=4` **0,735** *(önsözlü: **0,809**)*.
+> **Kapının işareti değişmedi** (`0,735 < 0,766`), ama bu ADR'den eşik türetilecekse **yeni**
+> sayılar kullanılmalı.
+
+
 ### ❌ Reddedilen A — korpus-dışı yeni soru kümesi
 
 Cevabı 40.496 maddelik indekste **gerçekten** olmayan sorular üretmek. Ürün gerçeğine en

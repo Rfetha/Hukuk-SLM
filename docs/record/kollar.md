@@ -186,9 +186,16 @@ Diğer ikisi **ablasyon**, versiyon numarası almazlar:
 
 | varyant | geri ölçek | artefakt | M1 kütle | M2 Rej | M2b Rej | durum |
 | :--- | ---: | :--- | ---: | ---: | ---: | :--- |
-| **ham TIES** | — | `tgta_v1` | **71,6%** | 0,893 | **0,877** | 🟢 **ANA SONUÇ** |
-| norm-dengeli `min` | 1,181 | `tg_ta_min` | 53,4% | 0,934 | 0,987 | ablasyon |
+| **ham TIES** | — | `tgta_v1` | **71,6%** | 0,893 ⚠ | **0,766** ᴷ³ | 🟢 **ANA SONUÇ** |
+| norm-dengeli `min` | 1,181 | `tg_ta_min` | 53,4% | 0,934 ⚠ | 0,987 ᴷ³ *(değişmedi)* | ablasyon |
 | norm-dengeli `ortalama` | 5,826 | `tg_ta_nb` | — | — | — | 🛑 dejenere, koşu geçersiz |
+
+ᴷ³ **M2b 2026-08-06'da yeniden puanlandı.** Eski sayılar, hakemin **modelin cevabına bakarak**
+verdiği bir paydayla üretilmişti — yani aynı sınav her modelde farklı payda veriyordu. Payda artık
+cevaba kör ve kollarda birebir aynı (`valid_traps` bu sınavda 61…80 → **77**). Eski değerler
+[`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md)'de duruyor; çeviri tablosu orada:
+base `0,986 → 0,961` · biz `0,877 → 0,766` · Gemini FL `1,000 → 0,883`.
+⚠ **M2/A1 sütunları yeniden puanlanmadı**, hâlâ modele bağımlı paydayı taşıyor.
 
 **Ölçülen — hepsi aynı protokol, hepsi geçerli koşu** (thinking on · 1024+512 · seed 3407 ·
 chunk 900 · Q4_K_M + llama-server · DEV havuzu · hakem gpt-4o-mini):
@@ -206,14 +213,14 @@ chunk 900 · Q4_K_M + llama-server · DEV havuzu · hakem gpt-4o-mini):
 ```
                  M1 kütle  aşırı-red      A1   M2 Rej  M2b Rej   tok/cevap (M1)
 çıplak base        56,7%      0,425   0,9864   0,814    0,986        1192
-tgta_v1 (BİZ)      71,6%      0,212   0,9087   0,893    0,877         714
+tgta_v1 (BİZ)      71,6%      0,212   0,9087   0,893⚠   0,766ᴷ³       714
 Gemini 3.1 FL      72,9%      0,237   0,9561   0,930    1,000           —
-τ_g v1             71,4%      0,175   0,8658   0,873    0,607           —
+τ_g v1             71,4%      0,175   0,8658   0,873⚠   0,506ᴷ³         —
 τ_a v1             41,2%      0,575   0,9697   0,984    0,987          ~1084
 ```
 
 **Ne başardı:** `τ_g`'nin grounding'ini **tamamen** korurken (71,4% → 71,6%) onun M2b
-çöküşünün **%71'ini onardı** (0,607 → 0,877). Ayrıca öz-sonlandırma geri geldi (M1'de 25/80
+çöküşünün **%71'ini onardı** (0,506 → 0,766 ᴷ³; sıçrama **+0,26**, değişmedi). Ayrıca öz-sonlandırma geri geldi (M1'de 25/80
 zorunlu kapatma, base 80/80) ve cevap başına maliyet base'e göre **%40 düştü**.
 
 > 🛑 **Bu bir PARİTE İDDİASI DEĞİLDİR.** Gemini sütunu **çıpa**dır: harness KAPALI (retriever ·
@@ -222,5 +229,5 @@ zorunlu kapatma, base 80/80) ve cevap başına maliyet base'e göre **%40 düşt
 > seçildi**. Frozen TEST (`data/eval/canon/`) görülmedi. Aynı disiplin:
 > [`sprint1-sonuc-tablosu.md`](sprint1/sprint1-sonuc-tablosu.md).
 >
-> ⚠️ Açıkça geride olduğumuz eksen **M2b: 0,877 ↔ 1,000**. Raporda böyle geçer.
+> ⚠️ Açıkça geride olduğumuz eksen **M2b: 0,766 ↔ 0,883** ᴷ³. Raporda böyle geçer.
 

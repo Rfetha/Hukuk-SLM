@@ -34,7 +34,15 @@ ham         tg 1,0   · ta 1,0        1,000       71,6%     0,893    0,877    %0
 τ_a (kıyas) —                        —           41,2%     0,984    0,987
 ```
 
-**Ham TIES `τ_a`'yı silmedi:** M2b 0,607 → **0,877** (çöküşün %71'i onarıldı), üstelik
+**Ham TIES `τ_a`'yı silmedi:** M2b 0,607 → **0,877** ᴷ³ (çöküşün %71'i onarıldı), üstelik
+> ᴷ³ **PAYDA ONARILDI 2026-08-06 — bu ADR'nin sayıları eski aletin birimindedir.** `valid_trap`
+> paydası hakemin **modelin cevabını görerek** verdiği bir karardı; aynı sınav her modelde farklı
+> payda veriyordu. Yeniden puanlanmış değerler ([#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)):
+> `τ_g` **0,607 → 0,506** · ham TIES **0,877 → 0,766** · `τ_a` **0,987 → 0,987 (değişmedi)**.
+> **Sıçrama +0,26 ile aynı kaldı → BU ADR'NİN HÜKMÜ AYAKTA.** Metindeki eski sayılar
+> bilerek silinmedi (denetim izi).
+
+
 grounding **tamamen** korunarak (71,4% → 71,6%).
 
 **Norm dengeleme ise `τ_g`'yi ezdi:** grounding 71,4% → 53,4%. Yüksek geri ölçekte
