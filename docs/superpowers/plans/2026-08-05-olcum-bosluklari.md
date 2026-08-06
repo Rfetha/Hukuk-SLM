@@ -56,6 +56,59 @@ okunmaz, hakem parası harcanmaz.
 [ADR-0055](../../adr/0055-isabet-denetimi-ekseni.md) ·
 borç bağlamları [`sprint3-part1.md`](../../../sprint3-part1.md#post-sprint-3-sırası)
 
+---
+
+## 📍 İCRA DURUMU — 2026-08-05, canlı
+
+> Bu blok planı **koşarken** doldurulur. Plan *niyeti*, bu blok *olanı* yazar.
+> Kutucuklar: `[x]` bitti · `[~]` koşuyor · `[ ]` sırada.
+
+| görev | durum | çıkan |
+| :--- | :--- | :--- |
+| **1** B5 | ✅ | `ALTIN_GELMEDI 10 · TAM 22 · KIRPILDI 46 · KIRPILDI_CEVAP_DISI 2` |
+| **2** B8 | ✅ | eşik 1-3'te 2 kurtarılan, 0 yanlış eşleme — **tolerans BENİMSENMEDİ** |
+| **3** `h2b` | ✅ | kod + 12 yeni test, `56 passed` |
+| **4** Ö1 | ✅ | **kapı KALDI**: AÇIK 0,840 < KAPALI 0,877 |
+| **5** D1 | 🔄 | çıpa ölçüldü · `EXTRA_ARGS` eklendi · üretim koşuyor |
+| **6** kayıt | 🔄 | `research_log` #56 taslağı yazıldı, D1 bölümü açık |
+
+**Commit'ler:** `7a5c985` · `46e10a5` · `028d33f` · `ca0aab3` · `64fcb4d` · `94ec602` · `ef01730`
+
+### 🚨 Planda bulunan ve düzeltilen kusurlar
+
+Beşi de **sessiz yanlışlık** sınıfı — hiçbiri hata vermezdi, hepsi yanlış sayı üretirdi.
+
+| # | plan ne diyordu | gerçek | düzeltme |
+| :--- | :--- | :--- | :--- |
+| 1 | G1/A5: ekseni `eksenler()`'e ekle **ve** `erisim_davranis_caprazi`'nın ardına | ikisi **ayrı yer**; `eksenler()` yalnız `--etiketler` ile koşuyor | üst düzeye eklendi — A6'nın *"toplam 80"* ölçütü öyle gerektiriyor |
+| 2 | G1/A6: `KIRPILDI_CEVAP_DISI`, **B1'in 7/80**'inden düşülür | `k2_bedeli` altın gelmediyse `ALTIN_GELMEDI` döner → iki küme **kesişemez** | okuma düzeltildi: 2 vaka `altin_geldi_cevapladi`'da, **B1 ve B10 el değmemiş** |
+| 3 | G2: toleransı korpusun **tam adlarına** uygula | doğrulayıcı **≥2 sözcüklü sonek** indeksiyle eşleştiriyor | sonek uzayına taşındı — eğri sıfırdan gerçek değerlere döndü |
+| 4 | G4/A1: komutta `THINK_BUDGET`/`MAXTOK` **yok** | betik varsayılanı `0`/`4096`, çıpa `1024`/`512` | eklendi — yoksa rejim sapar, koşu kıyaslanamazdı |
+| 5 | G4/A4: `Rej = 1 − coverage` (payda **80**) | çıpa 0,877'nin paydası **65** (geçerli tuzak) | `Rej`, çıpayla **aynı aletten** okundu (`score_abstention.rejection_rate`) |
+
+### ⚠️ İcra sırasında açılan ve kapatılan gedik
+
+**G1/A6'nın komutu `--etiketler` geçmiyordu** → `harness_tablo.json`'un
+`ayirt_edicilik_alt_kumeleri` bloğu **null'a düştü**, oysa G5/A1 tam onu okuyor.
+Tablo etiketlerle yeniden üretildi (`ca0aab3`).
+
+### 🔁 Plandan sapmalar (bilinçli)
+
+- **G2/A3:** planın import satırındaki `DOGRULANDI` betikte kullanılmıyordu → **ölü import
+  yazılmadı**. Sonradan `supur()` yeniden tasarlanınca gerçekten gerekti ve geri eklendi.
+- **G2 (ek):** eğri **iki yeni koşuya daha** genişletildi ($0). Sebep: tek koşuda payda
+  yalnız 2 atıftı. Sonuç payda zayıflığını **teyit etti** — 3 koşu, 4 atıf, hepsi aynı hata.
+- **G4:** k=10 koşusu bir kez **yarıda kesildi** (61/80, arka plan görevi SIGINT aldı; CUDA
+  hatası sonuç, sebep değil). `setsid` ile koparılıp temiz yeniden koşuldu.
+- **G5/A1:** çıpa G1'in tablo onarımıyla birlikte hesaplandı, ayrı komut gerekmedi.
+
+### 📌 Sonraki adımlar
+
+`[~]` G5/A3 üretim → A4 geçerlilik + bayrak kanıtı → A5 hakem → A6 hüküm → A7 commit →
+G6 (kayıt: #56 D1 bölümü · dizin satırı · **kazanç tablosu** · borç tablosu · manşet yayılımı)
+
+---
+
 **Çıpalar (hepsi `outputs/eval/s2-harness-k10-etiketli/`):**
 
 ```
@@ -99,7 +152,7 @@ bambaşka bir çare ister (kırpmayı gevşetmek ↔ modeli eğitmek).
   `"ALTIN_GELMEDI"` · `"TAM"` · `"KIRPILDI"` · `"KIRPILDI_CEVAP_DISI"`.
   Görev 3 bu adı ve dönüş değerlerini aynen kullanır.
 
-- [ ] **Adım 1: Başarısız testi yaz**
+- [x] **Adım 1: Başarısız testi yaz**
 
 `tests/test_harness_tablo.py` dosyasını oluştur:
 
@@ -167,7 +220,7 @@ def test_k2_bedeli_dayanak_cikarilamazsa_suclamaz():
     assert k2_bedeli(kayit, KORPUS_IDX) == "KIRPILDI"
 ```
 
-- [ ] **Adım 2: Testi koş, başarısız olduğunu doğrula**
+- [x] **Adım 2: Testi koş, başarısız olduğunu doğrula**
 
 Çalıştır:
 ```bash
@@ -175,7 +228,7 @@ source ~/code/global_venv/bin/activate && python -m pytest tests/test_harness_ta
 ```
 Beklenen: `ImportError: cannot import name 'k2_bedeli' from 'harness_tablo'` — 5 test de hata.
 
-- [ ] **Adım 3: `k2_bedeli` fonksiyonunu yaz**
+- [x] **Adım 3: `k2_bedeli` fonksiyonunu yaz**
 
 `scripts/harness_tablo.py`'de `_oran` fonksiyonundan **hemen sonra** ekle:
 
@@ -231,7 +284,7 @@ import re
 from madde_anahtar import madde_anahtari, korpus_indeksi  # noqa: E402
 ```
 
-- [ ] **Adım 4: Testi koş, geçtiğini doğrula**
+- [x] **Adım 4: Testi koş, geçtiğini doğrula**
 
 Çalıştır:
 ```bash
@@ -239,7 +292,7 @@ source ~/code/global_venv/bin/activate && python -m pytest tests/test_harness_ta
 ```
 Beklenen: `5 passed`
 
-- [ ] **Adım 5: Tabloya ekseni bağla**
+- [x] **Adım 5: Tabloya ekseni bağla**
 
 `scripts/harness_tablo.py` içinde `eksenler(idler)` fonksiyonunun döndürdüğü sözlüğe ekle
 (diğer eksenlerin yanına, `erisim_davranis_caprazi`'nın **hemen ardına**):
@@ -260,7 +313,7 @@ değil — bu yüzden `kayitlar[i]` yazılıyor.
     _korpus_idx = korpus_indeksi(a.korpus)
 ```
 
-- [ ] **Adım 6: Gerçek koşuda çalıştır ve sayıyı OKU**
+- [x] **Adım 6: Gerçek koşuda çalıştır ve sayıyı OKU**
 
 Çalıştır:
 ```bash
@@ -277,7 +330,7 @@ Beklenen: JSON'da `k2_bedeli` bloğu belirir ve **dört sınıfın toplamı 80 e
 **Okuma:** `KIRPILDI_CEVAP_DISI` sayısı, B1'in **7/80**'inden düşülmesi gereken paydır.
 0 çıkarsa B5 kapanır ve B1 temizdir; >0 çıkarsa B1 **abartılmış** demektir.
 
-- [ ] **Adım 7: Commit**
+- [x] **Adım 7: Commit**
 
 ```bash
 git add scripts/harness_tablo.py tests/test_harness_tablo.py \
@@ -306,7 +359,7 @@ kaç yanlış içeri girer.
 - Üretir: `b8_tolerans_supurme.mesafe(a: str, b: str) -> int` (Levenshtein) ·
   `b8_tolerans_supurme.supur(detay_yolu, korpus_yolu, esikler) -> dict`
 
-- [ ] **Adım 1: Başarısız testi yaz**
+- [x] **Adım 1: Başarısız testi yaz**
 
 `tests/test_b8_tolerans.py` dosyasını oluştur:
 
@@ -336,7 +389,7 @@ def test_mesafe_simetrik():
     assert mesafe("abc", "abd") == mesafe("abd", "abc")
 ```
 
-- [ ] **Adım 2: Testi koş, başarısız olduğunu doğrula**
+- [x] **Adım 2: Testi koş, başarısız olduğunu doğrula**
 
 Çalıştır:
 ```bash
@@ -344,7 +397,7 @@ source ~/code/global_venv/bin/activate && python -m pytest tests/test_b8_toleran
 ```
 Beklenen: `ModuleNotFoundError: No module named 'b8_tolerans_supurme'`
 
-- [ ] **Adım 3: Betiği yaz**
+- [x] **Adım 3: Betiği yaz**
 
 `scripts/b8_tolerans_supurme.py` dosyasını oluştur:
 
@@ -437,7 +490,7 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Adım 4: Testi koş, geçtiğini doğrula**
+- [x] **Adım 4: Testi koş, geçtiğini doğrula**
 
 Çalıştır:
 ```bash
@@ -445,7 +498,7 @@ source ~/code/global_venv/bin/activate && python -m pytest tests/test_b8_toleran
 ```
 Beklenen: `4 passed`
 
-- [ ] **Adım 5: Gerçek koşuda süpür**
+- [x] **Adım 5: Gerçek koşuda süpür**
 
 Çalıştır:
 ```bash
@@ -461,7 +514,7 @@ Beklenen: `esik_egrisi` bloğu, eşik 1/2/3 için üç sayı.
 ⚠️ **Bu adım tolerans BENİMSEMEZ.** Eğri elde olduktan sonra karar ayrı bir ADR'dir
 (ADR-0056 Karar 4). Kapı bu turda **katı** kalır.
 
-- [ ] **Adım 6: Commit**
+- [x] **Adım 6: Commit**
 
 ```bash
 git add scripts/b8_tolerans_supurme.py tests/test_b8_tolerans.py \
@@ -491,7 +544,7 @@ git commit -m "B8: tolerans eğrisi ölçüldü — doğrulayıcıya DOKUNULMADI
   `harness_izi["altin_sirasi"] -> int | None`. Görev 4'ün geçerlilik kapısı **`altin_sirasi`**
   okur ve ablasyon koşusunda **her kayıtta `None`** olmasını şart koşar.
 
-- [ ] **Adım 1: Başarısız testi yaz**
+- [x] **Adım 1: Başarısız testi yaz**
 
 `tests/test_harness_tablo.py` dosyasının **sonuna** ekle:
 
@@ -528,7 +581,7 @@ def test_altin_ablasyonu_sirayi_yeniden_numaralar():
     assert [p["sira"] for p in kalan] == [0, 1]
 ```
 
-- [ ] **Adım 2: Testi koş, başarısız olduğunu doğrula**
+- [x] **Adım 2: Testi koş, başarısız olduğunu doğrula**
 
 Çalıştır:
 ```bash
@@ -536,7 +589,7 @@ source ~/code/global_venv/bin/activate && python -m pytest tests/test_harness_ta
 ```
 Beklenen: `ImportError: cannot import name 'altin_ablasyonu'`
 
-- [ ] **Adım 3: Fonksiyonu ve bayrağı yaz**
+- [x] **Adım 3: Fonksiyonu ve bayrağı yaz**
 
 `scripts/gen_eval_grounded.py`'de, `clip_sources_block` importundan sonraki modül düzeyine ekle:
 
@@ -565,7 +618,7 @@ Bayrağı `--sufficiency-preamble`'ın **hemen ardına** ekle:
                         "normal koşuyla AYNI. Yalnız --harness-indeks ile anlamlı.")
 ```
 
-- [ ] **Adım 4: Harness bloğunu bağla**
+- [x] **Adım 4: Harness bloğunu bağla**
 
 `scripts/gen_eval_grounded.py:492-496` arasını değiştir. **Eski:**
 
@@ -601,7 +654,7 @@ Bayrağı `--sufficiency-preamble`'ın **hemen ardına** ekle:
                 }
 ```
 
-- [ ] **Adım 5: Testi koş, geçtiğini doğrula**
+- [x] **Adım 5: Testi koş, geçtiğini doğrula**
 
 Çalıştır:
 ```bash
@@ -609,7 +662,7 @@ source ~/code/global_venv/bin/activate && python -m pytest tests/ -v -k "ablasyo
 ```
 Beklenen: `8 passed`
 
-- [ ] **Adım 6: `h2b` modunu koşu betiklerine ekle**
+- [x] **Adım 6: `h2b` modunu koşu betiklerine ekle**
 
 `scripts/cp0_thinking_gen.sh` içinde `h1)` satırının **hemen ardına**:
 
@@ -634,7 +687,7 @@ Veri kapısını da genişlet — `*" h1 "*)` satırını şununla değiştir:
       ;;
 ```
 
-- [ ] **Adım 7: Betikleri sözdizimi kontrolünden geçir**
+- [x] **Adım 7: Betikleri sözdizimi kontrolünden geçir**
 
 Çalıştır:
 ```bash
@@ -644,7 +697,7 @@ cd /home/ersoy/code/Hukuk-SLM && bash -n scripts/cp0_thinking_gen.sh scripts/cp0
 ```
 Beklenen: sözdizimi hatası yok, `53 passed`
 
-- [ ] **Adım 8: Commit**
+- [x] **Adım 8: Commit**
 
 ```bash
 git add scripts/gen_eval_grounded.py scripts/cp0_thinking_gen.sh \
@@ -687,7 +740,7 @@ Sayı görüldükten sonra tahmine bakmak, tahmini yok saymakla aynıdır.
 > 🎁 Bonus: iki `k` arasındaki fark, `k` büyütmenin bedelini **çekinme ekseninde** de ölçer.
 > Bugüne dek yalnız **sadakat** ekseninde ölçülmüştü.
 
-- [ ] **Adım 1: İKİ üretimi de koş**
+- [x] **Adım 1: İKİ üretimi de koş**
 
 ⚖️ **k=4 ÖNCE koşulur** — hüküm ondan okunacak; k=10 bilgi amaçlı.
 
@@ -704,7 +757,7 @@ done
 Beklenen: iki dizinde de `80/80` üretim ve
 `outputs/eval/olcum-h2b-k{4,10}/h2b_tgta_v1_h2b_k{4,10}_detail.jsonl` oluşur.
 
-- [ ] **Adım 2: 🛑 GEÇERLİLİK KAPISI — hakem parası harcanmadan ÖNCE**
+- [x] **Adım 2: 🛑 GEÇERLİLİK KAPISI — hakem parası harcanmadan ÖNCE**
 
 Çalıştır:
 ```bash
@@ -732,7 +785,7 @@ Beklenen: `OK: iki koşu da geçerlilik kapısını GEÇTİ`.
 `kaynak ≠ k` → **eşit sınav bozuk**, `k=4` koşusu 0,877 çıpasıyla kıyaslanamaz ·
 `kesik > %5` → koşu geçersiz, hakem parası harcanmaz.
 
-- [ ] **Adım 3: Hakemi koş**
+- [x] **Adım 3: Hakemi koş**
 
 Çalıştır:
 ```bash
@@ -746,7 +799,7 @@ done
 ```
 Beklenen: `score_abstention.py` iki koşuda da koşar, `abstain_h2b_*.json` dosyaları oluşur.
 
-- [ ] **Adım 4: İki sayıyı AYRI çıkar — iki `k` için, zorluk kontrolüyle**
+- [x] **Adım 4: İki sayıyı AYRI çıkar — iki `k` için, zorluk kontrolüyle**
 
 Çalıştır:
 ```bash
@@ -803,7 +856,7 @@ OKU
 AÇIK'ın zorluğu **belirgin biçimde düşükse**, AÇIK'ın galibiyeti *"daha iyi"*yi değil
 *"daha kolay sınav"*ı gösteriyor olabilir — o hâlde hüküm **şerhli** yazılır.
 
-- [ ] **Adım 5: 🚨 ÖN-KAYITLI TAHMİNE KARŞI HÜKMÜ YAZ**
+- [x] **Adım 5: 🚨 ÖN-KAYITLI TAHMİNE KARŞI HÜKMÜ YAZ**
 
 ADR-0056 Karar 2'nin tahmini:
 
@@ -816,7 +869,7 @@ ADR-0056 Karar 2'nin tahmini:
 ⚠️ Sayıyı **olduğu gibi** yaz. Tahmin tutmazsa *"tahmin kötüydü"* değil, **"payda yanlıydı"**
 diye oku — ADR-0056 B tahmininin yanlı bir alt kümeden türetildiğini **kendi içinde** yazıyor.
 
-- [ ] **Adım 6: Commit**
+- [x] **Adım 6: Commit**
 
 ```bash
 git add outputs/eval/olcum-h2b-k4/ outputs/eval/olcum-h2b-k10/
@@ -838,7 +891,7 @@ dokunan en ucuz müdahale. Bayrak `--sufficiency-preamble` **zaten var**.
 - Kullanır: `gen_eval_grounded.py --sufficiency-preamble` *(mevcut)* · `h1` modu
 - Üretir: `outputs/eval/olcum-bi/h1_<etiket>_detail.jsonl`
 
-- [ ] **Adım 1: Yön çıpasını post-hoc hesapla — koşudan ÖNCE**
+- [x] **Adım 1: Yön çıpasını post-hoc hesapla — koşudan ÖNCE**
 
 ADR-0056 Karar 3: kabul ölçütünün ikinci ayağı *"belirsiz alt kümede çekinme ≥ ayırt edici
 alt kümede"*. Bu oranın **S2 korpusundaki** güncel değeri bilinmiyor (#53 S2-öncesinde ölçtü).
@@ -856,7 +909,7 @@ PY
 ```
 Bu iki sayıyı **not al** — D1'in kabul ölçütü bunlara karşı okunacak.
 
-- [ ] **Adım 2: `EXTRA_ARGS` desteğini ekle** *(betikte YOK — doğrulandı)*
+- [x] **Adım 2: `EXTRA_ARGS` desteğini ekle** *(betikte YOK — doğrulandı)*
 
 `scripts/cp0_thinking_gen.sh:113` civarındaki python çağrısında `$ARGS`'ın **ardına** ekle:
 
@@ -881,7 +934,7 @@ git add scripts/cp0_thinking_gen.sh && \
 git commit -m "cp0_thinking_gen: EXTRA_ARGS + künyeye yazılması (dropped-flag sigortası)"
 ```
 
-- [ ] **Adım 3: Üretimi koş**
+- [~] **Adım 3: Üretimi koş**
 
 Çalıştır:
 ```bash
