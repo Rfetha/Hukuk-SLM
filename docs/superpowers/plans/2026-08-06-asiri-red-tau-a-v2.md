@@ -37,7 +37,35 @@ python              source ~/code/global_venv/bin/activate  (aynı komut içinde
 ```
 
 **Her koşudan önce:** [`docs/record/yurutme-tuzaklari.md`](../../record/yurutme-tuzaklari.md).
-**Her koşudan sonra:** koşu klasörü + `KUNYE.json` yazıldı mı · kesik oranı ≤ %5 mi.
+
+### 🚨 KÜNYE ELLE YAZILIR — `gen_eval_grounded.py` künye YAZMAZ
+
+Doğrulandı (2026-08-06): betik yalnız `{out_dir}/{label}_detail.jsonl` üretir; hiçbir script
+`KUNYE.json` yazmıyor (`grep -rln KUNYE scripts/` → `cp2_prefilter.py` · `retriever.py` ·
+`cp0_thinking_gen.sh`). Eski koşu klasörlerindeki künyeler **elle** yazılmış, ve
+`s2-harness-k10-etiketli/`'de künye **hiç yok**, yalnız `kosu.log` var.
+
+Repo kuralı bağlayıcı: **künyeye yazılmayan parametre koşuldu sayılmaz** (tuzak 6.12). Bu yüzden
+her üretim bloğundan sonra şu **zorunlu**:
+
+```bash
+kunye_yaz() {   # kunye_yaz <out_dir> <json_govde>
+  mkdir -p "$1"
+  python - "$1" "$2" <<'PY'
+import json, subprocess, sys, datetime
+out_dir, govde = sys.argv[1], json.loads(sys.argv[2])
+govde["git_sha"] = subprocess.run(["git","rev-parse","--short","HEAD"],
+                                  capture_output=True, text=True).stdout.strip()
+govde["yazildi"] = datetime.datetime.now().isoformat(timespec="seconds")
+with open(f"{out_dir}/KUNYE.json", "w", encoding="utf-8") as f:
+    json.dump(govde, f, ensure_ascii=False, indent=2)
+print(f"künye yazıldı: {out_dir}/KUNYE.json")
+PY
+}
+```
+
+Ayrıca her üretim bloğu `2>&1 | tee <out_dir>/kosu.log` ile loglanır (`s2-harness-k10-etiketli`
+precedent'i).
 
 **Bütçe defteri — ÜÇ AYRI CÜZDAN, toplanmaz** (tuzak 6.3: bir defter iki cüzdanı toplayınca
 gerçek Modal kalanı $7,27'yken $35,93 sanılmıştı).
@@ -580,16 +608,31 @@ python scripts/gen_eval_grounded.py --server-url $S --server-model "$M" --label 
 ⚠️ **`--sufficiency-preamble` iki kolda da açık** — ADR-0058 sonrası ana protokol budur ve
 ADR-0057 aynı istemi şart koşar.
 
+Ardından künyeyi **elle** yaz (betik yazmıyor — Global kısıtlar §KÜNYE):
+
+```bash
+kunye_yaz "$OUT" '{
+  "kosu": "G2 — Gemini 3.1 FL harness AÇIK (ADR-0057 eşit sınav)",
+  "ozne": "google/gemini-3.1-flash-lite", "kapi": "openrouter",
+  "indeks": "data/index/mevzuat_bge_m3_s2", "korpus": "data/corpus/mevzuat_maddeler.jsonl",
+  "etiketler": {"h1_fl": {"harness_k": 10}, "h2b_fl_k4": {"harness_k": 4, "harness_no_gold": true}},
+  "seed": 3407, "max_chunk_chars": 900, "max_new_tokens": 512, "reasoning_budget": 1024,
+  "sufficiency_preamble": true, "n": 80, "veri": "data/eval/dev/core_hard.jsonl",
+  "adr": ["ADR-0057", "ADR-0058"]
+}'
+```
+
 → **verify:**
 ```bash
 python -c "
-import json,glob
-for p in glob.glob('outputs/eval/g2-fl-harness/KUNYE*.json'):
-    d=json.load(open(p)); print(p, {k:d[k] for k in d if k in
-      ('harness_k','seed','max_chunk_chars','sufficiency_preamble','reasoning_budget','n')})
-"
+import json; d=json.load(open('outputs/eval/g2-fl-harness/KUNYE.json'))
+for k in ('seed','max_chunk_chars','sufficiency_preamble','reasoning_budget','n','git_sha'):
+    print(k, '=', d[k])
+print('etiketler:', d['etiketler'])
+" && wc -l outputs/eval/g2-fl-harness/*_detail.jsonl
 ```
-Beklenen: `harness_k` 10 ve 4 · `seed` 3407 · `sufficiency_preamble` **true** · `n` 80.
+Beklenen: `seed` 3407 · `max_chunk_chars` 900 · `sufficiency_preamble` **true** ·
+`reasoning_budget` 1024 · `n` 80 · `git_sha` dolu · iki detail dosyası da **80 satır**.
 Künyede görünmeyen parametre **koşuldu sayılmaz** (tuzak 6.12).
 
 - [ ] **Adım 2.3 — Muhakeme ekseni gerçekten eşleşti mi**
@@ -614,16 +657,20 @@ kurulmaz (ADR-0057).
 source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
 export LLM_PROVIDER_ORDER=OpenAI
 D=outputs/eval/g2-fl-harness
-python scripts/groundedness.py    --details $D/h1_fl_detail.jsonl --label h1_fl
-python scripts/rescore_answered.py --details $D/h1_fl_detail.jsonl --label h1_fl
-python scripts/harness_tablo.py   --details $D/h1_fl_detail.jsonl --gnd $D/gnd_h1_fl.jsonl \
-                                  --out $D/harness_tablo_h1_fl.json
-python scripts/score_abstention.py --details $D/h2b_fl_k4_detail.jsonl --label h2b_fl_k4
+python scripts/groundedness.py     --details $D/h1_fl_detail.jsonl --label h1_fl --out-dir $D
+python scripts/rescore_answered.py --gnd $D/gnd_h1_fl.jsonl --bench $D/h1_fl_detail.jsonl --label h1_fl
+python scripts/harness_tablo.py    --details $D/h1_fl_detail.jsonl --gnd $D/gnd_h1_fl.jsonl \
+                                   --out $D/harness_tablo_h1_fl.json
+python scripts/score_abstention.py --details $D/h2b_fl_k4_detail.jsonl --label h2b_fl_k4 --out-dir $D
 ```
 
-⚠️ `harness_tablo.py` bayrakları **`--details` / `--gnd` / `--etiketler` / `--korpus` / `--out`**
-(imza `scripts/harness_tablo.py:88-94`). `--gnd` verilmezse **A1 sessizce boş kalır** — verilmesi
-zorunlu. `gnd_*` dosyasının gerçek adı bir önceki komutun çıktısından okunur.
+⚠️ **Üç imza tuzağı, üçü de doğrulandı (2026-08-06):**
+- `rescore_answered.py` **`--details` almaz** — imzası `--gnd` (groundedness satırları, faithfulness
+  taşır) + `--bench` (gen_eval detail, cevap taşır) + `--label` (satır 42-44). `--details` yazmak
+  koşuyu **anında** çökertir.
+- `groundedness.py` ve `score_abstention.py`'nin `--out-dir` **varsayılanı `outputs/eval`** — koşu
+  klasörü değil. Verilmezse `gnd_*.jsonl` kökle karışır ve bir sonraki komut dosyayı bulamaz.
+- `harness_tablo.py`'de `--gnd` verilmezse **A1 sessizce boş kalır** (imza satır 88-94).
 
 → **verify:** `harness_tablo` A1 == `rescore_answered` A1 **birebir** (tuzak 2.16). Eşit
 değilse sayı **raporlanmaz**, alet düzeltilir.
@@ -1447,23 +1494,47 @@ cd ~/code/Hukuk-SLM && source ~/code/global_venv/bin/activate
 G="python scripts/gen_eval_grounded.py --server-url http://127.0.0.1:8080/v1 --server-model local \
    --thinking on --think-budget 1024 --max-new-tokens 512 --max-chunk-chars 900 --seed 3407 \
    --sufficiency-preamble --out-dir outputs/eval/g7-kol-kapisi"
-$G --label m1_ta_v2  --data data/eval/dev/core_hard.jsonl --distractors 4 --n 80
-$G --label m2b_ta_v2 --data data/eval/dev/core_hard.jsonl --distractors 4 --no-gold --n 80
+$G --label m1_ta_v2  --data data/eval/dev/core_hard.jsonl --distractors 4 --n 80 \
+   2>&1 | tee outputs/eval/g7-kol-kapisi/kosu.log
+$G --label m2b_ta_v2 --data data/eval/dev/core_hard.jsonl --distractors 4 --no-gold --n 80 \
+   2>&1 | tee -a outputs/eval/g7-kol-kapisi/kosu.log
+
+kunye_yaz outputs/eval/g7-kol-kapisi '{
+  "kosu": "G7 — KOL KAPISI: τ_a v2 tek başına, harness KAPALI",
+  "ozne": "models/gguf/ta_v2-q4_k_m.gguf", "adaptor": "outputs/ta_v2",
+  "etiketler": {"m1_ta_v2": {"distractors": 4}, "m2b_ta_v2": {"distractors": 4, "no_gold": true}},
+  "thinking": "on", "think_budget": 1024, "max_new_tokens": 512, "max_chunk_chars": 900,
+  "seed": 3407, "n": 80, "sufficiency_preamble": true, "veri": "data/eval/dev/core_hard.jsonl",
+  "adr": ["ADR-0043", "ADR-0058", "ADR-0059"]
+}'
 ```
 
-→ **verify:** iki `KUNYE.json` yazıldı; `thinking=on` · `think_budget=1024` ·
-`max_chunk_chars=900` · `seed=3407` · `n=80` · `sufficiency_preamble=true`. Kesik oranı ≤ %5.
+→ **verify:** `KUNYE.json` yazıldı ve `thinking=on` · `think_budget=1024` ·
+`max_chunk_chars=900` · `seed=3407` · `n=80` · `sufficiency_preamble=true` içeriyor.
+Kesik oranı:
+```bash
+python -c "
+import json
+for L in ('m1_ta_v2','m2b_ta_v2'):
+    d=[json.loads(l) for l in open(f'outputs/eval/g7-kol-kapisi/{L}_detail.jsonl', encoding='utf-8')]
+    kesik=sum(1 for x in d if x.get('finish_reason')=='length')
+    print(L, 'n=',len(d), 'kesik=', kesik, f'%{100*kesik/len(d):.1f}')
+"
+```
+**Kesik oranı > %5 ise koşu geçersiz** — sayı raporlanmaz (tuzak 1.9).
 
 - [ ] **Adım 7.3 — Skorla**
 
 ```bash
 source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
 export LLM_PROVIDER_ORDER=OpenAI
-python scripts/groundedness.py --details outputs/eval/g7-kol-kapisi/m1_ta_v2_detail.jsonl --label m1_ta_v2
-python scripts/rescore_answered.py --details outputs/eval/g7-kol-kapisi/m1_ta_v2_detail.jsonl --label m1_ta_v2
-python scripts/score_abstention.py --details outputs/eval/g7-kol-kapisi/m2b_ta_v2_detail.jsonl --label m2b_ta_v2
+D=outputs/eval/g7-kol-kapisi
+python scripts/groundedness.py     --details $D/m1_ta_v2_detail.jsonl --label m1_ta_v2 --out-dir $D
+python scripts/rescore_answered.py --gnd $D/gnd_m1_ta_v2.jsonl --bench $D/m1_ta_v2_detail.jsonl \
+                                   --label m1_ta_v2
+python scripts/score_abstention.py --details $D/m2b_ta_v2_detail.jsonl --label m2b_ta_v2 --out-dir $D
 python -c "
-import sys, json, glob; sys.path.insert(0,'scripts')
+import sys, json; sys.path.insert(0,'scripts')
 from score_abstention import exact_reject
 d=[json.loads(l) for l in open('outputs/eval/g7-kol-kapisi/m1_ta_v2_detail.jsonl', encoding='utf-8')]
 red=sum(exact_reject(x.get('cevap',''),'data') for x in d)
@@ -1562,10 +1633,41 @@ $B --label h2b_tgta_v2_k4 --harness-indeks data/index/mevzuat_bge_m3_s2 --harnes
    --harness-no-gold --sufficiency-preamble
 # 4) TAVAN: harness KAPALI M1 → 17/80 çıpasına karşı
 $B --label m1_tgta_v2 --distractors 4 --sufficiency-preamble
+
+kunye_yaz outputs/eval/g9-urun-kapisi '{
+  "kosu": "G9 — ÜRÜN KAPISI: tgta_v2",
+  "ozne": "models/gguf/tgta_v2-q4_k_m.gguf", "kollar": ["tg_v1", "ta_v2"], "merge": "ham TIES",
+  "indeks": "data/index/mevzuat_bge_m3_s2", "korpus": "data/corpus/mevzuat_maddeler.jsonl",
+  "etiketler": {
+    "h1_tgta_v2":          {"harness_k": 10, "sufficiency_preamble": true},
+    "h1_tgta_v2_onsozsuz": {"harness_k": 10, "sufficiency_preamble": false},
+    "h2b_tgta_v2_k4":      {"harness_k": 4, "harness_no_gold": true, "sufficiency_preamble": true},
+    "m1_tgta_v2":          {"harness": false, "distractors": 4, "sufficiency_preamble": true}},
+  "thinking": "on", "think_budget": 1024, "max_new_tokens": 512, "max_chunk_chars": 900,
+  "seed": 3407, "n": 80, "veri": "data/eval/dev/core_hard.jsonl",
+  "cipa": {"kutle": 0.6275, "b10": "14/80", "a1": 0.8229},
+  "adr": ["ADR-0043", "ADR-0052", "ADR-0057", "ADR-0058", "ADR-0059"]
+}'
 ```
 
-→ **verify:** dört `KUNYE.json`; her birinde rejim değişmezleri ve `harness_k` doğru.
-Kesik oranı ≤ %5 · `ALTIN_SIZAN` = 0 · örneklem birebir aynı 80 id.
+→ **verify:** `KUNYE.json` yazıldı ve **dört etiketin** bayrakları ayrı ayrı görünüyor
+(özellikle `h1_tgta_v2_onsozsuz` için `sufficiency_preamble: false` — Δ(önsöz) testi buna dayanır).
+Ardından:
+```bash
+python -c "
+import json, glob
+ids=None
+for p in sorted(glob.glob('outputs/eval/g9-urun-kapisi/*_detail.jsonl')):
+    d=[json.loads(l) for l in open(p, encoding='utf-8')]
+    kesik=sum(1 for x in d if x.get('finish_reason')=='length')
+    cur={str(x['id']) for x in d}
+    print(p.split('/')[-1], 'n=',len(d), 'kesik=%.1f%%'%(100*kesik/len(d)))
+    if ids is None: ids=cur
+    else: assert ids==cur, 'ÖRNEKLEM KAYMASI — dört koşu aynı 80 id olmalı (tuzak 1.5)'
+print('örneklem birebir aynı ✓')
+"
+```
+Beklenen: dört dosyada da `n=80`, kesik ≤ %5, **örneklem birebir aynı ✓**.
 
 - [ ] **Adım 9.2 — Skorla + çapraz doğrula**
 
@@ -1574,16 +1676,19 @@ source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
 export LLM_PROVIDER_ORDER=OpenAI
 D=outputs/eval/g9-urun-kapisi
 for L in h1_tgta_v2 h1_tgta_v2_onsozsuz m1_tgta_v2; do
-  python scripts/groundedness.py     --details $D/${L}_detail.jsonl --label $L
-  python scripts/rescore_answered.py --details $D/${L}_detail.jsonl --label $L
+  python scripts/groundedness.py     --details $D/${L}_detail.jsonl --label $L --out-dir $D
+  python scripts/rescore_answered.py --gnd $D/gnd_${L}.jsonl --bench $D/${L}_detail.jsonl --label $L
 done
-python scripts/score_abstention.py --details $D/h2b_tgta_v2_k4_detail.jsonl --label h2b_tgta_v2_k4
+python scripts/score_abstention.py --details $D/h2b_tgta_v2_k4_detail.jsonl \
+                                   --label h2b_tgta_v2_k4 --out-dir $D
 python scripts/harness_tablo.py --details $D/h1_tgta_v2_detail.jsonl --gnd $D/gnd_h1_tgta_v2.jsonl \
                                 --out $D/harness_tablo_h1_tgta_v2.json
 ```
 
 → **verify:** her etikette `harness_tablo` A1 == `rescore_answered` A1 **birebir** (tuzak 2.16).
-⚠️ `--gnd` düşürülürse A1 **sessizce boş** kalır ve karşılaştırma yapılamaz.
+⚠️ İmzalar: `rescore_answered` **`--gnd` + `--bench`** ister (`--details` DEĞİL) ·
+`groundedness`/`score_abstention` `--out-dir` verilmezse `outputs/eval` köküne yazar ·
+`harness_tablo`'da `--gnd` düşerse A1 **sessizce boş** kalır.
 
 - [ ] **Adım 9.3 — Ayırt edici / belirsiz kırılımı (ADR-0054 K4 — ZORUNLU)**
 
