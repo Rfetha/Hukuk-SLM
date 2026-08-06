@@ -75,11 +75,11 @@ gerçek Modal kalanı $7,27'yken $35,93 sanılmıştı).
 
 | kalem | koşu-eşdeğeri | tahmin | gerçekleşen |
 | :--- | ---: | ---: | ---: |
-| Görev 2 · `h1_fl` + `h2b_fl_k4` | 1,5 | $0,06 | |
+| Görev 2 · **iki FL kolu** (2 × [h1 gnd + h2b abst]) | 3,0 | $0,12 | |
 | Görev 7 · kol kapısı (`m1` + `m2b`) | 1,5 | $0,06 | |
 | Görev 9 · ürün kapısı (3 gnd + 1 abst) | 3,5 | $0,14 | |
-| yeniden koşum payı | — | $0,09 | |
-| **A TOPLAM** | | **~$0,35** | |
+| yeniden koşum payı (regex değişirse yeniden skorlama dahil) | — | $0,13 | |
+| **A TOPLAM** | | **~$0,45** | |
 
 **B · GPU (Modal)** — panelden okunur, defterden **türetilmez**.
 
@@ -93,16 +93,19 @@ gerçek Modal kalanı $7,27'yken $35,93 sanılmıştı).
 `llm_client.PRICE`'ta yalnız `gpt-4o-mini` ve `gpt-4o` var; Gemini FL **kayıtlı değil** ve
 `price()` bilinmeyen modelde **hata verir** (sessiz varsayılan yok — doğru davranış).
 
-| kalem | sürücü | tahmin | gerçekleşen |
+| kalem | sürücü (160 üretim: ~4K girdi / ~1,5K çıktı) | tahmin | gerçekleşen |
 | :--- | :--- | ---: | ---: |
-| Görev 2 · 160 üretim (~4K girdi / ~1,5K çıktı her biri) | OpenRouter paneli | $0,10 – 0,50 | |
+| Görev 2 · **3.1 FL** | fiyat Adım 2.1b'de birincil kaynaktan doğrulanacak | $0,10 – 0,50 | |
+| Görev 2 · **3.5 FL** 🆕 | ~$0,30/M girdi · ~$2,50/M çıktı *(ön araştırma)* | ~$0,80 | |
+| **C TOPLAM** | | **$0,90 – 1,30** | |
 
 ```
-BEKLENEN TOPLAM   ~$2,0 – 3,0        TAVAN $10 (durma koşulu 4)
+BEKLENEN TOPLAM   ~$3,0 – 3,9        TAVAN $10 (durma koşulu 4)
 ```
 
-⚠️ **Önceki $7,20 tahmini fazlaydı** — Gemini kıyası için $1,50 yazmıştım; gerçek sürücü
-160 çağrı ve ölçülmüş hakem çıpası $0,04/koşu. Düzeltildi.
+⚠️ **İki düzeltme kayda geçiyor:** (a) ilk $7,20 tahmini fazlaydı — Gemini kıyasına $1,50
+yazmıştım, gerçek sürücü 160 çağrı ve ölçülmüş hakem çıpası $0,04/koşu; (b) ikinci rakip kolu
+(3.5 FL) eklenince ~$0,86 geri bindi. Net: **~$2,0-3,0 → ~$3,0-3,9**.
 
 ---
 
@@ -519,8 +522,21 @@ git commit -m "G1: eşleştirilmiş alt küme A1 aleti + base/FL/tgta_v1 kıyasl
 
 # GÖREV 2 — Gemini 3.1 FL, harness AÇIK (ADR-0057 eşit sınav)
 
-**Bedel:** ~$1,50 · **Neden:** bugün *"FL'ı geçtik/geçemedik"* cümlesi **kurulamıyor** — bizim
+**Bedel:** ~$0,90 · **Neden:** bugün *"FL'ı geçtik/geçemedik"* cümlesi **kurulamıyor** — bizim
 sayımız harness AÇIK (%62,8), FL'ınki KAPALI (%72,9). Ürün rejiminde kıyas **mevcut değil**.
+
+**İki rakip kolu** — insan kararı 2026-08-06:
+
+| kol | niye | aile / hakem çakışması |
+| :--- | :--- | :--- |
+| `gemini-3.1-flash-lite` | Kaydın sürekliliği — `kollar.md` · `MODEL_CARD` · sprint1 tablosu ona bağlı; düşürmek eski tabloyu **kalıcı olarak tamamlanamaz** yapar | google ↔ hakem OpenAI ✅ |
+| `gemini-3.5-flash-lite` 🆕 | **2026-07-21'de çıktı** — güncel giriş katmanı. 16 gün önce aşılmış bir modelle kıyaslanan bir OSS sürümü *"kolay baseline"* eleştirisini davet eder | google ↔ hakem OpenAI ✅ |
+
+⛔ **GPT-5.4 nano bilinçle DIŞARIDA** — hakemimiz `gpt-4o-mini` **OpenAI ailesi**, ve kural
+*"hiçbir özne kendi ailesinin hakemi tarafından puanlanmaz"* (ADR-0032 · ders A3.9). Eklemek
+üç-aileli panelin açılmasını gerektirir (`judge_agreement.py` **var ama bu hattın hiçbir
+koşusunda kullanılmadı**) → κ ölçümü + tüm çıpaların yeniden türetilmesi, yani turun içinde
+**üçüncü** protokol değişikliği. Ret değil **sıralama**; borç olarak kaydedilir (Adım 10.3).
 
 **Dosyalar:** yeni kod **yok** — `gen_eval_grounded.py`'nin `--harness-indeks` / `--harness-k` /
 `--reasoning-budget` bayrakları mevcut.
@@ -528,6 +544,10 @@ sayımız harness AÇIK (%62,8), FL'ınki KAPALI (%72,9). Ürün rejiminde kıya
 - [ ] **Adım 2.1 — 🚨 ÖN KOŞUL: red-regex Gemini ailesi için kalibre mi**
 
 Kalibre değilse rakibin reddi **eksik sayılır** ve sapma **bizim lehimize** çıkar (tuzak 2.1 · 2.2).
+
+⚠️ **Aynı aile ≠ aynı kalıp.** 3.1 FL için yapılmış kalibrasyon 3.5 FL'a **taşınır varsayılmaz**;
+sürüm içinde red ifadesi değişebilir. Kalibrasyon **iki kolda ayrı** doğrulanır — 3.5 FL kolunda
+Adım 2.2 koştuktan **sonra**, çıktısı üzerinde (elde henüz 3.5 FL üretimi yok).
 
 ```bash
 source ~/code/global_venv/bin/activate
@@ -561,13 +581,16 @@ istiyor ve bu tur ilk kez rakibi ürün rejiminde ölçüyor.
 PRICE = {  # 2026-07-24 itibarıyla
     "openai/gpt-4o-mini": (0.15 / 1e6, 0.60 / 1e6),
     "openai/gpt-4o": (2.50 / 1e6, 10.0 / 1e6),
-    # 2026-08-XX — birincil kaynak: <sağlayıcının resmî fiyat sayfası URL'si>
+    # 2026-08-XX — birincil kaynak: <Google resmî API fiyat sayfası URL'si>
     "google/gemini-3.1-flash-lite": (<girdi> / 1e6, <çıktı> / 1e6),
+    "google/gemini-3.5-flash-lite": (<girdi> / 1e6, <çıktı> / 1e6),
 }
 ```
 
-⚠️ Fiyat **birincil kaynaktan** okunur (sağlayıcının kendi liste sayfası), tarihiyle yazılır.
-Hatırlamayla ya da tahminle **yazılmaz** — `price()`'ın hata verme davranışı tam bu yüzden var.
+⚠️ Fiyat **birincil kaynaktan** okunur (Google'ın kendi liste sayfası), tarihiyle yazılır.
+Hatırlamayla ya da üçüncü-taraf blogdan **yazılmaz** — `price()`'ın hata verme davranışı tam
+bu yüzden var. *(Ön araştırma, 2026-08-06, üçüncü-taraf kaynak — **doğrulanacak, kabul
+edilmeyecek**: 3.5 FL ≈ $0,30/M girdi · $2,50/M çıktı.)*
 
 → **verify:**
 ```bash
@@ -575,50 +598,85 @@ source ~/code/global_venv/bin/activate
 python -c "
 import sys; sys.path.insert(0,'scripts')
 from llm_client import price
-print('gemini FL:', price('google/gemini-3.1-flash-lite'))
-print('hakem   :', price('openai/gpt-4o-mini'))
+for m in ('google/gemini-3.1-flash-lite','google/gemini-3.5-flash-lite','openai/gpt-4o-mini'):
+    print(m, price(m))
 "
 ```
-Beklenen: iki satır da fiyat basıyor, `SystemExit` yok. ⚠️ Bu bir **muhasebe** eklemesidir;
+Beklenen: üç satır da fiyat basıyor, `SystemExit` yok. ⚠️ Bu bir **muhasebe** eklemesidir;
 üretim yolu bu kaydı zaten kullanmıyor, gerçek harcama **OpenRouter panelinden** okunur ve
 künyeye o yazılır (tuzak 6.3).
 
+- [ ] **Adım 2.1c — 🚨 3.1 FL hâlâ çağrılabiliyor mu**
+
+Gemini 3.5 Flash-Lite **2026-07-21'de** çıktı. Google 3.1 FL'ı emekli ettiyse harness-AÇIK
+koşusu **kurulamaz** ve o kol yalnız tarihsel KAPALI çıpası olarak kalır.
+
+```bash
+source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
+for M in google/gemini-3.1-flash-lite google/gemini-3.5-flash-lite; do
+  echo "--- $M ---"
+  curl -s https://openrouter.ai/api/v1/chat/completions \
+    -H "Authorization: Bearer $OPENROUTER_API_KEY" -H "Content-Type: application/json" \
+    -d "{\"model\":\"$M\",\"messages\":[{\"role\":\"user\",\"content\":\"Merhaba\"}],\"max_tokens\":16}" \
+    | head -c 400; echo
+done
+```
+
+→ **verify:** iki model de **200 + içerik** dönüyor. 3.1 FL hata dönerse: o kol **düşer**,
+kıyas 3.5 FL üzerinden kurulur ve düşme sebebi künyeye + #57'ye yazılır (gizlenmez).
+
 - [ ] **Adım 2.2 — FL'ı harness AÇIK koş (h1 + h2b@k=4)**
+
+**İKİ rakip kolu** (insan kararı 2026-08-06): `3.1 FL` kaydın sürekliliği için
+(`kollar.md`/`MODEL_CARD`/sprint1 tablosu ona bağlı), `3.5 FL` güncel giriş katmanı olduğu için.
+Toplam **4 koşu** (2 model × {h1, h2b@k=4}).
 
 ```bash
 source ~/code/global_venv/bin/activate
 set -a && . ./.env && set +a
 export OPENAI_API_KEY="$OPENROUTER_API_KEY"
-M="google/gemini-3.1-flash-lite"; S="https://openrouter.ai/api/v1"
+S="https://openrouter.ai/api/v1"
 OUT=outputs/eval/g2-fl-harness
+mkdir -p $OUT
 
-python scripts/gen_eval_grounded.py --server-url $S --server-model "$M" --label h1_fl \
-  --data data/eval/dev/core_hard.jsonl --n 80 --seed 3407 \
-  --harness-indeks data/index/mevzuat_bge_m3_s2 --harness-k 10 \
-  --max-chunk-chars 900 --max-new-tokens 512 --reasoning-budget 1024 \
-  --sufficiency-preamble --out-dir $OUT
+kos() {   # kos <model-id> <etiket-eki>
+  python scripts/gen_eval_grounded.py --server-url $S --server-model "$1" --label "h1_$2" \
+    --data data/eval/dev/core_hard.jsonl --n 80 --seed 3407 \
+    --harness-indeks data/index/mevzuat_bge_m3_s2 --harness-k 10 \
+    --max-chunk-chars 900 --max-new-tokens 512 --reasoning-budget 1024 \
+    --sufficiency-preamble --out-dir $OUT 2>&1 | tee -a $OUT/kosu.log
 
-python scripts/gen_eval_grounded.py --server-url $S --server-model "$M" --label h2b_fl_k4 \
-  --data data/eval/dev/core_hard.jsonl --n 80 --seed 3407 \
-  --harness-indeks data/index/mevzuat_bge_m3_s2 --harness-k 4 --harness-no-gold \
-  --max-chunk-chars 900 --max-new-tokens 512 --reasoning-budget 1024 \
-  --sufficiency-preamble --out-dir $OUT
+  python scripts/gen_eval_grounded.py --server-url $S --server-model "$1" --label "h2b_$2_k4" \
+    --data data/eval/dev/core_hard.jsonl --n 80 --seed 3407 \
+    --harness-indeks data/index/mevzuat_bge_m3_s2 --harness-k 4 --harness-no-gold \
+    --max-chunk-chars 900 --max-new-tokens 512 --reasoning-budget 1024 \
+    --sufficiency-preamble --out-dir $OUT 2>&1 | tee -a $OUT/kosu.log
+}
+
+kos google/gemini-3.1-flash-lite fl31
+kos google/gemini-3.5-flash-lite fl35
 ```
 
-⚠️ **`--sufficiency-preamble` iki kolda da açık** — ADR-0058 sonrası ana protokol budur ve
-ADR-0057 aynı istemi şart koşar.
+⚠️ **`--sufficiency-preamble` dört koşuda da açık** — ADR-0058 sonrası ana protokol budur ve
+ADR-0057 **aynı istemi** şart koşar. Bir kolda düşerse kıyas geçersizdir.
 
 Ardından künyeyi **elle** yaz (betik yazmıyor — Global kısıtlar §KÜNYE):
 
 ```bash
 kunye_yaz "$OUT" '{
-  "kosu": "G2 — Gemini 3.1 FL harness AÇIK (ADR-0057 eşit sınav)",
-  "ozne": "google/gemini-3.1-flash-lite", "kapi": "openrouter",
+  "kosu": "G2 — Gemini FL harness AÇIK, iki sürüm (ADR-0057 eşit sınav)",
+  "ozneler": ["google/gemini-3.1-flash-lite", "google/gemini-3.5-flash-lite"],
+  "kapi": "openrouter", "aile": "google (hakem OpenAI → aile dışlama sağlanıyor, ADR-0032)",
   "indeks": "data/index/mevzuat_bge_m3_s2", "korpus": "data/corpus/mevzuat_maddeler.jsonl",
-  "etiketler": {"h1_fl": {"harness_k": 10}, "h2b_fl_k4": {"harness_k": 4, "harness_no_gold": true}},
+  "etiketler": {
+    "h1_fl31":     {"model": "google/gemini-3.1-flash-lite", "harness_k": 10},
+    "h2b_fl31_k4": {"model": "google/gemini-3.1-flash-lite", "harness_k": 4, "harness_no_gold": true},
+    "h1_fl35":     {"model": "google/gemini-3.5-flash-lite", "harness_k": 10},
+    "h2b_fl35_k4": {"model": "google/gemini-3.5-flash-lite", "harness_k": 4, "harness_no_gold": true}},
   "seed": 3407, "max_chunk_chars": 900, "max_new_tokens": 512, "reasoning_budget": 1024,
   "sufficiency_preamble": true, "n": 80, "veri": "data/eval/dev/core_hard.jsonl",
-  "adr": ["ADR-0057", "ADR-0058"]
+  "not": "3.5 FL 2026-07-21 cikti; 3.1 FL kaydin surekliligi icin tutuluyor",
+  "adr": ["ADR-0032", "ADR-0057", "ADR-0058"]
 }'
 ```
 
@@ -657,11 +715,15 @@ kurulmaz (ADR-0057).
 source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
 export LLM_PROVIDER_ORDER=OpenAI
 D=outputs/eval/g2-fl-harness
-python scripts/groundedness.py     --details $D/h1_fl_detail.jsonl --label h1_fl --out-dir $D
-python scripts/rescore_answered.py --gnd $D/gnd_h1_fl.jsonl --bench $D/h1_fl_detail.jsonl --label h1_fl
-python scripts/harness_tablo.py    --details $D/h1_fl_detail.jsonl --gnd $D/gnd_h1_fl.jsonl \
-                                   --out $D/harness_tablo_h1_fl.json
-python scripts/score_abstention.py --details $D/h2b_fl_k4_detail.jsonl --label h2b_fl_k4 --out-dir $D
+for V in fl31 fl35; do
+  python scripts/groundedness.py     --details $D/h1_${V}_detail.jsonl --label h1_$V --out-dir $D
+  python scripts/rescore_answered.py --gnd $D/gnd_h1_${V}.jsonl --bench $D/h1_${V}_detail.jsonl \
+                                     --label h1_$V
+  python scripts/harness_tablo.py    --details $D/h1_${V}_detail.jsonl --gnd $D/gnd_h1_${V}.jsonl \
+                                     --out $D/harness_tablo_h1_${V}.json
+  python scripts/score_abstention.py --details $D/h2b_${V}_k4_detail.jsonl \
+                                     --label h2b_${V}_k4 --out-dir $D
+done
 ```
 
 ⚠️ **Üç imza tuzağı, üçü de doğrulandı (2026-08-06):**
@@ -672,8 +734,30 @@ python scripts/score_abstention.py --details $D/h2b_fl_k4_detail.jsonl --label h
   klasörü değil. Verilmezse `gnd_*.jsonl` kökle karışır ve bir sonraki komut dosyayı bulamaz.
 - `harness_tablo.py`'de `--gnd` verilmezse **A1 sessizce boş kalır** (imza satır 88-94).
 
-→ **verify:** `harness_tablo` A1 == `rescore_answered` A1 **birebir** (tuzak 2.16). Eşit
-değilse sayı **raporlanmaz**, alet düzeltilir.
+→ **verify:** **her iki kolda** `harness_tablo` A1 == `rescore_answered` A1 **birebir**
+(tuzak 2.16). Eşit değilse sayı **raporlanmaz**, alet düzeltilir.
+
+- [ ] **Adım 2.4b — 3.5 FL kolunun red-regex kalibrasyonu (Adım 2.1'in ikinci yarısı)**
+
+```bash
+source ~/code/global_venv/bin/activate
+python -c "
+import sys, json; sys.path.insert(0,'scripts')
+from score_abstention import exact_reject
+d=[json.loads(l) for l in open('outputs/eval/g2-fl-harness/h1_fl35_detail.jsonl', encoding='utf-8')]
+red=[x for x in d if exact_reject(x.get('cevap',''),'data')]
+dolu=[x for x in d if not exact_reject(x.get('cevap',''),'data')]
+print(f'regex-red {len(red)}/{len(d)}')
+print('=== RED SAYILAN 15 (ileri kontrol) ==='); [print('-',x['cevap'][:160]) for x in red[:15]]
+print('=== RED SAYILMAYAN 2 (geri kontrol) ==='); [print('-',x['cevap'][:160]) for x in dolu[:2]]
+"
+```
+
+→ **verify:** 15/15 ileri (gerçekten red) + 2/2 geri (gerçekten cevap) doğru.
+🚨 Kaçan kalıp varsa `score_abstention.REJECT_RE`'ye **tek kaynaktan** eklenir (tuzak 2.9)
+**ve iki Gemini kolu İLE bizim mevcut koşularımız yeniden skorlanır** — regex değişirse eski
+sayılar farklı aletle üretilmiş olur ve ON/OFF kıyası elmayla armut olur (tuzak 2.16'nın
+regex tarafındaki kardeşi).
 
 - [ ] **Adım 2.5 — Kıyas tablosunu yaz ve adillik hükmünü ZORUNLU tut**
 
@@ -681,14 +765,24 @@ değilse sayı **raporlanmaz**, alet düzeltilir.
 adillik hükmü** olacak:
 
 ```
-kademe  eksen                  kaynak   BİZ(AÇIK)  FL(AÇIK)  hüküm
-  2     M1 kütle               10 ↔ 10  %62,8      ?         EŞLEŞMİŞ
-  2     A1 · altın getirilen   10 ↔ 10  0,8705     ?         EŞLEŞMİŞ
-  2     M2b Rej                 4 ↔ 4   0,840      ?         EŞLEŞMİŞ
-  -     muhakeme/maliyet        —       1198 tok   ?         Adım 2.3'ün damgası
+kademe  eksen                  kaynak   BİZ(AÇIK)  FL 3.1   FL 3.5   hüküm
+  2     M1 kütle               10 ↔ 10  %62,8      ?        ?        EŞLEŞMİŞ
+  2     A1 · altın getirilen   10 ↔ 10  0,8705     ?        ?        EŞLEŞMİŞ
+  2     M2b Rej                 4 ↔ 4   0,840      ?        ?        EŞLEŞMİŞ
+  2     aşırı-red               10 ↔ 10  ?          ?        ?        EŞLEŞMİŞ
+  -     muhakeme/maliyet        —       1198 tok   ?        ?        Adım 2.3'ün damgası
 ```
 
-→ **verify:** dosyada her satırın bir hükmü var; hükümsüz satır yok.
+⭐ **Maliyet satırı ayrıca $/cevap olarak yazılır** — `llm_client.PRICE` (Adım 2.1b) artık iki FL
+sürümünü de taşıyor, bizim tarafımızda çıkarım **yerel ve $0**. ADR-0017'nin maliyet ekseni ilk
+kez rakiple aynı sınavda doldurulabiliyor.
+
+⚠️ **3.1 ↔ 3.5 farkı da bir bulgudur ve ayrıca yazılır:** giriş katmanının 16 günde ne kadar
+kaydığı, `ROADMAP` §"Bakım halkası"nın tetikleyici sorusunun (*"belirgin daha iyi bir base"*)
+doğrudan verisidir.
+
+→ **verify:** dosyada her satırın bir hükmü var; hükümsüz satır yok. Kademe 3 satırları için
+*"AÇIK burada geride"* cümlesi **kurulmamış**.
 
 - [ ] **Adım 2.6 — Commit**
 
@@ -1781,9 +1875,17 @@ bulgularının birkaçı kendi planlarının çürütülmesidir.
 
 `docs/record/research_log/2026-08-06-yb1-ve-rakip-kiyasi.md` — künye bloğu (model · indeks ·
 rejim · hakem · koşular · maliyet · geçit) + üç bölüm: YB1 benimseme · eşleştirilmiş A1 ·
-Gemini FL harness AÇIK. **Her sayı, yaşadığı dosyayla birlikte.**
+**Gemini FL harness AÇIK (3.1 ↔ 3.5)**. **Her sayı, yaşadığı dosyayla birlikte.**
 
-→ **verify:** `docs/record/research_log/README.md`'ye #57 satırı eklendi ve bağlantı çözülüyor.
+Ayrıca **"Yeni doğan borçlar / kararlar"** tablosuna:
+
+| # | ne | neden karar gerektiriyor |
+| :--- | :--- | :--- |
+| **YB4** 🆕 | **OpenAI-ailesi rakip (GPT-5.4 nano sınıfı) ölçülemiyor** — hakemimiz `gpt-4o-mini` aynı aile, ADR-0032 aile-dışlaması yasaklıyor | Eklemek **üç-aileli panelin açılmasını** gerektirir: `judge_agreement.py` var ama bu hattın hiçbir koşusunda kullanılmadı → κ ölçümü + tüm çıpaların yeniden türetilmesi. Kendi turunu ister |
+| **YB5** 🆕 | **`ROADMAP` hedef cümlesi bayatladı** — *"önce Gemini 3.1 Flash-Lite'ı geçmek"*; giriş katmanı **2026-07-21'den beri 3.5 FL** | Hedef, bu turun ölçtüğü sayı **görüldükten sonra** güncellenir; ölçmeden güncellemek sayısız bir hedef yazmak olur. ROADMAP bunu zaten öngörmüştü (*"koşan bir hedef"*) |
+
+→ **verify:** `docs/record/research_log/README.md`'ye #57 satırı eklendi, bağlantı çözülüyor,
+ve YB4/YB5 borç tablosunda görünüyor.
 
 - [ ] **Adım 10.3 — `research_log` #58'i yaz** *(tur)*
 
