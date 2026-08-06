@@ -1,0 +1,120 @@
+{
+  "kosu": "G2 — Gemini FL harness AÇIK, iki sürüm (ADR-0057 eşit sınav)",
+  "ozneler": [
+    "google/gemini-3.1-flash-lite",
+    "google/gemini-3.5-flash-lite"
+  ],
+  "kapi": "openrouter",
+  "aile": "google (hakem OpenAI → aile dışlama sağlanıyor, ADR-0032)",
+  "indeks": "data/index/mevzuat_bge_m3_s2",
+  "korpus": "data/corpus/mevzuat_maddeler.jsonl",
+  "etiketler": {
+    "h1_fl31": {
+      "model": "google/gemini-3.1-flash-lite",
+      "harness_k": 10
+    },
+    "h2b_fl31_k4": {
+      "model": "google/gemini-3.1-flash-lite",
+      "harness_k": 4,
+      "harness_no_gold": true
+    },
+    "h1_fl35": {
+      "model": "google/gemini-3.5-flash-lite",
+      "harness_k": 10
+    },
+    "h2b_fl35_k4": {
+      "model": "google/gemini-3.5-flash-lite",
+      "harness_k": 4,
+      "harness_no_gold": true
+    }
+  },
+  "seed": 3407,
+  "max_chunk_chars": 900,
+  "max_new_tokens": 512,
+  "reasoning_budget": 1024,
+  "sufficiency_preamble": true,
+  "n": 80,
+  "veri": "data/eval/dev/core_hard.jsonl",
+  "not": "3.5 FL 2026-07-21 cikti; 3.1 FL kaydin surekliligi icin tutuluyor",
+  "adr": [
+    "ADR-0032",
+    "ADR-0057",
+    "ADR-0058"
+  ],
+  "hakem_yigini": {
+    "judge_model": "openai/gpt-4o-mini",
+    "judge_gateway": "openrouter",
+    "judge_providers": [
+      "OpenAI"
+    ],
+    "LLM_PROVIDER_ORDER": "OpenAI",
+    "not": "DORT puanlamanin dordu de ayni yiginda. cp09un ESKI FL sayilari (gpt-4o-mini/openai dogrudan, ADR-0041 oncesi istem) BU TABLOYA GIRMEZ."
+  },
+  "uretim_saglayicisi_PINLENMEDI": {
+    "3.1_FL": "Google AI Studio",
+    "3.5_FL": "Google",
+    "uyari": "LLM_PROVIDER_ORDER yalniz HAKEM kapisinda etkili; gen_eval_grounded dogrudan --server-url ile konusuyor. Iki modeli FARKLI upstream saglayici servis etti → 3.1-3.5 farkinin bir kismi saglayici kaynakli OLABILIR."
+  },
+  "gecerlilik_kapisi": {
+    "kaynak_sayisi": {
+      "h1": 10,
+      "h2b": 4,
+      "hepsi_tam": true
+    },
+    "altin_sizan_h2b": 0,
+    "recall_at_10": {
+      "h1_fl31": 0.875,
+      "h1_fl35": 0.875,
+      "BIZ_olcum_bi": 0.875,
+      "not": "ucu de AYNI → erisim modelden bagimsiz, harness ISPATLI ayni"
+    },
+    "kesik_orani": {
+      "h1_fl31": 0.038,
+      "h2b_fl31_k4": 0.0,
+      "h1_fl35": 0.1,
+      "h2b_fl35_k4": 0.1,
+      "BIZ_olcum_bi": 0.038
+    },
+    "KESIK_UYARISI": "3.5 FL iki kosuda da %10 kesik — onceki turun %5 esigini ASIYOR. Ayni 1024+512 butcesi altinda 3.5 FL daha cok muhakeme harciyor. Sayilari raporlanir ama kesime duyarli eksenlerde TAVAN/TANIMSIZ damgasi tasir."
+  },
+  "reasoning_tokens": {
+    "h1_fl31": {
+      "ort": 789.4,
+      "dolu": "78/80"
+    },
+    "h2b_fl31_k4": {
+      "ort": 626.9,
+      "dolu": "80/80"
+    },
+    "h1_fl35": {
+      "ort": 868.8,
+      "dolu": "41/80"
+    },
+    "h2b_fl35_k4": {
+      "ort": 865.6,
+      "dolu": "42/80"
+    },
+    "BIZ": {
+      "ort": null,
+      "dolu": "0/80",
+      "not": "llama-server reasoning_tokens BILDIRMIYOR. Butce ESLESIK (1024 iki tarafta da) ama OLCUM tek tarafli → muhakeme ekseni KISMEN TANIMSIZ. Kiyaslanabilir vekil completion_tokens (iki tarafta da dusunce DAHIL)."
+    },
+    "completion_tokens_ort": {
+      "BIZ_h1": 803.9,
+      "h1_fl31": 970.5,
+      "h1_fl35": 573.6
+    }
+  },
+  "olaylar": [
+    "INDEKS YANLIS ALARMI: retriever (bayt,mtime) vekili bugunku git checkout yuzunden bayat sandi (bayt AYNI). Icerik blob-hash ile ayni kanitlandi, indeks YENIDEN KURULMADI, kunyedeki mtime tazelendi.",
+    "h2b_fl31_k4 IKI KEZ COKTU: OpenRouter/Google AI Studio HTTP 200 + finish_reason=error + bos content, 22. ve 32. kalemde (FARKLI kalem → gecici). gen_eval_grounded icine geri-cekilmeli retry eklendi (commit 334880d); ucuncu deneme 80/80 tamamlandi. Yarim dosyalar YARIM-KOSU-DURDU olarak saklandi.",
+    "RED-REGEX IKI KEZ DUZELTILDI (commit b8938a6 + 334880d). Bizim cipalarimiz (olcum-bi, olcum-h2b-k4) HER IKI duzeltmeden de ETKILENMEDI — 0 satir."
+  ],
+  "brief_ten_sapma": [
+    "Adim 2.4 score_abstention komutuna --source-field context_shown EKLENDI. Brief bunu tasimiyordu; varsayilan referans=ALTIN madde hakeme gosterilir ve tuzaklarin cogu gecersiz sayilirdi. Bizim cipamiz (cp0_thinking_score.sh:58) context_shown kullaniyor → eslesme icin zorunlu.",
+    "groundedness --mode data ACIKCA verildi (varsayilan zaten data, cipayla ayni)."
+  ],
+  "M2b_EKSEN_UYUSMAZLIGI": "BIZIM M2b cipamiz (olcum-h2b-k4) --sufficiency-preamble OLMADAN kosuldu; bu gorevin dort kosusu onsoz ACIK. Repodaki HICBIR m2b/h2b kosusu onsoz kullanmiyor. ADR-0057 geregi M2b satiri ESLESMEMIS eksendir → TANIMSIZ damgali, hukum kurulmaz.",
+  "git_sha": "334880d",
+  "yazildi": "2026-08-06T17:28:18"
+}
