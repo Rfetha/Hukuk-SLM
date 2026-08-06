@@ -92,6 +92,18 @@ refuse · A1 = faithfulness of claims, **computed over answered items only** ·
 - **vs. Gemini 3.1 Flash-Lite:** we reach **98.2%** of its faithful-answer mass
   and **refuse less often than it does** — but we are behind on A1 (0.909 vs
   0.956), M2 (0.833 vs 0.848) ᴷ⁴ and clearly behind on **M2b (0.766 vs 0.883)** ᴷ³.
+  - ⚠️ **The M2 gap is ONE item wide — read it as the instrument's resolution
+    limit, not as a result.** After the denominator was equalized (ᴷ⁴) both arms
+    share denominator **66**, so the quantum is `1/66 = 1.52 points`:
+    `tgta_v1` abstains on **55/66**, Gemini on **56/66**. The 0.015 difference is
+    *exactly one judge verdict*. Before the repair the gap was ~2.4 items wide;
+    it is now the smallest non-zero difference this instrument can express.
+    A single item flipping would report "we equalized with Gemini on M2" —
+    that sentence should not be constructed from a one-item move.
+    ⚠️ The **0.3 A1-point** judge noise floor does **not** cover this axis (it was
+    derived for the answered-only A1 macro). No substitute floor is asserted here:
+    setting one is a human decision, filed as debt in
+    [`docs/open_questions.md`](docs/open_questions.md).
 - **This is not a parity claim.** The harness is off, cost is not normalized, and
   the merge configuration was **selected on DEV over 3 variants**. The competitor
   comparison has still never been run with the harness on.

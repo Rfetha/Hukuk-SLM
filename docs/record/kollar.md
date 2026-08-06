@@ -252,6 +252,21 @@ Gemini 3.1 FL      72,9%      0,237   0,9561   0,848ᴷ⁴  0,883ᴷ³         �
 > bu **türetilmiş** nicelik güncellenmemişti — üstelik "gözden geçirildi" diye tasdik eden
 > ᴷ³ damgasının **altında** duruyordu. Damgasız olmaktan zararlıydı.
 
+**Ne BAŞARAMADI — M2'de hiçbir şey taşımıyor** *(kaydedilmemişti, 2026-08-06 eklendi · kusur Ö2 m.3)*:
+
+```
+τ_g v1    55/66 = 0,833 ᴷ⁴        merge'in M2'ye katkısı:  ~~+0,020~~ → +0,000
+tgta_v1   55/66 = 0,833 ᴷ⁴        iki kol BİREBİR EŞİT (aynı 55 kalem)
+τ_a v1    63/66 = 0,955 ᴷ⁴        ← tek başına o eksende çok önde
+```
+
+Emekli alette merge `τ_g`'yi M2'de **+0,020** geçiyor görünüyordu; o fark tümüyle **paydaların
+özneye bağlı olmasından** geliyordu (`τ_g` 55'lik, `tgta_v1` 56'lık payda — **farklı sınav**).
+Payda 66'ya eşitlenince fark **sıfırlandı**. ⭐ Bu, ARA KAPI'nın *"merge `τ_a`'yı taşımıyor"*
+teşhisini **ikinci, bağımsız bir eksenden** doğruluyor — o teşhis M2b'den (`0,987 → 0,766`)
+türetilmişti. ⚠️ M2'nin kuantumu `1/66 = 1,52 p`, yani `+0,000` ile `±1 kalem` arasında ayrım
+kurulamaz (çözünürlük borcu: `docs/open_questions.md`). Kaynak: [#59](research_log/2026-08-06-m2-paydasi-ve-karar-4.md) §2.
+
 Ayrıca öz-sonlandırma geri geldi (M1'de 25/80
 zorunlu kapatma, base 80/80) ve cevap başına maliyet base'e göre **%40 düştü**.
 

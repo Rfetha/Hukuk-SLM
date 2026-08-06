@@ -39,10 +39,24 @@ pahalı ve doğru olandan kötüdür.
 | Gemini (thinking-off) | 57 → **66** | 0,842 → **0,758** | **−8,4 p** |
 | `τ_g` (thinking-off) | 59 → **66** | 0,458 → **0,439** | −1,9 p |
 
-### ✅ Kendi kendini doğrulayan sınav: **paydalar EŞİT**
+### ✅ Sınav paylaşımı doğrulandı: **paydalar EŞİT** — ama bilgiyi taşıyan kontrol hangisi?
 
-On koşunun `valid_traps` değeri **{66}** — tek eleman. Bu kontrol **düşebilirdi** (aynı sınavı
-paylaşmayan bir koşu ya da bozuk bir önbellek anında ayrışma üretirdi) ve düşmedi.
+On koşunun `valid_traps` değeri **{66}** — tek eleman.
+
+> ⚠️ **DÜZELTME 2026-08-06 (küçük k1).** İlk yazımda buna *"kendi kendini doğrulayan sınav"*
+> denmişti; ifade **fazla güçlüydü** ve düzeltiliyor. **70/70 anahtar kesişimi** verildikten
+> sonra payda eşitliği bir **teorem**, bağımsız bir gözlem değil: içerik-adresli önbellek aynı
+> anahtara aynı kaydı döndürür, dolayısıyla `{66}` sözlük aramasının aritmetik sonucudur
+> (maliyeti **$0**; 9 kolun 9'unda `gecerlilik_onbellekten = 70`).
+> ⭐ **Bilgi taşıyan asıl kontrol, anahtar kesişiminin KENDİSİdir** (70/70) — o gerçekten
+> düşebilirdi ve düşmedi. `{66}` kontrolü, kesişim ölçüldükten *sonra* çalışan bir tutarlılık
+> kontrolüdür: bozuk/kirli bir önbellek ya da yanlış eşleşen bir koşu onu yine de ayrıştırırdı,
+> yani **bedava bir alet denetimi** olarak değerli — ama *"sınav paylaşılıyor mu"* sorusuna
+> bağımsız kanıt sunmaz.
+> 🚨 **2. dalganın totolojisiyle AYNI SINIFTA DEĞİL:** o kontrol tanımı gereği düşemezdi
+> (ölçtüğü şeyin kendisinden türetiliyordu). Bu kontrol **düşebilir** — yalnızca *yeni bilgi*
+> ekleme payı, kesişim ölçüldükten sonra küçüktür. Ayrım kaydedildi çünkü ikisini aynı kefeye
+> koymak, gerçekten değerli olan bedava denetimi de attırır.
 
 ### 🚨 Düzeltmenin yönü **BİZİM LEHİMİZE** — ve bu yüzden ayrıca yazılıyor
 
@@ -74,7 +88,27 @@ eşiğe/çarpana/formüle **hiç dokunulmadı**.
 
 🚨 **Bu ✅ ilk kez BİRİM-TUTARLI.** Sprint 2 kapanışındaki `0,984 ≥ 0,923` kıyası **karışık
 birimdeydi**: pay özneye bağlı paydadan (63/70), eşik #46'nın kör çıpasından. Hüküm aynı
-kaldı, ama gerekçesi ilk kez sağlam. Marj +18,1 → **+3,2 puan**.
+kaldı, ama gerekçesi ilk kez sağlam.
+
+**Marj — referans noktası EŞİĞİN üstü:** ~~+18,1 →~~ **+6,1 p → +3,2 p** (marj **~1,9× daraldı**).
+
+> 🚨 **DÜZELTME 2026-08-06 (kusur Ö1) — bu cümlenin ilk hâli KARIŞIK BİRİMDEYDİ.** İronik
+> biçimde *"ilk kez birim-tutarlı"* iddiasını taşıyan cümlenin **kendi marjı** iki farklı
+> referans noktasından okunmuştu. Tanımlar (`#48:1103`):
+> ```
+> ÇIPANIN üstü  = Rej* − cevaba-kör base      +18,1 = 0,984 − 0,803
+> EŞİĞİN üstü   = Rej* − eşik                  +3,2 = 0,955 − 0,923
+> ```
+> Yayımlanan `18,1 → 3,2` **iki okuma da değildi**. Eşleşen okumalar:
+> ```
+> EŞİĞİN üstü  (bu turun seçtiği):  +6,1 p → +3,2 p     ~1,9× daraldı
+> ÇIPANIN üstü:                    +18,1 p → +15,2 p    ~1,2× daraldı
+> ```
+> ⚠️ Karışık hâli okuyan biri *"payda onarımı marjı **5,7 kat** eritti"* der ve `τ_a`'nın kapıyı
+> **kıl payı** geçtiğini sanır. Gerçekte kol kapıyı **rahat** geçiyor — ki §2'nin teşhisi
+> (*sorun `τ_a`'nın kalitesi değil, merge'in onu taşımaması*) tam buna dayanıyor.
+> **Kural, kayda geçti:** bir marj/fark yazarken **referans noktası cümlede söylenir**.
+> Aynı düzeltme `#48`, `research_log/README.md` ve `gorev-2-report.md`'de de yapıldı.
 
 ### ⇒ ADR-0045 §3'ün ön-kayıtlı tablosunda satır: **`✅ ❌` → DUR**
 
@@ -85,6 +119,33 @@ kaldı, ama gerekçesi ilk kez sağlam. Marj +18,1 → **+3,2 puan**.
 sorun `τ_a`'nın kalitesi **değil** — kol tek başına kapıyı rahat geçiyor — **merge'in onu
 taşımaması**. Kapının §Sonuç'ta vaat ettiği *"kaldı ama neden kaldı"* teşhisi tam bu.
 CP4-CP5 harcaması bu kapıdan **yetki almıyor**.
+
+### ⭐ Kaydedilmemiş sonuç — **merge'in M2'ye katkısı `+0,020` → `+0,000`**
+
+Payda eşitlenince yukarıdaki tablodan doğrudan okunan, ama hiçbir yerde **yazılmamış** bir
+gözlem çıktı:
+
+```
+τ_g v1     55/66 = 0,833        (emekli birimde 0,873)
+tgta_v1    55/66 = 0,833        (emekli birimde 0,893)
+                                merge'in M2'ye katkısı  ~~+0,020~~ → +0,000
+```
+
+İki kol **birebir eşit** — aynı payda, aynı pay, aynı kalem sayısı. Emekli alette merge `τ_g`'yi
+M2'de **+0,020** geçiyor görünüyordu; o fark tümüyle **paydaların farklı olmasından** geliyordu
+(`τ_g` 55/55 değil 55/**55 payda**, `tgta_v1` 56/**56 payda** — özneye bağlı payda iki kolu farklı
+sınavda ölçüyordu).
+
+⭐ **Bu gözlem, ARA KAPI'nın teşhisini BAĞIMSIZ olarak güçlendiriyor.** §2'nin *"merge `τ_a`'yı
+taşımıyor"* hükmü M2b ekseninden (`0,987 → 0,766`) türetilmişti. M2 ekseni şimdi aynı şeyi
+**ikinci, bağımsız bir yerden** söylüyor: merge M2'de `τ_g`'nin **üstüne hiçbir şey koymuyor**,
+oysa `τ_a` tek başına o eksende **0,955**. İki eksende de merge, çekinme kolunun kazanımını
+taşımıyor.
+
+⚠️ **Şerh (ADR-0057 · kuantum):** `+0,000` *"hiç fark yok"* demektir, *"fark ölçülemedi"*
+demez — iki kol aynı 66 kalemde **aynı 55'inde** çekiniyor. Ama ters yön de doğrudur: bu eksende
+`1/66 = 1,52 puanlık` bir kuantum var, dolayısıyla `+0,000` ile `±1 kalem` arasında ayrım
+kurulamaz. Çözünürlük sınırı borç olarak `docs/open_questions.md`'de.
 
 ---
 

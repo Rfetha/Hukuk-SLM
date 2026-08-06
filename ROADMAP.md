@@ -14,7 +14,7 @@ DEV, **harness kapalı**, hakem `gpt-4o-mini` (protokol: [MODEL_CARD](MODEL_CARD
 ```
                   BİZ 4B   Gemini FL    açık
 M1 sadık-cevap    71,6%     72,9%     ~kapandı  ✅
-M2 Rej            0,833     0,848      −0,015   (ᴷ⁴ yeniden puanlandı; eski 0,893 ↔ 0,930)
+M2 Rej            0,833     0,848      −0,015   ⚠️ TEK KALEM — aşağıya bak  (ᴷ⁴; eski 0,893 ↔ 0,930)
 A1                0,909     0,956      −0,047
 M2b Rej           0,766     0,883      −0,117   ← EN BÜYÜK   (ᴷ³ yeniden puanlandı)
 ```
@@ -28,6 +28,16 @@ M2b Rej           0,766     0,883      −0,117   ← EN BÜYÜK   (ᴷ³ yenide
 > en çok kayan özne **RAKİP** (Gemini −8,2 puan · biz −6,0), açıklık **3,7 → 1,5 puana daralıyor**.
 > Kirli paydadan en çok Gemini yararlanıyordu. Kaynak:
 > [`outputs/eval/karar3-m2-payda/`](outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json).
+>
+> ⚠️ **KUANTUM ŞERHİ — `M2 Rej`'deki `−0,015` TEK BİR KALEMDİR.** Payda eşitlenince (66) M2'nin
+> kuantumu `1/66 = **1,52 puan**` oldu: `tgta_v1` **55/66** çekiniyor, Gemini **56/66**.
+> Yani fark, aletin ifade edebileceği **en küçük sıfırdan farklı** değer — bir hakem yargısının
+> dönmesi. Düzeltme öncesi açıklık ~2,4 kalemdi. **Sonuç değil, çözünürlük sınırı olarak okunur:**
+> `τ_a` v2 bir kalem kazanırsa *"Gemini ile M2'de eşitlendik"* cümlesi **kurulmaz**.
+> ⛔ Global kısıttaki **`0,3 A1 puanı`** gürültü tabanı bu ekseni **KORUMAZ** (A1 makrosu için
+> yazılmıştır). Yerine yeni bir taban **uydurulmadı** — ikili oran ekseninde çözünürlük sınırı
+> koymak **insan kararıdır** ve borç olarak [`docs/open_questions.md`](docs/open_questions.md)'ye
+> düşüldü. Aynı şerh [`MODEL_CARD.md`](MODEL_CARD.md) *"How to read this honestly"* bölümünde.
 > ⚠️ `A1` satırı **hâlâ yeniden puanlanmadı** (`valid_trap`ten etkilenmiyor; ayrı eksen).
 
 ⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Rakip harness açıkken
