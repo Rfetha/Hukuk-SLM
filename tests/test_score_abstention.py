@@ -236,6 +236,111 @@ def test_pay_kaynagi_onceki_verdict_dosyasi_yoksa_ERKEN_PATLAR(tmp_path):
     assert "abst_x.jsonl" in (p.stdout + p.stderr)
 
 
+# ── K1: ÖNBELLEK KAYDI HAKEM YIĞINIYLA BİRLİKTE OKUNUR (tuzak 2.7 · ADR-0029) ──
+# Ölçülen kusur: anahtar (soru, kaynak) taşıyor, hakem yığınını taşımıyor; okuma yolunda tek
+# kontrol `if anahtar in onbellek`, kayıttaki `hakem` alanı HİÇ okunmuyordu. `cp2c_kabul.sh`
+# `LLM_GATEWAY=openai` ile koşuyor → ortak önbelleğe openai damgası yazılıyor, sonraki
+# openrouter ölçümü onu sessizce devralıp `judge_gateway: "openrouter"` yazıyordu.
+
+def _onbellek_yaz_ham(yol, cache):
+    import json
+    json.dump({"n": len(cache), "cache": cache}, open(yol, "w", encoding="utf-8"),
+              ensure_ascii=False)
+
+
+def _m2_kosusu_kur(tmp_path, soru, kaynak):
+    """`mode=data` + `--pay-kaynagi onceki` → payda dışında HİÇBİR çağrı yok."""
+    import json
+    d = tmp_path / "kosu"
+    d.mkdir(exist_ok=True)
+    with open(d / "m2_x_detail.jsonl", "w", encoding="utf-8") as f:
+        f.write(json.dumps({"id": 0, "soru": soru, "cevap": "Cevap.", "mode": "data",
+                            "referans": kaynak}, ensure_ascii=False) + "\n")
+    json.dump([{"id": 0, "verdict": "FABRICATE", "used_parametric": False, "reason": "x"}],
+              open(d / "abst_m2_x.jsonl", "w", encoding="utf-8"))
+    return d
+
+
+def _kosur(d, onbellek, kapi):
+    import os
+    import subprocess
+    ortam = {k: v for k, v in os.environ.items()
+             if k not in ("OPENAI_API_KEY", "OPENROUTER_API_KEY")}
+    ortam["LLM_GATEWAY"] = kapi
+    return subprocess.run(
+        [sys.executable, "scripts/score_abstention.py", "--details", str(d / "m2_x_detail.jsonl"),
+         "--label", "m2_x", "--out-dir", str(d), "--pay-kaynagi", "onceki",
+         "--gecerlilik-onbellek", str(onbellek)], capture_output=True, text=True, env=ortam)
+
+
+def test_onbellek_BASKA_KAPIDAN_yazilmis_paydayi_DEVRALMAZ(tmp_path):
+    """🚨 K1 — openai kapısının damgası openrouter koşusuna SESSİZCE geçmemeli."""
+    from score_abstention import gecerlilik_anahtari
+    soru, kaynak = "Kira sözleşmesi nasıl feshedilir?", "Madde 1 — alakasız hüküm."
+    onbellek = tmp_path / "onbellek.json"
+    _onbellek_yaz_ham(str(onbellek), {gecerlilik_anahtari(soru, kaynak): {
+        "gecerli": True, "reason": "x", "hakem": "gpt-4o", "kapi": "openai"}})
+    p = _kosur(_m2_kosusu_kur(tmp_path, soru, kaynak), onbellek, "openrouter")
+    assert p.returncode != 0, "farklı kapıdan gelen payda sessizce devralındı"
+    assert "YIĞIN UYUŞMAZLIĞI" in (p.stdout + p.stderr)
+
+
+def test_onbellek_AYNI_YIGINDAN_yazilmis_paydayi_DEVRALIR(tmp_path):
+    """Denetim fazla katı olmasın: yığın aynıysa devralma çalışmaya devam eder ($0)."""
+    import json
+    from score_abstention import gecerlilik_anahtari
+    soru, kaynak = "Kira sözleşmesi nasıl feshedilir?", "Madde 1 — alakasız hüküm."
+    onbellek = tmp_path / "onbellek.json"
+    _onbellek_yaz_ham(str(onbellek), {gecerlilik_anahtari(soru, kaynak): {
+        "gecerli": True, "reason": "x", "hakem": "openai/gpt-4o", "kapi": "openrouter"}})
+    d = _m2_kosusu_kur(tmp_path, soru, kaynak)
+    p = _kosur(d, onbellek, "openrouter")
+    assert p.returncode == 0, p.stdout + p.stderr
+    ozet = json.load(open(d / "abst_m2_x_summary.json", encoding="utf-8"))
+    assert ozet["gecerlilik_maliyet_usd"] == 0.0
+    assert ozet["gecerlilik_onbellekten"] == 1
+
+
+def test_onbellek_YIGIN_DAMGASIZ_kaydi_DEVRALMAZ(tmp_path):
+    """Damgasız (eski şema) kayıt da uyuşmazlıktır — 'bilinmiyor' sessizce 'uyuyor' olamaz."""
+    from score_abstention import gecerlilik_anahtari
+    soru, kaynak = "Kira sözleşmesi nasıl feshedilir?", "Madde 1 — alakasız hüküm."
+    onbellek = tmp_path / "onbellek.json"
+    _onbellek_yaz_ham(str(onbellek), {gecerlilik_anahtari(soru, kaynak): {
+        "gecerli": True, "reason": "x", "hakem": "openai/gpt-4o"}})     # `kapi` YOK
+    p = _kosur(_m2_kosusu_kur(tmp_path, soru, kaynak), onbellek, "openrouter")
+    assert p.returncode != 0
+    assert "YIĞIN UYUŞMAZLIĞI" in (p.stdout + p.stderr)
+
+
+# ── Ö5: `gecerlilik_devralinan` İKİ AYRI ŞEYİ SAYIYORDU ─────────────────────
+# `--payda-kaynagi onceki` devralması (kendi eski skorlamasından toptan) ile önbellek isabeti
+# (başka koşuyla sınav paylaşımı) aynı sayacı artırıyordu; anlamları taban tabana zıt ve
+# tuzak 2.17'nin kontrolü (*"devralınan >0 ise hangi koşuyla sınav paylaştığı gösterilebilmeli"*)
+# tam bu alana dayanıyordu — koşulamıyordu. Ölçülen karışım: `olcum-h2b-k10` 65 (önbellek)
+# ↔ `cp09-ab-ayrimi` 70 (önceki koşu).
+
+def test_ozet_onbellek_isabetini_ONCEKI_KOSU_devralmasindan_AYIRIR(tmp_path):
+    import json
+    d = _m2_kosusu_kur(tmp_path, "Soru?", "Madde 1 — alakasız.")
+    json.dump([{"id": 0, "verdict": "FABRICATE", "valid_trap": True, "reason": "x",
+                "valid_trap_anahtari": "ESKI", "valid_trap_reason": "y"}],
+              open(d / "abst_m2_x.jsonl", "w", encoding="utf-8"))
+    import os
+    import subprocess
+    ortam = {k: v for k, v in os.environ.items()
+             if k not in ("OPENAI_API_KEY", "OPENROUTER_API_KEY")}
+    p = subprocess.run(
+        [sys.executable, "scripts/score_abstention.py", "--details", str(d / "m2_x_detail.jsonl"),
+         "--label", "m2_x", "--out-dir", str(d), "--pay-kaynagi", "onceki",
+         "--payda-kaynagi", "onceki", "--gecerlilik-onbellek", str(tmp_path / "yok.json")],
+        capture_output=True, text=True, env=ortam)
+    assert p.returncode == 0, p.stdout + p.stderr
+    ozet = json.load(open(d / "abst_m2_x_summary.json", encoding="utf-8"))
+    assert ozet["gecerlilik_onceki_kosudan"] == 1
+    assert ozet["gecerlilik_onbellekten"] == 0, "iki sayaç aynı kutuya düşmemeli"
+
+
 def test_onbellek_yazimi_diskteki_kalemleri_silmez(tmp_path):
     """İki skorlama aynı önbelleğe yazıyor; ikincisi birincinin kalemini silmemeli."""
     from score_abstention import onbellek_yaz, onbellek_oku

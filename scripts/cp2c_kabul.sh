@@ -36,6 +36,14 @@ mkdir -p "$RUN"
 
 # Hakem anahtarı + kapı pinlemesi (tuzak 2.11 · 2.7)
 [ -f .env ] && { set -a; . ./.env; set +a; }
+# 🚨 2026-08-06 (kusur K1): bu zincir 4. adımda ORTAK içerik-adresli önbelleğe YAZIYOR.
+# Aşağıdaki `openai` varsayılanıyla koşarsa oraya openai yığınının damgaları girer ve
+# sonraki bir openrouter ölçümü aynı (soru, kaynak) çiftine düştüğünde tuzak 2.7 / ADR-0029
+# ihlali olur. Artık SESSİZ DEĞİL: `score_abstention.onbellek_isabeti` yığın uyuşmazlığında
+# DURDURUR (iki yönde de). Ölçüm koşularıyla önbellek paylaşacaksan `LLM_GATEWAY=openrouter`
+# ver ya da `--gecerlilik-onbellek` ile ayrı bir önbellek kullan.
+# ⚠️ Varsayılan BİLEREK değiştirilmedi: hangi yığının kabul ölçütünü ürettiği bir rejim
+# kararıdır, sessiz bir düzeltme değil (`docs/open_questions.md`'de açık soru).
 export LLM_GATEWAY="${LLM_GATEWAY:-openai}"
 [ -n "${OPENAI_API_KEY:-}" ] || die "OPENAI_API_KEY yok (.env yüklendi mi?)"
 
