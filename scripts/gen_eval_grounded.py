@@ -154,10 +154,10 @@ def parse_args():
                    help="N>0: OpenRouter `reasoning.max_tokens=N` gönder ve toplam bütçeyi "
                         "N+--max-new-tokens yap (rakip tarafı; --think-budget'ın karşılığı)")
     p.add_argument("--sufficiency-preamble", action="store_true",
-                   help="ABLASYON (research_log #43): sistem istemine 'önce kaynağın soruyu "
-                        "cevaplayıp cevaplamadığını belirt' satırını ekle. Düşünce ile gelen "
-                        "kazancın BİÇİMDEN mi muhakemeden mi geldiğini ayırmak için. "
-                        "Ana tabloda KULLANILMAZ.")
+                   help="ANA PROTOKOL (ADR-0058): sistem istemine 'önce kaynağın soruyu "
+                        "cevaplayıp cevaplamadığını belirt' satırını ekle. Ana tablodaki HER "
+                        "hücre bu bayrakla üretilir (çıpa: kütle %62,8 · A1 0,8229). "
+                        "BAYRAKSIZ koşu ABLASYON koludur ve ana tabloya girmez.")
     p.add_argument("--harness-no-gold", action="store_true",
                    help="ADR-0056 Karar 1 — `m2b`'nin harness-AÇIK karşılığı: retriever "
                         "k+1 getirir, ALTIN madde düşürülür, ilk k kalır. Bağlam uzunluğu "
@@ -285,7 +285,8 @@ def generate_completion(model, tokenizer, soru, max_new_tokens, source=None, sou
     return gen[:cut].strip()
 
 
-# ── ABLASYON: kaynak-yeterliliği önsözü (2026-07-29, research_log #43 Bulgu 5) ──
+# ── ANA PROTOKOL: kaynak-yeterliliği önsözü (ADR-0058) ─────────────────────────
+# Kökeni ABLASYON deneyiydi (2026-07-29, research_log #43 Bulgu 5); D1 ile benimsendi.
 # Bütçeli düşünce M2'de tuzak reddini 0.633 → 0.814 çıkardı. İki mekanizma aday:
 # (A) muhakeme kaynağı soruyla karşılaştırıyor · (B) zorunlu kapatma sonrası model kaynağın
 # içeriğini SAYIP DÖKMÜŞ durumda, oradan doğal devam "kaynak bunu kapsamıyor" oluyor.
@@ -645,10 +646,15 @@ def main():
         print(f"[gen-eval] rakip düşünce bütçesi: reasoning.max_tokens={a.reasoning_budget} "
               f"(toplam {a.reasoning_budget + a.max_new_tokens}) | ort reasoning_tokens "
               f"{rt_sum / max(1, rt_n):.1f}/cevap (bildirilen n={rt_n}/{len(sample)}) — künyeye yazılır")
-    if not a.sufficiency_preamble:
-        print("[gen-eval] ⚠️ bu koşu artık ablasyon kolu (ADR-0058): kaynak-yeterliliği önsözü "
+    # Why: bayrak künyeye yazılmıyor — log'daki bu satır koşunun hangi kolda olduğunun
+    # TEK izi. İki dalda da basılır ki ana protokol koşusu POZİTİF kanıt bıraksın.
+    if a.sufficiency_preamble:
+        print("[gen-eval] ✅ ana protokol: kaynak-yeterliliği önsözü AÇIK — ADR-0058 "
+              "(çıpa: kütle %62,8 · A1 0,8229)")
+    else:
+        print("[gen-eval] ⚠️ bu koşu ABLASYON kolu (ADR-0058): kaynak-yeterliliği önsözü "
               "KAPALI — sistem istemi ana protokolden FARKLI, bu koşu ana tabloya girmez "
-              "(çıpa: kütle %62,8)")
+              "(ana protokol çıpası: kütle %62,8)")
     print(f"[gen-eval] taşıyıcı={'http' if http_client else 'yerel'} | thinking={a.thinking} "
           f"| max_new_tokens={a.max_new_tokens} | seed={a.seed}")
     print(f"[gen-eval] detay → {detail}")

@@ -2,6 +2,7 @@
 
 **Tarih:** 2026-08-06 · **Durum:** kabul · **Karar veren:** insan
 **Kaynak ölçüm:** research_log #56 §5 (D1) · **Tadil eder:** ADR-0055 (B-i artık ablasyon değil)
+**Çıktı dizini:** `outputs/eval/olcum-bi/` *(önsözsüz ablasyon koşusu: `outputs/eval/s2-harness-k10-etiketli/`)*
 
 ## Karar
 `--sufficiency-preamble` ana protokolün parçasıdır. Ürünün resmî sayısı **%62,8**.
@@ -13,6 +14,7 @@ istem katmanından bedavaya alınabilecek bir kazanç eğitime yazılır.
 
 ## Yeniden türetilen çıpalar
 | eksen | eski (önsözsüz) | YENİ RESMÎ |
+| :--- | ---: | ---: |
 | kütle | %61,3 | **%62,8** |
 | A1 (cevaplanan) | 0,8042 | **0,8229** |
 | A1 · altın getirilen | 0,8616 | **0,8705** |

@@ -29,18 +29,21 @@ M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
 | `recall@10` | — *(altın **kurgu gereği** verilir)* | **0,8750** |
 | coverage | 0,7875 | **0,7625** |
 | A1 (cevaplanan-only) | 0,9087 | **0,8229** (önsözsüz ablasyon: 0,8042) |
-| A1 · altın getirilen | 0,9087 | **0,8616** |
+| A1 · altın getirilen | 0,9087 | **0,8705** (önsözsüz ablasyon: 0,8616) |
 | **KÜTLE** | **%71,6** | **%62,8** ← ürünün dürüst sayısı (önsözsüz ablasyon: %61,3) |
 | uydurulmuş madde no | 0 | **0/118** |
 
-`outputs/eval/s2-harness-k10-etiketli/` · [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
+**Ana protokol koşusu (RESMÎ, önsözlü):** `outputs/eval/olcum-bi/` ·
+[#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1) ·
+[ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md)
+**Önsözsüz ablasyon koşusu:** `outputs/eval/s2-harness-k10-etiketli/` ·
+[#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
 [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
 [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)
 
-> ⚠️ Bu ayrıştırma **önsözsüz** çıpayla (%61,3) yapılmıştır; ADR-0058 sonrası ana protokolde
-> açık 8,8 puandır ve yeniden ayrıştırılmamıştır.
-
-**⛔ %71,6 → %61,3 bir gerileme DEĞİL** — iki ölçüm aynı şeyi ölçmüyor. KAPALI'da altın madde
+**⛔ %71,6 → %61,3 bir gerileme DEĞİL** — ⚠️ *bu paragrafın tamamı ve ayrıştırması **önsözsüz**
+çıpayla (%61,3) yapılmıştır; ADR-0058 sonrası ana protokolde açık **8,8 puandır** ve yeniden
+ayrıştırılmamıştır.* İki ölçüm aynı şeyi ölçmüyor. KAPALI'da altın madde
 bağlama **kurgu gereği** konuyor; AÇIK'ta **bulunması gerekiyor**. KAPALI bir rakip değil,
 **tavan**. 10,2 puanlık açık ayrıştırıldı: **≈5,1 puan erişim ıskası** (harness'ın — altın 10/80
 soruda hiç gelmiyor) + **≈4,5 puan dikkat dağılması** (modelin — altın bağlamdayken bile
@@ -62,7 +65,7 @@ kayda o şekilde geçer.
 
 | bileşen | 08-03'te iddia | **ölçülen hüküm (08-05)** |
 | :--- | :--- | :--- |
-| **atıf doğrulayıcı** | A1 0,909 → ~1,0 | ❌ **ÇÜRÜDÜ.** Uydurulmuş madde no **0/118** — yakalayacak sınıf **zaten boştu**. A1 açığı fabrikasyondan değil, altın gelmeyince *başka bir gerçek maddeden* cevaplamaktan geliyor (**7/80**, borç B1) |
+| **atıf doğrulayıcı** | A1 0,909 → ~1,0 | ❌ **ÇÜRÜDÜ.** Uydurulmuş madde no **0/118** — yakalayacak sınıf **zaten boştu**. A1 açığı fabrikasyondan değil, altın gelmeyince *başka bir gerçek maddeden* cevaplamaktan geliyor (**5/80** — önsözsüz ablasyon: 7/80, borç B1) |
 | **red kapısı** | M2b 0,877 → ~1,0 | ❌ **ÇÜRÜDÜ (08-05, [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)).** Eşleşmiş sınavda (`h2b@k=4`, 4 kaynak ↔ 4 kaynak) **0,840 < 0,877** — kapatmadı, **kötüleştirdi**. Kapı 2/80 reddetti; mekanizması ölçülmüş biçimde boş: `KANUN_YOK 0` ve **36/80 cevapta hiç atıf yok**. İddia *sınanmamış* değil, bu rejimde **ateşlenemez** |
 | **retriever** | M1 · M4 | ✅ **KURULDU ve KAZANDIRDI.** `recall@10` **0,8750**, 759 ms/sorgu, CPU'da. Ama kendi bedelini de getirdi: bağlam uzadıkça sadakat düşüyor (**ölçüldü**, aşağı bak) |
 
@@ -101,7 +104,8 @@ Ayrıntılı faz tarifi: [`docs/VISION.md`](docs/VISION.md) Faz 2.
 | 2.4 | veri inceliği | 728 temiz negatif | hasat hattı kurulu, ucuz |
 
 🚨 **2.1c model tarafının yeni birinci sırası — ve gerekçesi ölçülmüş.** Coverage kaybının
-**büyük yarısı** burada, B1'in (7/80) **iki katı**. Model, elinde doğru madde varken
+**büyük yarısı** burada, B1'in (**5/80**; önsözsüz ablasyon: 7/80) **≈2,8 katı** (14 ↔ 5).
+Model, elinde doğru madde varken
 cevap vermiyor; bunu harness KAPALI'da da yapıyordu (**17/80**) → bir harness gerilemesi
 değil, **modelin kendi özelliği**. Bugünkü modelle kütlenin tavanı **~%71,6**.
 
@@ -270,13 +274,13 @@ mahremiyet (hukuki sorular kişiseldir). İkisi de zamanla **büyüyor**.
 0.  modül-başına norm (2.1)   ✅ koşuldu → 🔴 REDDEDİLDİ (ADR-0053)
 1.  HARNESS                   ✅ KURULDU  → sprint3-part1.md
 2.  harness AÇIK ölçüm        ✅ ÖLÇÜLDÜ  → %62,8 (ürünün dürüst sayısı; önsözsüz ablasyon: %61,3)
-3.  τ_a v2 (2.2)              ▶ sırada    — ve gerekçesi artık ölçülmüş: B10 (14/80)
+3.  τ_a v2 (2.2)              ▶ sırada    — gerekçesi ölçülmüş: B10 14/80 (önsözsüz ablasyon: 16/80)
 4.  Türkçe muhakeme (2.3)     veri turu
 ```
 
 ⚠️ **Sıranın gerekçesi ölçümle DEĞİŞTİ.** 08-03'te 3. sıranın gerekçesi *"artık doğru girdi
 dağılımını bilerek"* idi — yani bir **bilgi** gerekçesi. Bugün ona bir **büyüklük** gerekçesi
-eklendi: aşırı-red **14/80** ve harness'la kapanmıyor. Sıra aynı kaldı, ama artık *"sonra da
+eklendi: aşırı-red **14/80** (önsözsüz ablasyon: 16/80) ve harness'la kapanmıyor. Sıra aynı kaldı, ama artık *"sonra da
 yaparız"* değil **kütlenin büyük yarısı orada.**
 
 **Part 2'nin kararları verildi ve kayda geçti:** [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) — `m2b` harness-AÇIK protokolü (altın ablasyonu), iki-sayı raporlaması, ön-kayıtlı tahminler, ADR-0055'in çıpa düzeltmesi. **Uygulama planı** `docs/superpowers/plans/` altına ayrıca yazılır.
