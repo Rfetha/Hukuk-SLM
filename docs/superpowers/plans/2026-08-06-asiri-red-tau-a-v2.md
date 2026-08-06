@@ -206,6 +206,46 @@ veriyor. SDK'nın kendi retry'ı (`max_retries=8`) bunu **göremiyor** — HTTP 
 | 10 | **kesiklik kapısı** (`>%5 → geçersiz`) yalnız Görev 7/9'da, yani **bizim** koşularımız için yazılmış | ADR-0057 eşit sınav istiyor; 3.5 FL **%10** kesik, hattaki tek aykırı | Kapı simetrik uygulanacak; hüküm duyarlılık testine bağlandı |
 | 11 | **Görev 7.2 · 9.1** çıplak `llama-server -m ...` yazıyor | Binary **PATH'te yok**; repo'nun kendi konvansiyonu `BIN="${BIN:-$HOME/code/llama.cpp/build-cuda/bin/llama-server}"` (`cp0_thinking_gen.sh:46`). Komut olduğu gibi koşulsa `command not found` verirdi — çöker, sessiz değil, ama koşuyu durdurur | Sevklerde tam yol verilecek |
 | 8 | plan Görev 9 Adım 9.5'te **üç kollu tek paydalı** eşleştirilmiş A1 satırı istiyor | Alet katı biçimde **ikili**; her çift kendi paydasını üretiyor (`base`'in A1'i bir dosyada 0,9844, ötekinde 0,9861). O satır bu aletle **kurulamazdı** | imza **k-yollu** genelleştirildi; ikili çağrı özel hâl, mevcut testlerin davranışı korundu |
+| 12 | **Görev 9 kapısı** `M2b Rej ≥ 0,840` — *"bugünkü çıpadan gerileme yok"* demek için yazılmıştı | K3 düzeltilince (payda cevaba KÖR) çıpa **0,840 → 0,735**'e indi. Eşik olduğu gibi kalsaydı anlamı sessizce değişecekti: gerileme yasağı değil, **+10,5 puanlık iyileşme talebi** | ⬇️ aşağıdaki **KARAR-1**: eşik Ö5'in **önsözlü** çıpasından yeniden türetilecek (insan kararı 2026-08-06) |
+
+### 🧭 KARAR-1 — M2b eşiği yeniden türetiliyor (insan kararı, 2026-08-06)
+
+**Bağlam.** K3 (çekinme aletinin paydası hakemin gördüğü cevaba bağlıydı) kapandı. Düzeltmeden
+sonra payda **modelden bağımsız**: harness-KAPALI M2b'de altı kolun altısında da **77**;
+harness-AÇIK h2b k=4'te üç kolun üçünde de **68**; k=10'da 65. Bu, düzeltmenin kendi kendini
+doğrulayan sınavıydı ve **geçti**.
+
+| kol | eski Rej | **yeni Rej** |
+| :--- | ---: | ---: |
+| **BİZ** `h2b_tgta_v1_k4` | 0,840 | **0,735** |
+| 3.1 FL `h2b_fl31_k4` | 0,978 | **0,809** |
+| 3.5 FL `h2b_fl35_k4` | 0,982 | **0,926** |
+| `tgta_v1` M2b (harness kapalı) | 0,877 | **0,766** |
+| `tg_v1` M2b | 0,607 | **0,506** |
+| `ta_v1` M2b | 0,987 | **0,987** *(kıpırdamadı)* |
+| `base` M2b | 0,986 | 0,961 |
+| `tg_ta_min` (norm-dengeli) M2b | 0,987 | 0,987 |
+| `tg_ta_nb` M2b | 1,000 | 1,000 |
+
+**İki hüküm etkilenmedi — ikisi de kontrol edildi, varsayılmadı:**
+- **ADR-0052 ayakta.** *"Ham TIES `τ_a`'yı silmedi"* kanıtı 0,607 → 0,877 idi; yeni aletle
+  0,506 → 0,766. **Sıçrama aynı (+0,26)**, yön aynı. Karar yeniden açılmıyor.
+- **Görev 7 kol kapısı sağlam.** Referansı `ta_v1` = **0,987** ve o değişmedi, dolayısıyla
+  `M2b Rej ≥ 0,95` hâlâ yazıldığı anlamı taşıyor. Bu kapıya dokunulmuyor.
+
+**Karar.** Görev 9'un `M2b Rej ≥ 0,840` eşiği **Ö5'in önsözlü M2b çıpasından** yeniden
+türetilecek. Gerekçe: `τ_a` v2 önsözlü rejimde sınanacak, dolayısıyla tek gerçekten **eşleşen**
+sayı odur (ADR-0057, eşit sınav). Eşiğin *anlamı* korunuyor — *"gerileme yok"* — yalnız birimi
+düzeltilmiş aletin birimine çevriliyor.
+
+⛔ **Bu bir gevşetme değildir ve öyle kullanılamaz.** ADR-0050'nin kuralı: *sonucu gördükten sonra
+eşik değil **alet** düzeltilir.* Burada düzeltilen alettir; eşik yalnız yeni birime taşınıyor.
+Ajanın eşiğe dokunması yasaklandı — yeni çıpayı **ölçer**, eşiği **insan yazar**.
+
+⚠️ **Yayılım borcu:** `0,877` / `0,840` jetonu **20 belgede** geçiyor (`CLAUDE.md`, `MODEL_CARD.md`,
+`docs/record/kollar.md`, `ROADMAP.md`, dört ADR, altı research_log girdisi…). Eski değerler
+silinmeden, *"eski alet (payda modele bağlıydı)"* damgasıyla korunacak — CLAUDE.md'nin çelişki
+kuralı: sessizce üstüne yazma, **iki yerde de işaretle**.
 
 ### ⚠️ Yaşanan olumsuzluklar — ders çıkarılacak
 
