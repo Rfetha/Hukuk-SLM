@@ -66,7 +66,7 @@ not measure the same thing (OFF hands the model the gold article by construction
 | every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#59** |
 | the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
 | what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0059** |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0060** |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -138,7 +138,9 @@ decision ledger.
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
   record, **authoritative for "what happened."** New findings continue at **#60**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0060**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0061**.
+  ⚠️ **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
+  places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.
 
 ### Direction and scope
 
