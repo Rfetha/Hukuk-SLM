@@ -123,35 +123,43 @@ def test_gecerlilik_anahtari_cevaptan_bagimsiz():
             != gecerlilik_anahtari("Soru?", "BAŞKA kaynak"))
 
 
-def test_gecerlilik_anahtari_kaynak_klipinin_OTESINI_AYIRT_EDER():
-    """🚨 K-1 — anahtar TAM bağlamı ayırt etmeli; klip yalnız hakeme giden metni kırpar.
+def test_gecerlilik_anahtari_HAKEM_ISTEMINE_ESIT():
+    """⭐ KARAR-4 m.1 (2026-08-06) — anahtar, hakemin GERÇEKTEN gördüğü metnin fonksiyonu.
 
-    Kuralın ilk hâli anahtarı `kaynak[:SOURCE_CLIP]` üzerine kuruyordu ve bu, **farklı
-    sınavları aynı payda kaydına** düşürüyordu. Ölçüldü (2026-08-06): `h2b k=4` ile
-    `h2b k=10` 80 kalemin **15'inde** aynı anahtara düşüyor; `id=12`'de k=4 bağlamı
-    4.461, k=10 bağlamı 10.281 karakter, ilk 3.500 karakter AYNI, kaynak sayısı 4 ↔ 10.
-    k=10 kolu kendi paydasını hiç ödemiyor, k=4'ünkini devralıyordu.
+    K-1 anahtarı TAM metne taşımıştı; ölçüm o onarımın **sayısal** karşılığı olmadığını
+    gösterdi (15/15 aynı hüküm) ve bir gürültü yolu açtı: hakemin AYIRT EDEMEDİĞİ bir
+    farka göre bölünen anahtar, *aynı istem → aynı cevap* değişmezini kırar. Ölçüldü:
+    5.363 ayrı istemin **65'i** birden fazla anahtara düşüyor, **83** çağrı garanti
+    gereksiz, ve aynı istem iki kayda dönerse `Rej*` ~1,5 p oynar (saf gürültü).
+
+    Sınanan şey vekil DEĞİL: hakeme giden metin `hakem_kaynagi()`'ndan çıkıyor ve anahtar
+    da aynı fonksiyondan besleniyor — ikisi ayrışırsa bu test düşer.
     """
-    from score_abstention import gecerlilik_anahtari, SOURCE_CLIP
+    from score_abstention import gecerlilik_anahtari, hakem_kaynagi, SOURCE_CLIP
     onek = "A" * SOURCE_CLIP
-    assert gecerlilik_anahtari("S", onek) != gecerlilik_anahtari("S", onek + "kuyruk")
-    # Aynı sınavı paylaşan kollar YİNE aynı anahtara düşer — K3'ün kazanımı korunuyor.
-    assert gecerlilik_anahtari("S", onek + "kuyruk") == gecerlilik_anahtari("S", onek + "kuyruk")
+    # Hakem ikisini AYIRT EDEMEZ (istem bayt-bayt aynı) → anahtar da ayırmamalı.
+    assert hakem_kaynagi(onek + "kuyruk-A") == hakem_kaynagi(onek + "kuyruk-B")
+    assert gecerlilik_anahtari("S", onek + "kuyruk-A") == gecerlilik_anahtari("S", onek + "kuyruk-B")
+    # Klip İÇİNDE ayrışan metinler farklı istem → farklı anahtar (kural tek yöne bozulmasın).
+    assert gecerlilik_anahtari("S", "KAYNAK bir") != gecerlilik_anahtari("S", "KAYNAK iki")
+    assert gecerlilik_anahtari("S", "KAYNAK bir") != gecerlilik_anahtari("T", "KAYNAK bir")
 
 
-def test_farkli_sinavlar_ayni_payda_kaydini_PAYLASMAZ():
-    """⭐ Tuzak 2.17'nin birim testi — K3'ün (aynı sınav → aynı payda) TAMAMLAYICISI.
+def test_hakem_isteminden_TASAN_METIN_ANAHTARA_GIRMEZ():
+    """Aynı değişmezin uçtan uca hâli: `judge_gecerlilik`'in kurduğu istem AYNI iken
+    anahtar da AYNI olmalı. İstem metni ile anahtar arasına klip farkı giremez.
 
-    Gerçek şekil: `k=4` bağlamı, `k=10` bağlamının ÖNEKİdir. Klipli anahtarla ikisi tek
-    kayda düşüyordu; k=10 kolu kendi paydasını hiç ödemiyor, k=4'ünkini devralıyordu.
+    ⚠️ Bedeli KABUL EDİLDİ ve tek yerde tutuluyor (KARAR-4 m.2): `k=4` bağlamı `k=10`
+    bağlamının ÖNEKİ olduğu için ikisi TEK kayda düşer — `k=10`'un paydası bu yüzden
+    **TANIMSIZ** damgalıdır ve ondan hüküm kurulmaz. Aleti değil damgayı taşıyoruz.
     """
-    from score_abstention import gecerlilik_anahtari
+    from score_abstention import gecerlilik_anahtari, gecerlilik_istemi
     soru = "Kat maliki ortak gideri ödemezse ne olur?"
     k4 = "".join(f"[KAYNAK {i}]\n{'m' * 900}\n" for i in range(1, 5))
     k10 = k4 + "".join(f"[KAYNAK {i}]\n{'m' * 900}\n" for i in range(5, 11))
-    assert k10.startswith(k4)                                   # gerçek şekil korunuyor
-    assert gecerlilik_anahtari(soru, k4) != gecerlilik_anahtari(soru, k10)
-    assert gecerlilik_anahtari(soru, k10) == gecerlilik_anahtari(soru, k10)
+    assert k10.startswith(k4) and len(k4) > 3500          # gerçek şekil korunuyor
+    assert gecerlilik_istemi(soru, k4) == gecerlilik_istemi(soru, k10)
+    assert gecerlilik_anahtari(soru, k4) == gecerlilik_anahtari(soru, k10)
 
 
 # ── KARAR-2: BOŞ BAĞLAMDA PAYDA TANIM GEREĞİ 80/80 (ADR-0048 m.2) ──────────
