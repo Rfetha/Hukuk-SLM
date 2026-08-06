@@ -35,7 +35,7 @@ yazmazsan** bir sonraki plan aynı kusurla doğar.
 | belge | durum |
 | :--- | :--- |
 | [`plans/2026-08-03-s3a-on-prob.md`](plans/2026-08-03-s3a-on-prob.md) | ✅ uygulandı 2026-08-04 → [#49](../record/research_log/2026-08-04-s3a-on-prob.md) · [ADR-0054](../adr/0054-harness-tasarim-kararlari-k2-k5.md) |
-| [`plans/2026-08-05-olcum-bosluklari.md`](plans/2026-08-05-olcum-bosluklari.md) | 🔄 **koşuluyor** (2026-08-05) — Görev 1-4 ✅, Görev 5 üretimde. Canlı durum planın **İCRA DURUMU** bloğunda; kararları [ADR-0056](../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) · [ADR-0057](../adr/0057-harness-rekabet-kapisi-esit-sinav.md) |
+| [`plans/2026-08-05-olcum-bosluklari.md`](plans/2026-08-05-olcum-bosluklari.md) | ✅ **uygulandı 2026-08-05** → [#56](../record/research_log/2026-08-05-olcum-bosluklari.md) · [ADR-0056](../adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) · [ADR-0057](../adr/0057-harness-rekabet-kapisi-esit-sinav.md). 6/6 görev, GPU $0 + hakem $0,075. Planın **5 sessiz-yanlışlık kusuru** İCRA DURUMU bloğunda |
 | [`specs/2026-08-03-yol-haritasi-design.md`](specs/2026-08-03-yol-haritasi-design.md) | onaylandı — yürürlükteki özet [`ROADMAP.md`](../../ROADMAP.md) |
 
 Arşive alınmış eskiler: [`../_arsiv/superpowers/`](../_arsiv/superpowers/)
