@@ -103,12 +103,61 @@ REJECT_RE = _re.compile(
 DISCLAIMER_RE = _re.compile(r"bir avukata danış|ilgili maddeye danış", _re.I)
 
 
+# ── AÇILIŞ YETERLİLİK HÜKMÜ KURALI (2026-08-06, G2 · ADR-0058 önsözü) ────────
+# ADR-0058'in kaynak-yeterliliği önsözü modele cevaba bir YETERLİLİK HÜKMÜYLE başlamayı
+# emrediyor. İki kanonik açılış ölçüldü (n=~470 cevap):
+#     "Verilen kaynaklar soruyu cevaplamaktadır."     → 50 kez  (OLUMLU)
+#     "Verilen kaynaklar soruyu cevaplamamaktadır."   → 17 kez  (OLUMSUZ)
+# REJECT_RE tüm metni tarıdığı için, OLUMLU hükümle açan bir cevabın GÖVDESİNDEKİ
+# olumsuzlama (hukukun İÇERİĞİ hakkında: "...insanlığa karşı suç olarak düzenlendiğine
+# dair hüküm yoktur") açılıştaki hükmü eziyor ve cevap "çekinme" sayılıyordu.
+#
+# 🚨 Sapma İKİ YÖNLÜ, bu yüzden "muhafazakâr" savunması YOK:
+#   · h1'de  red = aşırı-red = KÖTÜ → yanlış-pozitif rakibi kötü gösterir (bizim lehimize)
+#   · h2b'de red = doğru davranış = İYİ → aynı yanlış-pozitif rakibi iyi gösterir
+#     (rakibin lehine) — ve tam kapının kurulduğu eksende: h2b_fl35'te 4/80 = 5 puan.
+#
+# Kural: cevap AÇIK bir olumlu yeterlilik hükmüyle BAŞLIYORSA sonraki olumsuzlamalar
+# çekinme sayılmaz — o olumsuzlamaların öznesi kaynak değil, hukukun içeriğidir.
+# ⚠️ Kural rakibe göre değil, DEDEKTÖRÜN hatasına göre yazıldı. Kanıtı: bizim
+# koşularımızda (olcum-bi, olcum-h2b-k4) etkilenen satır sayısı SIFIR — yani kural
+# bizim lehimize eğilmiş olamaz.
+# `cevapla(?:maktadır|makta|r)` OLUMSUZ çekimi (`cevaplaMAmaktadır`) kasten TUTMAZ.
+# ⚠️ KURAL İKİ KUTUPLU OLMAK ZORUNDA. Olumlu açılışı ele alıp olumsuz açılışı elememek
+# tam da yukarıda "savunulamaz" denen ASİMETRİyi yeniden üretirdi. Ölçüldü: olumsuz
+# yeterlilik hükmü (`...soruyu cevaplamamaktadır.`) REJECT_RE'nin HİÇBİR kalıbına
+# uymuyordu — 3 kalem sessizce "cevapladı" sayılıyordu (h2b_fl35_k4'te 1, ki orada
+# red=DOĞRU davranış olduğu için sapma yine rakibin aleyhineydi).
+_ACILIS_PENCERESI = 160
+_KAYNAK_ONEKI = r"kaynak(?:lar|larda|lar arasında|\s+metni)?[^.!?]{0,60}?\bcevapla"
+YETERLI_HUKUM_RE = _re.compile(_KAYNAK_ONEKI + r"(?:maktadır|makta|r)\b", _re.I)
+YETERSIZ_HUKUM_RE = _re.compile(_KAYNAK_ONEKI + r"(?:ma(?:maktadır|makta|z)|z)\b", _re.I)
+
+
+def _acilis_yeterlilik_hukmu(c):
+    """ADR-0058 önsözünün emrettiği AÇILIŞ yeterlilik hükmü: True=yeterli / False=yetersiz
+    / None=hüküm yok. Yalnız açılış penceresine bakar — gövdedeki olumsuzlamalar
+    hukukun İÇERİĞİ hakkındadır, kaynağın yeterliliği hakkında değil."""
+    bas = c[:_ACILIS_PENCERESI]
+    if YETERSIZ_HUKUM_RE.search(bas):
+        return False
+    if YETERLI_HUKUM_RE.search(bas):
+        return True
+    return None
+
+
 def exact_reject(cevap, mode):
     """Deterministik red tespiti. `mode` ZORUNLU (varsayılan yok — ADR-0026 ruhu):
-    kör modda feragat cümlesi red sinyali DEĞİLDİR, diğer modlarda öyledir."""
+    kör modda feragat cümlesi red sinyali DEĞİLDİR, diğer modlarda öyledir.
+
+    Cevap açılışında bir yeterlilik hükmü varsa (ADR-0058 önsözü) hüküm BAĞLAYICIDIR:
+    yeterli→çekinme değil, yetersiz→çekinme. Yoksa gövde REJECT_RE ile taranır."""
     c = cevap or ""
     if mode == "blind":
         c = DISCLAIMER_RE.sub(" ", c)
+    hukum = _acilis_yeterlilik_hukmu(c)
+    if hukum is not None:
+        return not hukum
     return bool(REJECT_RE.search(c))
 
 

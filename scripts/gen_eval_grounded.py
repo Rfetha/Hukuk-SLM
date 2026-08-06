@@ -27,6 +27,7 @@ import argparse
 import json
 import os
 import random
+import time
 import urllib.request
 from typing import NamedTuple
 
@@ -379,15 +380,33 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
         # Rakip tarafı: bütçeyi sunucu uyguluyor, zorunlu kapatmaya gerek yok. Toplam
         # bütçe = düşünce + cevap; yoksa düşünce cevabın payını yer (bizde 1024|512 ayrı).
         extra["reasoning"] = {"max_tokens": reasoning_budget}
-    r = client.chat.completions.create(
-        model=model_name,
-        messages=msgs,
-        max_tokens=(reasoning_budget + max_new_tokens) if reasoning_budget
-                   else (think_budget or max_new_tokens),
-        temperature=0.0,
-        seed=3407,
-        extra_body=extra or None,
-    )
+    # ⚠️ GEÇİCİ SAĞLAYICI HATASI (2026-08-06, G2): OpenRouter/Google AI Studio bazen
+    # HTTP **200** döner ama `finish_reason='error'` + BOŞ content verir. SDK'nın kendi
+    # retry'ı (max_retries=8) bunu GÖRMEZ — HTTP katmanında hata yok. Sonuç: 80 kalemlik
+    # ücretli bir koşu 22./32. kalemde ölüyordu (aynı koşu iki kez, FARKLI kalemde →
+    # içeriğe bağlı değil, geçici).
+    # §5 hata felsefesi: geçici altyapı hatası → GERİ-ÇEKİLMELİ RETRY. Deneme hakkı
+    # tükenirse fonksiyon boş metni döndürür ve çağıranın "boş cevap → koşuyu durdur"
+    # kapısı devreye girer — sessiz düşürme YOK, yanlış sayı YOK.
+    # Ölçüm rejimi değişmez: aynı istem, aynı temperature=0, aynı seed.
+    r = None
+    for deneme in range(4):
+        r = client.chat.completions.create(
+            model=model_name,
+            messages=msgs,
+            max_tokens=(reasoning_budget + max_new_tokens) if reasoning_budget
+                       else (think_budget or max_new_tokens),
+            temperature=0.0,
+            seed=3407,
+            extra_body=extra or None,
+        )
+        _ch = r.choices[0]
+        if _ch.finish_reason != "error" or (_ch.message.content or "").strip():
+            break
+        bekle = 2 ** deneme
+        print(f"    ↻ sağlayıcı geçici hatası (finish_reason='error', boş içerik) — "
+              f"{bekle}s sonra yeniden denenecek ({deneme + 1}/4)", flush=True)
+        time.sleep(bekle)
     ch = r.choices[0]
     msg = ch.message
     # reasoning_content OpenAI şemasında yok; llama-server/OpenRouter ekliyor.
