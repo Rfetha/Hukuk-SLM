@@ -10,6 +10,37 @@
 
 ---
 
+> 🚨 **DAMGA 2026-08-06 (kusur K-3) — bu girişin kör payda sayıları EMEKLİ BİR ALETİN
+> sayılarıdır. SİLİNMEDİ, ama artık yürürlükte değil.**
+>
+> Bu tur `valid_trap_cache.py` + `rescore_abstention_cached.py` ile ölçüldü; ikisi de
+> `score_abstention.py`'den **ayrı** bir kör payda üretiyordu ve klipleri farklıydı. Aynı
+> cp09 koşularında iki alet **çelişen** sayı veriyor (hepsi hakem gürültü tabanının 4-7 katı):
+>
+> | cp09 m2b Rej | cevaba bağlı | **bu giriş** (klip 900) | yürürlükteki alet (klip 3500) | fark |
+> | :--- | ---: | ---: | ---: | ---: |
+> | base | 0,986 | **0,949** | **0,961** | 1,2 p |
+> | Gemini | 1,000 | **0,861** | **0,883** | 2,2 p |
+> | `τ_g` | 0,607 | **0,519** | **0,506** | 1,3 p |
+>
+> **Sebep ölçüldü — 900 bir KATEGORİ HATASIYDI.** ADR-0011'in 900'ü `gen_eval_grounded`'ın
+> **her `[KAYNAK]` parçasına AYRI** uyguladığı üretim-zamanı eval-ayna klipi;
+> `context_shown` zaten kırpılmış parçaların BİRLEŞİMİ. Bu tur o parça sabitini birleşime
+> uyguladı. cp09 m2b'de (n=80, `[KAYNAK` sayımı): tam metinde **320** kaynak · klip 900 ile
+> hakem **147**'sini görüyor (**%46**) · klip 3500 ile **320**'sini (**%100**). Yani bu
+> girişin kör paydası bağlamın **yarısından** karar vermiş.
+>
+> **Ayakta kalanlar:** (a) paydanın cevaba KÖR olması gerektiği hükmü — ADR-0048 yürürlükte;
+> (b) M3'ün **80/80** tanımı — 2026-08-06'da alete alındı (KARAR-2) ve altı koşuya uygulandı;
+> (c) m2b kurgu tabanının geçildiği (79/80 ↔ yürürlükteki alet 77/80, ikisi de ≫ 40).
+> **Yürürlükteki sayılar:** `outputs/eval/cp09-butceli-1024-512/abst_*_summary.json` ·
+> [#57](2026-08-06-cekinme-aleti-onarimi.md) · [#58](2026-08-06-payda-tekillesmesi.md).
+>
+> ⛔ Bu girişteki **eşikler de emekli**: ARA KAPI 2. gözlemi 2026-08-06'da yeniden türetildi
+> ve **hükmü değişti** — bkz. #58 ve [ADR-0045](../../adr/0045-ara-kapi-merge-onarim-kontrolu.md).
+
+---
+
 ## Yapılan
 
 #45 `valid_trap`'in özne başına yeniden yargılandığını göstermişti. ADR-0048 düzeltmeyi karara
