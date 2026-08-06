@@ -31,12 +31,81 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 > **İcra kipi:** `superpowers:subagent-driven-development` — görev başına taze uygulayıcı ajan,
 > ardından bağımsız inceleme ajanı, bulgular kapanana dek döngü.
 
+---
+
+## 🌙 GÜN KAPANIŞI — 2026-08-06 · **YARIN BURADAN DEVAM**
+
+**Ara verildi.** Ajanlar durduruldu, `llama-server` kapatıldı, GPU boş, artık süreç yok.
+Çalışma ağacı temiz (yalnız bu dosya). **Kutucuk 22/71 · 41 commit.**
+
+### Neredeyiz
+```
+Görev 0  ✅ KAPANDI    ADR-0058 · beş çıpa
+Görev 1  ✅ KAPANDI    eşleştirilmiş A1 — base'in üstünlüğü çürüdü
+Görev 2  ✅ KAPANDI    4 dalga · 3 bağımsız inceleme · 30 bulgu · şartname ✅ · kod ✅
+Görev 3  🔄 YARIDA     ← BURADAN DEVAM
+Görev 4-10 ⏸
+```
+
+### Görev 3 — tam olarak nerede kaldı
+
+**Yapıldı** (commit `83d9658`):
+- `scripts/b10_hasat.py` (269 satır) + `tests/test_b10_hasat.py` (151 satır) yazıldı, commit edildi
+- Brief'in **iki kusuru** bulundu, düzeltildi, teste bağlandı → aşağıdaki **kusur 14 ve 15**
+- ⭐ **Sızıntı süzgeci gerçek veride ölçüldü: 13.350 → 12.914** (atılan **436**, **%3,3** —
+  planın öngördüğü %1-8 bandında). Havuz `τ_a` v2 için hazır.
+
+**Yapılmadı:**
+- ❌ Pilot koşusu (`--limit 150`) — hiç başlamadı
+- ❌ `pytest` tam suite doğrulaması (son bilinen: `89 passed, 1 xfailed`, G3 testleri hariç)
+- ❌ `.superpowers/sdd/gorev-3-report.md` yazılmadı (ajan öncesinde durduruldu)
+- ❌ Görev 3'ün kutucukları işaretlenmedi
+
+### Yarın ilk iş — sıra
+1. `pytest tests/ -q` koş, G3 testleri dâhil yeşil mi doğrula.
+2. **Pilotu İKİ KEZ koş** (KARAR-6, aşağıda) — önce tek slot, sonra `-np 8`.
+3. Kabul kümelerini karşılaştır → Görev 4'ün rejimi kararı → Görev 3 kapanır.
+4. Görev 4 (üretim hasadı) sevk edilir.
+
+⚠️ **`llama-server` PATH'te yok:** `~/code/llama.cpp/build-cuda/bin/llama-server`
+⚠️ **`-ngl 99 -fa on` olmadan model CPU'ya düşer** — bu turda bir kez yaşandı (kusur 11).
+
+### 🧭 KARAR-6 — pilot iki kez koşacak, toplu çıkarımın etkisi ÖLÇÜLECEK (insan, 2026-08-06)
+
+**Soru:** Görev 4'ün üretim hasadı yerelde **~4,5 saat** sürüyor (ölçüldü: 85 jeton/s ·
+ortalama 912 jeton/cevap · **~11 s/kalem** · 80 kalem ≈ 14 dk). Paralel slot (`-np 8`) bunu
+**~1 saate** indirir.
+
+**Modal REDDEDİLDİ, gerekçe kayda geçsin:** aynı GGUF ile Modal yalnız ~1,5× (4,5 s → 3 saat),
+kira boşa. vLLM/bf16 ile çok hızlı **ama artefakt değişir** — hasadın kabul ölçütü modelin
+**kendi çekinme davranışı**, farklı çıkarım yığınıyla toplarsak *başka bir modelin* aşırı-redlerini
+toplayıp `τ_a` v2'yi onunla eğitmiş oluruz. Kuantizasyon davranışı değiştirir; sessiz sapma.
+
+**Karar: pilot iki kez koşacak, sonucu insan değerlendirecek.**
+```
+1) tek slot   -c 8192            → data/_ham_ve_ara/b10_pilot.jsonl        (~30 dk, çıpayla birebir)
+2) paralel    -np 8 -c 32768     → data/_ham_ve_ara/b10_pilot_np8.jsonl    (~7 dk)
+   aynı seed 3407 · aynı 150 kalem · aynı sıra  (örneklem birebir aynı olmalı, DOĞRULA)
+```
+Ölçülecek ve `data/_ham_ve_ara/b10_pilot_np_karsilastirma.json`'a dökülecek:
+`n_kabul_tek · n_kabul_np8 · |kesişim| · |yalnız tek| · |yalnız np8| · Jaccard ·
+cevap metni BİREBİR aynı olan kalem sayısı`.
+
+⛔ **Ajan hüküm KURMAZ** — *"fark yok, paralel kullanılabilir"* demez; sayıları verir, kararı insan verir.
+⛔ Fark çıkarsa **yumuşatılmaz**; bu turun en değerli bulgularından biri olur ve #60'a girer.
+
+⭐ **İki soruyu birden çözüyor:** Görev 4'ün süresi **ve** aşağıdaki **kusur 13** — Görev 9'un
+ürün kapısı komutu zaten `-np 4` içeriyor, oysa tüm çıpalarımız **tek slotta** ölçüldü.
+
+---
+
 | görev | durum | çıkan |
 | :--- | :--- | :--- |
 | **0** YB1 / ADR-0058 | ✅ **KAPANDI** — 6/6 kutucuk | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
 | **1** eşleştirilmiş A1 | ✅ **KAPANDI** — 7/7 kutucuk (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
 | **2** Gemini FL harness AÇIK | ✅ **KAPANDI** — 9/9 kutucuk · **4 düzeltme dalgası · 3 bağımsız inceleme · 30 bulgu** | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı** · ⭐ **K3 kapandı: payda artık cevaba KÖR** (16 koşu yeniden puanlandı, `h2b@k=4` üç kolda da 68) · ⭐ **Ö5: önsözle M2b'de 3.1 FL ile başa baş** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu · önbellek `flock`+atomik replace ile kayıpsız · `81 passed` |
-| **3-4** hasat | ⏸ | |
+| **3** `b10_hasat.py` | 🔄 **YARIDA** — betik+testler commit (`83d9658`), pilot koşulmadı | Brief'in **iki kusuru** bulundu (14 · 15) · ⭐ sızıntı süzgeci ölçüldü: **13.350 → 12.914** (−436, %3,3) |
+| **4** üretim hasadı | ⏸ | rejimi KARAR-6'nın pilot kıyası belirleyecek |
 | **5** ORPO paketleme | ⏸ | |
 | **6** `τ_a` v2 eğitimi | ⏸ | |
 | **7** 🛑 kol kapısı | ⏸ | |
@@ -66,7 +135,7 @@ diye bir bulgu yok.** Bütçe yine de rahat: kalan **$10,26**.
 📌 Temel ölçüm alındı (`.superpowers/sdd/butce-temel.json`, `total_usage=9,7403`) — bundan sonraki
 her harcama **farktan ölçülecek**.
 
-Commit: `339d9b1` → `0f65930` (18 commit). **Kutucuk: 13 / 70.**
+Commit: `38ffe6c` → `83d9658` (**41 commit**). **Kutucuk: 22 / 71.**
 
 ### ⭐ Görev 0'dan doğan ÖLÇÜLMÜŞ bulgu — plan bunu öngörmemişti
 
@@ -206,6 +275,9 @@ veriyor. SDK'nın kendi retry'ı (`max_retries=8`) bunu **göremiyor** — HTTP 
 | 10 | **kesiklik kapısı** (`>%5 → geçersiz`) yalnız Görev 7/9'da, yani **bizim** koşularımız için yazılmış | ADR-0057 eşit sınav istiyor; 3.5 FL **%10** kesik, hattaki tek aykırı | Kapı simetrik uygulanacak; hüküm duyarlılık testine bağlandı |
 | 11 | **Görev 7.2 · 9.1** çıplak `llama-server -m ...` yazıyor | Binary **PATH'te yok**; repo'nun kendi konvansiyonu `BIN="${BIN:-$HOME/code/llama.cpp/build-cuda/bin/llama-server}"` (`cp0_thinking_gen.sh:46`). Komut olduğu gibi koşulsa `command not found` verirdi — çöker, sessiz değil, ama koşuyu durdurur | Sevklerde tam yol verilecek |
 | 8 | plan Görev 9 Adım 9.5'te **üç kollu tek paydalı** eşleştirilmiş A1 satırı istiyor | Alet katı biçimde **ikili**; her çift kendi paydasını üretiyor (`base`'in A1'i bir dosyada 0,9844, ötekinde 0,9861). O satır bu aletle **kurulamazdı** | imza **k-yollu** genelleştirildi; ikili çağrı özel hâl, mevcut testlerin davranışı korundu |
+| 14 | **Görev 3 `_soru()`** — brief `messages` içinde `SORU:` işareti arıyor, bulamazsa `ValueError` | 🚨 DEV/CANON kaleminde user mesajı **doğrudan sorudur**, `SORU:` işareti **YOK** — ölçüldü: **0/80** DEV, **0/40** CANON. Brief'in sürümü **her gerçek DEV kaleminde** patlıyordu → **sızıntı süzgeci hiç koşamazdı**. (Ön-uçuş denetimim bu tuzağı kaçırdı: `SORU:` varlığını **raft** dosyasında doğruladım, DEV dosyasında değil) | İki biçim de destekleniyor; naif düzeltmeye (tüm bloğu soru say) karşı **NO-OP kapısı korundu** — soru çıkarılamazsa hâlâ `ValueError` |
+| 15 | **Görev 3 `_anahtar()`** — brief `.upper()` kullanıyor | 🚨 Türkçede ayrışıyor: `'Geçici'.upper()` = `'GEÇICI'` ≠ `'GEÇİCİ'`. Külliyatta **iki yazım da var** (166 + 88 kalem). Sızıntı süzgeci noktasız/noktalı `i` yüzünden kalem kaçırırdı — **hata vermeden** | Repo'nun tek normalleştiricisi `madde_anahtar.madde_anahtari` kullanıldı (tuzak 2.9 sınıfı: tek kaynak). İki sürüm bu veride aynı sonucu veriyor (436) |
+| 13 | **Adım 9.1** sunucu komutu: `llama-server -m … -c 8192 --cache-type-k q8_0 --cache-type-v q8_0 -np 4` | Çıpayı üreten komutla **üç eksende** ayrışıyor: (a) **`-ngl 99` YOK** → model CPU'ya düşer, rejim çıpadan sapar (bu turda **bir kez yaşandı**, kusur 11); (b) **`-fa on` YOK**; (c) **`-np 4`** — çıpa (Ö5 ve önceki tüm koşular) **tek slotta** koştu. Toplu çıkarımda matris çarpımları farklı sırayla yapılır, kayan nokta sonuçları birebir aynı olmayabilir — ve burası **ürün kapısı**, yani çıpayla kıyaslanan tam yer | Görev 9'a gelmeden karara bağlanacak. `-ngl 99 -fa on` **eklenecek** (tartışmasız). `-np 4` için iki seçenek: tek slota dön (çıpayla birebir, yavaş) ya da paralel kal + **rejim damgası** düş ve duyarlılığı ölç. ⛔ Sessizce paralel koşulmayacak |
 | 12 | **Görev 9 kapısı** `M2b Rej ≥ 0,840` — *"bugünkü çıpadan gerileme yok"* demek için yazılmıştı | K3 düzeltilince (payda cevaba KÖR) çıpa **0,840 → 0,735**'e indi. Eşik olduğu gibi kalsaydı anlamı sessizce değişecekti: gerileme yasağı değil, **+10,5 puanlık iyileşme talebi** | ⬇️ aşağıdaki **KARAR-1**: eşik Ö5'in **önsözlü** çıpasından yeniden türetilecek (insan kararı 2026-08-06) |
 
 ### 🧭 KARAR-1 — M2b eşiği yeniden türetiliyor (insan kararı, 2026-08-06)
