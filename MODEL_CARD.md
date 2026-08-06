@@ -72,7 +72,14 @@ hand-built context — decides what the model sees. Retriever: hybrid BM25 +
 `BAAI/bge-m3` (RRF), 40,496-article index, **k=10** (swept 2026-08-05).
 Full record: [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
 **correction + k sweep: [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)** ·
-**corpus repair: [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)**.
+**corpus repair: [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)** ·
+**sufficiency preamble adopted as main protocol:
+[#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1) /
+[ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md)**.
+
+**Source directories.** Main-protocol (with preamble, official) run:
+`outputs/eval/olcum-bi/`. No-preamble ablation run:
+`outputs/eval/s2-harness-k10-etiketli/`.
 
 > 🚨 **Corrected 2026-08-05.** The first published ON numbers used the wrong metric —
 > `harness_tablo.py` reported a macro over *all* scored items as `A1`, while `A1` is
@@ -91,7 +98,12 @@ Full record: [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md
 | strict-gate rejections | 2/80 | 1/80 | 1/80 | **1/80** |
 
 **62.8% is the honest product number** (k=10, repaired corpus, `--sufficiency-preamble` main
-protocol — ADR-0058; no-preamble ablation: 61.3%). Most of the drop from 71.6%
+protocol — ADR-0058; no-preamble ablation: 61.3%).
+
+> ⚠️ The decomposition below was made against the **no-preamble** anchor (61.3%); after
+> ADR-0058 the gap is **8.8 points** and it has **not** been re-decomposed.
+
+Most of the drop from 71.6%
 is retrieval: at k=5 the gold article missed the top 5 in 25% of questions; raising k to 10
 recovers 10 of those (+2.6 points), and repairing sub-article identity in the corpus adds
 another **+1.8**.
@@ -115,14 +127,15 @@ rises 0.694 → 0.790 — the ordering flips from **wrong** to **right**
 ([#53](docs/record/research_log/2026-08-05-ayirt-edicilik-etiketi.md)).
 
 ⚠️ **Known limit of the citation verifier.** The model does not fabricate article
-numbers — it copies the label from its context. In **7/80** questions (14/80 at k=5) the
+numbers — it copies the label from its context. In **5/80** questions (ablation, no preamble:
+7/80; 14/80 at k=5) the
 gold was not retrieved and it answered from a *different real* article: the citation
 verifies, the gate passes it, and the answer still does not fit the question. Deterministic
 citation checking solves fabrication, **not** off-target grounding.
 
 🚨 **The larger gap is the opposite failure: over-refusal.** In **14/80** (ablation, no preamble: 16/80) questions the
-model abstains *while the gold article is in its context* — twice the size of the
-off-target class above, and **independent of `k`** (14 → 15 → 16 across every setting
+model abstains *while the gold article is in its context* — **≈2.8× the size** of the
+off-target class above (14 ↔ 5), and **independent of `k`** (14 → 15 → 16 across every setting
 measured). No amount of retrieval improvement closes it; it is a model-side gap and it is
 the stated reason for the next training round.
 

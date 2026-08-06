@@ -8,7 +8,8 @@
 > [`2026-08-05-olcum-bosluklari.md`](docs/superpowers/plans/2026-08-05-olcum-bosluklari.md) ·
 > sonuçlar: [**#56**](docs/record/research_log/2026-08-05-olcum-bosluklari.md).
 > Çıkanlar: M2b iddiası **yapısal olarak öldü** (kapı bu rejimde ateşlenemiyor) → **eğitim borcu** ·
-> B-i önsözü **başarılı** ama benimsenmedi (**YB1**) · `k` büyütmenin bedeli **iki eksende** ölçüldü.
+> B-i önsözü **başarılı** ve **BENİMSENDİ** ([ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md),
+> 2026-08-06 — ana protokol; YB1 kapandı) · `k` büyütmenin bedeli **iki eksende** ölçüldü.
 >
 > **▶ AKTİF PLAN: B10 aşırı-red turu** — `τ_a` v2 simetrik yeterlilik çifti + rakip kıyası.
 > Plan (kutucuklar **tek durum kaynağıdır**):
@@ -49,8 +50,15 @@ Tasarım: [`docs/superpowers/specs/2026-08-03-yol-haritasi-design.md`](docs/supe
 
 Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md)'de.
 
-> **Ürünün dürüst sayısı: kütle %61,3** (harness AÇIK, `k=10`, onarılmış korpus) ↔ %71,6
-> (KAPALI = **tavan**, altın madde kurgu gereği verilir). Aradaki 10,2 puan **ayrıştırıldı**:
+> **Ürünün dürüst sayısı: kütle %62,8** (harness AÇIK, `k=10`, onarılmış korpus, kaynak-yeterliliği
+> önsözü — [ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md); önsözsüz ablasyon:
+> %61,3) ↔ %71,6 (KAPALI = **tavan**, altın madde kurgu gereği verilir).
+> Kaynak: `outputs/eval/olcum-bi/` · [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1).
+>
+> ⚠️ Bu ayrıştırma **önsözsüz** çıpayla (%61,3) yapılmıştır; ADR-0058 sonrası açık 8,8 puandır ve
+> yeniden ayrıştırılmamıştır.
+>
+> Aradaki 10,2 puan **ayrıştırıldı**:
 > ≈5,1 erişim ıskası (harness'ın) + ≈4,5 dikkat dağılması (modelin).
 > GPU **$0** · hakem **$0,127** · 7 research_log · 3 ADR · 3 yeni tuzak.
 
@@ -89,7 +97,8 @@ Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](docs/_arsiv/sprint3-p
 
 ### 📌 Part 1'in bıraktığı — Part 2'nin girdisi
 
-- **6 açık borç:** B10 (aşırı-red 16/80) · B1 (7/80) · B4 · B5 · B8 · B9 · B6
+- **6 açık borç:** B10 (aşırı-red **14/80**; önsözsüz ablasyon: 16/80) · B1 (**5/80**; önsözsüz
+  ablasyon: 7/80) · B4 · B5 · B8 · B9 · B6
 - **2 ölçüm boşluğu:** `m2b` harness AÇIK **hiç koşulmadı** · rakip harness AÇIK **hiç ölçülmedi**
 
 Sıra ve ölçüm bağlamları: [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası) ·

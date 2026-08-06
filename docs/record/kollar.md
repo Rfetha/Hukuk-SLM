@@ -165,8 +165,11 @@ onarılmış korpus) ↔ %62,8 (açık, k=10 + onarılmış korpus + önsöz, AD
 önsözsüz ablasyon: %61,3)**, altın getirilen alt kümede A1 **~~0,934~~ 0,923 >
 0,909** (k=5) ama **0,843** (k=10) → **0,8705** (k=10 + S2 + yeterlilik önsözü; önsözsüz: 0,8616).
 ⚠️ Eski sayılar `A1` yerine ham makro kullanıyordu (tuzak 2.16).
-Koşular: `outputs/eval/s3-harness-k10/` (k=10) · **`outputs/eval/s2-harness-k10-etiketli/`
-(nihai)**.
+Koşular: `outputs/eval/s3-harness-k10/` (k=10) · `outputs/eval/s2-harness-k10-etiketli/`
+(k=10 + S2 — **önsözsüz ablasyon** koşusu; ADR-0058'e kadar "nihai" diye etiketliydi) ·
+**`outputs/eval/olcum-bi/` (ANA PROTOKOL — önsözlü, resmî çıpa;
+[#56](research_log/2026-08-05-olcum-bosluklari.md) §5 (D1) ·
+[ADR-0058](../adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md))**.
 
 **Harness artefaktı** (modelin parçası değil, ama ölçümün parçası):
 

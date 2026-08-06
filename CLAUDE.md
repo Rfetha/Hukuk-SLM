@@ -50,8 +50,9 @@ independently from the raw base, merged as task vectors with **raw TIES**.
 Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: ⭐ [`docs/record/kollar.md`](docs/record/kollar.md).
 
 ```
-product number (harness ON, k=10, S2 corpus)   faithful-answer mass  61.3%
-ceiling        (harness OFF, gold guaranteed)                        71.6%
+product number (harness ON, k=10, S2 corpus, sufficiency preamble — ADR-0058)
+                            faithful-answer mass  62.8%   (ablation, no preamble: 61.3%)
+ceiling        (harness OFF, gold guaranteed)     71.6%
 ```
 
 ⚠️ `v0.1` not `v1.0` **on purpose**: the merge config was selected on DEV and has **not** been
@@ -65,7 +66,7 @@ not measure the same thing (OFF hands the model the gold article by construction
 | every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#56** |
 | the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
 | what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0057** |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0058** |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -129,7 +130,7 @@ decision ledger.
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
   record, **authoritative for "what happened."** New findings continue at **#57**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0058**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0059**.
 
 ### Direction and scope
 

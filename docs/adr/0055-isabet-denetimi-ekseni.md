@@ -3,6 +3,9 @@
 **Tarih:** 2026-08-05 · **Durum:** ✅ kabul (tasarım; kod açılmadı) · **Sprint:** [`sprint3-part1.md`](../_arsiv/sprint3-part1.md) **S4**
 **İlgili:** [ADR-0054](0054-harness-tasarim-kararlari-k2-k5.md) · [#53](../record/research_log/2026-08-05-ayirt-edicilik-etiketi.md) · [#54](../record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)
 
+> ⚠️ **[ADR-0058](0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md) (2026-08-06) tadil etti** —
+> B-i artık ablasyon değil, ana protokol.
+
 ## Bağlam — ölçülmüş açık
 
 Harness AÇIK (k=10) ölçümünden sonra kalan kayıp **iki uçtan** geliyor ve ikisi de
