@@ -1519,6 +1519,15 @@ muhasebesine doğrudan giriyor.
 Karar tablosu: **✅✅ → güçlü yeşil → CP4-CP5 koşulabilir.** §20'nin ön-kayıtlı uyarısı da
 karşılanıyor: merge bir *"her şeye hayır diyen"* model değil.
 
+> 🚨 **DAMGA 2026-08-06 (kusur K-2) — 2. GÖZLEM YENİDEN TÜRETİLDİ, HÜKÜM TERSİNE DÖNDÜ.**
+> Yukarıdaki ✅ o günün aletiyle doğrudur, **silinmedi**. Düzeltilmiş cevaba-kör paydayla
+> aynı ön-kayıtlı formül: `eşik = 0,90 × 0,961 = **0,8649**` · `merge = **0,766**` →
+> **🔴 DÜŞTÜ (−9,9 puan)**; eski 0,887 eşiğine karşı da düşüyor, paydalar eşit (77 ↔ 77).
+> ⛔ ADR-0050: eşik/çarpan/formül **değiştirilmedi**. *"Güçlü yeşil"* ve *"CP4-CP5
+> koşulabilir"* cümleleri **bugünkü ölçümle geçersizdir.**
+> Bu girişin diğer M2b sayıları için de aynı çeviri geçerli — bkz.
+> [#57](2026-08-06-cekinme-aleti-onarimi.md) ve [#58](2026-08-06-payda-tekillesmesi.md).
+
 ### ⚠️⚠️ ADR-0036'NIN HÜKMÜ TERSİNE DÖNÜYOR — yeni ADR gerekiyor
 
 Yeşil hücre, tasarımın **ablasyon** dediği varyanttan geldi. ADR-0036 *"ana sonuç norm-dengeli,

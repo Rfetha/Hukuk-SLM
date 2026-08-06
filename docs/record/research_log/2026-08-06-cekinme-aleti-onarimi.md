@@ -52,9 +52,11 @@ dağılımı da kayardı ve her tarihsel sayı kıyaslanamaz olurdu.
 
 ```
 h2b@k=4  (BİZ · 3.1 FL · 3.5 FL)      50 / 45 / 56   →   68 / 68 / 68     ✅
-m2b distractor (8 koşu)               61 … 80 saçılım →   hepsi 77         ✅
+m2b distractor (10 koşu)              61 … 80 saçılım →   hepsi 77         ✅
 h2b@k=10 (tek kol, kendi sınavı)      51             →   65
 ```
+
+*(⚠️ düzeltme 2026-08-06, kusur k-1: satır **8 koşu** diyordu, gerçek **10** — cp09 ×3 · cp3-supurme-ham · cp3-supurme-min · cp3c-ta-v1 · cp3e-merge · sprint1 ×3. `mode == "distractor_nogold"` taranarak sayıldı; kürasyon koşuları (cp2c ×4, kontrol_m2b) ölçüm değil, dışarıda. Doğrulama iddiadan güçlüydü, sayım yanlıştı.)*
 
 Önbellek 16 koşuda **250 ayrık** `(soru, kaynak)` kalemi taşıyor; beklenen ayrık sayı da
 **250** (eksik anahtar 0). Önbellek olmasa 1225 hakem çağrısı gerekirdi — **975 çağrı ödenmedi.**

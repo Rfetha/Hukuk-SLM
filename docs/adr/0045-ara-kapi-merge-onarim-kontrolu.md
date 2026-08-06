@@ -72,6 +72,28 @@ Bu **DEV** ölçümüdür; dondurulmuş CANON'a dokunulmaz.
 biçimde yukarıda ve base'in 0.986'sının %90'ının üstünde** olmalı → **M2b ≥ 0.887**.
 *(0.90× çarpanı ARA KAPI'nın muhafız formülüyle aynı; yeni bir sabit uydurulmadı.)*
 
+> ## 🚨 2. GÖZLEMİN HÜKMÜ — ÜÇ KEZ TÜRETİLDİ, SON HÂLİ **DÜŞTÜ** (2026-08-06)
+>
+> Ön-kayıtlı olan **formül** (`base M2b × 0.90`); sayı, base'in o günkü ölçümünden türer.
+> ⛔ ADR-0050 gereği çarpana, formüle ve eşiğe **hiç dokunulmadı** — yalnız yeniden türetildi.
+>
+> | tarih | base M2b | eşik | merge (ham TIES) | hüküm |
+> | :--- | ---: | ---: | ---: | :--- |
+> | 2026-07-29 (bu ADR) | 0,986 *(cevaba bağlı payda)* | 0,887 | — | ön-kayıt |
+> | 2026-07-30 ([#46](../record/research_log/2026-07-30-cp2r-kor-payda.md), klip 900) | 0,949 | 0,8541 | 0,877 | ✅ GEÇTİ |
+> | **2026-08-06 (yürürlükte, K3+K-1)** | **0,961** | **0,8649** | **0,766** | **🔴 DÜŞTÜ (−9,9 p)** |
+>
+> Eski 0,887 eşiğine karşı da **düşüyor**. Paydalar eşit (77 ↔ 77) → kıyas geçerli.
+> Ortadaki satır emekli bir aletin sayısıdır (900 klipi kategori hatası — #46'daki damga).
+>
+> **Yorum kuralının uygulanması:** 1. gözlemin (`τ_a` tekil M2) paydası bu dalgada
+> **onarılmadı** — m2 hâlâ modele bağımlı, bedeli ≈$0,11. Yani satır ya `✅ ❌` ya `❌ ❌`;
+> **her iki hâlde de karar DUR.** *"Güçlü yeşil"* okuması bugünkü ölçümle **yoktur** ve
+> CP4-CP5 harcaması bu kapıdan **yetki almıyor**.
+>
+> Türetme: `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json` ·
+> [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md)
+
 ### 4. CP2 hasadı **iki tipi birden** toplar
 
 `rejected` havuzu artık hem **M2-tipi** (tuzak madde **verilmiş**, kaynak soruyu cevaplamıyor)

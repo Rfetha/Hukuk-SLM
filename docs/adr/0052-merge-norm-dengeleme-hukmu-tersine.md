@@ -77,5 +77,18 @@ grounding **tamamen** korunarak (71,4% → 71,6%).
 M2b 0,877 ≥ 0,854 ✅ · ve §20'nin ön-kayıtlı uyarısı karşılandı (merge M1 kütlesi 71,6%,
 `τ_g` ile eşit — merge bir *"her şeye hayır diyen"* model değil).
 
+> 🚨 **2. GÖZLEM YENİDEN TÜRETİLDİ 2026-08-06 (kusur K-2) — HÜKÜM DEĞİŞTİ.** Yukarıdaki ✅
+> o günün aletiyle doğrudur ve **silinmedi**. Düzeltilmiş cevaba-kör paydayla aynı ön-kayıtlı
+> formül: `eşik = 0,90 × base M2b 0,961 = **0,8649**` · `merge M2b = **0,766**` →
+> **🔴 DÜŞTÜ, 9,9 puan altında** (eski 0,887 eşiğine karşı da düşüyor; paydalar eşit 77↔77).
+> ⛔ ADR-0050: eşiğe/çarpana/formüle dokunulmadı, yalnız yeniden türetildi.
+> Türetme: `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json` ·
+> [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md).
+>
+> **Bu ADR'nin KENDİ hükmü etkilenmiyor.** ADR-0052 *"ham TIES ≫ norm-dengeli"* diyor ve bu
+> ayakta: aynı düzeltilmiş aletle ham 0,766 ↔ norm-dengeli koşunun dejenerasyonu değişmedi.
+> Değişen, ham TIES'in **mutlak** olarak ARA KAPI'yı geçip geçmediği. `τ_g`'nin M2b çöküşünün
+> onarım oranı da düştü: 0,607→0,877 (%71 onarım) ⇒ **0,506→0,766** (%57 onarım).
+
 ⚠️ Bu, iç iddianın **kanıtlandığı** anlamına gelmez: iddia **karşılaştırmalıdır** (merge >
 karışık SFT ve ardışık SFT). O karşılaştırma CP4-CP5'tir ve insan onayı bekler.

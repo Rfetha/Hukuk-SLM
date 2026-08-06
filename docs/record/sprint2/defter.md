@@ -951,6 +951,21 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 §20 şartı  merge cevaplamayı bıraktı mı?         ❌   HAYIR (71,6% ↔ τ_g 71,4%)
 ```
 
+> 🚨 **ARA KAPI 2. GÖZLEMİ YENİDEN TÜRETİLDİ 2026-08-06 (kusur K-2) — HÜKÜM DEĞİŞTİ.**
+> Yukarıdaki ✅ **o günün aletiyle doğrudur ve silinmedi.** Düzeltilmiş cevaba-kör paydayla
+> (K3 + K-1) aynı ön-kayıtlı formül şunu veriyor:
+> `eşik = 0,90 × base M2b 0,961 = **0,8649**` · `merge (ham TIES) M2b = **0,766**`
+> → **🔴 DÜŞTÜ, 9,9 puan altında.** Eski eşiğe (0,887) karşı da düşüyor. Paydalar eşit
+> (77 ↔ 77), yani kıyas geçerli. ⛔ ADR-0050 gereği eşiğe/çarpana/formüle **dokunulmadı**;
+> bu satırın kendi kuralı (m.1) zaten *"ön-kayıtlı olan formül, sayı değil"* diyordu.
+> Türetme: `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json` ·
+> [#58](../research_log/2026-08-06-payda-tekillesmesi.md).
+> **Bu kapı CP4-CP5 harcamasını yetkilendiren kapıydı — yetki bugünkü ölçümle YOK.**
+>
+> ⚠️ 1. GÖZLEM'in (`τ_a` tekil M2) paydası **hâlâ modele bağımlı** — m2 kolu bu dalgada
+> onarılmadı (bedeli ölçüldü: 70 ayrık kalem, tek ödemeyle 10 koşu, ≈$0,11). O satırın ✅'i
+> ne doğrulandı ne çürütüldü; **askıda**.
+
 🛑 **CP4-CP5 koşulmadı** — insan başka bir zamana erteledi. Yeni `/goal` gerektirir.
 
 ## Ölçülen tablo — hepsi aynı protokol, hepsi geçerli koşu
@@ -963,6 +978,15 @@ Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,930    1,000         
 τ_a v1           34/80       0,575   0,9697     41,2% 🔴 0,984    0,987       ~1084
 tgta_v1 ⭐       63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅      714
 ```
+
+> 🚨 **DAMGA 2026-08-06 — `M2b Rej` sütununun TAMAMI emekli birimde.** Paydası modelin
+> cevabına bakan hakemden geliyordu (K3, [#57](../research_log/2026-08-06-cekinme-aleti-onarimi.md)).
+> Yürürlükteki payda **77/80**, aynı sınavı paylaşan her kolda eşit. Çeviri:
+> base **0,986 → 0,961** · Gemini **1,000 → 0,883** · `τ_g` **0,607 → 0,506** ·
+> `τ_a` **0,987 → 0,987 (değişmedi)** · `tgta_v1` **0,877 → 0,766** (ve ✅'i **🔴** olur — K-2).
+> `M2 Rej` sütunu **HÂLÂ ONARILMADI** (payda modele bağımlı, bedeli ≈$0,11) — o sütuna
+> dayanarak hüküm kurulmaz. `A1` / `M1 kütle` / `aşırı-red` sütunları `valid_trap`'ten
+> **etkilenmez**, aynen geçerli.
 
 ## Sprint 2'nin dört ana bulgusu
 
@@ -1007,5 +1031,5 @@ merge süpürme  GPU $0 · hakem $0,11 · ~2 saat        (3 varyant, DEV)
 - **`scripts/cp3_merge_dene.sh`** — varyant → GGUF → 3 eksen eval → puanlama, tek komut
 - **`merge_ties.py --geri-olcek {ortalama|min|max|<kol>}`** + künyede `geri_olcek_kurali`
 - **Açık soru:** modül-başına normalleştirme denenmedi (`open_questions.md`) — ham TIES'in
-  `τ_a`'yı seyreltmesini (0,987 → 0,877) telafi edebilir
+  `τ_a`'yı seyreltmesini (0,987 → 0,877 ᴷ³ **düzeltilmiş: 0,987 → 0,766**) telafi edebilir
 - **Açık iş:** CP4 (karışık SFT) + CP5 (ardışık SFT) — iç iddianın **gerçek** sınavı

@@ -180,6 +180,10 @@ def main():
                              "ayakta": m2b_ayakta,
                              "kural": "ADR-0049 m.3 — altında merge onarımı tanımlayıcıya iner"},
         "ara_kapi_2_gozlem": hukum,
+        # 🚨 Hangi çıpanın paydası BUGÜNKÜ aletle üretildi, hangisi değil — eşiği okuyanın
+        # bunu görmeden hüküm kurmaması için (tuzak 2.6/2.14).
+        "payda_onarildi_mi": {ad: d["valid_trap_kaynagi"] or "🔴 HAYIR — eski, modele bağımlı payda"
+                              for ad, d in (("m2", m2), ("m2b", m2b), ("m3", m3))},
         "serh": "Eşik hareketi τ_a LEHİNE. Savunma: (a) τ_a henüz yok; (b) düzeltme her özneye aynı; "
                 "(c) bozuk ölçümden türeyen eşiği korumak hatayı korumaktır. Eski eşiğe karşı da raporlanır.",
     }
