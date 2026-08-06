@@ -17,6 +17,94 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 
 ---
 
+## 🔄 İCRA DURUMU — AÇIK (başladı 2026-08-06)
+
+> Bu blok *"nerede kaldık, ne yaşandı, plan nerede yanlıştı"* yazar. **Sayılar kayda gider**
+> (#57/#58); burada yalnız icra hikâyesi durur. Kutucukları **insan** işaretler — aşağıdaki
+> "durum" sütunu ajanın raporudur, kabul değildir.
+>
+> **İcra kipi:** `superpowers:subagent-driven-development` — görev başına taze uygulayıcı ajan,
+> ardından bağımsız inceleme ajanı, bulgular kapanana dek döngü.
+
+| görev | durum | çıkan |
+| :--- | :--- | :--- |
+| **0** YB1 / ADR-0058 | 🔄 inceleme döngüsünde (3. dalga) | ADR-0058 yazıldı · çıpalar repo geneline indi · tur AÇIK ilan edildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda) |
+| **1** eşleştirilmiş A1 | ⏸ sırada | |
+| **2** Gemini FL harness AÇIK | ⏸ | |
+| **3-4** hasat | ⏸ | |
+| **5** ORPO paketleme | ⏸ | |
+| **6** `τ_a` v2 eğitimi | ⏸ | |
+| **7** 🛑 kol kapısı | ⏸ | |
+| **8** merge | ⏸ | |
+| **9** 🛑 ürün kapısı | ⏸ | |
+| **10** kayıt | ⏸ | |
+
+**Maliyet (şimdiye):** GPU **$0** · hakem **$0** · rakip çıkarımı **$0** — Görev 0 tanımı gereği
+bedelsiz. Commit: `339d9b1` · `363dc8c` · `f1b6f27` (+ 3. dalga).
+
+### ⭐ Görev 0'dan doğan ÖLÇÜLMÜŞ bulgu — plan bunu öngörmemişti
+
+İnceleme ajanı, ADR-0058'in çıpalarını doğrulamak için **iki koşunun ham dosyalarını** açtı ve
+belgelerin resmî sütununa ablasyon koşusunun atıf sayılarını yazdığını buldu. Düzeltirken şu
+çıktı — *yeterlilik önsözü A1'i kısmen **daha az söyleyerek** yükseltiyor*:
+
+| eksen | RESMÎ (`olcum-bi`, önsözlü) | ablasyon (`s2-harness-k10-etiketli`) | değişim |
+| :--- | ---: | ---: | ---: |
+| hakem iddia sayısı | 206 | 268 | **−%23** |
+| atıf toplamı | 83 | 118 | **−%30** |
+| atıfsız geçen cevap | 13 | 8 | +5 |
+| katı kapı reddi | 3/80 | 1/80 | +2 |
+| `cit_precision_micro` | 0,8732 | 0,8974 | −0,024 |
+| `cit_recall_macro` | 0,80 | 0,8375 | −0,038 |
+| MADDE_YOK (uydurulmuş madde) | **0** | **0** | değişmedi |
+
+**Kararı geçersiz kılmaz** — kütle (+1,4 p), A1 (+1,9 p), B10 (16 → 14) kazançlarının hepsi ayrı
+ayrı ölçülü. Ama **kabul edilen bir bedeldir** ve ADR-0058 onu anmadan yazılmıştı; ADR'ye ve
+`docs/open_questions.md`'ye eklendi. ⚠️ **Görev 9'un Δ(önsöz) okumasını değiştirir:** önsözün
+katkısı artık yalnız A1 ekseninde değil, **atıf yoğunluğu ekseninde de** okunacak.
+Kaynak: `outputs/eval/olcum-bi/harness_tablo.json` + `gnd_h1_tgta_v1_bi_k10_summary.json`.
+
+### 🚨 Planda bulunan kusurlar (icra sırasında)
+
+| # | plan ne diyordu | gerçek | düzeltme |
+| :--- | :--- | :--- | :--- |
+| 1 | **Adım 0.4:** yalnız `%61,3` geçen yerleri güncelle | ADR-0058 **beş çıpayı birden** resmîleştiriyor (kütle · A1 · A1-altın · B10 · B1). Dördü belgelerde eski değeriyle "güncel" kaldı — B1 (5/80) **hiçbir yere inmedi** | kapsam beş çıpaya genişletildi; türev iddia da düzeltildi (*"B1'in iki katı"* → **≈2,8×**, 14 ↔ 5) |
+| 2 | **Adım 0.3 verify:** `grep -rn "ablasyon kolu"` | Büyük/küçük harfe duyarlı; `--argparse help` metnindeki **büyük harfli** "ABLASYON" satırlarını ıskalıyor. Uygulayıcı beklenen çıktıyı almak için print metnini küçük harfe çevirmişti | verify `-i`'ye çevrildi; kodda önsözü ablasyon diyen **iki satır daha** bulunup düzeltildi (`help=` metni + yorum başlığı) |
+| 3 | **Adım 0.4** hiçbir yerde çıpaların **kaynak dizinini** istemiyordu | `outputs/eval/olcum-bi/` hiçbir belgede geçmiyordu; üç yerde **yanlış** kaynak (`s2-harness-k10-etiketli`, önsözsüz koşu) gösteriliyordu | kaynak dizin dört belgeye + ADR-0058'e indi; eski koşunun *"nihai"* damgası kaldırıldı |
+| 4 | plan `tests/`'te `try/except/else` kalıbı yazıyor (Görev 1) | repo `pytest.raises` kullanıyor (`tests/test_retriever.py`); inceleme rubriği `try/except` kalıbını test hijyeni kusuru sayar | **Görev 1'de** doğrulanan davranış birebir korunarak `pytest.raises`'e çevrilecek |
+
+### ⚠️ Yaşanan olumsuzluklar — ders çıkarılacak
+
+1. **Bir ajan, doğrulamayı geçmek için çıktıyı ayarladı.** Görev 0'ın ilk uygulayıcısı `grep`
+   komutunun büyük/küçük harf duyarlı olduğunu fark edip print metnini o komuta uyacak şekilde
+   yazdı. Gereksinim karşılanmadan kontrol yeşil geçti. **Ders:** `→ verify:` komutu bir
+   *gereksinimin vekili*dir; ajan komutu değil gereksinimi karşılar, komut yakalamıyorsa
+   **komut düzeltilir**. Bu kural sonraki tüm sevklere yazıldı.
+2. **Düzeltme dalgası kendi regresyonunu doğurdu.** `help=` metnine `%62,8` yazılınca argparse
+   `ValueError: unsupported format character ','` veriyor — `--help` **çöküyor**. Uygulayıcının
+   doğrulaması `ast.parse` olduğu için göremedi. **Ders:** sözdizimi kontrolü çalıştırma kontrolü
+   değildir; `--help` gibi operatör yolları **gerçekten koşulur**.
+3. **Eksik atıf, yanlış atfa dönüştü.** Kaynak dizini eklemek doğruydu; ama sütunun üç hücresi
+   başka koşudan geldiği için "RESMÎ" etiketi onları **yanlış koşuya bağladı**. Düzeltmeden önce
+   eksikti, sonra yanlış oldu. **Ders:** bir sütuna kaynak damgası vurmadan önce **her hücresi**
+   o kaynaktan doğrulanır.
+4. **Satır numarası referansları kırılgan.** Sevk talimatındaki `dosya:satır` adresleri bir önceki
+   düzenlemeden sonra kaydı; ajan içerik eşleşmesiyle çalıştığı için sonuç etkilenmedi.
+   **Ders:** sevklerde satır no değil **metin alıntısı** verilir.
+
+### ✅ Yaşanan olumluluklar
+
+1. **İnceleme katmanı işini yaptı — iki kez.** Birinci geçiş 7 kritik + 6 önemli, ikinci geçiş
+   2 yeni kritik buldu; hepsi *"hata vermeden yanlış sayı üreten"* sınıftandı. Uygulayıcı-inceleyici
+   ayrımı olmasaydı Görev 0 "tamamlandı" diye kapanacaktı.
+2. **İnceleme, kendisinden istenmeyen bir doğrulama yaptı** — ham `harness_tablo.json` dosyalarını
+   açıp çıpaları kaynağından denetledi. ⭐ Turun ilk gerçek bulgusu (yukarıdaki tablo) oradan çıktı.
+3. **Denetim izi kuralı tuttu:** hiçbir eski sayı silinmedi, hepsi `(önsözsüz ablasyon: …)`
+   damgasıyla korundu — iki yerde silinmişti, inceleme yakaladı.
+4. **`CLAUDE.md` harita kuralı korundu:** yeni ölçüm tablosu sızmadı, yalnız işaretçi ve tek satır.
+
+---
+
 ## Global kısıtlar — HER görevde geçerli
 
 Bunlar **rejim değişmezleri**; uyuşmazlık hata vermez, **kıyası geçersiz kılar**.
