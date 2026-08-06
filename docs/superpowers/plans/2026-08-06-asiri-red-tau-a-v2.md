@@ -39,16 +39,42 @@ python              source ~/code/global_venv/bin/activate  (aynı komut içinde
 **Her koşudan önce:** [`docs/record/yurutme-tuzaklari.md`](../../record/yurutme-tuzaklari.md).
 **Her koşudan sonra:** koşu klasörü + `KUNYE.json` yazıldı mı · kesik oranı ≤ %5 mi.
 
-**Bütçe defteri** — her görev sonunda güncellenir:
+**Bütçe defteri — ÜÇ AYRI CÜZDAN, toplanmaz** (tuzak 6.3: bir defter iki cüzdanı toplayınca
+gerçek Modal kalanı $7,27'yken $35,93 sanılmıştı).
+
+**A · Hakem (`gpt-4o-mini`)** — hesaplanabilir: `llm_client.PRICE` = $0,15/M girdi · $0,60/M çıktı.
+Ölçülmüş çıpa: 80 kalemlik tam skorlama ≈ **$0,04** (#56: $0,0411 · $0,0339).
+
+| kalem | koşu-eşdeğeri | tahmin | gerçekleşen |
+| :--- | ---: | ---: | ---: |
+| Görev 2 · `h1_fl` + `h2b_fl_k4` | 1,5 | $0,06 | |
+| Görev 7 · kol kapısı (`m1` + `m2b`) | 1,5 | $0,06 | |
+| Görev 9 · ürün kapısı (3 gnd + 1 abst) | 3,5 | $0,14 | |
+| yeniden koşum payı | — | $0,09 | |
+| **A TOPLAM** | | **~$0,35** | |
+
+**B · GPU (Modal)** — panelden okunur, defterden **türetilmez**.
 
 | kalem | tahmin | gerçekleşen |
 | :--- | ---: | ---: |
-| Görev 2 · Gemini üretim + hakem | ~$1,50 | |
-| Görev 4 · hasat (Modal ise) | $0-4,00 | |
-| Görev 6 · `τ_a` v2 eğitimi | ~$1,30 | |
-| Görev 7 · kol kapısı hakem | ~$0,10 | |
-| Görev 9 · ürün kapısı hakem | ~$0,30 | |
-| **TOPLAM** | **≤ $7,20** | |
+| Görev 4 · hasat — **yerel gece koşusu ise $0**; Modal ise ~700 üretim | $0 – 0,50 | |
+| Görev 6 · `τ_a` v2 (≈85 adım; `τ_a` v1 = 70 adım ≈ $1,30) | ~$1,60 | |
+| **B TOPLAM** | **$1,60 – 2,10** | |
+
+**C · Rakip çıkarımı (OpenRouter → Gemini FL)** — ⚠️ **repo bu cüzdanı hiç izlemiyor.**
+`llm_client.PRICE`'ta yalnız `gpt-4o-mini` ve `gpt-4o` var; Gemini FL **kayıtlı değil** ve
+`price()` bilinmeyen modelde **hata verir** (sessiz varsayılan yok — doğru davranış).
+
+| kalem | sürücü | tahmin | gerçekleşen |
+| :--- | :--- | ---: | ---: |
+| Görev 2 · 160 üretim (~4K girdi / ~1,5K çıktı her biri) | OpenRouter paneli | $0,10 – 0,50 | |
+
+```
+BEKLENEN TOPLAM   ~$2,0 – 3,0        TAVAN $10 (durma koşulu 4)
+```
+
+⚠️ **Önceki $7,20 tahmini fazlaydı** — Gemini kıyası için $1,50 yazmıştım; gerçek sürücü
+160 çağrı ve ölçülmüş hakem çıpası $0,04/koşu. Düzeltildi.
 
 ---
 
@@ -496,6 +522,38 @@ Gemini'nin red kalıplarını yakaladığını doğrula.
 → **verify:** 15/15 ileri + 2/2 geri doğru. Kaçan kalıp varsa `score_abstention.REJECT_RE`'ye
 eklenir, **tek kaynaktan** (tuzak 2.9), ve `git diff` ile gösterilir. Kalibrasyon yapılmadan
 Adım 2.2'ye geçilmez.
+
+- [ ] **Adım 2.1b — Gemini FL'ı fiyat kaydına ekle (ADR-0017 maliyet ekseni)**
+
+`llm_client.PRICE` (satır 49-52) yalnız `gpt-4o-mini` ve `gpt-4o` taşıyor. Rakibin çıkarım
+maliyeti bugün **hiçbir yerde muhasebeleşmiyor** — oysa ADR-0017 maliyet-normalize kıyas
+istiyor ve bu tur ilk kez rakibi ürün rejiminde ölçüyor.
+
+```python
+PRICE = {  # 2026-07-24 itibarıyla
+    "openai/gpt-4o-mini": (0.15 / 1e6, 0.60 / 1e6),
+    "openai/gpt-4o": (2.50 / 1e6, 10.0 / 1e6),
+    # 2026-08-XX — birincil kaynak: <sağlayıcının resmî fiyat sayfası URL'si>
+    "google/gemini-3.1-flash-lite": (<girdi> / 1e6, <çıktı> / 1e6),
+}
+```
+
+⚠️ Fiyat **birincil kaynaktan** okunur (sağlayıcının kendi liste sayfası), tarihiyle yazılır.
+Hatırlamayla ya da tahminle **yazılmaz** — `price()`'ın hata verme davranışı tam bu yüzden var.
+
+→ **verify:**
+```bash
+source ~/code/global_venv/bin/activate
+python -c "
+import sys; sys.path.insert(0,'scripts')
+from llm_client import price
+print('gemini FL:', price('google/gemini-3.1-flash-lite'))
+print('hakem   :', price('openai/gpt-4o-mini'))
+"
+```
+Beklenen: iki satır da fiyat basıyor, `SystemExit` yok. ⚠️ Bu bir **muhasebe** eklemesidir;
+üretim yolu bu kaydı zaten kullanmıyor, gerçek harcama **OpenRouter panelinden** okunur ve
+künyeye o yazılır (tuzak 6.3).
 
 - [ ] **Adım 2.2 — FL'ı harness AÇIK koş (h1 + h2b@k=4)**
 
