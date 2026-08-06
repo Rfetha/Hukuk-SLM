@@ -7,7 +7,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta mahkeme kararının ne olacağına dair bilgi yok."
+    "reason": "Verilen kaynakta mahkeme kararının ne olacağına dair bilgi yok.",
+    "valid_trap_anahtari": "ad5dcf18e59684cc7cf7a4c3",
+    "valid_trap_reason": "Kaynak metin, mahkeme kararının lehe sonuçlanması durumunda ne olacağına dair bilgi vermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 1,
@@ -17,17 +20,23 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, beraat kararının temyiz edilebilirliğini açıkça belirtmemekte ve model, bu konuda yanıltıcı bir sonuç çıkarmaktadır."
+    "reason": "Kaynak metin, beraat kararının temyiz edilebilirliğini açıkça belirtmemekte, model ise bu konuda kesin bir cevap vermektedir.",
+    "valid_trap_anahtari": "87d4d4df917a916ccbb5f338",
+    "valid_trap_reason": "Kaynak metinler ilk derece mahkemesinin beraat kararının temyiz edilip edilemeyeceğini doğrudan cevaplamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 2,
     "soru": "Hangi suçlarla ilgili olarak müdafinin dosya inceleme yetkisi kısıtlanabilir?",
     "cevap": "1) İlgili kaynak, KAYNAK 2'dir çünkü bu kaynak, müdafi ile görüşme hakkının kısıtlanabileceği suçları ve bu kısıtlamanın nasıl uygulanacağını açıklamaktadır. Di",
-    "valid_trap": false,
-    "verdict": "ABSTAIN",
+    "valid_trap": true,
+    "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynak, müdafinin dosya inceleme yetkisi kısıtlanabileceği suçları düzenlemiyor."
+    "reason": "Model, kaynakta belirtilen suçları doğru bir şekilde aktarmış ancak müdafinin dosya inceleme yetkisi kısıtlanabilir mi sorusuna doğrudan yanıt vermemiştir.",
+    "valid_trap_anahtari": "88ebd45d2072c33f263b6a4f",
+    "valid_trap_reason": "Kaynak metinler müdafinin dosya inceleme yetkisinin kısıtlanabileceği suçları belirtmiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 3,
@@ -37,7 +46,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde olmayan bir bilgi ekleyerek tazminat talebinin mümkün olmadığını iddia etmiştir."
+    "reason": "Model, kaynakta olmayan bir bilgi ekleyerek tazminat talebinin mümkün olmadığını iddia etmiştir.",
+    "valid_trap_anahtari": "27fa0adc5af74aef20b00fe0",
+    "valid_trap_reason": "Kaynak metin, karşı tarafın yanılmayı bilmesi durumunda tazminat alınıp alınamayacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 4,
@@ -47,7 +59,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta elkonulan eşyaların ne olacağına dair net bir bilgi yok."
+    "reason": "Verilen kaynakta elkonulan eşyaların ne olacağına dair net bir bilgi yok.",
+    "valid_trap_anahtari": "7b6a28feb35dd1cfac171d13",
+    "valid_trap_reason": "Kaynak 2, el konulan eşyaların geri verilmesi koşullarını açıklıyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 5,
@@ -57,7 +72,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, fuhşa teşvik eden kişiye verilecek ceza ile ilgili bilgi içermemekte ve model, bu konuda yanlış bir atıf yapmıştır."
+    "reason": "Kaynak metin, fuhşa teşvik eden kişiye verilecek ceza ile ilgili bilgi içermemektedir.",
+    "valid_trap_anahtari": "3146710d2a37f399b4c66046",
+    "valid_trap_reason": "Kaynak metinler çocuğu fuhşa teşvik eden kişiye verilecek cezayı içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 6,
@@ -67,7 +85,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin ihbar sonrası süreçle ilgili yeterli bilgi sunmamakta, model ise bu konuda kesin bir sonuç vermektedir."
+    "reason": "Kaynak metin, ihbar sonrası süreçle ilgili net bilgi sunmamakta, model ise bu konuda kesin bir sonuç vermektedir.",
+    "valid_trap_anahtari": "3f5082b37a4936267cbd9436",
+    "valid_trap_reason": "Kaynak metinler ihbar sonrası süreç hakkında bilgi vermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 7,
@@ -77,7 +98,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta işçinin ücret alma hakkı ile ilgili bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta işçinin ücret alma hakkı ile ilgili bilgi yok.",
+    "valid_trap_anahtari": "2be0bfa2dcb09c29143cb5bf",
+    "valid_trap_reason": "Kaynak metin, mahkeme kararı kesinleşmeden çalışmama durumunda ücret alınıp alınamayacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 8,
@@ -87,7 +111,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta evlât edinmek için gereken şartlar açıkça belirtilmemiştir."
+    "reason": "Verilen kaynakta evlât edinmek için gereken şartlar açıkça belirtilmemiştir.",
+    "valid_trap_anahtari": "1498d6e0dc13218e370d2dfb",
+    "valid_trap_reason": "Kaynak metin evlât edinme şartlarını açıkça belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 9,
@@ -97,17 +124,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "Verilen kaynakta bu bilgi yok.",
+    "valid_trap_anahtari": "e9555709003e5c90472fb075",
+    "valid_trap_reason": "Kaynak metin zamanaşımına uğramış bir alacakla takas yapılıp yapılamayacağını doğrudan cevaplamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 10,
     "soru": "Tedbir kararının tebliğ edilmemesi bir sorun mu?",
     "cevap": "1) İlgili kaynak, KAYNAK 2'dir çünkü bu kaynak, tedbir kararlarının tebliği ve itiraz süreçleri hakkında bilgi vermektedir. Diğer kaynaklar, tedbir kararlarının",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Model, kaynakta yer alan bilgiyi kullanarak soruya net bir cevap vermiştir."
+    "reason": "Model, kaynakta yer alan bilgiyi kullanarak soruya net bir cevap vermiştir.",
+    "valid_trap_anahtari": "a0f4f67d3c5acc6d536d2946",
+    "valid_trap_reason": "Kaynak metin, tedbir kararının tebliğ edilmemesinin bir sorun olup olmadığını doğrudan cevaplamıyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 11,
@@ -117,7 +150,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Bu madde bu konuyu düzenlemiyor."
+    "reason": "Bu madde bu konuyu düzenlemiyor.",
+    "valid_trap_anahtari": "174e8b681f173a71a3ccba2a",
+    "valid_trap_reason": "Kaynak metin ruhsatsız inşaata elektrik bağlatmanın cezasını içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 12,
@@ -127,7 +163,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta 50'den az işçi çalıştıran bir tarım işyerinin İş Kanunu'na tabi olup olmadığına dair bilgi yok."
+    "reason": "Verilen kaynakta 50'den az işçi çalıştıran bir tarım işyerinin İş Kanunu'na tabi olup olmadığına dair bilgi yok.",
+    "valid_trap_anahtari": "c09510586d1b0ba054cd573d",
+    "valid_trap_reason": "Kaynak metinler, 50'den az işçi çalıştıran bir tarım işyerinde İş Kanunu'nun geçerli olup olmadığını doğrudan cevaplamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 13,
@@ -137,7 +176,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta evlât edinmek için bakma süresi ile ilgili bilgi yok."
+    "reason": "Verilen kaynakta evlât edinme için bakma süresi ile ilgili bilgi yok.",
+    "valid_trap_anahtari": "6813b6f94f5ce21a5307ef73",
+    "valid_trap_reason": "Kaynak metin, engelli birini evlât edinmek için ne kadar süre bakılması gerektiğine dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 14,
@@ -147,7 +189,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer almayan 'işverene başvurmamak' durumunun sonuçlarını belirtiyor."
+    "reason": "Model, kaynak metinde bulunmayan bir bilgi ekleyerek soruya iddialı bir cevap vermiştir.",
+    "valid_trap_anahtari": "bb3fbd1bf187101bd3324559",
+    "valid_trap_reason": "Kaynak metin işverene başvurulmaması durumunda ne olacağını doğrudan açıklamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 15,
@@ -157,7 +202,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "Verilen kaynakta bu bilgi yok.",
+    "valid_trap_anahtari": "d006d2007a9b7e0f711ef12a",
+    "valid_trap_reason": "Kaynak metin vesayet altındaki kişinin menfaatinin nasıl belirleneceğine dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 16,
@@ -167,7 +215,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta hakem kararında karşı oy yazısının yer alıp almayacağına dair bir bilgi yok."
+    "reason": "Verilen kaynakta hakem kararında karşı oy yazısının yer alıp almayacağına dair bir düzenleme bulunmamaktadır.",
+    "valid_trap_anahtari": "2f90d6ab5f73dc898cab5556",
+    "valid_trap_reason": "Kaynak metin, hakem kararında karşı oy yazısının yer alıp almayacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 17,
@@ -177,7 +228,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynakta bulunmayan bir bilgi ekleyerek yanıltma durumunda işçinin fesih hakkını belirtti."
+    "reason": "Model, kaynakta olmayan bir bilgi ekleyerek yanıltma durumunda işçinin fesih hakkını belirtti.",
+    "valid_trap_anahtari": "806754873c182ee87eaa1caa",
+    "valid_trap_reason": "Kaynak metin işverenin işçiyi yanıltması durumunda işçinin ne yapabileceğini doğrudan cevaplamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 18,
@@ -187,7 +241,10 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynakta yer almayan bir değerlendirme yaparak zorla fuhşa sevketmeyi insanlığa karşı suç olarak nitelendirmiştir."
+    "reason": "Model, kaynakta yer almayan bir değerlendirme yaparak zorla fuhşa sevketmeyi insanlığa karşı suç olarak nitelendirmiştir.",
+    "valid_trap_anahtari": "84d22c830aaae806db77e3f1",
+    "valid_trap_reason": "Kaynak metin zorla fuhşa sevketmenin insanlığa karşı suç olup olmadığını cevaplamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 19,
@@ -197,7 +254,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "verilen kaynakta bu bilgi yok"
+    "reason": "verilen kaynakta bu bilgi yok",
+    "valid_trap_anahtari": "5546950f78be41a6a7d71a16",
+    "valid_trap_reason": "Kaynak metin promosyon uygulamalarında hangi tür mal veya hizmet verilebileceği hakkında bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 20,
@@ -207,7 +267,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta tatil günleri hakkında doğrudan bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta tatil günleri hakkında doğrudan bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "209d97279f97da4f7c349af7",
+    "valid_trap_reason": "Kaynak metin, çalışılan günler dışında tatil günleri olup olmadığını doğrudan belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 21,
@@ -217,7 +280,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "verilen kaynakta bu bilgi yok",
+    "valid_trap_anahtari": "87591dc571b7a6d467dfd7cf",
+    "valid_trap_reason": "Kaynak metin, sözleşmede para birimi belirlemenin sonuçları hakkında bilgi vermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 22,
@@ -227,7 +293,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta gayrimenkulün yönetimiyle ilgili kurallar bulunmamaktadır."
+    "reason": "Verilen kaynakta gayrimenkulün yönetimiyle ilgili kurallar bulunmamaktadır.",
+    "valid_trap_anahtari": "9745c1412e00c124cae4b7b7",
+    "valid_trap_reason": "Kaynak metin gayrimenkul yönetimiyle ilgili kuralları belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 23,
@@ -237,7 +306,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metinde yeter sayı sağlanamaması durumunda ne olacağına dair bilgi yok, model kendi bilgisiyle cevap vermiştir."
+    "reason": "Kaynak metin yeter sayı sağlanamaması durumunu açıklamamakta, model ise bu durumu net bir şekilde yanıtlamaktadır.",
+    "valid_trap_anahtari": "0fff3f107ea0e75c5273ec7c",
+    "valid_trap_reason": "Kaynak metinler ilk toplantıda yeter sayı sağlanamazsa ne olacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 24,
@@ -247,17 +319,23 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, şiddet içeren müstehcen içerik hakkında doğrudan bir bilgi sunmamakta, ancak model bu durumu müstehcenlik suçu olarak yorumlayarak cevap vermiştir."
+    "reason": "Kaynak, şiddet içeren müstehcen içerik hakkında doğrudan bir bilgi sunmamakta, ancak model bu durumu ceza ile ilişkilendirerek yanıltıcı bir sonuç çıkarmıştır.",
+    "valid_trap_anahtari": "cdf64eb00b3e846f7050a069",
+    "valid_trap_reason": "Kaynak metin şiddet içeren müstehcen içerikle ilgili cezai durumu açıklamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 25,
     "soru": "Kira bedelini nasıl belirliyoruz?",
     "cevap": "1) İlgili kaynak, KAYNAK 3'tür çünkü bu kaynak, kira bedelinin belirlenmesine ilişkin dava açma koşullarını ve mahkemece belirlenecek kira bedelinin geçerliliği",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynakta yer alan bilgiyi kullanarak kira bedelinin belirlenmesi hakkında net bir cevap vermektedir."
+    "reason": "Model, kaynakta yer alan bilgiyi kullanarak kira bedelinin belirlenmesi hakkında net bir cevap vermektedir.",
+    "valid_trap_anahtari": "25f8610dba082a3da73bfa0b",
+    "valid_trap_reason": "Kaynak metin kira bedelinin nasıl belirleneceğini açıklamıyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 26,
@@ -267,7 +345,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "verilen kaynakta bu bilgi yok"
+    "reason": "Verilen kaynakta bu bilgi yok.",
+    "valid_trap_anahtari": "9a86a656c10925312c248bcd",
+    "valid_trap_reason": "Kaynak metin borcun bir kısmına itiraz etme sürecini açıklamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 27,
@@ -277,17 +358,23 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, mahkeme karar verme süreçlerini doğrudan açıklamamakta, ancak model mahkeme yetkisini belirten bir yorum yapmıştır."
+    "reason": "Kaynak metin, mahkemenin karar verme süreçlerini açıklamamakta, yalnızca yönetici atama sürecini düzenlemektedir.",
+    "valid_trap_anahtari": "98bf70186996c4bc391fa74c",
+    "valid_trap_reason": "Kaynak metin mahkemenin hangi kurallara göre karar verdiğini açıklamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 28,
     "soru": "Aldığım ürünün eklentileri ayıplıysa, ana ürün için geri dönüş yapabilir miyim?",
     "cevap": "1) İlgili kaynak, Türk Borçlar Kanunu Madde 228'dir. Bu madde, alıcının ayıplı bir ürünle karşılaştığında geri dönüş hakkını kullanma yetkisini düzenlemektedir.",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde yer alan bilgiyi doğru bir şekilde kullanarak soruya net bir cevap vermiştir."
+    "reason": "Model, kaynak metinde yer alan bilgiyi doğru bir şekilde kullanarak soruya net bir cevap vermiştir.",
+    "valid_trap_anahtari": "29f37cdcb5bfca946236f5ca",
+    "valid_trap_reason": "Kaynak metin, ürünün eklentilerinin ayıplı olması durumunda ana ürün için geri dönüş yapılıp yapılamayacağını doğrudan cevaplamıyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 29,
@@ -297,27 +384,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta cayma hakkı ile ilgili bilgi yok."
+    "reason": "Verilen kaynakta cayma hakkı ile ilgili bilgi yok.",
+    "valid_trap_anahtari": "3ec08fad2913fbc28f30e5e3",
+    "valid_trap_reason": "Kaynak metin cayma hakkını tanımlamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 30,
     "soru": "Takas işlemi sırasında alacakların türü ne olmalı?",
     "cevap": "1) İlgili kaynak, takas işlemleriyle ilgili olarak Türk Borçlar Kanunu'nun 141. maddesidir. Diğer kaynaklar, takas işlemleriyle doğrudan ilgili olmadıkları için",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde yer alan bilgiyi kullanarak takas işlemleri sırasında alacakların türü hakkında net bir cevap vermiştir."
+    "reason": "Model, kaynak metinde belirtilen durumu net bir şekilde açıklamış ve takas işlemleriyle ilgili bir sonuç çıkarmıştır.",
+    "valid_trap_anahtari": "97f70d423321f91f48f8e1e7",
+    "valid_trap_reason": "Kaynak metin takas işlemi sırasında alacakların türü hakkında bilgi vermiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 31,
     "soru": "Toplu yapı nedir?",
     "cevap": "1) İlgili kaynak, KAYNAK 4'tür çünkü bu kaynak, \"toplu yapı\" kavramını ve onun bileşenlerini tanımlamaktadır. Diğer kaynaklar, toplu yapıların yönetimi, hak ve ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Model, kaynakta yer alan bilgiyi kullanarak toplu yapının tanımını yapmış ancak bu tanımın kapsamını genişletmiştir."
+    "reason": "Model, kaynakta yer alan bilgiyi kullanarak toplu yapının tanımını yapmış ancak bu tanımın kapsamını genişletmiştir.",
+    "valid_trap_anahtari": "f7cef651cbb63b037b12bf76",
+    "valid_trap_reason": "Kaynak metinler toplu yapının tanımını içermiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 32,
@@ -327,27 +423,36 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin duruşmaya katılmamanın sonuçlarını açıkça belirtmiyor, ancak model bu konuda kesin bir sonuç sunuyor."
+    "reason": "Kaynak metin duruşmaya katılmamanın sonuçlarını açıkça belirtmiyor, ancak model bu konuda kesin bir sonuç sunuyor.",
+    "valid_trap_anahtari": "90560e5d244f60654110ddbd",
+    "valid_trap_reason": "Kaynak metin duruşmaya katılmamanın sonuçlarını açıklamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 33,
     "soru": "Başvurum kabul edilirse ne olur?",
     "cevap": "1) İlgili kaynak, KAYNAK 2'dir çünkü bu kaynak, tedbir kararının nasıl verileceği ve başvurunun kabul edilmesi durumunda ne olacağına dair doğrudan bilgi sunmak",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, başvurunun kabul edilmesi durumunda ne olacağına dair bilgi veriyor ancak kaynak metin bu durumu tam olarak açıklamıyor."
+    "reason": "Model, başvurunun kabul edilmesi durumunda ne olacağına dair bilgi veriyor ancak kaynakta bu konuda yeterli bilgi yok.",
+    "valid_trap_anahtari": "8fd37f64fb87f21ab695a9c9",
+    "valid_trap_reason": "Kaynak metin başvurunun kabul edilmesi durumunda ne olacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 34,
     "soru": "Cumhuriyet savcıları hangi durumlarda doğrudan soruşturma yapar?",
     "cevap": "1) İlgili kaynak, KAYNAK 2'dir çünkü bu kaynak, Cumhuriyet savcısının hangi durumlarda doğrudan soruşturma yapacağını açıkça belirtmektedir. Diğer kaynaklar, sa",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynakta belirtilen durumu doğru bir şekilde aktarmış ancak bu durumun detaylarını genişleterek kendi yorumunu eklemiştir."
+    "reason": "Model, kaynakta belirtilen durumu net bir şekilde açıklayarak doğrudan soruşturma yapma yükümlülüğünü ifade etmiştir.",
+    "valid_trap_anahtari": "2a286b903d7402a842abcac9",
+    "valid_trap_reason": "Kaynak metin, Cumhuriyet savcılarının doğrudan soruşturma yapma durumlarını açıkça belirtmiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 35,
@@ -357,37 +462,49 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta nafaka davalarının yargılama usulü hakkında bilgi yok."
+    "reason": "Verilen kaynakta nafaka davalarının hangi yargılama usulüne tabi olduğu bilgisi yok.",
+    "valid_trap_anahtari": "e4a5e8885c7cc77f7da6f2b3",
+    "valid_trap_reason": "Kaynak metin nafaka davalarının yargılama usulüne dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 36,
     "soru": "Kat mülkiyetine geçiş sürecinde hangi kurallar geçerli?",
     "cevap": "1) İlgili kaynak, kat mülkiyetine geçiş sürecini düzenleyen KAYNAK 1'dir. Diğer kaynaklar, kat mülkiyeti ile ilgili farklı konuları ele almakta olup, geçiş süre",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta kat mülkiyetine geçiş sürecine dair genel bir bilgi bulunmakta, ancak detaylı kurallar belirtilmemiştir."
+    "reason": "Verilen kaynakta kat mülkiyetine geçiş sürecine dair genel bir çerçeve sunulmakta, ancak spesifik kurallar detaylandırılmamaktadır.",
+    "valid_trap_anahtari": "43c152c5a499556728788f31",
+    "valid_trap_reason": "Kaynak metinler kat mülkiyetine geçiş sürecindeki kuralları doğrudan açıklamıyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 37,
     "soru": "Vesayet altındaki kişi için aile meclisi kurulması zorunlu mu?",
     "cevap": "1) İlgili kaynak, KAYNAK 1'dir çünkü bu kaynak, aile meclisinin oluşumunu ve vesayet altındaki kişinin vasi olma ehliyetini düzenlemektedir. Diğer kaynaklar, ve",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Kaynak metin aile meclisinin kurulması gerektiğini belirtse de, zorunluluk ifadesi açıkça yer almamaktadır."
+    "reason": "Kaynak metin aile meclisinin kurulması gerektiğini belirtse de, zorunluluk ifadesi açıkça yer almamaktadır.",
+    "valid_trap_anahtari": "7eddea4825abcf3a0f55d7ba",
+    "valid_trap_reason": "Kaynak metin, aile meclisinin vesayet altındaki kişi için zorunlu olup olmadığını belirtmiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 38,
     "soru": "Bir kamu kurumu zarar görmezse, ihaleye fesat karıştıran kişi ne kadar ceza alır",
     "cevap": "1) İlgili kaynak, KAYNAK 1'dir çünkü bu kaynak, kamu kurumlarına karşı ihaleye fesat karıştıran kişilerin cezasını düzenlemektedir. Diğer kaynaklar, aile hukuku",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde belirtilen ceza aralığını doğru bir şekilde aktarmış ancak kamu kurumunun zarar görmemesi durumunu açıklamadan net bir cevap vermiştir."
+    "reason": "Model, kaynak metinde belirtilen ceza aralığını doğru bir şekilde aktarmış ancak kamu kurumunun zarar görmemesi durumunu net bir şekilde ele almamıştır.",
+    "valid_trap_anahtari": "68377712f0b815c978d15746",
+    "valid_trap_reason": "Kaynak metin, kamu kurumu zarar görmediğinde ihaleye fesat karıştıran kişinin cezasını belirtmiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 39,
@@ -397,7 +514,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta vasiliğe atanma kararı sonrası yapılması gerekenler hakkında bilgi yok."
+    "reason": "Verilen kaynakta vasiliğe atanma kararı sonrası yapılması gerekenler hakkında bilgi yok.",
+    "valid_trap_anahtari": "af1b4ccd0c6345e9603b0712",
+    "valid_trap_reason": "Kaynak metinler vasiliğe atanma kararı kesinleşince ne yapılması gerektiğini belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 40,
@@ -407,7 +527,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ruhsatsız bina yapmanın cezası hakkında bilgi yok."
+    "reason": "Verilen kaynakta ruhsatsız bina yapmanın cezası hakkında bilgi yok.",
+    "valid_trap_anahtari": "6945861d35ee3e75a066c02f",
+    "valid_trap_reason": "Kaynak metin ruhsatsız bina yapmanın cezasını içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 41,
@@ -417,17 +540,23 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Kaynak metin, zorla icra yapılacağı durumları açıkça belirtmiyor, modelin cevabı ise bu durumu net bir şekilde ifade ediyor."
+    "reason": "Kaynak metin zorla icra durumlarını açıkça belirtmiyor, model kendi yorumunu ekleyerek cevap vermiştir.",
+    "valid_trap_anahtari": "e76fbb9b2daf5a23df4cfd41",
+    "valid_trap_reason": "Kaynak metinler ilamların icrası hakkında genel bilgiler veriyor ancak zorla icra edilme durumlarını açıkça belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 42,
     "soru": "Ürünüm elimden alınırsa, geri alabilir miyim?",
     "cevap": "1) İlgili kaynak, KAYNAK 4'tür çünkü bu kaynak, satılanın bir kısmının elinden alınması durumunda alıcının haklarını düzenlemektedir. Diğer kaynaklar, satıcının",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynakta olmayan bilgi ekleyerek soruya net bir cevap vermiştir."
+    "reason": "Model, kaynakta yer almayan 'zararınızı talep edebilirsiniz' ifadesini ekleyerek esaslı bir cevap vermiştir.",
+    "valid_trap_anahtari": "c3ffda611c4f7d94ac0c66cf",
+    "valid_trap_reason": "Kaynak metin, ürünün elden alınması durumunda geri alınıp alınamayacağına dair doğrudan bir cevap içermiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 43,
@@ -437,7 +566,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynakta olmayan bir bilgi ile soruya yanıt vermiştir."
+    "reason": "Model, kaynakta olmayan bir bilgi ile iddianameyi iade etme koşulunu belirterek esaslı bir cevap vermiştir.",
+    "valid_trap_anahtari": "700eeee5bfed4e639d731fe1",
+    "valid_trap_reason": "Kaynak metin, suçun nitelendirilmesi nedeniyle iddianamenin iadesi hakkında bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 44,
@@ -447,7 +579,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta derneklerin oluşturduğu organların nitelikleri hakkında bilgi yok."
+    "reason": "Verilen kaynakta derneklerin oluşturduğu organların nitelikleri hakkında bilgi yok.",
+    "valid_trap_anahtari": "fe96990490a530e6508a14f3",
+    "valid_trap_reason": "Kaynak metin, derneklerin zorunlu organları dışında oluşturdukları organların niteliklerine dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 45,
@@ -457,7 +592,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "Verilen kaynakta bu konuya ilişkin bir düzenleme bulunmamaktadır.",
+    "valid_trap_anahtari": "dbeee6dc9903a23d26fb7f06",
+    "valid_trap_reason": "Kaynak metin, tüketici davalarında mahkeme kararlarının nasıl yayınlandığına dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 46,
@@ -467,7 +605,10 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Kaynak metin yönetim planının zorunluluğuna dair bir bilgi içermemekte, model ise bu konuda kesin bir cevap vermektedir."
+    "reason": "Kaynak metin yönetim planının zorunluluğu hakkında bilgi vermemekte, model ise kesin bir cevap vermiştir.",
+    "valid_trap_anahtari": "5795f3d24ff6456ca18d761e",
+    "valid_trap_reason": "Kaynak metinler, kat mülkiyetine geçişte yönetim planı yapılmasının zorunlu olup olmadığını belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 47,
@@ -477,7 +618,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta organ alımına dair bir bilgi yoktur."
+    "reason": "Verilen kaynakta organ alımına dair bir bilgi yoktur.",
+    "valid_trap_anahtari": "5132c8c283365f4a71d77c9f",
+    "valid_trap_reason": "Kaynak metinler, örgüt kapsamında organ almanın cezasını doğrudan belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 48,
@@ -487,7 +631,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta konut finansmanı kuruluşunun sorumluluğunun ne kadar sürdüğüne dair bilgi yok."
+    "reason": "Verilen kaynakta konut finansmanı kuruluşunun sorumluluğunun ne kadar sürdüğüne dair bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "9fb203395b503c280a7dcc13",
+    "valid_trap_reason": "Kaynak metin konut finansmanı kuruluşunun sorumluluğunun süresi hakkında bilgi vermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 49,
@@ -497,7 +644,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin abonelik sonlandırma bedeli hakkında bilgi vermemekte, model ise bu konuda kesin bir sonuç sunmaktadır."
+    "reason": "Model, kaynakta olmayan bilgi ekleyerek kesin bir cevap vermiştir.",
+    "valid_trap_anahtari": "c4e21f3fd081a09c1727ca92",
+    "valid_trap_reason": "Kaynak metin abonelik sonlandırma sonrası bedel ödenip ödenmeyeceği hakkında bilgi vermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 50,
@@ -507,7 +657,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde yer alan bilgiyi doğru bir şekilde kullanarak soruyu yanıtlamış, ancak kaynak dışında ek bilgi sunmamıştır."
+    "reason": "Model, kaynak metinde yer alan bilgiyi doğru bir şekilde kullanarak soruyu yanıtlamış, ancak kaynakta olmayan bir detay eklememiştir.",
+    "valid_trap_anahtari": "642cd0d48f6f7dd872265d4d",
+    "valid_trap_reason": "Kaynak 3, işçinin yaptığı giderlerin ücretle birlikte ödenmesi gerektiğini belirtmektedir.",
+    "source_answers_cevapli": true
   },
   {
     "id": 51,
@@ -517,7 +670,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta birden fazla kişiye zarar verme durumunu düzenleyen bir hüküm yok."
+    "reason": "Verilen kaynakta birden fazla kişiye zarar verme durumu ile ilgili bir bilgi yok.",
+    "valid_trap_anahtari": "211cf088d58cc3524f74d411",
+    "valid_trap_reason": "Kaynak metin, birden fazla kişiye zarar verme durumunda uygulanacak cezayı doğrudan belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 52,
@@ -527,7 +683,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde belirtilen bilgileri doğru bir şekilde özetlemiş ancak tutuklama kararının nasıl verileceği konusunda daha fazla bilgi sağlamamıştır."
+    "reason": "Model, kaynak metinde belirtilen bilgileri doğru bir şekilde aktarmış ancak tutuklama kararının nasıl verileceği konusunda daha fazla detay sunmamıştır.",
+    "valid_trap_anahtari": "9aa5e4b7da5c6c4e2e8fe1bf",
+    "valid_trap_reason": "Kaynak 1, tutuklama kararının nasıl verileceğini açıklıyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 53,
@@ -537,7 +696,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin zincirleme suçların mahkeme yetkisini doğrudan düzenlemiyor, ancak model bu konuda kesin bir cevap vermiştir."
+    "reason": "Kaynak metin zincirleme suçların mahkeme yetkisini düzenlemiyor, ancak model bu konuda iddialı bir cevap vermiştir.",
+    "valid_trap_anahtari": "4141402625f3cc38f5e48208",
+    "valid_trap_reason": "Kaynak metin zincirleme suçlarda hangi mahkemenin yetkili olduğunu belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 54,
@@ -547,7 +709,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta işten ayrılıp işe dönme şartlarıyla ilgili bilgi yok."
+    "reason": "Verilen kaynakta işten ayrılıp işe dönme şartlarıyla ilgili bilgi yok.",
+    "valid_trap_anahtari": "b5efed8dc89939b51eee143f",
+    "valid_trap_reason": "Kaynak metin işten ayrılıp tekrar işe dönme durumunda aynı şartlarda çalışılıp çalışılmayacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 55,
@@ -557,7 +722,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "verilen kaynakta bu bilgi yok"
+    "reason": "verilen kaynakta bu bilgi yok",
+    "valid_trap_anahtari": "cd4d8e1eb1bc4f1d93383f8c",
+    "valid_trap_reason": "Kaynak metinler icra memurunun borçluya ödeme emri gönderme zamanını açıklamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 56,
@@ -567,7 +735,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta, bireysel sigorta bedeli ile ilgili bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta, sigorta bedelinin kişisel olarak yaptırılması durumuna dair bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "9247c54351747bba0de8dd82",
+    "valid_trap_reason": "Kaynak metin sigorta bedelinin bireysel olarak yaptırılması durumunu ele almıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 57,
@@ -577,7 +748,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Bu madde bu konuyu düzenlemiyor."
+    "reason": "Bu madde bu konuyu düzenlemiyor.",
+    "valid_trap_anahtari": "61d5a9caf007d743feecd28c",
+    "valid_trap_reason": "Kaynak metin kolluk güçlerinin eğitimleri hakkında bilgi vermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 58,
@@ -587,7 +761,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta silah bulundurma ile ilgili bir bilgi yok."
+    "reason": "Verilen kaynakta silah bulundurma ile ilgili bir bilgi yok.",
+    "valid_trap_anahtari": "caf5506b0525045d9d9392e4",
+    "valid_trap_reason": "Kaynak metin silah bulundurmanın sonuçları hakkında bilgi vermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 59,
@@ -597,7 +774,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin garanti belgesi ile hangi malların satılmak zorunda olduğunu belirtmiyor, ancak model bu konuda kesin bir bilgi veriyor."
+    "reason": "Kaynak metin garanti belgesi ile hangi malların satılmak zorunda olduğunu belirtmiyor, ancak model bu konuda kesin bir bilgi veriyor.",
+    "valid_trap_anahtari": "7ecd9d7aa4ae70a747d088ed",
+    "valid_trap_reason": "Kaynak metinler garanti belgesi ile hangi malların satılmak zorunda olduğunu belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 60,
@@ -607,7 +787,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynakta istinaf başvurusu için gerekli belgeler hakkında net bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta istinaf başvurusu için gerekli belgeler hakkında net bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "c7e9f46d9c195df6c7b2d3b4",
+    "valid_trap_reason": "Kaynak metinler istinaf başvurusu için gerekli belgeleri belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 61,
@@ -617,7 +800,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "Verilen kaynakta bu bilgi yok.",
+    "valid_trap_anahtari": "b0041e3031e1dec18f260356",
+    "valid_trap_reason": "kaynak metin soruşturma kararına itiraz hakkında bilgi içermiyor",
+    "source_answers_cevapli": false
   },
   {
     "id": 62,
@@ -627,7 +813,10 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynakta bulunmayan bir bilgi ekleyerek soruya yanıt vermiştir."
+    "reason": "Kaynak metin, ortak giderlerin ödenmemesi durumunu düzenlememekte, ancak modelin cevabı bu durumu yasal işlemlerle ilişkilendirerek yanıltıcı bir şekilde cevap vermektedir.",
+    "valid_trap_anahtari": "920e57a6104595b28e4fa885",
+    "valid_trap_reason": "Kaynak metinler kat maliklerinin ortak giderleri ödememesi durumunu ele almıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 63,
@@ -637,7 +826,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta emziren kadın işçilerin süt vermesi için süre hakkında bilgi yok."
+    "reason": "Verilen kaynakta emziren kadın işçilerin süt vermesi için süre hakkında bilgi yok.",
+    "valid_trap_anahtari": "42df14ff4b94f428e183054c",
+    "valid_trap_reason": "kaynak metin emziren kadın işçilerin süt vermesi için süre hakkında bilgi içermiyor",
+    "source_answers_cevapli": false
   },
   {
     "id": 64,
@@ -647,27 +839,36 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, temyiz dilekçesinin nasıl yapılacağına dair detaylı bilgi vermekte, ancak kaynakta bu bilgi tam olarak bulunmamaktadır."
+    "reason": "Model, kaynakta bulunmayan 'temyiz dilekçesinin nasıl yapılacağı' bilgisi ekleyerek iddialı bir cevap vermiştir.",
+    "valid_trap_anahtari": "ded70f10e7076247efcc6e26",
+    "valid_trap_reason": "Kaynak metin temyiz dilekçesinin nasıl yapılacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 65,
     "soru": "Hüküm hangi durumlarda kesin hüküm sayılır?",
     "cevap": "1) İlgili kaynak, HUKUK MUHAKEMELERİ KANUNU MADDE 302'dir çünkü bu madde, hükmün kesinleşme sürecini ve tarafların ilamı alma haklarını düzenlemektedir. Diğer k",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta hükmün kesinleşme durumları açıkça belirtilmemiştir."
+    "reason": "Verilen kaynakta hükmün kesinleşme durumları açıkça belirtilmemiştir.",
+    "valid_trap_anahtari": "bbc7473a206e1d70b4377d72",
+    "valid_trap_reason": "Kaynak metin, hükmün hangi durumlarda kesin hüküm sayılacağını açıklamıyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 66,
     "soru": "Eğer tüketici hakem heyetinin oluşumu sağlanamazsa ne olur?",
     "cevap": "1) İlgili kaynak, KAYNAK 1'dir çünkü bu kaynak, tüketici hakem heyetinin bulunmadığı yerlerde başvuruların nasıl yapılacağına dair bilgi vermektedir. Diğer kayn",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde yer alan bilgiyi kullanarak soruya net bir cevap vermiştir."
+    "reason": "Model, kaynak metinde yer alan bilgiyi kullanarak soruya net bir cevap vermiştir.",
+    "valid_trap_anahtari": "c2bd4b3c17b89d9c79f6d816",
+    "valid_trap_reason": "Kaynak metin, tüketici hakem heyetinin oluşamaması durumunda ne olacağına dair bilgi içermiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 67,
@@ -677,7 +878,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta tüketici hakem heyetinin başkanının kim olduğu hakkında bilgi yok."
+    "reason": "Verilen kaynakta tüketici hakem heyetinin başkanının kim olduğu hakkında bilgi yok.",
+    "valid_trap_anahtari": "415daebec216d12f4ba1c77c",
+    "valid_trap_reason": "Kaynak metinlerde tüketici hakem heyetinin başkanının kim olduğu belirtilmemiştir.",
+    "source_answers_cevapli": false
   },
   {
     "id": 68,
@@ -687,7 +891,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta taşınmaz malların haczi ile ilgili bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta taşınmaz malların haczi ile ilgili bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "927baf0a66d6381ac9bec08b",
+    "valid_trap_reason": "kaynak metin taşınmaz malların haczine dair bilgi içermiyor",
+    "source_answers_cevapli": false
   },
   {
     "id": 69,
@@ -697,7 +904,10 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Kaynak metin alkol bağımlılığını ağır hastalık olarak değerlendirmiyor, bu nedenle modelin cevabı yanıltıcıdır."
+    "reason": "Kaynak metinde alkol bağımlılığına dair bir düzenleme yoktur, ancak model bu durumu ağır hastalık olarak değerlendirerek kısıtlanma talebini mümkün göstermiştir.",
+    "valid_trap_anahtari": "01f484e3e608abb446c569f6",
+    "valid_trap_reason": "Kaynak metin alkol bağımlılığı nedeniyle kısıtlanma konusunu ele almıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 70,
@@ -707,7 +917,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynakta borçlu eşin mal varlığına nasıl ulaşılacağına dair bilgi yok."
+    "reason": "Verilen kaynakta borçlu eşin mal varlığına nasıl ulaşılacağına dair bilgi yok.",
+    "valid_trap_anahtari": "ed6bb4853291f51cc8dce174",
+    "valid_trap_reason": "kaynak metin borçlu olan eşin mal varlığına ulaşma yöntemlerini açıklamıyor",
+    "source_answers_cevapli": false
   },
   {
     "id": 71,
@@ -717,7 +930,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, hâkimin taraf değişikliği için neye bakacağına dair doğrudan bilgi sunmamaktadır."
+    "reason": "Kaynak metin, hâkimin taraf değişikliği için neye bakacağına dair doğrudan bilgi sunmamaktadır.",
+    "valid_trap_anahtari": "29d70137bd6f12aa2e020a5a",
+    "valid_trap_reason": "kaynak metin taraf değişikliği için hâkimin neye baktığını açıklamıyor",
+    "source_answers_cevapli": false
   },
   {
     "id": 72,
@@ -727,7 +943,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta engelli işçi çalıştırılma oranı hesaplamasıyla ilgili bilgi yok."
+    "reason": "Verilen kaynakta engelli işçi çalıştırılma oranı hesaplamasıyla ilgili bilgi yok.",
+    "valid_trap_anahtari": "eef7cfdc268dc9ec7c063513",
+    "valid_trap_reason": "Kaynak metinler engelli işçi çalıştırılma oranının hesaplanması hakkında bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 73,
@@ -737,7 +956,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta zorlama hapsinin süresi ile ilgili bilgi yok."
+    "reason": "Verilen kaynakta zorlama hapsinin süresi ile ilgili bilgi yok.",
+    "valid_trap_anahtari": "1486bdc5e95c1af84474a74e",
+    "valid_trap_reason": "Kaynak metin zorlama hapsinin süresinin nasıl belirlendiğine dair bilgi içermiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 74,
@@ -747,27 +969,36 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Kaynak metin, konutta haciz yapılırken özel bir durum olup olmadığını açıkça belirtmemekte, ancak modelin cevabı bu durumu net bir şekilde ifade etmektedir."
+    "reason": "Kaynak metin, konutta haciz yapılırken özel bir durum olup olmadığını açıkça belirtmemektedir.",
+    "valid_trap_anahtari": "322f6bd3b33bb4cce8f7916e",
+    "valid_trap_reason": "Kaynak metin konutta hacizle ilgili özel bir durumu açıklamıyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 75,
     "soru": "Mahkeme ne zaman davayı sona erdirir?",
     "cevap": "1) İlgili kaynak, HUKUK MUHAKEMELERİ KANUNU MADDE 295'tir. Bu madde, mahkemenin hüküm verme sürecini ve bu sürecin nasıl sona ereceğini açıklamaktadır. Diğer ka",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde yer alan bilgiyi doğru bir şekilde kullanarak soruyu yanıtlamış, ancak kaynakta bulunmayan 'dava sona erme' ifadesini esas alarak iddialı bir sonuç çıkarmıştır."
+    "reason": "Model, kaynak metinde yer alan bilgiyi doğru bir şekilde kullanarak soruyu yanıtlamış, ancak kaynakta belirtilen hüküm verme sürecinin detaylarını kendi yorumuyla genişletmiştir.",
+    "valid_trap_anahtari": "642132f68ae102a13e16ee24",
+    "valid_trap_reason": "Kaynak metin, mahkemenin davayı ne zaman sona erdireceği hakkında doğrudan bilgi vermiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 76,
     "soru": "Borçlu ile başka birinin aynı taşınır malı elinde bulundurmaları durumunda kim m",
     "cevap": "1) İlgili kaynak, borçlunun mal üzerindeki hak iddialarını düzenleyen İcra ve İflas Kanunu'nun 96. maddesidir. Diğer kaynaklar, malın muhafaza, idare ve işletil",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde yer alan bilgiyi kullanarak soruya net bir cevap vermiştir."
+    "reason": "Model, kaynak metinde yer alan bilgileri kullanarak soruya net bir cevap vermiştir.",
+    "valid_trap_anahtari": "48dbbd5fbd586144ebdbcc02",
+    "valid_trap_reason": "Kaynak metin, borçlu ile başka birinin aynı taşınır malı elinde bulundurmaları durumunda kimin mal sahibi sayılacağına dair doğrudan bir cevap içermiyor.",
+    "source_answers_cevapli": true
   },
   {
     "id": 77,
@@ -777,7 +1008,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok ve cinsel saldırı suçlarıyla ilgili düzenleme bulunmamaktadır."
+    "reason": "Verilen kaynakta cinsel saldırı suçuna dair net bir düzenleme bulunmamaktadır.",
+    "valid_trap_anahtari": "7b1626a40089acf8fbd8a65b",
+    "valid_trap_reason": "Kaynak metinler vücuda cisim sokularak yapılan cinsel saldırının cezasını belirtmiyor.",
+    "source_answers_cevapli": false
   },
   {
     "id": 78,
@@ -787,7 +1021,10 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, borçlunun taşınır mallarının haczedilebilirliğini açıklamıyor, ancak model bu durumu kendi yorumuyla net bir şekilde ifade ediyor."
+    "reason": "Kaynak metin, borçlunun taşınır mallarının haczedilebilirliğini doğrudan açıklamamakta, ancak hacizle ilgili bazı düzenlemeler içermektedir.",
+    "valid_trap_anahtari": "db67cb13f359363e8df20fbf",
+    "valid_trap_reason": "kaynak borçlunun taşınır mallarının neden haczedilebileceğini açıklamıyor",
+    "source_answers_cevapli": false
   },
   {
     "id": 79,
@@ -797,6 +1034,9 @@
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, on iki yaşından küçük mağdurlar için ceza belirlemiyor, ancak model bu durumu net bir şekilde yanıtlıyor."
+    "reason": "Kaynak metin, on iki yaşından küçük mağdurlar için ceza belirlemiyor, ancak model bu durumu kendi bilgisiyle yorumlayarak cevap vermiştir.",
+    "valid_trap_anahtari": "38f3e8ad88e86cb3db31ac22",
+    "valid_trap_reason": "Kaynak metin mağdurun on iki yaşından küçük olması durumunda uygulanacak cezayı açıkça belirtmiyor.",
+    "source_answers_cevapli": false
   }
 ]

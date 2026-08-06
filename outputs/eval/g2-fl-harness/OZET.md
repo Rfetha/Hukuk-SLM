@@ -1,6 +1,14 @@
 # G2 — Gemini Flash-Lite, harness AÇIK · ADR-0057 kademe tablosu
 
-**Tarih:** 2026-08-06 · **git_sha:** `334880d` · **künye:** [`KUNYE.json`](KUNYE.json)
+**Tarih:** 2026-08-06 · **üretim git_sha:** `d88786c` *(koşu başına: [`KUNYE.json`](KUNYE.json) →
+`git_sha_KOSU_BASINA`)* · **puanlama git_sha:** `ff64682` · **künye:** [`KUNYE.json`](KUNYE.json)
+
+> 🚨 **BU BELGE 2026-08-06 AKŞAMI BAĞIMSIZ İNCELEMEDEN SONRA DÜZELTİLDİ.** Altı ayrı sayı/hüküm
+> yanlıştı ve düzeltmelerin **yönü tek taraflı değil**: bazıları bizim, bazıları rakibin lehine.
+> Düzeltilenler: **K1** muhakeme ortalamaları (`None` ↔ `0` karışmış) · **K2** muhakeme bütçesi
+> rakipte UYGULANMIYOR · **K3** M2b paydası modele bağımlıydı · **Ö1** kesiklik şerhinin yönü
+> tersti · **Ö7** `$/cevap` yalnız çıktıydı · **Ö8** kendi karşıolgumuzda TAVAN damgası yoktu.
+> Her satırın altında önceki değer **silinmedi**, `~üstü çizili~` olarak duruyor.
 
 > **Bu tablo, projenin tarihinde rakibin İLK KEZ ürün rejiminde (harness AÇIK) ölçüldüğü yerdir.**
 > Bugüne kadar *"FL'ı geçtik/geçemedik"* cümlesi kurulamıyordu: bizim sayımız harness AÇIK,
@@ -37,31 +45,79 @@ bağımsızdır, yani üç özne de **aynı bağlamı** gördü. Harness'ın ayn
 | **2** | **aşırı-red** (↓ iyi) | 10 ↔ 10 | **%23,75** | **%12,5** | **%12,5** | ✅ **EŞLEŞMİŞ** — 🚨 **iki rakibin de ~2 KATI. Turun ana borcu (B10) doğrulandı.** |
 | **2** | coverage (↑ iyi) | 10 ↔ 10 | 0,7625 | 0,8750 | 0,8750 | ✅ EŞLEŞMİŞ — aşırı-red'in aynası |
 | **2** | altın geldi ama çekindi | 10 ↔ 10 | **14/80** | 8/80 | 6/80 | ✅ EŞLEŞMİŞ — B10'un çekirdeği: bağlamda altın **var**, model yine susuyor |
-| **3** | **M2b Rej\*** (↑ iyi) | 4 ↔ 4 | 0,840 | 0,978 | 0,982 | ⛔ **TANIMSIZ — hüküm YOK.** Bizim M2b çıpamız **önsözsüz** koşuldu, FL kolları **önsözlü**. İstem ekseni **eşleşmiyor** (ADR-0057). |
-| **3** | M2b fabrication (↓ iyi) | 4 ↔ 4 | 0,160 | 0,022 | 0,018 | ⛔ **TANIMSIZ** — aynı sebep |
-| **3** | M2b Rej (regex) | 4 ↔ 4 | 0,820 | 0,911 | 0,768 | ⛔ **TANIMSIZ** — aynı sebep |
-| **—** | muhakeme (reasoning tok) | — | **ölçülemiyor** | 789,4 (78/80) | 868,8 (41/80) | ⛔ **KISMEN TANIMSIZ** — bütçe eşleşik (1024), **ölçüm tek taraflı**: `llama-server` `reasoning_tokens` bildirmiyor |
-| **—** | completion tok/cevap | 10 ↔ 10 | 803,9 | 970,5 | 573,6 | ⚠️ vekil eksen (düşünce iki tarafta da dâhil); 3.5 FL'ın düşük değeri **kesikten** kaynaklanıyor |
-| **—** | kesik oranı | 10 ↔ 10 | %3,8 | %3,8 | **%10,0** | ⚠️ 3.5 FL önceki turun **%5 eşiğini aşıyor** — aşağıdaki şerh |
-| **—** | **$/cevap** (liste fiyatı) | — | **$0** (yerel) | $0,001456 | $0,001434 | ✅ ADR-0017 maliyet ekseni **ilk kez rakiple aynı sınavda** dolduruldu |
+| **3** | **M2b Rej\*** (↑ iyi) | 4 ↔ 4 | **0,735** ~~0,840~~ | **0,809** ~~0,978~~ | **0,926** ~~0,982~~ | ⛔ **TANIMSIZ — hüküm YOK** (istem ekseni). ⚠️ Payda K3 ile onarıldı, aşağı bak. |
+| **3** | M2b fabrication (↓ iyi) | 4 ↔ 4 | **0,265** ~~0,160~~ | **0,191** ~~0,022~~ | **0,074** ~~0,018~~ | ⛔ **TANIMSIZ** — aynı sebep |
+| **3** | M2b Rej (regex) | 4 ↔ 4 | **0,647** ~~0,820~~ | **0,632** ~~0,911~~ | **0,662** ~~0,768~~ | ⛔ **TANIMSIZ** — aynı sebep |
+| **—** | muhakeme (reasoning tok) | — | **ölçülemiyor** | **769,6** ort · **735** med ~~789,4~~ | **445,2** ort · **198** med ~~868,8~~ | ⛔ **TANIMSIZ (K1+K2).** Ortalamalar düzeltildi; **etkin bütçe EŞLEŞMİYOR** |
+| **—** | completion tok/cevap | 10 ↔ 10 | 803,9 | 970,5 | 573,6 | ⚠️ vekil eksen (düşünce iki tarafta da dâhil) |
+| **—** | kesik oranı | 10 ↔ 10 | %3,8 | %3,8 | **%10,0** | ⚠️ **sebebi K2'dir** (rejim), 3.5 FL'ın özelliği değil — aşağıdaki şerh |
+| **—** | **$/cevap** (liste, **girdi+çıktı**) | 10 ↔ 10 | **$0** (yerel) | **$0,002074** | **$0,002175** | ✅ ADR-0017. ⚠️ **3.5 FL %4,9 PAHALI** — yalnız çıktıya bakan eski satır sıralamayı TERS gösteriyordu |
+| **—** | ~~$/cevap (yalnız çıktı)~~ | — | ~~$0~~ | ~~$0,001456~~ | ~~$0,001434~~ | 🚫 **GEÇERSİZ (Ö7)** — girdi yok sayılmış |
+
+### 🚨 K3 — M2b'nin PAYDASI modele bağımlıydı, onarıldı
+
+`score_abstention.judge()` hakeme soruyu, kaynağı **ve modelin cevabını** tek çağrıda veriyor,
+`source_answers`'ı (tuzağın geçerli olup olmadığı) aynı JSON'da istiyordu. Oysa bu yargı
+`(soru, bağlam)`'ın fonksiyonudur; hangi modelin skorlandığına bağlı olamaz.
+
+Ölçüldü: sınav **birebir aynı** (`soru`, `context_shown`, `referans` üç kolda da bayt-bayt aynı),
+buna rağmen **`valid_traps` fl31 45 · fl35 56 · BİZ 50**. Payda artık **cevaba kör** bir çağrıdan
+ve içerik-adresli bir önbellekten geliyor:
+
+| | valid_traps ESKİ → YENİ | Rej\* ESKİ → YENİ |
+| :--- | :--- | :--- |
+| BİZ (`olcum-h2b-k4`) | 50 → **68** | 0,840 → **0,735** |
+| 3.1 FL | 45 → **68** | 0,978 → **0,809** |
+| 3.5 FL | 56 → **68** | 0,982 → **0,926** |
+
+⭐ **Doğrulama: üç kolun paydası artık EŞİT (68).** Düzeltmenin yönü **iki taraflı da değil,
+herkesin aleyhine** — üç kol da düştü, en çok düşen 3.1 FL (−16,9 puan).
+
+⚠️ **Bu, `ROADMAP`/plan'daki `M2b ≥ 0,840` eşiğini ilgilendirir:** o eşik **eski aletin
+birimiyle** yazılmıştı. ADR-0050 kuralı gereği sonucu gördükten sonra **eşik değil ALET**
+düzeltilir — burada alet düzeltildi, dolayısıyla eşik **yeni çıpadan yeniden türetilmelidir.**
+Yeni çıpa yazıldı; **eşik değiştirilmedi, insan kararına bırakıldı.**
 
 ### Kademe 3 satırları için hüküm kurulmadı
 
-ADR-0057 gereği **"AÇIK burada geride" cümlesi kurulmamıştır.** M2b'de FL'ın sayısı bizimkinden
-yüksek görünüyor, **ama bu bir üstünlük bulgusu değildir**: bizim M2b çıpamız
-`--sufficiency-preamble` **olmadan** koşuldu, FL kolları **önsözle** koşuldu. Önsöz tam olarak
-*"kaynak yetersizse söyle"* diyen istemdir — yani ölçülen eksenin kendisini değiştirir.
-Repodaki **hiçbir** `m2b`/`h2b` koşusu önsöz kullanmıyor; eşleşme ancak bizim tarafımızda
-**yeni bir önsözlü M2b koşusuyla** kurulabilir (yerel, API maliyeti $0). **Borç.**
+ADR-0057 gereği **"AÇIK burada geride" cümlesi kurulmamıştır.** Bizim M2b çıpamız
+`--sufficiency-preamble` **olmadan** koşuldu, FL kolları **önsözle**. Önsöz tam olarak
+*"kaynak yetersizse söyle"* diyen istemdir — ölçülen eksenin kendisini değiştirir.
+Eşleştirme koşusu **yapılmaktadır**: `outputs/eval/g2b-m2b-onsozlu` (önsözlü h2b@k=4, yerel, $0).
+O koşu inip skorlanana kadar satır **TANIMSIZ** kalır.
 
-### ⚠️ 3.5 FL kesik şerhi
+### ⚠️ 3.5 FL kesik şerhi — YÖNÜ ÖLÇÜLDÜ VE ŞERH TERSİNE ÇEVRİLDİ (Ö1)
 
-3.5 FL iki koşusunda da **%10 kesik** (`finish_reason='length'`) verdi; 3.1 FL ve biz **%3,8**.
-Aynı `1024 düşünce + 512 cevap` bütçesi altında 3.5 FL **daha çok muhakeme harcıyor**
-(`reasoning_tokens` ort. 868,8 vs 789,4) ve cevabı kesiliyor. Bu, sınavın **ayarı** eşit olsa da
-**etkisi**nin eşit olmadığı anlamına gelir. Sonuç: 3.5 FL'ın sayıları **aleyhine** eğilimlidir —
-yani *"3.5 FL bizi 6,7 puan geçiyor"* hükmü **muhafazakârdır** (bütçe artsa fark muhtemelen açılır).
-Bütçeyi 3.5 FL için artırmak **eşit sınavı bozacağı** için yapılmadı.
+Önceki şerh *"kesiklik 3.5 FL'in aleyhine, dolayısıyla hüküm muhafazakâr"* diyordu. **Bu
+ölçülmeden yazılmıştı ve tersi doğru.** Üç kolda da kesik olmayan **ortak alt kümede (n=68)**:
+
+| | kütle (80) | kütle (n=68) | Δ | A1·cevaplanan (80 → 68) |
+| :--- | ---: | ---: | ---: | :--- |
+| BİZ | 0,6275 | **0,6579** | **+3,0 p** | 0,8229 → 0,8603 |
+| 3.1 FL | 0,6172 | 0,6516 | +3,4 p | 0,7054 → 0,7640 |
+| 3.5 FL | 0,6948 | 0,7002 | **+0,5 p** | 0,7940 → 0,8210 |
+
+Kesikliği kaldırmak **bize 3.5 FL'dan 6 kat çok yarıyor**; BİZ ↔ 3.5 FL farkı
+**6,7 → 4,2 puana daralıyor**. Yani hüküm muhafazakâr değil, **bizim aleyhimize** eğilimliydi.
+
+**Kesiklik hükmü — kol DÜŞÜRÜLMEDİ, gerekçesiyle:** planın *"oynuyorsa kol geçersiz"* ölçütü
+katı uygulansa fl35 düşerdi (A1 ±1,65 p oynuyor). Düşürülmedi çünkü **K2 kesikliğin fl35'in
+kusuru değil REJİMİN kusuru olduğunu gösteriyor** ve aynı kusur fl31'de de var (3 kalem).
+Doğru davranış: **her sayıyı hem tam 80'de hem ortak kesiksiz n=68'de raporlamak** ve rejim
+uyuşmazlığını damgalamak. Yapılan budur.
+
+### 🚨 K2 — muhakeme bütçesi rakip tarafında UYGULANMIYOR
+
+Kesik kalemlerin muhakeme token'ları: `fl35 [1473,1103,1475,1405,1472,1473,1470,1472]` ·
+`fl31 [1157,1267,1222]` — **hepsi 1024'ün üstünde**; görülen en büyük değer **1475**.
+`extra["reasoning"]={"max_tokens":1024}` sağlayıcı tarafından **yok sayılıyor**; tek bağlayıcı
+sınır `max_tokens=1536`. Yani **rakipte muhakeme cevabın 512'lik payını yiyor**; bizde ADR-0043
+gereği ayrık bütçe + zorunlu kapanış var.
+
+**Künyedeki *"Bütçe EŞLEŞİK (1024 iki tarafta da)"* ifadesi YANLIŞTI:** *nominal* bütçe aynı,
+**etkin** bütçe değil. Bu ADR-0057 anlamında bir **eksen uyuşmazlığıdır** — maliyet ve muhakeme
+duyarlı hiçbir hüküm bu eksende kurulmaz. Ve **3.5 FL'ın %10 kesikliğinin gerçek sebebi budur**,
+modelin özelliği değil.
 
 ---
 
@@ -72,18 +128,32 @@ aynı hakem yığını. Tek değişen model sürümü.
 
 | eksen | 3.1 FL | 3.5 FL | fark | yorum |
 | :--- | ---: | ---: | ---: | :--- |
-| **M1 kütle** | %61,7 | **%69,5** | **+7,8 puan** | gürültü tabanının **26 katı** — gerçek |
-| **A1 · cevaplanan** | 0,7054 | **0,7940** | **+8,9 puan** | sadakat belirgin yükseldi |
+| **M1 kütle** (80) | %61,7 | **%69,5** | **+7,8 puan** | gürültü tabanının ≤26 katı — **üst sınır**, aşağıya bak |
+| **M1 kütle** (n=68, kesiksiz) | %65,2 | **%70,0** | **+4,9 puan** | kesiklik çıkarılınca fark **daralıyor** |
+| **A1 · cevaplanan** (80 → 68) | 0,7054 → 0,7640 | **0,7940 → 0,8210** | +8,9 → **+5,7 p** | sadakat belirgin yükseldi |
 | **A1 · altın getirilen** | 0,7835 | **0,8607** | **+7,7 puan** | — |
-| aşırı-red | %12,5 | %12,5 | **0** | çekinme davranışı **hiç değişmemiş** |
-| M2b Rej\* | 0,978 | 0,982 | +0,4 puan | **gürültü içinde — yorumlanmaz** |
-| kesik | %3,8 | %10,0 | +6,2 puan | 3.5 FL daha çok muhakeme harcıyor |
-| liste fiyatı (çıktı) | $1,50/M | $2,50/M | **+%67** | kazanç bedava değil |
+| aşırı-red (toplam) | %12,5 | %12,5 | **0** | ⚠️ toplam eşit, **kalem düzeyinde değil** — aşağıya bak |
+| M2b Rej\* *(kör payda)* | 0,809 | 0,926 | +11,7 puan | ⛔ TANIMSIZ eksen — hüküm kurulmuyor |
+| kesik | %3,8 | %10,0 | +6,2 puan | **sebebi K2** (etkin bütçe), model farkı değil |
+| **muhakeme tok/cevap** | **769,6** (med 735) | **445,2** (med 198) | **−324 (−%42)** | 🚨 **eski satır tersini söylüyordu**: 3.5 FL **daha AZ** muhakeme harcıyor |
+| liste fiyatı (girdi/çıktı) | $0,25 / $1,50 /M | $0,30 / $2,50 /M | — | **$/cevap: $0,002074 → $0,002175 (+%4,9)** |
 
-**Okuma:** Google'ın giriş katmanı 16 günde **kütlede +7,8 puan** kazandı ve kazanç tamamen
-**sadakat** ekseninden geldi — çekinme davranışı milimetre oynamadı. Bu, `ROADMAP` §"Bakım
-halkası"nın *"belirgin daha iyi bir base var mı"* sorusunun doğrudan verisidir: **rakip hareketli
-bir hedef ve bizim tempomuzdan hızlı.**
+⚠️ **"Çekinme milimetre oynamadı" cümlesi TOPLAM EŞİTLİĞİNDEN kurulmuştu — kalem düzeyinde
+yanlış.** Ölçüldü: aşırı-red kümeleri `3.1 FL {1,15,28,38,43,45,56,59,61,66}` ·
+`3.5 FL {0,1,15,21,28,38,45,56,61,66}` → **örtüşme 8/10** (Jaccard 0,667); yalnız 3.1 FL
+`[43, 59]`, yalnız 3.5 FL `[0, 21]`. Doğru okuma: *aşırı-red **oranı** değişmedi, **hangi
+kalemlerde** olduğu değişti.*
+
+⚠️ **Gürültü tabanı eksen karıştırıyor — çarpanlar ÜST SINIRDIR.** `0,3 puan` gürültü tabanı
+**A1** için ölçüldü. Yukarıdaki *"26 katı"* / *"22 katı"* çarpanları **kütle** üzerinde kuruluyor;
+kütle = coverage × A1 ve **coverage'ın kendi varyansı bu tabanda yok**. Dolayısıyla bu çarpanlar
+gerçek anlamlılığın **üst sınırıdır**, ölçüsü değil.
+
+**Okuma:** Google'ın giriş katmanı 16 günde **kütlede +7,8 puan** (kesiksiz alt kümede +4,9)
+kazandı ve kazanç **sadakat** ekseninden geldi. Bu, `ROADMAP` §"Bakım halkası"nın *"belirgin
+daha iyi bir base var mı"* sorusunun doğrudan verisidir: **rakip hareketli bir hedef.**
+🚨 Ve muhakeme ekseninde kazanç **daha az düşünerek** geldi (769,6 → 445,2 token/cevap) — önceki
+özet bunun tersini söylüyordu.
 
 ⚠️ **Şerh:** iki modeli **farklı upstream sağlayıcı** servis etti (3.1 FL → `Google AI Studio`,
 3.5 FL → `Google`). Üretim tarafında sağlayıcı **pinlenmiyor** (`LLM_PROVIDER_ORDER` yalnız hakem
@@ -103,8 +173,26 @@ altın bağlamda ama sustu BİZ 14/80   «  3.1 FL 8/80    «  3.5 FL 6/80      
 
 Model, altın maddeyi **görüyor**, gördüğünde **rakiplerden daha sadık** cevaplıyor — ama
 **gördüğü hâlde 14 kez susuyor**, rakip aynı bağlamda 6-8 kez susuyor. Kütledeki kaybımızın
-kaynağı sadakat değil, **çekinme**. Bu, B10'un rakip karşısında ilk kez **sayıyla** doğrulanmasıdır:
-*aşırı-red kapatılabilse kütlemiz `0,875 × 0,8229 = %72,0`'a çıkardı ve 3.5 FL'ı geçerdi.*
+kaynağı sadakat değil, **çekinme**. Bu, B10'un rakip karşısında ilk kez **sayıyla**
+doğrulanmasıdır.
+
+### ⚠️ TAVAN / VARSAYIMSAL — kendi karşıolgumuz (Ö8)
+
+> *"Aşırı-red kapatılabilse kütlemiz `0,875 × 0,8229 = %72,0`'a çıkar ve 3.5 FL'ı geçerdi."*
+
+**Bu cümle bir ÖLÇÜM DEĞİL, bir TAVANDIR** ve damgası eksikti. İki varsayıma dayanıyor,
+ikisi de iyimser:
+
+1. **Çekindiği 19 kalem, cevapladıklarıyla AYNI sadakatte cevaplanacak.** Oysa o 19, modelin
+   *cevaplamayı seçmediği* kalemler — yani sınavın **en zor** ucu. Cevaplanan A1'i (0,8229)
+   onlara uygulamak, seçim yanlılığını yok saymak demektir.
+2. **`0,875` paydası altın GELMEYEN 10 kalemde de doğru cevaplamayı gerektirir.** Tek-altın
+   yer-gerçeğinde o kalemler tanım gereği **0** alır.
+
+Rakibe TAVAN damgası basan bir belgede kendi karşıolgumuz damgasız kalamaz (ADR-0057 ruhu).
+**Damga: TAVAN / VARSAYIMSAL — rakiple kıyas cümlesi bu satırdan KURULMAZ.**
+Kurulabilecek cümle şudur ve o ölçülmüştür: *aşırı-red bizde rakibin iki katı, ve altın
+bağlamdayken 14 kez susuyoruz (rakip 6-8).*
 
 ---
 
@@ -113,7 +201,10 @@ kaynağı sadakat değil, **çekinme**. Bu, B10'un rakip karşısında ilk kez *
 | sayı | dosya |
 | :--- | :--- |
 | BİZ h1 (çıpa) | `outputs/eval/olcum-bi/harness_tablo.json` · `a1_h1_tgta_v1_bi_k10.txt` |
-| BİZ M2b (çıpa) | `outputs/eval/olcum-h2b-k4/abst_h2b_tgta_v1_h2b_k4_summary.json` |
+| BİZ M2b (çıpa, önsözSÜZ) | `outputs/eval/olcum-h2b-k4/abst_h2b_tgta_v1_h2b_k4_summary.json` |
+| BİZ M2b (**önsözlü**, eksen eşleştirme) | `outputs/eval/g2b-m2b-onsozlu/` |
+| kör payda önbelleği | `outputs/eval/_artefakt/valid_trap_kor_onbellek.json` |
+| K3 öncesi puanlamalar | her klasörde `abst_*_summary.json.ONCEKI-PAYDA` |
 | 3.1 FL | `harness_tablo_h1_fl31.json` · `a1_h1_fl31.txt` · `abst_h2b_fl31_k4_summary.json` |
 | 3.5 FL | `harness_tablo_h1_fl35.json` · `a1_h1_fl35.txt` · `abst_h2b_fl35_k4_summary.json` |
 | hakem ham çıktısı | `gnd_h1_fl31.jsonl` · `gnd_h1_fl35.jsonl` · `abst_h2b_*_k4.jsonl` |
