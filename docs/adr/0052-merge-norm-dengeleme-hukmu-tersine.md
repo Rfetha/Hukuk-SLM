@@ -32,15 +32,27 @@ min         tg 0,096 · ta 0,847      1,181       53,4%     0,934    0,987    %0
 ham         tg 1,0   · ta 1,0        1,000       71,6%     0,893    0,877    %0,4
 τ_g (kıyas) —                        —           71,4%     0,873    0,607
 τ_a (kıyas) —                        —           41,2%     0,984    0,987
+
+🚨 ᴷ⁴ M2 Rej sütunu da EMEKLİ BİRİMDE (payda özneye bağlıydı → 66'ya eşitlendi, #58/KARAR-4):
+   min 0,934 → 0,909 · ham 0,893 → 0,833 · τ_g 0,873 → 0,833 · τ_a 0,984 → 0,955
 ```
 
-**Ham TIES `τ_a`'yı silmedi:** M2b 0,607 → **0,877** ᴷ³ (çöküşün %71'i onarıldı), üstelik
+**Ham TIES `τ_a`'yı silmedi:** M2b 0,607 → **0,877** ᴷ³ (çöküşün %71'i onarıldı
+🚨 ᴷ³ türetmesi: `(0,766−0,506)/(0,961−0,506)` = **%57**, ~~%71~~), üstelik
 > ᴷ³ **PAYDA ONARILDI 2026-08-06 — bu ADR'nin sayıları eski aletin birimindedir.** `valid_trap`
 > paydası hakemin **modelin cevabını görerek** verdiği bir karardı; aynı sınav her modelde farklı
 > payda veriyordu. Yeniden puanlanmış değerler ([#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)):
 > `τ_g` **0,607 → 0,506** · ham TIES **0,877 → 0,766** · `τ_a` **0,987 → 0,987 (değişmedi)**.
 > **Sıçrama +0,26 ile aynı kaldı → BU ADR'NİN HÜKMÜ AYAKTA.** Metindeki eski sayılar
 > bilerek silinmedi (denetim izi).
+>
+> 🚨 **EK DAMGA 2026-08-06 (kusur Ö3-d) — bu bloğun kapsamı EKSİKTİ.** ᴷ³ yalnız **M2b**
+> sütununu kapsıyordu; **M2 Rej** sütunu ayrı bir onarımdan (**ᴷ⁴**, M2 paydası 66'ya eşitlendi,
+> [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md) · KARAR-4) geçmiş ve damgasız
+> kalmıştı. Çeviri ölçüm bloğuna yazıldı.
+> Ayrıca **türetilmiş nicelik** damgalandı: onarım oranı ~~%71~~ → **%57** (girdiler yerinde
+> güncellenmiş, onlardan türeyen oran güncellenmemişti — bu turun kendi kuralının ihlali).
+> ⭐ Yürürlükteki çıpa: [`kollar.md`](../record/kollar.md).
 
 
 grounding **tamamen** korunarak (71,4% → 71,6%).
