@@ -65,7 +65,52 @@ kabul ölçütünü hangi yığının ürettiği bir rejim kararıdır, sessiz b
 ama geçmiş kabul koşularıyla kıyaslanamaz; (b) zincire ayrı `--gecerlilik-onbellek` ver —
 yalıtılır, paylaşımın kazandırdığı devralma kaybolur. **Karar insana ait.**
 
-### M2'nin paydası hâlâ modele bağımlı — fiyatı ölçüldü 🔴 *$0,11, insan kararı bekliyor*
+⚠️ **Düzeltme 2026-08-06 (kusur k5) — sızıntı *"kirletemez"* değil, *"SESSİZCE kirletemez"*.**
+Ayrım önemli: betik `LLM_GATEWAY=openai` ile koşulursa (bugünkü varsayılan) ve anahtar boşsa,
+ortak önbelleğe **openai damgalı kayıt YAZILIR**. Yakalayan şey sonraki `openrouter` ölçümünün
+`SystemExit`'idir — davranış **doğru** (fail-loud, K1), ama bedeli **sonraki koşuya** ödetiliyor
+ve o koşunun sahibi elinde **kirlenmiş bir önbellekle** kalıyor.
+🔴 **Kapanmayan:** kirlenen kaydı **düşürme yolu belgesiz**. `--gecerlilik-onbellek` ile
+yalıtmak yalnız *bundan sonrasını* korur, **hâlihazırda yazılmış** openai damgalı kalemleri
+temizlemez. Gereken: (i) hata mesajının temizleme yolunu **söylemesi** (hangi dosya, hangi
+alan, kaç kalem), (ii) damgaya göre seçici düşürme reçetesi. ⛔ Bu dalgada kod değişmedi
+(inceleme kod kalitesini onayladı) — **borç olarak açık**.
+
+### İkili oran eksenlerinin (M2 / M2b / M3 `Rej`) çözünürlük sınırı yazılmadı 🔴 *insan kararı*
+
+Global kısıttaki **`0,3 A1 puanı = 0,003 kesir`** gürültü tabanı **yalnız A1 makrosu** içindir
+(cevaplanan-only, hakemin yeniden-koşum gürültüsünden türetildi). Çekinme oranları **ikili
+sayımlardır** ve kendi kuantumları var:
+
+```
+M2   payda 66  →  kuantum 1/66 = 1,52 puan
+M2b  payda 77  →  kuantum 1/77 = 1,30 puan
+M3   payda 80  →  kuantum 1/80 = 1,25 puan
+```
+
+⭐ **Isırdığı yer ölçüldü:** payda eşitlendikten sonra M2'de `tgta_v1` **55/66** ↔ Gemini
+**56/66** — yayımlanan `−0,015` farkı **tam olarak bir kalem**, yani aletin ifade edebileceği en
+küçük sıfırdan farklı değer. Bir hakem yargısı dönerse *"Gemini ile M2'de eşitlendik"* yazılır;
+hareket eden şey ölçüm değil, tek bir yargıdır ([`MODEL_CARD.md`](../MODEL_CARD.md) ·
+[`ROADMAP.md`](../ROADMAP.md)'de kuantum şerhi olarak damgalandı).
+
+⛔ **Bu turda yeni bir taban UYDURULMADI.** Eşik/taban koymak **insan kararıdır** (ADR-0050'nin
+ruhu: alet düzeltilir, eşik insan tarafından konur). Karar verilene kadar kural: *bu eksenlerde
+`≤ 1 kalem`lik farktan hüküm kurulmaz, kuantum cümlede yazılır.*
+**Seçenekler:** (a) `k` kalem kuralı — sabit bir kalem sayısı altındaki fark yorumlanmaz;
+(b) ölçülmüş taban — aynı kolun yeniden-skorlamasıyla `Rej` oynamasını ölç (hakem maliyeti var);
+(c) güven aralığı — Wilson aralığı, ek maliyet $0 ama kapı kuralını değiştirir.
+
+### ~~M2'nin paydası hâlâ modele bağımlı — fiyatı ölçüldü~~ ✅ **KAPANDI 2026-08-06 (KARAR-3)**
+
+> ✅ **Ödendi:** on koşunun `m2` paydası **$0,1054** ile eşitlendi (55-63 → **66/70**, 10/10 kol).
+> Kayıt: [#59](record/research_log/2026-08-06-m2-paydasi-ve-karar-4.md) ·
+> `outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json`.
+> **ARA KAPI 1. gözlemi askıdan indi: `τ_a` M2 0,955 ≥ 0,923 ✅ GEÇTİ.**
+> ⚠️ Düzeltmenin yönü **bizim lehimize** ve öyle raporlanıyor (en çok kayan özne **rakip**).
+> Aşağıdaki metin, karar anındaki bilgi durumu olarak **silinmeden** duruyor.
+> 🔴 **Kalan:** `m3`'ün paydası ADR-0048 m.2 gereği tanım gereği 80/80 olmalıyken cp09'da
+> `54 · 56 · 39` — o ayak **hâlâ açık** ve hakemsiz/ücretsiz kapanır.
 
 K3/KARAR-2 `m2b`, `h2b` ve `m3`'ü kapattı. **`m2` kapanmadı:** cp09'da üç kol **59 · 57 · 55**
 payda gösteriyor (aynı sınav), yani `m2` oranları hâlâ kirli hakemden geliyor. Etkilenen
