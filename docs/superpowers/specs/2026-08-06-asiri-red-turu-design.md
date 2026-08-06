@@ -148,16 +148,35 @@ kayda geçer, bu turda **düzeltilmez** (cerrahi kural).
 | :-: | :--- | :--- | :--- |
 | **0** | **YB1 — B-i önsözünü ana protokole benimse** (ADR-0058) | $0 | Bir **eğitim** turunun çıpası, elde olan en iyi **dağıtım** yapılandırması olmalı; yoksa istem katmanından bedavaya alınabilecek bir kazancı eğitime yazarız. Çıpa **%62,8** |
 | **1** | **Eşleştirilmiş alt küme A1** — `tgta_v1` ↔ base ↔ FL | $0 post-hoc | Tuzak **2.4**: base soruların %57,5'ini, biz %78,75'ini cevaplıyoruz → ham A1 kıyası elmayla armut. Bu kıyas `tgta_v1` için **hiç yapılmadı** |
-| **2** | **Gemini FL harness AÇIK** — ADR-0057 eşit sınav | ~$1,5 | 🚨 Bugün *"FL'ı geçtik/geçemedik"* cümlesi **kurulamıyor**: bizim sayımız AÇIK (%62,8), FL'ınki KAPALI (%72,9). Ürün rejiminde kıyas **mevcut değil** |
-| **3** | **`τ_a` v2 turu** | ~$3-6 | Asıl iş. 0-2 bittikten sonra çıpa **donar** ve tur ona karşı ölçülür |
+| **2** | **Gemini FL harness AÇIK — İKİ SÜRÜM (3.1 + 3.5)** — ADR-0057 eşit sınav | ~$0,9 | 🚨 Bugün *"FL'ı geçtik/geçemedik"* cümlesi **kurulamıyor**: bizim sayımız AÇIK (%62,8), FL'ınki KAPALI (%72,9). Ürün rejiminde kıyas **mevcut değil** |
+| **3** | **`τ_a` v2 turu** | ~$2 | Asıl iş. 0-2 bittikten sonra çıpa **donar** ve tur ona karşı ölçülür |
 
-**Bütçe tavanı: $10.** Adım başına defter tutulur; GPU ve hakem **ayrı satırda** (tuzak 6.3).
+**Bütçe tavanı: $10** (beklenen ~$3,0-3,9). Defter **üç cüzdana** ayrılır — hakem · GPU · rakip
+çıkarımı — ve toplanmaz (tuzak 6.3).
 
 ### 5.1 Adım 2'nin protokolü
 
+**İki rakip kolu** (insan kararı, 2026-08-06):
+
+| kol | niye | hakem çakışması |
+| :--- | :--- | :--- |
+| `gemini-3.1-flash-lite` | Kaydın sürekliliği — `kollar.md`/`MODEL_CARD`/sprint1 ona bağlı; düşürmek eski tabloyu **kalıcı olarak tamamlanamaz** yapar | google ↔ OpenAI hakem ✅ |
+| `gemini-3.5-flash-lite` 🆕 | **2026-07-21'de çıktı**, güncel giriş katmanı. 16 gün önce aşılmış bir modelle kıyaslanan OSS sürümü *"kolay baseline"* eleştirisini davet eder | google ↔ OpenAI hakem ✅ |
+
+⛔ **GPT-5.4 nano sınıfı DIŞARIDA — para değil, kendi kuralımız engelliyor.** Hakem `gpt-4o-mini`
+**OpenAI ailesi**; ADR-0032 *"hiçbir özne kendi ailesinin hakemi tarafından puanlanmaz"* diyor
+(ders A3.9). Eklemek üç-aileli panelin açılmasını gerektirir — `judge_agreement.py` **var ama bu
+hattın hiçbir koşusunda kullanılmadı** → κ ölçümü + tüm çıpaların yeniden türetilmesi, yani turun
+içinde **üçüncü** protokol değişikliği. **Ret değil sıralama** → borç **YB4**.
+
 - Aynı 80 DEV sorusu · aynı indeks (`mevzuat_bge_m3_s2`) · aynı `k`=10 · aynı 900 klip · seed 3407.
-  Bağlam **bizim** retriever'ımızla kurulur ve FL'a öyle verilir → ADR-0057'nin *"aynı kaynak sayısı,
-  aynı altın koşulu"* şartı sağlanır.
+  Bağlam **bizim** retriever'ımızla kurulur ve her iki FL'a öyle verilir → ADR-0057'nin *"aynı
+  kaynak sayısı, aynı altın koşulu"* şartı sağlanır.
+- ⚠️ **Aynı aile ≠ aynı kalıp:** 3.1 için yapılan red-regex kalibrasyonu 3.5'e **taşınır
+  varsayılmaz**; iki kolda ayrı doğrulanır. Regex değişirse **bizim koşularımız da** yeniden
+  skorlanır — yoksa sayılar farklı aletle üretilmiş olur.
+- ⚠️ **Ön koşul:** 3.1 FL'ın OpenRouter'da hâlâ çağrılabildiği doğrulanır. Emekli edildiyse o kol
+  düşer, kıyas 3.5 üzerinden kurulur, düşme sebebi **yazılır**.
 - **Muhakeme ekseni eşitlenir:** FL `--reasoning-budget 1024` ile koşulur (bizim 1024 düşünce
   bütçemize karşılık). Sağlayıcı bunu onurlandırmıyorsa eksen **TANIMSIZ** damgalanır ve maliyet
   duyarlı hiçbir hüküm kurulmaz.
@@ -281,6 +300,10 @@ Tuzak satırı düzeltilir.
 - **A1 açığı** (base'e −7,8 · FL'a −4,7). Gerçek, ölçülmüş, sahibi ADR-0041 seçenek D. Ayrı tur.
 - **B4** — `τ_a` genliği. Yasak, ve §2.1'e göre zaten bir takas.
 - **B8 · B9 · B6** — dokunulmuyor.
+- **OpenAI-ailesi rakip** (GPT-5.4 nano sınıfı) — aile-dışlaması engelliyor, üç-aileli panel
+  turuna kalıyor (**YB4**).
+- **`ROADMAP` hedef cümlesinin güncellenmesi** — *"önce 3.1 FL'ı geçmek"* bayatladı, ama yeni
+  hedef **ölçüm görüldükten sonra** yazılır (**YB5**).
 - ⚠️ **"Her eksende net farkla ezmek" tek turda ulaşılabilir bir hedef değil.** Bu tur
   **kütle** ve **aşırı-red** eksenlerini net farka taşıyabilir; **A1** ve **M2b** eksenlerinin
   sahipleri ayrı ve adları yukarıda yazılı.
