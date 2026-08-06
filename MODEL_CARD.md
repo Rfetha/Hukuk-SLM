@@ -49,6 +49,17 @@ budget, seed 3407, temperature 0.
 | **HakHukuk-4B-v0.1** | **71.6%** | **0.212** | 0.9087 | 0.893 | 0.877 | **714** |
 | Gemini 3.1 Flash-Lite | 72.9% | 0.237 | 0.9561 | 0.930 | 1.000 | — |
 
+> 🚨 **The A1 column is not judge-stack matched (measured 2026-08-06).** The base and Gemini rows
+> were judged on the **openai-direct** gateway with a **pre-ADR-0041** judge prompt; our row was
+> judged on **openrouter (provider-pinned)** with the current one. Re-judged under the current
+> protocol on the identical answers, **base A1 = 0.9587** (−2.77 pts) and **Gemini FL = 0.9592**
+> (+0.31) — the shift is asymmetric, so it cannot be dismissed as gateway noise. The two causes
+> (gateway vs judge-prompt version) **cannot be separated**: the old stack is permanently
+> unreachable (no OpenAI credit). Source: `outputs/eval/g1-eslesmis-a1/`.
+> ⚠️ On a **coverage-matched** subset (n=40, one denominator, all stacks matched) the A1 axis
+> does **not** separate base from ours: base **0.9525** · ours **0.9563** · FL **0.9813**, with
+> 33/40 items tied. The raw A1 column above rewards **answering less**.
+
 **Modes.** M1 = answer from a given article · M2 = a *wrong* article is supplied,
 the model must refuse · M2b = only distractors are supplied, gold absent, must
 refuse · A1 = faithfulness of claims, **computed over answered items only** ·

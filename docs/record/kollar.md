@@ -191,7 +191,17 @@ Diğer ikisi **ablasyon**, versiyon numarası almazlar:
 | norm-dengeli `ortalama` | 5,826 | `tg_ta_nb` | — | — | — | 🛑 dejenere, koşu geçersiz |
 
 **Ölçülen — hepsi aynı protokol, hepsi geçerli koşu** (thinking on · 1024+512 · seed 3407 ·
-chunk 900 · Q4_K_M + llama-server · DEV havuzu · hakem gpt-4o-mini, kapı openrouter/`OpenAI` pinli):
+chunk 900 · Q4_K_M + llama-server · DEV havuzu · hakem gpt-4o-mini):
+
+> 🚨 **Künye düzeltmesi (2026-08-06):** yukarıdaki satır *"kapı openrouter/`OpenAI` pinli"* diyordu;
+> **yanlıştı.** `çıplak base` ve `Gemini 3.1 FL` satırları **openai-doğrudan** kapıda ve
+> **ADR-0041 öncesi** hakem istemiyle puanlanmış; `tgta_v1` · `τ_g` · `τ_a` satırları openrouter'da
+> ve muafiyet **sonrası**. **A1 sütunu yığın-eşleşmesiz.** Aynı cevaplar güncel protokolle yeniden
+> puanlandığında: **base 0,9864 → 0,9587** (−2,77 puan) · **FL 0,9561 → 0,9592** (+0,31). Kayma
+> **asimetrik**, dolayısıyla salt kapı gürültüsü diye yazılamaz; kapı ↔ istem-sürümü ayrıştırması
+> **açık kalem** (eski yığın erişilemez, OpenAI kredisi yok). Kaynak: `outputs/eval/g1-eslesmis-a1/`.
+> ⚠️ **Coverage-eşleşmiş** alt kümede (n=40, tek payda, üç yığın eşleşmiş) A1 ekseni base ile bizi
+> **ayırmıyor**: base **0,9525** · biz **0,9563** · FL **0,9813**; 40 kalemin **33'ü berabere**.
 
 ```
                  M1 kütle  aşırı-red      A1   M2 Rej  M2b Rej   tok/cevap (M1)
