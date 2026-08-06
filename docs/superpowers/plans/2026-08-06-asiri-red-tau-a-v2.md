@@ -35,7 +35,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | :--- | :--- | :--- |
 | **0** YB1 / ADR-0058 | ✅ **KAPANDI** — 6/6 kutucuk | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
 | **1** eşleştirilmiş A1 | ✅ **KAPANDI** — 7/7 kutucuk (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
-| **2** Gemini FL harness AÇIK | ✅ ajan bitirdi — **incelemede** | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı çıktı** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu (aşağıda) |
+| **2** Gemini FL harness AÇIK | 🔄 düzeltme dalgası bitti — **bağımsız incelemede** | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı** · ⭐ **K3 kapandı: payda artık cevaba KÖR** (16 koşu yeniden puanlandı, `h2b@k=4` üç kolda da 68) · ⭐ **Ö5: önsözle M2b'de 3.1 FL ile başa baş** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu · önbellek `flock`+atomik replace ile kayıpsız · `81 passed` |
 | **3-4** hasat | ⏸ | |
 | **5** ORPO paketleme | ⏸ | |
 | **6** `τ_a` v2 eğitimi | ⏸ | |
@@ -241,6 +241,33 @@ düzeltilmiş aletin birimine çevriliyor.
 ⛔ **Bu bir gevşetme değildir ve öyle kullanılamaz.** ADR-0050'nin kuralı: *sonucu gördükten sonra
 eşik değil **alet** düzeltilir.* Burada düzeltilen alettir; eşik yalnız yeni birime taşınıyor.
 Ajanın eşiğe dokunması yasaklandı — yeni çıpayı **ölçer**, eşiği **insan yazar**.
+
+#### ✅ KARAR-1 SONUÇLANDI — eşik **0,809**
+
+Ö5 koştu (80/80, **kesiklik %0,0**, künye yazıldı):
+
+```
+Ö5 önsözlü M2b (BİZ):  valid_traps=68 · rejection_rate=0,809 · rejection_exact=0,559
+dosya: outputs/eval/g2b-m2b-onsozlu/abst_h2b_tgta_v1_onsozlu_k4_summary.json
+```
+
+**Görev 9 ürün kapısı: `M2b Rej ≥ 0,809`** — insanın koyduğu kuralın mekanik sonucu, ayrı bir
+karar değil. Anlamı eskisiyle aynı: *bugünkü çıpadan gerileme yok.*
+
+⭐ **Bu ölçüm turun ikinci eşit-sınav hükmünü kurdu:** önsözlü rejimde M2b'de **3.1 FL ile başa
+başız** (0,809 ↔ 0,809); 3.5 FL **11,7 puan** önde. Önsözün M2b getirisi **+7,4 puan**
+(0,735 → 0,809) — ADR-0058'in bedel/getiri defterine bu eksen hiç yazılmamıştı.
+
+#### 🧭 KARAR-2 — M2/M3 paydası da kapatılıyor (insan kararı, 2026-08-06)
+
+K3 yalnız **M2b/h2b** için kapatılmıştı. **M2 ve M3'ün paydası hâlâ modele bağımlı** ve bozukluk
+gözle görülür: `cp09-butceli-1024-512`'nin **aynı** M3 sınavında üç kol **54 · 56 · 39** payda
+gösteriyor — oysa ADR-0048 m.2 gereği M3'te (boş bağlam) payda **tanım gereği 80/80**. Yani
+kayıtta **üç yanlış sayı** duruyor.
+
+**Karar: şimdi kapatılıyor.** Alet zaten düzeltildi; koda dokunulmayacak, yalnız M2/M3 koşuları
+yeniden puanlanıp yayılım yapılacak. Bedeli **$0** (hakem çağrısı yok). Görev 2'nin inceleme
+bulgularıyla **tek düzeltme dalgasında** birleştirilecek — ayrı dalga açılmayacak.
 
 ⚠️ **Yayılım borcu:** `0,877` / `0,840` jetonu **20 belgede** geçiyor (`CLAUDE.md`, `MODEL_CARD.md`,
 `docs/record/kollar.md`, `ROADMAP.md`, dört ADR, altı research_log girdisi…). Eski değerler
