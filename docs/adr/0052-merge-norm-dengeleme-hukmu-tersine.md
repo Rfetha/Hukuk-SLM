@@ -85,8 +85,10 @@ grounding **tamamen** korunarak (71,4% → 71,6%).
 
 ## Sonuç
 
-**ARA KAPI kapatılabilir hâle geldi:** 1. gözlem M2 Rej 0,984 ≥ 0,923 ✅ · 2. gözlem merge
-M2b 0,877 ≥ 0,854 ✅ · ve §20'nin ön-kayıtlı uyarısı karşılandı (merge M1 kütlesi 71,6%,
+**ARA KAPI kapatılabilir hâle geldi:** 1. gözlem M2 Rej 0,984 ≥ 0,923 ✅ *(🚨 ᴷ⁴ 2026-08-06:
+**0,955 ≥ 0,923** ✅ — bu ayak **ayakta**, KARAR-3)* · 2. gözlem merge
+M2b 0,877 ≥ 0,854 ✅ *(🚨 ᴷ³: **0,766 < 0,8649** 🔴 **DÜŞTÜ** — aşağıya bak)* ·
+⇒ satır **`✅ ❌` → DUR**, ve §20'nin ön-kayıtlı uyarısı karşılandı (merge M1 kütlesi 71,6%,
 `τ_g` ile eşit — merge bir *"her şeye hayır diyen"* model değil).
 
 > 🚨 **2. GÖZLEM YENİDEN TÜRETİLDİ 2026-08-06 (kusur K-2) — HÜKÜM DEĞİŞTİ.** Yukarıdaki ✅

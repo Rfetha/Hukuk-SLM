@@ -119,6 +119,18 @@ yararlanıyordu (M2b'de 1.000 raporlanmıştı, gerçek **0,861**).
 | m2b | 0,986 → **0,949** (−0,037) | 1,000 → **0,861** (−0,139) | 0,607 → **0,519** (−0,088) |
 | m3 | 1,000 → 1,000 | 1,000 → 1,000 | 0,923 → **0,800** (−0,123) |
 
+> 🚨 **DAMGA 2026-08-06 (Ö3) — bu tablonun SAĞ tarafı da artık EMEKLİ.** Buradaki *"yeni"*
+> değerler **klip 900** aletinden geliyordu ve o alet K-3'te bir **kategori hatası** olarak
+> çürüdü (parça sabiti birleşik bağlama uygulanmıştı). Yürürlükteki üçüncü sütun
+> ([#57](2026-08-06-cekinme-aleti-onarimi.md) · [#59](2026-08-06-m2-paydasi-ve-karar-4.md)):
+> ```
+>      base            Gemini          τ_g v1        payda
+> m2   0,803 (aynı)    0,848 (aynı)    0,833 (aynı)   66   ᴷ⁴ — iki alet aynı hükümde birleşti
+> m2b  0,949 → 0,961   0,861 → 0,883   0,519 → 0,506  77   ᴷ³
+> ```
+> ⭐ `m2`'de iki alet **aynı paydayı** verdi (66/70) — 900 klipinin zararı yalnız
+> **birleştirilmiş çok-kaynaklı** bağlamda (`m2b`, `h2b`) doğuyor. Eski sayılar silinmedi.
+
 ## 5) `τ_g` hakkında yeni gerçek: açık **raporlanandan büyük**
 
 - **M2b 0,607 → 0,519** · base'e açık **0,379 → 0,430**. `τ_a`'nın hedefi daha da acil.
