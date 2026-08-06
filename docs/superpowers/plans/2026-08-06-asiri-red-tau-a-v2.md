@@ -48,18 +48,21 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 
 | cüzdan | tutar | kaynak |
 | :--- | ---: | :--- |
-| **A** hakem | **$0,1182** | `judge_cost_usd` toplamı |
-| **C** rakip çıkarımı | **≈$0,111** | panel deltası − hakem |
-| **A+C tur toplamı** | **$0,3042** | `total_usage` deltası |
+| **A** hakem | **$0,1182** | `judge_cost_usd` toplamı (deterministik) |
+| **C** rakip çıkarımı | **≈$0,71** | jeton × `PRICE`; çıktı-only kesin alt sınır **$0,489** |
+| **A+C tur toplamı** | **≈$1,03** | **panel** *"son 24 saat"* |
 | **B** (Modal GPU) | **$0** | Görev 6'ya kadar harcanmıyor |
 | kalan bakiye | **$10,26** | `total_usage` 9,7403 |
 
 ⚠️ **Planın bütçe defteri iki şeyi birden ıskalamış:**
 (a) **tavan yanlış kısıttı** — $10 yazıyordu ama Görev 2 başlarken hesapta yalnız **$0,489** vardı;
 gerçek sınır bakiyeydi (6 Ağustos 17:12'de $10 yüklendi).
-(b) **rakip çıkarımı 8 KAT fazla tahmin edilmişti** — plan $0,90 diyordu, gerçek **$0,111**.
-Sebep: 160 çağrı varsayımı ve FL'in liste fiyatı üzerinden kaba çarpım; gerçek jeton kullanımı
-çok daha düşük çıktı. **Turun kalan bütçe endişesi yok.**
+🚨 **(b) BU SATIR YANLIŞTI ve düzeltildi (inceleme K4).** Bir ara *"rakip çıkarımı $0,111,
+tahmin 8 kat fazlaydı"* yazmıştım — **ajanın sayısını doğrulamadan aktardım**. Ajanın `total_usage`
+temel ölçümü harcamanın **sonrasında** alınmıştı, delta pencereyi ıskalıyordu. Jeton × fiyat
+hesabı çıktı-only **$0,489** alt sınırı veriyor; girdiyle ≈**$0,71**. Panelin *"son 24 saat"*
+okuması **$1,03** ve bu hesapla uyumlu. **Planın orijinal ~$0,90 tahmini doğruydu; "8 kat fazla"
+diye bir bulgu yok.** Bütçe yine de rahat: kalan **$10,26**.
 📌 Temel ölçüm alındı (`.superpowers/sdd/butce-temel.json`, `total_usage=9,7403`) — bundan sonraki
 her harcama **farktan ölçülecek**.
 
