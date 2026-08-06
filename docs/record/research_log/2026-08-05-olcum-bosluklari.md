@@ -15,7 +15,7 @@ rejim      thinking on · think-budget 1024 · max-new-tokens 512 · seed 3407
 hakem      openai/gpt-4o-mini · OpenRouter · sağlayıcı pinli (OpenAI)  — tuzak 2.7
 koşular    outputs/eval/olcum-h2b-k4/ · olcum-h2b-k10/ · olcum-bi/
            (post-hoc: outputs/eval/s2-harness-k10-etiketli/)
-maliyet    GPU $0 · hakem $0,041 (Ö1) + $TBD (D1)   bütçe ≤ $2
+maliyet    GPU $0 · hakem $0,0411 (Ö1) + $0,0339 (D1) = $0,075   bütçe ≤ $2
 geçit      n=80 · kesik %3,8 · ALTIN_SIZAN=0 · kaynak={k} · üç koşuda da GEÇTİ
 ```
 
@@ -117,14 +117,119 @@ mesafe **1**. Sonek uzayına taşındı. Ek koruma: tek sözcüklü soneke inilm
 ⭐ **Hatanın üç koşuda da aynen tekrarlaması** onu rastlantı değil, modelin **tekrarlanabilir bir
 transkripsiyon tiki** yapıyor — dolayısıyla çaresi de tolerans değil, dar ve hedefli olabilir.
 
-## 4. D1 — B-i deneyi (kaynak-yeterliliği önsözü)
+## 4. ⚖️ HARNESS KAZANÇ TABLOSU — [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md)
 
-*(bu bölüm koşu bitince doldurulacak)*
+**Her satırda adillik hükmü zorunludur.** Olmadığı için bugüne kadar *"harness kötüleştirdi"*
+yanlış okuması kolaydı — oysa eksenlerin çoğunda KAPALI **rakip değil TAVAN**.
+
+```
+kademe  eksen                     kaynak    KAPALI    AÇIK     hüküm
+──────  ────────────────────────  ───────   ──────    ─────    ─────────────────────
+  1     kapı + doğrulayıcı        aynı      —         2/80     TAM EŞİT SINAV · katkı ≈0
+  2     A1 · altın getirilen      5 ↔ 5     0,9087    0,9230   EŞLEŞMİŞ ✅ GEÇTİ (k=5)
+  2     M2b Rej                   4 ↔ 4     0,8770    0,8400   EŞLEŞMİŞ ❌ KALDI (k=4)
+  3     M1 manşet kütle           5 ↔ 10    %71,6     %61,3    TAVAN — hüküm YOK
+  3     M4 / M3 / M5 / M2         —         —         —        TANIMSIZ
+```
+
+⚠️ **Kademe 3 satırları için *"AÇIK burada geride"* cümlesi KURULMAZ.** KAPALI orada altını
+**kurgu gereği** alıyor; M4 yalnız altını verir, M3/M5 bağlamın **yokluğuyla** tanımlıdır,
+M2'de retriever altını bulunca çekinme koşulu **kendini yok eder**. Bu ayrım yazılmazsa tablo
+yanıltır.
+
+⭐ **Kademe 2'nin iki satırı zıt yönde ve ikisi de gerçek:** retriever bulduğunda model daha
+sadık (**+1,4 puan**), altın hiç yokken daha az çekingen (**−3,7 puan**). Harness *"iyi"* ya da
+*"kötü"* değil — **bulduğunda kazandırıyor, bulamadığında kaybettiriyor.**
+
+## 5. D1 — B-i deneyi: kaynak-yeterliliği önsözü ✅ **BAŞARILI**
+
+[ADR-0055](../../adr/0055-isabet-denetimi-ekseni.md)'in **B-i** müdahalesi: sistem istemine tek
+satır — *"Cevabına başlamadan ÖNCE, verilen kaynağın soruyu cevaplayıp cevaplamadığını tek
+cümleyle belirt."* Aynı model, aynı indeks, aynı `k`, aynı rejim. **Değişen tek şey istem.**
+
+```
+                       ÇIPA (h1)   D1 (B-i)     fark
+coverage                  0,7625     0,7625   ±0,0000
+A1 cevaplanan             0,8042     0,8229   +0,0187
+A1 · altın getirilen      0,8616     0,8705   +0,0089
+kütle                     0,6132     0,6275   +0,0143
+recall@10                 0,8750     0,8750   ±0,0000   ← retriever'a dokunulmadı
+```
+
+**Ön-kayıtlı kabul (ADR-0055 + ADR-0056 Karar 3): `kütle > %61,3` ✓ **VE** `yön doğru` ✓
+→ BAŞARILI.**
+
+⭐ **Asıl bulgu çapraz tabloda: dört hücre de eşzamanlı olarak doğru yöne gitti.**
+
+```
+                          çıpa   D1
+altın geldi · cevapladı     54    56   (+2)
+altın geldi · çekindi       16    14   (−2)   ← borç B10 (aşırı-red)
+altın gelmedi · cevapladı    7     5   (−2)   ← borç B1 (isabetsizlik)
+altın gelmedi · çekindi      3     5   (+2)
+```
+
+**Tek bir istem satırı, Part 1'in iki açık borcunu birden 2'şer kalem küçülttü.** Ve yön ayrımı
+**keskinleşti**: belirsiz altkümede çekinme 0,2778 → **0,3333**, ayırt edicide 0,2258 →
+**0,2097**; açıklık **5,2 → 12,4 puan**. [#53](2026-08-05-ayirt-edicilik-etiketi.md)'ün ölçtüğü kök
+mekanizma — *çekinme sinyali konusal uyuma bakıyor, yeterliliğe değil* — tam bu eksende
+**gerilemeye başladı**.
+
+**Doğrulamalar:** `harness_tablo` A1 = `rescore_answered` A1 = **0,8229** birebir (tuzak 2.16) ·
+`recall@10` **değişmedi** → değişenin yalnız istem olduğunun kanıtı · bayrak künyede **ve**
+kodun kendi ABLASYON satırında görünüyor (dropped-flag sigortası).
+
+⚠️ **İki şerh, ikisi de kayda giriyor:**
+1. **Kod bu koşuyu ablasyon damgalıyor** (`"sistem istemi ana protokolden FARKLI, bu koşu ana
+   tabloya girmez"`). **Benimsemek AYRI bir karardır** ve kendi ADR'sini ister — tıpkı B8
+   toleransı gibi. **Ürünün sayısı %61,3 olarak kalır.**
+2. **2/80'lik hücre hareketleri için ayrı bir gürültü tabanı ölçülmedi.** A1'deki +1,87 puan
+   hakemin ölçülmüş tabanının (0,3) üstünde, ama hücre sayıları farklı bir tahmin edicidir.
 
 ## Ders
 
-*(bu bölüm D1 sonrası yazılacak)*
+> **Deterministik kodun kapatabileceği açık kalmadı; kalan açığın tamamı modelin çekinme
+> kararında — ve o karara en ucuz müdahale en pahalı iki borcu birden hareket ettirdi.**
+
+Bu turun mekanizması şu: harness'ın üç parçasından **ikisinin gerekçesi öldü** (doğrulayıcı
+ateşleyecek sınıf bulamıyor, kapı ateşleyecek atıf bulamıyor), **biri ayakta** (retriever —
+onsuz ürün yok). Geriye kalan bütün açık, modelin *"bu kaynak yetiyor mu"* sorusunu
+**soramamasından** geliyor:
+
+- altın **bağlamdayken** çekiniyor (**16/80**),
+- altın **yokken** çekinmiyor (`Rej` 0,840 < 0,877),
+- bağlam **dağıldıkça** daha az çekiniyor (`k=4 → 10`: 0,840 → 0,784).
+
+Üçü aynı kusurun üç yüzü. Ve D1 bunu **istem katmanından** kısmen düzeltebildiğini gösterdi —
+demek ki yetenek **mevcut ama tetiklenmiyor**, yok değil. Bu, eğitim turunun hedefini
+daraltıyor: *yeni bir yetenek öğretmek* değil, **var olan yeteneği varsayılan hâle getirmek**.
+
+⚠️ **Ve bu turda bir tahminim çürüdü, olduğu gibi kayda geçiyor:** D1 koşulmadan önce
+*"istem katmanı eğitilmiş bir refleksi değiştirmez, tavanı düşüktür"* demiştim. **Ölçüm bunu
+çürüttü.**
 
 ## Açık kalanlar
 
-*(bu bölüm D1 sonrası yazılacak)*
+| borç | durum |
+| :--- | :--- |
+| **B5** | ✅ **KAPANDI** — 2/80, ve gerekçesi (B1'i kirletiyor) **yapısal olarak imkânsız** çıktı |
+| **B8** | 🔴 **AÇIK** — eğri ölçüldü ama **risk tarafında sıfır gözlem**; tolerans benimsenmedi |
+| **B10** aşırı-red | 🔴 **AÇIK, ama ilk kez KIPIRDADI**: 16/80 → **14/80** (D1 ile, istem katmanında) |
+| **B1** isabetsizlik | 🔴 **AÇIK, ama kıpırdadı**: 7/80 → **5/80** (D1 ile) |
+| **B4** `τ_a` seyrelmesi | 🔴 **AÇIK** — dokunulmadı; ‖τ_a‖ = 1,18 |
+| **B9** indeks hijyeni | 🔴 **AÇIK** — bilinçli, indeksi değiştirir |
+| **B6** canlı bedesten | 🔴 **AÇIK** — ürün işi |
+
+**Yeni doğan borçlar / kararlar:**
+
+| # | ne | neden karar gerektiriyor |
+| :--- | :--- | :--- |
+| **YB1** | **B-i önsözü benimsensin mi?** Ölçüldü ve kazandırdı (+1,43 puan kütle), ama ana protokolü değiştirir → **tüm çıpalar yeniden türetilir** | Kabul edilirse `%61,3` çıpası ve ondan türeyen her kıyas yenilenir. **Kendi ADR'sini ister.** |
+| **YB2** | **M2b artık bir eğitim borcudur** — kapı yolu ölçülerek kapandı | Part 1'in gerekçesi öldü; hedef listesi [ROADMAP](../../../ROADMAP.md) 2.1c'ye taşınmalı |
+| **YB3** | **`k`'nın bedeli iki eksende birden ölçüldü** — `k` büyütmek artık ücretsiz değil | `k=20` gerekçesi bu turdan sonra **daha da zayıf** |
+
+**Sonraki tur için ön-kayıtlı soru** *(bu turun kendi dersinden doğdu — Part 1 tam burada hata
+yapmıştı: çareyi ölçmeden gerekçe saydı)*:
+
+> *"Yeterlilik-etiketli negatiflerle yeniden eğitilmiş bir `τ_a`, B10'u 14/80'in altına ve
+> M2b `Rej`'i 0,877'nin üstüne çıkarır mı?"* — **bu bir tahmindir, ölçülmeden gerekçe sayılmaz.**

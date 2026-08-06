@@ -178,13 +178,18 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
 
 1. **No currency in the shipped path.** Legislation is frozen in the weights. The
    retrieval layer is built and measured but not wired into serving.
-2. **M2b is our weakest axis (0.877) and the planned fix is now in doubt.** When
+2. **M2b is our weakest axis (0.877) and the planned fix is now MEASURED DEAD.** When
    given only distractor articles, the model still answers ~12% of the time. The
-   rejection gate was built as the fix — but 🚨 **it has never been run on m2b**, and
-   the mechanism it depends on is measurably empty in the harness-ON regime
-   (fabricated article numbers **0/118**: the model copies labels from its context,
-   so its citations verify and the gate passes them). Whether deterministic code can
-   close M2b at all is an **open measurement**, not a plan.
+   rejection gate was built as the fix. It was run on 2026-08-05 in a **matched exam**
+   (harness-ON with the gold article ablated, 4 sources ↔ 4 sources, same regime) and
+   🚨 **it made the axis worse, not better: 0.840 vs 0.877.** The gate rejected 2/80,
+   and the mechanism it depends on is measurably empty — `KANUN_YOK 0`, `MADDE_YOK 0`,
+   and **36/80 answers carry no citation at all**, so there is nothing for the gate to
+   fire on. The model copies labels from its context, so its citations verify and the
+   gate passes them. Deterministic code **cannot** close M2b in this regime; the fix
+   moves to training. Note the exam favoured the harness and it still lost: the
+   closed-harness distractors are all drawn from the gold article's own law
+   (same-law rate **1.00** vs **0.475**), which makes abstaining harder, not easier.
 3. **Reasoning traces are in English.** Measured 8/8. For a citizen-facing product
    that promises readable reasoning, this is a real gap.
 4. **`τ_a` learned a template.** Its typical abstention is a fixed sentence

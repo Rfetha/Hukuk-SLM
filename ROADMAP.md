@@ -60,12 +60,23 @@ kayda o şekilde geçer.
 | bileşen | 08-03'te iddia | **ölçülen hüküm (08-05)** |
 | :--- | :--- | :--- |
 | **atıf doğrulayıcı** | A1 0,909 → ~1,0 | ❌ **ÇÜRÜDÜ.** Uydurulmuş madde no **0/118** — yakalayacak sınıf **zaten boştu**. A1 açığı fabrikasyondan değil, altın gelmeyince *başka bir gerçek maddeden* cevaplamaktan geliyor (**7/80**, borç B1) |
-| **red kapısı** | M2b 0,877 → ~1,0 | ⏸️ **SINANMADI.** `m2b` harness AÇIK **hiç koşulmadı** — bu, Part 1'in en büyük ölçüm boşluğu |
+| **red kapısı** | M2b 0,877 → ~1,0 | ❌ **ÇÜRÜDÜ (08-05, [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)).** Eşleşmiş sınavda (`h2b@k=4`, 4 kaynak ↔ 4 kaynak) **0,840 < 0,877** — kapatmadı, **kötüleştirdi**. Kapı 2/80 reddetti; mekanizması ölçülmüş biçimde boş: `KANUN_YOK 0` ve **36/80 cevapta hiç atıf yok**. İddia *sınanmamış* değil, bu rejimde **ateşlenemez** |
 | **retriever** | M1 · M4 | ✅ **KURULDU ve KAZANDIRDI.** `recall@10` **0,8750**, 759 ms/sorgu, CPU'da. Ama kendi bedelini de getirdi: bağlam uzadıkça sadakat düşüyor (**ölçüldü**, aşağı bak) |
 
 ⭐ **Sprintin asıl getirisi sayı değil, dört mekanizma:** `k` büyütmenin **ölçülmüş bedeli** ·
 çekinmenin **yanlış sinyale** (konusal uyum, yeterlilik değil) kalibre olduğu · doğrulayıcının
 fabrikasyonu değil **transkripsiyonu** yakaladığı · hakem gürültüsünün **tabanı**.
+
+🆕 **08-05 ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)) beşinci mekanizmayı
+ekledi ve o bir ÇARE:** *kaynak-yeterliliği önsözü* — sistem istemine tek satır
+(*"cevaba başlamadan önce kaynak yetiyor mu söyle"*) kütleyi **%61,3 → %62,8** çıkardı ve
+**çapraz tablonun dört hücresini birden** doğru yöne taşıdı (aşırı-red 16 → **14**,
+isabetsizlik 7 → **5**). `recall@10` değişmedi — değişen tek şey **istem**.
+⚠️ **Benimsenmedi:** ana protokolü değiştirir, dolayısıyla tüm çıpalar yeniden türetilir →
+**kendi ADR'sini ister**. Ürünün sayısı bugün hâlâ **%61,3**.
+⚠️ Ve bu, *"deterministik koddan sonra sıra eğitimde"* okumasını **inceltir**: kalan açığın
+kökü modelde ama **istem katmanından kısmen tetiklenebiliyor** — yani yetenek **var, varsayılan
+değil**.
 
 ⭐ **Ve kategorik bir üstünlük:** canlı mevzuat API'si (`bedesten.adalet.gov.tr`,
 çalışıyor, [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md)). Harness'lı bir model
@@ -277,8 +288,11 @@ yapıştırması gerekiyor.
 > | ayak | hüküm |
 > | :--- | :--- |
 > | *"A1'i kod kapatır"* | ❌ **ÇÜRÜDÜ** — uydurulmuş madde no **0/118**, doğrulayıcının yakalayacağı sınıf **boştu** |
-> | *"M2b'yi kod kapatır"* | ⏸️ **SINANMADI** — `m2b` harness AÇIK hiç koşulmadı |
+> | *"M2b'yi kod kapatır"* | ❌ **ÇÜRÜDÜ (08-05)** — eşleşmiş sınavda **0,840 < 0,877**; kapı ateşlenemiyor ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)) |
 > | *"retriever olmadan ürün yok"* | ✅ **AYAKTA ve ölçüldü** — `recall@10` 0,8750, ürünün ilk gerçek sayısı çıktı |
+>
+> 🚨 **08-05 itibarıyla iddianın İKİ ayağı da çürüdü, üçüncüsü ayakta.** Yani harness'ın
+> gerekçesi artık *"iki açığı deterministik kodla kapatır"* değil, yalnız *"onsuz ürün yok"*.
 >
 > ⭐ **Sprint yine de doğru seçimdi, ama bildiğimiz sebepten değil.** Değerini *"iki açığı
 > kapatmasından"* değil, **hangi açıkların gerçek olduğunu ölçmesinden** aldı: A1 açığının

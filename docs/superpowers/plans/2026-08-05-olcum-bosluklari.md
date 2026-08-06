@@ -58,21 +58,21 @@ borç bağlamları [`sprint3-part1.md`](../../../sprint3-part1.md#post-sprint-3-
 
 ---
 
-## 📍 İCRA DURUMU — 2026-08-05, canlı
+## ✅ İCRA DURUMU — KAPANDI 2026-08-05
 
-> Bu blok planı **koşarken** doldurulur. Plan *niyeti*, bu blok *olanı* yazar.
-> Kutucuklar: `[x]` bitti · `[~]` koşuyor · `[ ]` sırada.
+> Sonuçlar → [**research_log #56**](../../record/research_log/2026-08-05-olcum-bosluklari.md).
+> Bu blok *"nerede kaldık ve plan nerede yanlıştı"* yazar; sayılar kayıtta.
 
 | görev | durum | çıkan |
 | :--- | :--- | :--- |
-| **1** B5 | ✅ | `ALTIN_GELMEDI 10 · TAM 22 · KIRPILDI 46 · KIRPILDI_CEVAP_DISI 2` |
-| **2** B8 | ✅ | eşik 1-3'te 2 kurtarılan, 0 yanlış eşleme — **tolerans BENİMSENMEDİ** |
-| **3** `h2b` | ✅ | kod + 12 yeni test, `56 passed` |
-| **4** Ö1 | ✅ | **kapı KALDI**: AÇIK 0,840 < KAPALI 0,877 |
-| **5** D1 | 🔄 | çıpa ölçüldü · `EXTRA_ARGS` eklendi · üretim koşuyor |
-| **6** kayıt | 🔄 | `research_log` #56 taslağı yazıldı, D1 bölümü açık |
+| **1** B5 | ✅ | `ALTIN_GELMEDI 10 · TAM 22 · KIRPILDI 46 · KIRPILDI_CEVAP_DISI 2` → **borç kapandı**, B1/B10'a dokunmuyor |
+| **2** B8 | ✅ | eşik 1-3'te 2 kurtarılan · 0 yanlış eşleme — ama **risk tarafında 0 gözlem**, tolerans **BENİMSENMEDİ** |
+| **3** `h2b` | ✅ | `--harness-no-gold` + altın ablasyonu · 12 yeni test · `56 passed` |
+| **4** Ö1 | ✅ | 🚨 **kapı KALDI**: AÇIK **0,840** < KAPALI **0,877** (eşleşmiş sınav, k=4) |
+| **5** D1 | ✅ | ⭐ **BAŞARILI**: kütle **%61,3 → %62,8**, çapraz tablonun **dört hücresi** birden düzeldi |
+| **6** kayıt | ✅ | #56 · dizin satırı · kazanç tablosu · borç tablosu · ROADMAP/MODEL_CARD/CLAUDE.md |
 
-**Commit'ler:** `7a5c985` · `46e10a5` · `028d33f` · `ca0aab3` · `64fcb4d` · `94ec602` · `ef01730`
+**Maliyet:** GPU **$0** · hakem **$0,075** (sınır $2) · **9 commit**
 
 ### 🚨 Planda bulunan ve düzeltilen kusurlar
 
@@ -82,9 +82,12 @@ Beşi de **sessiz yanlışlık** sınıfı — hiçbiri hata vermezdi, hepsi yan
 | :--- | :--- | :--- | :--- |
 | 1 | G1/A5: ekseni `eksenler()`'e ekle **ve** `erisim_davranis_caprazi`'nın ardına | ikisi **ayrı yer**; `eksenler()` yalnız `--etiketler` ile koşuyor | üst düzeye eklendi — A6'nın *"toplam 80"* ölçütü öyle gerektiriyor |
 | 2 | G1/A6: `KIRPILDI_CEVAP_DISI`, **B1'in 7/80**'inden düşülür | `k2_bedeli` altın gelmediyse `ALTIN_GELMEDI` döner → iki küme **kesişemez** | okuma düzeltildi: 2 vaka `altin_geldi_cevapladi`'da, **B1 ve B10 el değmemiş** |
-| 3 | G2: toleransı korpusun **tam adlarına** uygula | doğrulayıcı **≥2 sözcüklü sonek** indeksiyle eşleştiriyor | sonek uzayına taşındı — eğri sıfırdan gerçek değerlere döndü |
+| 3 | G2: toleransı korpusun **tam adlarına** uygula | doğrulayıcı **≥2 sözcüklü sonek** indeksiyle eşleştiriyor (mesafe 11 ↔ **1**) | sonek uzayına taşındı — eğri sıfırdan gerçek değerlere döndü |
 | 4 | G4/A1: komutta `THINK_BUDGET`/`MAXTOK` **yok** | betik varsayılanı `0`/`4096`, çıpa `1024`/`512` | eklendi — yoksa rejim sapar, koşu kıyaslanamazdı |
 | 5 | G4/A4: `Rej = 1 − coverage` (payda **80**) | çıpa 0,877'nin paydası **65** (geçerli tuzak) | `Rej`, çıpayla **aynı aletten** okundu (`score_abstention.rejection_rate`) |
+
+⭐ **Kusur 5 kritikti:** bu repoda bir kapı hükmü zaten **bir kez** metrik uyuşmazlığıyla
+tersine dönmüştü ([#54](../../record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md)).
 
 ### ⚠️ İcra sırasında açılan ve kapatılan gedik
 
@@ -92,20 +95,22 @@ Beşi de **sessiz yanlışlık** sınıfı — hiçbiri hata vermezdi, hepsi yan
 `ayirt_edicilik_alt_kumeleri` bloğu **null'a düştü**, oysa G5/A1 tam onu okuyor.
 Tablo etiketlerle yeniden üretildi (`ca0aab3`).
 
-### 🔁 Plandan sapmalar (bilinçli)
+### 🔁 Plandan sapmalar (bilinçli, hepsi kayıtta)
 
-- **G2/A3:** planın import satırındaki `DOGRULANDI` betikte kullanılmıyordu → **ölü import
-  yazılmadı**. Sonradan `supur()` yeniden tasarlanınca gerçekten gerekti ve geri eklendi.
-- **G2 (ek):** eğri **iki yeni koşuya daha** genişletildi ($0). Sebep: tek koşuda payda
-  yalnız 2 atıftı. Sonuç payda zayıflığını **teyit etti** — 3 koşu, 4 atıf, hepsi aynı hata.
-- **G4:** k=10 koşusu bir kez **yarıda kesildi** (61/80, arka plan görevi SIGINT aldı; CUDA
-  hatası sonuç, sebep değil). `setsid` ile koparılıp temiz yeniden koşuldu.
-- **G5/A1:** çıpa G1'in tablo onarımıyla birlikte hesaplandı, ayrı komut gerekmedi.
+- **G2/A3:** planın import satırındaki `DOGRULANDI` betikte kullanılmıyordu → ölü import
+  yazılmadı; `supur()` yeniden tasarlanınca gerçekten gerekti ve geri eklendi.
+- **G2 (ek):** eğri **iki yeni koşuya** genişletildi ($0), çünkü tek koşuda payda 2 atıftı.
+  Sonuç zayıflığı **teyit etti** — 3 koşu, 4 atıf, hepsi **aynı** hata.
+- **G4:** k=10 koşusu bir kez **yarıda kesildi** (61/80; arka plan görevi SIGINT aldı, CUDA
+  hatası sonuç değil sebepti). `setsid` ile koparılıp temiz yeniden koşuldu.
+- **G5/A1:** çıpa G1'in tablo onarımıyla birlikte hesaplandı; ayrı komut gerekmedi.
+- **G6/A5:** manşet **değişmedi** — D1 kod tarafından ablasyon damgalı, benimsemek ayrı karar
+  (**yeni borç YB1**). `%61,3` üç belgede de yerinde kaldı; değişen **M2b iddiasının hükmü**.
 
-### 📌 Sonraki adımlar
+### 📌 Bu turdan doğan kararlar
 
-`[~]` G5/A3 üretim → A4 geçerlilik + bayrak kanıtı → A5 hakem → A6 hüküm → A7 commit →
-G6 (kayıt: #56 D1 bölümü · dizin satırı · **kazanç tablosu** · borç tablosu · manşet yayılımı)
+**YB1** B-i önsözü benimsensin mi (ADR ister) · **YB2** M2b artık **eğitim** borcu ·
+**YB3** `k` büyütmenin bedeli **iki eksende** ölçüldü
 
 ---
 
@@ -934,7 +939,7 @@ git add scripts/cp0_thinking_gen.sh && \
 git commit -m "cp0_thinking_gen: EXTRA_ARGS + künyeye yazılması (dropped-flag sigortası)"
 ```
 
-- [~] **Adım 3: Üretimi koş**
+- [x] **Adım 3: Üretimi koş**
 
 Çalıştır:
 ```bash
@@ -949,7 +954,7 @@ bash scripts/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf tgta_v1_bi_k10 
 
 Beklenen: `80/80` üretim, künyede `ekstra : --sufficiency-preamble` görünür.
 
-- [ ] **Adım 4: 🛑 GEÇERLİLİK KAPISI + bayrağın gerçekten uygulandığının kanıtı**
+- [x] **Adım 4: 🛑 GEÇERLİLİK KAPISI + bayrağın gerçekten uygulandığının kanıtı**
 
 Çalıştır:
 ```bash
@@ -968,7 +973,7 @@ grep -c "sufficiency" outputs/eval/olcum-bi/kosu.log
 🚨 Logda `sufficiency` **görünmüyorsa bayrak düşmüştür** — koşu geçersiz, tekrarla.
 Bu, bu hattın en pahalı tuzak sınıfıdır (*dropped flag*, `yurutme-tuzaklari.md`).
 
-- [ ] **Adım 5: Hakemi koş**
+- [x] **Adım 5: Hakemi koş**
 
 Çalıştır:
 ```bash
@@ -980,7 +985,7 @@ bash scripts/cp0_thinking_score.sh tgta_v1_bi_k10 \
 ```
 Beklenen: `groundedness.py` **ve** `rescore_answered.py` koşar (A1 cevaplanan-only, tuzak 2.16).
 
-- [ ] **Adım 6: Tabloyu çıkar ve hükmü ver**
+- [x] **Adım 6: Tabloyu çıkar ve hükmü ver**
 
 Çalıştır:
 ```bash
@@ -1007,7 +1012,7 @@ BAŞARISIZ : kütle DÜŞER ya da yön bozulur            → B-i düşer, B-ii'
 `kutle_ekseni.A1_cevaplanan` ile `a1_*.txt` içindeki `A1_faithfulness_macro_answered`
 **eşleşmeli**. Eşleşmiyorsa tuzak 2.16 tekrarlıyor — dur.
 
-- [ ] **Adım 7: Commit**
+- [x] **Adım 7: Commit**
 
 ```bash
 git add outputs/eval/olcum-bi/
@@ -1028,7 +1033,7 @@ elverişli (tahminlerin ikisi de tutmayabilir).
 - Değiştir: `sprint3-part1.md` *(borç tablosu: B5 · B8 · B1 · B10 durumları)*
 - Değiştir: `ROADMAP.md` · `MODEL_CARD.md` *(yalnız sayı değiştiyse)*
 
-- [ ] **Adım 1: research_log girdisini yaz**
+- [x] **Adım 1: research_log girdisini yaz**
 
 `docs/record/research_log/2026-08-05-olcum-bosluklari.md` oluştur. **Zorunlu bölümler:**
 
@@ -1062,12 +1067,12 @@ Sayı değil MEKANİZMA. Bu turun bir cümlelik dersi ne?
 hangi borç kapandı, hangisi açık kaldı, yeni borç doğdu mu
 ```
 
-- [ ] **Adım 2: Dizine satır ekle**
+- [x] **Adım 2: Dizine satır ekle**
 
 `docs/record/research_log/README.md` tablosuna `#56` satırını ekle — **sayılarla**,
 önceki satırların yoğunluğunda.
 
-- [ ] **Adım 3: ⚖️ HARNESS KAZANÇ TABLOSU** — [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md)
+- [x] **Adım 3: ⚖️ HARNESS KAZANÇ TABLOSU** — [ADR-0057](../../adr/0057-harness-rekabet-kapisi-esit-sinav.md)
 
 `research_log` girdisine **şu tabloyu** koy. Her satırda **adillik hükmü** zorunlu —
 olmadığı için bugüne kadar *"harness kötüleştirdi"* yanlış okuması kolaydı:
@@ -1085,7 +1090,7 @@ kademe  eksen                     kaynak   KAPALI   AÇIK    hüküm
 ⚠️ **Kademe 3 satırları için *"AÇIK geride"* cümlesi KURULMAZ.** KAPALI orada altını
 **kurgu gereği** alıyor — rakip değil **tavan**. Bu ayrım yazılmazsa tablo yanıltır.
 
-- [ ] **Adım 4: Borç tablosunu güncelle**
+- [x] **Adım 4: Borç tablosunu güncelle**
 
 `sprint3-part1.md`'de: **B5** kapandıysa ✅ KAPANDI tablosuna taşı · **B8** eğrisi ölçüldü
 diye işaretle *(tolerans benimsenmediği için AÇIK kalır)* · **B1**'i B5'in düştüğü payla
@@ -1095,13 +1100,13 @@ düzelt · **B10**'u D1'in sonucuyla güncelle.
 düzenlemek sayıyı tutarsız bırakır (bu hata Part 1'de bir kez oldu: B8 satırı tablonun
 **dışında** kalmıştı).
 
-- [ ] **Adım 5: Manşet sayı değiştiyse üç belgeye birden işle**
+- [x] **Adım 5: Manşet sayı değiştiyse üç belgeye birden işle**
 
 Kütle değiştiyse `ROADMAP.md` · `MODEL_CARD.md` · `CLAUDE.md` **aynı commit'te** güncellenir.
 Biri atlanırsa repo kendi içinde çelişir — ve bu, `research_log/README.md`'de bir kez
 gerçekten oldu.
 
-- [ ] **Adım 6: Testleri son kez koş**
+- [x] **Adım 6: Testleri son kez koş**
 
 Çalıştır:
 ```bash
@@ -1109,7 +1114,7 @@ cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && pytho
 ```
 Beklenen: tüm testler geçer.
 
-- [ ] **Adım 7: Commit**
+- [x] **Adım 7: Commit**
 
 ```bash
 git add docs/ sprint3-part1.md ROADMAP.md MODEL_CARD.md CLAUDE.md

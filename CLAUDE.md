@@ -53,7 +53,7 @@ Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: [`docs/record/kollar.md`](do
 M1 faithful mass    71.6%      72.9%
 M2 Rej              0.893      0.930
 A1                  0.909      0.956
-M2b Rej             0.877      1.000   ← widest gap; "the harness closes it in code" ⏸ UNTESTED
+M2b Rej             0.877      1.000   ← widest gap; "the harness closes it in code" ❌ REFUTED 08-05
 ```
 
 ⚠️ **The table above is measured with the harness OFF.** `v0.1` because the config was
