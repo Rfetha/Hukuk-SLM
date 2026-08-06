@@ -84,13 +84,14 @@ Full record: [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md
 | gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 | 70/80 — recall@10 0.875 | **70/80 — recall@10 0.875** |
 | coverage | 0.788 | 0.750 | 0.775 | **0.763** |
 | A1 (answered-only) | 0.909 | ~~0.782~~ 0.759 | 0.768 | **0.804** |
-| **faithful-answer mass** | **71.6%** | ~~58.7%~~ 56.9% | 59.5% | **61.3%** |
+| **faithful-answer mass** | **71.6%** | ~~58.7%~~ 56.9% | 59.5% | **62.8%** (no-preamble ablation: 61.3%) |
 | ⭐ A1, **gold-retrieved subset** | 0.909 | ~~0.934~~ 0.923 | 0.843 | **0.862** |
 | verified citations | 87/89 | 89/89 | 118/120 | **116/118** |
 | **fabricated article numbers** | 0 | **0** | **0** | **0** |
 | strict-gate rejections | 2/80 | 1/80 | 1/80 | **1/80** |
 
-**61.3% is the honest product number** (k=10, repaired corpus). Most of the drop from 71.6%
+**62.8% is the honest product number** (k=10, repaired corpus, `--sufficiency-preamble` main
+protocol — ADR-0058; no-preamble ablation: 61.3%). Most of the drop from 71.6%
 is retrieval: at k=5 the gold article missed the top 5 in 25% of questions; raising k to 10
 recovers 10 of those (+2.6 points), and repairing sub-article identity in the corpus adds
 another **+1.8**.
