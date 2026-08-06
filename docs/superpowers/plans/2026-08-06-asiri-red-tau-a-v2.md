@@ -35,7 +35,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | :--- | :--- | :--- |
 | **0** YB1 / ADR-0058 | ✅ **KAPANDI** — 6/6 kutucuk | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
 | **1** eşleştirilmiş A1 | ✅ **KAPANDI** — 7/7 kutucuk (2 düzeltme dalgası) | `eslesmis_a1.py` (k-yollu, hakem-yığını kapılı) + **13 test** · üç kıyas + tek-paydalı k-yollu çıktı · ⭐ **base'in A1 üstünlüğü ÇÜRÜDÜ**, iki kıyas işaret değiştirdi (aşağıda) · $0,0745 |
-| **2** Gemini FL harness AÇIK | 🔄 düzeltme dalgası bitti — **bağımsız incelemede** | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı** · ⭐ **K3 kapandı: payda artık cevaba KÖR** (16 koşu yeniden puanlandı, `h2b@k=4` üç kolda da 68) · ⭐ **Ö5: önsözle M2b'de 3.1 FL ile başa baş** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu · önbellek `flock`+atomik replace ile kayıpsız · `81 passed` |
+| **2** Gemini FL harness AÇIK | ✅ **KAPANDI** — 9/9 kutucuk · **4 düzeltme dalgası · 3 bağımsız inceleme · 30 bulgu** | 4 üretim + 4 puanlama koşusu · ⭐ **turun ilk eşit-sınav satırı** · ⭐ **K3 kapandı: payda artık cevaba KÖR** (16 koşu yeniden puanlandı, `h2b@k=4` üç kolda da 68) · ⭐ **Ö5: önsözle M2b'de 3.1 FL ile başa baş** · red-regex **iki kez** düzeltildi · harness'ta sessiz-ölüm hatası bulundu · önbellek `flock`+atomik replace ile kayıpsız · `81 passed` |
 | **3-4** hasat | ⏸ | |
 | **5** ORPO paketleme | ⏸ | |
 | **6** `τ_a` v2 eğitimi | ⏸ | |
@@ -273,6 +273,55 @@ bulgularıyla **tek düzeltme dalgasında** birleştirilecek — ayrı dalga aç
 `docs/record/kollar.md`, `ROADMAP.md`, dört ADR, altı research_log girdisi…). Eski değerler
 silinmeden, *"eski alet (payda modele bağlıydı)"* damgasıyla korunacak — CLAUDE.md'nin çelişki
 kuralı: sessizce üstüne yazma, **iki yerde de işaretle**.
+
+### 🧭 KARAR-5 — Merge bu turun konusu DEĞİL; beklenmedik hâli ön-kayıtlandı (insan, 2026-08-06)
+
+ARA KAPI'nın `✅ ❌` satırı (kol iyi, merge taşımıyor) **planı değiştirmiyor** — kapının
+ön-kayıtlı reçetesi zaten *"`τ_a` rejimi düzeltilir"* ve tur tam olarak bunu yapıyor.
+**Merge tekniği bu turun konusu değildir**, ancak final patlarsa kendi turunu alır.
+
+**Tetikleyici — sonuç görülmeden yazıldı:**
+```
+Görev 7 (merge ÖNCESİ, τ_a v2 tek)  ✅   VE   Görev 9 (merge SONRASI, tgta_v2)  ❌
+   → kayıp merge'de İZOLE edilmiş olur  →  merge turu açılır
+```
+⛔ **Başka hiçbir desen açmaz.** Görev 7 ❌ ise sorun koldadır. İkisi de ✅ ise mesele yok.
+*"Sezgim merge'de"* bir tetikleyici değildir.
+
+**Bu turda yine de yapılacak tek merge işi — Görev 8:** ham TIES **verili kabul edilmeyecek**,
+DEV'de süpürülecek (`CLAUDE.md`: *merge eğitim hesabı harcamaz*; ama DEV'de, CANON'da asla).
+`τ_a` **v2** ile varyantlar yeniden seçilecek — v1'in seçimi v2'ye devrolmaz. Yeni bütçe yok.
+
+**Neden şimdi girmiyoruz — gerekçe kayda geçsin.** Merge bir **kadran**: `τ_g`'nin kütlesi ↔
+`τ_a`'nın çekinmesi. Kadranın hiçbir yerinde iyi nokta yok:
+
+| varyant | M1 kütle | M2 | M2b | ARA KAPI (≥0,865) |
+| :--- | ---: | ---: | ---: | :--- |
+| ham TIES (= `tgta_v1`) | **%71,6** | 0,833 | 0,766 | ❌ |
+| norm-dengeli `min` | %53,4 | 0,909 | **0,987** | ✅ |
+
+Sebebi `τ_a` v1'in **tek yönlü** olması: 703 tercih çiftinin 703'ü de çekinme yönünde, *"altın
+geldiyse cevapla"* yönünde **sıfır**. Böyle bir kol karıştırıldığında ancak *ne kadar* çekineceği
+ayarlanabilir, *ne zaman* çekineceği değil. Ölçülmüş kanıt: merge `τ_a`'yı 0,987 → 0,766'ya
+seyreltiyor **ama model hâlâ 14/80 kez altın maddeyi görüp çekiniyor** — seyreltme yanlış
+çekinmeyi ayıklamıyor, hepsini birden kısıyor. Merge noktasını oynatmak bunu çözemez;
+**kolun şeklini** değiştirmek çözer. Turun tezi budur.
+
+### 🚨 Görev 2'den doğan YENİ BORÇ — dağıtım istemi artefaktı yok
+
+ADR-0058 önsözü **ana protokol** yaptı, ama `SUFFICIENCY_PREAMBLE` repoda **tek bir yerde**
+yaşıyor: `scripts/gen_eval_grounded.py`. Serve/app yolu yok, dağıtım için tanımlanmış bir sistem
+istemi artefaktı da yok.
+
+**Sonucu:** bugün biri modeli alıp kendi istemiyle koşarsa **ablasyon sayılarını** alır (%61,3),
+resmî sayıları (%62,8) değil. `MODEL_CARD.md` %62,8 diyor ama o sayıyı üreten iki cümleyi
+**çalıştırılabilir biçimde** hiçbir yerde vermiyor. Bu turun kendi hata sınıfı: *hata vermez,
+sadece sayı tutmaz.*
+
+⭐ Ayrıca bir **ürün kararı** doğuruyor: önsöz cevabı *"Verilen kaynaklar bu soruyu
+cevaplamaktadır…"* diye başlatıyor — ölçüm için değerli (dedektör bu hükmü okuyor), vatandaş için
+gürültü. Muhtemel şekil: **üretimde tut, sunumda rozete çevir** (CLAUDE.md: *sade dil doğru
+cevabın sunum katmanıdır, eğitim hedefi değil*). Faz 2'nin işi, şimdi karara bağlanmadı.
 
 ### ⚠️ Yaşanan olumsuzluklar — ders çıkarılacak
 
@@ -914,7 +963,7 @@ koşusunda kullanılmadı**) → κ ölçümü + tüm çıpaların yeniden türe
 **Dosyalar:** yeni kod **yok** — `gen_eval_grounded.py`'nin `--harness-indeks` / `--harness-k` /
 `--reasoning-budget` bayrakları mevcut.
 
-- [ ] **Adım 2.1 — 🚨 ÖN KOŞUL: red-regex Gemini ailesi için kalibre mi**
+- [x] **Adım 2.1 — 🚨 ÖN KOŞUL: red-regex Gemini ailesi için kalibre mi**
 
 Kalibre değilse rakibin reddi **eksik sayılır** ve sapma **bizim lehimize** çıkar (tuzak 2.1 · 2.2).
 
@@ -944,7 +993,7 @@ Gemini'nin red kalıplarını yakaladığını doğrula.
 eklenir, **tek kaynaktan** (tuzak 2.9), ve `git diff` ile gösterilir. Kalibrasyon yapılmadan
 Adım 2.2'ye geçilmez.
 
-- [ ] **Adım 2.1b — Gemini FL'ı fiyat kaydına ekle (ADR-0017 maliyet ekseni)**
+- [x] **Adım 2.1b — Gemini FL'ı fiyat kaydına ekle (ADR-0017 maliyet ekseni)**
 
 `llm_client.PRICE` (satır 49-52) yalnız `gpt-4o-mini` ve `gpt-4o` taşıyor. Rakibin çıkarım
 maliyeti bugün **hiçbir yerde muhasebeleşmiyor** — oysa ADR-0017 maliyet-normalize kıyas
@@ -979,7 +1028,7 @@ Beklenen: üç satır da fiyat basıyor, `SystemExit` yok. ⚠️ Bu bir **muhas
 üretim yolu bu kaydı zaten kullanmıyor, gerçek harcama **OpenRouter panelinden** okunur ve
 künyeye o yazılır (tuzak 6.3).
 
-- [ ] **Adım 2.1c — 🚨 3.1 FL hâlâ çağrılabiliyor mu**
+- [x] **Adım 2.1c — 🚨 3.1 FL hâlâ çağrılabiliyor mu**
 
 Gemini 3.5 Flash-Lite **2026-07-21'de** çıktı. Google 3.1 FL'ı emekli ettiyse harness-AÇIK
 koşusu **kurulamaz** ve o kol yalnız tarihsel KAPALI çıpası olarak kalır.
@@ -998,7 +1047,7 @@ done
 → **verify:** iki model de **200 + içerik** dönüyor. 3.1 FL hata dönerse: o kol **düşer**,
 kıyas 3.5 FL üzerinden kurulur ve düşme sebebi künyeye + #57'ye yazılır (gizlenmez).
 
-- [ ] **Adım 2.2 — FL'ı harness AÇIK koş (h1 + h2b@k=4)**
+- [x] **Adım 2.2 — FL'ı harness AÇIK koş (h1 + h2b@k=4)**
 
 **İKİ rakip kolu** (insan kararı 2026-08-06): `3.1 FL` kaydın sürekliliği için
 (`kollar.md`/`MODEL_CARD`/sprint1 tablosu ona bağlı), `3.5 FL` güncel giriş katmanı olduğu için.
@@ -1066,7 +1115,7 @@ Beklenen: `seed` 3407 · `max_chunk_chars` 900 · `sufficiency_preamble` **true*
 `reasoning_budget` 1024 · `n` 80 · `git_sha` dolu · iki detail dosyası da **80 satır**.
 Künyede görünmeyen parametre **koşuldu sayılmaz** (tuzak 6.12).
 
-- [ ] **Adım 2.3 — Muhakeme ekseni gerçekten eşleşti mi**
+- [x] **Adım 2.3 — Muhakeme ekseni gerçekten eşleşti mi**
 
 ```bash
 python -c "
@@ -1082,7 +1131,7 @@ for p in glob.glob('outputs/eval/g2-fl-harness/*detail.jsonl'):
 TANIMSIZ damgalanır**; sonuç yine raporlanır ama maliyet ve muhakeme duyarlı hiçbir hüküm
 kurulmaz (ADR-0057).
 
-- [ ] **Adım 2.4 — Skorla ve tabloyu üret**
+- [x] **Adım 2.4 — Skorla ve tabloyu üret**
 
 ```bash
 source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a
@@ -1110,7 +1159,7 @@ done
 → **verify:** **her iki kolda** `harness_tablo` A1 == `rescore_answered` A1 **birebir**
 (tuzak 2.16). Eşit değilse sayı **raporlanmaz**, alet düzeltilir.
 
-- [ ] **Adım 2.4b — 3.5 FL kolunun red-regex kalibrasyonu (Adım 2.1'in ikinci yarısı)**
+- [x] **Adım 2.4b — 3.5 FL kolunun red-regex kalibrasyonu (Adım 2.1'in ikinci yarısı)**
 
 ```bash
 source ~/code/global_venv/bin/activate
@@ -1132,7 +1181,7 @@ print('=== RED SAYILMAYAN 2 (geri kontrol) ==='); [print('-',x['cevap'][:160]) f
 sayılar farklı aletle üretilmiş olur ve ON/OFF kıyası elmayla armut olur (tuzak 2.16'nın
 regex tarafındaki kardeşi).
 
-- [ ] **Adım 2.5 — Kıyas tablosunu yaz ve adillik hükmünü ZORUNLU tut**
+- [x] **Adım 2.5 — Kıyas tablosunu yaz ve adillik hükmünü ZORUNLU tut**
 
 `outputs/eval/g2-fl-harness/OZET.md` içine ADR-0057 kademe tablosunu doldur — **her satırda
 adillik hükmü** olacak:
@@ -1157,7 +1206,7 @@ doğrudan verisidir.
 → **verify:** dosyada her satırın bir hükmü var; hükümsüz satır yok. Kademe 3 satırları için
 *"AÇIK burada geride"* cümlesi **kurulmamış**.
 
-- [ ] **Adım 2.6 — Commit**
+- [x] **Adım 2.6 — Commit**
 
 ```bash
 git add outputs/eval/g2-fl-harness/ scripts/score_abstention.py
