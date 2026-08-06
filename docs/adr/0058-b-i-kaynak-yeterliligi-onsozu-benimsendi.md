@@ -31,6 +31,17 @@ ADR-0050'nin kuralı: sonucu gördükten sonra **eşik değil alet** düzeltilir
 A1'deki +1,87 puan hakemin ölçülmüş 0,3 puanlık tabanının üstünde; hücre sayıları farklı
 bir tahmin edicidir ve o taban ölçülmemiştir.
 
+**⚠️ Önsözün atıf davranışına bedeli — ölçüldü, ADR-0058 yazılırken anılmamıştı.**
+Önsöz A1'i kısmen **daha az söyleyerek** yükseltiyor: hakem iddia sayısı 268 → **206** (−%23),
+atıf toplamı 118 → **83** (−%30), atıfsız geçen cevap 8 → **13**, katı kapının reddi 1 → **3**.
+Atıf *hassasiyeti* de düşüyor (0,8974 → **0,8732**), *geri çağırması* da (0,8375 → **0,80**).
+Uydurulmuş madde numarası sınıfı **iki koşuda da boş** (0) — değişen paydadır, iddia değil.
+Kaynak: `outputs/eval/olcum-bi/harness_tablo.json` · `gnd_h1_tgta_v1_bi_k10_summary.json`
+↔ `outputs/eval/s2-harness-k10-etiketli/` karşılıkları.
+**Karar bu bedelle birlikte alınmıştır**: kütle (+1,4 p), A1 (+1,9 p) ve B10 (16 → 14) kazançları
+ölçülü, bedel ise atıf yoğunluğunda. Bedelin ürün açısından kabul edilebilirliği **açık bir
+sorudur** ve [`docs/open_questions.md`](../open_questions.md)'ye borç olarak girer.
+
 ## Sonuçlar
 - Eski %61,3 sütunu SİLİNMEZ; "önsözsüz ablasyon" olarak kalır.
 - ⚠️ EĞİTİM VERİSİ bu değişikliği İZLEMEZ — gerekçesi ADR-0059 §sapma-1.

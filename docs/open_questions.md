@@ -14,6 +14,24 @@
 
 ## 🔴 AÇIK
 
+### Yeterlilik önsözünün atıf bedeli ürün açısından kabul edilebilir mi? 🔴 *ölçüm var, yorum yok*
+
+`--sufficiency-preamble` (ana protokol, [ADR-0058](adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md))
+kütleyi ve A1'i yükseltiyor, ama bunu kısmen **daha az söyleyerek** yapıyor: hakem iddia sayısı
+268 → **206** (−%23), atıf toplamı 118 → **83** (−%30), atıfsız geçen cevap 8 → **13**, katı
+kapının reddi 1 → **3**; atıf hassasiyeti 0,8974 → **0,8732**, geri çağırma 0,8375 → **0,80**.
+Uydurulmuş madde no sınıfı **iki koşuda da boş** — değişen paydadır, iddia değil.
+
+**Soru:** atıf yoğunluğundaki bu düşüş, mevzuat asistanı için kabul edilebilir bir takas mı?
+Kaynak-gösteren cevap sayısı düşerken doğruluk yükselmesi, kullanıcıya *"denetlenebilirlik"*
+ekseninde bedel çıkarabilir. **Ölçüm var, yorum yok** — kural yazılmadan kapanmaz.
+
+**Kaynak:** `outputs/eval/olcum-bi/harness_tablo.json` · `gnd_h1_tgta_v1_bi_k10_summary.json`
+↔ `outputs/eval/s2-harness-k10-etiketli/` karşılıkları ·
+[#56](record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1)
+
+---
+
 ### §13.3 — DEV havuzunun `n`'i yeterli mi? ⏸️ *ölçüm bekliyor*
 
 **Güç analizi yapılmadı.** ADR-0037'nin Kapı 5 eşikleri (%90, `min` bileşik) yazıldı ama

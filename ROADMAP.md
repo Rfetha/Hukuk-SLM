@@ -24,14 +24,14 @@ M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
 
 ### ⭐ Harness AÇIK — ürünün gerçek sayısı *(2026-08-05, [Part 1](docs/_arsiv/sprint3-part1.md) kapanışı)*
 
-| eksen | KAPALI | AÇIK k=10 + onarılmış korpus ⭐ |
+| eksen | KAPALI | AÇIK k=10 + onarılmış korpus + yeterlilik önsözü ⭐ |
 | :--- | ---: | ---: |
 | `recall@10` | — *(altın **kurgu gereği** verilir)* | **0,8750** |
 | coverage | 0,7875 | **0,7625** |
 | A1 (cevaplanan-only) | 0,9087 | **0,8229** (önsözsüz ablasyon: 0,8042) |
 | A1 · altın getirilen | 0,9087 | **0,8705** (önsözsüz ablasyon: 0,8616) |
 | **KÜTLE** | **%71,6** | **%62,8** ← ürünün dürüst sayısı (önsözsüz ablasyon: %61,3) |
-| uydurulmuş madde no | 0 | **0/118** |
+| uydurulmuş madde no | 0 | **0/83** (önsözsüz ablasyon: 0/118) |
 
 **Ana protokol koşusu (RESMÎ, önsözlü):** `outputs/eval/olcum-bi/` ·
 [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1) ·
@@ -105,9 +105,9 @@ Ayrıntılı faz tarifi: [`docs/VISION.md`](docs/VISION.md) Faz 2.
 
 🚨 **2.1c model tarafının yeni birinci sırası — ve gerekçesi ölçülmüş.** Coverage kaybının
 **büyük yarısı** burada, B1'in (**5/80**; önsözsüz ablasyon: 7/80) **≈2,8 katı** (14 ↔ 5).
-Model, elinde doğru madde varken
-cevap vermiyor; bunu harness KAPALI'da da yapıyordu (**17/80**) → bir harness gerilemesi
-değil, **modelin kendi özelliği**. Bugünkü modelle kütlenin tavanı **~%71,6**.
+Model, elinde doğru madde varken cevap vermiyor; bunu harness KAPALI'da da yapıyordu
+(**17/80**) → bir harness gerilemesi değil, **modelin kendi özelliği**. Bugünkü modelle
+kütlenin tavanı **~%71,6**.
 
 ⚠️ 2.1c ile 2.1b **birleştirilmedi**: *"aşırı-red `τ_a` seyrelmesinden geliyor"* makul ama
 **ölçülmemiş bir varsayım**; birleştirmek onu kayıtta sessizce gerçeğe çevirirdi.

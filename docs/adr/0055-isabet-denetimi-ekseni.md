@@ -94,10 +94,14 @@ KAYNAK-YETERLİLİĞİ ekseninde kurulur (B).** İlk deney bedeli sıfır olan *
 
 **Ön-kayıtlı kabul ölçütü — sayı görülmeden yazıldı:**
 
+> ⚠️ **ADR-0058 (2026-08-06):** güncel çıpa **%62,8**; aşağıdaki %61,3 artık **önsözsüz ablasyondur**.
+>
 > 🔁 **ÇIPASI TADİL EDİLDİ 2026-08-05 — [ADR-0056](0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) Karar 3.**
 > Aşağıdaki `%59,5` **S2-öncesi korpustan**; B-i **S2 korpusunda** koşacak. Güncel çıpa
 > **%61,3**. Eşiğin kendisi (*"kütle ARTAR"*), yön ölçütü ve red şıkkı **değişmedi** — ve
 > eşik böylece **zorlaştı**, gevşemedi. Özgün metin üzerine yazılmadı.
+
+> ⚠️ **ADR-0058 (2026-08-06):** güncel çıpa **%62,8**; aşağıdaki %61,3 artık **önsözsüz ablasyondur**.
 
 ```
 BAŞARILI  : kütle ARTAR  (bugünkü resmî: k=10 · %59,5 → 🔁 GÜNCEL ÇIPA: %61,3)
