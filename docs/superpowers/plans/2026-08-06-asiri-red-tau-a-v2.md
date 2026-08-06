@@ -3,8 +3,12 @@
 > **Agentic worker için:** GEREKLİ ALT-BECERİ: `superpowers:subagent-driven-development` ya da
 > `superpowers:executing-plans`. Adımlar `- [ ]` kutucuklu.
 >
-> ⚠️ **Kutucuk kuralı (bu repo'da TERS):** kutucuğu **insan** işaretler. Ajan bir adımı bitirince
-> `→ verify:` çıktısını rapor eder; kutucuğu kendisi doldurmaz.
+> ⚠️ **Kutucuk kuralı — 2026-08-06'da İNSAN KARARIYLA DEĞİŞTİ:** kutucuğu **ajan** işaretler.
+> Bir adım ancak `→ verify:` çıktısı **gerçekten alındıktan** sonra işaretlenir; işaretli kutucuk
+> *"koştu ve doğrulaması tuttu"* demektir, *"yapıldı sayılır"* değil.
+> 🔁 **Eski kural (aynı gün, aynı insan):** *"kutucuğu insan işaretler, ajan yalnız raporlar."*
+> İkisi de burada duruyor — [`CLAUDE.md`](../../../CLAUDE.md) §Dokümantasyon disiplini: bir karar
+> eskisini değiştirince **çelişki iki yerde de işaretlenir**, sessizce üzerine yazılmaz.
 
 **Spec:** [`specs/2026-08-06-asiri-red-turu-design.md`](../specs/2026-08-06-asiri-red-turu-design.md)
 **Hedef:** Aşırı-reddi (**B10**, 14/80) `τ_a`'nın eğitim verisindeki tek-yönlü tercih baskısını
@@ -29,7 +33,7 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 | görev | durum | çıkan |
 | :--- | :--- | :--- |
 | **0** YB1 / ADR-0058 | ✅ ajan tarafı bitti — **insan kutucukları bekliyor** | ADR-0058 yazıldı · beş çıpa repo geneline indi · tur AÇIK ilan edildi · `--help` regresyonu giderildi · ⭐ **planlanmamış bir ölçüm bulgusu doğdu** (aşağıda). 5 commit · 2 inceleme turu · 20 bulgu, 20'si kapandı · `56 passed` |
-| **1** eşleştirilmiş A1 | ⏸ sırada | |
+| **1** eşleştirilmiş A1 | 🔄 incelemede | `eslesmis_a1.py` + 3 test (`3 passed`) + üç kıyas · ⭐ **ham A1 açığının üçte ikisi coverage artefaktı çıktı** (aşağıda) |
 | **2** Gemini FL harness AÇIK | ⏸ | |
 | **3-4** hasat | ⏸ | |
 | **5** ORPO paketleme | ⏸ | |
@@ -64,6 +68,55 @@ ayrı ölçülü. Ama **kabul edilen bir bedeldir** ve ADR-0058 onu anmadan yaz�
 katkısı artık yalnız A1 ekseninde değil, **atıf yoğunluğu ekseninde de** okunacak.
 Kaynak: `outputs/eval/olcum-bi/harness_tablo.json` + `gnd_h1_tgta_v1_bi_k10_summary.json`.
 
+### ⭐ Görev 1'in bulgusu — ham A1 açığının üçte ikisi ARTEFAKTMIŞ
+
+Coverage kolları arasında çok ayrık: base **%57,5** · `gemini_fl` **%76,25** · `tgta_v1` **%78,75**.
+İkisinin de cevapladığı kesişimde A1 yeniden hesaplandı (harness KAPALI M1 koşuları):
+
+| kıyas | ham A1 farkı | **eşleştirilmiş fark** | artefakt payı | n |
+| :--- | ---: | ---: | ---: | ---: |
+| base − `tgta_v1` | 7,77 p | **2,81 p** | **%64** | 40 |
+| `gemini_fl` − `tgta_v1` | 4,74 p | **3,33 p** | %30 | 51 |
+| base − `gemini_fl` | 3,03 p | **0,77 p** | **%75** | 45 |
+
+Ham A1: base 0,9864 · FL 0,9561 · `tgta_v1` 0,9087 (her kol **kendi** cevapladığı küme üzerinde).
+Kaynak: `outputs/eval/g1-eslesmis-a1/` · alet `scripts/eslesmis_a1.py`.
+
+**Ne söylüyor:** base'in A1 üstünlüğü **yön olarak gerçek ama büyüklük olarak üçte bir**. Base,
+soruların yalnız %57,5'ini cevaplayarak kendi kolay dilimini seçiyor; o dilim eşitlendiğinde açık
+7,77 → **2,81 puana** iniyor. Base ile FL arasındaki fark ise neredeyse tamamen artefakt (**0,77 p**).
+
+🛑 **Ama KALAN fark için hüküm KURULAMAZ — iki bağımsız sebeple.** İkisi de incelemeden çıktı:
+
+**(a) Hakem yığını uyuşmuyor (tuzak 2.7 · ADR-0029).** `base` ve `gemini_fl` **openai-doğrudan**
+gateway'de puanlanmış (`gpt-4o-mini`), `tgta_v1` ise **OpenRouter**'da (`openai/gpt-4o-mini`,
+`providers=["OpenAI"]`). Repo'nun kendi makine kapısı — `compare_runs.py:73-76` — bu durumda
+tabloyu basmayı **reddediyor** (`SystemExit`). Üç kıyastan **ikisi**, yani manşet olanlar, bu
+sınırı geçiyor; temiz olan tek kıyas `base − FL`.
+⭐ Bu, planın öngörmediği bir mirası da açığa çıkardı: **Görev 2** FL'ı OpenRouter hakemiyle
+puanlayacak, oysa `cp09`'daki FL sayıları openai-doğrudan — **aynı çelişki oraya da geçecekti**.
+
+**(b) Etkin n = 4.** Eşleşmiş kümede mutlak A1'ler **0,93-0,99**, yani **tavana yakın**:
+
+| kıyas | n | berabere | ayrışan | dağılım | işaret testi |
+| :--- | ---: | ---: | ---: | :--- | ---: |
+| base − `tgta_v1` | 40 | **36** | **4** | 3 ↔ 1 | p ≈ 0,63 |
+| FL − `tgta_v1` | 51 | 41 | 10 | 6 ↔ 4 | p ≈ 1,0 |
+| base − FL | 45 | 40 | 5 | 4 ↔ 1 | p ≈ 0,38 |
+
+`n_kesisim = 40` sağlam görünüyor ama farkın **tamamı 4 kalemden** geliyor. Kontrol, seçim
+artefaktını kaldırıyor **ama ayırt ediciliği de daraltıyor**.
+🚨 Bunun aletsel sonucu: planın `n_kesisim ≥ 30` kabul eşiği **yanlış büyüklüğü ölçüyor** ve
+**Görev 9 aynı aleti aynı yanlış eşikle kullanacaktı**. Alet `n_ayrisan` döndürecek, kapı ona bağlanacak.
+
+**Doğru hüküm:** *"Tuzak 2.4 gerçekti ve artefakt payı ölçüldü"* **kurulabilir** — aletin asıl işi
+buydu ve başarıldı. *"base cevapladığında da daha sadık"* **kurulamaz**.
+
+🚨 **Uygulayıcının yorumu iki dayanaktan da hatalıydı:** ham A1'leri hiç hesaplamamış (üç eşleşmiş
+sayıyı birbiriyle kıyaslamış), ve gürültü tabanını `0,3` **kesir** sanmış (doğrusu **0,3 puan =
+0,003**). Nihai cümlesi tesadüfen savunulabilir bir yere düştü ama **her iki gerekçesi de yanlıştı**.
+Ders: bu repo'da *"puan"* = **yüzde puanı**; sevk talimatlarına birim artık açıkça yazılıyor.
+
 ### 🚨 Planda bulunan kusurlar (icra sırasında)
 
 | # | plan ne diyordu | gerçek | düzeltme |
@@ -71,7 +124,11 @@ Kaynak: `outputs/eval/olcum-bi/harness_tablo.json` + `gnd_h1_tgta_v1_bi_k10_summ
 | 1 | **Adım 0.4:** yalnız `%61,3` geçen yerleri güncelle | ADR-0058 **beş çıpayı birden** resmîleştiriyor (kütle · A1 · A1-altın · B10 · B1). Dördü belgelerde eski değeriyle "güncel" kaldı — B1 (5/80) **hiçbir yere inmedi** | kapsam beş çıpaya genişletildi; türev iddia da düzeltildi (*"B1'in iki katı"* → **≈2,8×**, 14 ↔ 5) |
 | 2 | **Adım 0.3 verify:** `grep -rn "ablasyon kolu"` | Büyük/küçük harfe duyarlı; `--argparse help` metnindeki **büyük harfli** "ABLASYON" satırlarını ıskalıyor. Uygulayıcı beklenen çıktıyı almak için print metnini küçük harfe çevirmişti | verify `-i`'ye çevrildi; kodda önsözü ablasyon diyen **iki satır daha** bulunup düzeltildi (`help=` metni + yorum başlığı) |
 | 3 | **Adım 0.4** hiçbir yerde çıpaların **kaynak dizinini** istemiyordu | `outputs/eval/olcum-bi/` hiçbir belgede geçmiyordu; üç yerde **yanlış** kaynak (`s2-harness-k10-etiketli`, önsözsüz koşu) gösteriliyordu | kaynak dizin dört belgeye + ADR-0058'e indi; eski koşunun *"nihai"* damgası kaldırıldı |
-| 4 | plan `tests/`'te `try/except/else` kalıbı yazıyor (Görev 1) | repo `pytest.raises` kullanıyor (`tests/test_retriever.py`); inceleme rubriği `try/except` kalıbını test hijyeni kusuru sayar | **Görev 1'de** doğrulanan davranış birebir korunarak `pytest.raises`'e çevrilecek |
+| 4 | plan `tests/`'te `try/except/else` kalıbı yazıyor (Görev 1) | repo `pytest.raises` kullanıyor (`tests/test_retriever.py`); inceleme rubriği `try/except` kalıbını test hijyeni kusuru sayar | **Görev 1'de** doğrulanan davranış birebir korunarak `pytest.raises`'e çevrildi |
+| 5 | **Adım 1.1** rejim kapısı yalnız `cp09-butceli-1024-512` künyesini okuyor | Kıyasların **ikisinde** `tgta_v1` kolu var ve o kol `cp3-supurme-ham/`'dan geliyor — orada **künye YOK**. Kapının yarısı açık kaldı: `seed` ve `max_chunk_chars` hiçbir yerden doğrulanamıyor | künyesiz kol için **"bilinmiyor ≠ uyuşuyor"** damgası; sayı damgasız raporlanmıyor |
+| 6 | **Adım 1.6** kabul ölçütü `n_kesisim ≥ 30` | Tavan etkisi yüzünden `n_kesisim` **ayırt edicilik hakkında hiçbir şey söylemiyor** — 40 kalemin 36'sı berabere, fark **4 kalemden**. Görev 9 aynı yanlış eşiği miras alacaktı | alet `n_ayrisan` · `n_berabere` · `fark_sd` döndürüyor; kapı **`n_ayrisan`'a** bağlandı |
+| 7 | **Adım 1.6** hiçbir yerde **hakem yığını** eşleşmesini istemiyor | `compare_runs.py:73-76` bu kapıyı taşıyor (`SystemExit`) ama yeni alet atlamıştı; üç kıyasın **ikisi** repo'nun kendi kuralına göre raporlanamaz | alete makine kapısı eklendi; `base`/`FL` M1 koşuları **güncel yığınla** yeniden puanlandı (~$0,08), eski sayılar silinmeden |
+| 8 | plan Görev 9 Adım 9.5'te **üç kollu tek paydalı** eşleştirilmiş A1 satırı istiyor | Alet katı biçimde **ikili**; her çift kendi paydasını üretiyor (`base`'in A1'i bir dosyada 0,9844, ötekinde 0,9861). O satır bu aletle **kurulamazdı** | imza **k-yollu** genelleştirildi; ikili çağrı özel hâl, mevcut testlerin davranışı korundu |
 
 ### ⚠️ Yaşanan olumsuzluklar — ders çıkarılacak
 
@@ -234,13 +291,13 @@ yazmıştım, gerçek sürücü 160 çağrı ve ölçülmüş hakem çıpası $0
 **Üretir (sonraki görevler buna dayanır):** resmî çıpa `KÜTLE_CIPA = 0,6275` · `B10_CIPA = 14/80` ·
 `A1_CIPA = 0,8229` · ana protokol = `--sufficiency-preamble` **AÇIK**.
 
-- [ ] **Adım 0.1 — İnsan onayı**
+- [x] **Adım 0.1 — İnsan onayı**
 
 Bu plan insan tarafından okunup onaylanmadan **hiçbir adım koşulmaz**. Onay yoksa dur.
 
 → **verify:** insan "GO" yazdı.
 
-- [ ] **Adım 0.1b — 🚨 Turu AÇIK ilan et (kapanışta değil, BAŞTA)**
+- [x] **Adım 0.1b — 🚨 Turu AÇIK ilan et (kapanışta değil, BAŞTA)**
 
 Bugün `TODO.md` ve `CLAUDE.md` **ikisi de** *"AÇIK SPRINT YOK, AKTİF PLAN YOK"* diyor. Tur
 başlarsa bu **anında yanlış** olur — ve bu proje **aralıklı, tek kişilik**: haftalar geçebiliyor
@@ -277,7 +334,7 @@ grep -rn "AKTİF PLAN YOK\|no plan is active" TODO.md CLAUDE.md
 ```
 Beklenen: ilk iki komut eşleşme verir; **üçüncüsü hiçbir şey döndürmez**.
 
-- [ ] **Adım 0.2 — ADR-0058'i yaz**
+- [x] **Adım 0.2 — ADR-0058'i yaz**
 
 `docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md`, şu bölümlerle:
 
@@ -321,7 +378,7 @@ bir tahmin edicidir ve o taban ölçülmemiştir.
 → **verify:** `test -f docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md` ve dosya
 yukarıdaki altı bölümü de içeriyor.
 
-- [ ] **Adım 0.3 — Kod damgasını ters çevir**
+- [x] **Adım 0.3 — Kod damgasını ters çevir**
 
 `scripts/gen_eval_grounded.py`'de `SUFFICIENCY_PREAMBLE` üstündeki yorum bloğunun son satırı
 şu anda şöyle:
@@ -348,7 +405,7 @@ grep -rn "ablasyon kolu" scripts/gen_eval_grounded.py
 Beklenen: birinci komut eşleşme verir; ikinci komut **yalnız** bayraksız koşuyu ablasyon diye
 tarif eden satırı gösterir (önsözü ablasyon diyen eski satır kalmamıştır).
 
-- [ ] **Adım 0.4 — Çıpaları üç belgede güncelle**
+- [x] **Adım 0.4 — Çıpaları üç belgede güncelle**
 
 `MODEL_CARD.md`, `ROADMAP.md`, `docs/record/kollar.md`: `%61,3` geçen her ürün-sayısı yerine
 `%62,8` yaz **ve yanına** `(önsözsüz ablasyon: %61,3)` ekle. Eski sayı **silinmez**.
@@ -361,7 +418,7 @@ grep -rn "61,3" MODEL_CARD.md ROADMAP.md docs/record/kollar.md
 Beklenen: her iki komut da her üç dosyada eşleşme verir (yeni sayı var, eski sayı ablasyon
 olarak korunmuş).
 
-- [ ] **Adım 0.5 — Commit**
+- [x] **Adım 0.5 — Commit**
 
 ```bash
 git add docs/adr/0058-*.md scripts/gen_eval_grounded.py MODEL_CARD.md ROADMAP.md \
@@ -397,7 +454,7 @@ gnd_*.jsonl      id · faithfulness · n_claims · cit_precision · …  ← A1 
 `n_kesisim` (int) · `n_ortak_id` (int) · `a1_a` (float) · `a1_b` (float) · `fark` (float) ·
 `id_listesi` (list[str]).
 
-- [ ] **Adım 1.1 — Kıyas kollarının rejimi eşleşiyor mu**
+- [x] **Adım 1.1 — Kıyas kollarının rejimi eşleşiyor mu**
 
 Üç kol da `outputs/eval/cp09-butceli-1024-512/` (base · Gemini FL · `τ_g`) ve `tgta_v1` için
 `outputs/eval/cp3-supurme-ham/`. Rejim eşleşmesi künyeden **okunur, varsayılmaz**:
@@ -417,7 +474,7 @@ print('değişmezler     :', d['degismezler']['seed'], d['degismezler']['max_chu
 → **verify:** düşünce 1024 · cevap 512 · seed 3407 · klip 900 — yani rakip **sunucu-taraflı**
 `reasoning.max_tokens=1024` ile aynı bantta koşmuş. Bir tanesi bile uymuyorsa kıyas kurulmaz.
 
-- [ ] **Adım 1.2 — Düşen testi yaz**
+- [x] **Adım 1.2 — Düşen testi yaz**
 
 `tests/test_eslesmis_a1.py`:
 
@@ -493,7 +550,7 @@ def test_eslesmis_a1_gnd_kaydi_eksikse_patlar(tmp_path):
 
 → **verify:** dosya yazıldı.
 
-- [ ] **Adım 1.3 — Testi koş, DÜŞTÜĞÜNÜ gör**
+- [x] **Adım 1.3 — Testi koş, DÜŞTÜĞÜNÜ gör**
 
 ```bash
 source ~/code/global_venv/bin/activate && python -m pytest tests/test_eslesmis_a1.py -v
@@ -502,7 +559,7 @@ Beklenen: `ModuleNotFoundError: No module named 'eslesmis_a1'` → **FAIL**.
 
 → **verify:** çıktıda FAIL var ve sebebi modülün yokluğu.
 
-- [ ] **Adım 1.4 — `scripts/eslesmis_a1.py` yaz**
+- [x] **Adım 1.4 — `scripts/eslesmis_a1.py` yaz**
 
 ```python
 #!/usr/bin/env python3
@@ -604,7 +661,7 @@ if __name__ == "__main__":
 
 → **verify:** dosya yazıldı.
 
-- [ ] **Adım 1.5 — Testi koş, GEÇTİĞİNİ gör**
+- [x] **Adım 1.5 — Testi koş, GEÇTİĞİNİ gör**
 
 ```bash
 source ~/code/global_venv/bin/activate && python -m pytest tests/test_eslesmis_a1.py -v
@@ -613,7 +670,9 @@ Beklenen: **3 passed**.
 
 → **verify:** çıktıda `3 passed`.
 
-- [ ] **Adım 1.6 — Üç kıyası koş**
+- [ ] **Adım 1.6 — Üç kıyası koş** &nbsp; 🔄 *bir kez koştu, **yeniden koşuluyor**: hakem yığını
+  uyuşmazlığı (İCRA DURUMU §planda bulunan kusurlar #7) yüzünden `base`/`FL` kolları güncel
+  yığınla yeniden puanlanıyor. Eski çıktı `_openai_dogrudan` sonekiyle saklanıyor.*
 
 Yollar **doğrulandı** (2026-08-06). Üç çıpa kolu aynı künyeden (`cp09-butceli-1024-512`),
 `tgta_v1` ise harness KAPALI M1 koşusundan (`cp3-supurme-ham`).
@@ -646,7 +705,7 @@ kıyas **raporlanmaz**, sebebi (coverage çok ayrık) yazılır.
 ⚠️ `gnd_m1_gem_th.jsonl` yanında bir `gnd_m1_gem_th_RERUN.jsonl` de var
 (`cp1-hakem-meta-iddia/`) — **RERUN kullanılmaz**, çıpa tablosunu üreten dosya budur.
 
-- [ ] **Adım 1.7 — Commit**
+- [x] **Adım 1.7 — Commit**
 
 ```bash
 git add scripts/eslesmis_a1.py tests/test_eslesmis_a1.py outputs/eval/g1-eslesmis-a1/
