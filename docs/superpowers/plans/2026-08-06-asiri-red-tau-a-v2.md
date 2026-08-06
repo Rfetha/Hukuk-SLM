@@ -143,6 +143,43 @@ Bu plan insan tarafından okunup onaylanmadan **hiçbir adım koşulmaz**. Onay 
 
 → **verify:** insan "GO" yazdı.
 
+- [ ] **Adım 0.1b — 🚨 Turu AÇIK ilan et (kapanışta değil, BAŞTA)**
+
+Bugün `TODO.md` ve `CLAUDE.md` **ikisi de** *"AÇIK SPRINT YOK, AKTİF PLAN YOK"* diyor. Tur
+başlarsa bu **anında yanlış** olur — ve bu proje **aralıklı, tek kişilik**: haftalar geçebiliyor
+ve *"repo hatırlayan tek şey"*. Oturum yarıda kesilirse bir sonraki oturum *"aktif plan yok"*
+okur, oysa diskte yarım artefaktlar durur (`outputs/ta_v2/` · `data/_ham_ve_ara/b10_kabul.jsonl` ·
+yeni `outputs/eval/g*/` dizinleri) ve hiçbir işaretçi onlara götürmez.
+
+⚠️ **İlerleme DURUMU buraya kopyalanmaz** — tek kaynak bu plandaki kutucuklardır. Belgelere
+yalnız **işaretçi** girer (DRY; iki yerde tutulan durum kaçınılmaz olarak ayrışır).
+
+`TODO.md`'nin baş bloğundaki şu satır:
+
+```
+> **▶ AÇIK SPRINT YOK, AKTİF PLAN YOK. Sıradaki turun hangisi olacağı insan kararı** —
+```
+
+şununla değiştirilir:
+
+```
+> **▶ AKTİF PLAN: B10 aşırı-red turu** — `τ_a` v2 simetrik yeterlilik çifti + rakip kıyası.
+> Plan (kutucuklar **tek durum kaynağıdır**):
+> [`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md) ·
+> tasarım: [`2026-08-06-asiri-red-turu-design.md`](docs/superpowers/specs/2026-08-06-asiri-red-turu-design.md)
+```
+
+`CLAUDE.md`'deki *"Status of work: no sprint is open and no plan is active."* cümlesi de aynı
+işaretçiyle değiştirilir (**sayı yazılmaz** — CLAUDE.md bir haritadır).
+
+→ **verify:**
+```bash
+grep -n "AKTİF PLAN" TODO.md
+grep -n "asiri-red-tau-a-v2" CLAUDE.md TODO.md
+grep -rn "AKTİF PLAN YOK\|no plan is active" TODO.md CLAUDE.md
+```
+Beklenen: ilk iki komut eşleşme verir; **üçüncüsü hiçbir şey döndürmez**.
+
 - [ ] **Adım 0.2 — ADR-0058'i yaz**
 
 `docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md`, şu bölümlerle:
@@ -230,8 +267,11 @@ olarak korunmuş).
 - [ ] **Adım 0.5 — Commit**
 
 ```bash
-git add docs/adr/0058-*.md scripts/gen_eval_grounded.py MODEL_CARD.md ROADMAP.md docs/record/kollar.md
-git commit -m "ADR-0058: B-i önsözü ana protokole benimsendi — çıpa %61,3 → %62,8"
+git add docs/adr/0058-*.md scripts/gen_eval_grounded.py MODEL_CARD.md ROADMAP.md \
+        docs/record/kollar.md TODO.md CLAUDE.md
+git commit -m "ADR-0058: B-i önsözü ana protokole benimsendi — çıpa %61,3 → %62,8
+
+Tur AÇIK ilan edildi: TODO.md + CLAUDE.md artık plana işaret ediyor."
 ```
 
 → **verify:** `git log --oneline -1` yeni commit'i gösterir; `git status` temiz.
@@ -1925,8 +1965,13 @@ Bu dosyanın başına ✅ kapanış bloğu ekle: hüküm · üretilen artefaktla
 - [ ] **Adım 10.6 — `CLAUDE.md`'de yalnız İŞARETÇİLERİ güncelle**
 
 ⚠️ **SAYI YAZMA.** Güncellenecekler: "Current state" bloğundaki ürün sayısı ve artefakt adı ·
-research_log aralığı (#39-#58) · ADR aralığı (0058'e kadar) · *"no sprint is open"* cümlesi ·
+research_log aralığı (#39-#58) · ADR aralığı (0059'a kadar) ·
 *"Two things a new session must not get wrong"* bloğu (B10'un yeni durumu).
+
+⚠️ **Adım 0.1b'nin işaretçisi geri alınır:** `TODO.md` ve `CLAUDE.md`'deki *"AKTİF PLAN: B10…"*
+satırı, tur kapandığı için *"aktif plan yok"* hâline döner ve kapanan plana **kayıt olarak**
+işaret eder. `TODO.md` baş bloğu, `#56` kapanışının biçimiyle yazılır (*"✅ … turu KAPANDI"* +
+plan + sonuç bağlantısı + çıkanlar).
 
 → **verify:** `git diff CLAUDE.md` — eklenen satırlarda **ölçüm tablosu yok**, yalnız işaretçi
 ve tek-satırlık durum.
