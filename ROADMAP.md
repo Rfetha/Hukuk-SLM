@@ -28,7 +28,7 @@ M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
 | :--- | ---: | ---: |
 | `recall@10` | — *(altın **kurgu gereği** verilir)* | **0,8750** |
 | coverage | 0,7875 | **0,7625** |
-| A1 (cevaplanan-only) | 0,9087 | **0,8042** |
+| A1 (cevaplanan-only) | 0,9087 | **0,8229** (önsözsüz ablasyon: 0,8042) |
 | A1 · altın getirilen | 0,9087 | **0,8616** |
 | **KÜTLE** | **%71,6** | **%62,8** ← ürünün dürüst sayısı (önsözsüz ablasyon: %61,3) |
 | uydurulmuş madde no | 0 | **0/118** |
@@ -36,6 +36,9 @@ M2b Rej           0,877     1,000      −0,123   ← EN BÜYÜK
 `outputs/eval/s2-harness-k10-etiketli/` · [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md) ·
 [#54](docs/record/research_log/2026-08-05-k-supurmesi-ve-a1-duzeltmesi.md) ·
 [#55](docs/record/research_log/2026-08-05-s2-yururluk-alani.md)
+
+> ⚠️ Bu ayrıştırma **önsözsüz** çıpayla (%61,3) yapılmıştır; ADR-0058 sonrası ana protokolde
+> açık 8,8 puandır ve yeniden ayrıştırılmamıştır.
 
 **⛔ %71,6 → %61,3 bir gerileme DEĞİL** — iki ölçüm aynı şeyi ölçmüyor. KAPALI'da altın madde
 bağlama **kurgu gereği** konuyor; AÇIK'ta **bulunması gerekiyor**. KAPALI bir rakip değil,
@@ -72,8 +75,9 @@ ekledi ve o bir ÇARE:** *kaynak-yeterliliği önsözü* — sistem istemine tek
 (*"cevaba başlamadan önce kaynak yetiyor mu söyle"*) kütleyi **%61,3 → %62,8** çıkardı ve
 **çapraz tablonun dört hücresini birden** doğru yöne taşıdı (aşırı-red 16 → **14**,
 isabetsizlik 7 → **5**). `recall@10` değişmedi — değişen tek şey **istem**.
-⚠️ **Benimsenmedi:** ana protokolü değiştirir, dolayısıyla tüm çıpalar yeniden türetilir →
-**kendi ADR'sini ister**. Ürünün sayısı bugün hâlâ **%61,3**.
+✅ **BENİMSENDİ** — ADR-0058 (2026-08-06): ana protokolü değiştirdi, dolayısıyla tüm çıpalar
+yeniden türetildi. Ürünün resmî sayısı **%62,8**; önsözsüz koşu artık **ablasyon kolu**
+(%61,3).
 ⚠️ Ve bu, *"deterministik koddan sonra sıra eğitimde"* okumasını **inceltir**: kalan açığın
 kökü modelde ama **istem katmanından kısmen tetiklenebiliyor** — yani yetenek **var, varsayılan
 değil**.
@@ -91,7 +95,7 @@ Ayrıntılı faz tarifi: [`docs/VISION.md`](docs/VISION.md) Faz 2.
 | :-: | :--- | :--- | :--- |
 | ~~2.1~~ | ~~**merge `τ_a`'yı seyreltiyor** → modül-başına norm~~ | 🔴 **ÖLÇÜLDÜ ve REDDEDİLDİ 2026-08-04** — kütle ≤ **%56,2** < gereken %71,6 ([ADR-0053](docs/adr/0053-modul-basina-norm-kapsami-reddedildi.md) · [#50](docs/record/research_log/2026-08-04-modul-basina-norm.md)) | hakem **$0** |
 | **2.1b** 🆕 | **`τ_a` seyrelmesi HÂLÂ AÇIK** (M2b 0,987 → 0,877) — ama çare merge'de değil | Norm *kapsamı* çürütüldü: kol profilleri **orantılı**. Kalan en olası yer **`τ_a`'nın eğitim genliği** (‖τ_a‖ = 1,18 · 82 adım @1e-5) | eğitim işi (borç **B4**) |
-| **2.1c** 🚨 ⭐ | **AŞIRI-RED — altın madde bağlamdayken çekinme** | **16/80** ve **`k`'dan bağımsız** (14 → 15 → 16). Harness KAPALI'da da aynı: **17/80**. Retriever ne kadar iyileşirse iyileşsin **kapanmıyor** | eğitim işi (borç **B10**) |
+| **2.1c** 🚨 ⭐ | **AŞIRI-RED — altın madde bağlamdayken çekinme** | **14/80** (önsözsüz ablasyon: 16/80) — önsözsüz koşuda **`k`'dan bağımsız** (14 → 15 → 16). Harness KAPALI'da da aynı: **17/80**. Retriever ne kadar iyileşirse iyileşsin **kapanmıyor** | eğitim işi (borç **B10**) |
 | 2.2 | **`τ_a` şablon ezberledi** | M1 medyan cevabı **58 karakter** = şablonun kendisi; model cümleyi çekimliyor | [ADR-0051](docs/adr/0051-m2b-cift-kalibi-ve-chosen-uretimi.md) B planı · ~$2 |
 | 2.3 | **muhakeme izi İngilizce** | 8/8 ölçüldü ([`kollar.md`](docs/record/kollar.md) #4) | veri turu |
 | 2.4 | veri inceliği | 728 temiz negatif | hasat hattı kurulu, ucuz |
@@ -142,7 +146,7 @@ iki kanuna ait olabiliyor (`İŞ KANUNU` = **4857** yürürlükte **ve** **1475*
   | graf ne için | ölçüm ne diyor |
   | :--- | :--- |
   | erişim kalitesi | ❌ gerekmiyor — `recall@5` 0,750 → `@20` **0,925**, açığın çoğu **k** ile kapanıyor |
-  | cevap kalitesi | ❌ gerekmiyor — altın getirildiğinde A1 zaten **0,862** *(k=10; k=5'te 0,923)* |
+  | cevap kalitesi | ❌ gerekmiyor — altın getirildiğinde A1 zaten **0,8705** (önsözsüz ablasyon: 0,8616) *(k=10; k=5'te 0,923)* |
   | belirsiz sorgu | ❌ çözmüyor — soruların ~%25'i (ölçüldü: **18/80**) konusunu hiç belirtmiyor |
   | **yürürlük · ilga · tadil · atıf zincirleri** | ✅ **düz vektör benzerliğinden okunamaz** — ama 5.1 bunun **ucuz** kısmını **bir veri alanıyla** çözdü |
 
@@ -266,13 +270,13 @@ mahremiyet (hukuki sorular kişiseldir). İkisi de zamanla **büyüyor**.
 0.  modül-başına norm (2.1)   ✅ koşuldu → 🔴 REDDEDİLDİ (ADR-0053)
 1.  HARNESS                   ✅ KURULDU  → sprint3-part1.md
 2.  harness AÇIK ölçüm        ✅ ÖLÇÜLDÜ  → %62,8 (ürünün dürüst sayısı; önsözsüz ablasyon: %61,3)
-3.  τ_a v2 (2.2)              ▶ sırada    — ve gerekçesi artık ölçülmüş: B10 (16/80)
+3.  τ_a v2 (2.2)              ▶ sırada    — ve gerekçesi artık ölçülmüş: B10 (14/80)
 4.  Türkçe muhakeme (2.3)     veri turu
 ```
 
 ⚠️ **Sıranın gerekçesi ölçümle DEĞİŞTİ.** 08-03'te 3. sıranın gerekçesi *"artık doğru girdi
 dağılımını bilerek"* idi — yani bir **bilgi** gerekçesi. Bugün ona bir **büyüklük** gerekçesi
-eklendi: aşırı-red **16/80** ve harness'la kapanmıyor. Sıra aynı kaldı, ama artık *"sonra da
+eklendi: aşırı-red **14/80** ve harness'la kapanmıyor. Sıra aynı kaldı, ama artık *"sonra da
 yaparız"* değil **kütlenin büyük yarısı orada.**
 
 **Part 2'nin kararları verildi ve kayda geçti:** [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md) — `m2b` harness-AÇIK protokolü (altın ablasyonu), iki-sayı raporlaması, ön-kayıtlı tahminler, ADR-0055'in çıpa düzeltmesi. **Uygulama planı** `docs/superpowers/plans/` altına ayrıca yazılır.

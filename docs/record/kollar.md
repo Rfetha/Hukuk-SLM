@@ -163,7 +163,7 @@ kıyas bu yüzden kurulabiliyor. Sayılar:
 **%71,6 (kapalı) ↔ ~~%58,7~~ %56,9 (açık, k=5) ↔ %59,5 (açık, k=10) ↔ %61,3 (açık, k=10 +
 onarılmış korpus) ↔ %62,8 (açık, k=10 + onarılmış korpus + önsöz, ADR-0058 — ⭐ ürünün ayarı;
 önsözsüz ablasyon: %61,3)**, altın getirilen alt kümede A1 **~~0,934~~ 0,923 >
-0,909** (k=5) ama **0,843** (k=10) → **0,862** (k=10 + S2).
+0,909** (k=5) ama **0,843** (k=10) → **0,8705** (k=10 + S2 + yeterlilik önsözü; önsözsüz: 0,8616).
 ⚠️ Eski sayılar `A1` yerine ham makro kullanıyordu (tuzak 2.16).
 Koşular: `outputs/eval/s3-harness-k10/` (k=10) · **`outputs/eval/s2-harness-k10-etiketli/`
 (nihai)**.
