@@ -164,7 +164,24 @@ ayrı koşu olmadan karşılar).
 
 ---
 
-## ⭐ Eşiklerin türetilmesi — **0.923 / 0.880 / 0.854**
+## ⭐ Eşiklerin türetilmesi — **0.923 / 0.880 / 0.854** ᴷ³
+
+> 🚨 **DAMGA 2026-08-06 (K-2/K-3): bu üç sayı EMEKLİ BİR ALETİN türetmesidir.** Silinmedi.
+> Aşağıdaki türetme `valid_trap_cache.py` + `rescore_abstention_cached.py` ile yapıldı;
+> ikisi de emekli edildi ve **900 klipi bir kategori hatasıydı** (parça sabiti birleşime
+> uygulanmış; hakem cp09 m2b'de 320 kaynağın 147'sini görüyordu, %46). Bugünkü tek aletle:
+>
+> | eşik | formül (ön-kayıtlı, DEĞİŞMEDİ) | bu bölüm | **yürürlükte 2026-08-06** |
+> | :--- | :--- | ---: | ---: |
+> | M2 tekil | base M2 + 0,12 | 0,923 | **0,934** ⚠️ payda ONARILMADI, askıda |
+> | M1 A1 muhafızı | base A1 × 0,90 | 0,880 | **0,8878** *(valid_trap'ten etkilenmez)* |
+> | merge M2b | base M2b × 0,90 | 0,8541 | **0,8649** |
+>
+> ⛔ ADR-0050: formüle/çarpana **dokunulmadı**, yalnız yeniden bölündü.
+> Türetme: `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json` ·
+> [#58](../research_log/2026-08-06-payda-tekillesmesi.md).
+> **Merge onarımı bu yeni eşikte DÜŞÜYOR (0,766 < 0,8649).**
+
 
 ```
 M2 eşiği       = düzeltilmiş base M2 + 12 puan
@@ -796,7 +813,7 @@ llama-server + 3 cevap                             ✅ 3/3 dolu
 | ~~CP2-a uyum kapısı~~ | CP2-a ✅ | **KALDI** — hakemler %58,3-%91,7 arasında dağıldı; ön-eleme **koşulmadı** ([ADR-0048](../../adr/0048-cevaba-kor-tuzak-gecerliligi.md) m.4) |
 | ~~M2b kurgu tabanı~~ | CP2-r ✅ | **GEÇİLDİ: 79/80 ≫ 40/80** → merge onarımı ARA KAPI'nın 2. gözlemi olarak KALIR. *(Kural: cevaba-kör geçerli tuzak < 40/80 ise M2b tasarlandığı mod olmaktan çıkar → ADR-0045'in merge onarım kontrolü **tanımlayıcıya** iner ([ADR-0049](../../adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.3))* |
 | **CP2-c verim kapısı** | CP2-c | Modal koşusunun **ilk 10 dakikasında** gerçek `s/üretim` okunur; tahminin **2 katını** aşarsa koşu **DURUR**, sayı negatif bulgu olarak yazılır ([ADR-0047](../../adr/0047-cp2-hedef-750-modal-hasat.md) m.3). ⚠️ İki kez düzeltildi: (a) `limit`e takılıp **atlanabiliyordu**, (b) **kümülatif** ortalamayla ölçüyordu → 16:19 koşusunu **hatalı** durdurdu. Artık **kararlı hız** okunur (`saniye_per_uretim_kararli`); **eşik 2,88 değişmedi** |
-| **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.923 · M1 A1 ≥ 0.880** **+** `τ_g+τ_a` merge **M2b ≥ 0.854** — ✅ üçü de CP2-r'de türetildi. Eski 0.934/0.888/0.887'ye karşı da raporlanır |
+| **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.923 · M1 A1 ≥ 0.880** **+** `τ_g+τ_a` merge **M2b ≥ 0.854** — ✅ üçü de CP2-r'de türetildi. Eski 0.934/0.888/0.887'ye karşı da raporlanır. 🚨 **ᴷ³ 2026-08-06: yürürlükteki eşikler 0.934 (askıda) / 0.8878 / 0.8649; merge 0,766 ile DÜŞÜYOR** — [#58](../research_log/2026-08-06-payda-tekillesmesi.md) |
 | **Kapı 5** | Sprint 3 | ADR-0037 (3 madde) — referansları burada üretiliyor |
 | **Kapı 6** | Sprint 3 | **ADR-0044 sayıları** — M5 coverage ≤ **%97.5** · ezber kütlesi ≤ **%42.5** (base, bütçeli kip) |
 

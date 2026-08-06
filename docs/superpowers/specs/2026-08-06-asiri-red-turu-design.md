@@ -207,11 +207,16 @@ yer değiştirirse (A3.6 · tuzak **2.13**) kapı düşer.
 
 harness AÇIK · k=10 · S2 · ana protokol (önsözlü) · n=80 · seed 3407:
 
+> ⚠️ **BİRİM DÜZELTMESİ 2026-08-06 (kusur Ö-A).** Aşağıdaki eşikler **emekli birimde** yazılmıştı: paydaları modelin cevabına bakan hakemden geliyordu (K3). Eski değerler **silinmedi**, `~~üstü çizili~~` duruyor. Ölçülmüş çeviriler ([#57](../../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)): `tgta_v1` KAPALI m2b **0,877 → 0,766** · AÇIK `h2b@k=4` önsözsüz **0,840 → 0,735** · AÇIK `h2b@k=4` **önsözlü** (ana protokol, ürün kapısının çıpası) **0,809**.
+
 ```
-BAŞARILI   kütle > %62,8  VE  B10 < 14/80  VE  M2b Rej (h2b@k=4) ≥ 0,840
+BAŞARILI   kütle > %62,8  VE  B10 < 14/80  VE  M2b Rej (önsözlü h2b@k=4) ≥ 0,809   ~~0,840~~
 KISMİ      B10 < 14/80 ama kütle ±0,3 içinde → çekinme düzeldi, kayıp başka yerde; tanı OKUNUR
 BAŞARISIZ  kütle < %62,5  ya da  B10 ≥ 14/80  → `tgta_v1` ÜRÜN OLARAK KALIR
 ```
+🚨 **0,809 insan kararının mekanik sonucudur** (plan §KARAR-1, 2026-08-06): kural
+*"eşik Ö5'in önsözlü çıpasından türetilir"* idi, çıpa 0,809 ölçüldü. ADR-0050 gereği
+sonuç görüldükten sonra eşik değil **alet** düzeltildi.
 
 Hüküm üretmeyen, ama zorunlu ek ölçümler: önsözsüz koşu (%61,3 ile kıyas) · ayırt edici/belirsiz
 alt küme kırılımı (ADR-0054 K4) · harness KAPALI M1 (17/80 çıpası).
@@ -223,17 +228,23 @@ alt küme kırılımı (ADR-0054 K4) · harness KAPALI M1 (17/80 çıpası).
 | B10 (AÇIK) | 14/80 | **8-11/80** | 703:0 asimetri ~4:1'e iniyor; tek bir istem satırı (D1) 2 kalem aldıysa tercih baskısı daha güçlü kaldıraç |
 | kütle (AÇIK) | %62,8 | **%64-66** | kurtarılan her kalem ≈ %1,25 kütle, A1 sabit varsayımıyla |
 | kütle (KAPALI) | %71,6 | **%75-79** | `(1 − aşırı-red) × A1`; B10 17→10 ise coverage 0,875 |
-| **M2b Rej** | 0,877 | ⭐ **mekanizmanın ayırt edici ölçümü** — aşağı bak | |
+| **M2b Rej** (önsözlü AÇIK) | **0,809** ~~0,877~~ | ⭐ **mekanizmanın ayırt edici ölçümü** — aşağı bak | |
 | Δ(önsöz) | +1,43 p | **+0,0 … +0,7 p** | ⭐ yetenek varsayılan olduysa önsözün marjinal katkısı **daralır** |
 | ‖τ_a v2‖ | 1,1806 | **1,18 ± %25** | rejim aynı, veri ~%30 büyüdü → B4'e dokunulmadığının kanıtı |
 
 **M2b bir yan etki değil, turun mekanizma testi:**
 
 ```
-M2b ≥ 0,877   → model YETERLİLİĞİ öğrendi (altın yokken hâlâ tanıyor)   ✅ mekanizma tuttu
-0,84 – 0,877  → kısmi                                                   🟡
-M2b < 0,84    → model yalnız "daha çok cevapla" öğrendi                 ❌ kör kayma
+M2b ≥ 0,766 ~~0,877~~     → model YETERLİLİĞİ öğrendi (altın yokken tanıyor)  ✅ tuttu
+0,735 – 0,766 ~~0,84–0,877~~ → kısmi                                          🟡
+M2b < 0,735 ~~0,84~~      → model yalnız "daha çok cevapla" öğrendi           ❌ kör kayma
 ```
+
+🚨 **Bu bandın İKİ UCU İKİ AYRI SINAVDAN geliyor** — üst uç `tgta_v1`'in **KAPALI** m2b'si
+(distractor kurgusu), alt uç **AÇIK** `h2b@k=4`. ADR-0057 gereği eşleşmeyen eksenler tek
+banda konamaz; band bu hâliyle **birim düzeltmesinden önce de** kusurluydu, çeviri onu
+görünür kıldı. **Görev 9 ölçümü ÖNSÖZLÜ `h2b@k=4`'tür** ve tek geçerli çıpası **0,809**;
+mekanizma okuması o çıpaya göre yapılır, bu band yalnız **tarihsel süreklilik** için durur.
 
 Simetrik çiftin tek iddiası, modelin altın-var/altın-yok ayrımını okumasıdır. Okuyorsa M2b
 düşmez. Düşüyorsa müdahale patolojiyi **taşımıştır**, çözmemiştir — ve kapı orada durur.

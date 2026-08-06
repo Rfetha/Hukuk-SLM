@@ -45,3 +45,30 @@ sorudur** ve [`docs/open_questions.md`](../open_questions.md)'ye borç olarak gi
 ## Sonuçlar
 - Eski %61,3 sütunu SİLİNMEZ; "önsözsüz ablasyon" olarak kalır.
 - ⚠️ EĞİTİM VERİSİ bu değişikliği İZLEMEZ — gerekçesi ADR-0059 §sapma-1.
+
+---
+
+## 🚨 DAMGA 2026-08-06 (kusur Ö-B) — A/B ablasyon koşusunun bir sayısı emekli dedektörden geliyordu
+
+`outputs/eval/cp09-ab-ayrimi/` bu ADR'nin **A/B ayrım** koşusudur — önsözün M2 tarafındaki
+etkisi orada ölçüldü. Kaydedilen `rejection_exact = 0,452` **artık var olmayan** bir dedektör
+sürümüyle üretilmişti (ADR-0058'in açılış-hükmü kuralı henüz yoktu). Bugünkü aletle yeniden
+puanlandı (**hakem çağrısı yok, $0** — `score_abstention --pay-kaynagi onceki --payda-kaynagi onceki`):
+
+```
+rejection_exact   0,452  →  0,484     (id 53 ve 55 açılış kuralıyla çekinmeye döndü)
+rejection_rate    0,968  →  0,968     değişmedi (LLM hakemi yeniden koşmadı)
+valid_traps          62  →     62     payda DEVRALINDI — aşağıdaki şerh
+```
+
+**3,2 puan = hakem gürültü tabanının (0,3 p) ~10 katı.** Eski özet
+`abst_m2_base_suff_summary.json.ONCEKI-20260806` olarak duruyor.
+
+**ADR-0058'in hükmüne etkisi: YOK.** Bu ADR'nin benimseme gerekçesi *kütle · A1 · B10* üzerine
+kuruludur; `rejection_exact` bu ADR'de hiçbir eşiğe girmiyor. Düzeltmenin yönü zaten önsözün
+**lehine** (regex artık önsözün emrettiği çekinmeleri sayıyor). Ama sayı kayıtta yanlış duruyordu.
+
+> 🔴 **KAPANMAYAN:** bu koşunun **paydası** (62/70) hâlâ modele bağımlı — `m2` kolu K3/KARAR-2
+> kapsamında onarılmadı. Özet dosyası `valid_trap_kaynagi` alanında bunu damgalıyor.
+> Onarımın fiyatı ölçüldü: **≈$0,11**, tek ödemeyle 10 m2 koşusunu birden kapatır
+> ([`open_questions.md`](../open_questions.md)). **İnsan kararı bekliyor.**

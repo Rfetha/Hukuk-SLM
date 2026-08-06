@@ -1141,7 +1141,7 @@ adillik hükmü** olacak:
 kademe  eksen                  kaynak   BİZ(AÇIK)  FL 3.1   FL 3.5   hüküm
   2     M1 kütle               10 ↔ 10  %62,8      ?        ?        EŞLEŞMİŞ
   2     A1 · altın getirilen   10 ↔ 10  0,8705     ?        ?        EŞLEŞMİŞ
-  2     M2b Rej                 4 ↔ 4   0,840      ?        ?        EŞLEŞMİŞ
+  2     M2b Rej (önsözlü)       4 ↔ 4   0,809      ?        ?        EŞLEŞMİŞ   (~~0,840~~ emekli birim)
   2     aşırı-red               10 ↔ 10  ?          ?        ?        EŞLEŞMİŞ
   -     muhakeme/maliyet        —       1198 tok   ?        ?        Adım 2.3'ün damgası
 ```
@@ -2180,8 +2180,12 @@ raporlanmaz.**
 
 - [ ] **Adım 9.4 — 🛑 ÜRÜN KAPISINI UYGULA**
 
+> ⚠️ **BİRİM DÜZELTMESİ 2026-08-06 (kusur Ö-A).** Bu blok emekli birimde yazılmıştı;
+> KARAR-1 eşiği **0,809**'a çekmişti ama bu satır damgasız `0,840` diyordu. Yeni bir karar
+> DEĞİL — KARAR-1'in buraya işlenmesi. Eski değerler `~~üstü çizili~~` duruyor.
+
 ```
-BAŞARILI   kütle > %62,8  VE  B10 < 14/80  VE  M2b Rej (h2b@k=4) ≥ 0,840
+BAŞARILI   kütle > %62,8  VE  B10 < 14/80  VE  M2b Rej (önsözlü h2b@k=4) ≥ 0,809  ~~0,840~~
 KISMİ      B10 < 14/80 ama kütle ±0,3 içinde → çekinme düzeldi, kayıp başka yerde; tanı OKUNUR
 BAŞARISIZ  kütle < %62,5  ya da  B10 ≥ 14/80  → tgta_v1 ÜRÜN OLARAK KALIR
 ```
@@ -2190,7 +2194,7 @@ Ayrıca **hüküm üretmeyen ama zorunlu** üç okuma:
 
 | ölçüm | çıpa | ne söyler |
 | :--- | :--- | :--- |
-| M2b Rej | 0,877 | ⭐ **mekanizma testi**: ≥0,877 yeterlilik öğrenildi · <0,84 kör kayma |
+| M2b Rej (önsözlü AÇIK) | **0,809** ~~0,877~~ | ⭐ **mekanizma testi**: ≥0,809 yeterlilik korundu · <0,735 ~~<0,84~~ kör kayma. ⚠️ tasarımın bandı iki ayrı sınavı karıştırıyor (ADR-0057), tek geçerli çıpa **0,809** |
 | Δ(önsöz) = ana − ablasyon | +1,43 p | daralıyorsa yetenek **varsayılan** oldu |
 | harness KAPALI aşırı-red | 17/80 | tavan tarafı da hareket etti mi |
 

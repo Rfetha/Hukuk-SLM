@@ -5,6 +5,8 @@ Kaynak: G2 Adım 2.1 + 2.4b + 2.6 (2026-08-06), Gemini ailesi kalibrasyonu.
 """
 import sys
 
+import pytest
+
 sys.path.insert(0, "scripts")
 from score_abstention import exact_reject  # noqa: E402
 
@@ -59,6 +61,22 @@ def test_exact_reject_acilis_hukmu_yoksa_govde_taranir():
                         "data") is True
     assert exact_reject("Mahkeme lehine karar verirse icra emri tebliğ edilir "
                         "(İİK m.32).", "data") is False
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "🔴 AÇIK BORÇ (kusur Ö-E, 2026-08-06). `_son_esasli_ibare` yalnız SON esaslı ibareye "
+    "bakıyor; çekinme beyanı sonuç konumunda olup ARKASINDAN sonuç-dışı bir tavsiye cümlesi "
+    "gelirse kural onu göremez. ÖLÇÜLDÜ ve kapatılmadı: tüm `outputs/eval`'da olumlu açılışlı "
+    "96 cevabın **0'ı** bu şekle uyuyor (gövdede red + son ibarede red yok = 3 vaka, üçü de "
+    "GERÇEKTEN dolu cevap; son ibaresi tavsiye/başvuru kalıbıyla biten 4 vaka, dördü de "
+    "gerçekten dolu). Yani kuralı bugün onarmanın ölçülmüş bir dayanağı YOK ve körlemesine "
+    "genişletmek yeni yanlış-pozitif üretir (ADR-0050 ruhu). Bu test kusuru KİLİTLEMEZ, "
+    "SINIRI çizer: kural düzelirse strict=True ile PATLAR ve damga kaldırılmak zorunda kalır."))
+def test_exact_reject_cekinme_sonrasi_tavsiye_kuyrugu_kacar():
+    """Sınır vakası — kural bugün bunu 'cevapladı' sayıyor, oysa çekinmedir."""
+    cevap = ("Verilen kaynaklar soruyu cevaplamaktadır. Kaynaklarda bu konu düzenlenmiyor. "
+             "Bu konuda güncel mevzuata başvurmanız gerekir.")
+    assert exact_reject(cevap, "data") is True
 
 
 # ── Kanunun kendi KOŞUL kipi red değildir (#39'un `(?!sa)` ilkesi) ──────────
@@ -119,6 +137,21 @@ def test_gecerlilik_anahtari_kaynak_klipinin_OTESINI_AYIRT_EDER():
     assert gecerlilik_anahtari("S", onek) != gecerlilik_anahtari("S", onek + "kuyruk")
     # Aynı sınavı paylaşan kollar YİNE aynı anahtara düşer — K3'ün kazanımı korunuyor.
     assert gecerlilik_anahtari("S", onek + "kuyruk") == gecerlilik_anahtari("S", onek + "kuyruk")
+
+
+def test_farkli_sinavlar_ayni_payda_kaydini_PAYLASMAZ():
+    """⭐ Tuzak 2.17'nin birim testi — K3'ün (aynı sınav → aynı payda) TAMAMLAYICISI.
+
+    Gerçek şekil: `k=4` bağlamı, `k=10` bağlamının ÖNEKİdir. Klipli anahtarla ikisi tek
+    kayda düşüyordu; k=10 kolu kendi paydasını hiç ödemiyor, k=4'ünkini devralıyordu.
+    """
+    from score_abstention import gecerlilik_anahtari
+    soru = "Kat maliki ortak gideri ödemezse ne olur?"
+    k4 = "".join(f"[KAYNAK {i}]\n{'m' * 900}\n" for i in range(1, 5))
+    k10 = k4 + "".join(f"[KAYNAK {i}]\n{'m' * 900}\n" for i in range(5, 11))
+    assert k10.startswith(k4)                                   # gerçek şekil korunuyor
+    assert gecerlilik_anahtari(soru, k4) != gecerlilik_anahtari(soru, k10)
+    assert gecerlilik_anahtari(soru, k10) == gecerlilik_anahtari(soru, k10)
 
 
 # ── KARAR-2: BOŞ BAĞLAMDA PAYDA TANIM GEREĞİ 80/80 (ADR-0048 m.2) ──────────
