@@ -1771,7 +1771,7 @@ print('şema ✓')
 **Tüketir:** Görev 4'ün `b10_kabul.jsonl`'i · mevcut `cp2c_kabul_m2.jsonl` · `cp2c_kabul_m2b.jsonl`.
 **Üretir:** `data/train/orpo_abstain_v2/` — `train_orpo.py --data` bunu **dizin** olarak bekler.
 
-- [ ] **Adım 5.1 — Mevcut kabul dosyalarını doğrula (yerleri BULUNDU, 2026-08-06)**
+- [x] **Adım 5.1 — Mevcut kabul dosyalarını doğrula (yerleri BULUNDU, 2026-08-06)**
 
 `τ_a` v1'in havuzu **dört dosyaya** bölünmüş — ikisi değil (`orpo_report.json`'daki
 `hasat_kaynak_karisimi`: `cp2c 3 · cp2c-64 357 · cp2c-ek1 366`):
