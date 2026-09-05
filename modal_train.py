@@ -591,11 +591,18 @@ def harvest_b10(gguf: str, havuz: str, out_dir: str, np_list: list[int],
     gguf_sha = h.hexdigest()
     kart = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"],
                           capture_output=True, text=True).stdout.strip()
-    surum = subprocess.run([binary, "--version"], capture_output=True, text=True)
+    # Why: `--version` probu da ikilinin kütüphanesine muhtaç; düzeltilmiş env olmadan
+    # çağrılırsa künyeye sürüm yerine linker hatası yazılır (ölçüldü 2026-09-05, pilot koşusu).
+    bin_dir = os.path.dirname(binary) or "/app"
+    srv_env = dict(os.environ)
+    srv_env["LD_LIBRARY_PATH"] = bin_dir + os.pathsep + srv_env.get("LD_LIBRARY_PATH", "")
+    surum = subprocess.run([binary, "--version"], capture_output=True, text=True,
+                           cwd=bin_dir, env=srv_env)
     surum_s = (surum.stderr or surum.stdout).strip().splitlines()[0] if (surum.stderr or surum.stdout) else "?"
     print(f"[b10] künye · gguf={os.path.basename(gguf)} sha256={gguf_sha[:16]}… "
           f"kollar -np {np_list} · {surum_s} · kart={kart}", flush=True)
 
+    # Sunucu ikilinin dizininde koşar (cwd /root'ta, sızıntı süzgecinin göreli yolu için).
     kollar = {}
     for np_slots in np_list:
         ctx = np_slots * ctx_per_slot
@@ -608,7 +615,7 @@ def harvest_b10(gguf: str, havuz: str, out_dir: str, np_list: list[int],
              "--cache-type-k", "q8_0", "--cache-type-v", "q8_0",
              "-c", str(ctx), "-np", str(np_slots),
              "--host", "127.0.0.1", "--port", "8080"],
-            stdout=log, stderr=subprocess.STDOUT)
+            stdout=log, stderr=subprocess.STDOUT, cwd=bin_dir, env=srv_env)
         try:
             for _ in range(180):                      # 6 dk: ağırlık yükleme + KV ayırma
                 if srv.poll() is not None:
