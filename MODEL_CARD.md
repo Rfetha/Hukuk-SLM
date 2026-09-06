@@ -132,16 +132,25 @@ Full record: [#51](docs/record/research_log/2026-08-04-harness-acik-ilk-olcum.md
 | | harness OFF | ON (k=5) | ON (k=10) | ⭐ **ON k=10, repaired corpus + sufficiency preamble** |
 | :--- | ---: | ---: | ---: | ---: |
 | gold article in context | guaranteed (by construction) | 60/80 — recall@5 0.750 | 70/80 — recall@10 0.875 | **70/80 — recall@10 0.875** |
-| coverage | 0.788 | 0.750 | 0.775 | **0.763** |
-| A1 (answered-only) | 0.909 | ~~0.782~~ 0.759 | 0.768 | **0.8229** (ablation, no preamble: 0.804) |
-| **faithful-answer mass** | **71.6%** | ~~58.7%~~ 56.9% | 59.5% | **62.8%** (no-preamble ablation: 61.3%) |
-| ⭐ A1, **gold-retrieved subset** | 0.909 | ~~0.934~~ 0.923 | 0.843 | **0.8705** (ablation, no preamble: 0.862) |
+| coverage | 0.788 | 0.750 | 0.775 | **0.8250** ~~0.763~~ |
+| A1 (answered-only) | 0.909 | ~~0.782~~ 0.759 | 0.768 | **0.8288** ~~0.8229~~ (ablation, no preamble: **0.8110**) |
+| **faithful-answer mass** | **71.6%** | ~~58.7%~~ 56.9% | 59.5% | **68.4%** ~~62.8%~~ (no-preamble ablation: **73.0%** ~~61.3%~~ ⚠️ now *higher* — see note) |
+| ⭐ A1, **gold-retrieved subset** | 0.909 | ~~0.934~~ 0.923 | 0.843 | **0.8729** ~~0.8705~~ (ablation, no preamble: **0.8593**) |
 | verified citations | 87/89 | 89/89 | 118/120 | **80/83** (ablation, no preamble: 116/118) |
 | **fabricated article numbers** | 0 | **0** | **0** | **0/83** (ablation, no preamble: 0/118) |
 | strict-gate rejections | 2/80 | 1/80 | 1/80 | **3/80** (ablation, no preamble: 1/80) |
 
-**62.8% is the honest product number** (k=10, repaired corpus, `--sufficiency-preamble` main
-protocol — ADR-0058; no-preamble ablation: 61.3%).
+**68.4% is the honest product number** ~~62.8%~~ (k=10, repaired corpus, `--sufficiency-preamble`
+main protocol — ADR-0058; no-preamble ablation: **73.0%**).
+
+> 🚨 **Rescored 2026-09-06 ([ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
+> [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)).** The abstention
+> detector scanned the *whole* answer in one branch, so our template's discarded-sources
+> rationale was read as a refusal. The bug was **specific to our own answer template** — the
+> competitor's numbers did not move at all when it was fixed (measured). All 80 items were then
+> read **by eye**. ⚠️ The fix also **inverted ADR-0058's rationale**: the preamble now *lowers*
+> mass (68.4% with, 73.0% without) though it still improves A1 and misattribution. The protocol
+> was **not** changed — open question **S14**.
 
 > ⚠️ The decomposition below was made against the **no-preamble** anchor (61.3%); after
 > ADR-0058 the gap is **8.8 points** and it has **not** been re-decomposed.
@@ -175,7 +184,7 @@ numbers — it copies the label from its context. In **5/80** questions (ablatio
 article: the citation verifies, the gate passes it, and the answer still does not fit the
 question. Deterministic citation checking solves fabrication, **not** off-target grounding.
 
-🚨 **The larger gap is the opposite failure: over-refusal.** In **14/80** (ablation, no preamble: 16/80) questions the
+🚨 **The larger gap is the opposite failure: over-refusal.** In **9/80** ~~14/80~~ (ablation, no preamble: **5/80** ~~16/80~~) questions the
 model abstains *while the gold article is in its context* — **≈2.8× the size** of the
 off-target class above (14 ↔ 5), and **independent of `k`** (14 → 15 → 16 across every setting
 measured). No amount of retrieval improvement closes it; it is a model-side gap and it is
@@ -297,7 +306,7 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
    [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md).
 9. 🚨 **Gemini 3.5 Flash-Lite is ahead of us in the product regime.** First measured
    2026-08-06 on a matched exam (ADR-0057; `recall@10` identical at 0.875 across all three
-   subjects): faithful-answer mass **62.8% (us) · 61.7% (3.1 FL) · 69.5% (3.5 FL)** — we pass
+   subjects): faithful-answer mass **68.4% (us) ~~62.8%~~ · 61.7% (3.1 FL) · 69.5% (3.5 FL)** — we pass
    3.1 FL by **+1.0 point (narrow)** and 3.5 FL passes us by **6.7 points**. Over-refusal is
    where we lose: **23.75%** vs **12.5%** for both competitors — roughly **twice** theirs.
    We do lead both on A1 (answered and gold-retrieved). Source:
@@ -309,12 +318,28 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
     (−30%), answers with no citation at all 8 → **13**. Whether that trade is acceptable for a
     legislation assistant — where *auditability* is the promise — is **an open question, not a
     settled one** ([`docs/open_questions.md`](docs/open_questions.md), OQ-3 / decision S6).
-12. ⚠️ **The over-refusal counts (14/80 · 16/80) are under review.** On 2026-09-06 the
-    abstention detector was found to score a correct, cited answer as an abstention in the
-    no-preamble prompt regime; the official anchor contains **at least one verified false
-    positive** and the size of the contamination has **not been measured** — closing it
-    requires reading all 80 items by eye
-    ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)).
+12. ✅ **The over-refusal counts were wrong and have been corrected — 14/80 → 9/80 (8/80 by
+    eye).** On 2026-09-06 the abstention detector was found to score a correct, cited answer as
+    an abstention: in the no-opening-verdict branch it scanned the whole answer, and our
+    template's discarded-sources rationale tripped the refusal regex. Six of the fourteen were
+    false positives; **none were missed in the other direction**. All 80 items were read by eye
+    (`outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md`). ⚠️ The bug was **specific to our own answer
+    template** and therefore **penalised only us** — the competitor's numbers did not move when
+    it was fixed. A training round planned to close this gap was **cancelled**: the
+    pre-registered target (8-11/80) was already met with no training at all
+    ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) ·
+    [#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+    [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)).
+13. ⛔ **Over-refusal is smaller, not solved.** 8/80 is still above Gemini 3.5 Flash-Lite's
+    **6/80**, and *"how far would training push it down"* was **never measured** — the round
+    that would have answered it was cancelled. This stays an open limitation.
+14. 🚨 **ADR-0058's rationale is inverted and the protocol has not yet been revisited.** The
+    sufficiency preamble was adopted because it raised mass; after the detector repair it
+    **lowers** mass (68.4% with, **73.0%** without) while still improving A1 (0.8288 ↔ 0.8110)
+    and misattribution (5/80 ↔ 7/80). The pair is a matched exam — same 80 ids,
+    byte-identical context in 80/80. Changing the main protocol needs its own ADR and a human
+    decision; until then the official number is the **with-preamble** one
+    ([`docs/open_questions.md`](docs/open_questions.md), **S14**).
 
 ## Reproducibility
 

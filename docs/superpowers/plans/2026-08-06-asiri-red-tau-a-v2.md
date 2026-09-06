@@ -21,7 +21,60 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 
 ---
 
-## 🔄 İCRA DURUMU — AÇIK (başladı 2026-08-06)
+## ✅ KAPANIŞ — 2026-09-06 · **TUR KAPATILDI, `τ_a` v2 EĞİTİLMEDİ**
+
+> **Karar:** [ADR-0062](../../adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) (insan) ·
+> **Ölçümler:** [#60](../../record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+> [#61](../../record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md) ·
+> **Alet kararı:** [ADR-0061](../../adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md)
+
+**Görev 0-3 koşuldu · Görev 3.5 (plan dışı onarım) koşuldu · Görev 4-10 KOŞULMADI.**
+Kutucuk **28 / 71**. Tur, hedefine **eğitim yapmadan** ulaştığı için kapandı.
+
+### Turun hükmü — hedef eğitimsiz karşılandı
+
+| eksen | tur başlarken | **kapanışta** | nasıl |
+| :--- | ---: | ---: | :--- |
+| aşırı-red (B10) | 14/80 | **8/80** *(alet 9/80)* | ölçüt onarıldı, eğitim yapılmadı |
+| ürün kütlesi | %62,8 | **%68,4** | aynı onarım |
+| coverage | 0,7625 | **0,8250** | aynı onarım |
+| hasat verimi | 0,1733 | **0,0667** | aynı onarım — 🛑 **D1 düştü** |
+| `recall@10` | 70/80 | **70/80** | erişime dokunulmadı |
+
+Ön-kayıtlı band **8-11/80** idi. **8/80'deyiz ve `τ_a` v2 hiç eğitilmedi** — aşırı-red gerçekti,
+ama **büyüklüğünün %43'ü aletin kendisiydi**.
+
+### Neden devam edilmedi — üç ölçülmüş sayı
+
+1. Hedef **zaten karşılandı** (8/80 ∈ 8-11/80).
+2. Hasadın bedeli getirisini aştı: `250 ÷ 0,0667 = 3.750 üretim × 5,1 s = **5,3 saat ≈ $5,2**`
+   → **D10** (3 saat) aşılıyor, **D9** ($5) zorlanıyor, üstüne eğitim ~$2.
+3. Kalan pay dar: **8/80 ↔ 3.5 FL 6/80**, iki kalem için ~$7 ve 5 saat.
+
+### ⛔ Kapanmayanlar — gizlenmiyor
+
+- **Aşırı-red sıfırlanmadı, küçüldü.** 8/80 hâlâ 3.5 FL'ın 6/80'inin üstünde → MODEL_CARD
+  Limitations'ında **açık sınır** olarak duruyor.
+- ***"Aşırı-red eğitimle ne kadar iner"* sorusu ÖLÇÜLMEDİ** ve öyle kaydedildi.
+- **B4** (`τ_a`'nın merge'de seyrelmesi) · **YB2** (M2b eğitim borcu) — bu tur kapatacaktı, kapatmadı.
+- **KARAR-6'nın hükmü hâlâ insanın**, ama artık ölçülmüş sayılara dayanıyor (aşağıda).
+- Ön-kayıtlı tahminlerin geri kalanı (kütle %64-66 · KAPALI %75-79 · Δ(önsöz)) **sınanmadı**.
+
+### 🔧 Silinmeyen artefaktlar — B1 turunda yeniden kullanılabilir
+
+`scripts/b10_hasat.py` · `tests/test_b10_hasat.py` · Modal `harvest_b10` + `spawn_b10`
+(ADR-0047 m.2 taşıyıcısı, L4'te doğrulandı) · sızıntı süzgeci (13.350 → 12.914, konteynerde
+yerelle birebir) · `scripts/eslesmis_a1.py` · ORPO paketleme reçetesi (Görev 5, yazılmadı ama tarifi hazır).
+
+### ⭐ Turun asıl getirisi
+
+Bir model değil, **bir ölçüm**: *bu repodaki en büyük tek kaybın **%43'ü aletin kendisiydi**.*
+Ve onu yakalayan şey sayısal kapı değildi — sayısal kapı (`kabul_orani 0,1733 > 0,10`) hatayı
+**geçirdi**. Yakalayan, planın **gözle okuma** adımıydı (ADR-0051, **ikinci kez** kendini ödedi).
+
+---
+
+## 🔄 İCRA DURUMU — ~~AÇIK~~ **KAPANDI** (2026-08-06 → 2026-09-06)
 
 > Bu blok *"nerede kaldık, ne yaşandı, plan nerede yanlıştı"* yazar. **Sayılar kayda gider**
 > (#57/#58); burada yalnız icra hikâyesi durur.

@@ -4,9 +4,34 @@
 **Kaynak ölçüm:** research_log #56 §5 (D1) · **Tadil eder:** ADR-0055 (B-i artık ablasyon değil)
 **Çıktı dizini:** `outputs/eval/olcum-bi/` *(önsözsüz ablasyon koşusu: `outputs/eval/s2-harness-k10-etiketli/`)*
 
+> 🚨🚨 **2026-09-06 — BU KARARIN GEREKÇESİ TERSİNE DÖNDÜ. Karar yürürlükte, gerekçesi değil.**
+>
+> Önsöz **kütleyi yükselttiği için** benimsenmişti. Çekinme dedektörü onarılınca
+> ([ADR-0061](0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
+> [#61](../record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)) yön **döndü**:
+>
+> | | eski (bozuk) alet | **onarılmış alet** |
+> | :--- | ---: | ---: |
+> | önsözlü (resmî) | %62,8 | **%68,4** |
+> | önsözsüz (ablasyon) | %61,3 | **%73,0** |
+> | **Δ(önsöz)** | **+1,5 p** ✅ | **−4,6 p** 🔴 |
+>
+> Kıyas **geçerli ve doğrudan ham dosyalardan doğrulandı** (künye yok — borç D-c):
+> aynı 80 id · **80/80 birebir aynı `context_shown`** · aynı `recall@10` → değişen **yalnız istem**.
+>
+> ⚠️ **Ama karar salt kütleye dayanmıyordu** ve diğer ayakları **hâlâ ayakta**:
+> A1 **0,8288 ↔ 0,8110** (önsöz +1,8 p) · A1·altın **0,8729 ↔ 0,8593** (+1,4 p) ·
+> B1 isabetsizlik **5/80 ↔ 7/80** (önsöz lehine). Takas iki yönlü: önsöz modeli **daha seçici**
+> ama **daha suskun** yapıyor (coverage 0,8250 ↔ 0,9000 · B10 9/80 ↔ 5/80).
+>
+> ⛔ **Protokol DEĞİŞTİRİLMEDİ** — ana protokol hâlâ önsözlü, resmî sayı **%68,4**.
+> Değiştirmek **yeni bir ADR ve insan kararı** ister; açık soru **S14**
+> ([`open_questions.md`](../open_questions.md)).
+
 ## Karar
-`--sufficiency-preamble` ana protokolün parçasıdır. Ürünün resmî sayısı **%62,8**.
-Önsözsüz koşu bundan sonra **ablasyon koludur** (damga tersine döner).
+`--sufficiency-preamble` ana protokolün parçasıdır. Ürünün resmî sayısı ~~**%62,8**~~ →
+**%68,4** *(2026-09-06'da alet onarımıyla yeniden türetildi, ADR-0061)*.
+Önsözsüz koşu bundan sonra **ablasyon koludur** (damga tersine döner) — ~~%61,3~~ → **%73,0**.
 
 ## Gerekçe
 Bir EĞİTİM turunun çıpası, elde olan en iyi DAĞITIM yapılandırması olmalıdır. Aksi hâlde

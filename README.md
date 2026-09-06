@@ -58,24 +58,39 @@ index, k=10, CPU-only) and the **source-sufficiency preamble** in the system pro
 | | harness OFF | **harness ON — official** | ON, no-preamble *ablation* |
 | :--- | ---: | ---: | ---: |
 | gold article in context | guaranteed *by construction* | **70/80 — recall@10 0.875** | 70/80 — identical |
-| coverage | 0.788 | **0.7625** | 0.7625 *(identical)* |
-| faithful-answer mass | 71.6% | **62.8%** | 61.3% |
-| A1 (answered-only) | 0.909 | **0.8229** | 0.8042 |
-| A1, gold-retrieved subset | 0.909 | **0.8705** | 0.8616 |
+| coverage | 0.788 | **0.8250** ~~0.7625~~ | **0.9000** ~~0.7625~~ |
+| faithful-answer mass | 71.6% | **68.4%** ~~62.8%~~ | **73.0%** ~~61.3%~~ |
+| A1 (answered-only) | 0.909 | **0.8288** | 0.8110 |
+| A1, gold-retrieved subset | 0.909 | **0.8729** | 0.8593 |
 | **fabricated article numbers** | 0 | **0 / 83** | 0 / 118 |
-| abstains with gold in context ↓ | 17/80 | **14/80** | 16/80 |
+| abstains with gold in context ↓ | 17/80 | **9/80** ~~14/80~~ | **5/80** ~~16/80~~ |
 | answers from a *different real* article ↓ | — | **5/80** | 7/80 |
 
-> 🚨 **Corrected 2026-09-06.** This section previously published the **pre-ADR-0058**
-> anchors (61.3% · 0.862 · 0/118 · 16/80 · 7/80) as if they were the official numbers.
-> They are the **no-preamble ablation** and are kept in the right-hand column rather than
-> deleted. Official run: `outputs/eval/olcum-bi/harness_tablo.json` ·
-> [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1). Ablation run:
-> `outputs/eval/s2-harness-k10-etiketli/`.
+> 🚨 **Rescored 2026-09-06 — the abstention detector was broken, and it penalised only us.**
+> In the no-opening-verdict branch `exact_reject` scanned the *whole* answer, so our answer
+> template's discarded-sources rationale (*"the other sources do **not contain** …"*) tripped
+> the refusal regex. Gemini's answers carry that phrase in only 3/80 cases, so the bug was
+> **specific to our own training template**. Repairing it moved **our** numbers and left the
+> competitor's untouched (measured, not assumed).
+> Reading 80 items **by eye** gives **8/80** abstentions-with-gold and 69.6% mass; the tool
+> gives 9/80 and 68.4%, and the tool's number is the one published because it is what you
+> reproduce. Old values are struck through, not deleted.
+> [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
+> [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md) ·
+> per-item log: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md`
 
-**62.8% is the number we stand behind.** The drop is not a regression — the two
-settings do not measure the same thing, and the OFF column is a **ceiling, not a
-rival**.
+> 🚨 **And the rescoring inverted ADR-0058's own rationale — read this before quoting either
+> column.** The preamble was adopted *because it raised mass* (61.3% → 62.8%). With the
+> repaired detector it **lowers** it: **68.4% with, 73.0% without** (−4.6 points). The pair is
+> a genuinely matched exam — same 80 ids, **byte-identical `context_shown` in 80/80**, same
+> `recall@10`; the only difference is the prompt. But the preamble's *other* legs still hold:
+> A1 **0.8288 ↔ 0.8110** and misattribution **5/80 ↔ 7/80**, both in its favour. The trade is
+> two-sided: the preamble makes the model **more selective but more silent**.
+> **The protocol has NOT been changed** — that needs its own ADR and a human decision (open
+> question **S14**). Official = with preamble.
+
+**68.4% is the number we stand behind.** The gap to the OFF column is not a regression — the
+two settings do not measure the same thing, and OFF is a **ceiling, not a rival**.
 
 > ⚠️ The decomposition below was made against the **no-preamble** anchor (61.3%), i.e. a
 > 10.2-point gap. After ADR-0058 the gap is **8.8 points** and it has **not** been
@@ -86,27 +101,34 @@ harness's — the gold article never arrives in 10/80 questions) and **≈4.5 po
 distraction** (the model's — even when the gold *is* retrieved, A1 falls 0.909 →
 0.862 because nine other articles sit beside it).
 
-⚠️ **One consequence you should know before downloading.** The 62.8% figure is produced by
+⚠️ **One consequence you should know before downloading.** The 68.4% figure is produced by
 *model + retriever + preamble*. The preamble currently lives in one evaluation script and is
 not shipped, and the retriever is not wired into the serving path below — so a plain download
-reproduces the **ablation** column (61.3%), not the headline. Packaging both is the stated
+reproduces the **ablation** column (73.0%), not the headline. Packaging both is the stated
 condition for `v1` ([roadmap](ROADMAP.md)).
+*(Yes — the ablation column is currently the **higher** one. See the ADR-0058 note above: that
+inversion is a live open question, not a reason to ship the ablation as the product.)*
 
 🚨 **And the measurement refuted our own plan.** We built the citation verifier to
 close the A1 gap. It found **zero fabricated article numbers** — the class it was
 built to catch is empty. The model doesn't invent article numbers; it answers from a
 *different real* article when retrieval misses (**5/80**; no-preamble ablation: 7/80). The
-larger failure is the opposite one: in **14/80** (ablation: 16/80) questions the model
-abstains *while the gold article is in its context* — and that number is essentially
-unchanged with the harness off (17/80), so it is a model property, not a retrieval one.
-Deterministic code cannot close it.
+larger failure is still the opposite one: in **9/80** (ablation: 5/80) questions the model
+abstains *while the gold article is in its context* — and with the harness off it is 17/80, so
+it is a model property, not a retrieval one. Deterministic code cannot close it.
 Details and the full record: [roadmap](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
 
-⚠️ **Those 14/80 and 16/80 counts are under review.** On 2026-09-06 the abstention detector was
-found to mis-read a correct, cited answer as an abstention in one prompt regime; at least one
-verified false positive exists in the official anchor and the size of the contamination has
-**not** been measured
-([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)).
+✅ **Those counts were 14/80 and 16/80 until 2026-09-06 — they were wrong, and the correction
+is the single most useful thing this round produced.** The detector was repaired, all 80 items
+were read **by eye**, and the true count is **8/80** (the tool says 9/80). Six of the old
+fourteen were correct, cited answers misfiled as refusals; **no abstention was ever missed** in
+the other direction. A training round had been planned to close this gap — it was **cancelled**,
+because the pre-registered target (8-11/80) turned out to be already met with **no training at
+all**: 43% of the "problem" was the measuring instrument.
+⛔ It is **smaller, not gone** — 8/80 is still above Gemini 3.5 Flash-Lite's 6/80.
+[ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) ·
+[#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+[#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
 ## How it was built
 

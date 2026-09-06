@@ -51,9 +51,19 @@ Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: ⭐ [`docs/record/kollar.md`
 
 ```
 product number (harness ON, k=10, S2 corpus, sufficiency preamble — ADR-0058)
-                            faithful-answer mass  62.8%   (ablation, no preamble: 61.3%)
+                            faithful-answer mass  68.4%   (ablation, no preamble: 73.0%)
 ceiling        (harness OFF, gold guaranteed)     71.6%
 ```
+
+🚨 **Both ON figures were rescored on 2026-09-06 and two things flipped.** The abstention
+detector scanned the whole answer in one branch, so our template's discarded-sources rationale
+read as a refusal — a bug **specific to our own answer template**, which is why fixing it moved
+our numbers (62.8% → 68.4%) and left the competitor's untouched (measured, not assumed).
+⚠️ And the ablation is now the **higher** column, which **inverts ADR-0058's own rationale**
+(the preamble was adopted for raising mass; it now lowers it by 4.6 points, while still
+improving A1 and misattribution). The protocol was **not** changed — open question **S14**.
+[ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
+[#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
 ⚠️ `v0.1` not `v1.0` **on purpose**: the merge config was selected on DEV and has **not** been
 tested against the baselines. The OFF number is a **ceiling, not a rival** — the two settings do
@@ -102,21 +112,32 @@ not measure the same thing (OFF hands the model the gold article by construction
   [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
   (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
 
-**Status of work: 🛑 B10 over-refusal round STARTED AND STOPPED — at Task 3.8, the plan's own
-read-it-by-eye step.** The Task 3 pilot ran and the eyeball check **refuted the round's harvest
-acceptance criterion** (6 of 10 sampled "abstentions" were full, cited answers), so Task 4 was
-never started and Tasks 4-10 are blocked. Plan (checkboxes are the single source of state):
-[`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md) ·
-design: [`2026-08-06-asiri-red-turu-design.md`](docs/superpowers/specs/2026-08-06-asiri-red-turu-design.md) ·
-finding: [#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md).
+**Status of work: ✅ B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
+training** ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
+Tasks 0-3 ran, Tasks 4-10 **never did**, `τ_a` v2 **was never trained**. The plan carries its
+✅ closing block:
+[`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md).
 
-**Decided 2026-09-06 (human), before any new number was seen — no selection bias:** the round's
-new step zero is option **(c)** of S13 — repair `exact_reject` under TDD, re-score the 73 detail
-files at $0, read the anchor's 80 items by eye, and re-run the pilot. **If the repair moves the
-anchors, the Task 7 / Task 9 gate thresholds are RE-ANCHORED WITH THE SAME FORMULA** — the
-number is re-derived from the new anchor, the rule is not touched (ADR-0050's standing
-prescription: fix the tool, let a human set the threshold in advance). ⚠️ A tool change of this
-class needs an ADR — next number is **0061** (0059 is RESERVED).
+The round set out to train over-refusal down from 14/80 into a pre-registered 8-11/80 band.
+Its own **read-it-by-eye** step (Task 3.8) instead refuted the harvest acceptance criterion —
+6 of 10 sampled "abstentions" were full, cited answers — and repairing the detector put the
+true number at **8/80 by eye (9/80 by tool) with nothing trained**: **43% of the "problem" was
+the measuring instrument.** Harvesting anyway would have cost 5.3 h and ≈$5.2 for a gap of two
+items, so the round was closed. ⛔ Over-refusal is **smaller, not gone** — 8/80 still sits above
+3.5 Flash-Lite's 6/80, and *"how far would training push it"* was **never measured**.
+
+⚠️ **Three things a new session must carry forward from that closure:**
+- **Next first-rank axis is B1** (misattribution, 5/80) — B10 stepped down; the gap between them
+  narrowed 2.8× → 1.6×, and B1 has never been worked on.
+- **The round's tooling is intact and reusable** — `scripts/b10_hasat.py`, Modal `harvest_b10`
+  (ADR-0047 m.2 carrier, verified on L4), the leakage filter (13,350 → 12,914, byte-identical in
+  the container). Do not rebuild it for B1.
+- **The thresholds re-derived under ADR-0061 Karar 2 stand unused** (`aşırı-red < 0.4125`, etc.)
+  — this round did not need them; **the next training round will**.
+
+**What caught it was not a numeric gate** — the gate (`kabul_orani 0.1733 > 0.10`) **passed** the
+broken measurement. The eyeball step caught it. ADR-0051 has now paid for itself twice.
+
 **Not blocked by any of that:** the Phase 0 cheap repairs run in parallel —
 [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md).
 
