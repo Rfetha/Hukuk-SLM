@@ -56,8 +56,18 @@ değer kümesi görülür. **Bayrak adlarını buradan al, tahmin etme.**
 
 - [ ] **Adım 2: `recall@10`'u yöntem başına bas**
 
-Adım 1'in gösterdiği `--yontem` değerleriyle (hibrit/bm25/dense) üç koşu, çıktı
-`outputs/eval/f01-erisim/recall_taban.json`.
+⚠️ **`--out` bir DİZİNDİR, dosya değil** (`recall_olc.py`:134 `os.makedirs(a.out)` · :204
+`os.path.join(a.out, f"recall_{etiket}.json")`). Dosya yolu verilirse o adda bir **klasör**
+açılır ve çıktı içine gömülür — hata vermez, sessizce yanlış yere yazar (2026-09-06'da olan
+budur).
+
+```bash
+source ~/code/global_venv/bin/activate && \
+set -a && . ./.env && set +a && mkdir -p outputs/eval/f01-erisim && \
+for Y in hibrit bm25 yogun; do
+  python scripts/recall_olc.py --yontem $Y --kapsam korpus --out outputs/eval/f01-erisim
+done
+```
 `verify:` hibrit değer **0,875** çıkar (bugünkü çıpa; `g2-fl-harness/KUNYE.json`
 `recall_at_10` ile birebir). Çıkmazsa **DUR** — çıpa kaymış, sebebi bulunmadan devam edilmez.
 
