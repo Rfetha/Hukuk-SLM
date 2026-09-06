@@ -44,7 +44,7 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 **Arayüz:** Üretir → `KACIRILAN_10.md` (kaçırılan kalemlerin sınıflaması) ve bir **karar önerisi**.
 ⛔ Bu görev indeksi **değiştirmez**; değişiklik ADR gerektirir (Görev 1b).
 
-- [ ] **Adım 1: Taban ölçümü — üç yöntem ayrı ayrı**
+- [x] **Adım 1: Taban ölçümü — üç yöntem ayrı ayrı**
 
 ```bash
 source ~/code/global_venv/bin/activate && \
@@ -54,7 +54,7 @@ python scripts/recall_olc.py --help
 `verify:` `--yontem` / `--kapsam` / `--model` / `--out` / `--cihaz` bayraklarının gerçek
 değer kümesi görülür. **Bayrak adlarını buradan al, tahmin etme.**
 
-- [ ] **Adım 2: `recall@10`'u yöntem başına bas**
+- [x] **Adım 2: `recall@10`'u yöntem başına bas**
 
 ⚠️ **`--out` bir DİZİNDİR, dosya değil** (`recall_olc.py`:134 `os.makedirs(a.out)` · :204
 `os.path.join(a.out, f"recall_{etiket}.json")`). Dosya yolu verilirse o adda bir **klasör**
@@ -82,7 +82,7 @@ koşunun ilerliyor mu takıldı mı olduğu anlaşılmaz (2026-09-06'da olan bud
 `verify:` hibrit değer **0,875** çıkar (bugünkü çıpa; `g2-fl-harness/KUNYE.json`
 `recall_at_10` ile birebir). Çıkmazsa **DUR** — çıpa kaymış, sebebi bulunmadan devam edilmez.
 
-- [ ] **Adım 3: Kaçırılan 10 kalemi GÖZLE oku ve sınıfla**
+- [x] **Adım 3: Kaçırılan 10 kalemi GÖZLE oku ve sınıfla**
 
 80 kalemin altın maddesi ilk 10'a girmeyenleri çıkar; her biri için: soru · altın madde ·
 retriever'ın getirdiği ilk 3 · **kaçırma sebebi**. Sınıflar: (a) sorgu-madde kelime örtüşmesi
@@ -91,13 +91,13 @@ yok · (b) altın madde chunk'ı bölünmüş/tablo (borç **B9**) · (c) yürü
 `outputs/eval/f01-erisim/KACIRILAN_10.md`'ye yaz.
 `verify:` 10 kalemin **10'u** sınıflanmış; her satırda kalem id'si + sebep sınıfı var.
 
-- [ ] **Adım 4: Karar önerisi yaz, UYGULAMA**
+- [x] **Adım 4: Karar önerisi yaz, UYGULAMA**
 
 `KACIRILAN_10.md` sonuna: sınıf dağılımı · en ucuz müdahale · **beklenen kazanç** ·
 ⚠️ *"indeks değişirse rakip kolları yeniden koşulmalı"* şerhi.
 `verify:` öneri tek cümlelik bir eylem + tahmini `recall@10` içeriyor.
 
-- [ ] **Adım 5: Commit**
+- [x] **Adım 5: Commit**
 
 ```bash
 git add outputs/eval/f01-erisim/ && \
@@ -109,7 +109,15 @@ git commit -m "F0.1 erişim teşhisi — kaçırılan 10 kalem gözle sınıflan
 
 ---
 
-### Görev 2 · F0.2 — bizim kolun yeniden üretimi *(yalnız indeks değiştiyse)*
+### Görev 1b · soru onarımı — ✅ TAMAM *(planda yoktu, Görev 1'in bulgusundan doğdu)*
+
+- [x] 155 sorunun tamamı belirlenebilirlik ölçütüyle tarandı → DEV 13 · TEST 2 kusurlu
+- [x] 15 öneri yalnız altın madde metninden yazıldı, **insan onayına** sunuldu, onaylandı
+- [x] Uygulandı: DEV+TEST `core_hard` **v2**, yedekler `.v1-2026-09-06`, `KUNYE_soru_onarimi_2026-09-06.json`
+- [x] Etki ölçüldü: `recall@10` **0,8750 → 0,9375** (kaçan 10→5) · kontrol grubu çıpayı birebir üretti
+- [x] ⛔ id 79 bulunuyorken kaçtı — **geri alınmadı** (eval sorusunu retriever lehine ayarlamak olurdu)
+
+### Görev 2 · F0.2 — bizim kolun yeniden üretimi 🚨 **ZORUNLU** *(sorular değişti; eski koşullu hüküm geçersiz)*
 
 **Dosyalar:** Create: `outputs/eval/f02-biz-onsozsuz/` (+ `KUNYE.json`)
 
