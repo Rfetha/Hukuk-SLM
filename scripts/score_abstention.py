@@ -293,7 +293,17 @@ def yedekle(yol):
 # görüntüden cevap veriyor. Büyütmek PAY hakemini (`judge()`) de değiştirir ve tüm tarihsel
 # `verdict` sayılarını kıyaslanamaz kılar → bu dalgada değiştirilmedi, `open_questions.md`'ye
 # ölçülmüş borç olarak yazıldı (2026-08-06, reçete + ≈$0,30).
-SOURCE_CLIP = 3500
+SOURCE_CLIP = 12000   # ⭐ ÖDENDİ 2026-09-07 (YB3 / açık soru S4) — eski değer 3500.
+# Yukarıdaki şerh 3500'ün bedelini doğru tarif ediyordu; bu tur onu ÖLÇTÜ ve ödedi:
+#   k=10 bağlamı  ort 7.067 · med 7.304 · MAX 10.549 karakter → hakem ort **%52'sini** görüyor,
+#                 79/80 kalemde kesiliyor
+#   k=4  bağlamı  ort 2.889 · MAX 4.461                        → hakem **%99'unu** görüyor
+# Sonuç: k=4 bağlamı k=10'unkinin ÖNEKİ olduğu için ikisi AYNI önbellek anahtarına düşüyordu
+# ve k=10'un paydası TANIMSIZ damgalıydı (ADR-0057, KARAR-4 m.2).
+# Yeni değer keyfî DEĞİL: gözlenen en büyük bağlam 10.549 + %14 pay = 12.000. k=10'un tamamı
+# hakeme gidiyor, iki kol artık AYRI anahtar üretiyor, k ekseni TANIMLI.
+# ⚠️ Bedeli açıkça: bu sabit hem kör paydayı hem PAY hakemini (`judge()`) besliyor →
+# 3500 birimiyle üretilmiş TÜM tarihsel `verdict`/M2/M2b sayıları KIYASLANAMAZ ve damgalıdır.
 
 
 def hakem_kaynagi(source):
