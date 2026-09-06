@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 """v3 ADIM 6b — ORPO eğitim (MaskedORPOTrainer): near-miss abstention fix (v3_recipe).
 
-Unsloth FastModel + TRL 0.24 ORPOTrainer subclass. base = v2b ADAPTER'dan DEVAM (grounding taşınır).
+Unsloth FastModel + TRL 0.24 ORPOTrainer subclass.
+
+⚠️ BAYAT SATIR DÜZELTİLDİ (2026-09-06). Eskiden burada *"base = v2b ADAPTER'dan DEVAM
+(grounding taşınır)"* yazıyordu; bu, 12B hattının v3 reçetesiydi ve BUGÜNKÜ KURALA AYKIRIDIR.
+Bugün her kol HAM BASE'den bağımsız eğitilir (ADR-0027): task-vector tanımı `τ = θ_ft − θ_base`
+tek bir θ_base şart koşar. `--adapter` yolu ARDIŞIK SFT üretir, task-vector DEĞİL.
+Yürürlükteki artefakt `τ_a v1` **`--fresh-adapter`** ile ham base'den koştu
+(`docs/record/kollar.md`:64). `--adapter` yolu yalnız 12B-hattı yeniden üretimi için durur.
 MaskedORPOTrainer: her satır `is_pref` taşır → grounding-replay satırında (is_pref=0) OR-terimi
 NaN-safe SIFIRLANIR (torch.where), yalnız NLL(chosen) akar = SFT-replay. abstain-çiftinde (is_pref=1)
 tam ORPO. Kaynak-doğrulandı: trl/trainer/orpo_trainer.py 0.24.0 (loss=policy_nll_loss−losses.mean()

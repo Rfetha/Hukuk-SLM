@@ -168,3 +168,6 @@ data/index/**/*.npy
 # S2 korpus yedeği — tek seferlik, git tarihçesi zaten yedek
 data/corpus/*.yedek-*
 data/eval/**/*.yedek-*
+
+# pytest önbelleği — ne ignore ne tracked'tı (T3, 2026-09-06)
+.pytest_cache/
