@@ -33,6 +33,15 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 - **Her koşudan önce** `docs/record/yurutme-tuzaklari.md` okunur.
 - **Bütçe:** Modal $29,19 · OpenRouter $10,26. Bu plan **~$1,65** harcar.
 - ⭐ **Gözle okuma bir kapıdır** — sayısal kapı bozuk ölçümü bir kez geçirdi.
+- 🔌 **PİLDE ÖLÇÜM KOŞMA — sayısı ölçüldü (2026-09-07).** `cp0_thinking_gen.sh` künyeye
+  `güç : PİLDE ⚠️` basıyor ve bu **boş bir uyarı değil**: pilde GPU **P5 · SM clock 180 MHz**'e
+  kısılıyor (şarjda ~2.000 MHz), üretim **8,4 t/s** (şarjda ~42 t/s) ⇒ **~5-11× yavaş**.
+  Ölçülmüş etki: M5'in 80 kalemi **şarjda ~57 dk, pilde ~4,8 saat**.
+  ⚠️ Sayı DEĞİŞMEZ (`temperature=0`, seed 3407) — değişen yalnız süre; ama saatlerce süren bir
+  koşu, teşhisi de imkânsızlaştırıyor (*"takıldı mı yavaş mı"* ayrımı yapılamıyor).
+  ⭐ Ayrıca ölçüldü: **M5'te kalem başına İKİ üretim** gerekiyor — model kör modda `</think>`'i
+  bütçe içinde kapatmıyor, zorla-kapatma yolu devreye giriyor (research_log #42'nin kalıntısı).
+  M5 kalem başına ~1800 token, diğer modların **iki katı**.
 - 🚨 **Uzun koşuyu harness'ın arka plan görevi olarak başlatma.** Ölçüldü 2026-09-06: koşunun
   tepe kullanımı **7,2 GB / 15,9 GB** (llama-server 1,65 + python 3,65) ve `available` **9 GB**
   iken, Linux kalanı sayfa önbelleğine aldığı için **`free` 0'a düşüyor**; harness'ın bellek
