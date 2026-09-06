@@ -110,6 +110,53 @@ Hatanın kapsamı **tam olarak öngörüldüğü yerdeydi.**
 | B10 < | ~~14/80~~ | **9/80** | alet ölçümü *(gözle okuma 8/80)* |
 | M2b Rej ≥ | 0,809 | **0,809** | ⭐ **DEĞİŞMEDİ** — hakem metriği (`rejection_rate`), onarım ona dokunmadı |
 
+### ⭐ Pilot ONARILMIŞ ölçütle yeniden türetildi — **yeniden üretim OLMADAN, $0**
+
+**Yöntem:** eski kural *"hüküm yok"* dalında **tüm metni** tarıyordu; yeni kural ilk/son esaslı
+ibareye bakıyor ⇒ **yeni kabul kümesi eskisinin ALT KÜMESİ.** Kodda `assert` ile doğrulandı
+(kaydedilmiş 55 kabulün **55'ini** eski kural da kabul ediyor). Dolayısıyla kaydedilmiş kabulleri
+yeniden süzmek **kesin** sonuç verir — pilotun yeniden koşulmasına **gerek kalmadı** (~$0,81 tasarruf).
+Çıktı: `data/_ham_ve_ara/b10-pilot/ONARILMIS_OLCUT.json`
+
+```
+np1: denenen 150 · kabul 26 → 10   kabul_orani 0,1733 → 0,0667
+np8: denenen 150 · kabul 29 →  9   kabul_orani 0,1933 → 0,0600
+```
+
+## 🛑 D1 DÜŞTÜ — artık tahmin değil, ÖLÇÜM
+
+```
+kabul_orani  0,0667 (np1) · 0,0600 (np8)   <   eşik 0,10
+```
+Goal'ün D1 kuralı: *"pilot `kabul_orani` < 0,10 → **DUR.** Havuz mu ölçüt mü sorusu **insana ait**"*
+(plan Adım 3.7, durma koşulu 2). Ölçüt onarıldı; **düşen artık havuzun kendisi.**
+
+⚠️ **Görev 4'ün fiyatı bu oranla:** `250 ÷ 0,0667 = 3.750 üretim × 5,1 s = **5,3 saat ≈ $5,2**`
+→ **D10'un 3 saatlik sınırını AŞAR** ve **D9'un $5 sınırını da zorlar.**
+Havuz (12.914 kalem) teorik olarak ~**861** kabul verebilir, yani 250 ulaşılabilir — **ama ucuz değil.**
+
+## ⭐ KARAR-6 onarılmış ölçütle — sayılar TERSİNE döndü
+
+| ölçüm | bozuk ölçütle | **onarılmış ölçütle** |
+| :--- | ---: | ---: |
+| `n_kabul_np1` | 26 | **10** |
+| `n_kabul_np8` | 29 | **9** |
+| kesişim | 19 | **9** |
+| yalnız np1 | 7 | **1** |
+| yalnız np8 | 10 | **0** |
+| **Jaccard** | 0,5278 | **0,9000** |
+| cevap metni birebir aynı | 3 / 19 | **2 / 9** |
+| kesişimde metin **farklı** | 16 | **7 / 9** |
+
+⭐ **Ayrım keskinleşti ve iki ayrı şey söylüyor:** paralel slot **cevabın METNİNİ** hâlâ
+değiştiriyor (9 ortak kalemin 7'sinde farklı metin), ama **ÇEKİNME KARARINI** neredeyse hiç
+değiştirmiyor (Jaccard 0,90 · tek kalem ayrışma). Önceki **0,5278**, ölçütün gürültüyü
+büyütmesinin eseriymiş.
+
+⛔ **Hüküm KURULMADI** — KARAR-6 insan kararıdır. Sayılar sunuldu, yorum insanındır.
+
+---
+
 ### 🚨 Turun öncülü hakkında — insana açık soru
 
 Spec, sayı görülmeden B10 için **8-11/80** ön-kayıtladı. Gözle okuma **8/80** veriyor:
