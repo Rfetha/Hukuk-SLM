@@ -1,5 +1,33 @@
 # HakHukuk-4B-v0.1
 
+> # 🚨 SAYILAR 2026-09-07'DE DEĞİŞTİ — AŞAĞIDAKİLER ESKİ BİRİMDEDİR
+>
+> Bu belgedeki **her** kütle/aşırı-red/A1 sayısı **v1 soru seti · `RRF_K=60` · 1024 üretim
+> bütçesi** birimindedir ve bugünkü sayılarla **KIYASLANAMAZ**. Faz 0 ölçüm zinciri aletin
+> dört kusurunu buldu (soru seti · füzyon · DEV↔TEST bileşimi · **rakiple eşit olmayan üretim
+> bütçesi**) ve **model ağırlıklarına hiç dokunmadan** sayılar değişti:
+>
+> | eksen | bu belgede (eski) | **ölçülen (v2 birimi)** |
+> | :--- | ---: | ---: |
+> | sadık-cevap kütlesi | %68,4 | **%80,1** |
+> | `recall@10` | 0,875 | **0,9500** |
+> | aşırı-red | 9/80 | **4/80** |
+> | uydurulmuş madde | 0/83 | **0/114** |
+>
+> ⛔ **Bu belgedeki rakip kıyas cümleleri geçersizdir.** Eşit sınavda ölçülen yeni tablo:
+> BİZ **0,8011** ↔ 3.1 FL 0,7058 ↔ 3.5 FL 0,7622 ↔ **3.5 Flash 0,7425** (bağlayıcı GÖZ-katı
+> okuması). `v1.0` kapısı madde (1) **geçildi**.
+>
+> Kaynaklar: [`research_log #62`](docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md) ·
+> [ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) ·
+> [ADR-0067](docs/adr/0067-soru-onarimi-dev-test-v2.md) ·
+> [ADR-0068](docs/adr/0068-rrf-k-60-to-10.md) ·
+> [ADR-0070](docs/adr/0070-uretim-butcesi-esitlendi.md) ·
+> [`f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md)
+>
+> **Bu belge belge-katmanı turunda yeniden yazılacak; bant o zaman kalkar.**
+
+
 A 4B-parameter Turkish legal assistant built by training two LoRA branches
 independently from the raw base and merging them as task vectors.
 

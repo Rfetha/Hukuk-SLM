@@ -71,6 +71,12 @@ Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: ⭐ [`docs/record/kollar.md`
 ```
 product number (harness ON, k=10, S2 corpus, sufficiency preamble — ADR-0058)
                             faithful-answer mass  68.4%   (ablation, no preamble: 73.0%)
+🚨 SUPERSEDED 2026-09-07 — v2 unit: mass **80.1%** · recall@10 0.9500 · over-refusal 4/80.
+   Four instrument defects were found and fixed with ZERO training (question set · RRF fusion ·
+   DEV↔TEST composition · a production budget that was NOT equal to the competitor's).
+   Equal-exam table (binding GÖZ-katı reading): US 0.8011 ↔ 3.1 FL 0.7058 ↔ 3.5 FL 0.7622 ↔
+   3.5 Flash 0.7425 → v1.0 gate clause (1) PASSED by +5.86 p.
+   → docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md · ADR-0064·0067·0068·0070
 ceiling        (harness OFF, gold guaranteed)     71.6%
 ```
 
