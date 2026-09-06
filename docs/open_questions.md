@@ -12,7 +12,7 @@
 
 ---
 
-## 🆕 v1/v2 SÜRÜM KARARLARI — **S1…S13** *(eklendi 2026-09-06)*
+## 🆕 v1/v2 SÜRÜM KARARLARI — **S1…S14** *(eklendi 2026-09-06)*
 
 > **Nereden geliyor:** [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md) §7.2.
 > Çerçeve: tez değil **ürün** — **v1 = çalışan model release'i · v2 = API · arxiv yan ürün**.
@@ -38,7 +38,8 @@
 | **S10** | **Avukatlık Kanunu / hukuki sorumluluk sınırı** | **hukukçu görüşü gerekir** — repo'da hiç değerlendirilmemiş | taslak §4.6 |
 | **S11** | **arxiv yazılsın mı?** | (a) hayır · (b) yalnız **P2/P3** → *metodoloji paper'ı* (taslağın okumasıyla **en güçlü hikâye**) · (c) tam iddia katmanı (P1, ⚠️ ARA KAPI düştüğü için **yetkisiz**) | [`PAPER_TARGET.md`](PAPER_TARGET.md) · taslak §6 |
 | **S12** | **KARAR-6 — paralel slot (`-np`)** | sayılar geldi (Jaccard **0,5278** · birebir **3/19**) ⚠️ **bozuk ölçütle toplandı** → ölçüt onarılınca **yeniden koşulur**, hükmü **insan** kurar | [#60](record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) |
-| **S13** 🆕 | **Hasat kabul ölçütü nasıl onarılır?** ⬇️ ayrıntı aşağıda | ✅ **KARARA BAĞLANDI 2026-09-06 → (c)**: alet TDD ile onarılır **+** 73 detay dosyası $0'a yeniden puanlanır **+** çıpanın 80 kalemi gözle okunur **+** pilot yeniden koşulur | [#60](record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) |
+| **S13** 🆕 | **Hasat kabul ölçütü nasıl onarılır?** ⬇️ ayrıntı aşağıda | ✅ **KAPANDI 2026-09-06 → (c) uygulandı.** Alet TDD ile onarıldı (`112 passed, 2 xfailed`) · **82** dosya $0'a yeniden puanlandı · çıpanın **80 kalemi gözle okundu** · pilot **yeniden koşulmadı, gerek kalmadı** (yeni kabul kümesi eskisinin **alt kümesi** olduğu için kaydedilmiş kabuller yeniden süzüldü, ~$0,81 tasarruf) | [#60](record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) · [#61](record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md) · [ADR-0061](adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) |
+| **S14** 🆕🚨 | **ADR-0058'in gerekçesi TERSİNE DÖNDÜ — ana protokol önsözlü kalsın mı?** Önsöz *kütleyi yükselttiği için* benimsenmişti; onarılmış aletle **düşürüyor**: önsözlü **%68,4** ↔ önsözsüz **%73,0** (**−4,6 p**). Kıyas eşleşmiş ve **doğrudan ham dosyalardan** doğrulandı: aynı 80 id · **80/80 birebir aynı `context_shown`** · aynı `recall@10` → değişen **yalnız istem**. ⚠️ Ama önsözün diğer ayakları **ayakta**: A1 **0,8288 ↔ 0,8110** (+1,8 p) · A1·altın **0,8729 ↔ 0,8593** (+1,4 p) · isabetsizlik **5/80 ↔ 7/80**. Takas iki yönlü: önsöz modeli **daha seçici ama daha suskun** yapıyor (coverage 0,8250 ↔ 0,9000 · B10 9/80 ↔ 5/80). ⚠️ −4,6 p'yi koruyan **çözünürlük sınırı YOK** (0,3 tabanı A1 makrosu içindir; kütle = cov × A1 ve coverage'ın varyansı o tabanda yok) | 🔴 **AÇIK — insan kararı.** Protokol **değiştirilmedi**, resmî sayı hâlâ **önsözlü %68,4**. Değiştirmek **yeni bir ADR** ister. Seçenekler: (a) önsözü koru — A1/B1 lehine, kütleyi feda et · (b) önsözü kaldır — kütle lehine, A1/B1'i feda et · (c) çözünürlük sınırı önce kararlaştırılsın (**S5** ile birlikte), sonra bakılsın | [#61](record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md) §ADR-0058 · [ADR-0058](adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md) |
 
 ### **[S13]** 🚨 Hasat kabul ölçütü çöktü — onarılacak mı, hasat rejimi mi değişecek? 🔴 *ölçüldü 2026-09-06, karar yok*
 

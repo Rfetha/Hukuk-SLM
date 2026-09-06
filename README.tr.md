@@ -56,23 +56,39 @@ indeks, `k=10`, tamamı CPU'da) ve sistem isteminde **kaynak-yeterliliği önsö
 | | harness KAPALI | **harness AÇIK — RESMÎ** | AÇIK, önsözsüz *ablasyon* |
 | :--- | ---: | ---: | ---: |
 | altın madde bağlamda | **kurgu gereği** garanti | **70/80 — `recall@10` 0,875** | 70/80 — birebir aynı |
-| coverage | 0,788 | **0,7625** | 0,7625 *(birebir aynı)* |
-| sadık-cevap kütlesi | %71,6 | **%62,8** | %61,3 |
-| A1 · cevaplanan | 0,909 | **0,8229** | 0,8042 |
-| A1 · altın getirilen alt küme | 0,909 | **0,8705** | 0,8616 |
+| coverage | 0,788 | **0,8250** ~~0,7625~~ | **0,9000** ~~0,7625~~ |
+| sadık-cevap kütlesi | %71,6 | **%68,4** ~~%62,8~~ | **%73,0** ~~%61,3~~ |
+| A1 · cevaplanan | 0,909 | **0,8288** | 0,8110 |
+| A1 · altın getirilen alt küme | 0,909 | **0,8729** | 0,8593 |
 | **uydurulmuş madde numarası** | 0 | **0 / 83** | 0 / 118 |
-| altın bağlamdayken çekindi ↓ | 17/80 | **14/80** | 16/80 |
+| altın bağlamdayken çekindi ↓ | 17/80 | **9/80** ~~14/80~~ | **5/80** ~~16/80~~ |
 | *başka bir gerçek* maddeden cevapladı ↓ | — | **5/80** | 7/80 |
 
-> 🚨 **DÜZELTİLDİ 2026-09-06.** Bu bölüm bugüne kadar **ADR-0058 ÖNCESİ** çıpaları
-> (%61,3 · 0,862 · 0/118 · 16/80 · 7/80) resmî sayı gibi yayımlıyordu. Onlar **önsözsüz
-> ablasyon** sayılarıdır ve **silinmedi**, sağdaki sütunda duruyor. Resmî koşu:
-> `outputs/eval/olcum-bi/harness_tablo.json` ·
-> [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1). Ablasyon koşusu:
-> `outputs/eval/s2-harness-k10-etiketli/`.
+> 🚨 **YENİDEN PUANLANDI 2026-09-06 — çekinme dedektörü bozuktu ve yalnız BİZİ cezalandırıyordu.**
+> Açılış hükmü olmayan dalda `exact_reject` **cevabın tamamını** tarıyordu; bizim cevap
+> şablonumuzun eleme gerekçesi (*"diğer kaynaklar … **içermemektedir**"*) red regex'ini
+> tetikliyordu. Gemini'nin cevaplarında o kalıp yalnız **3/80** kalemde var, yani hata
+> **bizim kendi eğitim şablonumuza özgüydü**. Onarım **bizim** sayılarımızı oynattı, rakibinkine
+> **hiç dokunmadı** (varsayılmadı, ölçüldü).
+> **80 kalem gözle okunduğunda** aşırı-red **8/80** ve kütle **%69,6**; alet 9/80 ve %68,4
+> veriyor — **yayımlanan aletin sayısıdır**, çünkü senin yeniden üretebileceğin odur.
+> Eski değerler **silinmedi**, üstü çizildi.
+> [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
+> [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md) ·
+> kalem kalem kayıt: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md`
 
-**Arkasında durduğumuz sayı %62,8.** Bu bir gerileme değil — iki ölçüm aynı şeyi
-ölçmüyor ve KAPALI sütunu bir rakip değil **tavan**.
+> 🚨 **Ve yeniden puanlama ADR-0058'in kendi gerekçesini TERSİNE ÇEVİRDİ — iki sütundan birini
+> alıntılamadan önce bunu oku.** Önsöz **kütleyi yükselttiği için** benimsenmişti (%61,3 → %62,8).
+> Onarılmış aletle **düşürüyor**: **önsözlü %68,4, önsözsüz %73,0** (−4,6 puan). Çift gerçekten
+> eşleşmiş bir sınav — aynı 80 id, **80/80 birebir aynı `context_shown`**, aynı `recall@10`;
+> değişen tek şey istem. Ama önsözün **diğer ayakları hâlâ ayakta**: A1 **0,8288 ↔ 0,8110** ve
+> isabetsizlik **5/80 ↔ 7/80**, ikisi de önsözün lehine. Takas iki yönlü: önsöz modeli
+> **daha seçici ama daha suskun** yapıyor.
+> **Protokol DEĞİŞTİRİLMEDİ** — bu kendi ADR'sini ve insan kararını ister (açık soru **S14**).
+> Resmî = önsözlü.
+
+**Arkasında durduğumuz sayı %68,4.** KAPALI sütunuyla arasındaki fark bir gerileme değil —
+iki ölçüm aynı şeyi ölçmüyor ve KAPALI bir rakip değil **tavan**.
 
 > ⚠️ Aşağıdaki ayrıştırma **önsözsüz** çıpaya (%61,3) karşı, yani 10,2 puanlık açık için
 > yapıldı. ADR-0058 sonrası açık **8,8 puandır** ve **yeniden ayrıştırılmamıştır.**
@@ -82,25 +98,32 @@ indeks, `k=10`, tamamı CPU'da) ve sistem isteminde **kaynak-yeterliliği önsö
 **≈4,5 puan dikkat dağılması** (modelin — altın getirildiğinde bile yanına dokuz madde
 konunca A1 0,909 → 0,862 düşüyor).
 
-⚠️ **İndirmeden önce bilinmesi gereken bir sonuç.** %62,8 sayısı *model + retriever + önsöz*
+⚠️ **İndirmeden önce bilinmesi gereken bir sonuç.** %68,4 sayısı *model + retriever + önsöz*
 üçlüsünün sayısıdır. Önsöz bugün tek bir ölçüm script'inin içinde duruyor ve dağıtılmıyor,
 retriever da aşağıdaki servis yoluna bağlı değil — dolayısıyla modeli düz indiren kişi manşeti
-değil **ablasyon** sütununu (%61,3) yeniden üretir. İkisini de paketlemek `v1`'in ilan edilmiş
+değil **ablasyon** sütununu (%73,0) yeniden üretir. İkisini de paketlemek `v1`'in ilan edilmiş
 şartıdır ([yol haritası](ROADMAP.md)).
+*(Evet — ablasyon sütunu şu an **daha yüksek**. Yukarıdaki ADR-0058 şerhine bak: bu tersine
+dönüş **açık bir soru**, ablasyonu ürün diye dağıtmanın gerekçesi değil.)*
 
 🚨 **Ve ölçüm kendi planımızı çürüttü.** Atıf doğrulayıcıyı A1 açığını kapatmak için
 kurduk. **Sıfır** uydurulmuş madde numarası buldu — yakalamak için kurulduğu sınıf
 **boş**. Model numara uydurmuyor; erişim ıskaladığında *başka bir gerçek* maddeden
-cevaplıyor (**5/80**; önsözsüz ablasyon: 7/80). Asıl büyük hata bunun tersi: **14/80**
-(ablasyon: 16/80) soruda model, altın madde **bağlamındayken** çekiniyor — ve bu sayı harness
-kapalıyken de neredeyse aynı (17/80), yani bir **model** özelliği, erişim özelliği değil.
-Deterministik kod bunu kapatamaz.
+cevaplıyor (**5/80**; önsözsüz ablasyon: 7/80). Asıl büyük hata hâlâ bunun tersi: **9/80**
+(ablasyon: 5/80) soruda model, altın madde **bağlamındayken** çekiniyor — harness kapalıyken
+17/80, yani bir **model** özelliği, erişim özelliği değil. Deterministik kod bunu kapatamaz.
 Ayrıntı ve tam kayıt: [yol haritası](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
 
-⚠️ **Bu 14/80 ve 16/80 sayıları incelemede.** 2026-09-06'da çekinme dedektörünün bir istem
-rejiminde **doğru, atıflı bir cevabı** çekinme sayabildiği ölçüldü; resmî çıpada **en az bir
-doğrulanmış yanlış pozitif** var ve bulaşmanın büyüklüğü **ölçülmedi**
-([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)).
+✅ **Bu sayılar 2026-09-06'ya kadar 14/80 ve 16/80'di — yanlıştılar, ve bu düzeltme turun
+ürettiği en değerli şey oldu.** Dedektör onarıldı, **80 kalemin tamamı gözle okundu**, gerçek
+sayı **8/80** çıktı (alet 9/80 diyor). Eski on dördün **altısı** doğru, atıflı cevaptı ve
+yanlışlıkla red sayılmıştı; ters yönde **hiçbir çekinme kaçırılmamıştı**. Bu açığı kapatmak için
+bir eğitim turu planlanmıştı — **iptal edildi**, çünkü ön-kayıtlı hedef (8-11/80) **hiç eğitim
+yapılmadan** zaten karşılanmıştı: *"sorunun"* **%43'ü ölçüm aletinin kendisiymiş**.
+⛔ **Küçüldü, yok olmadı** — 8/80 hâlâ Gemini 3.5 Flash-Lite'ın 6/80'inin üstünde.
+[ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) ·
+[#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+[#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
 ## Nasıl kuruldu
 

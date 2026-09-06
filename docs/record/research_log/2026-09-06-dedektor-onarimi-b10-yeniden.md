@@ -110,6 +110,65 @@ determinist regexle yeniden türetildi; `make_client()` hiç çağrılmadı, kö
 (`_artefakt/valid_trap_kor_onbellek.json`) **git'te değişmedi**, `judge_cost_usd` /
 `valid_traps` alanları aynen duruyor.
 
+## 🚨🚨 ADR-0058'İN GEREKÇESİ TERSİNE DÖNDÜ — yeni, kapatılmamış bulgu
+
+Onarım, ana protokolün **kendi seçim gerekçesini** çürüttü.
+
+| | eski (bozuk) alet | **onarılmış alet** |
+| :--- | ---: | ---: |
+| önsözlü — **resmî protokol** (`olcum-bi`) | %62,8 | **%68,4** |
+| önsözsüz — **ablasyon** (`s2-harness-k10-etiketli`) | %61,3 | **%73,0** |
+| **Δ(önsöz)** | **+1,5 p** ✅ | **−4,6 p** 🔴 |
+
+[ADR-0058](../../adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md) önsözü **tam da kütleyi
+yükselttiği için** benimsemişti ([#56](2026-08-05-olcum-bosluklari.md) §D1: *"kütle %61,3 → %62,8"*).
+Onarılmış aletle **düşürüyor**.
+
+### Kıyas geçerli — doğrudan ham dosyalardan ölçüldü
+
+⚠️ İki koşuda da `KUNYE.json` **yok** (borç **D-c**), o yüzden künyeye güvenilmedi:
+
+```
+n            80 ↔ 80
+id kümesi    BİREBİR AYNI (kesişim 80/80)
+soru metni   80/80 birebir aynı
+context_shown 80/80 BİREBİR AYNI     ← değişen TEK şey istem
+recall@10    0,875 ↔ 0,875
+```
+
+Yani ADR-0057'nin **eşit sınav** şartı bu çiftte tam olarak sağlanıyor: aynı sorular, aynı
+kaynaklar, aynı sayıda kaynak, aynı rejim. Fark **yalnız istemden** geliyor.
+
+### Diğer eksenler ne diyor
+
+| eksen | önsözlü | önsözsüz | kim önde |
+| :--- | ---: | ---: | :--- |
+| kütle | 0,6838 | **0,7299** | önsözsüz **+4,6 p** |
+| coverage | 0,8250 | **0,9000** | önsözsüz |
+| A1 (cevaplanan) | **0,8288** | 0,8110 | önsözlü **+1,8 p** |
+| A1 · altın getirilen | **0,8729** | 0,8593 | önsözlü **+1,4 p** |
+| B10 (aşırı-red) | 9/80 | **5/80** | önsözsüz |
+| B1 (isabetsizlik) | **5/80** | 7/80 | önsözlü |
+| katı kapı reddi | 3/80 | **1/80** | önsözsüz |
+
+⭐ **Takas net ve iki yönlü:** önsöz modeli **daha seçici** yapıyor (A1 ↑, B1 ↓) ama **daha
+suskun** yapıyor (coverage ↓, B10 ↑). Bozuk alet suskunluğun bedelini **göremiyordu**, çünkü
+önsözsüz kolun cevaplarını red sayıyordu — ve o kol **daha çok cevap ürettiği için daha çok
+yanlış pozitif** alıyordu. Hatanın asimetrisi tam buradaydı.
+
+### ⛔ Hüküm KURULMADI
+
+Bu, ana protokolün değişmesi gereken bir bulgu **olabilir** ama:
+- Protokol değişikliği **yeni bir ADR** ve **insan kararı** ister (ADR-0058 yürürlükte).
+- Δ(önsöz) **−4,6 p** — ama bu ekseni koruyan bir **çözünürlük sınırı yok** (0,3 tabanı A1
+  makrosu içindir; kütle = coverage × A1 ve coverage'ın varyansı o tabanda yok).
+- ADR-0058'in benimsenme gerekçesi **yalnız kütle değildi**: çapraz tablonun dört hücresi
+  (B10 16→14, B1 7→5) ve A1 kazancı da vardı. **A1 ve B1 hâlâ önsözün lehine.**
+
+**Yayımlanan sayı bu turda DEĞİŞTİRİLMEDİ:** resmî protokol hâlâ önsözlü ⇒ **%68,4**.
+Ablasyon **%73,0** olarak, bu şerhle birlikte yayımlanır.
+⇒ Yeni açık soru; [`docs/open_questions.md`](../../open_questions.md) **S14**.
+
 ## Kapanmayan / şerhli kalemler
 
 - 🟡 **1/80 uyuşmazlık — `id=32`:** onarılmış alet ÇEKİNME diyor, gözle okuma CEVAP. Model
