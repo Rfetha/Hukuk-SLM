@@ -362,13 +362,13 @@ python scripts/measure_vram_stack.py \
 Modify: `docs/record/research_log/README.md` (**#62** satırı) · `docs/open_questions.md`
 ⚠️ **0059 REZERVE — atlanır.**
 
-- [ ] **Adım 1: ADR-0063** — önsöz kaldırıldı. ADR-0058'in gerekçesinin **tersine döndüğünü**
+- [x] **Adım 1: ADR-0063** — önsöz kaldırıldı. ADR-0058'in gerekçesinin **tersine döndüğünü**
 iki yerde işaretle (0058'in kendi dosyasına da şerh). Ölçüm: önsözlü %68,4 ↔ önsözsüz %73,0
 (−4,6 p kütle) · A1 0,8288 ↔ 0,8110 · isabetsizlik 5/80 ↔ 7/80 · aynı 80 soru, **80/80 birebir
 aynı bağlam**, değişen yalnız istem.
 `verify:` ADR-0058 dosyasında *"gerekçesi ADR-0063 ile tersine döndü"* şerhi var.
 
-- [ ] **Adım 2: ADR-0064 — kapı, sayıyla kapanır**
+- [~] **Adım 2: ADR-0064 — kapı, sayıyla kapanır**  ⏳ **madde (3) M5 ölçümünü bekliyor**
 
 ```
 (1) kütle ≥ (3.5 Flash kütlesi, F0.4) − 2,0 p
@@ -380,18 +380,18 @@ aynı bağlam**, değişen yalnız istem.
 için; kütle = coverage × A1 ve coverage varyansı o tabanda yok) · sayılar F0.3/F0.4'ten
 **alıntı ve dosya adıyla**.
 
-- [ ] **Adım 3: ADR-0065** (bölünmüş sürümleme) + **ADR-0066** (B1 = reddetme-örneklemesi,
+- [x] **Adım 3: ADR-0065** (bölünmüş sürümleme) + **ADR-0066** (B1 = reddetme-örneklemesi,
 GRPO **gerekçeli** ertelendi: $10-30 tahmin ↔ Modal $29,19, tahmin ölçülmedi).
 `verify:` ADR-0066'da GRPO'nun **hangi ölçümle** açılacağı yazılı.
 
-- [ ] **Adım 4: research_log #62** — Faz 0'ın tam anlatısı: ne koştu, ne çıktı, **ne şaşırttı**.
+- [x] **Adım 4: research_log #62** — Faz 0'ın tam anlatısı: ne koştu, ne çıktı, **ne şaşırttı**.
 `verify:` README tablosuna #62 satırı eklendi; her sayının yanında kaynak dosya var.
 
-- [ ] **Adım 5: `open_questions.md` bakımı** — kapanan **S1 · S2 · S11 · S14** ADR'lere işlenip
+- [x] **Adım 5: `open_questions.md` bakımı** — kapanan **S1 · S2 · S11 · S14** ADR'lere işlenip
 **kapanış dizinine** taşınır (gövdeden çıkar, iz kalır); otorite `TASARIM.md` → `PRODUCT.md`.
 `verify:` `grep -c "TASARIM.md" docs/open_questions.md` → **0**.
 
-- [ ] **Adım 6: Commit**
+- [x] **Adım 6: Commit**
 
 ---
 
