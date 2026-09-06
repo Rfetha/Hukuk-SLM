@@ -324,9 +324,12 @@ artefaktın kendisi ölçülmedi.
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
+# ⚠️ Script'in bayrakları: --ggufs --ctxs --kv-type --out. `--cache-type-k/-v`,
+# `--host`, `--port`, `--no-context-shift` llama-server'ın bayraklarıdır, bu script'in DEĞİL
+# (2026-09-06'da koşmadan önce yakalandı).
 python scripts/measure_vram_stack.py \
   --ggufs models/gguf/tgta_v1-q4_k_m.gguf \
-  --ctxs 4096 32768 131072 --cache-type-k q8_0 --cache-type-v q8_0 \
+  --ctxs 4096 32768 131072 --kv-type q8_0 \
   --out outputs/eval/_artefakt/vram_stack_tgta_v1.json
 ```
 `verify:` üç ctx için sunucu GiB + tepe MiB basıldı. Base ile kıyas: ctx 4.096 → base **3,09 GiB**.
