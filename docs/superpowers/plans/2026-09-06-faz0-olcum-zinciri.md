@@ -33,6 +33,12 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 - **Her koşudan önce** `docs/record/yurutme-tuzaklari.md` okunur.
 - **Bütçe:** Modal $29,19 · OpenRouter $10,26. Bu plan **~$1,65** harcar.
 - ⭐ **Gözle okuma bir kapıdır** — sayısal kapı bozuk ölçümü bir kez geçirdi.
+- 🚨 **Uzun koşuyu harness'ın arka plan görevi olarak başlatma.** Ölçüldü 2026-09-06: koşunun
+  tepe kullanımı **7,2 GB / 15,9 GB** (llama-server 1,65 + python 3,65) ve `available` **9 GB**
+  iken, Linux kalanı sayfa önbelleğine aldığı için **`free` 0'a düşüyor**; harness'ın bellek
+  gözcüsü `free`'ye bakıp görevi **öldürdü** (0/80'de). Gerçek bellek sıkıntısı YOKTU.
+  ⇒ Uzun koşular `setsid nohup … &` ile **ayrık** başlatılır, `Monitor` ile beklenir.
+  ⚠️ WSL2'ye 15,9 GB verilmiş (makinede 32 GB var, `.wslconfig`'de bellek ayarı yok).
 
 ---
 
