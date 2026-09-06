@@ -225,7 +225,10 @@ for M in google/gemini-3.1-flash-lite google/gemini-3.5-flash-lite google/gemini
   TAG="$(echo "$M" | tr '/.' '__' )_nb"
   python scripts/gen_eval_grounded.py \
     --server-url https://openrouter.ai/api/v1 --server-model "$M" \
-    --thinking on --max-new-tokens 512 --think-budget 1024 \
+    --thinking on --max-new-tokens 512 --reasoning-budget 1024 \
+    `# ⚠️ rakip tarafı --reasoning-budget kullanır, --think-budget DEĞİL: ikisi karşılıklı` \
+    `# dışlayıcı; --think-budget istemci-taraflı zorunlu kapatmadır ve yalnız bizim kolda.` \
+    `# Künye kanıtı: g2-fl-harness/KUNYE.json → "reasoning_budget": 1024` \
     --max-chunk-chars 900 --seed 3407 --n 80 \
     --data data/eval/dev/core_hard.jsonl \
     --harness-indeks data/index/mevzuat_bge_m3_s2 --harness-k 10 \
