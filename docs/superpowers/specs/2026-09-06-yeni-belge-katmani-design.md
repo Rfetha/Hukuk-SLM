@@ -119,6 +119,7 @@ sayıyı **üretemiyor** (YB6: istem yalnız `gen_eval_grounded.py` içinde).
 | **A5** | `MODEL_CARD.md` + `README*.md`: yeni manşet, iki sürüm şeması, kırık linkler | `grep` ile silinen dosya adına link kalmadığı gösterilir |
 | **A6** | **Sorumluluk ibaresi** — *"hukuki tavsiye değil"* ürün yüzeyine. `AÇIK KARAR S10` (hukukçu görüşü) ibarenin girmesini **engellemez** | CLI çıktısı ve README ibareyi taşır |
 | **A7** 🆕 | **Basit TUI** — hazır bir kütüphaneyle (aday: `textual`; `prompt_toolkit` alternatif) tek ekranlı arayüz: soru kutusu · cevap · atıflar · kaynak listesi. ⛔ Web arayüzü, API sunucusu, hesap/oturum **DEĞİL** — onlar v2. Kullanıcı kararı 2026-09-06: *"v1'de belki hazır bir TUI kütüphanesi ile basit bir arayüz olsun"* | terminalde çalışır; `answer()` derin arayüzünün üstüne oturur, kendi mantığı yoktur |
+| **A8** 🆕 | **Ölçüm aletlerini ürün yüzeyine taşı — `suskunluk_terazisi`.** Bugün ölçüm aleti olan üç şey üründe **güven mekanizması** olur: (1) **dürüst suskunluk** — model çekindiğinde vatandaşa açıkça söylenir (`exact_reject` zaten var) · (2) **çekinceli cevap rozeti** — 2026-09-06'da keşfedilen üçüncü sınıf (*"doğrudan madde yok, bununla birlikte…"*) vatandaş için en tehlikelisi: cevap gibi görünüyor ama tam değil · (3) **atıf doğrulama** (`atif_dogrula.py`) — uydurulmuş madde numarası kullanıcıya **gitmeden** yakalanır (bizde 0/114 ↔ rakiplerde 1·4·4). Kullanıcı kararı 2026-09-06. ⛔ Sıfır yeni araştırma, mevcut kodun yeniden kullanımı | CLI/TUI çıktısında üç durum ayırt edilebiliyor: **cevap · çekinceli cevap · suskunluk**; uydurulmuş atıf kullanıcıya ulaşmıyor |
 
 ## 6. Hat B — model (kütle) → `v1.0`
 
@@ -171,6 +172,17 @@ dosyalara işaret eden isabetler döner.
 | `docs/open_questions.md` | **KALSIN + kendi kuralı uygulansın** | otoritesi `PRODUCT.md`'ye taşınır; kapanan **S1/S2/S11/S14** ADR'lere işlenip **kapanış dizinine** geçer (iz kalır, gövdeden çıkar); S5-S13 canlı kalır |
 | `docs/model-soyagaci.mmd` | **KALSIN**, işaretçi onarılsın | kolların bağımsızlığını ve merge'in zincir **olmadığını** tek bakışta anlatıyor |
 | `referans-design-doc.md` | 🗑️ **SİLİNİR** → yerine `docs/MIMARI.md` | insan kararı: *"güncel hedefe göre yenisi yazılsın"* |
+
+## 9b. Aletin adı — `suskunluk_terazisi` (kullanıcı kararı 2026-09-06)
+
+Red dedektörü **tek başına alet değildir**; iki parçadır ve ikincisi olmadan birincisi yanıltır:
+1. **`exact_reject`** — deterministik, rejim-duyarlı red tespiti (ADR-0061)
+2. **Kalibrasyon protokolü** — her özne ailesinde işaretlenen kalemlerin **gözle okunması**, sonra
+   **ALET / GÖZ-orta / GÖZ-katı** üçlü raporlama
+
+**Ad: `suskunluk_terazisi`.** Gerekçe: 2026-09-06'nın asıl bulgusu *"alet tek başına hüküm vermez,
+iki kefe gerekir"* oldu — dedektör önce **bizim** şablonumuzda 14'ü 8 gösterdi (ADR-0061), sonra
+**Gemini** şablonunda 11'i 7 gösterdi (F0.4 kalibrasyonu). İki kez, iki farklı yönde.
 
 ## 10. Yan bulgular — bu oturumda ölçüldü, düzeltilmedi
 
