@@ -255,20 +255,20 @@ done
 harness eşleşmemiş, hüküm kurulmaz (ADR-0057). ⚠️ Alan adı çıkmazsa `detail.jsonl`'in
 anahtarlarını `head -1 | python -m json.tool` ile oku, tahmin etme.
 
-- [ ] **Adım 3: Puanlama — üçü de aynı hakem yığınında**
+- [x] **Adım 3: Puanlama — üçü de aynı hakem yığınında**
 
 Her özne için `groundedness.py --mode data --judge-model openai/gpt-4o-mini` +
 `harness_tablo.py` (Görev 2 Adım 2-3'ün birebir aynı komutları, yalnız `--label`/`--details` değişir).
 `verify:` üç `harness_tablo*.json`; hakem yığını üçünde de aynı.
 
-- [ ] **Adım 4: Kesiklik damgası (tuzak 1.9 · K2)**
+- [x] **Adım 4: Kesiklik damgası (tuzak 1.9 · K2)**
 
 `finish_reason == "length"` oranı özne başına basılır. ⚠️ Rakipte muhakeme bütçesi
 sağlayıcı tarafından **yok sayılıyor** (K2) — kesik >%5 ise sayı raporlanır ama
 kesime duyarlı eksenler **TAVAN/TANIMSIZ** damgası taşır. Ortak kesiksiz alt kümede de hesapla.
 `verify:` özne başına kesik oranı + ortak kesiksiz `n` yazıldı.
 
-- [ ] **Adım 5: `OZET.md` + `KUNYE.json` + commit**
+- [x] **Adım 5: `OZET.md` + `KUNYE.json` + commit**
 
 `OZET.md`: eşit sınav kanıt tablosu · kademe tablosu (her satırda hüküm) ·
 `$/cevap` **girdi+çıktı** (yalnız çıktıya bakmak sıralamayı ters gösterir — Ö7) ·
@@ -285,14 +285,14 @@ Create: `outputs/eval/f05-source-clip/`
 **Neden:** `k`'nın **çekinme** ekseni bugün **TANIMSIZ** — kör payda hakemi `k=10`'da
 kaynakların **%57'sini** görüyor (`SOURCE_CLIP=3500`), `k=4`'te %100'ünü.
 
-- [ ] **Adım 1: Bugünkü `SOURCE_CLIP` değerini ve nerede uygulandığını bul**
+- [x] **Adım 1: Bugünkü `SOURCE_CLIP` değerini ve nerede uygulandığını bul**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && grep -rn "SOURCE_CLIP" scripts/ | head
 ```
 `verify:` değer ve uygulandığı satır görülür.
 
-- [ ] **Adım 2: Kırpmasız kör payda ile yeniden puanla**
+- [x] **Adım 2: Kırpmasız kör payda ile yeniden puanla**
 
 `score_abstention.py`'nin gerçek bayrakları: `--details` · `--label` · `--out-dir` ·
 `--judge-model` · `--source-field` · `--pay-kaynagi` · `--payda-kaynagi` ·
@@ -305,11 +305,11 @@ anahtar hakem istemine eşitlendi — istem değişirse önbellek ıskalar, sess
 `verify:` yeni `valid_traps` paydası basıldı ve **eski değerin yanında** durur; önbellek
 isabet/ıska sayısı log'da görülür (ıska ≈ %100 beklenir — istem değişti).
 
-- [ ] **Adım 3: Şerh yaz** — ⚠️ tarihsel `verdict`'ler artık kıyaslanamaz; eski sayılar
+- [x] **Adım 3: Şerh yaz** — ⚠️ tarihsel `verdict`'ler artık kıyaslanamaz; eski sayılar
 `~üstü çizili~` olarak korunur, **silinmez**.
 `verify:` şerh dosyada; eski/yeni iki sütun yan yana.
 
-- [ ] **Adım 4: Commit**
+- [x] **Adım 4: Commit**
 
 ---
 
@@ -320,7 +320,7 @@ isabet/ıska sayısı log'da görülür (ıska ≈ %100 beklenir — istem deği
 **Neden:** Bugünkü **3,09 GiB** (ctx 4.096) **base GGUF** üzerinde ölçüldü; yayımlanacak
 artefaktın kendisi ölçülmedi.
 
-- [ ] **Adım 1: Ölç**
+- [x] **Adım 1: Ölç**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -336,10 +336,10 @@ python scripts/measure_vram_stack.py \
 ⚠️ Fark **%1'den büyükse** sebebi yazılır (aynı boyut Q4_K_M olmalı: base 2.783.446.752 B ↔
 `tgta_v1` 2.783.446.720 B).
 
-- [ ] **Adım 2: `≤8 GB` yumuşak kapısına göre hüküm** — hangi ctx'e kadar bandın içinde.
+- [x] **Adım 2: `≤8 GB` yumuşak kapısına göre hüküm** — hangi ctx'e kadar bandın içinde.
 `verify:` tek satırlık hüküm dosyada.
 
-- [ ] **Adım 3: Commit**
+- [x] **Adım 3: Commit**
 
 ---
 
