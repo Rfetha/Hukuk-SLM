@@ -785,7 +785,7 @@
     "cevap": "Verilen kaynaklar, istinaf başvurusu sürecinde kullanılan dilekçe ve layihadan bahsederek soruyu kısmen cevaplamaktadır.\n\nİstinaf başvurusu için kullanılan belg",
     "valid_trap": true,
     "verdict": "FABRICATE",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
     "reason": "Model, kaynak metinlerde belirtilen belgeleri doğru bir şekilde sıralamış ancak bazı detaylar ekleyerek esaslı bir cevap vermiştir.",
     "valid_trap_anahtari": "cb2caafa5cf741b68d66b527",

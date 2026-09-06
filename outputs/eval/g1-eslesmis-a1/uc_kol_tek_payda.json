@@ -1,42 +1,42 @@
 {
-  "n_kesisim": 40,
+  "n_kesisim": 46,
   "n_ortak_id": 80,
   "n_cevaplayan": {
-    "base": 46,
-    "tgta_v1": 63,
-    "gemini_fl": 61
+    "base": 47,
+    "tgta_v1": 74,
+    "gemini_fl": 63
   },
   "a1_kollar": {
-    "base": 0.9524525,
-    "tgta_v1": 0.95625,
-    "gemini_fl": 0.98125
+    "base": 0.958654347826087,
+    "tgta_v1": 0.9402173913043478,
+    "gemini_fl": 0.9836956521739131
   },
   "farklar": {
-    "base−tgta_v1": -0.003797500000000009,
-    "base−gemini_fl": -0.02879749999999992,
-    "tgta_v1−gemini_fl": -0.02499999999999991
+    "base−tgta_v1": 0.018436956521739267,
+    "base−gemini_fl": -0.025041304347826032,
+    "tgta_v1−gemini_fl": -0.0434782608695653
   },
   "ayrisma": {
     "base−tgta_v1": {
-      "n_ayrisan": 7,
-      "n_berabere": 33,
-      "a_lehine": 3,
+      "n_ayrisan": 9,
+      "n_berabere": 37,
+      "a_lehine": 5,
       "b_lehine": 4,
-      "fark_sd": 0.23043780904995514
+      "fark_sd": 0.238322947427501
     },
     "base−gemini_fl": {
       "n_ayrisan": 6,
-      "n_berabere": 34,
+      "n_berabere": 40,
       "a_lehine": 2,
       "b_lehine": 4,
-      "fark_sd": 0.19453209937153673
+      "fark_sd": 0.18136479699592195
     },
     "tgta_v1−gemini_fl": {
-      "n_ayrisan": 6,
-      "n_berabere": 34,
+      "n_ayrisan": 8,
+      "n_berabere": 38,
       "a_lehine": 2,
-      "b_lehine": 4,
-      "fark_sd": 0.19447496707934628
+      "b_lehine": 6,
+      "fark_sd": 0.2061845709423622
     }
   },
   "hakem_yigini": {
@@ -71,8 +71,8 @@
       "gnd": "outputs/eval/g1-eslesmis-a1/gnd_m1_gem_th_or.jsonl"
     }
   },
-  "git_sha": "9b9be30",
-  "uretildi": "2026-08-06T15:54:58",
+  "git_sha": "ae698fc",
+  "uretildi": "2026-09-06T12:16:18",
   "uyarilar": [],
   "id_listesi": [
     "2",
@@ -86,6 +86,7 @@
     "12",
     "13",
     "16",
+    "17",
     "18",
     "20",
     "21",
@@ -93,6 +94,8 @@
     "25",
     "31",
     "34",
+    "35",
+    "36",
     "39",
     "40",
     "46",
@@ -101,6 +104,7 @@
     "49",
     "50",
     "52",
+    "53",
     "55",
     "60",
     "63",
@@ -112,8 +116,10 @@
     "70",
     "71",
     "72",
+    "73",
     "74",
     "75",
-    "77"
+    "77",
+    "79"
   ]
 }

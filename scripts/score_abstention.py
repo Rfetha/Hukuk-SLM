@@ -170,6 +170,24 @@ DISCLAIMER_RE = _re.compile(r"bir avukata danış|ilgili maddeye danış", _re.I
 # ⚠️ OLUMSUZ kutup bağlayıcı KALIYOR ve bu bir ölçüm sonucudur: repo genelinde 28 olumsuz
 # açılışlı cevabın hepsi 500 karakterin altında, yani hiçbiri "yetersiz dedim ama cevapladım"
 # vakası değil. Bağlayıcılığı kaldırmak burada kapatacak bir hata bulamadı.
+#
+# ⚠️ ÜÇÜNCÜ DÜZELTME 2026-09-06 (ADR-0061, ölçüm #60) — HÜKÜM YOK dalı cevabın TAMAMINI
+# tarıyordu. O dal marjinal değil, BASKIN: `_acilis_yeterlilik_hukmu` hasat rejiminde 26/26,
+# ÖNSÖZLÜ resmî çıpada bile 75/80 `None` dönüyor (cevapların %94'ü). RAFT şablonu elenen
+# kaynakların gerekçesini gövdenin BAŞINDA taşıdığı için ("… Diğer kaynaklar … içermemektedir"),
+# tam ve atıflı cevaplar çekinme sayılıyordu — B10 pilotunun 10 kabul kaleminin 6'sı.
+#
+# Onarım Ö2'nin kuralının AYNISI, yalnız örtük kutupla: ADR-0058 hükmü hiç kurulmamışsa
+# açılış hükmünü İLK ESASLI İBARE taşır. Oradaki red bağlayıcıdır (olumsuz kutup gibi),
+# yoksa karar yine SON ESASLI İBAREye düşer. İki yönü birlikte tutması şart:
+#   çekinme   : "Verilen kaynaklarda … madde bulunmuyor. Kaynaklar … bilgi sunmamaktadır."
+#               → hüküm AÇILIŞTA, son ibare yalnız açıklama (naif "son ibare" çözümü kırar)
+#   dolu cevap: "1) … Diğer kaynaklar … içermemektedir. … 3) Sonuç olarak, … (KANUN, m.N)"
+#               → hüküm SONDA, açılış yalnız eleme gerekçesi (eski "tüm metin" çözümü kırar)
+# ⛔ REJECT_RE'ye DOKUNULMADI — kusur regex'in içeriğinde değil, uygulandığı KAPSAMDA idi.
+# ⛔ `mode == "blind"` yolu ve DISCLAIMER_RE değişmedi.
+# Karakter penceresi (`c[:_ACILIS_PENCERESI]`) ELENDİ: 13 vakada çalışıyor ama çıpa id=19'da
+# payı 22 karakter — bu hattın hata sınıfı (sessiz yanlışlık) için kabul edilemez marj.
 _ACILIS_PENCERESI = 160
 _KAYNAK_ONEKI = r"kaynak(?:lar|larda|lar arasında|\s+metni)?[^.!?]{0,60}?\bcevapla"
 YETERLI_HUKUM_RE = _re.compile(_KAYNAK_ONEKI + r"(?:maktadır|makta|r)\b", _re.I)

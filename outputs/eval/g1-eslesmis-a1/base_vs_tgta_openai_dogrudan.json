@@ -1,24 +1,24 @@
 {
-  "n_kesisim": 40,
+  "n_kesisim": 47,
   "n_ortak_id": 80,
   "n_cevaplayan": {
-    "base": 46,
-    "tgta_v1": 63
+    "base": 47,
+    "tgta_v1": 74
   },
   "a1_kollar": {
-    "base": 0.984375,
-    "tgta_v1": 0.95625
+    "base": 0.976063829787234,
+    "tgta_v1": 0.9414893617021277
   },
   "farklar": {
-    "base−tgta_v1": 0.028124999999999956
+    "base−tgta_v1": 0.034574468085106336
   },
   "ayrisma": {
     "base−tgta_v1": {
-      "n_ayrisan": 4,
-      "n_berabere": 36,
-      "a_lehine": 3,
-      "b_lehine": 1,
-      "fark_sd": 0.17787811838447135
+      "n_ayrisan": 7,
+      "n_berabere": 40,
+      "a_lehine": 5,
+      "b_lehine": 2,
+      "fark_sd": 0.2063893265567741
     }
   },
   "hakem_yigini": {
@@ -45,8 +45,8 @@
       "gnd": "outputs/eval/cp3-supurme-ham/gnd_m1_tg_ta_ham_th.jsonl"
     }
   },
-  "git_sha": "9b9be30",
-  "uretildi": "2026-08-06T15:54:57",
+  "git_sha": "ae698fc",
+  "uretildi": "2026-09-06T12:16:18",
   "uyarilar": [],
   "id_listesi": [
     "2",
@@ -60,6 +60,7 @@
     "12",
     "13",
     "16",
+    "17",
     "18",
     "20",
     "21",
@@ -67,14 +68,18 @@
     "25",
     "31",
     "34",
+    "35",
+    "36",
     "39",
     "40",
+    "42",
     "46",
     "47",
     "48",
     "49",
     "50",
     "52",
+    "53",
     "55",
     "60",
     "63",
@@ -86,18 +91,20 @@
     "70",
     "71",
     "72",
+    "73",
     "74",
     "75",
-    "77"
+    "77",
+    "79"
   ],
-  "n_cevaplayan_a": 46,
-  "n_cevaplayan_b": 63,
-  "a1_a": 0.984375,
-  "a1_b": 0.95625,
-  "fark": 0.028124999999999956,
-  "n_ayrisan": 4,
-  "n_berabere": 36,
-  "a_lehine": 3,
-  "b_lehine": 1,
-  "fark_sd": 0.17787811838447135
+  "n_cevaplayan_a": 47,
+  "n_cevaplayan_b": 74,
+  "a1_a": 0.976063829787234,
+  "a1_b": 0.9414893617021277,
+  "fark": 0.034574468085106336,
+  "n_ayrisan": 7,
+  "n_berabere": 40,
+  "a_lehine": 5,
+  "b_lehine": 2,
+  "fark_sd": 0.2063893265567741
 }

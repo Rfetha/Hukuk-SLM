@@ -889,7 +889,7 @@
     "cevap": "Evet, borçlu olan birinin taşınmaz malı haczedilebilir.\n\n**Dayanılan Kaynak:**\n[KAYNAK 3]\nİCRA VE İFLAS KANUNU Madde 84\n– Yetişmemiş her nevi toprak ve ağaç mah",
     "valid_trap": true,
     "verdict": "FABRICATE",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": true,
     "reason": "Kaynak metin, taşınmaz malların haczi hakkında doğrudan bir bilgi sunmamakta, model ise bu konuda kesin bir cevap vermektedir.",
     "valid_trap_anahtari": "927baf0a66d6381ac9bec08b",

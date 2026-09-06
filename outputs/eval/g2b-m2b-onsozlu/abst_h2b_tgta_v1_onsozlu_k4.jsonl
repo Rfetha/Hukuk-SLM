@@ -967,7 +967,7 @@
     "cevap": "KAYNAK 1, konutta hacizle ilgili bilgiyi eksik bırakarak bitirir ve KAYNAK 2, haciz sırasında borçlunun bulunmaması durumunda uygulanacak özel bir usulü düzenle",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
     "reason": "Verilen kaynakta konutta haciz yapılırken özel bir durum hakkında bilgi yok.",
     "valid_trap_anahtari": "eb42880f8171453f9f80d6ee",
