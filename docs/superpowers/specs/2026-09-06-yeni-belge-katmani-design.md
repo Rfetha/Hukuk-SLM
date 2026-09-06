@@ -118,6 +118,7 @@ sayıyı **üretemiyor** (YB6: istem yalnız `gen_eval_grounded.py` içinde).
 | **A4** | **Yeniden üretim yolu** — yayımlanan sayıyı kullanıcının makinesinde üreten tek komut | ölçülen kütle = yayımlanan kütle |
 | **A5** | `MODEL_CARD.md` + `README*.md`: yeni manşet, iki sürüm şeması, kırık linkler | `grep` ile silinen dosya adına link kalmadığı gösterilir |
 | **A6** | **Sorumluluk ibaresi** — *"hukuki tavsiye değil"* ürün yüzeyine. `AÇIK KARAR S10` (hukukçu görüşü) ibarenin girmesini **engellemez** | CLI çıktısı ve README ibareyi taşır |
+| **A7** 🆕 | **Basit TUI** — hazır bir kütüphaneyle (aday: `textual`; `prompt_toolkit` alternatif) tek ekranlı arayüz: soru kutusu · cevap · atıflar · kaynak listesi. ⛔ Web arayüzü, API sunucusu, hesap/oturum **DEĞİL** — onlar v2. Kullanıcı kararı 2026-09-06: *"v1'de belki hazır bir TUI kütüphanesi ile basit bir arayüz olsun"* | terminalde çalışır; `answer()` derin arayüzünün üstüne oturur, kendi mantığı yoktur |
 
 ## 6. Hat B — model (kütle) → `v1.0`
 
