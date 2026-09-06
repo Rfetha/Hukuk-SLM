@@ -398,5 +398,13 @@ yolunun **task-vector üretmediği** şerhiyle.
   (`cp0_thinking_gen.sh` ← `modal_train.py` + `cp3_merge_dene.sh` · `cp2_harvest.py` ←
   `modal_train.py` · `cp2c_kabul.sh` ← `score_abstention.py`). Liste **izole 9'a** indi ve
   **Faz 0'dan sonraya** alındı — ölçümün aletini ölçümden önce oynatmıyoruz.
+- 🆕 **Borç: uzun madde chunk'lama.** Ölçüldü 2026-09-06: `_src_len` en uzun çeyreğinde
+  `recall@10` = **0,6667** (Q2/Q3'te 0,9333). İlişki **U biçimli** — en kısa çeyrek de 0,8000.
+  Sebep: chunk = **tam madde** (ADR-0054/K2); uzun madde çok konuyu kapsar, tek gömme seyrelir,
+  BM25 uzunluk normalizasyonu cezalandırır. ⚠️ **B9'dan AYRI**: orada *bozuk* chunk var
+  (tablo/cetvel parçaları), burada **doğru ama çok uzun** chunk.
+- 🆕 **Borç: DEV/TEST ayrımı katmanlanmamış.** Kanuna göre kusursuz 2:1, ama madde uzunluğuna
+  göre değil: en zor uzunluk diliminde DEV'in payı %12, TEST'in **%50**. Düzeltmek **donmuş
+  TEST'i açmak** demek → bugün yapılmıyor. Raporlama tarafı ADR-0069 ile kapatıldı (S15).
 - **Dört belge** (`PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`) + kırık link
   onarımı + `referans-design-doc.md`'nin silinmesi — Faz 0'ın sayıları geldikten sonra.
