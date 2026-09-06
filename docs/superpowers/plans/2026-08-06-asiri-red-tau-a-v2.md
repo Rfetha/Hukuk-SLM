@@ -33,6 +33,60 @@ TIES ile `τ_g` v1'e merge edilir, ön-kayıtlı iki kapıdan geçirilir.
 
 ---
 
+## 🛑 DURAK — 2026-09-06 · **ÖLÇÜT ÇÖKTÜ, GÖREV 4 BAŞLATILMADI**
+
+**Görev 3'ün pilotu koşuldu ve Adım 3.8 (gözle okuma) kabul ölçütünü ÇÜRÜTTÜ.**
+Kayıt: [#60](../../record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+karar: [ADR-0061](../../adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md).
+
+```
+Görev 0-2  ✅ KAPANDI
+Görev 3    🛑 DURDU — pilot koşuldu, ölçüt çürüdü
+Görev 3.5  🆕 ONARIM (ADR-0061 Karar 1)   ← BURADAN DEVAM
+Görev 4-10 ⏸ BLOKE
+```
+
+**Ölçülen (gözle okundu, uydurulmadı):** 10 kabul kaleminin **6'sı** çekinme değil, **tam atıflı
+CEVAP**. Kök neden: hasat **önsözsüz** koşuyor → açılış yeterlilik hükmü **26/26 `None`** →
+`exact_reject` cevabın TAMAMINI tarıyor → `raft` şablonunun 1. bölümündeki *"diğer kaynaklar …
+İÇERMEMEKTEDİR"* **eleme gerekçesi** `REJECT_RE`'yi tetikliyor. Gerçek hüküm 3. bölümde.
+
+🚨 **Ön-kayıtlı D1 kapısı aslında DÜŞÜYOR:** raporlanan `kabul_orani` **0,1733** sahte,
+gerçek **~0,07** < eşik 0,10.
+
+**Pilotun yine de ödediği sayılar** (⚠️ **bozuk ölçütle** toplandı, hüküm KURULMADI):
+```
+np1  denenen 150 · kabul 26 · 0,1733 · s_uretim 13,735 s · 2.174,9 s
+np8  denenen 150 · kabul 29 · 0,1933 · s_uretim  ~5,1  s ·   845,4 s   (2,57×)
+KARAR-6: kesişim 19 · yalnız np1 7 · yalnız np8 10 · Jaccard 0,5278
+         cevap metni birebir aynı 3 · kesişimde metin farklı 16
+```
+⛔ KARAR-6'nın hükmü **insanındır** ve ölçüt onarılınca **yeniden koşulacak**.
+
+**Taşıyıcı DOĞRULANDI (bu kısım ayakta):** Modal `harvest_b10` çalışıyor (ADR-0047 m.2
+taşıyıcısı) · sızıntı süzgeci konteynerde yerelle **birebir** (13.350 → 12.914, atılan 436) ·
+L4'te **65,8 tok/s** (CPU'ya düşmedi) · `gguf_sha 755e15e92e9f7021…`.
+
+### Görev 3.5 — ONARIM (ADR-0061 Karar 1)
+- [ ] `exact_reject` **TDD ile** onarılır — test korpusu #60'ın gözle okunan 10 hasat + 3 çıpa kalemi
+- [ ] `pytest tests/ -q` tamamen yeşil (çıpa: `99 passed, 1 xfailed`)
+- [ ] Çıpanın **80 kalemi gözle okunur** → **gerçek B10 sayısı** belirlenir
+- [ ] Etkilenen koşular **$0'a yeniden puanlanır** (73 detail dosyası; eski değerler `yedekle()` ile damgalanır)
+- [ ] 🛑 **İNSAN:** Görev 7/9 eşikleri **aynı formülle** yeni birimde yeniden türetilir (ADR-0061 Karar 2)
+- [ ] Pilot **yeniden koşulur** (Modal L4, ~$1) → D1 ve KARAR-6 **gerçek** sayılarla
+
+### ⚠️ Bu durağın planın kendisine söylediği
+Adım 3.8 (*"10 kalemi gözle oku"*) **kapıyı tutan tek şey oldu.** Ölçüt sayısal olarak sağlıklı
+görünüyordu; yalnız gözle okuma çürüttü — **ADR-0051'in dersi ikinci kez kendini ödedi.**
+Ayrıca #57'nin dersi tekrarlandı: `_son_esasli_ibare` tam bu hata sınıfı için eklenmişti ama
+**yalnız bir dala** bağlanmıştı.
+
+**Ayrıca ödendi (bu turda, durakla ilgisiz):** `pytest` **99 passed, 1 xfailed** ·
+**Adım 5.1 ✅** — mevcut kabul dosyaları doğrulandı: **272 · 90 · 266 · 100 = 728**
+(m2 538 · m2b 190), plandaki sayılarla birebir.
+
+---
+
 ## 🌙 GÜN KAPANIŞI — 2026-08-06 · **YARIN BURADAN DEVAM**
 
 **Ara verildi.** Ajanlar durduruldu, `llama-server` kapatıldı, GPU boş, artık süreç yok.
