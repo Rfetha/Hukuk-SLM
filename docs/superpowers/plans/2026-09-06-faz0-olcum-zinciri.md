@@ -127,7 +127,7 @@ git commit -m "F0.1 erişim teşhisi — kaçırılan 10 kalem gözle sınıflan
 
 **Dosyalar:** Create: `outputs/eval/f02-biz-onsozsuz/` (+ `KUNYE.json`)
 
-- [ ] **Adım 1: Üretim — önsözsüz, harness AÇIK**
+- [x] **Adım 1: Üretim — önsözsüz, harness AÇIK**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -140,7 +140,7 @@ bash scripts/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf tgta_v1_f02_nb
 `verify:` künyede **`ekstra : <yok>`** (önsöz YOK — kanıt) · `harness : data/index/... · k=10` ·
 `thinking : on | cevap bütçesi: 512 | düşünce bütçesi: 1024` · geçerlilik kapısı: kesik **≤%5**.
 
-- [ ] **Adım 2: Puanlama**
+- [x] **Adım 2: Puanlama**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -152,7 +152,7 @@ python scripts/groundedness.py \
 ```
 `verify:` `gnd_h1_tgta_v1_f02_nb_summary.json` yazıldı, `n=80`.
 
-- [ ] **Adım 3: Harness tablosu**
+- [x] **Adım 3: Harness tablosu**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -164,7 +164,7 @@ python scripts/harness_tablo.py \
 ```
 `verify:` `recall@10` **Görev 1'in yeni değeriyle birebir** · kütle · coverage · A1 basıldı.
 
-- [ ] **Adım 4: KUNYE.json + commit** — künyede rejim değişmezleri, `sufficiency_preamble: false`,
+- [x] **Adım 4: KUNYE.json + commit** — künyede rejim değişmezleri, `sufficiency_preamble: false`,
 `git_sha`, indeks sürümü. `verify:` `python -c "import json;json.load(open('outputs/eval/f02-biz-onsozsuz/KUNYE.json'))"` hata vermez.
 
 ---
@@ -177,10 +177,10 @@ Read: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md` (kalıp) · `scripts/score_a
 **Neden:** Bu adım 2026-09-06'da bozuk ölçümü yakalayan tek şeydi. Önsözlü çıpada aletin
 14 dediği yerde göz **8** dedi — **6 yanlış pozitif**. Önsözsüz rejim hiç okunmadı.
 
-- [ ] **Adım 1: Kalıbı oku** — `B10_GOZLE_OKUMA_80.md`'nin sütun düzenini birebir devral.
+- [x] **Adım 1: Kalıbı oku** — `B10_GOZLE_OKUMA_80.md`'nin sütun düzenini birebir devral.
 `verify:` sütunlar listelendi.
 
-- [ ] **Adım 2: 80 kalemin tamamını oku ve sınıfla**
+- [x] **Adım 2: 80 kalemin tamamını oku ve sınıfla**
 
 Kaynak: geçerli koşunun `h1_*_detail.jsonl` (Görev 2 koştuysa `f02`, koşmadıysa
 `outputs/eval/s2-harness-k10-etiketli/h1_tgta_v1_h1_k10_et_detail.jsonl`).
@@ -188,19 +188,19 @@ Her kalem: id · altın geldi mi · model sustu mu **(göz)** · alet ne dedi ·
 **isabetsizlik mi** (gerçek ama yanlış madde). ⛔ Örneklem değil, **80/80**.
 `verify:` dosyada 80 satır var; `aşırı-red (göz)` ve `isabetsizlik (göz)` sayıları basıldı.
 
-- [ ] **Adım 3: Alet ↔ göz deltasını raporla**
+- [x] **Adım 3: Alet ↔ göz deltasını raporla**
 
 Tablo: alet 5/80 ↔ göz ?/80 · yanlış pozitif · yanlış negatif. ⚠️ Delta **sıfır bile olsa**
 yazılır — negatif sonuç birinci sınıftır.
 `verify:` delta tablosu var; delta ≠ 0 ise **her fark eden kalem** id'siyle listelenmiş.
 
-- [ ] **Adım 4: Kütle düzeltmesi**
+- [x] **Adım 4: Kütle düzeltmesi**
 
 Göz sayıları kütleyi oynatıyorsa düzeltilmiş kütle hesaplanır ve **ikisi yan yana** yazılır
 (alet kütlesi damgalanarak durur, silinmez).
 `verify:` `kütle (alet)` ve `kütle (göz)` iki ayrı satır olarak var.
 
-- [ ] **Adım 5: Commit**
+- [x] **Adım 5: Commit**
 
 ```bash
 git add outputs/eval/*/GOZLE_OKUMA_80.md && \
@@ -215,7 +215,7 @@ git commit -m "F0.3 önsözsüz rejimin 80 kalemi GÖZLE OKUNDU — alet↔göz 
 **Özneler:** `google/gemini-3.1-flash-lite` · `google/gemini-3.5-flash-lite` ·
 **`google/gemini-3.5-flash`** *(ilk kez ölçülüyor — `v1.0` kapısının çıpası)*
 
-- [ ] **Adım 1: Üç özneyi üret — önsöz bayrağı YOK**
+- [x] **Adım 1: Üç özneyi üret — önsöz bayrağı YOK**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -238,7 +238,7 @@ done
 `verify:` üç `h1_*_detail.jsonl` dosyası, her biri **80 satır**. ⛔ `--sufficiency-preamble`
 komutta **yok** — bizim rejimle eşleşmenin şartı bu.
 
-- [ ] **Adım 2: Eşit sınav kapısı — `recall@10` birebir aynı mı**
+- [x] **Adım 2: Eşit sınav kapısı — `recall@10` birebir aynı mı**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -385,17 +385,17 @@ GRPO **gerekçeli** ertelendi: $10-30 tahmin ↔ Modal $29,19, tahmin ölçülme
 
 ### Görev 8 · T3 + T4 — ucuz temizlik (Faz 0'a paralel, bağımsız)
 
-- [ ] **Adım 1: `.gitignore`'a `.pytest_cache/`**
+- [x] **Adım 1: `.gitignore`'a `.pytest_cache/`**
 `verify:` `git check-ignore -q .pytest_cache && echo ignored`
 
-- [ ] **Adım 2: `scripts/train_orpo.py` docstring'i gerçeğe çekilir**
+- [x] **Adım 2: `scripts/train_orpo.py` docstring'i gerçeğe çekilir**
 Bugünkü hâli *"base = v2b ADAPTER'dan DEVAM (grounding taşınır)"* diyor; bu **ardışık SFT**
 kalıbıdır ve `τ = θ_ft − θ_base` tanımına aykırıdır. Gerçek: `τ_a v1` **`--fresh-adapter`** ile
 ham base'den koştu (`docs/record/kollar.md`:64). Docstring bunu söyleyecek, `--adapter`
 yolunun **task-vector üretmediği** şerhiyle.
 `verify:` `grep -n "fresh-adapter" scripts/train_orpo.py` docstring'de eşleşme verir · `pytest` **112 passed, 2 xfailed**.
 
-- [ ] **Adım 3: Commit** (yapısal değişiklik — davranış değişmez, ayrı commit)
+- [x] **Adım 3: Commit** (yapısal değişiklik — davranış değişmez, ayrı commit)
 
 ---
 
