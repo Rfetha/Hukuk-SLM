@@ -1,5 +1,24 @@
 # CLAUDE.md
 
+> 🚨 **2026-09-06 — THE FORWARD-LOOKING DOC LAYER WAS DELETED. Read
+> [`DEVIR-PROMPT.md`](DEVIR-PROMPT.md) FIRST; it is the handoff note.**
+>
+> Deleted (human decision, preserved on a backup branch): `ROADMAP.md` · `TODO.md` ·
+> `TASARIM.md` · `docs/VISION.md` · `docs/PAPER_TARGET.md` · `docs/superpowers/**` ·
+> `docs/_arsiv/**`. **Every link to those from this file is dead** until the new doc layer is
+> written. The measurement record (`docs/record/**`), the decision ledger (`docs/adr/**`) and
+> `outputs/eval/**` were **kept** — they are the source of every number published here.
+>
+> **Framing is now: open-source PRODUCT — a legal adviser a Turkish citizen can actually ask.**
+> `v1` = model layer · `v2` = app layer · arxiv is a **by-product**. The v1/v2 roadmap, the
+> product doc and the new specs/plans are being written from scratch; until they exist,
+> `DEVIR-PROMPT.md` is the authority on direction, and the numbers below still stand.
+>
+> ⚠️ Some pointers further down still name deleted files (`ROADMAP.md` as *"the authority on
+> direction"*, `docs/_arsiv/README.md` as the binding doc-type table, `sprint3-part1.md` as the
+> debt queue). The debt queue was rescued into `DEVIR-PROMPT.md` §5. Fixing these pointers is
+> the **last** step of the rewrite, not the first — they need somewhere to point.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 > **This file is a MAP, not a report.** It says *where things are* and *what rules bind you*.
