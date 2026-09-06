@@ -185,3 +185,70 @@ dosyalara işaret eden isabetler döner.
 - **`train_orpo.py` docstring'i BAYAT** — *"base = v2b ADAPTER'dan DEVAM"* diyor, bu bugünkü
   ham-base kuralına aykırı bir kalıp. Kural **ihlal edilmedi**: `kollar.md`:64 `τ_a v1`'in
   **`--fresh-adapter`** ile koştuğunu gösteriyor. Yalnız docstring yanıltıcı → TODO.
+
+---
+
+## 11. Temizlik turu — bayat/çöp envanteri (insan kararlı, 2026-09-06)
+
+> ⛔ **İLK KURAL: KAYIT TEMİZLENMEZ.** `docs/record/**` · `docs/adr/**` ·
+> `outputs/eval/**` sayıları ve `KUNYE.json`'ları · `.ONCEKI-*` / `.YARIM-*` izleri
+> **dokunulmaz.** Bunlar yayımlanmış her sayının kaynağıdır ve *"çelişki iki yerde
+> işaretlenir, sessizce üzerine yazılmaz"* kuralının fiziksel hâlidir.
+
+**Ölçülen envanter** (2026-09-06, `du`/`git check-ignore`/`find` ile):
+
+| sınıf | ölçüm | **KARAR** |
+| :--- | ---: | :--- |
+| `models/merged/` 4 × 8,8 GB | 35 GB | **T1** — yalnız `tg_ta_modulmin` + `tg_ta_globalmin` silinir |
+| `models/gguf/` 12 dosya | 40 GB | **T1** — yalnız `cp2s-ties-smoke-q4_k_m.gguf` silinir |
+| `.ONCEKI-*` / `.YARIM-*` | 173 dosya · 2,8 MB | 🔒 **KALIR** — denetim izi, insan kararı |
+| emekli tur script'i | 16 dosya | **T2** — `scripts/_arsiv/`e **taşınır** (silinmez) |
+| `.pytest_cache` | 40 KB | **T3** — ne ignore ne tracked → `.gitignore` |
+| bayat içerik | — | **T4** — damgalanır (silinmez) |
+
+### T1 · `models/` — ~20 GB (git'te değil, yeniden üretilebilir)
+
+Silinecek: `models/merged/tg_ta_modulmin/` · `models/merged/tg_ta_globalmin/`
+(**ADR-0053: modül başına norm kapsamı REDDEDİLDİ** — reddedilmiş varyantlar) ·
+`models/gguf/cp2s-ties-smoke-q4_k_m.gguf` (smoke testi artefaktı).
+
+**Neden güvenli — bugün doğrulandı:** asıl artefakt **adaptördür** ve ikisi de yerinde:
+`outputs/tg_v1` (115 MB) · `outputs/ta_v1` (326 MB). Yeniden üretim komutu
+`kollar.md`:24-26'da yazılı (`merge_lora.py` / `merge_ties.py` + llama.cpp Q4_K_M).
+
+⚠️ **Ama adaptörler YEDEKSİZ** (`kollar.md`: *"yedeklenmiyor — bilinçli"*; 12B hattında
+adaptörler **kalıcı kaybedildi**). Türevleri silmek tek disk arızasının yıkım yarıçapını
+büyütür. ⇒ **`AÇIK KARAR S7` (adaptörler HF'ye yüklensin mi) bu temizliğin gerçek ön
+koşuludur** ve ROADMAP'te T1'in **önüne** yazılır. Kalan `tgta_v1` (yayımlanacak taşıyıcı) ·
+`tg_v1` (aktif kol) · base `q4_k_m` (kıyas çıpası) **korunur**.
+
+`verify:` `du -sh models/` öncesi **75 GB** → sonrası **≈55 GB**; `kollar.md`'nin
+"diskte tutulan" satırı gerçeği yansıtır hâle gelir.
+
+### T2 · Emekli tur script'leri → `scripts/_arsiv/`
+
+`cp05_conv1d_ceiling.py` · `cp09_gemini_gen.sh` · `cp09_tablo.py` · `cp0_thinking_gen.sh` ·
+`cp0_thinking_score.sh` · `cp1_delta.py` · `cp1_rescore_meta.sh` · `cp1_spotcheck.py` ·
+`cp2_audit.py` · `cp2_harvest.py` · `cp2_pilot.sh` · `cp2_prefilter.py` · `cp2c_birlestir.py` ·
+`cp2c_kabul.sh` · `cp2r_esikler.py` · `watch_cp09.sh` (16 dosya).
+
+⚠️ **Silinmiyor, taşınıyor** — `cp2_prefilter.py` / `cp2_harvest.py` B1 turunun
+reddetme-örneklemesinde işe yarayabilir; görünmez kılmak istemiyoruz.
+
+`verify:` taşımadan önce `grep -rnE "cp0[59]?_|cp1_|cp2[cr]?_|watch_cp09"` ile çağıran/import
+eden aranır (bulunursa yol güncellenir) · taşımadan sonra `pytest` **112 passed, 2 xfailed**.
+
+### T3 · `.gitignore` · `.pytest_cache/` eklenir. `verify:` `git check-ignore -q .pytest_cache`
+
+### T4 · Bayat içerik — damgalanır, silinmez
+
+| yer | bayat olan | eylem |
+| :--- | :--- | :--- |
+| `scripts/train_orpo.py` docstring | *"base = v2b ADAPTER'dan DEVAM"* — bugünkü **ham-base** kuralına aykırı kalıp | docstring gerçeğe çekilir: `τ_a v1` **`--fresh-adapter`** ile koştu (`kollar.md`:64), kural ihlal edilmedi |
+| `docs/FINE_TUNING.md` · `VERI_PLANI.md` · `YARGI_KAYNAKLARI.md` · `model-soyagaci.mmd` | silinen dosyalara **kırık işaretçiler** (toplam 9) | yeni belgelere bağlanır (§8 son adım) |
+| `docs/open_questions.md` | otoritesi silinen `TASARIM.md` (20 atıf) · kapanan **S1/S2/S11/S14** gövdede duruyor | otorite `PRODUCT.md`'ye çekilir; kapanan dördü ADR-0063/0064/0065'e işlenip **kapanış dizinine** taşınır |
+| `CLAUDE.md` · `MODEL_CARD.md` · `README*.md` | manşet `%68,4` + kırık işaretçiler | Faz 0 sayısı geldikten sonra güncellenir |
+
+**Temizliğin bütün turu için `verify:`**
+`grep -rE '(ROADMAP|TODO|TASARIM|VISION|PAPER_TARGET)\.md|docs/_arsiv/|docs/superpowers/specs/2026-09-06-v1-v2'`
+→ yalnız **var olan** dosyalara işaret eden isabetler döner.
