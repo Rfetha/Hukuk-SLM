@@ -382,8 +382,11 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
     if thinking != "none":
         extra["chat_template_kwargs"] = {"enable_thinking": thinking == "on"}
     if reasoning_budget:
-        # Rakip tarafı: bütçeyi sunucu uyguluyor, zorunlu kapatmaya gerek yok. Toplam
-        # bütçe = düşünce + cevap; yoksa düşünce cevabın payını yer (bizde 1024|512 ayrı).
+        # Rakip tarafı: bütçeyi sunucu uyguluyor, zorunlu kapatmaya gerek yok.
+        # ⚠️ K2 (2026-08-06): OpenRouter bu ipucunu YOK SAYIYOR; tek bağlayıcı sınır max_tokens.
+        # ⚠️ DÜZELTME (ADR-0070, 2026-09-06): buradaki eski şerh "bizde 1024|512 ayrı" diyordu —
+        # ÖLÇÜLDÜ ve YANLIŞTI. Bizde de düşünce cevabın payını yiyordu; üstelik toplamımız
+        # 1024 iken rakibinki 1536'ydı. Artık iki taraf da tek formülle 1536 alıyor.
         extra["reasoning"] = {"max_tokens": reasoning_budget}
     # ⚠️ GEÇİCİ SAĞLAYICI HATASI (2026-08-06, G2): OpenRouter/Google AI Studio bazen
     # HTTP **200** döner ama `finish_reason='error'` + BOŞ content verir. SDK'nın kendi
@@ -399,8 +402,13 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
         r = client.chat.completions.create(
             model=model_name,
             messages=msgs,
-            max_tokens=(reasoning_budget + max_new_tokens) if reasoning_budget
-                       else (think_budget or max_new_tokens),
+            # ADR-0070 (2026-09-06): TEK FORMÜL, rakiple birebir aynı.
+            # Eskiden bizim kol `max_tokens=think_budget` (1024) alıyordu → model `</think>`'i
+            # kendi kapatınca cevap 1024'ün KALANINA sığmak zorundaydı ve ayrı 512 payını
+            # YALNIZ zorla kapatılanlar alıyordu. Ölçüldü: 75/80 kalemde tavan 1024, rakipte
+            # 1536 (ve 36/80 · 18/80 kalemde 1024 fiilen AŞILMIŞ) → ADR-0043 §3'ün
+            # "bütün rakipler aynı bütçeyle koşar" şartı TUTMUYORDU, sapma bizim aleyhimize.
+            max_tokens=(reasoning_budget or think_budget or 0) + max_new_tokens,
             temperature=0.0,
             seed=3407,
             extra_body=extra or None,

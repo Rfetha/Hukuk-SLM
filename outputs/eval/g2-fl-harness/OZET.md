@@ -127,8 +127,20 @@ uyuşmazlığını damgalamak. Yapılan budur.
 Kesik kalemlerin muhakeme token'ları: `fl35 [1473,1103,1475,1405,1472,1473,1470,1472]` ·
 `fl31 [1157,1267,1222]` — **hepsi 1024'ün üstünde**; görülen en büyük değer **1475**.
 `extra["reasoning"]={"max_tokens":1024}` sağlayıcı tarafından **yok sayılıyor**; tek bağlayıcı
-sınır `max_tokens=1536`. Yani **rakipte muhakeme cevabın 512'lik payını yiyor**; bizde ADR-0043
-gereği ayrık bütçe + zorunlu kapanış var.
+sınır `max_tokens=1536`. Yani **rakipte muhakeme cevabın 512'lik payını yiyor**; ~~bizde ADR-0043
+gereği ayrık bütçe + zorunlu kapanış var.~~
+
+> 🚨 **BU CÜMLENİN İKİNCİ YARISI 2026-09-06'DA ÖLÇÜLDÜ ve ÇÜRÜDÜ ([ADR-0070](../../../docs/adr/0070-uretim-butcesi-esitlendi.md)).**
+> Bizde de **ayrık bütçe yoktu**: `gen_eval_grounded` bizim kolda `max_tokens = think_budget`
+> (**1024**) gönderiyordu; ayrı 512 payını **yalnız `content` boş kalan** (zorla kapatılan)
+> kalemler alıyordu. Ölçüm, üç koşumuzda da aynı: zorla kapatılmayan kalemlerde tavan **tam 1024**
+> (YENİ 75/80 · ESKİ 76/80 · ÇIPA 59/80), rakipte **1532** ve **36/80 (3.1 FL) · 18/80 (3.5 FL)**
+> kalem 1024'ü **fiilen aşmış**.
+> ⇒ **Sapmanın yönü bu şerhin söylediğinin TERSİ ve bizim aleyhimizeydi**: rakip 1536 toplam
+> bütçeyle koşarken biz yaygın durumda 1024 ile koştuk. ADR-0043 §3 (*"bütün rakipler aynı
+> bütçeyle koşar; sapma kıyası geçersiz kılar"*) gereği **bu tablodaki bütçe-duyarlı hükümler
+> bu eksende damgalıdır.** Bütçe ADR-0070 ile eşitlendi (iki tarafta da tek formül, 1536);
+> bu tablonun sayıları **eski rejimde** kalır.
 
 **Künyedeki *"Bütçe EŞLEŞİK (1024 iki tarafta da)"* ifadesi YANLIŞTI:** *nominal* bütçe aynı,
 **etkin** bütçe değil. Bu ADR-0057 anlamında bir **eksen uyuşmazlığıdır** — maliyet ve muhakeme
