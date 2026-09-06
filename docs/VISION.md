@@ -6,7 +6,20 @@
 >
 > **Tez artık iki katmanlı:** *dış* = maliyet-normalize parite (ADR-0017 teyit edildi) · *iç (YENİ)* = beceri başına bağımsız eğitilmiş LoRA kolları + task-vector merge, **çatışan becerileri** (grounding ↔ abstention) ardışık SFT'den daha iyi koruyor mu?
 >
-> **Çerçeve (2026-08-03, GÜNCEL):** Proje **tamamen açık kaynak** — **Apache-2.0**, ağırlıklar + kod + veri + araştırma kaydı. Yüksek lisans tezi çerçevesi **bırakıldı**; arxiv yazılabilir ama hedef **daha iyi model** ([`ROADMAP.md`](../ROADMAP.md)). Erişilebilirlik temel kısıt olduğundan model SLM-sınıfı tutulur — base bir **PARAMETRE** (ADR-0026); mevcut sürüm **`HakHukuk-4B-v0.1`** (Qwen3.5-4B üzerine). ⚠️ Tezin dayattığı **tek-boyut kilidi (ADR-0028) ve graph-RAG'in kapsam dışılığı (ADR-0019) KALKTI**. *(Eski çerçeve: private + proprietary — 2026-08-03'te aşıldı.)*
+> **⚠️ ÇERÇEVE (2026-09-06, GÜNCEL — bu satır aşağıdaki tez dilinin ÜSTÜNDEDİR):** Ürünün
+> sürüm dili artık **v1/v2**: **v1 = pratik olarak çalışan fine-tuned model release'i**
+> (ağırlık + kod + veri + araştırma kaydı, tek komutluk CLI ile — çünkü resmî sayı
+> **retriever + yeterlilik önsözü** rejiminde üretiliyor) · **v2 = aynı modelin API'si** ·
+> **arxiv yan ürün, hedef değil.** Aşağıdaki **5 fazlı evrim haritası geçerliliğini korur** ve
+> iptal edilmedi; eşlemesi şudur: **Faz 1** ✅ koştu · **Faz 2**'nin retriever dilimi ✅ kuruldu,
+> graf dilimi ❌ kurulmadı · **Faz 3'ün serving yarısı = v2** · Faz 3'ün agentic yarısı, Faz 4
+> ve Faz 5 **v2 sonrası**. Sıralı plan ve kabul ölçütleri:
+> [`superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
+> *(taslak)* · [`ROADMAP.md`](../ROADMAP.md).
+> ⚠️ **Bu belgede kalan "tez", "teze girer/girmez", "tez kapsamı" ifadeleri TARİHSELDİR** ve
+> okunabilirlik için silinmedi — bugün hükümleri yok.
+>
+> **Çerçeve (2026-08-03):** Proje **tamamen açık kaynak** — **Apache-2.0**, ağırlıklar + kod + veri + araştırma kaydı. Yüksek lisans tezi çerçevesi **bırakıldı**; arxiv yazılabilir ama hedef **daha iyi model** ([`ROADMAP.md`](../ROADMAP.md)). Erişilebilirlik temel kısıt olduğundan model SLM-sınıfı tutulur — base bir **PARAMETRE** (ADR-0026); mevcut sürüm **`HakHukuk-4B-v0.1`** (Qwen3.5-4B üzerine). ⚠️ Tezin dayattığı **tek-boyut kilidi (ADR-0028) ve graph-RAG'in kapsam dışılığı (ADR-0019) KALKTI**. *(Eski çerçeve: private + proprietary — 2026-08-03'te aşıldı.)*
 >
 > **⚠️ TEZ ÇERÇEVESİ (2026-07-17, otorite: `docs/superpowers/specs/2026-07-17-tez-cercevesi-design.md` + ADR-0017):** Tezin **birincil katkısı** artık tek başına benchmark değil → **maliyet-normalize parite + iş bölümü**: *dar bir domainde SLM+harness, kapalı ticari modellerin dağıtım sınıfına (Gemini 3 Flash / Claude Sonnet / GPT-5-mini) maliyet-normalize paritede ne kadar yaklaşır, ve bunun ne kadarını FT ne kadarını harness sağlar?* 6-mod CANON benchmark bu iddianın **altyapısı** (eşdeğerlik testi için gereken ölçüm zemini), tek başına ana katkı değil. v0→v3 = proof-of-concept / FT kolu.
 
@@ -89,7 +102,15 @@ flowchart LR
 
 **Hedef:** "Yeni yasa çıktı, ne yapacağız?" sorusunun mimari cevabı.
 
-- **Neden Graph DB?** Hukuk doğası gereği ilişkiseldir:
+- **Neden Graph DB?** ⚠️ **ŞERH (2026-08-04/05, ölçüldü):** aşağıdaki *"hukuk doğası gereği
+  ilişkiseldir"* gerekçesi bir **VARSAYIMDI** ve ölçüm onu **daralttı** — grafın meşru alanı
+  yalnız **ilişki ekseni** (yürürlük · ilga · tadil · atıf zincirleri), *erişim* ekseni değil:
+  `recall@5` 0,750 → `@20` **0,925** ile açığın çoğu **`k`** ile kapandı, altın getirildiğinde
+  model zaten sadık, ve ilişki ekseninin **ucuz kısmını bir boolean veri alanı** çözdü (S2,
+  B7 kapandı). Üstelik grafın en büyük riski artık ölçülü: bağlam uzadıkça sadakat düşüyor
+  (`k` 5→10 ile A1 **0,9230 → 0,8426**), graf bağlamı k=10'dan **çok daha fazla** uzatır.
+  Tam tablo ve ön-kayıtlı tahmin: [`ROADMAP.md` §5](../ROADMAP.md). Gerekçenin **kendisi**
+  aşağıda silinmeden duruyor:
   - Kanun → Madde → Fıkra hiyerarşisi
   - "Atıfta bulunulan madde", "yürürlükten kaldırılan madde", "ilgili Yargıtay kararı" gibi tipli ilişkiler
   - Düz vektör DB bu ilişkiyi kaybeder; **Neo4j / Memgraph + vektör hibrit** yapısı tasarlanır.
@@ -157,9 +178,19 @@ Kullanıcı: [ses] "Ev sahibim kirayı %100 artırmak istiyor"
 
 ---
 
-## 3. Tez ve Makale Eksenleri — ⚠️ **YENİDEN YAZILDI (2026-07-23)**
+## 3. Tez ve Makale Eksenleri — 📁 **TARİHSEL** *(çerçeve 2026-08-03'te bırakıldı)*
 
-**Ana tez (yürürlükte, ADR-0017):**
+> 🚨 **Bu bölüm TARİHSELDİR ve silinmedi.** Proje tez değil **ürün**; arxiv **yan ürün, hedef
+> değil** (karar sorusu **S11**, [`open_questions.md`](open_questions.md)). Aşağıdaki *"ana tez"*
+> cümlesi bugün bir **hedef** değil, olası bir **paper açısı**dır — ve iddia katmanının
+> çekirdeği (**P1** = CP4/CP5 tabanları) bugün **koşulamaz**: **ARA KAPI 2026-08-06'da düştü**
+> (merge M2b **0,766** < eşik **0,8649**), CP4-CP5 harcamasını yetkilendiren kapı oydu
+> ([ADR-0045](adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
+> [#58](record/research_log/2026-08-06-payda-tekillesmesi.md)).
+> Bugün savunulabilir iddialar ve eksik ölçümler (P1/P2/P3):
+> [`PAPER_TARGET.md`](PAPER_TARGET.md) · v1/v2 taslağı §6.
+
+**Ana tez (~~yürürlükte~~ tarihsel, ADR-0017):**
 
 > Dar bir domainde (TR hukuku), **SLM + harness** kapalı ticari modellerin dağıtım sınıfına
 > **maliyet-normalize paritede** ne kadar yaklaşır — ve bunun **ne kadarı fine-tuning, ne kadarı

@@ -12,9 +12,89 @@
 
 ---
 
+## 🆕 v1/v2 SÜRÜM KARARLARI — **S1…S13** *(eklendi 2026-09-06)*
+
+> **Nereden geliyor:** [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md) §7.2.
+> Çerçeve: tez değil **ürün** — **v1 = çalışan model release'i · v2 = API · arxiv yan ürün**.
+> **Hepsi insan kararıdır.** Eşik/ölçüt koymak ADR-0050 gereği insanın işidir ve koşudan
+> **önce** ön-kayıtlanır.
+>
+> ⚠️ **Bu tablo aşağıdaki OQ girdilerini YİNELEMEZ.** Zaten burada duran sorular karar
+> numarasıyla **damgalandı**: **S4** = `SOURCE_CLIP` (YB3) · **S5** = OQ-2 ikili oran
+> çözünürlüğü · **S6** = OQ-3 önsözün atıf bedeli. OQ-1 (M3 paydası) · OQ-4 · OQ-5 · OQ-6
+> ilgili başlıklarında duruyor ve karar sorusu değil, **iş kalemi**dir.
+
+| # | soru | seçenekler | bağlı olduğu |
+| :-- | :--- | :--- | :--- |
+| **S1** | **ARA KAPI düşmüşken `v1.0` adı verilebilir mi?** | (a) `v1.0` = *ürün* olgunluğu, ARA KAPI bir *iddia* kapısıydı → yeni ölçütle açılır · (b) CP4-CP5 koşulana dek `v0.x` ⚠️ ~$19 ve **yetkisi yok** · (c) sürümü ikiye ayır (ürün sürümü ↔ iddia sürümü) | [ADR-0045](adr/0045-ara-kapi-merge-onarim-kontrolu.md) · [#58](record/research_log/2026-08-06-payda-tekillesmesi.md) |
+| **S2** | **v1 harness'lı mı çıkar?** | (a) **evet, CLI ile** *(taslağın önerisi)* · (b) model-only → ⚠️ o zaman **yayımlanan sayı (%62,8) yeniden üretilemez**, ablasyon (%61,3) alınır | ADR-0058 · borç **D-d/YB6** |
+| **S3** | **B10 hedefi ne olsun?** | (a) ≤11/80 *(taslağın önerisi; turun kendi ön-kayıtlı tahmini 8-11/80)* · (b) ≤8/80 (3.1 FL ile eşitlen) · (c) yalnız *"gerileme yok"* | plan ön-kayıtları · `g2-fl-harness/OZET.md` |
+| **S4** | **`SOURCE_CLIP` ödensin mi?** (≈$0,30) | (a) öde → `k`'nın çekinme ekseni **tanımlı** olur, ⚠️ tarihsel `verdict`ler kıyaslanamaz hâle gelir · (b) ödeme → **TANIMSIZ** damgasıyla taşı | ⬇️ aynı adlı OQ · KARAR-4 · ADR-0057 |
+| **S5** | **İkili oran çözünürlük sınırı** | (a) `k` kalem kuralı · (b) ölçülmüş taban (hakem maliyeti var) · (c) Wilson aralığı ($0, kapı kuralını değiştirir) | ⬇️ **OQ-2** |
+| **S6** | **Önsözün atıf bedeli kabul mü?** | takas ölçüldü: atıf **−%30**, atıfsız cevap 8 → 13 ↔ kütle **+1,4 p**, A1 **+1,9 p** | ⬇️ **OQ-3** |
+| **S7** | **LoRA adaptörleri HF'ye yüklensin mi?** | `kollar.md`'nin *"adaptörler yedeklenmiyor — bilinçli"* kararını **değiştirir** → **ADR gerekir**. ⚠️ 12B hattında adaptörler **kalıcı kaybedildi**; HF yayını ilk gerçek yedek olur | [`record/kollar.md`](record/kollar.md) · [ADR-0034](adr/0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md) |
+| **S8** | **İndeks nasıl dağıtılır?** (80 MB) | (a) HF dataset · (b) kurulumda üret (~10 dk) | v1 §C5 |
+| **S9** | **v2 nasıl barındırılır?** | (a) yalnız self-host · (b) + hız-sınırlı vitrin (~$100-300/ay) · (c) hosted-first ⚠️ **mahremiyet vaadini zayıflatır** ⚠️ **TR IP** kısıtı bulut barındırmayı da kısıtlayabilir | taslak §4.1 · [`BEDESTEN_API.md`](BEDESTEN_API.md) |
+| **S10** | **Avukatlık Kanunu / hukuki sorumluluk sınırı** | **hukukçu görüşü gerekir** — repo'da hiç değerlendirilmemiş | taslak §4.6 |
+| **S11** | **arxiv yazılsın mı?** | (a) hayır · (b) yalnız **P2/P3** → *metodoloji paper'ı* (taslağın okumasıyla **en güçlü hikâye**) · (c) tam iddia katmanı (P1, ⚠️ ARA KAPI düştüğü için **yetkisiz**) | [`PAPER_TARGET.md`](PAPER_TARGET.md) · taslak §6 |
+| **S12** | **KARAR-6 — paralel slot (`-np`)** | sayılar geldi (Jaccard **0,5278** · birebir **3/19**) ⚠️ **bozuk ölçütle toplandı** → ölçüt onarılınca **yeniden koşulur**, hükmü **insan** kurar | [#60](record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) |
+| **S13** 🆕 | **Hasat kabul ölçütü nasıl onarılır?** ⬇️ ayrıntı aşağıda | ✅ **KARARA BAĞLANDI 2026-09-06 → (c)**: alet TDD ile onarılır **+** 73 detay dosyası $0'a yeniden puanlanır **+** çıpanın 80 kalemi gözle okunur **+** pilot yeniden koşulur | [#60](record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) |
+
+### **[S13]** 🚨 Hasat kabul ölçütü çöktü — onarılacak mı, hasat rejimi mi değişecek? 🔴 *ölçüldü 2026-09-06, karar yok*
+
+`b10_hasat.py` hasadı **yeterlilik önsözü OLMADAN** koşuyor (`sufficiency_preamble: false`).
+O rejimde açılış yeterlilik hükmü oluşmuyor (**26/26 kalemde `None`**), ve
+`exact_reject` (`scripts/score_abstention.py:208`) o dalda **cevabın TAMAMINI** `REJECT_RE` ile
+tarıyor. Havuzun cevap şablonunda tetikleyen ibare cevabın hükmü değil, **elenen kaynakların
+gerekçesi** (*"…İÇERMEMEKTEDİR"*); gerçek hüküm 3. maddede duruyor.
+
+```
+gözle okunan 10 kabul  →  6'sı tam, atıflı CEVAP · 4'ü gerçek çekinme
+raporlanan kabul_orani    0,1733 (26/150)   → kapı geçmiş GÖRÜNÜYORDU
+gözle okumaya göre        ~0,07             → eşik 0,10'un ALTINDA
+```
+
+⚠️ Doğru okuyan yol (`_son_esasli_ibare`, [#57](record/research_log/2026-08-06-cekinme-aleti-onarimi.md)/Ö2
+ile eklendi) **yalnız açılış hükmü `True` iken** çalışıyor — önsözsüz rejim kapsam dışı kaldı.
+Bu, #57'nin dersinin tekrarı: *alet düzeltmesi aletin **kendisinde** yapılır, bir dalında değil.*
+
+**Seçenekler ve takasları:**
+- **(a) `exact_reject`'in önsözsüz dalı düzeltilir** — ⚠️ aynı fonksiyon **çıpaları da** okuyor,
+  dolayısıyla **yayımlanmış sayıları etkileyebilir** → **ADR gerekir** (sıradaki **0061**;
+  ⚠️ **0059 REZERVE**).
+- **(b) Hasat önsözlü koşar** — alet değişmez, ADR-0058 ana protokolüne yaklaşır; ama hasat
+  `τ_a` v1'in eğitildiği rejimden **uzaklaşır**.
+- **(c) İkisi de + çıpaların 80 kalemi gözle okunur** — en pahalısı, tek kesin olanı.
+
+> ## ✅ KARARA BAĞLANDI — **(c)**, insan kararı, 2026-09-06
+>
+> 1. **`exact_reject` onarılır** — TDD ile (önce düşen test), aletin **kendisinde**, bir dalında
+>    değil (#57'nin dersi). Alet değiştiği için **ADR gerekir**: sıradaki **0061**
+>    (⚠️ **0059 REZERVE**).
+> 2. **73 detay dosyası yeniden puanlanır** — hakem çağrısı yok, maliyet **$0**.
+> 3. **Çıpanın 80 kalemi gözle okunur** — bulaşmanın büyüklüğünü *ölçen* tek yol; sonda her iki
+>    yönde de hatalı olduğu için programatik kestirme **kabul edilmiyor**.
+> 4. **Pilot yeniden koşulur** — bugünkü kabul kümeleri bozuk ölçütle seçildi; KARAR-6 kıyası
+>    (**S12**) da bu koşudan yeniden gelir.
+>
+> 🔒 **Eşik kuralı — karar YENİ SAYILAR GÖRÜLMEDEN verildi (seçim yanlılığı yok).** Onarım
+> çıpaları oynatırsa, turun **Görev 7 (kol kapısı)** ve **Görev 9 (ürün kapısı)** eşikleri
+> **AYNI FORMÜLLE yeniden çıpalanır** — eşiğin *sayısı* yeni çıpadan türer, *kuralı* değişmez.
+> Bu, ADR-0050'nin hükmünün aynısıdır: **alet düzeltilir, eşik insan tarafından ve önceden
+> konur**; sonucu gördükten sonra eşik oynatılmaz.
+
+🔴 **Ayrı ve kapanmamış:** çıpa bulaşmasının **büyüklüğü ÖLÇÜLMEDİ.** Kesin olan iki şey:
+(1) resmî çıpada **en az bir doğrulanmış yanlış pozitif** var (`id=19`); (2) önsözlü resmî
+koşuda bile açılış hükmü çoğunlukla oluşmuyor (**75 `None` · 5 `True`** — cevapların %94'ü aynı
+dala düşüyor). Programatik sonda **her iki yönde de** hatalı çıktığı için
+*"çıpanın 19 reddinin 10'u yanlış"* cümlesi **kurulmadı ve kurulmamalıdır.**
+Kapanana dek **B10'un 16 → 14 sayıları şüpheli** sayılır.
+
+---
+
 ## 🔴 AÇIK
 
-### `SOURCE_CLIP = 3500` hakemi k=10'da bağlamın yarısına kör bırakıyor 🔴 *ölçüldü, kapatılmadı*
+### **[YB3 · karar S4]** `SOURCE_CLIP = 3500` hakemi k=10'da bağlamın yarısına kör bırakıyor 🔴 *ölçüldü, kapatılmadı*
 
 `score_abstention.judge_gecerlilik()` (payda) **ve** `judge()` (pay) hakeme kaynak metnini
 `[:3500]` kırparak veriyor. Ölçüldü 2026-08-06 (`[KAYNAK` sayımı):
@@ -53,7 +133,7 @@ klip ile yeniden öde (~80 kalem × `gpt-4o`, ölçülmüş birim maliyet **$0,0
 **≈$0,30**); (c) eski/yeni paydayı yan yana raporla; (d) kapandığında `k=10`'un **TANIMSIZ**
 damgası kalkar ve `k`'nın çekinme bedeli ilk kez hüküm kurabilir. **Karar insana ait.**
 
-### `cp2c_kabul.sh` hangi hakem yığınıyla koşmalı? 🟡 *rejim kararı, kod hazır*
+### **[OQ-4]** `cp2c_kabul.sh` hangi hakem yığınıyla koşmalı? 🟡 *rejim kararı, kod hazır*
 
 `cp2c_kabul.sh:39` → `LLM_GATEWAY="${LLM_GATEWAY:-openai}"`, oysa ölçüm koşuları
 `openrouter` + sağlayıcı pini kullanıyor (global kısıt). Zincir 4. adımda **ortak**
@@ -76,7 +156,7 @@ temizlemez. Gereken: (i) hata mesajının temizleme yolunu **söylemesi** (hangi
 alan, kaç kalem), (ii) damgaya göre seçici düşürme reçetesi. ⛔ Bu dalgada kod değişmedi
 (inceleme kod kalitesini onayladı) — **borç olarak açık**.
 
-### İkili oran eksenlerinin (M2 / M2b / M3 `Rej`) çözünürlük sınırı yazılmadı 🔴 *insan kararı*
+### **[OQ-2 · karar S5]** İkili oran eksenlerinin (M2 / M2b / M3 `Rej`) çözünürlük sınırı yazılmadı 🔴 *insan kararı*
 
 Global kısıttaki **`0,3 A1 puanı = 0,003 kesir`** gürültü tabanı **yalnız A1 makrosu** içindir
 (cevaplanan-only, hakemin yeniden-koşum gürültüsünden türetildi). Çekinme oranları **ikili
@@ -101,7 +181,7 @@ ruhu: alet düzeltilir, eşik insan tarafından konur). Karar verilene kadar kur
 (b) ölçülmüş taban — aynı kolun yeniden-skorlamasıyla `Rej` oynamasını ölç (hakem maliyeti var);
 (c) güven aralığı — Wilson aralığı, ek maliyet $0 ama kapı kuralını değiştirir.
 
-### ~~M2'nin paydası hâlâ modele bağımlı — fiyatı ölçüldü~~ ✅ **KAPANDI 2026-08-06 (KARAR-3)**
+### **[OQ-1 — kalan ayak: M3 paydası]** ~~M2'nin paydası hâlâ modele bağımlı — fiyatı ölçüldü~~ ✅ **KAPANDI 2026-08-06 (KARAR-3)**
 
 > ✅ **Ödendi:** on koşunun `m2` paydası **$0,1054** ile eşitlendi (55-63 → **66/70**, 10/10 kol).
 > Kayıt: [#59](record/research_log/2026-08-06-m2-paydasi-ve-karar-4.md) ·
@@ -130,7 +210,7 @@ ADR-0029/tuzak 2.7 hakem yığınının aynı olmasını şart koşuyor. Ucuz am
 **Bağlı olan:** ARA KAPI'nın **1. gözlemi** (`τ_a` tekil M2 ≥ base + 0,12) bu paydadan türüyor
 ve bugün **askıda** — ne doğrulandı ne çürütüldü ([ADR-0045](adr/0045-ara-kapi-merge-onarim-kontrolu.md)).
 
-### Açılış-yeterlilik kuralının maruziyeti kollar arasında ~8 kat asimetrik 🟡 *ölçüldü, kural değişmedi*
+### **[OQ-6]** Açılış-yeterlilik kuralının maruziyeti kollar arasında ~8 kat asimetrik 🟡 *ölçüldü, kural değişmedi*
 
 ADR-0058'in açılış hükmü kuralı (`score_abstention._acilis_yeterlilik_hukmu`) her kolda aynı
 sıklıkta **tetiklenmiyor**, çünkü modeller önsözü farklı sıklıkta uyguluyor. Ölçüldü 2026-08-06:
@@ -149,7 +229,7 @@ sıklıkta **tetiklenmiyor**, çünkü modeller önsözü farklı sıklıkta uyg
 manşet hükmün kurulduğu kolda (`h2b_fl35_k4`). Kural yanlı olmasa bile, hatası olsaydı **yalnız
 o kolda** görünürdü. Kural bu dalgada **değiştirilmedi** (ADR-0050); asimetri kayda geçti.
 
-### 🐞 Gizil kusur — `harness_tablo.py:137` `id` ile liste indeksini karıştırıyor 🟡 *bugün çalışıyor*
+### **[OQ-5]** 🐞 Gizil kusur — `harness_tablo.py:137` `id` ile liste indeksini karıştırıyor 🟡 *bugün çalışıyor*
 
 `cevaplandi[i]` ifadesinde `i`, `gnd` kaydının **`id`**'si; oysa `cevaplandi` **konum-indeksli**
 bir liste. Bugün doğru sonuç veriyor çünkü harness detay dosyalarında id'ler `0..n-1` sırayla
@@ -157,7 +237,7 @@ gidiyor (doğrulandı). **Devam ettirilen** (`--resume`) ya da **seyrek id**'li 
 `coverage` **sessizce yanlış** çıkar — hata vermez. Düzeltmek serbest; düzeltilirse **önce
 düşen test** yazılır (seyrek id'li fixture).
 
-### Yeterlilik önsözünün atıf bedeli ürün açısından kabul edilebilir mi? 🔴 *ölçüm var, yorum yok*
+### **[OQ-3 · karar S6]** Yeterlilik önsözünün atıf bedeli ürün açısından kabul edilebilir mi? 🔴 *ölçüm var, yorum yok*
 
 `--sufficiency-preamble` (ana protokol, [ADR-0058](adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md))
 kütleyi ve A1'i yükseltiyor, ama bunu kısmen **daha az söyleyerek** yapıyor: hakem iddia sayısı

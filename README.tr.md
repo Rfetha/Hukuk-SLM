@@ -50,28 +50,57 @@ merge yapılandırması DEV'de seçildi.
 
 Yukarıdaki tablo doğru maddeyi modelin eline veriyor. Gerçek kullanıcının böyle bir
 lüksü yok. Bağlamı bir retriever seçtiğinde (hibrit BM25 + `bge-m3`, 40.496 maddelik
-indeks, `k=10`, tamamı CPU'da):
+indeks, `k=10`, tamamı CPU'da) ve sistem isteminde **kaynak-yeterliliği önsözü** varken
+(2026-08-06'dan beri ana protokol — [ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md)):
 
-| | harness KAPALI | **harness AÇIK** |
-| :--- | ---: | ---: |
-| altın madde bağlamda | **kurgu gereği** garanti | **70/80 — `recall@10` 0,875** |
-| sadık-cevap kütlesi | %71,6 | **%61,3** |
-| A1 · altın getirilen alt küme | 0,909 | **0,862** |
-| **uydurulmuş madde numarası** | 0 | **0 / 118** |
+| | harness KAPALI | **harness AÇIK — RESMÎ** | AÇIK, önsözsüz *ablasyon* |
+| :--- | ---: | ---: | ---: |
+| altın madde bağlamda | **kurgu gereği** garanti | **70/80 — `recall@10` 0,875** | 70/80 — birebir aynı |
+| coverage | 0,788 | **0,7625** | 0,7625 *(birebir aynı)* |
+| sadık-cevap kütlesi | %71,6 | **%62,8** | %61,3 |
+| A1 · cevaplanan | 0,909 | **0,8229** | 0,8042 |
+| A1 · altın getirilen alt küme | 0,909 | **0,8705** | 0,8616 |
+| **uydurulmuş madde numarası** | 0 | **0 / 83** | 0 / 118 |
+| altın bağlamdayken çekindi ↓ | 17/80 | **14/80** | 16/80 |
+| *başka bir gerçek* maddeden cevapladı ↓ | — | **5/80** | 7/80 |
 
-**Arkasında durduğumuz sayı %61,3.** Bu bir gerileme değil — iki ölçüm aynı şeyi
-ölçmüyor ve KAPALI sütunu bir rakip değil **tavan**. 10,2 puanlık açığı ayrıştırdık:
+> 🚨 **DÜZELTİLDİ 2026-09-06.** Bu bölüm bugüne kadar **ADR-0058 ÖNCESİ** çıpaları
+> (%61,3 · 0,862 · 0/118 · 16/80 · 7/80) resmî sayı gibi yayımlıyordu. Onlar **önsözsüz
+> ablasyon** sayılarıdır ve **silinmedi**, sağdaki sütunda duruyor. Resmî koşu:
+> `outputs/eval/olcum-bi/harness_tablo.json` ·
+> [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1). Ablasyon koşusu:
+> `outputs/eval/s2-harness-k10-etiketli/`.
+
+**Arkasında durduğumuz sayı %62,8.** Bu bir gerileme değil — iki ölçüm aynı şeyi
+ölçmüyor ve KAPALI sütunu bir rakip değil **tavan**.
+
+> ⚠️ Aşağıdaki ayrıştırma **önsözsüz** çıpaya (%61,3) karşı, yani 10,2 puanlık açık için
+> yapıldı. ADR-0058 sonrası açık **8,8 puandır** ve **yeniden ayrıştırılmamıştır.**
+
+10,2 puanlık açığı ayrıştırdık:
 **≈5,1 puan erişim ıskası** (harness'ın — 10/80 soruda altın madde hiç gelmiyor) +
 **≈4,5 puan dikkat dağılması** (modelin — altın getirildiğinde bile yanına dokuz madde
 konunca A1 0,909 → 0,862 düşüyor).
 
+⚠️ **İndirmeden önce bilinmesi gereken bir sonuç.** %62,8 sayısı *model + retriever + önsöz*
+üçlüsünün sayısıdır. Önsöz bugün tek bir ölçüm script'inin içinde duruyor ve dağıtılmıyor,
+retriever da aşağıdaki servis yoluna bağlı değil — dolayısıyla modeli düz indiren kişi manşeti
+değil **ablasyon** sütununu (%61,3) yeniden üretir. İkisini de paketlemek `v1`'in ilan edilmiş
+şartıdır ([yol haritası](ROADMAP.md)).
+
 🚨 **Ve ölçüm kendi planımızı çürüttü.** Atıf doğrulayıcıyı A1 açığını kapatmak için
 kurduk. **Sıfır** uydurulmuş madde numarası buldu — yakalamak için kurulduğu sınıf
 **boş**. Model numara uydurmuyor; erişim ıskaladığında *başka bir gerçek* maddeden
-cevaplıyor (7/80). Asıl büyük hata bunun tersi: **16/80** soruda model, altın madde
-**bağlamındayken** çekiniyor — ve bu sayı harness kapalıyken de aynı (17/80), yani bir
-**model** özelliği, erişim özelliği değil. Deterministik kod bunu kapatamaz.
+cevaplıyor (**5/80**; önsözsüz ablasyon: 7/80). Asıl büyük hata bunun tersi: **14/80**
+(ablasyon: 16/80) soruda model, altın madde **bağlamındayken** çekiniyor — ve bu sayı harness
+kapalıyken de neredeyse aynı (17/80), yani bir **model** özelliği, erişim özelliği değil.
+Deterministik kod bunu kapatamaz.
 Ayrıntı ve tam kayıt: [yol haritası](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
+
+⚠️ **Bu 14/80 ve 16/80 sayıları incelemede.** 2026-09-06'da çekinme dedektörünün bir istem
+rejiminde **doğru, atıflı bir cevabı** çekinme sayabildiği ölçüldü; resmî çıpada **en az bir
+doğrulanmış yanlış pozitif** var ve bulaşmanın büyüklüğü **ölçülmedi**
+([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)).
 
 ## Nasıl kuruldu
 
@@ -115,7 +144,7 @@ takılıp **geçersiz sayılan iki koşu** ve ölçüm çeliştiği için **sonr
 | | |
 | :--- | :--- |
 | [`docs/record/research_log/`](docs/record/research_log/) | ne olduğu, kronolojik, her sayıyla |
-| [`docs/adr/`](docs/adr/) | 55 karar kaydı — bağlam, seçenekler, **elenenler** |
+| [`docs/adr/`](docs/adr/) | 60 karar kaydı — bağlam, seçenekler, **elenenler** *(0059 rezerve, henüz yazılmadı)* |
 | [`docs/record/kollar.md`](docs/record/kollar.md) | artefakt kaydı: her kol ve merge, künyesiyle |
 | [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) | **hata vermeden yanlış sayı üreten** kalıplar — her biri fiilen ısırdı |
 | [`outputs/eval/`](outputs/eval/) | ham eval çıktıları ve koşu künyeleri |
