@@ -67,7 +67,61 @@ KARAR-6: kesişim 19 · yalnız np1 7 · yalnız np8 10 · Jaccard 0,5278
 taşıyıcısı) · sızıntı süzgeci konteynerde yerelle **birebir** (13.350 → 12.914, atılan 436) ·
 L4'te **65,8 tok/s** (CPU'ya düşmedi) · `gguf_sha 755e15e92e9f7021…`.
 
-### Görev 3.5 — ONARIM (ADR-0061 Karar 1)
+### ✅ Görev 3.5 KAPANDI — onarım yapıldı, ölçüldü, kayda geçti ([#61](../../record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md))
+
+- [x] `exact_reject` **TDD ile** onarıldı — 11 satır, `REJECT_RE`'ye dokunulmadı
+- [x] `pytest tests/ -q` → **112 passed, 2 xfailed** (çıpa 99/1)
+- [x] Çıpanın **80 kalemi gözle okundu** → **gerçek B10 = 8/80** (alet: 9/80, eski: 14/80)
+- [x] **82 dosya $0'a yeniden puanlandı**, 82 yedek `*.ONCEKI-20260906`
+- [ ] 🛑 **İNSAN:** aşağıdaki yeniden türetilmiş eşikler onaylanacak
+- [ ] Pilot yeniden koşulur (Modal L4, ~$0,81) → D1 ve KARAR-6 **gerçek** sayılarla
+
+### 🛑 EŞİKLERİN YENİDEN TÜRETİLMESİ — ADR-0061 Karar 2, **insan onayı bekliyor**
+
+⛔ Kural insanca onaylandı (*"aynı formül, yeni birim"*, sayılar görülmeden). Aşağıdaki tablo
+o kuralın **mekanik sonucudur** — yeni bir karar değil. Eşiğe, çarpana, formüle **dokunulmadı**.
+
+**Görev 7 — kol kapısı.** Formül *"base'in altına in"*; değişen yalnız base'in birimi:
+
+| kol (M1, harness KAPALI) | eski birim | **yeni birim** | fark |
+| :--- | ---: | ---: | ---: |
+| **`base`** ← kapının çıpası | ~~0,4250~~ | **0,4125** | −0,0125 |
+| `τ_g` v1 | ~~0,1750~~ | 0,0375 | −0,1375 |
+| `τ_a` v1 | 0,5750 | **0,5750** | **0,0000** ⭐ |
+| `tgta_v1` | ~~0,2125~~ | 0,0750 | −0,1375 |
+
+```
+Görev 7 kapısı, yeni birimde:
+  BAŞARILI   aşırı-red < 0,4125  VE  M2b Rej ≥ 0,95  VE  M1 A1 ≥ 0,88
+  KISMİ      0,4125 ≤ aşırı-red < 0,50  VE  M2b Rej ≥ 0,95
+  BAŞARISIZ  aşırı-red ≥ 0,50  ya da  M2b Rej < 0,95
+```
+
+⭐ **`τ_a` v1'in sayısı KIL PAYI KIPIRDAMADI (0,5750 → 0,5750)** — ve bu, onarımın doğru şeyi
+düzelttiğinin bağımsız kanıtı: `τ_a` v1 çekinme kolu, cevapları kısa şablon redler
+(ADR-0051'in *"58 karakter"* bulgusu), yani `raft` eleme-gerekçesi kalıbını **hiç taşımıyor**.
+Hatanın kapsamı **tam olarak öngörüldüğü yerdeydi.**
+
+**Görev 9 — ürün kapısı:**
+
+| eksen | eski birim | **yeni birim** | not |
+| :--- | ---: | ---: | :--- |
+| kütle > | ~~%62,8~~ | **%68,4** | `tgta_v1`'in kendi yeni sayısı |
+| B10 < | ~~14/80~~ | **9/80** | alet ölçümü *(gözle okuma 8/80)* |
+| M2b Rej ≥ | 0,809 | **0,809** | ⭐ **DEĞİŞMEDİ** — hakem metriği (`rejection_rate`), onarım ona dokunmadı |
+
+### 🚨 Turun öncülü hakkında — insana açık soru
+
+Spec, sayı görülmeden B10 için **8-11/80** ön-kayıtladı. Gözle okuma **8/80** veriyor:
+**hedef `τ_a` v2 hiç eğitilmeden karşılandı.** Aşırı-red gerçekti ama büyüklüğünün **%43'ü
+aletin kendisiydi**. *"Kütlenin büyük yarısı burada"* okuması **artık ayakta değil**
+(8/80 hâlâ 3.5 FL'ın 6/80'inin üstünde — sıfırlanmadı, küçüldü).
+
+⛔ **Hüküm kurulmadı.** *"Tur devam etsin mi, yoksa birinci sıra B1'e mi geçsin"* **insan kararı**.
+
+---
+
+### ~~Görev 3.5~~ — ONARIM (ADR-0061 Karar 1) *(özgün kalem, yukarıda kapandı)*
 - [ ] `exact_reject` **TDD ile** onarılır — test korpusu #60'ın gözle okunan 10 hasat + 3 çıpa kalemi
 - [ ] `pytest tests/ -q` tamamen yeşil (çıpa: `99 passed, 1 xfailed`)
 - [ ] Çıpanın **80 kalemi gözle okunur** → **gerçek B10 sayısı** belirlenir
