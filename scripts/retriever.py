@@ -7,7 +7,13 @@ S3a ön-probu (research_log #49) yöntemi **ölçerek** seçti:
     BM25                             0,625       0,750
     multilingual-e5-base             0,700       0,750
     BAAI/bge-m3                      0,800       0,863
-    hibrit (BM25 + bge-m3, RRF)      0,875       0,925   ← bu
+    hibrit (BM25 + bge-m3, RRF)      0,875       0,925   ← bu (RRF_K=60, soru seti v1)
+
+    ⚠️ 2026-09-06: iki şey değişti, ESKİ SATIR SİLİNMEDİ — damgalandı.
+    Soru seti v2 (KUNYE_soru_onarimi_2026-09-06.json) + RRF_K 60→10 (ADR-0068):
+    hibrit, DEV-v2, RRF_K=10        r@10 0,9500   r@5 0,8250   r@1 0,5500
+    Aynı indeks, aynı korpus. Yukarıdaki 0,875 v1 soru setinin sayısıdır ve
+    v2 ile KIYASLANMAZ.
 
 ⚠️ **Chunk = TAM MADDE** (ADR-0054/K2). Eval-ayna kuralının 900 karakter kırpması
 retriever'da **uygulanmaz**; bağlam modele verilirken uygulanır — kuralın öznesi
@@ -34,7 +40,15 @@ import numpy as np
 
 MODEL = "BAAI/bge-m3"
 AZAMI_TOKEN = 512   # kıyas değişmezi (research_log #49 §4.2) — modeller arası eşitlenir
-RRF_K = 60
+RRF_K = 10   # ADR-0068 (2026-09-06): 60 → 10.
+# Why: RRF_K=60 çok-sistemli füzyon için varsayılandır. İKİ kollu ve kolları çok farklı
+# davranan bu sistemde "iki kolda vasat" olanı "bir kolda mükemmel" olana tercih ediyordu:
+# k=60'ta 0. sıra + 97. sıra = 1/60 + 1/157 = 0,0231 < iki kolda 5. sıra = 2/65 = 0,0308.
+# Ölçüldü (DEV-v2, n=80): k=60'ta altını YOĞUN kol 0. sırada bulduğu kalem (id 79) ve
+# BM25 kolun 0. sırada bulduğu kalem (id 12) ilk 10'un DIŞINA itiliyordu.
+# Seçim gerekçesi PLATO, sivrilik değil: r@5 = 0,8250 k∈[5,20] boyunca sabit (k=30'da
+# 0,8125, k=60'ta 0,7875); k=10 o platonun ORTASI. r@10'daki fazladan kalem BONUSTUR.
+# Seçim DEV'de yapıldı; doğrulaması donmuş TEST'tedir.
 
 
 def rrf_birlestir(skor_listeleri, rrf_k=RRF_K):
