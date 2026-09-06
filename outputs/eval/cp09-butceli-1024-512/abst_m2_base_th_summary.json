@@ -19,7 +19,7 @@
   "gecerlilik_maliyet_usd": 0.1054,
   "source_field": "referans",
   "rejection_rate": 0.803,
-  "rejection_exact": 0.545,
+  "rejection_exact": 0.485,
   "fabrication_rate": 0.197,
   "parametric_leak": 0.136,
   "pay_kaynagi": "onceki",

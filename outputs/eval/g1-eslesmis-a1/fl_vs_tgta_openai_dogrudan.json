@@ -1,24 +1,24 @@
 {
-  "n_kesisim": 51,
+  "n_kesisim": 62,
   "n_ortak_id": 80,
   "n_cevaplayan": {
-    "gemini_fl": 61,
-    "tgta_v1": 63
+    "gemini_fl": 63,
+    "tgta_v1": 74
   },
   "a1_kollar": {
-    "gemini_fl": 0.9695470588235294,
-    "tgta_v1": 0.9362745098039216
+    "gemini_fl": 0.9568048387096774,
+    "tgta_v1": 0.9193548387096774
   },
   "farklar": {
-    "gemini_fl−tgta_v1": 0.033272549019607855
+    "gemini_fl−tgta_v1": 0.03744999999999998
   },
   "ayrisma": {
     "gemini_fl−tgta_v1": {
-      "n_ayrisan": 10,
-      "n_berabere": 41,
-      "a_lehine": 6,
-      "b_lehine": 4,
-      "fark_sd": 0.2337803551014767
+      "n_ayrisan": 13,
+      "n_berabere": 49,
+      "a_lehine": 8,
+      "b_lehine": 5,
+      "fark_sd": 0.22288322146324982
     }
   },
   "hakem_yigini": {
@@ -45,10 +45,11 @@
       "gnd": "outputs/eval/cp3-supurme-ham/gnd_m1_tg_ta_ham_th.jsonl"
     }
   },
-  "git_sha": "9b9be30",
-  "uretildi": "2026-08-06T15:54:58",
+  "git_sha": "ae698fc",
+  "uretildi": "2026-09-06T12:16:18",
   "uyarilar": [],
   "id_listesi": [
+    "0",
     "1",
     "2",
     "3",
@@ -62,7 +63,9 @@
     "12",
     "13",
     "16",
+    "17",
     "18",
+    "19",
     "20",
     "21",
     "22",
@@ -74,9 +77,12 @@
     "32",
     "33",
     "34",
+    "35",
+    "36",
     "37",
     "39",
     "40",
+    "41",
     "44",
     "46",
     "47",
@@ -84,8 +90,11 @@
     "49",
     "50",
     "52",
+    "53",
     "55",
     "56",
+    "57",
+    "58",
     "60",
     "63",
     "64",
@@ -96,19 +105,21 @@
     "70",
     "71",
     "72",
+    "73",
     "74",
     "75",
     "77",
-    "78"
+    "78",
+    "79"
   ],
-  "n_cevaplayan_a": 61,
-  "n_cevaplayan_b": 63,
-  "a1_a": 0.9695470588235294,
-  "a1_b": 0.9362745098039216,
-  "fark": 0.033272549019607855,
-  "n_ayrisan": 10,
-  "n_berabere": 41,
-  "a_lehine": 6,
-  "b_lehine": 4,
-  "fark_sd": 0.2337803551014767
+  "n_cevaplayan_a": 63,
+  "n_cevaplayan_b": 74,
+  "a1_a": 0.9568048387096774,
+  "a1_b": 0.9193548387096774,
+  "fark": 0.03744999999999998,
+  "n_ayrisan": 13,
+  "n_berabere": 49,
+  "a_lehine": 8,
+  "b_lehine": 5,
+  "fark_sd": 0.22288322146324982
 }

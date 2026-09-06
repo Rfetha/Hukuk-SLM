@@ -1,24 +1,24 @@
 {
-  "n_kesisim": 45,
+  "n_kesisim": 46,
   "n_ortak_id": 80,
   "n_cevaplayan": {
-    "base": 46,
-    "gemini_fl": 61
+    "base": 47,
+    "gemini_fl": 63
   },
   "a1_kollar": {
-    "base": 0.9577355555555556,
-    "gemini_fl": 0.9833333333333333
+    "base": 0.958654347826087,
+    "gemini_fl": 0.9836956521739131
   },
   "farklar": {
-    "base−gemini_fl": -0.02559777777777772
+    "base−gemini_fl": -0.025041304347826032
   },
   "ayrisma": {
     "base−gemini_fl": {
       "n_ayrisan": 6,
-      "n_berabere": 39,
+      "n_berabere": 40,
       "a_lehine": 2,
       "b_lehine": 4,
-      "fark_sd": 0.18337446348547515
+      "fark_sd": 0.18136479699592195
     }
   },
   "hakem_yigini": {
@@ -45,8 +45,8 @@
       "gnd": "outputs/eval/g1-eslesmis-a1/gnd_m1_gem_th_or.jsonl"
     }
   },
-  "git_sha": "9b9be30",
-  "uretildi": "2026-08-06T15:54:58",
+  "git_sha": "ae698fc",
+  "uretildi": "2026-09-06T12:16:18",
   "uyarilar": [],
   "id_listesi": [
     "2",
@@ -69,6 +69,7 @@
     "31",
     "34",
     "35",
+    "36",
     "39",
     "40",
     "46",
@@ -95,14 +96,14 @@
     "77",
     "79"
   ],
-  "n_cevaplayan_a": 46,
-  "n_cevaplayan_b": 61,
-  "a1_a": 0.9577355555555556,
-  "a1_b": 0.9833333333333333,
-  "fark": -0.02559777777777772,
+  "n_cevaplayan_a": 47,
+  "n_cevaplayan_b": 63,
+  "a1_a": 0.958654347826087,
+  "a1_b": 0.9836956521739131,
+  "fark": -0.025041304347826032,
   "n_ayrisan": 6,
-  "n_berabere": 39,
+  "n_berabere": 40,
   "a_lehine": 2,
   "b_lehine": 4,
-  "fark_sd": 0.18337446348547515
+  "fark_sd": 0.18136479699592195
 }

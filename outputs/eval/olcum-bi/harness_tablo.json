@@ -9,31 +9,31 @@
     "recall@10": 0.875
   },
   "kutle_ekseni": {
-    "coverage": 0.7625,
-    "A1_cevaplanan": 0.8229,
+    "coverage": 0.825,
+    "A1_cevaplanan": 0.8288,
     "faith_macro_tum_cekinme_dahil": 0.8137,
-    "A1_tum": 0.8229,
-    "A1_altin_getirilen_alt_kume": 0.8705,
-    "kutle_tum": 0.6275
+    "A1_tum": 0.8288,
+    "A1_altin_getirilen_alt_kume": 0.8729,
+    "kutle_tum": 0.6838
   },
   "kapi": {
     "kati": {
       "gecen": 77,
       "reddedilen": 3,
       "atifsiz_gecen": 13,
-      "kapi_sonrasi_coverage": 0.75
+      "kapi_sonrasi_coverage": 0.8125
     },
     "cogunluk": {
       "gecen": 77,
       "reddedilen": 3,
       "atifsiz_gecen": 13,
-      "kapi_sonrasi_coverage": 0.75
+      "kapi_sonrasi_coverage": 0.8125
     },
     "cerrahi": {
       "gecen": 80,
       "reddedilen": 0,
       "atifsiz_gecen": 13,
-      "kapi_sonrasi_coverage": 0.7625
+      "kapi_sonrasi_coverage": 0.825
     }
   },
   "atif_dagilimi": {
@@ -44,8 +44,8 @@
     "MULGA": 0
   },
   "erisim_davranis_caprazi": {
-    "altin_geldi_cevapladi": 56,
-    "altin_geldi_cekindi": 14,
+    "altin_geldi_cevapladi": 61,
+    "altin_geldi_cekindi": 9,
     "altin_gelmedi_cevapladi": 5,
     "altin_gelmedi_cekindi": 5
   },
@@ -64,10 +64,10 @@
         "recall@5": 0.8226,
         "recall@10": 0.9355
       },
-      "coverage": 0.7903,
-      "A1_tum": 0.875,
-      "A1_altin_getirilen_alt_kume": 0.891,
-      "kutle_tum": 0.6915
+      "coverage": 0.871,
+      "A1_tum": 0.8773,
+      "A1_altin_getirilen_alt_kume": 0.8918,
+      "kutle_tum": 0.7641
     },
     "belirsiz": {
       "n": 18,

@@ -70,7 +70,7 @@
     "cevap": "Verilen kaynak metni (Hukuk Muhakemeleri Kanunu Madde 55) taraflardan birinin ölümü hâlinde mirasçılar mirası kabul veya reddetmemişse dava ertelenmesi ve hâkim",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
     "reason": "Verilen kaynakta yasal danışman atanması ile ilgili bilgi yok.",
     "valid_trap_anahtari": "a5d5ea4aa6440aa4b00fdb57",

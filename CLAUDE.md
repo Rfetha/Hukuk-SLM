@@ -63,7 +63,7 @@ not measure the same thing (OFF hands the model the gold article by construction
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#60** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#61** |
 | the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
 | what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
 | why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0061** |
@@ -166,7 +166,7 @@ decision ledger.
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#61**.
+  record, **authoritative for "what happened."** New findings continue at **#62**.
 - [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0062**.
   ⚠️ **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
   places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.

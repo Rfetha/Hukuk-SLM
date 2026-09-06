@@ -1,24 +1,24 @@
 {
-  "n_kesisim": 45,
+  "n_kesisim": 46,
   "n_ortak_id": 80,
   "n_cevaplayan": {
-    "base": 46,
-    "gemini_fl": 61
+    "base": 47,
+    "gemini_fl": 63
   },
   "a1_kollar": {
-    "base": 0.9861111111111112,
-    "gemini_fl": 0.9784488888888889
+    "base": 0.9864130434782609,
+    "gemini_fl": 0.9789173913043479
   },
   "farklar": {
-    "base−gemini_fl": 0.007662222222222237
+    "base−gemini_fl": 0.007495652173913014
   },
   "ayrisma": {
     "base−gemini_fl": {
       "n_ayrisan": 5,
-      "n_berabere": 40,
+      "n_berabere": 41,
       "a_lehine": 4,
       "b_lehine": 1,
-      "fark_sd": 0.12852458959791754
+      "fark_sd": 0.12709353678211743
     }
   },
   "hakem_yigini": {
@@ -45,8 +45,8 @@
       "gnd": "outputs/eval/cp09-butceli-1024-512/gnd_m1_gem_th.jsonl"
     }
   },
-  "git_sha": "9b9be30",
-  "uretildi": "2026-08-06T15:54:58",
+  "git_sha": "ae698fc",
+  "uretildi": "2026-09-06T12:16:18",
   "uyarilar": [],
   "id_listesi": [
     "2",
@@ -69,6 +69,7 @@
     "31",
     "34",
     "35",
+    "36",
     "39",
     "40",
     "46",
@@ -95,14 +96,14 @@
     "77",
     "79"
   ],
-  "n_cevaplayan_a": 46,
-  "n_cevaplayan_b": 61,
-  "a1_a": 0.9861111111111112,
-  "a1_b": 0.9784488888888889,
-  "fark": 0.007662222222222237,
+  "n_cevaplayan_a": 47,
+  "n_cevaplayan_b": 63,
+  "a1_a": 0.9864130434782609,
+  "a1_b": 0.9789173913043479,
+  "fark": 0.007495652173913014,
   "n_ayrisan": 5,
-  "n_berabere": 40,
+  "n_berabere": 41,
   "a_lehine": 4,
   "b_lehine": 1,
-  "fark_sd": 0.12852458959791754
+  "fark_sd": 0.12709353678211743
 }

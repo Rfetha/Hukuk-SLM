@@ -15,7 +15,7 @@
   "gecerlilik_maliyet_usd": 0.0,
   "source_field": "context_shown",
   "rejection_rate": 0.809,
-  "rejection_exact": 0.632,
+  "rejection_exact": 0.618,
   "fabrication_rate": 0.191,
   "parametric_leak": 0.015,
   "judge_cost_usd": 0.0189,

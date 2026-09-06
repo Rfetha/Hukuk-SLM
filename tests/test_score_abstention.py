@@ -460,3 +460,18 @@ def test_exact_reject_resmi_cipa_gozle_okunan_kalemi_dogru_sinifla(kimlik):
     """
     beklenen, cevap = _CIPA[kimlik]
     assert exact_reject(cevap, "harness") is beklenen
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "🔴 AÇIK BORÇ (ADR-0061, 2026-09-06). Ö2'nin AYNA vakası: model açılışta reddedip "
+    "GÖVDEDE kendi reddini yalanlıyor ve tam cevabı veriyor. Onarılmış kural örtük açılış "
+    "reddini BAĞLAYICI sayıyor, bu yüzden burada çekinme diyor. ÖLÇÜLDÜ ve kapatılmadı: "
+    "çıpanın 80 kaleminin GÖZLE OKUNMASINDA bu şekle uyan tek kalem `id=32`. Rule of Three "
+    "— tek örnekte kural kurulmaz; genişletmek ters yönde yanlış-pozitif üretir (ADR-0050 "
+    "ruhu: sonucu gördükten sonra alet keyfî kurcalanmaz). Bu test kusuru KİLİTLEMEZ, "
+    "SINIRI çizer: kural düzelirse strict=True ile PATLAR ve damga kaldırılmak zorunda kalır. "
+    "Kaynak: outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md"))
+def test_exact_reject_acilis_reddini_YALANLAYAN_govde_kacar():
+    """Sınır vakası — kural bugün bunu 'çekindi' sayıyor, oysa dolu cevaptır."""
+    cevap = "Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor. İlgili kaynak, duruşmaya katılmama durumunu düzenleyen HUKUK MUHAKEMELERİ KANUNU MADDE 147'dir. Ancak bu madde, tarafların duruşmaya gelmemesi durumunda mahkemenin devam etmesi ve itiraz edemeyecekleri hususunu belirtmektedir. \n\nKAYNAK 2, duruşmaya katılmama durumunda tarafların mahkemede hazır bulunmadıkları takdirde duruşmaya yokluklarında devam edileceği ve yapılan işlemlere itiraz edemeyecekleri hususunu açıkça belirtmektedir. Bu nedenle, mazeret bildirmezseniz ve duruşmaya katılmazsanız, mahkeme duruşmaya devam edecektir ve yapılan işlemlere itiraz edemeyeceksiniz."
+    assert exact_reject(cevap, "harness") is False

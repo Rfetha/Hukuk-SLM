@@ -967,7 +967,7 @@
     "cevap": "İcra memuru haczi bizzat yapabileceği gibi yardımcı veya katiplerinden birine de yaptırabilir. Borçlu haciz sırasında malın bulunduğu yerde bulunmaz ve hemen bu",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
     "reason": "Verilen kaynakta konutta haciz yapılırken özel bir durum olup olmadığına dair bilgi yok.",
     "valid_trap_anahtari": "322f6bd3b33bb4cce8f7916e",
