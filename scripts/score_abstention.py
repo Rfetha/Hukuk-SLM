@@ -192,17 +192,28 @@ def _acilis_yeterlilik_hukmu(c):
     return None
 
 
-def _son_esasli_ibare(c):
-    """Cevabın SON esaslı ibaresi — salt atıf parantezleri ve kırıntılar atılır.
+def _esasli_ibareler(c):
+    """Cevabın esaslı ibareleri — salt atıf parantezleri ve kırıntılar atılır.
 
-    Why: gövdenin hükmünü sonuç cümlesi taşır, ama cevaplar sık sık `(TÜRK CEZA KANUNU,
-    Madde 80)` gibi bir atıfla biter; o atıf hüküm değildir ve son ibare sayılırsa gerçek
-    sonuç görünmez olur (ölçülen vaka: `h2b_fl35_k4` id=76).
+    Why: hüküm taşıyan birim cümle/ibaredir, ama cevaplar sık sık `(TÜRK CEZA KANUNU,
+    Madde 80)` gibi bir atıfla başlar/biter; o atıf hüküm değildir ve ibare sayılırsa
+    gerçek hüküm görünmez olur (ölçülen vaka: `h2b_fl35_k4` id=76).
     """
     parcalar = [p.strip() for p in _IBARE_SINIRI.split(c) if p and p.strip()]
-    esasli = [p for p in parcalar
-              if len(p.split()) >= 4 and not (p.startswith("(") and p.endswith(")"))]
+    return [p for p in parcalar
+            if len(p.split()) >= 4 and not (p.startswith("(") and p.endswith(")"))]
+
+
+def _son_esasli_ibare(c):
+    """Gövdenin hükmünü taşıyan SON esaslı ibare."""
+    esasli = _esasli_ibareler(c)
     return esasli[-1] if esasli else c
+
+
+def _ilk_esasli_ibare(c):
+    """Açılış hükmünü taşıyan İLK esaslı ibare."""
+    esasli = _esasli_ibareler(c)
+    return esasli[0] if esasli else c
 
 
 def exact_reject(cevap, mode):
@@ -210,17 +221,18 @@ def exact_reject(cevap, mode):
     kör modda feragat cümlesi red sinyali DEĞİLDİR, diğer modlarda öyledir.
 
     Açılışta OLUMSUZ yeterlilik hükmü varsa çekinmedir. OLUMLU hüküm bağlayıcı değildir:
-    gövdeyle çelişebilir, o zaman gövdenin SON ESASLI İBARESİ karar verir. Hüküm yoksa
-    gövdenin tamamı REJECT_RE ile taranır."""
+    gövdeyle çelişebilir, o zaman gövdenin SON ESASLI İBARESİ karar verir. ADR-0058 hükmü
+    hiç kurulmamışsa (önsözsüz rejim) açılış hükmü ÖRTÜKtür: İLK esaslı ibaredeki red
+    bağlayıcıdır, yoksa yine SON esaslı ibare karar verir (ADR-0061)."""
     c = cevap or ""
     if mode == "blind":
         c = DISCLAIMER_RE.sub(" ", c)
     hukum = _acilis_yeterlilik_hukmu(c)
     if hukum is False:
         return True
-    if hukum is True:
-        return bool(REJECT_RE.search(_son_esasli_ibare(c)))
-    return bool(REJECT_RE.search(c))
+    if hukum is None and REJECT_RE.search(_ilk_esasli_ibare(c)):
+        return True
+    return bool(REJECT_RE.search(_son_esasli_ibare(c)))
 
 
 def load_jsonl(p):

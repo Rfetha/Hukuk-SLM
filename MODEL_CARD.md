@@ -195,17 +195,35 @@ below 1.0.
 
 ## Hardware
 
+> 🚨 **Corrected 2026-09-06.** This section previously said the figures were
+> ~~**calculated, not measured**~~ and that *"a measured peak is still owed"*. That was
+> **wrong**: a measurement exists — `outputs/eval/_artefakt/vram_stack.json`, produced by
+> [`scripts/measure_vram_stack.py`](scripts/measure_vram_stack.py). The old prose is struck,
+> not deleted.
+
+**Measured**, `llama-server`, Q4_K_M, KV cache `q8_0`, one slot (⚠️ the GPU model is **not**
+recorded in the output file — only pstate, clocks, power and temperature are):
+
+| context | server VRAM | peak |
+| ---: | ---: | ---: |
+| 4,096 | **3.09 GiB** | 4,530 MiB |
+| 32,768 | 3.70 GiB | 5,146 MiB |
+| 131,072 | 5.76 GiB | 7,259 MiB |
+
 ```
-GPU     ~6 GB VRAM   weights 2.59 GiB + KV cache (1 slot, 8192 ctx, q8_0) + buffers ≈ 3.5 GB
-                     4 GB may work with -c 4096 — untested
 RAM     ~8 GB        the harness (embedder, index) runs on CPU by design
 disk    ~5 GB        model + corpus + index
 ```
 
-⚠️ These are **calculated, not measured** — still true. The harness has since landed and the
-design rule held in practice: it runs entirely on CPU (embedder + 40,496-article index, 759 ms
-per query) and **never enters the GPU**. That is what makes the difference between fitting on
-a laptop and not. A measured peak is still owed.
+> ⚠️ **The measurement was taken on the BASE GGUF (`q35-4b-q4_k_m.gguf`), not on this model.**
+> `tgta_v1` is the same architecture, quantization and file-size class (2.59 GiB), so the
+> figures are expected to carry over — but **`tgta_v1` itself has not been measured** and no
+> number here is claimed for it. Closing that costs $0 and ~15 minutes; it is a listed `v1`
+> item ([roadmap](ROADMAP.md), Phase 0.2).
+
+The harness landed and the design rule held in practice: it runs entirely on CPU
+(embedder + 40,496-article index, 759 ms per query) and **never enters the GPU**. That is what
+makes the difference between fitting on a laptop and not.
 
 ## Method
 
@@ -260,14 +278,48 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
    the fix is queued.
 5. **The model thinks before answering** (~714 tokens/answer including reasoning).
    Cheaper than the base's 1192 but not free.
-6. **Judge-based metrics.** A1/Rej come from an LLM judge with no human-κ
-   calibration. Treat them as **model-vs-model rankings**, not absolute truth.
-7. **Single size, single base.** No evidence that these findings transfer.
+6. **Judge-based metrics, and only ONE judge family.** A1/Rej come from a single LLM judge
+   family (`gpt-4o-mini`) with **no κ and no three-family panel** — the panel specified in
+   ADR-0032 was never built, and human-κ is DESCOPED. Every judgment-axis number on this card
+   carries a **single-family** stamp. Treat them as **model-vs-model rankings**, not absolute
+   truth.
+7. **Single size, single base — and this gap does NOT close.** No evidence that these findings
+   transfer to another size or family. This is an accepted, permanent cost of the one-size-point
+   design, not future work.
+8. 🚨 **The ARA KAPI (mid-gate) FAILED on 2026-08-06 — the merge has not been validated against
+   the baselines.** What was pre-registered was the *formula*
+   (`merge M2b ≥ 0.90 × base's answer-blind M2b`), not a number: threshold **0.8649** ↔ merge
+   **0.766** → **short by 9.9 points** (it also fails the older 0.887 threshold; denominators
+   are equal, 77 ↔ 77). Per ADR-0050 the *tool* was repaired and the threshold was **not**
+   touched. That gate is what authorized the CP4-CP5 baseline spend — **that authorization is
+   gone**, so *"merge preserves conflicting skills better than sequential/mixed SFT"* remains
+   **unproven**. [ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
+   [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md).
+9. 🚨 **Gemini 3.5 Flash-Lite is ahead of us in the product regime.** First measured
+   2026-08-06 on a matched exam (ADR-0057; `recall@10` identical at 0.875 across all three
+   subjects): faithful-answer mass **62.8% (us) · 61.7% (3.1 FL) · 69.5% (3.5 FL)** — we pass
+   3.1 FL by **+1.0 point (narrow)** and 3.5 FL passes us by **6.7 points**. Over-refusal is
+   where we lose: **23.75%** vs **12.5%** for both competitors — roughly **twice** theirs.
+   We do lead both on A1 (answered and gold-retrieved). Source:
+   `outputs/eval/g2-fl-harness/OZET.md`.
+10. **ADR-0018's cost-performance CURVE requirement is not met.** One marked point is reported,
+    not a measured curve across sizes.
+11. **The sufficiency preamble buys accuracy partly by saying less.** Adopting it (ADR-0058)
+    raised mass and A1, but claims fell 268 → **206** (−23%), total citations 118 → **83**
+    (−30%), answers with no citation at all 8 → **13**. Whether that trade is acceptable for a
+    legislation assistant — where *auditability* is the promise — is **an open question, not a
+    settled one** ([`docs/open_questions.md`](docs/open_questions.md), OQ-3 / decision S6).
+12. ⚠️ **The over-refusal counts (14/80 · 16/80) are under review.** On 2026-09-06 the
+    abstention detector was found to score a correct, cited answer as an abstention in the
+    no-preamble prompt regime; the official anchor contains **at least one verified false
+    positive** and the size of the contamination has **not been measured** — closing it
+    requires reading all 80 items by eye
+    ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)).
 
 ## Reproducibility
 
 Everything is in this repository: the full chronological research log (including
-the negative results and the two invalidated runs), 55 ADRs, run manifests with
+the negative results and the two invalidated runs), 60 ADRs, run manifests with
 seeds and hashes, and the evaluation harness.
 
 ```

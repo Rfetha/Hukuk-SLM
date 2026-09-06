@@ -63,10 +63,10 @@ not measure the same thing (OFF hands the model the gold article by construction
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#59** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#60** |
 | the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
 | what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0060** |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0061** |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -86,10 +86,39 @@ not measure the same thing (OFF hands the model the gold article by construction
   [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md).
 - ⚠️ **The biggest single loss is over-refusal, and the model owns it** — the gold article is *in
   context* and the model abstains anyway. Retrieval cannot fix this. Debt **B10**.
+- 🚨 **The abstention DETECTOR itself is under repair — do not quote B10's counts as settled.**
+  Measured 2026-09-06: in the no-preamble regime `exact_reject` scores a correct, cited answer
+  as an abstention, because it scans the whole answer and the discarded-sources rationale trips
+  the refusal regex. The official anchor holds at least one verified false positive and the
+  contamination size is **unmeasured**. A programmatic probe was wrong in *both* directions, so
+  the only closing move is reading all 80 items by eye — decided, scheduled, and pre-registered
+  ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+  [`docs/open_questions.md`](docs/open_questions.md) **S13**).
+- 🧭 **Framing, 2026-09-06: the release language is v1/v2.** `v1` = a fine-tuned model release
+  that actually works end to end (weights + code + data + research record, shipped with the
+  retriever and the preamble, because the headline number is not reproducible without them);
+  `v2` = the API over that same model; arxiv is a **by-product, not the goal**. Sequenced plan,
+  acceptance criteria and rejected options:
+  [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
+  (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
 
-**Status of work: ACTIVE PLAN — B10 over-refusal round.** Plan (checkboxes are the single source
-of state): [`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md) ·
-design: [`2026-08-06-asiri-red-turu-design.md`](docs/superpowers/specs/2026-08-06-asiri-red-turu-design.md).
+**Status of work: 🛑 B10 over-refusal round STARTED AND STOPPED — at Task 3.8, the plan's own
+read-it-by-eye step.** The Task 3 pilot ran and the eyeball check **refuted the round's harvest
+acceptance criterion** (6 of 10 sampled "abstentions" were full, cited answers), so Task 4 was
+never started and Tasks 4-10 are blocked. Plan (checkboxes are the single source of state):
+[`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md) ·
+design: [`2026-08-06-asiri-red-turu-design.md`](docs/superpowers/specs/2026-08-06-asiri-red-turu-design.md) ·
+finding: [#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md).
+
+**Decided 2026-09-06 (human), before any new number was seen — no selection bias:** the round's
+new step zero is option **(c)** of S13 — repair `exact_reject` under TDD, re-score the 73 detail
+files at $0, read the anchor's 80 items by eye, and re-run the pilot. **If the repair moves the
+anchors, the Task 7 / Task 9 gate thresholds are RE-ANCHORED WITH THE SAME FORMULA** — the
+number is re-derived from the new anchor, the rule is not touched (ADR-0050's standing
+prescription: fix the tool, let a human set the threshold in advance). ⚠️ A tool change of this
+class needs an ADR — next number is **0061** (0059 is RESERVED).
+**Not blocked by any of that:** the Phase 0 cheap repairs run in parallel —
+[`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md).
 
 ### Target audience: the CITIZEN — but read the trap
 
@@ -132,13 +161,13 @@ decision ledger.
   carries an anchor per ADR (`#adr-0011`). **Read part A before designing any experiment.**
 - ⭐ **[`docs/record/kollar.md`](docs/record/kollar.md) — the artifact registry.** Every trained
   branch AND merge has its identity here; *an artifact with no row is nameless and must not be
-  used*. `tg_v1` (‖τ‖ 10,4722) · `ta_v1` (‖τ‖ 1,1806) · **`tgta_v1` = `HakHukuk-4B-v0.1`**. Both
+  used*. `tg_v1` (‖τ‖ 10,4722 — **and 10,4589 in `kollar.md` is also right**: the first is measured at merge time from the bf16-materialized ΔW, the second from the standalone artifact; the 0,13% gap is bf16 and [#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md) logged it as an *independent cross-check*, not a discrepancy — do not "fix" either) · `ta_v1` (‖τ‖ 1,1806) · **`tgta_v1` = `HakHukuk-4B-v0.1`**. Both
   names stay and do different jobs: `tgta_v1` is internal traceability (*which branch, which
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#60**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0061**.
+  record, **authoritative for "what happened."** New findings continue at **#61**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0062**.
   ⚠️ **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
   places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.
 

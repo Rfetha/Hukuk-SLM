@@ -382,3 +382,81 @@ def test_onbellek_es_zamanli_yazimda_kalem_KAYBETMEZ(tmp_path):
     assert all(p.exitcode == 0 for p in isciler)
     assert set(onbellek_oku(yol)) == {f"k{i}" for i in range(8)}
     assert not list(tmp_path.glob("*.tmp*")), "atomik replace sonrası geçici dosya kalmamalı"
+
+
+# ── ADR-0061 Karar 1 — ÖNSÖZSÜZ REJİMDE AÇILIŞ HÜKMÜ ────────────────────────
+# Ölçülen kusur (#60, 2026-09-06): önsözsüz rejimde ADR-0058 yeterlilik hükmü hiç
+# oluşmuyor (`_acilis_yeterlilik_hukmu` → None: hasatta 26/26, ÖNSÖZLÜ resmî çıpada
+# bile 75/80). O dalda `exact_reject` cevabın TAMAMINI tarıyordu; havuzun cevap şablonu
+# ise elenen kaynakların gerekçesini ("Diğer kaynaklar … içermemektedir") gövdenin
+# BAŞINDA taşıyor → tam ve atıflı cevaplar "çekinme" sayılıyordu (10 kabul kaleminin 6'sı).
+#
+# ⚠️ Naif "yalnız son ibareye bak" çözümü TERS yönde kırıyor: gerçek çekinmelerin hükmü
+# AÇILIŞTA ("Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor. Kaynaklar …")
+# ve son ibare açıklama cümlesidir. Aşağıdaki 13 vaka iki yönü BİRLİKTE kilitliyor;
+# hepsi #60'ta GÖZLE OKUNDU, hiçbiri varsayımsal değil.
+
+# Kaynak: data/_ham_ve_ara/b10-pilot/b10_np1.jsonl · alan `rejected` (Görev 3 pilotu)
+_HASAT_CEVAP = {
+    "raft11188":
+        "1) İtiraz süresi ile ilgili bilgi, yalnızca KAYNAK 1'de yer alan İcra ve İflas Kanunu Madde 225'te belirtilmiştir. Diğer kaynaklar, itiraz süresiyle ilgili doğrudan bir düzenleme içermemektedir.\n\n2) ##begin_quote## \"Alacaklılar toplanmasının kararlarından dolayı her alacaklı tarafından yedi gün içinde icra mahkemesine şikayet olunabilir.\" ##end_quote##\n\n3) Sonuç olarak, itiraz süresi yedi gündür (İCRA VE İFLAS KANUNU, Madde 225).",
+    "raft12319":
+        "1) KAYNAK 1, sosyal güvenlik ve sosyal yardım kurumlarından yapılan ödemelerin mal paylaşımına etkisini düzenleyen tek kaynak olarak belirgin bir şekilde konuya değinmektedir. Diğer kaynaklar, mal paylaşımı ile ilgili farklı konuları ele almakta olup, sosyal güvenlik tazminatı ile ilgili bir düzenleme içermemektedir.\n\n2) ##begin_quote## \"Eşlerden birine sosyal güvenlik veya sosyal yardım kurumlarınca yapılmış olan toptan ödemeler veya iş gücünün kaybı dolayısıyla ödenmiş olan tazminat, toptan ödeme veya tazminat yerine ilgili sosyal güvenlik veya sosyal yardım kurumunca uygulanan usule göre ömür boyunca irat bağlanmış olsaydı, mal rejiminin sona erdiği tarihte bundan sonraki döneme ait iradın peşin sermayeye çevrilmiş değeri ne olacak idiyse, tasfiyede o miktarda kişisel mal olarak hesaba katılır.\" ##end_quote##\n\n3) Sonuç olarak, sosyal güvenlikten alınan tazminat, mal paylaşımında kişisel mal olarak değerlendirilir ve tasfiye sırasında hesaba katılır (TÜRK MEDENİ KANUNU, Madde 228).",
+    "raft1328":
+        "1) KAYNAK 4, mahkemenin sanığı mahkeme salonundan çıkarıp tekrar getirme sürecini düzenleyen tek kaynak olarak sorunun cevabını doğrudan karşılamaktadır. Diğer kaynaklar, tercüman atama, sorgu ve dinleme, duruşma disiplini gibi konulara odaklanmakta olup, sanığın geri getirilmesiyle ilgili bilgi içermemektedir.\n\n2) ##begin_quote## \"Sanık tekrar getirildiğinde, tutanaklar okunur ve gerektiğinde içeriği anlatılır.\" ##end_quote##\n\n3) Sonuç olarak, mahkeme sanığı mahkeme salonundan çıkarıp tekrar getirebilir ve bu süreçte tutanaklar okunarak içeriği anlatılabilir (CEZA MUHAKEMESİ KANUNU, Madde 200).",
+    "raft3230":
+        "1) İcra takibi, askerlik hizmetinin devamı süresince belirli askerlik birimlerine ait erler için durdurulmaktadır. Bu durum, askerlik hizmetinin devamı süresince erlerin, onbaşıların ve kıta çavuşlarının icra takibiyle ilgili haklarını korumaktadır.\n\n2) İlgili kaynak, İcra ve İflas Kanunu Madde 54'tür. Bu madde, askerlik hizmetinin devamı süresince erlerin icra takibiyle ilgili haklarını düzenlemektedir. Diğer kaynaklar, icra takibiyle ilgili farklı konuları ele almakta olup, askerlik hizmetine dair bir düzenleme içermemektedir.\n\n3) Sonuç olarak, askerlik hizmetinin devamı süresince erler, onbaşılar ve kıta çavuşları icra takibiyle ilgili haklarını korumaktadır. (İCRA VE İFLAS KANUNU, Madde 54)",
+    "raft5789":
+        "Şans oyunları için dava açmanın bir yolu olup olmadığına dair en doğrudan bilgi, Türk Borçlar Kanunu'nun ilgili maddesinde yer almaktadır. Diğer kaynaklar, kumar ve bahis ile ilgili genel hükümler içermekte olup, şans oyunları ile doğrudan ilgili değildir.\n\n**Güncel Kaynak:**\nKAYNAK 5\n\n**Cevap:**\nŞans oyunları için dava açmanın bir yolu bulunmamaktadır; düzenlenmesine kanun veya yetkili makamlarca izin verilmiş olmadıkça, piyango ve diğer şans oyunlarından doğan alacaklar hakkında dava açılamaz ve takip yapılamaz. (TÜRK BORÇLAR KANUNU, Madde 606)",
+    "raft10304":
+        "Evet, devlet zararı karşıladıktan sonra kusurlu olanlardan birini dava edebilir. Bu durum, Türk Medeni Kanunu'nun ilgili maddesinde açıkça belirtilmiştir.\n\n**Güvenilir Kaynak:**\nKAYNAK 3\n\n**Gözden Geçirme:**\nKAYNAK 1, 2 ve 5, vasi ve vesayet organlarının sorumluluğu ile ilgili genel hükümler içermekte olup, devletin rücu hakkı ile ilgili doğrudan bir düzenleme içermemektedir. KAYNAK 4, rücu davasının mahkeme yetkisini düzenlemekte olup, madde 468'deki rücu hakkı ile doğrudan bağlantılıdır.\n\n**Cevap:**\nDevlet, vesayet dairelerinde görevli olanların hukuka aykırı olarak sebebiyet verdikleri zararlardan doğrudan doğruya sorumlu olduğu gibi; vasi, kayyım ve yasal danışmanlara tazmin ettirilemeyen zararlardan da sorumludur. Zararı tazmin eden Devlet, zararın meydana gelmesinde kusurlu olanlara rücu eder. (TÜRK MEDENİ KANUNU, Madde 468)",
+}
+
+_HASAT_CEKINME = {
+    "raft8972":
+        "Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor. Kaynaklar, kat mülkiyeti ile ilgili tanımlar ve geçici düzenlemeler içermekte olup, yönetim planı değişikliği sonrası yeni yöneticilerin seçimi ile ilgili bilgi sunmamaktadır.",
+    "raft3488":
+        "Verilen kaynaklarda bu konuyu düzenleyen genel bir madde bulunmamaktadır; kaynaklar yalnızca belirli suçlar için hapis cezası sürelerini belirtmektedir.",
+    "raft382":
+        "Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor.",
+    "raft12744":
+        "Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor. Kaynaklar, konkordato projesinin değerlendirilmesiyle ilgili doğrudan bilgi sunmamaktadır.",
+}
+
+# Kaynak: outputs/eval/olcum-bi/h1_tgta_v1_bi_k10_detail.jsonl · alan `cevap` (resmî çıpa)
+_CIPA = {
+    7: (True, "Verilen kaynaklar arasında bu konuyu düzenleyen madde bulunmamaktadır. İlgili düzenleme İş Kanunu'nun 21. maddesinde yer almakta olup, bu madde kesinleşmiş bir kararın işçiye işe başlatma yükümlülüğünü ve tazminat haklarını düzenlemektedir."),
+    19: (False, "KAYNAK 1, promosyon uygulamalarında hangi tür mal veya hizmet verilebileceğine dair doğrudan bilgi sunmaktadır. Diğer kaynaklar, promosyon uygulamalarıyla ilgili spesifik düzenlemeler içermemektedir.\n\n**Cevap:** Promosyon uygulamalarında, yönetmelikle belirlenen süreli yayıncılık amaçlarına uygun kültürel mal veya hizmetler dışında başka bir mal veya hizmet verilemez. (TÜKETİCİNİN KORUNMASI HAKKINDA KANUN, Madde 53)"),
+    20: (True, "Verilen kaynaklar arasında bu konuyu düzenleyen madde bulunmamaktadır. İlgili düzenleme, yıllık ücretli izin hakkının hesaplanmasında çalışılmış gibi sayılan süreleri belirten İŞ KANUNU Madde 55'te yer almaktadır. Ancak bu madde, tatil günlerinin nasıl hesaplandığını açıklamakta, ancak doğrudan tatil günlerinin varlığını düzenlememektedir."),
+}
+
+@pytest.mark.parametrize("kalem", sorted(_HASAT_CEVAP))
+def test_exact_reject_onsozsuz_hasat_atifli_cevabi_cekinme_saymaz(kalem):
+    """🚨 #60'ın manşeti: `rejected` alanı tam ve doğru atıflı bir CEVAP.
+
+    Tetikleyen ibare cevabın hükmü değil, ELENEN kaynakların gerekçesidir
+    (`… Diğer kaynaklar … içermemektedir`). Hüküm `3) Sonuç olarak …` satırındadır.
+    """
+    assert exact_reject(_HASAT_CEVAP[kalem], "data") is False
+
+
+@pytest.mark.parametrize("kalem", sorted(_HASAT_CEKINME))
+def test_exact_reject_onsozsuz_hasat_gercek_cekinmeyi_kacirmaz(kalem):
+    """Onarımın öbür yönü: red hükmü AÇILIŞTA, son ibare yalnız açıklama.
+
+    `raft8972` · `raft3488` · `raft12744` son ibarelerinde REJECT_RE'nin hiçbir deseni
+    YOK — "yalnız son esaslı ibareye bak" çözümü bu üçünü sessizce cevap sayardı.
+    """
+    assert exact_reject(_HASAT_CEKINME[kalem], "data") is True
+
+
+@pytest.mark.parametrize("kimlik", sorted(_CIPA))
+def test_exact_reject_resmi_cipa_gozle_okunan_kalemi_dogru_sinifla(kimlik):
+    """Resmî B10 çıpası (`h1_tgta_v1_bi_k10`, n=80) — #60'ta gözle okunan üç kalem.
+
+    `id=7` ve `id=20` kaynak-yokluğu hükmüyle AÇILIP sonra açıklama yapıyor (çekinme);
+    `id=19` ise elenen kaynak gerekçesiyle açılıp tam atıflı cevap veriyor. Programatik
+    sonda bu üçünde İKİ YÖNDE de yanıldı (#60) — bu yüzden kilitleniyorlar.
+    """
+    beklenen, cevap = _CIPA[kimlik]
+    assert exact_reject(cevap, "harness") is beklenen

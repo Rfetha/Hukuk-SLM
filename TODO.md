@@ -11,13 +11,21 @@
 > B-i önsözü **başarılı** ve **BENİMSENDİ** ([ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md),
 > 2026-08-06 — ana protokol; YB1 kapandı) · `k` büyütmenin bedeli **iki eksende** ölçüldü.
 >
-> **▶ AKTİF PLAN: B10 aşırı-red turu** — `τ_a` v2 simetrik yeterlilik çifti + rakip kıyası.
+> **🛑 AKTİF PLAN DURDU: B10 aşırı-red turu** — `τ_a` v2 simetrik yeterlilik çifti + rakip kıyası.
 > Plan (kutucuklar **tek durum kaynağıdır**):
 > [`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md) ·
 > tasarım: [`2026-08-06-asiri-red-turu-design.md`](docs/superpowers/specs/2026-08-06-asiri-red-turu-design.md)
 > adaylar ve ölçülmüş gerekçeleri `ROADMAP.md`'de ve borç kuyruğunda
 > ([`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası): **B10 · B1 · B4 · B8 ·
 > B9 · B6** + **YB1 · YB2 · YB3**).
+>
+> 🚨 **2026-09-06 — Görev 3 pilotu hasadın kabul ölçütünü ÇÜRÜTTÜ**
+> ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)): `exact_reject`
+> önsözsüz rejimde **doğru, atıflı cevapları** çekinme sayıyor (gözle okunan 10 kabulün 6'sı).
+> **Görev 4-10 bloke**; turun yeni sıfırıncı adımı aşağıda (**Faz 1.0**).
+>
+> **▶ Sıralı plan (v1/v2):** [`2026-09-06-v1-v2-roadmap-taslak.md`](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
+> — *taslak, insan onayı bekliyor.* **v1 = çalışan model release'i · v2 = API · arxiv yan ürün.**
 >
 > Gerekçeler ve ölçülmüş açıklar: **[`ROADMAP.md`](ROADMAP.md)**
 > Her koşudan önce: ⭐ [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md)
@@ -103,6 +111,53 @@ Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](docs/_arsiv/sprint3-p
 
 Sıra ve ölçüm bağlamları: [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası) ·
 Part 2'nin kararları ve ön-kayıtlı tahminleri: [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)
+
+---
+
+## 🔧 FAZ 0 — ucuz düzeltmeler *(Faz 1'i BEKLETMEZ, hepsi paralel)*
+
+Kaynak: [v1/v2 taslağı §5](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md) Faz 0.
+Bedel sütunu taslaktan; **eşikler ve harcama kararı insanındır**.
+
+- [ ] **0.1 [P]** `README.md` + `README.tr.md` çıpalarını **ADR-0058'e taşı** — *dışa dönük ilk
+      belge hâlâ ADR-0058 ÖNCESİ sayıları yayımlıyordu* (borç **D-a**)
+      → **verify:** `grep -c '62,8\|62.8' README*` > 0; %61,3 · 16/80 · 7/80 · 0/118 yalnız
+      **ablasyon** damgasıyla duruyor · **$0**
+- [ ] **0.2 [P]** `scripts/measure_vram_stack.py`'yi **`tgta_v1`'de** koş (borç **D-b**)
+      → **verify:** `outputs/eval/_artefakt/vram_stack.json`'da `tgta_v1` satırı var
+      · **$0 · ~15 dk** ⚠️ bugünkü ölçüm **base GGUF** üzerinde
+- [ ] **0.3 [P]** **M3 paydasını 80/80** yap, yayılımı damgala (**OQ-1**) — cp09'da `54 · 56 · 39`,
+      oysa ADR-0048 m.2 gereği tanım gereği 80/80
+      → **verify:** üç kolda payda 80; eski değerler **damgalı**, silinmemiş · **$0**
+- [ ] **0.4 [P]** `kunye_yaz` bir **script** olsun (borç **D-c**, tuzak 6.12) — bugün künyeler
+      **elle** yazılıyor, `s2-harness-k10-etiketli/`'de künye **hiç yok**
+      → **verify:** yeni koşuda `KUNYE.json` otomatik üretiliyor · **$0**
+- [ ] **0.5 [P]** **ADR-0059 yazılır** (borç **D-e**) — numara rezerve ama belge yok, **altı yer**
+      `ADR-0059 §sapma-1`'e atıf yapıyor
+      → **verify:** `docs/adr/0059-*.md` var, atıflar çözülüyor · **$0**
+- [ ] **0.6** `SOURCE_CLIP` borcunu öde (**YB3**) — `k=10`'un çekinme ekseni bugün **TANIMSIZ**
+      → **verify:** payda, hakemin **gördüğü** bağlamla eşleşiyor · **≈$0,30**
+      🛑 ⚠️ **tüm tarihsel `verdict`leri kıyaslanamaz kılar → insan onayı şart** (karar **S4**)
+
+## 🛑 FAZ 1.0 — B10 turunun yeni sıfırıncı adımı *(kritik yol)*
+
+- [ ] **1.0** 🚨 **Hasat kabul ölçütünü ONAR** (**YB7** · [#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md))
+      — `exact_reject`'in **önsözsüz** dalı cevabın tamamını tarıyor ve *elenen kaynakların
+      gerekçesini* red sanıyor; doğru okuyan yol (`_son_esasli_ibare`, #57'de eklendi) yalnız
+      açılış hükmü `True` iken çalışıyor
+      → **verify:** gözle okunan **10 kabulün 10'u** gerçek çekinme · **$0 · ~1 oturum**
+      · seçenekler ve takas: karar sorusu **S13** ([`docs/open_questions.md`](docs/open_questions.md))
+      ⚠️ **Alet değişecekse ADR gerekir** — sıradaki numara **0061** (**0059 REZERVE**)
+- [ ] **1.0b** Çıpa bulaşmasını kapat ya da **şüpheli** damgasını taşı — resmî çıpada **en az bir
+      doğrulanmış yanlış pozitif** var (`id=19`), büyüklüğü **ÖLÇÜLMEDİ**; sonda **her iki yönde
+      de** hatalı çıktı
+      → **verify:** `h1_tgta_v1_bi_k10_detail.jsonl`'ın 80 kalemi gözle okundu **ya da** B10
+      sayıları (16 → 14) belgelerde *şüpheli* damgalı · **$0**
+- [ ] **1.2'** Pilot (KARAR-6, `-np 1` ↔ `-np 8`) **onarım sonrası yeniden koşulur** — bugünkü
+      kümeler **bozuk ölçütle** seçildi (Jaccard 0,5278 · birebir 3/19), hüküm **kurulmadı**
+      → **verify:** yeni ölçütle iki kol; hükmü **insan** kurar (karar **S12**) · **$0 · ~50 dk**
+- [ ] **1.3-1.8** Görev 4-10 (üretim hasadı → ORPO → `τ_a` v2 → kol kapısı → merge → ürün kapısı
+      → kayıt) — ⏸ **1.0 kapanmadan başlamaz**. Ön-kayıtlı kapılar ve tahminler planda.
 
 ---
 

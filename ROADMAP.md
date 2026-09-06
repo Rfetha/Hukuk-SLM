@@ -1,7 +1,22 @@
 # Yol haritası — ölçülmüş açıklardan işlere
 
-> **Hedef:** daha iyi model. Önce Gemini 3.1 Flash-Lite'ı geçmek, sonra Flash ve
-> Pro'ya yetişmek. Bu belge o hedefi **ölçülmüş açıklara** bağlar — his değil, sayı.
+> **Çerçeve (2026-09-06) — tez değil ÜRÜN.** **v1 = pratik olarak çalışan fine-tuned model
+> release'i** (ağırlık + kod + veri + araştırma kaydı) · **v2 = aynı modelin API'si** ·
+> **arxiv yan ürün, hedef değil.** Sıralı faz planı, kabul ölçütleri ve elenen seçenekler:
+> [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
+> *(taslak — insan onayı bekliyor; eşikleri ADR-0050 gereği insan koyar)*.
+>
+> **Hedef:** daha iyi model. ~~Önce Gemini 3.1 Flash-Lite'ı geçmek, sonra Flash ve Pro'ya
+> yetişmek.~~ 🚨 **BU CÜMLE BAYAT — ölçüldü 2026-08-06** (borç **YB5**): ürün rejiminde
+> (harness AÇIK, ADR-0057 *eşit sınav*) **3.1 FL geçildi** — kütlede **+1,0 puan**, gürültü
+> tabanının 3,4 katı ama **dar** — ve **3.5 FL bizi 6,7 puan geçiyor** (22 katı, **sağlam**).
+> Kaynak: [`outputs/eval/g2-fl-harness/OZET.md`](outputs/eval/g2-fl-harness/OZET.md).
+> **Güncel hedef cümlesi:** *3.5 Flash-Lite'ın kütlesine yetişmek — ve bunu **aşırı-reddi (B10)**
+> kapatarak yapmak, çünkü açığın ölçülmüş kanalı orası (aşırı-red bizde rakibin ~2 katı).*
+> ⛔ *"Aşırı-red kapansa %72,0'a çıkardık"* cümlesi **TAVAN/VARSAYIMSAL** damgalıdır; rakip
+> kıyası ondan **kurulmaz**.
+>
+> Bu belge hedefi **ölçülmüş açıklara** bağlar — his değil, sayı.
 >
 > Yöntem disiplini (sabit seed, kayıtlı koşu, ön-kayıtlı kapı) **korunuyor**, ama
 > gerekçesi değişti: artık bir hakemi ikna etmek için değil, **kendimizi
@@ -40,8 +55,32 @@ M2b Rej           0,766     0,883      −0,117   ← EN BÜYÜK   (ᴷ³ yenide
 > düşüldü. Aynı şerh [`MODEL_CARD.md`](MODEL_CARD.md) *"How to read this honestly"* bölümünde.
 > ⚠️ `A1` satırı **hâlâ yeniden puanlanmadı** (`valid_trap`ten etkilenmiyor; ayrı eksen).
 
-⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI.** Rakip harness açıkken
-**hâlâ ölçülmedi** — o kıyas bugün de yok.
+⚠️ **Bu tablo rakiple kıyas içindir ve harness KAPALI — ÜRÜNÜN SAYISI DEĞİL.**
+~~Rakip harness açıkken **hâlâ ölçülmedi** — o kıyas bugün de yok.~~
+🆕 **2026-08-06'da ölçüldü** → aşağıdaki *ürün rejimi* tablosu. Eski cümle silinmedi: o gün
+bilinen durum buydu.
+
+### 🚨 Rakip — ÜRÜN REJİMİ (harness AÇIK, ADR-0057 "eşit sınav") *(2026-08-06, projede İLK KEZ)*
+
+⭐ **Rakip kıyası BU tablodan kurulur**, yukarıdaki KAPALI tablodan değil.
+Kaynak: [`outputs/eval/g2-fl-harness/OZET.md`](outputs/eval/g2-fl-harness/OZET.md) — eşit sınav
+**varsayılmadı, ölçüldü**: `recall@10` üç öznede de birebir **0,875**.
+
+| eksen | **BİZ** | 3.1 FL | **3.5 FL** |
+| :--- | ---: | ---: | ---: |
+| **M1 kütle (AÇIK)** | **%62,8** | %61,7 | **%69,5** |
+| A1 · cevaplanan | **0,8229** | 0,7054 | 0,7940 |
+| A1 · altın getirilen | **0,8705** | 0,7835 | 0,8607 |
+| **aşırı-red** (↓ iyi) | %23,75 | **%12,5** | **%12,5** |
+| altın bağlamda ama sustu | 14/80 | 8/80 | **6/80** |
+| M2b Rej\* (önsözlü, k=4) | 0,809 | 0,809 | **0,926** |
+| $/cevap (girdi+çıktı) | **$0** (yerel) | $0,002074 | $0,002175 |
+
+**Okuma: sadakatte birinciyiz, çekinmede rakibin iki katı gerideyiz.** A1'in her iki
+kademesinde de iki rakibi de geçiyoruz; kütleyi kaybettiren şey **cevaplamamak**.
+⚠️ M2b satırında 3.5 FL'ın **%10,0 kesikliği** var (bizde ve 3.1 FL'de 0/80); ortak kesiksiz
+alt kümede (n=60) açıklık **daralmıyor, genişliyor** → hüküm sağlam ama kesiklik yazılmadan
+kurulamaz (OZET.md, tuzak 1.9).
 
 ### ⭐ Harness AÇIK — ürünün gerçek sayısı *(2026-08-05, [Part 1](docs/_arsiv/sprint3-part1.md) kapanışı)*
 
@@ -132,6 +171,19 @@ kütlenin tavanı **~%71,6**.
 
 ⚠️ 2.1c ile 2.1b **birleştirilmedi**: *"aşırı-red `τ_a` seyrelmesinden geliyor"* makul ama
 **ölçülmemiş bir varsayım**; birleştirmek onu kayıtta sessizce gerçeğe çevirirdi.
+
+> 🛑 **B10 turu 2026-09-06'da DURDU — kabul ölçütü çöktü**
+> ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)). Görev 3 pilotu koştu,
+> planın **gözle-okuma** adımı kapıyı düşürdü: hasat önsözsüz rejimde koşuyor, o dalda
+> `exact_reject` cevabın tamamını tarıyor ve **elenen kaynakların gerekçesini** ("…İÇERMEMEKTEDİR")
+> red sanıyor → gözle okunan **10 kabulün 6'sı tam, atıflı CEVAP**. Görev 4 koşsaydı havuzun
+> çoğunluğu ORPO'ya *"doğru cevap verme"* diye girecekti — **turun hedefinin tam tersi**.
+> ⛔ **Görev 4-10 bloke.** Turun yeni sıfırıncı adımı: *kabul ölçütünü onar ya da hasadı
+> önsözlü koş* (karar sorusu **S13**, [`docs/open_questions.md`](docs/open_questions.md)).
+> ⚠️ Ve **B10'un kendi sayıları (16 → 14) şüpheli** — resmî çıpada **en az bir doğrulanmış
+> yanlış pozitif** var (`id=19`) ama bulaşmanın büyüklüğü **ÖLÇÜLMEDİ**; kapatması 80 kalemin
+> gözle okunmasını gerektirir. Sonda her iki yönde de hatalı çıktığı için
+> *"çıpanın 19 reddinin 10'u yanlış"* cümlesi **kurulmadı ve kurulmamalıdır**.
 
 **2.3 vatandaş kararıyla öne çıktı:** Türkçe düşünmeyen bir model, vatandaşa
 "okunabilir muhakeme" veremez.
@@ -242,16 +294,35 @@ Karşılaştır: **`k`'yı 5→10 yapmak bir bayrak** — ön-kayıtlı tahmin k
 
 ---
 
-## Opsiyonel: iddia katmanı (arxiv)
+## Opsiyonel: iddia katmanı (arxiv) — **yan ürün, hedef değil**
 
 *"Merge, karışık ve ardışık SFT'den daha iyi korur"* iddiasını kanıtlayan
 karşılaştırma — [`sprint2b.md`](docs/_arsiv/sprint2b.md)'de tarifi hazır, **ertelendi**.
 
-Artefaktlar (`τ_g`, `τ_a`, veri, protokol) bozulmuyor; arxiv'e karar verilirse
-istenen zaman koşulur (~$19,64).
+Artefaktlar (`τ_g`, `τ_a`, veri, protokol) bozulmuyor; ~~arxiv'e karar verilirse istenen zaman
+koşulur (~$19,64).~~
+
+> 🚨 **DÜZELTME 2026-08-06 — CP4-CP5 harcamasının YETKİSİ YOK.** ARA KAPI **düştü**: ön-kayıtlı
+> olan **formüldü**, sayı değil → eşik `0,90 × base M2b 0,961 = **0,8649**`, merge **0,766** →
+> **9,9 puan altında** (eski 0,887 eşiğine karşı da düşüyor; paydalar **eşit**, 77 ↔ 77).
+> ⛔ ADR-0050 gereği **alet** düzeltildi, **eşiğe dokunulmadı**.
+> [ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
+> [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md) ·
+> `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json`.
+> **CP4-CP5'i yetkilendiren kapı buydu** — koşulmadan önce yeni bir ön-kayıtlı ölçüt gerekir
+> (karar sorusu **S1**). ⚠️ ADR-0052'nin hükmü (*ham TIES ≫ norm-dengeli*) bundan
+> **etkilenmedi**: sıçrama +0,26 değişmedi.
+> ⚠️ İkinci açık kalem: ön-kayıtlı metin CP4'e *"karışık **SFT**"* diyor ama `τ_a` **ORPO** ile
+> eğitildi.
+
+Bugün savunulabilir iddialar, eksik ölçümler (**P1** CP4/CP5 tabanları · **P2** üç-aileli hakem
+paneli + κ · **P3** frozen TEST + güç analizi) ve venue tartışması:
+[`docs/PAPER_TARGET.md`](docs/PAPER_TARGET.md) ·
+[v1/v2 taslağı §6](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md).
 
 ⚠️ **Ürün için gerekli değil.** *"Daha iyi mi"* sorusunu ölçüm zaten cevaplıyor;
-o karşılaştırma *"neden daha iyi"* sorusunu cevaplıyor.
+o karşılaştırma *"neden daha iyi"* sorusunu cevaplıyor. P2/P3 ürün yolunda **koşulmaz**,
+model kartında **Limitations satırı** olarak yazılır.
 
 ---
 
@@ -270,6 +341,25 @@ Her biri bir sonrakinin basamağı. Tam tasarım ve elenen seçenekler:
 S3a ön-prob → S3 harness → S4 model → 🟦 A → S5 servis → 🟩 B → S6+ → 🟪 C
                                                                     ↻ bakım
 ```
+
+### 🆕 Drop'ların v1/v2 karşılığı *(2026-09-06 — atılmadı, EŞLEŞTİRİLDİ)*
+
+Üç drop yürürlükte; değişen tek şey **adlandırma ve kabul ölçütü**. Faz numaraları
+[v1/v2 taslağı §5](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)'ten gelir.
+
+| drop | sürüm | hangi fazlar | çıkış ölçütü |
+| :--- | :--- | :--- | :--- |
+| — | *(ön iş)* | **Faz 0** ucuz düzeltmeler (0.1-0.6) · **Faz 1** B10 turu | Faz 0 belge/alet borçları · Faz 1'in iki ön-kayıtlı kapısı |
+| 🟦 **A** | **v1** — model release'i | **Faz 2** v1 hazırlığı → **Faz 3** v1 RELEASE | taslak §3.2 **A** kalite · **B** frozen TEST bir kez · **C** dağıtım · **D** yeniden üretilebilirlik · **E** belge/lisans |
+| 🟩 **B** | **v2** — API + sunum | **Faz 4** (FastAPI · atıf paneli · Docker · B6 canlı mevzuat · B9 yeniden indeksleme) | temiz konteynerde yalnız belgeyle kurulum; ölçüm rejimi ↔ servis rejimi sapması **ölçülür** |
+| 🟪 **C** | v2 sonrası | [`VISION.md`](docs/VISION.md) Faz 4-5 | ayrı tur |
+
+🚨 **v1'in tanımı model-only DEĞİL** (taslak §3.1, ölçülmüş gerekçe): resmî sayı %62,8
+**retriever + yeterlilik önsözü** rejiminde üretiliyor (ADR-0058); bugün modeli indiren ikisine
+de sahip değil, dolayısıyla **ablasyon sayısını** (%61,3) alır. *Yayımlanan sayıyı kimsenin
+üretemediği bir release, bu repo'nun kendi disiplininin ihlalidir.* Taşıyıcı: tek komutluk CLI
+(`hakhukuk sor "..."` → retriever + önsöz + llama.cpp + atıf doğrulayıcı). Web arayüzü/API **v2**.
+⛔ **A/B/C kabul ölçütleri karşılanmazsa `v0.2` çıkar, `v1.0` çıkmaz.**
 
 ⚠️ **Takvim yok, çıkış ölçütü var.** Aralıklı ritimde süre tahmini yanlış çıkar ve yapay
 baskı yaratır. Bağlayıcı olan **sıra** ve her halkanın **çıkış ölçütü**dür.
@@ -302,9 +392,18 @@ mahremiyet (hukuki sorular kişiseldir). İkisi de zamanla **büyüyor**.
 0.  modül-başına norm (2.1)   ✅ koşuldu → 🔴 REDDEDİLDİ (ADR-0053)
 1.  HARNESS                   ✅ KURULDU  → sprint3-part1.md
 2.  harness AÇIK ölçüm        ✅ ÖLÇÜLDÜ  → %62,8 (ürünün dürüst sayısı; önsözsüz ablasyon: %61,3)
-3.  τ_a v2 (2.2)              ▶ sırada    — gerekçesi ölçülmüş: B10 14/80 (önsözsüz ablasyon: 16/80)
-4.  Türkçe muhakeme (2.3)     veri turu
+2b. rakip ürün rejiminde      ✅ ÖLÇÜLDÜ 2026-08-06 → 3.1 FL geçildi (dar) · 3.5 FL 6,7 p önde
+3.  τ_a v2 / B10 turu (2.2)   🛑 BAŞLADI ve DURDU 2026-09-06 (#60) — kabul ölçütü çöktü;
+                                 Faz 1'in yeni sıfırıncı adımı: ölçütü onar (S13). Görev 4-10 bloke
+3b. Faz 0 ucuz düzeltmeler    ▶ SIRADA ve Faz 1'i BEKLETMEZ — README/MODEL_CARD çıpaları,
+                                 ölçülmüş VRAM satırı, M3 paydası, künye script'i, ADR-0059
+4.  Türkçe muhakeme (2.3)     veri turu — ⚠️ önce **istem katmanında** bedavaya denenir
+5.  v1 → v2                   Faz 2-3 (release) → Faz 4 (API)
 ```
+
+⚠️ **3. sıra artık "sırada" değil, "yarıda ve bloke".** Sıranın kendisi değişmedi; değişen,
+turun **kendi aletinin** ölçütü çürüttüğü. Faz 0 kalemleri buna **bağlı değil** ve paralel koşar —
+bugünkü repo dışa **yanlış sayı** yayımlıyor (borç D-a), o borcun bedeli $0.
 
 ⚠️ **Sıranın gerekçesi ölçümle DEĞİŞTİ.** 08-03'te 3. sıranın gerekçesi *"artık doğru girdi
 dağılımını bilerek"* idi — yani bir **bilgi** gerekçesi. Bugün ona bir **büyüklük** gerekçesi
