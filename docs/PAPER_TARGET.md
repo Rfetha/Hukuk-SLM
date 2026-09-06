@@ -11,8 +11,42 @@
 > **opsiyonel** — arxiv yazılırsa koşulur. Tezin dayattığı kısıtlar **kalktı**:
 > tek boyut noktası (ADR-0028) ve graph-RAG'in kapsam dışılığı (ADR-0019).
 >
-> **Ne kalmadı:** ölçüm disiplini. Gerekçesi değişti — hakemi ikna etmek değil,
+> **Ne KALDI:** ölçüm disiplini. Gerekçesi değişti — hakemi ikna etmek değil,
 > kendimizi kandırmamak.
+
+> ## 🧭 GÜNCEL KONUM (2026-09-06) — **arxiv = YAN ÜRÜN, HEDEF DEĞİL**
+>
+> Ürünün sürüm dili **v1/v2**: **v1 = pratik olarak çalışan fine-tuned model release'i** ·
+> **v2 = aynı modelin API'si**. Paper **hiçbirinin ön koşulu değildir** ve yol haritasında
+> **satır kalemi yoktur**; yazılıp yazılmayacağı açık bir insan kararıdır
+> (**S11**, [`open_questions.md`](open_questions.md)).
+> Sıralı plan: [`superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md) *(taslak)* ·
+> yön: [`ROADMAP.md`](../ROADMAP.md).
+>
+> **Bugün savunulabilir iddialar** (hepsi bu repoda ölçüldü — ayrıntı ve kaynak dosyalar
+> taslak §6'da): çatışan iki becerinin ayrı kollarda eğitilip TIES ile birleştirilmesi ikisini
+> de kısmen koruyor · ön-kayıtlı bir tasarım kararı **ölçümle tersine çevrildi** (ADR-0036 →
+> ADR-0052) · deterministik atıf doğrulama **fabrikasyonu değil transkripsiyonu** yakalıyor ·
+> **aşırı-red baskın kayıp kanalıdır ve erişimle kapanmıyor** · ve muhtemelen en özgün kısım,
+> **ölçüm metodolojisi bulguları** (cevaba bağlı payda · hakem yığını kayması · yeniden-koşum
+> gürültü tabanı · ikili oran kuantumu · eşit sınav kapısı ADR-0057 · ve
+> [#60](record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ile eklenen altıncısı:
+> *bir çekinme dedektörünün istem rejimine bağımlı olması ve bunun ancak gözle okumayla
+> yakalanması*).
+>
+> **"Şu üçünü ölçersen paper çıkar" — ama ÖNCELİK DEĞİL:**
+>
+> | # | eksik ölçüm | ne kazandırır | bedel |
+> | :-- | :--- | :--- | ---: |
+> | **P1** | **CP4 + CP5 tabanları** | iddianın çekirdeği: *"merge, ardışık/karışık SFT'den daha iyi korur"*. 🚨 **ARA KAPI 2026-08-06'da DÜŞTÜ** (merge M2b **0,766** < eşik **0,8649**) → **harcamanın yetkisi YOK** ([ADR-0045](adr/0045-ara-kapi-merge-onarim-kontrolu.md) · [#58](record/research_log/2026-08-06-payda-tekillesmesi.md)). ⚠️ Ayrıca ön-kayıt CP4'e *"karışık SFT"* diyor ama `τ_a` **ORPO** ile eğitildi | ~$19,1 |
+> | **P2** | **Üç-aileli hakem paneli + κ** (ADR-0032, kurulmadı) | bugün her yargı-eksenli sayı **tek aile** damgalı | ÖLÇÜLMEMİŞ |
+> | **P3** | **Frozen TEST + güç analizi** | DEV n=80'in gözlenen farkları ayırt edip etmediği bilinmiyor | ~$1 |
+>
+> ⚠️ **Ürün için üçü de gerekli değil.** P2/P3 koşulmazsa bile yazılmaları gereken yer var:
+> `MODEL_CARD.md` **Limitations** — ve oraya yazıldı, *"future work"* diye yumuşatılmadan.
+> ⛔ Aşağıdaki **Y1-Y6 katkı sırası, "ana tez" cümlesi ve §4 rakip tablosu TARİHSELDİR**
+> (§4 hâlâ emekli **Gemma 4 12B** hattını rakip diye listeliyor). Okunabilirlik için silinmedi;
+> bugün hükümleri yok.
 
 
 > **⚠️ KISMEN SÜPERSED — TEZ YENİDEN ÇERÇEVELENDİ (2026-07-17).** Bu belge **içeri-dönük** çerçeveyi

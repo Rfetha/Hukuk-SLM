@@ -7,7 +7,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta mahkemenin lehine karar vermesi durumunda ne olacağına dair bilgi yok."
+    "reason": "Verilen kaynakta mahkemenin lehine karar vermesi durumunda ne olacağına dair bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 1,
@@ -17,27 +20,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta beraat kararlarının temyiz edilebilirliği hakkında bilgi yok."
+    "reason": "Verilen kaynakta beraat kararlarının temyiz edilebilirliği hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 2,
     "soru": "Hangi suçlarla ilgili olarak müdafinin dosya inceleme yetkisi kısıtlanabilir?",
     "cevap": "1) İlgili kaynak, müdafinin dosya inceleme yetkisi ile ilgili düzenlemeleri içermemektedir. Bu nedenle, doğru kaynak metni bulunamadığı için herhangi bir maddey",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta müdafinin dosya inceleme yetkisinin kısıtlanabileceği suçlar açıkça belirtilmiştir."
+    "reason": "Verilen kaynakta müdafinin dosya inceleme yetkisinin kısıtlanabileceği suçlar açıkça belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 3,
     "soru": "Eğer karşı taraf benim yanıldığımı biliyorsa, tazminat alabilir miyim?",
     "cevap": "1) İlgili kaynak metni bulunmadığından, bu konuyu düzenleyen bir maddeye dayanarak yanıt vermem mümkün değildir. \n\n2) ##begin_quote## \"İlgili kaynak metni bulun",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "Verilen kaynakta bu bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 4,
@@ -47,17 +59,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta el konulan gönderilerin ne olacağına dair net bir bilgi yok."
+    "reason": "Verilen kaynakta el konulan gönderilerin ne olacağına dair net bir bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 5,
     "soru": "Bir çocuğu fuhşa teşvik eden kişiye ne ceza verilir?",
     "cevap": "1) İlgili kaynak, çocuğun fuhşa teşvik edilmesi durumunu düzenleyen bir madde içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat metninin",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta çocuğu fuhşa teşvik eden kişiye verilecek ceza açıkça belirtilmiştir."
+    "reason": "Verilen kaynakta çocuğu fuhşa teşvik eden kişiye verilecek ceza açıkça belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 6,
@@ -67,27 +85,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ihbar sonrası süreçle ilgili bilgi yok."
+    "reason": "Verilen kaynakta ihbar sonrası süreçle ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 7,
     "soru": "Mahkeme kararı kesinleşmeden çalışmazsam ücretimi alabilir miyim?",
     "cevap": "1) İlgili kaynak metni bulunmadığından, bu konuyu düzenleyen maddeyi doğrudan alınamaz. Ancak genel olarak, Türk hukukunda mahkeme kararının kesinleşmeden önce ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Kaynak metin, mahkeme kararı kesinleşmeden çalışmama durumunda ücretin ödenip ödenmeyeceği konusunda net bir bilgi sunmamaktadır."
+    "reason": "Kaynak metin, mahkeme kararı kesinleşmeden çalışmama durumunda ücretin ödenip ödenmeyeceği konusunda net bir bilgi sunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 8,
     "soru": "Evlât edinmek için ne tür şartlar gerekiyor?",
     "cevap": "1) İlgili kaynak, evlât edinme şartlarını düzenleyen bir madde içermemektedir. Sunulan kaynaklar, miras, velayet ve aile hukuku gibi konulara odaklanmakta olup,",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynak, evlât edinme şartlarını düzenleyen bir madde içermektedir."
+    "reason": "Verilen kaynak, evlât edinme şartlarını düzenleyen bir madde içermektedir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 9,
@@ -95,9 +122,12 @@
     "cevap": "1) İlgili kaynak, zamanaşımına uğramış alacakların takas edilebilirliği konusunu ele almadığı için bu soruya yanıt veremem. Sağlanan kaynaklar, takasın tanımı v",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynakta zamanaşımına uğramış alacakların takas edilebilirliği ile ilgili bilgi yok."
+    "reason": "Verilen kaynakta zamanaşımına uğramış alacakların takas edilebilirliği ile ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 10,
@@ -107,17 +137,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Verilen kaynakta tedbir kararının tebliğ edilmemesinin bir sorun olup olmadığına dair net bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta tedbir kararının tebliğ edilmemesinin bir sorun olup olmadığına dair net bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 11,
     "soru": "Ruhsatsız inşaata elektrik bağlatan kişi ne kadar ceza alır?",
     "cevap": "1) İlgili kaynak, ruhsatsız inşaatlara elektrik bağlatma ile ilgili düzenlemeleri içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat metn",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ruhsatsız inşaatlara elektrik bağlatma cezası hakkında net bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta ruhsatsız inşaatlara elektrik bağlatma cezası hakkında net bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 12,
@@ -127,27 +163,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu konuya dair net bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta bu konuya dair net bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 13,
     "soru": "Engelli birini evlât edinmek için ne kadar süre bakmak gerekiyor?",
     "cevap": "1) İlgili kaynak, engelli bireylerin evlat edinimi ile ilgili süreleri düzenleyen bir madde içermemektedir. Bu nedenle, doğru kaynak metni bulunamadı. \n\n2) ##be",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta engelli bireylerin evlât edinimi için gereken süre açıkça belirtilmiştir."
+    "reason": "Verilen kaynakta engelli bireylerin evlât edinimi için gereken süre açıkça belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 14,
     "soru": "İşverene başvurmazsam ne olur?",
     "cevap": "1) İlgili kaynak, işverene başvurma konusunu ele almayan ve bu nedenle sorunun cevabını sağlamayan bir kaynak metnidir. Diğer kaynaklar da işverene başvurma ile",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer almayan bir bilgi ekleyerek soruya iddialı bir cevap vermiştir."
+    "reason": "Model, kaynak metinde yer almayan bir bilgi ekleyerek soruya iddialı bir cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 15,
@@ -157,37 +202,49 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynakta olmayan bir bilgi ekleyerek yanıltıcı bir cevap vermiştir."
+    "reason": "Model, kaynakta olmayan bir bilgi ekleyerek yanıltıcı bir cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 16,
     "soru": "Hakem kararında karşı oy yazısı yer alabilir mi?",
     "cevap": "1) İlgili kaynak, hakem kararında karşı oy yazısının yer alıp almayacağına dair bir düzenleme içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta hakem kararında karşı oy yazısının yer alabileceği açıkça belirtilmiştir."
+    "reason": "Verilen kaynakta hakem kararında karşı oy yazısının yer alabileceği açıkça belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 17,
     "soru": "İşverenin işçiyi yanıltması durumunda işçi ne yapabilir?",
     "cevap": "1) İlgili kaynak, işverenin işçiyi yanıltması durumunda işçinin hakları ve yükümlülükleri hakkında bilgi veren bir düzenleme içermektedir. Ancak, sunulan kaynak",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta işverenin işçiyi yanıltması durumunda işçinin ne yapabileceği açıkça belirtilmemektedir."
+    "reason": "Verilen kaynakta işverenin işçiyi yanıltması durumunda işçinin ne yapabileceği açıkça belirtilmemektedir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 18,
     "soru": "Zorla fuhşa sevketme, insanlığa karşı suç mudur?",
     "cevap": "Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor.",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta zorla fuhşa sevketmenin insanlığa karşı suç olup olmadığına dair net bir değerlendirme yok."
+    "reason": "Verilen kaynakta zorla fuhşa sevketmenin insanlığa karşı suç olup olmadığına dair net bir değerlendirme yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 19,
@@ -197,7 +254,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta promosyon uygulamalarında hangi tür mal veya hizmet verilebileceğine dair bilgi yok."
+    "reason": "Verilen kaynakta promosyon uygulamalarında hangi tür mal veya hizmet verilebileceğine dair bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 20,
@@ -207,17 +267,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta tatil günleri hakkında net bir bilgi yok."
+    "reason": "Verilen kaynakta tatil günleri hakkında net bir bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 21,
     "soru": "Sözleşmemde bir para birimi belirttiğimde ne olur?",
     "cevap": "1) İlgili kaynak, sözleşmelerin geçerliliği ve tarafların yükümlülükleri hakkında bilgi veren bir kaynak metni değildir. Bu nedenle, sorunuzla doğrudan bağlantı",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer almayan bir madde ve bilgi ekleyerek yanıltıcı bir cevap vermiştir."
+    "reason": "Model, kaynak metinde yer almayan bir madde ve bilgi ekleyerek yanıltıcı bir cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 22,
@@ -227,17 +293,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta gayrimenkul yönetimiyle ilgili kurallar düzenlenmemiştir."
+    "reason": "Verilen kaynakta gayrimenkul yönetimiyle ilgili kurallar düzenlenmemiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 23,
     "soru": "İlk toplantıda yeter sayı sağlanamazsa ne olur?",
     "cevap": "1) İlgili kaynak, toplantı yeter sayısına dair bir düzenleme içermemektedir. Bu nedenle, doğru bilgiye ulaşabilmek için ilgili mevzuat metninin sağlanması gerek",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta yeter sayının sağlanamaması durumunda ikinci toplantının yapılacağı belirtilmiştir."
+    "reason": "Verilen kaynakta yeter sayının sağlanamaması durumunda ikinci toplantının yapılacağı belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 24,
@@ -247,27 +319,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta şiddet içeren müstehcen içerikle ilgili ceza düzenlemeleri bulunmamaktadır."
+    "reason": "Verilen kaynakta şiddet içeren müstehcen içerikle ilgili ceza düzenlemeleri bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 25,
     "soru": "Kira bedelini nasıl belirliyoruz?",
     "cevap": "1) İlgili kaynak, kira bedelinin belirlenmesiyle ilgili herhangi bir düzenleme içermemektedir. Sunulan kaynaklar, \"kendi\" kavramının tanımı ve hukuki sonuçları ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer alan kira bedelinin belirlenmesi ile ilgili düzenlemeleri göz ardı ederek yanıltıcı bir şekilde cevap vermiştir."
+    "reason": "Model, kaynak metinde yer alan kira bedelinin belirlenmesi ile ilgili düzenlemeleri göz ardı ederek yanıltıcı bir şekilde cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 26,
     "soru": "Borcun bir kısmına itiraz ederken ne yapmalıyım?",
     "cevap": "1) İlgili kaynak, borçların itirazı ile ilgili düzenlemeleri içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat metninin sağlanması gerek",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer almayan sözleşme hükümlerine atıfta bulunarak yanıltıcı bir bilgi vermiştir."
+    "reason": "Model, kaynak metinde yer almayan sözleşme hükümlerine atıfta bulunarak yanıltıcı bir bilgi vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 27,
@@ -277,27 +358,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta mahkeme karar verme kurallarıyla ilgili bilgi yok."
+    "reason": "Verilen kaynakta mahkeme karar verme kurallarıyla ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 28,
     "soru": "Aldığım ürünün eklentileri ayıplıysa, ana ürün için geri dönüş yapabilir miyim?",
     "cevap": "1) İlgili kaynak, tüketici hakları ve ürün geri dönüşü konularında düzenlemeler içeren bir madde metni sunmamaktadır. Bu nedenle, doğru kaynak metnini temin ede",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metni doğru yorumlayarak geri dönüş hakkını açıklamış ancak ek bilgi ekleyerek yanıltıcı bir sonuç vermiştir."
+    "reason": "Model, kaynak metni doğru yorumlayarak geri dönüş hakkını açıklamış ancak ek bilgi ekleyerek yanıltıcı bir sonuç vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 29,
     "soru": "Cayma hakkı nedir?",
     "cevap": "1) İlgili kaynak metni bulunmadığından, bu konuyu düzenleyen maddeye dayanarak bir yanıt vermem mümkün değildir. Kaynak metinlerinde cayma hakkı ile ilgili herh",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
-    "reason": "Kaynak metin cayma hakkını düzenlemekte ancak model, bu bilgiyi göz ardı ederek yanıt vermekten kaçınmıştır."
+    "reason": "Kaynak metin cayma hakkını düzenlemekte ancak model, bu bilgiyi göz ardı ederek yanıt vermekten kaçınmıştır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 30,
@@ -307,17 +397,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Verilen kaynakta takas işlemi sırasında alacakların türü hakkında bilgi yok."
+    "reason": "Verilen kaynakta takas işlemi sırasında alacakların türü hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 31,
     "soru": "Toplu yapı nedir?",
     "cevap": "1) İlgili kaynak, toplu yapı kavramını tanımlayan bir düzenleme içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat metninin sağlanması ge",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer alan tanımı kendi ifadesiyle tekrar ederek yanıltıcı bir şekilde net bir bilgi sunmuştur."
+    "reason": "Model, kaynak metinde yer alan tanımı kendi ifadesiyle tekrar ederek yanıltıcı bir şekilde net bir bilgi sunmuştur.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 32,
@@ -327,7 +423,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta mazeret bildirmemenin sonuçları hakkında bilgi yok."
+    "reason": "Verilen kaynakta mazeret bildirmemenin sonuçları hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 33,
@@ -337,27 +436,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta başvurunun kabul edilmesi durumunda ne olacağına dair bilgi yok."
+    "reason": "Verilen kaynakta başvurunun kabul edilmesi durumunda ne olacağına dair bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 34,
     "soru": "Cumhuriyet savcıları hangi durumlarda doğrudan soruşturma yapar?",
     "cevap": "1) İlgili kaynak metni, Cumhuriyet savcılarının doğrudan soruşturma yapma durumlarını düzenleyen bir hüküm içermemektedir. Bu nedenle, sorunun yanıtı için gerek",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta Cumhuriyet savcılarının doğrudan soruşturma yapma durumları hakkında yeterli bilgi sağlanmamıştır."
+    "reason": "Verilen kaynakta Cumhuriyet savcılarının doğrudan soruşturma yapma durumları hakkında yeterli bilgi sağlanmamıştır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 35,
     "soru": "Nafaka davaları hangi yargılama usulüne tabidir?",
     "cevap": "1) İlgili kaynak, nafaka davalarının hangi yargılama usulüne tabi olduğunu açıklayan bir madde içermemektedir. Verilen kaynaklar, hukukun tanımı ve hukukun işle",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynak, nafaka davalarının hangi yargılama usulüne tabi olduğunu açıkça belirtmektedir."
+    "reason": "Verilen kaynak, nafaka davalarının hangi yargılama usulüne tabi olduğunu açıkça belirtmektedir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 36,
@@ -367,7 +475,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Verilen kaynakta kat mülkiyetine geçiş sürecine dair net bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta kat mülkiyetine geçiş sürecine dair net bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 37,
@@ -377,17 +488,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta aile meclisi kurulması zorunluluğu ile ilgili bir düzenleme yoktur."
+    "reason": "Verilen kaynakta aile meclisi kurulması zorunluluğu ile ilgili bir düzenleme yoktur.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 38,
     "soru": "Bir kamu kurumu zarar görmezse, ihaleye fesat karıştıran kişi ne kadar ceza alır",
     "cevap": "1) İlgili kaynak, ihaleye fesat karıştıran kişilerin cezasını düzenleyen maddeyi içermemektedir. Bu nedenle, doğru bilgiye ulaşmak için ilgili mevzuat metninin ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer almayan para cezası bilgisi ekleyerek yanıltıcı bir cevap vermiştir."
+    "reason": "Model, kaynak metinde yer almayan para cezası bilgisi ekleyerek yanıltıcı bir cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 39,
@@ -397,17 +514,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Verilen kaynakta vasiliğe atanma kararının kesinleşmesi sonrası yapılması gereken işlemlerle ilgili bilgi yok."
+    "reason": "Verilen kaynakta vasiliğe atanma kararının kesinleşmesi sonrası yapılması gereken işlemlerle ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 40,
     "soru": "Ruhsatsız bina yapmanın cezası nedir?",
     "cevap": "1) İlgili kaynak, ruhsatsız bina yapmanın cezasını düzenleyen bir madde içermemektedir. Sunulan kaynaklar, Türk Ceza Kanunu ve Türk Medeni Kanunu ile sınırlıdır",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynak, ruhsatsız bina yapmanın cezasını açıkça düzenlemektedir."
+    "reason": "Verilen kaynak, ruhsatsız bina yapmanın cezasını açıkça düzenlemektedir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 41,
@@ -417,17 +540,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta ilamların icrası ile ilgili bilgi yok."
+    "reason": "Verilen kaynakta ilamların icrası ile ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 42,
     "soru": "Ürünüm elimden alınırsa, geri alabilir miyim?",
     "cevap": "Bu konuyu düzenleyen bir madde verilen kaynaklarda yer almıyor. Doğru bir atıf yapabilmem için ilgili mevzuat metninin sağlanması gerekmektedir.",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta, ürünün geri alınmasıyla ilgili net bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta, ürünün geri alınmasıyla ilgili net bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 43,
@@ -435,9 +564,12 @@
     "cevap": "1) İlgili kaynak, suçun nitelendirilmesi ve iddianame iadesi konusunu ele almadığı için bu soruya yanıt veremem. Sağlanan kaynaklar, suçun tanımı ve Türk Ceza K",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta suçun nitelendirilmesi nedeniyle iddianame iadesi ile ilgili bir düzenleme bulunmamaktadır."
+    "reason": "Verilen kaynakta suçun nitelendirilmesi nedeniyle iddianame iadesi ile ilgili bir düzenleme bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 44,
@@ -447,17 +579,23 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynakta olmayan bir bilgi ekleyerek yanıltıcı bir cevap vermiştir."
+    "reason": "Model, kaynakta olmayan bir bilgi ekleyerek yanıltıcı bir cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 45,
     "soru": "Tüketici davalarında mahkeme kararları nasıl yayınlanır?",
     "cevap": "1) İlgili kaynak metni bulunmadığından, bu konuyu düzenleyen maddeye dayanarak bir yanıt vermem mümkün değildir. \n\n2) ##begin_quote## \"Tüketici davalarında mahk",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta mahkeme kararlarının nasıl yayınlanacağına dair bilgi bulunmaktadır."
+    "reason": "Verilen kaynakta mahkeme kararlarının nasıl yayınlanacağına dair bilgi bulunmaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 46,
@@ -467,27 +605,36 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta yönetim planı yapılması zorunluluğu hakkında bilgi yok."
+    "reason": "Verilen kaynakta yönetim planı yapılması zorunluluğu hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 47,
     "soru": "Bir örgüt kapsamında organ alırsam cezam ne olur?",
     "cevap": "Bu konuyu düzenleyen bir madde elimdeki kaynaklarda yer almıyor. Organ alımı ile ilgili cezai yaptırımlar hakkında doğru bilgiye ulaşabilmek için resmi hukuki k",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "Verilen kaynakta bu bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 48,
     "soru": "Konut finansmanı kuruluşunun sorumluluğu ne kadar sürer?",
     "cevap": "1) İlgili kaynak, konut finansmanı kuruluşlarının sorumluluğu ile ilgili düzenlemeleri içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde belirtilen bir yıllık sorumluluk süresini atıf yapmadan net bir şekilde ifade etmiştir."
+    "reason": "Model, kaynak metinde belirtilen bir yıllık sorumluluk süresini atıf yapmadan net bir şekilde ifade etmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 49,
@@ -497,47 +644,62 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta abonelik sonlandırma ve bedel ödemeleri hakkında bilgi yok."
+    "reason": "Verilen kaynakta abonelik sonlandırma ve bedel ödemeleri hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 50,
     "soru": "İşveren işçiye yaptığı harcamaları nasıl ödemeli?",
     "cevap": "1) İlgili kaynak, işverenin işçiye yaptığı harcamaları nasıl ödemesi gerektiğine dair düzenlemeleri içeren bir madde metni olarak bulunmamaktadır. Bu nedenle, d",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde olmayan bir bilgi ekleyerek yanıltıcı bir cevap vermiştir."
+    "reason": "Model, kaynak metinde olmayan bir bilgi ekleyerek yanıltıcı bir cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 51,
     "soru": "Birden fazla kişiye zarar verirsem cezam ne olur?",
     "cevap": "Bu konuyu düzenleyen bir madde verilen kaynaklarda yer almıyor. Doğru bir atıf yapabilmem için ilgili mevzuat metninin sağlanması gerekmektedir.",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta birden fazla kişiye zarar verme durumunun cezası açıkça belirtilmiştir."
+    "reason": "Verilen kaynakta birden fazla kişiye zarar verme durumunun cezası açıkça belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 52,
     "soru": "Tutuklama kararı nasıl verilir?",
     "cevap": "1) İlgili kaynak, tutuklama kararının nasıl verileceği ile ilgili bilgi sunmamaktadır. Verilen kaynaklar, Türkiye'nin tanımı ve Türk hukukunun tanımı gibi konul",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": true,
-    "reason": "Model, kaynak metni doğru değerlendirmeyip yanıltıcı bir bilgi sunmuştur."
+    "reason": "Model, kaynak metni doğru değerlendirmeyip yanıltıcı bir bilgi sunmuştur.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 53,
     "soru": "Zincirleme suçlarda hangi mahkeme yetkilidir?",
     "cevap": "1) İlgili kaynak, zincirleme suçların tanımı ve mahkeme yetkisi hakkında bilgi vermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili kaynak metninin ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta zincirleme suçlar için mahkeme yetkisi belirtilmiştir, ancak modelin cevabı bu bilgiyi yeterince değerlendirmemektedir."
+    "reason": "Verilen kaynakta zincirleme suçlar için mahkeme yetkisi belirtilmiştir, ancak modelin cevabı bu bilgiyi yeterince değerlendirmemektedir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 54,
@@ -547,17 +709,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta işten ayrılıp işe dönme şartlarıyla ilgili bilgi yok."
+    "reason": "Verilen kaynakta işten ayrılıp işe dönme şartlarıyla ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 55,
     "soru": "İcra memuru ne zaman borçluya ödeme emri gönderir?",
     "cevap": "1) İlgili kaynak, icra memurunun borçluya ödeme emri gönderme sürecini düzenleyen bir madde içermemektedir. Sunulan kaynaklar, Türk Ceza Kanunu, Türk Medeni Kan",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer alan bilgileri yanlış yorumlayarak yanıltıcı bir cevap vermiştir."
+    "reason": "Model, kaynak metinde yer alan bilgileri yanlış yorumlayarak yanıltıcı bir cevap vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 56,
@@ -567,7 +735,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu bilgi yok."
+    "reason": "Verilen kaynakta bu bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 57,
@@ -577,7 +748,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta bu konuya dair bilgi yok."
+    "reason": "Verilen kaynakta bu konuya dair bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 58,
@@ -587,17 +761,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta silah bulundurmanın sonuçları hakkında bilgi yok."
+    "reason": "Verilen kaynakta silah bulundurmanın sonuçları hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 59,
     "soru": "Garanti belgesi ile hangi malların satılmak zorunda olduğu nereden öğrenilir?",
     "cevap": "1) İlgili kaynak, garanti belgesi ile ilgili düzenlemeleri içeren bir madde metni sunmamaktadır. Bu nedenle, doğru bilgiye ulaşmak için ilgili mevzuat metninin ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta hangi malların garanti belgesi ile satılmak zorunda olduğu belirtilmemiştir."
+    "reason": "Verilen kaynakta hangi malların garanti belgesi ile satılmak zorunda olduğu belirtilmemiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 60,
@@ -607,17 +787,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta istinaf başvurusu için gerekli belgeler hakkında bilgi yok."
+    "reason": "Verilen kaynakta istinaf başvurusu için gerekli belgeler hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 61,
     "soru": "Soruşturma yapılmasına yer olmadığına dair karara itiraz edebilir miyim?",
     "cevap": "1) İlgili kaynak, soruşturma yapılmasına yer olmadığına dair karara itiraz edilebilmesi konusunu düzenleyen bir madde içermemektedir. Bu nedenle, doğru kaynak m",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Model, kaynak metinde açıkça belirtilen itiraz hakkını yanlış bir şekilde reddetmektedir."
+    "reason": "Model, kaynak metinde açıkça belirtilen itiraz hakkını yanlış bir şekilde reddetmektedir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 62,
@@ -625,29 +811,38 @@
     "cevap": "1) İlgili kaynak, kat mülkiyeti ile ilgili düzenlemeleri içermektedir. Ancak, kat malikinin ortak giderleri ödememesi durumunda ne olacağına dair spesifik bir d",
     "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta kat malikinin ortak giderleri ödememesi durumuna dair spesifik bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta kat malikinin ortak giderleri ödememesi durumuna dair spesifik bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 63,
     "soru": "Emziren kadın işçilerin süt vermesi için süre var mı?",
     "cevap": "1) İlgili kaynak bulunamadığı için bu konuyu düzenleyen maddeyi veremem. Doğru bilgiye ulaşabilmek için ilgili mevzuat metninin sağlanması gerekmektedir.",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta emziren kadın işçilerin süt vermeleri için sürelerin belirtileceği ifade edilmiştir."
+    "reason": "Verilen kaynakta emziren kadın işçilerin süt vermeleri için sürelerin belirtileceği ifade edilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 64,
     "soru": "Temyiz dilekçesi nasıl yapılır?",
     "cevap": "1) İlgili kaynak, temyiz dilekçesi ile ilgili herhangi bir bilgi içermemektedir. Bu nedenle, doğru kaynak metni bulunmadığı için doğru bir yanıt vermem mümkün d",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta temyiz dilekçesinin nasıl yapılacağına dair yeterli bilgi bulunmaktadır."
+    "reason": "Verilen kaynakta temyiz dilekçesinin nasıl yapılacağına dair yeterli bilgi bulunmaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 65,
@@ -657,27 +852,36 @@
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynak metinde yer almayan bir bilgi ekleyerek kesin hüküm tanımını yapmıştır."
+    "reason": "Model, kaynak metinde yer almayan bir bilgi ekleyerek kesin hüküm tanımını yapmıştır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 66,
     "soru": "Eğer tüketici hakem heyetinin oluşumu sağlanamazsa ne olur?",
     "cevap": "Verilen kaynaklarda bu konuyu düzenleyen madde bulunmuyor. İlgili düzenleme elimdeki metinlerde yer almıyor, bu nedenle madde atfı yapmam doğru olmaz.",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynak, tüketici hakem heyetinin oluşumunun sağlanamadığı durumları düzenlemektedir."
+    "reason": "Verilen kaynak, tüketici hakem heyetinin oluşumunun sağlanamadığı durumları düzenlemektedir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 67,
     "soru": "Tüketici hakem heyetinin başkanı kimdir?",
     "cevap": "1) İlgili kaynak, tüketici hakem heyetinin başkanının kim olduğunu belirten bir madde içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta tüketici hakem heyetinin başkanının kim olduğu açıkça belirtilmiştir."
+    "reason": "Verilen kaynakta tüketici hakem heyetinin başkanının kim olduğu açıkça belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 68,
@@ -687,7 +891,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta borçlu olan birinin taşınmaz malının haczedilebilmesi konusunu düzenleyen bir bilgi yok."
+    "reason": "Verilen kaynakta borçlu olan birinin taşınmaz malının haczedilebilmesi konusunu düzenleyen bir bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 69,
@@ -697,7 +904,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta alkol bağımlılığı sebebiyle kısıtlama ile ilgili bilgi yok."
+    "reason": "Verilen kaynakta alkol bağımlılığı sebebiyle kısıtlama ile ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 70,
@@ -707,17 +917,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta borçlu eşin mal varlığına ulaşma yöntemleri hakkında bilgi yok."
+    "reason": "Verilen kaynakta borçlu eşin mal varlığına ulaşma yöntemleri hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 71,
     "soru": "Taraf değişikliği için hâkim neye bakar?",
     "cevap": "1) İlgili kaynak, taraf değişikliği konusunu düzenleyen bir madde içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat metninin sağlanması ",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Verilen kaynakta hâkimin taraf değişikliği için neye bakacağına dair net bir bilgi yok."
+    "reason": "Verilen kaynakta hâkimin taraf değişikliği için neye bakacağına dair net bir bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 72,
@@ -727,17 +943,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta engelli işçi çalıştırılma oranının hesaplanmasıyla ilgili bilgi yok."
+    "reason": "Verilen kaynakta engelli işçi çalıştırılma oranının hesaplanmasıyla ilgili bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 73,
     "soru": "Zorlama hapsinin süresi nasıl belirlenir?",
     "cevap": "1) İlgili kaynak, zorlama hapsinin süresinin belirlenmesiyle ilgili herhangi bir düzenleme içermemektedir. Sunulan kaynaklar, sağlık, içişleri ve eğitim bakanlı",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "FABRICATE",
     "reject_exact": true,
     "used_parametric": true,
-    "reason": "Model, kaynakta belirtilen süreleri doğru bir şekilde aktarmak yerine genel bir ifade kullanarak yanıltıcı bir bilgi vermiştir."
+    "reason": "Model, kaynakta belirtilen süreleri doğru bir şekilde aktarmak yerine genel bir ifade kullanarak yanıltıcı bir bilgi vermiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 74,
@@ -747,7 +969,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta konutta haciz yapılmasıyla ilgili özel durumlar düzenlenmemiştir."
+    "reason": "Verilen kaynakta konutta haciz yapılmasıyla ilgili özel durumlar düzenlenmemiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 75,
@@ -757,7 +982,10 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta mahkemenin davayı sona erdirme koşulları hakkında bilgi yok."
+    "reason": "Verilen kaynakta mahkemenin davayı sona erdirme koşulları hakkında bilgi yok.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 76,
@@ -767,17 +995,23 @@
     "verdict": "ABSTAIN",
     "reject_exact": false,
     "used_parametric": true,
-    "reason": "Verilen kaynakta bu konuya dair bir bilgi bulunmamaktadır."
+    "reason": "Verilen kaynakta bu konuya dair bir bilgi bulunmamaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 77,
     "soru": "Vücuda bir cisim sokularak yapılan cinsel saldırıda ceza ne olur?",
     "cevap": "1) İlgili kaynak, cinsel saldırı ile ilgili ceza hükümlerini düzenleyen Türk Ceza Kanunu'nun 104. maddesidir. Ancak, bu madde, vücuda bir cisim sokularak yapıla",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
-    "reject_exact": true,
+    "reject_exact": false,
     "used_parametric": false,
-    "reason": "Verilen kaynakta vücuda bir cisim sokularak yapılan cinsel saldırının cezası açıkça belirtilmiştir."
+    "reason": "Verilen kaynakta vücuda bir cisim sokularak yapılan cinsel saldırının cezası açıkça belirtilmiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 78,
@@ -787,16 +1021,22 @@
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Verilen kaynakta borçlunun taşınır mallarının haczedilme nedenleri düzenlenmemiştir."
+    "reason": "Verilen kaynakta borçlunun taşınır mallarının haczedilme nedenleri düzenlenmemiştir.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   },
   {
     "id": 79,
     "soru": "Mağdur on iki yaşından küçükse ceza ne olur?",
     "cevap": "1) İlgili kaynak, bu konuyu düzenleyen bir madde içermemektedir. Bu nedenle, doğru bir atıf yapabilmem için ilgili mevzuat metninin sağlanması gerekmektedir. \n\n",
-    "valid_trap": false,
+    "valid_trap": true,
     "verdict": "ABSTAIN",
     "reject_exact": true,
     "used_parametric": false,
-    "reason": "Kaynak metin, mağdurun on iki yaşından küçük olması durumunda verilecek ceza hakkında net bilgiler sunmaktadır."
+    "reason": "Kaynak metin, mağdurun on iki yaşından küçük olması durumunda verilecek ceza hakkında net bilgiler sunmaktadır.",
+    "valid_trap_anahtari": "TANIM:bos-baglam",
+    "valid_trap_reason": "bağlam boş, kaynak metni yok → tuzak tanım gereği geçerli",
+    "source_answers_cevapli": null
   }
 ]

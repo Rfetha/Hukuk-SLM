@@ -10,7 +10,8 @@
   "korpus": {
     "yol": "/home/ersoy/code/Hukuk-SLM/data/corpus/mevzuat_maddeler.jsonl",
     "bayt": 38751499,
-    "mtime": 1785939073
+    "mtime": 1786009165,
+    "mtime_duzeltme_notu": "2026-08-06: mtime 1785939073 -> 1786009165 olarak duzeltildi. BAYT AYNI (38751499) ve icerik KRIPTOGRAFIK OLARAK AYNI: worktree blob == HEAD blob == 6083ddb161a3c2a62a4ba2352a9a64b28a5fbfa5. Korpusun icerigini degistiren son commit 64ed4b9 (2026-08-05 17:14), gomme.npy 2026-08-05 17:30'da kuruldu -> indeks BU icerikten uretildi. mtime'i degistiren sey bugunku (12:39:25) git checkout'u; retriever'in (bayt,mtime) vekili icerik-korumali dokunuslarda YANLIS ALARM veriyor. Indeks YENIDEN KURULMADI - kurulmasi gerekmiyordu."
   },
   "secim_gerekcesi": "S3a ön-probu, research_log #49 — recall@10 0,875"
 }

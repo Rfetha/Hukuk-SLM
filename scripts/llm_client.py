@@ -49,6 +49,15 @@ ALIAS = {
 PRICE = {  # 2026-07-24 itibarıyla
     "openai/gpt-4o-mini": (0.15 / 1e6, 0.60 / 1e6),
     "openai/gpt-4o": (2.50 / 1e6, 10.0 / 1e6),
+    # ── Rakip çıkarım fiyatı (ADR-0017 maliyet ekseni · Görev 2, Adım 2.1b) ────────
+    # Birincil kaynak: https://ai.google.dev/gemini-api/docs/pricing — Google'ın kendi
+    # resmî API fiyat sayfası. Okundu 2026-08-06, "Paid tier / Standard" satırları.
+    # ⚠️ Alınan değer TEXT modalitesi; ses girdisi (3.1 FL'de $0,50/M) ayrı ve
+    # kullanılmıyor — bu hattın girdisi yalnız metin.
+    # ⚠️ Sayfa açıkça diyor: DÜŞÜNCE (thinking/reasoning) token'ları ÇIKTI tarifesinden
+    # faturalanır. `--reasoning-budget 1024` bu yüzden doğrudan maliyet kalemidir.
+    "google/gemini-3.1-flash-lite": (0.25 / 1e6, 1.50 / 1e6),
+    "google/gemini-3.5-flash-lite": (0.30 / 1e6, 2.50 / 1e6),
 }
 
 # Yalnız bu aileler `response_format={"type":"json_object"}` ile güvenilir çalışıyor kabul
@@ -98,15 +107,26 @@ _MAX_RETRIES = int(os.environ.get("LLM_MAX_RETRIES", "8"))
 _TIMEOUT_S = float(os.environ.get("LLM_TIMEOUT_S", "120"))
 
 
+def gateway_of():
+    """Hangi kapı kullanılacak — İSTEMCİ KURMADAN. `make_client()` de bunu çağırır.
+
+    Why ayrı: hiç çağrı yapmayacak bir koşu (ör. payda tanımdan geliyor + verdict önceki
+    skorlamadan okunuyor) kapının kimliğini istememeli, ama koşu kaydına yine de hangi
+    kapının geçerli olduğunu yazmalı. İki yerde ayrı ayrı türetilirse sessizce ayrışır.
+    """
+    want = (os.environ.get("LLM_GATEWAY") or "").strip().lower()
+    return want or ("openrouter" if os.environ.get("OPENROUTER_API_KEY", "").strip()
+                    else "openai")
+
+
 def make_client():
     """(client, gateway) döndürür. OpenRouter varsa onu, yoksa doğrudan OpenAI'ı kullanır.
     Client, timeout'larda otomatik retry+backoff yapacak şekilde kurulur (üstteki not)."""
     from openai import OpenAI
-    want = (os.environ.get("LLM_GATEWAY") or "").strip().lower()
     or_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     oa_key = os.environ.get("OPENAI_API_KEY", "").strip()
 
-    gateway = want or ("openrouter" if or_key else "openai")
+    gateway = gateway_of()
     if gateway == "openrouter":
         if not or_key:
             raise SystemExit("[llm] OPENROUTER_API_KEY yok (.env yükle)")

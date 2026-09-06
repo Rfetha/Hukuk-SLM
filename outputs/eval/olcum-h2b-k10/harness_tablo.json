@@ -9,7 +9,7 @@
     "recall@10": 0.0
   },
   "kutle_ekseni": {
-    "coverage": 0.5,
+    "coverage": 0.55,
     "A1_cevaplanan": null,
     "faith_macro_tum_cekinme_dahil": null,
     "A1_tum": null,
@@ -21,19 +21,19 @@
       "gecen": 76,
       "reddedilen": 4,
       "atifsiz_gecen": 34,
-      "kapi_sonrasi_coverage": 0.45
+      "kapi_sonrasi_coverage": 0.5
     },
     "cogunluk": {
       "gecen": 77,
       "reddedilen": 3,
       "atifsiz_gecen": 34,
-      "kapi_sonrasi_coverage": 0.4625
+      "kapi_sonrasi_coverage": 0.5125
     },
     "cerrahi": {
       "gecen": 80,
       "reddedilen": 0,
       "atifsiz_gecen": 34,
-      "kapi_sonrasi_coverage": 0.5
+      "kapi_sonrasi_coverage": 0.55
     }
   },
   "atif_dagilimi": {
@@ -46,8 +46,8 @@
   "erisim_davranis_caprazi": {
     "altin_geldi_cevapladi": 0,
     "altin_geldi_cekindi": 0,
-    "altin_gelmedi_cevapladi": 40,
-    "altin_gelmedi_cekindi": 40
+    "altin_gelmedi_cevapladi": 44,
+    "altin_gelmedi_cekindi": 36
   },
   "k2_bedeli": {
     "ALTIN_GELMEDI": 80,

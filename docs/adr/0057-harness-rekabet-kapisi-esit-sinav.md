@@ -111,7 +111,7 @@ kapı açılır.
 | kademe | eksen | kaynak | OFF | ON | hüküm |
 | :---: | :--- | :---: | ---: | ---: | :--- |
 | 2 | **A1 · altın getirilen** | 5 ↔ 5 | 0,9087 | **0,9230** | ✅ **GEÇİYOR** *(k=5)* |
-| 2 | **M2b Rej** | 4 ↔ 4 | 0,8770 | ? | ⏸️ **ölçülecek** — `h2b@k=4` |
+| 2 | **M2b Rej** | 4 ↔ 4 | **0,766** ᴷ³ ~~0,8770~~ | 0,735 (önsözsüz) · **0,809** (önsözlü) | ✅ **ölçüldü** — `h2b@k=4`, [#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md) |
 | 1 | kapı + doğrulayıcı katkısı | aynı cevaplar | — | ? | ⏸️ **ölçülecek**, post-hoc |
 
 ### ADR-0056 Karar 1'in tadili

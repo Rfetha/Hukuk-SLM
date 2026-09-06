@@ -50,9 +50,20 @@ independently from the raw base, merged as task vectors with **raw TIES**.
 Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: ⭐ [`docs/record/kollar.md`](docs/record/kollar.md).
 
 ```
-product number (harness ON, k=10, S2 corpus)   faithful-answer mass  61.3%
-ceiling        (harness OFF, gold guaranteed)                        71.6%
+product number (harness ON, k=10, S2 corpus, sufficiency preamble — ADR-0058)
+                            faithful-answer mass  68.4%   (ablation, no preamble: 73.0%)
+ceiling        (harness OFF, gold guaranteed)     71.6%
 ```
+
+🚨 **Both ON figures were rescored on 2026-09-06 and two things flipped.** The abstention
+detector scanned the whole answer in one branch, so our template's discarded-sources rationale
+read as a refusal — a bug **specific to our own answer template**, which is why fixing it moved
+our numbers (62.8% → 68.4%) and left the competitor's untouched (measured, not assumed).
+⚠️ And the ablation is now the **higher** column, which **inverts ADR-0058's own rationale**
+(the preamble was adopted for raising mass; it now lowers it by 4.6 points, while still
+improving A1 and misattribution). The protocol was **not** changed — open question **S14**.
+[ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
+[#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
 ⚠️ `v0.1` not `v1.0` **on purpose**: the merge config was selected on DEV and has **not** been
 tested against the baselines. The OFF number is a **ceiling, not a rival** — the two settings do
@@ -62,10 +73,10 @@ not measure the same thing (OFF hands the model the gold article by construction
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#56** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#61** |
 | the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
 | what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0057** |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0061** |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -75,13 +86,60 @@ not measure the same thing (OFF hands the model the gold article by construction
   scored *below* the OFF anchor, and the gate cannot even fire in this regime
   ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)). What survived is *"without a
   retriever there is no product"* plus a set of measured mechanisms. M2b is now a **training** debt.
+- 🚨 **The ARA KAPI (mid-gate) verdict flipped on 2026-08-06 — it now FAILS.** The
+  pre-registered thing was the *formula* (`merge M2b ≥ 0,90 × base's answer-blind M2b`),
+  not the number. Re-derived with the single repaired tool: threshold **0,8649** ↔ merge
+  **0,766** → **fails by 9,9 points** (and fails the old 0,887 threshold too; denominators
+  are equal, 77 ↔ 77). ⛔ ADR-0050: the *tool* was fixed, the threshold was **not touched**.
+  This is the gate that authorized CP4-CP5 spending — **that authorization is gone.**
+  [ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
+  [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md).
 - ⚠️ **The biggest single loss is over-refusal, and the model owns it** — the gold article is *in
   context* and the model abstains anyway. Retrieval cannot fix this. Debt **B10**.
+- 🚨 **The abstention DETECTOR itself is under repair — do not quote B10's counts as settled.**
+  Measured 2026-09-06: in the no-preamble regime `exact_reject` scores a correct, cited answer
+  as an abstention, because it scans the whole answer and the discarded-sources rationale trips
+  the refusal regex. The official anchor holds at least one verified false positive and the
+  contamination size is **unmeasured**. A programmatic probe was wrong in *both* directions, so
+  the only closing move is reading all 80 items by eye — decided, scheduled, and pre-registered
+  ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+  [`docs/open_questions.md`](docs/open_questions.md) **S13**).
+- 🧭 **Framing, 2026-09-06: the release language is v1/v2.** `v1` = a fine-tuned model release
+  that actually works end to end (weights + code + data + research record, shipped with the
+  retriever and the preamble, because the headline number is not reproducible without them);
+  `v2` = the API over that same model; arxiv is a **by-product, not the goal**. Sequenced plan,
+  acceptance criteria and rejected options:
+  [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
+  (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
 
-**Status of work: no sprint is open and no plan is active.** The last round
-([plan](docs/superpowers/plans/2026-08-05-olcum-bosluklari.md), closed 2026-08-05) shipped its
-findings to #56. **Which round comes next is an open human decision** — the candidates and their
-measured justifications are in `ROADMAP.md` and the debt queue.
+**Status of work: ✅ B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
+training** ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
+Tasks 0-3 ran, Tasks 4-10 **never did**, `τ_a` v2 **was never trained**. The plan carries its
+✅ closing block:
+[`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md).
+
+The round set out to train over-refusal down from 14/80 into a pre-registered 8-11/80 band.
+Its own **read-it-by-eye** step (Task 3.8) instead refuted the harvest acceptance criterion —
+6 of 10 sampled "abstentions" were full, cited answers — and repairing the detector put the
+true number at **8/80 by eye (9/80 by tool) with nothing trained**: **43% of the "problem" was
+the measuring instrument.** Harvesting anyway would have cost 5.3 h and ≈$5.2 for a gap of two
+items, so the round was closed. ⛔ Over-refusal is **smaller, not gone** — 8/80 still sits above
+3.5 Flash-Lite's 6/80, and *"how far would training push it"* was **never measured**.
+
+⚠️ **Three things a new session must carry forward from that closure:**
+- **Next first-rank axis is B1** (misattribution, 5/80) — B10 stepped down; the gap between them
+  narrowed 2.8× → 1.6×, and B1 has never been worked on.
+- **The round's tooling is intact and reusable** — `scripts/b10_hasat.py`, Modal `harvest_b10`
+  (ADR-0047 m.2 carrier, verified on L4), the leakage filter (13,350 → 12,914, byte-identical in
+  the container). Do not rebuild it for B1.
+- **The thresholds re-derived under ADR-0061 Karar 2 stand unused** (`aşırı-red < 0.4125`, etc.)
+  — this round did not need them; **the next training round will**.
+
+**What caught it was not a numeric gate** — the gate (`kabul_orani 0.1733 > 0.10`) **passed** the
+broken measurement. The eyeball step caught it. ADR-0051 has now paid for itself twice.
+
+**Not blocked by any of that:** the Phase 0 cheap repairs run in parallel —
+[`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md).
 
 ### Target audience: the CITIZEN — but read the trap
 
@@ -124,13 +182,15 @@ decision ledger.
   carries an anchor per ADR (`#adr-0011`). **Read part A before designing any experiment.**
 - ⭐ **[`docs/record/kollar.md`](docs/record/kollar.md) — the artifact registry.** Every trained
   branch AND merge has its identity here; *an artifact with no row is nameless and must not be
-  used*. `tg_v1` (‖τ‖ 10,4722) · `ta_v1` (‖τ‖ 1,1806) · **`tgta_v1` = `HakHukuk-4B-v0.1`**. Both
+  used*. `tg_v1` (‖τ‖ 10,4722 — **and 10,4589 in `kollar.md` is also right**: the first is measured at merge time from the bf16-materialized ΔW, the second from the standalone artifact; the 0,13% gap is bf16 and [#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md) logged it as an *independent cross-check*, not a discrepancy — do not "fix" either) · `ta_v1` (‖τ‖ 1,1806) · **`tgta_v1` = `HakHukuk-4B-v0.1`**. Both
   names stay and do different jobs: `tgta_v1` is internal traceability (*which branch, which
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#57**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0058**.
+  record, **authoritative for "what happened."** New findings continue at **#62**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0062**.
+  ⚠️ **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
+  places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.
 
 ### Direction and scope
 
@@ -196,7 +256,7 @@ These are non-negotiable framing from the docs — honor them in any code or rec
 - **Training:** PyTorch 2.4+, Unsloth (primary; fall back to TRL+PEFT+transformers), bitsandbytes 0.43+ (NF4 4-bit), FlashAttention-2.
 - **Method: QLoRA per branch, then task-vector merge (ADR-0027).** Per-branch QLoRA — `r=16`, `lora_alpha=32`, `target_modules="all-linear"`, `lora_dropout=0.05`, `batch=1`, `gradient_checkpointing=True`. **Every branch trains from the RAW BASE, independently.** This is a validity requirement, not a style choice: a task vector is defined as `τ = θ_ft − θ_base`, so all branches must share one `θ_base`. Training one branch on top of another produces sequential SFT, not a task vector — it destroys the very thing we set out to measure.
   Merging is **simultaneous k-way** TIES/DARE, not iterative — `TIES(TIES(τg,τa),τr) ≠ TIES(τg,τa,τr)`, because TIES trims, elects signs and averages across *all* vectors at once. Each LoRA is materialized as `ΔW = (α/r)·BA` in **bf16**, merged in **full weight space**, and quantized **last**. Merging runs on **host RAM, streaming tensor-by-tensor** — never on the GPU.
-  **⚠️ The main result is RAW TIES; norm-balanced is the ablation — [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md) reversed ADR-0036's prescription.** ADR-0036's *premise* was confirmed and still holds: branches train at very different scales (`τ_g` 1.083 steps @1e-4 · `τ_a` 70 steps @1e-5, ‖τ‖ ratio **8,87×**) and TIES' sign-election is mass-weighted. Its *inference* — "without normalization the small branch is erased" — was **measured false**: raw TIES did not erase `τ_a` (0,607 → 0,877); balancing crushed `τ_g` instead. `‖τ‖` is measured and reported **unconditionally** for every branch.
+  **⚠️ The main result is RAW TIES; norm-balanced is the ablation — [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md) reversed ADR-0036's prescription.** ADR-0036's *premise* was confirmed and still holds: branches train at very different scales (`τ_g` 1.083 steps @1e-4 · `τ_a` 70 steps @1e-5, ‖τ‖ ratio **8,87×**) and TIES' sign-election is mass-weighted. Its *inference* — "without normalization the small branch is erased" — was **measured false**: raw TIES did not erase `τ_a` (0,506 → 0,766 — **re-scored 2026-08-06**, [#57](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md); the old tool read 0,607 → 0,877 and the **jump is unchanged at +0,26**); balancing crushed `τ_g` instead. `‖τ‖` is measured and reported **unconditionally** for every branch.
   **Merging itself costs no training compute** — that is what makes sweeping merge techniques realistic. But sweep on **DEV**, never on the frozen CANON test set.
 - **Deploy pipeline:** per-branch QLoRA (NF4) → materialize ΔW (bf16) → k-way merge (full weight space, host RAM) → quantize via llama.cpp (**Q4_K_M**) → GGUF → consumer GPU.
 - **⚠️ Multimodal / OCR is NOT a base-selection argument and never was measured.** For Turkish the right architecture is a **separate OCR preprocessor, not native VLM OCR**: dedicated engines beat general VLMs on Turkish, and `ğ→˘g` / `ş→¸s` / `İ→Ì` breakages corrupt RAG matching in legal text (OCRTurk, arXiv:2602.03693).

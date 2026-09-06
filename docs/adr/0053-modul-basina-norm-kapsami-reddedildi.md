@@ -21,6 +21,11 @@ ADR-0036 metnindeki `τ/‖τ‖` ifadesinin birebir okunuşuydu. Modül-başın
 
 **Kabul ölçütü (ön-kayıtlı):** M2b > 0,877 **ve** M1 kütlesi ≥ %71,6 — ikisi birden.
 
+> ᴷ³ **2026-08-06:** buradaki `0,877` ve `0,987` eski aletin birimindedir (payda modele bağlıydı,
+> [#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md)). Yeni değerler: ham TIES
+> **0,766** · `tg_ta_min` **0,987 (değişmedi)**. **Bu ADR'nin reddi M1 KÜTLESİNE dayanıyordu
+> (%56,2 < %71,6), M2b'ye değil → hüküm etkilenmiyor.**
+
 ## Ölçüm
 
 ### 1. Gerekçe çürüdü (bedava, ağırlık okunmadan)
@@ -68,8 +73,8 @@ gereken                   ≥ %71,6
 
 | varyant | cevaplanan | A1 | **kütle** | M2b red |
 | :--- | ---: | ---: | ---: | ---: |
-| `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | 0,877 |
-| `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 |
+| `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | 0,877 🚨 ᴷ³ **0,766** |
+| `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 *(değişmedi)* |
 | **`modulmin` (bu ADR)** | **45/80** | ölçülmedi | **≤ %56,2** | ölçülmedi |
 
 Modül-başına kapsam, global `min`'in davranışını **tekrarladı** (43 → 45 cevap). %27'lik
@@ -88,7 +93,8 @@ tekrar ölçülebilir olması bu repoda kayıt değeri taşıyor; varsayılan `g
 
 - ✅ `sprint3-part1.md` Adım 0 kapandı 🔴; sprint'in ağırlığı harness'a (Adım 1-4) kayıyor.
 - ✅ `open_questions.md`'deki modül-başına sorusu **kapandı** — açık soru değil, ölçülmüş red.
-- ⚠️ `τ_a`'nın merge'de seyrelmesi (0,987 → 0,877) **hâlâ açık**. Bu ADR onu norm
+- ⚠️ `τ_a`'nın merge'de seyrelmesi (0,987 → 0,877 🚨 ᴷ³ **0,987 → 0,766**; seyrelme
+  ~~−11,0 p~~ → **−22,1 p**, `τ_a` v1'e göre) **hâlâ açık**. Bu ADR onu norm
   kapsamının çözmediğini gösteriyor; çözüm başka yerde (trim eşiği · λ · farklı operatör ·
   ya da `τ_a`'yı daha yüksek genlikte eğitmek) aranmalı.
 - 💰 Hakem maliyeti **$0**. Kabul bir **VE** koşulu olduğu için önce düşmesi beklenen eksen

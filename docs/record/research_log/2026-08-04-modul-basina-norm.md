@@ -8,6 +8,19 @@
 > **kapsamı** global (tek `‖τ‖_F`). Modül-başına kapsam bunu düzeltir mi?
 > **Ön-kayıtlı kabul:** M2b > 0,877 **ve** M1 kütlesi ≥ %71,6 — ikisi birden.
 
+> ## 🚨 ᴷ³ BU GİRİŞİN M2b EŞİĞİ **EMEKLİ BİRİMDEDİR** (damgalandı 2026-08-06, kusur Ö2)
+> Ön-kayıtlı `0,877` eşiği hakemin **modelin cevabını görerek** verdiği paydayla üretilmişti.
+> Yürürlükteki alette aynı hücre **0,766** ölçüyor ([#57](2026-08-06-cekinme-aleti-onarimi.md)
+> çeviri tablosu: ham TIES `0,877 → 0,766` · `τ_a` tekil `0,987 → 0,987`, değişmedi).
+> ⛔ **Eşiğe DOKUNULMADI** (ADR-0050: eşik değil alet düzeltilir) — yalnız **birimi** damgalandı:
+> karşılaştırma yapılacaksa **iki taraf da yürürlükteki aletle** okunur.
+>
+> **Neden kritik:** [ADR-0052](../../adr/0052-merge-norm-dengeleme-hukmu-tersine.md) alternatif
+> D'yi açık bırakıyor. Yeniden denenirse M2b örneğin `0,80` ölçülür — bu **bugünkü 0,766'ya göre
+> İYİLEŞMEDİR**, ama emekli birimdeki `> 0,877` eşiğine bakan okuyucu **BAŞARISIZ** ilan eder.
+> Damgasız bırakmak, ölçümü tersine okutan bir tuzaktır. **M1 kütlesi %71,6 eşiği etkilenmez**
+> (kütle payda onarımından geçmedi).
+
 ## 1. Önce bedava kısım: gerekçe ölçümde durmuyor
 
 Adım 0'ın metni şöyleydi: *"iki kolun da en büyük normu **aynı MLP yüzeyinde** —
@@ -80,10 +93,10 @@ gereken                   ≥ %71,6
 **Kütle tavanı ölçütün 15,4 puan altında.** A1'i ölçmek sonucu değiştiremezdi → hakem
 çağrılmadı, m2b/m2 üretimi koşulmadı. **Toplam hakem maliyeti: $0.**
 
-| varyant | cevaplanan | A1 | **kütle** | M2b red |
+| varyant | cevaplanan | A1 | **kütle** | M2b red ᴷ³ |
 | :--- | ---: | ---: | ---: | ---: |
-| `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | 0,877 |
-| `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 |
+| `ham` = yayınlanan `tgta_v1` | 63/80 | 0,909 | **%71,6** | **0,766** ~~0,877~~ |
+| `min` (global norm-dengeli) | 43/80 | 0,994 | **%53,4** | 0,987 *(değişmedi)* |
 | **`modulmin`** | **45/80** | ölçülmedi | **≤ %56,2** | ölçülmedi |
 
 Modül-başına kapsam global `min`'i **tekrarladı** (43 → 45 cevap). %27'lik yön farkı

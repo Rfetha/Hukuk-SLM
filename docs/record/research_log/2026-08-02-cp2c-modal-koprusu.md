@@ -12,6 +12,28 @@
 > **"16:19-16:47 · üretim denemesi ve verim kapısı olayı"** bölümünde. Aynı kartta `-np 64`,
 > `-np 32`'den **hızlı** çıktı.
 
+> 🚨 **DOSYA ÇAPINDA BİRİM DAMGASI 2026-08-06 (kusur Ö3-c) — bu girişteki HER `M2 Rej` ve
+> `M2b Rej` sayısı EMEKLİ BİRİMDEDİR.** Hiçbiri silinmedi; okurken aşağıdaki çeviriyi uygula.
+> **ᴷ³** = çekinme paydası cevaba **kör** yapıldı ([#57](2026-08-06-cekinme-aleti-onarimi.md), K3;
+> M2b paydası **77**) · **ᴷ⁴** = M2 paydası özneye bağlı olmaktan çıkıp **66**'ya eşitlendi
+> ([#58](2026-08-06-payda-tekillesmesi.md), KARAR-3/KARAR-4).
+>
+> ```
+> özne             M2 Rej  (emekli → 66)      M2b Rej (emekli → 77)
+> base                0,814 → 0,803              0,986 → 0,961
+> Gemini 3.1 FL       0,930 → 0,848              1,000 → 0,883
+> τ_g v1              0,873 → 0,833              0,607 → 0,506
+> τ_a v1              0,984 → 0,955              0,987 → 0,987   (değişmedi)
+> MERGE min           0,934 → 0,909              0,987 → 0,987   (değişmedi)
+> MERGE ham (tgta_v1) 0,893 → 0,833              0,877 → 0,766
+> ```
+>
+> **Bu sayılardan TÜRETİLEN oran/fark da damgalıdır** (turun kendi kuralı — girdiyi damgalarken
+> türevini de tara): merge onarım oranı ~~%71~~ → **%57** · merge'in M2'ye katkısı ~~+0,020~~ →
+> **+0,000** · ARA KAPI 2. gözlem ✅ → **🔴** (§24'teki K-2 damgası).
+> A1 · M1 kütle · aşırı-red · token sütunları **etkilenmedi**.
+> ⭐ Yürürlükteki çıpa tek yerdedir: [`kollar.md`](../kollar.md) — burada yeniden türetilmez.
+
 ---
 
 ## Sorulan soru
@@ -1078,10 +1100,32 @@ Koşu: `outputs/eval/cp3c-ta-v1/` · taşıyıcı `ta_v1-q4_k_m.gguf` + llama-se
 · hakem `gpt-4o-mini`, kapı **openrouter**, sağlayıcı **`OpenAI` pinli**.
 
 ```
-M2 Rej   = 0,984   ≥ 0,923   ✅   (çıpa cevaba-kör base 0,803 → +18,1 puan; gereken +12)
+M2 Rej   = 0,984   ≥ 0,923   ✅   (ÇIPANIN üstü: 0,984 − 0,803 = +18,1 puan; gereken +12)
 M1 A1    = 0,9697  ≥ 0,880   ✅
 kesik    = %1,4              ✅   (kapı %5; m1 %0,0 · m2 %1,4)
 ```
+
+> 🚨 ᴷ⁴ **BU KIYAS KARIŞIK BİRİMDEYDİ — hüküm AYNI, gerekçesi onarıldı (2026-08-06, KARAR-3).**
+> `0,984`'ün paydası **özneye bağlıydı** (63/70, hakem cevabı görerek karar veriyordu), eşiğin
+> çıpası ise [#46](2026-07-30-cp2r-kor-payda.md)'nın **cevaba kör** ölçümünden geliyordu. İki
+> taraf iki ayrı aletten okunmuş; hata vermez, sayı yanlış çıkar.
+> Bugünkü alette **iki taraf da aynı yerden**: payda on koşuda **66/70**'e eşitlendi →
+> `τ_a` M2 **0,955** ≥ eşik **0,923** (base 0,803 + 0,12) → ✅ **hüküm AYAKTA**.
+> Muhafız da geçiyor (0,9697 ≥ 0,8799). Eski sayı silinmedi.
+> Kaynak: `outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json` ·
+> [#59](2026-08-06-m2-paydasi-ve-karar-4.md).
+>
+> 🚨 **BİRİM DÜZELTMESİ 2026-08-06 (kusur Ö1) — bu damganın kendi marj cümlesi KARIŞIK BİRİMDEYDİ.**
+> Yayımlanan ~~*"marj +18,1 → +3,2 puan"*~~ iki **farklı referans noktasından** okunmuştu:
+> `+18,1` **ÇIPANIN** (cevaba-kör base) üstü · `+3,2` **EŞİĞİN** üstü. Eşleşen okumalar:
+> ```
+> EŞİĞİN üstü  (referans 0,923):   +6,1 p → +3,2 p     (marj ~1,9× daraldı)
+> ÇIPANIN üstü (referans base):   +18,1 p → +15,2 p    (marj ~1,2× daraldı)
+> ```
+> **Bu turda kullanılan referans noktası: EŞİĞİN üstü** — kapı hükmü eşiğe göre kurulur.
+> ⚠️ *"payda onarımı marjı 5,7 kat eritti"* okuması **yanlıştır**; öyle bir kıyas yoktur.
+> Kusur sınıfı: bir marj/fark yazarken referans noktası cümlede söylenmemiş
+> (`docs/record/yurutme-tuzaklari.md`).
 
 ### 🚨 Ama muhafız §17'nin işaret ettiği kör noktaya düştü
 
@@ -1219,8 +1263,8 @@ Koşu: `outputs/eval/cp3e-merge/` · taşıyıcı `tg_ta_nb-q4_k_m.gguf` + llama
 · rejim değişmezleri birebir · hakem `gpt-4o-mini`, kapı openrouter, sağlayıcı `OpenAI` pinli.
 
 ```
-2. GÖZLEM  M2b Rej = 1,000  ≥ 0,854   ✅  (τ_g'nin 0,607'si → 1,000)
-1. GÖZLEM  M2  Rej = 0,984  ≥ 0,923   ✅  (τ_a tekil, §18)
+2. GÖZLEM  M2b Rej = 1,000  ≥ 0,854   ✅  (τ_g'nin 0,607'si → 1,000)   ← ᴷ³, dosya başı çeviri
+1. GÖZLEM  M2  Rej = 0,984  ≥ 0,923   ✅  (τ_a tekil, §18)             ← ᴷ⁴: 0,955 ≥ 0,923 ✅
            M1  A1  = 1,0000 ≥ 0,880   ✅  ← TEORİK TAVAN
 ```
 
@@ -1335,6 +1379,7 @@ bütçeyi büyütmek değil, **merge'i düzeltmek** (DEV süpürmesi, §21'deki 
 
 ```
 1. GÖZLEM  τ_a tekil M2 Rej = 0,984 ≥ 0,923   ✅  GEÇERLİ koşu (kesik %0,4)
+                             ← ᴷ⁴: 0,955 ≥ 0,923 ✅ hüküm AYAKTA (dosya başı çeviri)
            muhafız M1 A1    = 0,9697 ≥ 0,880  ✅  ama kütle %41,2 (base %56,7) ⚠️
 2. GÖZLEM  merge M2b        = ÖLÇÜLEMEDİ      🛑  koşu geçersiz (kesik %5,2)
 ```
@@ -1379,10 +1424,11 @@ MERGE(min)       43/80       0,463   0,9940     53,4%      —      0,987 ✅
 ```
 
 **Çekinme tam korundu:** `τ_g`'nin çöken 0,607'si → **0,987**, `τ_a` ile birebir.
+*(🚨 ᴷ³ · dosya başı çeviri: `0,506` → **0,987**; hüküm **ayakta**, girdi damgalı.)*
 **Grounding korunmadı:** M1 kütlesi 53,4% — `τ_a`'nın 41,2%'sinden iyi ama **çıplak base'in
 56,7%'sinin altında**, `τ_g`'nin 71,4%'ünden uzak.
 
-Her iki ön-kayıtlı kapı geçildi (M2 0,984 · M2b 0,987) ama **iddia henüz kanıtlanmadı** —
+Her iki ön-kayıtlı kapı geçildi (M2 0,984 *(ᴷ⁴ **0,955**)* · M2b 0,987 *(değişmedi)*) ama **iddia henüz kanıtlanmadı** —
 merge iki kazanımı birden taşımıyor, yalnız birini.
 
 ### ⭐ GEOMETRİ ANLAŞILDI — sorun ÖLÇEK değil ORAN
@@ -1422,10 +1468,16 @@ düşürülmüştü). **Eksikti ve dolduruldu** — tek eksenle çekinme okumak 
 ```
 M2 Rej (tuzak madde verilen mod)
 base 0,814 · Gemini 0,930 · τ_g 0,873 · τ_a 0,984 · MERGE(min) 0,934
+🚨 ᴷ⁴ (payda 66): base 0,803 · Gemini 0,848 · τ_g 0,833 · τ_a 0,955 · MERGE(min) 0,909
 ```
 
 **Merge her iki çekinme ekseninde de `τ_g`'yi geçiyor:** M2 0,873 → **0,934** · M2b 0,607 →
 **0,987**. M2'de Gemini'nin de (0,930) üstünde.
+
+> 🚨 **TÜRETİLMİŞ NİCELİK DAMGASI 2026-08-06 (Ö3-c).** Bu `MERGE(min)` (norm-dengeli, ablasyon)
+> satırıdır. Dosya başı çevirisiyle: M2 `0,833 → **0,909**` (+0,076 ~~+0,061~~) ·
+> M2b `0,506 → **0,987**` (+0,481 ~~+0,380~~) · Gemini karşılaştırması `0,909 > 0,848` ~~0,934 > 0,930~~.
+> **Hüküm ayakta**, marjlar değişti. ⚠️ ADR-0057: kıyas yalnız aynı paydada (66 / 77) kurulur.
 
 ```
 özne          M1 kütle   M2 Rej   M2b Rej
@@ -1480,19 +1532,40 @@ Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,930    1,000
 MERGE ortalama     —           —        —         —        —        —   🛑 dejenere
 MERGE min        43/80       0,463   0,9940     53,4%    0,934    0,987
 MERGE ham        63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅
+
+🚨 M2 Rej / M2b Rej sütunları EMEKLİ BİRİMDE — yürürlükteki çeviri (ᴷ⁴ / ᴷ³):
+             M2 Rej (payda 66)         M2b Rej (payda 77)
+base           0,814 → 0,803             0,986 → 0,961
+Gemini 3.1 FL  0,930 → 0,848             1,000 → 0,883
+τ_g            0,873 → 0,833             0,607 → 0,506
+τ_a            0,984 → 0,955             0,987 → 0,987  (değişmedi)
+MERGE min      0,934 → 0,909             0,987 → 0,987  (değişmedi)
+MERGE ham      0,893 → 0,833             0,877 → 0,766
 ```
 
 ### Sonuç
 
 ```
 GROUNDING     τ_g 71,4%  →  merge 71,6%     TAMAMEN korundu (%100,3)
-ÇEKİNME M2b   τ_g 0,607  →  merge 0,877     çöküşün %71'i ONARILDI
-ÇEKİNME M2    τ_g 0,873  →  merge 0,893     +0,020
+ÇEKİNME M2b   τ_g 0,607  →  merge 0,877     çöküşün %71'i ONARILDI      ← ᴷ³ ile: 0,506 → 0,766, %57
+ÇEKİNME M2    τ_g 0,873  →  merge 0,893     +0,020                      ← ᴷ⁴ ile: 0,833 → 0,833, +0,000
 ```
 
-`τ_g` tek başına M2b'de çökmüştü (0,607). Merge **grounding'den hiçbir şey kaybetmeden** o
-çöküşün %71'ini geri aldı. İç iddianın öncülü (§18: çatışma gerçek) ve sonucu (merge çatışan
-becerileri birlikte taşıyor) artık **aynı protokolde ölçülü**.
+> 🚨 **TÜRETİLMİŞ NİCELİK DAMGASI 2026-08-06 (kusur Ö3-c).** §18'in ᴷ⁴ bloğu girdileri
+> damgalamıştı; **onlardan hesaplanan oran/fark** damgasız kalmıştı — bu turun kendi kuralının
+> ihlali. Eski değerler silinmedi. Yürürlükteki türetmeler:
+> · **onarım oranı** `(0,766 − 0,506) / (0,961 − 0,506) = **%57,1**` ~~%71,2~~ (ᴷ³)
+> · **merge'in M2'ye katkısı** `0,833 − 0,833 = **+0,000**` ~~+0,020~~ (ᴷ⁴)
+> `:1500`'de kaybolan işaret değil, **kazancın varlığıdır**: düzeltilmiş aletle `τ_g` v1 ile
+> `tgta_v1` M2'de **birebir eşit** (ikisi de 55/66) — merge M2'ye hiçbir şey taşımıyor.
+> Bu, ARA KAPI'nın *"merge taşımıyor"* teşhisini bağımsız olarak güçlendirir.
+> Çıpa: ⭐ [`kollar.md`](../kollar.md) · [#57](2026-08-06-cekinme-aleti-onarimi.md) · [#58](2026-08-06-payda-tekillesmesi.md).
+
+~~`τ_g` tek başına M2b'de çökmüştü (0,607). Merge **grounding'den hiçbir şey kaybetmeden** o
+çöküşün %71'ini geri aldı.~~ → Yürürlükteki okuma: `τ_g` M2b'de **0,506**'ya çökmüştü; merge
+grounding'den hiçbir şey kaybetmeden o çöküşün **%57'sini** geri aldı. İç iddianın öncülü
+(§18: çatışma gerçek) ve sonucu (merge çatışan becerileri birlikte taşıyor) artık **aynı
+protokolde ölçülü** — ama **yalnız M2b'de**; M2'de merge'in katkısı **+0,000**.
 
 ### Yan kazanımlar — ADR-0017 maliyet ekseni
 
@@ -1510,7 +1583,7 @@ muhasebesine doğrudan giriyor.
 ### 🔴🟢 ARA KAPI — KAPATILABİLİR
 
 ```
-1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅
+1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅   ← ᴷ⁴: 0,955 ≥ 0,923 ✅ hüküm AYAKTA
            muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅
 2. GÖZLEM  merge      M2b    = 0,877  ≥ 0,854   ✅  (GEÇERLİ koşu, kesik %0,4)
 §20 şartı  merge M1 kütlesi τ_g'den belirgin düşük mü?   ❌ HAYIR (71,6% ↔ 71,4%)
@@ -1518,6 +1591,15 @@ muhasebesine doğrudan giriyor.
 
 Karar tablosu: **✅✅ → güçlü yeşil → CP4-CP5 koşulabilir.** §20'nin ön-kayıtlı uyarısı da
 karşılanıyor: merge bir *"her şeye hayır diyen"* model değil.
+
+> 🚨 **DAMGA 2026-08-06 (kusur K-2) — 2. GÖZLEM YENİDEN TÜRETİLDİ, HÜKÜM TERSİNE DÖNDÜ.**
+> Yukarıdaki ✅ o günün aletiyle doğrudur, **silinmedi**. Düzeltilmiş cevaba-kör paydayla
+> aynı ön-kayıtlı formül: `eşik = 0,90 × 0,961 = **0,8649**` · `merge = **0,766**` →
+> **🔴 DÜŞTÜ (−9,9 puan)**; eski 0,887 eşiğine karşı da düşüyor, paydalar eşit (77 ↔ 77).
+> ⛔ ADR-0050: eşik/çarpan/formül **değiştirilmedi**. *"Güçlü yeşil"* ve *"CP4-CP5
+> koşulabilir"* cümleleri **bugünkü ölçümle geçersizdir.**
+> Bu girişin diğer M2b sayıları için de aynı çeviri geçerli — bkz.
+> [#57](2026-08-06-cekinme-aleti-onarimi.md) ve [#58](2026-08-06-payda-tekillesmesi.md).
 
 ### ⚠️⚠️ ADR-0036'NIN HÜKMÜ TERSİNE DÖNÜYOR — yeni ADR gerekiyor
 
@@ -1528,7 +1610,7 @@ ham TIES kontrol"* diyordu. Ölçüm bunun tersini söylüyor:
 | :--- | :--- |
 | Kollar çok farklı ölçekte eğitiliyor | ✅ **DOĞRULANDI** — 8,87× (‖τ_g‖ 10,47 ↔ ‖τ_a‖ 1,18) |
 | TIES kütle-ağırlıklı | ✅ **DOĞRULANDI** — ama işaret seçiminde değil, **ayrık ortalamada** (§23) |
-| Dengelenmezse küçük kol **silinir** | ❌ **ÇÜRÜTÜLDÜ** — ham TIES'te `τ_a` silinmedi: M2b 0,607 → 0,877 |
+| Dengelenmezse küçük kol **silinir** | ❌ **ÇÜRÜTÜLDÜ** — ham TIES'te `τ_a` silinmedi: M2b 0,607 → 0,877 *(🚨 ᴷ³: **0,506 → 0,766**; sıçrama +0,26, çürütme **ayakta**)* |
 | Bu yüzden dengeleme **gerekli** | ❌ **TERSİ** — dengeleme `τ_g`'yi eziyor, grounding 71,4% → 53,4% |
 
 **Mekanizma:** norm, etkinin iyi bir vekili değil. `τ_a` yalnız 1,18 normla M1 reddini

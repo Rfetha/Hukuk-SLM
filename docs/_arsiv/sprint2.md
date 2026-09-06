@@ -18,6 +18,12 @@ sonuç     : 🟢 GÜÇLÜ YEŞİL (1. gözlem 0,984 ≥ 0,923 · 2. gözlem 0,8
 kapsam    : CP2-c → kabul zinciri → CP3 → ARA KAPI   ✅ hepsi kapandı
 ```
 
+> 🚨 **DAMGA 2026-08-06 (K-2):** 2. gözlem düzeltilmiş cevaba-kör paydayla yeniden türetildi
+> → `0,766 < 0,8649` **🔴 DÜŞTÜ (−9,9 puan)**. *"Güçlü yeşil"* bugünkü ölçümle geçerli değil.
+> **1. gözlem** ise ᴷ⁴ (m2 paydası 66) ile `0,955 ≥ 0,923` ✅ **ayakta** → satır **✅❌ = DUR**.
+> Arşiv belgesi olduğu için içerik **değiştirilmedi**, yalnız damgalandı.
+> Bkz. [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md).
+
 > ### 🛑 CP4-CP5 BU BELGEDE DEĞİL → [`sprint2b.md`](sprint2b.md) (2026-08-03)
 > Devamı ayrı bir hedef belgesine taşındı: **`/goal sprint2b.md`**. Orada bir **açık karar**
 > insan onayı bekliyor (CP4 karışık **ORPO** mu saf **SFT** mi — hedef eşleşmesi sorunu).
@@ -61,6 +67,11 @@ Yeni iş başlarsa **yeni bir icra belgesi** açılır; buradaki numaralar ve ap
 
 **Karar tablosu: ✅✅ → CP4-CP5 koşulabilir.** 🛑 Ama para insan onayıyla harcanır.
 
+> 🚨 **DAMGA 2026-08-06 (K-2):** düzeltilmiş paydayla `merge = 0,766 < eşik 0,8649` →
+> **🔴 DÜŞTÜ (−9,9 puan)**. *"CP4-CP5 koşulabilir"* yetkisi bugünkü ölçümle **YOK**.
+> ⛔ ADR-0050: eşiğe/çarpana/formüle dokunulmadı.
+> Bkz. [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md).
+
 ### Ölçülen tablo — hepsi aynı protokol, hepsi geçerli koşu
 
 ```
@@ -80,6 +91,21 @@ GROUNDING     τ_g 71,4%  →  merge 71,6%     TAMAMEN korundu
 ÇEKİNME M2    τ_g 0,873  →  merge 0,893     +0,020
 maliyet       1084 tok   →  784 tok/cevap   öz-sonlandırma geri geldi (115/230 zorunlu)
 ```
+
+> 🚨 **TÜRETİLMİŞ NİCELİK DAMGASI 2026-08-06 (kusur Ö3).** Yukarıdaki tablonun `M2 Rej` /
+> `M2b Rej` sütunları **emekli birimdedir** ve **onlardan hesaplanan iki nicelik de** öyledir —
+> girdiler damgalanırken türevleri damgasız kalmıştı.
+> ```
+> ÇEKİNME M2b   τ_g 0,506 → merge 0,766     çöküşün %57'si onarıldı   ᴷ³  ~~%71~~
+> ÇEKİNME M2    τ_g 0,833 → merge 0,833     +0,000                    ᴷ⁴  ~~+0,020~~
+> ```
+> `+0,000`'da kaybolan işaret değil, **kazancın varlığıdır**: düzeltilmiş alette `τ_g` v1 ile
+> `tgta_v1` M2'de **birebir eşit** (55/66). Sütun çevirileri: base `0,814→0,803` / `0,986→0,961` ·
+> Gemini `0,930→0,848` / `1,000→0,883` · `τ_g` `0,873→0,833` / `0,607→0,506` ·
+> `τ_a` `0,984→0,955` / `0,987` değişmedi · MERGE min `0,934→0,909` · MERGE ham `0,893→0,833` /
+> `0,877→0,766`. Ayrıca ARA KAPI **1. gözlem** ᴷ⁴ ile: `0,955 ≥ 0,923` ✅ **ayakta**.
+> A1 · kütle · aşırı-red · token satırları etkilenmedi. Arşiv belgesi: eski metin **değiştirilmedi**.
+> ⭐ Çıpa: [`kollar.md`](../record/kollar.md) · [#57](../record/research_log/2026-08-06-cekinme-aleti-onarimi.md) · [#58](../record/research_log/2026-08-06-payda-tekillesmesi.md).
 
 ### ⚠️⚠️ [ADR-0052](../adr/0052-merge-norm-dengeleme-hukmu-tersine.md) — ADR-0036'nın hükmü TERSİNE
 

@@ -27,13 +27,21 @@ DEV kümesi, harness kapalı, hakem `gpt-4o-mini`. Tam protokol [model kartında
 
 | | sadık-cevap kütlesi ↑ | aşırı-red ↓ | kaynak yokken red ↑ | tok/cevap ↓ |
 | :--- | ---: | ---: | ---: | ---: |
-| çıplak base | 56,7% | 0,425 | 0,986 | 1192 |
-| **HakHukuk-4B-v0.1** | **71,6%** | **0,212** | 0,877 | **714** |
-| Gemini 3.1 Flash-Lite | 72,9% | 0,237 | 1,000 | — |
+| çıplak base | 56,7% | 0,425 | 0,961 ᴷ³ | 1192 |
+| **HakHukuk-4B-v0.1** | **71,6%** | **0,212** | **0,766** ᴷ³ | **714** |
+| Gemini 3.1 Flash-Lite | 72,9% | 0,237 | 0,883 ᴷ³ | — |
+
+ᴷ³ **M2b 2026-08-06'da yeniden puanlandı.** Eski sayılar, hakemin **modelin cevabına bakarak**
+verdiği bir paydayla üretilmişti — yani aynı sınav her modelde farklı payda veriyordu. Payda artık
+cevaba kör ve kollarda birebir aynı (`valid_traps` bu sınavda 61…80 → **77**). Eski değerler
+[`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md)'de duruyor; çeviri tablosu orada:
+base `0,986 → 0,961` · biz `0,877 → 0,766` · Gemini FL `1,000 → 0,883`.
+⚠ **M2/A1 sütunları yeniden puanlanmadı**, hâlâ modele bağımlı paydayı taşıyor.
 
 Flash-Lite'ın sadık-cevap kütlesinin **%98'ine ulaşıyoruz ve ondan daha az
 reddediyoruz** — 2,59 GiB'lık bir modelle ve ~sıfır marjinal maliyetle. Yalnız
-çeldirici kaynaklar verildiğinde reddetme ekseninde hâlâ geride kalıyoruz.
+çeldirici kaynaklar verildiğinde reddetme ekseninde hâlâ geride kalıyoruz (0,766 ↔ 0,883 —
+payda onarılınca açıklık 12,3 → 11,7 puana daraldı, ama işaret değişmedi).
 
 **Bu bir parite iddiası değildir:** harness kapalı, maliyet normalize edilmedi ve
 merge yapılandırması DEV'de seçildi.
@@ -42,28 +50,80 @@ merge yapılandırması DEV'de seçildi.
 
 Yukarıdaki tablo doğru maddeyi modelin eline veriyor. Gerçek kullanıcının böyle bir
 lüksü yok. Bağlamı bir retriever seçtiğinde (hibrit BM25 + `bge-m3`, 40.496 maddelik
-indeks, `k=10`, tamamı CPU'da):
+indeks, `k=10`, tamamı CPU'da) ve sistem isteminde **kaynak-yeterliliği önsözü** varken
+(2026-08-06'dan beri ana protokol — [ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md)):
 
-| | harness KAPALI | **harness AÇIK** |
-| :--- | ---: | ---: |
-| altın madde bağlamda | **kurgu gereği** garanti | **70/80 — `recall@10` 0,875** |
-| sadık-cevap kütlesi | %71,6 | **%61,3** |
-| A1 · altın getirilen alt küme | 0,909 | **0,862** |
-| **uydurulmuş madde numarası** | 0 | **0 / 118** |
+| | harness KAPALI | **harness AÇIK — RESMÎ** | AÇIK, önsözsüz *ablasyon* |
+| :--- | ---: | ---: | ---: |
+| altın madde bağlamda | **kurgu gereği** garanti | **70/80 — `recall@10` 0,875** | 70/80 — birebir aynı |
+| coverage | 0,788 | **0,8250** ~~0,7625~~ | **0,9000** ~~0,7625~~ |
+| sadık-cevap kütlesi | %71,6 | **%68,4** ~~%62,8~~ | **%73,0** ~~%61,3~~ |
+| A1 · cevaplanan | 0,909 | **0,8288** | 0,8110 |
+| A1 · altın getirilen alt küme | 0,909 | **0,8729** | 0,8593 |
+| **uydurulmuş madde numarası** | 0 | **0 / 83** | 0 / 118 |
+| altın bağlamdayken çekindi ↓ | 17/80 | **9/80** ~~14/80~~ | **5/80** ~~16/80~~ |
+| *başka bir gerçek* maddeden cevapladı ↓ | — | **5/80** | 7/80 |
 
-**Arkasında durduğumuz sayı %61,3.** Bu bir gerileme değil — iki ölçüm aynı şeyi
-ölçmüyor ve KAPALI sütunu bir rakip değil **tavan**. 10,2 puanlık açığı ayrıştırdık:
+> 🚨 **YENİDEN PUANLANDI 2026-09-06 — çekinme dedektörü bozuktu ve yalnız BİZİ cezalandırıyordu.**
+> Açılış hükmü olmayan dalda `exact_reject` **cevabın tamamını** tarıyordu; bizim cevap
+> şablonumuzun eleme gerekçesi (*"diğer kaynaklar … **içermemektedir**"*) red regex'ini
+> tetikliyordu. Gemini'nin cevaplarında o kalıp yalnız **3/80** kalemde var, yani hata
+> **bizim kendi eğitim şablonumuza özgüydü**. Onarım **bizim** sayılarımızı oynattı, rakibinkine
+> **hiç dokunmadı** (varsayılmadı, ölçüldü).
+> **80 kalem gözle okunduğunda** aşırı-red **8/80** ve kütle **%69,6**; alet 9/80 ve %68,4
+> veriyor — **yayımlanan aletin sayısıdır**, çünkü senin yeniden üretebileceğin odur.
+> Eski değerler **silinmedi**, üstü çizildi.
+> [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
+> [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md) ·
+> kalem kalem kayıt: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md`
+
+> 🚨 **Ve yeniden puanlama ADR-0058'in kendi gerekçesini TERSİNE ÇEVİRDİ — iki sütundan birini
+> alıntılamadan önce bunu oku.** Önsöz **kütleyi yükselttiği için** benimsenmişti (%61,3 → %62,8).
+> Onarılmış aletle **düşürüyor**: **önsözlü %68,4, önsözsüz %73,0** (−4,6 puan). Çift gerçekten
+> eşleşmiş bir sınav — aynı 80 id, **80/80 birebir aynı `context_shown`**, aynı `recall@10`;
+> değişen tek şey istem. Ama önsözün **diğer ayakları hâlâ ayakta**: A1 **0,8288 ↔ 0,8110** ve
+> isabetsizlik **5/80 ↔ 7/80**, ikisi de önsözün lehine. Takas iki yönlü: önsöz modeli
+> **daha seçici ama daha suskun** yapıyor.
+> **Protokol DEĞİŞTİRİLMEDİ** — bu kendi ADR'sini ve insan kararını ister (açık soru **S14**).
+> Resmî = önsözlü.
+
+**Arkasında durduğumuz sayı %68,4.** KAPALI sütunuyla arasındaki fark bir gerileme değil —
+iki ölçüm aynı şeyi ölçmüyor ve KAPALI bir rakip değil **tavan**.
+
+> ⚠️ Aşağıdaki ayrıştırma **önsözsüz** çıpaya (%61,3) karşı, yani 10,2 puanlık açık için
+> yapıldı. ADR-0058 sonrası açık **8,8 puandır** ve **yeniden ayrıştırılmamıştır.**
+
+10,2 puanlık açığı ayrıştırdık:
 **≈5,1 puan erişim ıskası** (harness'ın — 10/80 soruda altın madde hiç gelmiyor) +
 **≈4,5 puan dikkat dağılması** (modelin — altın getirildiğinde bile yanına dokuz madde
 konunca A1 0,909 → 0,862 düşüyor).
 
+⚠️ **İndirmeden önce bilinmesi gereken bir sonuç.** %68,4 sayısı *model + retriever + önsöz*
+üçlüsünün sayısıdır. Önsöz bugün tek bir ölçüm script'inin içinde duruyor ve dağıtılmıyor,
+retriever da aşağıdaki servis yoluna bağlı değil — dolayısıyla modeli düz indiren kişi manşeti
+değil **ablasyon** sütununu (%73,0) yeniden üretir. İkisini de paketlemek `v1`'in ilan edilmiş
+şartıdır ([yol haritası](ROADMAP.md)).
+*(Evet — ablasyon sütunu şu an **daha yüksek**. Yukarıdaki ADR-0058 şerhine bak: bu tersine
+dönüş **açık bir soru**, ablasyonu ürün diye dağıtmanın gerekçesi değil.)*
+
 🚨 **Ve ölçüm kendi planımızı çürüttü.** Atıf doğrulayıcıyı A1 açığını kapatmak için
 kurduk. **Sıfır** uydurulmuş madde numarası buldu — yakalamak için kurulduğu sınıf
 **boş**. Model numara uydurmuyor; erişim ıskaladığında *başka bir gerçek* maddeden
-cevaplıyor (7/80). Asıl büyük hata bunun tersi: **16/80** soruda model, altın madde
-**bağlamındayken** çekiniyor — ve bu sayı harness kapalıyken de aynı (17/80), yani bir
-**model** özelliği, erişim özelliği değil. Deterministik kod bunu kapatamaz.
+cevaplıyor (**5/80**; önsözsüz ablasyon: 7/80). Asıl büyük hata hâlâ bunun tersi: **9/80**
+(ablasyon: 5/80) soruda model, altın madde **bağlamındayken** çekiniyor — harness kapalıyken
+17/80, yani bir **model** özelliği, erişim özelliği değil. Deterministik kod bunu kapatamaz.
 Ayrıntı ve tam kayıt: [yol haritası](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
+
+✅ **Bu sayılar 2026-09-06'ya kadar 14/80 ve 16/80'di — yanlıştılar, ve bu düzeltme turun
+ürettiği en değerli şey oldu.** Dedektör onarıldı, **80 kalemin tamamı gözle okundu**, gerçek
+sayı **8/80** çıktı (alet 9/80 diyor). Eski on dördün **altısı** doğru, atıflı cevaptı ve
+yanlışlıkla red sayılmıştı; ters yönde **hiçbir çekinme kaçırılmamıştı**. Bu açığı kapatmak için
+bir eğitim turu planlanmıştı — **iptal edildi**, çünkü ön-kayıtlı hedef (8-11/80) **hiç eğitim
+yapılmadan** zaten karşılanmıştı: *"sorunun"* **%43'ü ölçüm aletinin kendisiymiş**.
+⛔ **Küçüldü, yok olmadı** — 8/80 hâlâ Gemini 3.5 Flash-Lite'ın 6/80'inin üstünde.
+[ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) ·
+[#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+[#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
 ## Nasıl kuruldu
 
@@ -75,10 +135,11 @@ ham base ──┬── LoRA SFT   (dayanaklandırma) → τ_g
 ```
 
 Birbiriyle **fiilen çatışan** iki beceri: dayanaklandırma için eğitmek çekinmeyi
-çökertiyor (ölçüldü: 0,986 → 0,607), çekinme için eğitmek dayanaklandırmayı
+çökertiyor (ölçüldü: 0,961 → 0,506 ᴷ³), çekinme için eğitmek dayanaklandırmayı
 çökertiyor (%56,7 → %41,2). Hiçbir kol tek başına kullanılabilir değil. Merge
 ikisini de geri getiriyor — dayanaklandırma tamamen korunuyor, çekinme çöküşünün
-%71'i onarılıyor.
+**%57'si** ~~%71'i~~ onarılıyor *(oran 2026-08-06'da ᴷ³ paydalarından yeniden türetildi:
+`(0,766−0,506)/(0,961−0,506)`; not [`MODEL_CARD.md`](MODEL_CARD.md)'de).*
 
 ## Hızlı başlangıç
 
@@ -106,7 +167,7 @@ takılıp **geçersiz sayılan iki koşu** ve ölçüm çeliştiği için **sonr
 | | |
 | :--- | :--- |
 | [`docs/record/research_log/`](docs/record/research_log/) | ne olduğu, kronolojik, her sayıyla |
-| [`docs/adr/`](docs/adr/) | 55 karar kaydı — bağlam, seçenekler, **elenenler** |
+| [`docs/adr/`](docs/adr/) | 60 karar kaydı — bağlam, seçenekler, **elenenler** *(0059 rezerve, henüz yazılmadı)* |
 | [`docs/record/kollar.md`](docs/record/kollar.md) | artefakt kaydı: her kol ve merge, künyesiyle |
 | [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) | **hata vermeden yanlış sayı üreten** kalıplar — her biri fiilen ısırdı |
 | [`outputs/eval/`](outputs/eval/) | ham eval çıktıları ve koşu künyeleri |

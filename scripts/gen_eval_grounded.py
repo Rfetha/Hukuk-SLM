@@ -27,6 +27,7 @@ import argparse
 import json
 import os
 import random
+import time
 import urllib.request
 from typing import NamedTuple
 
@@ -154,10 +155,10 @@ def parse_args():
                    help="N>0: OpenRouter `reasoning.max_tokens=N` gönder ve toplam bütçeyi "
                         "N+--max-new-tokens yap (rakip tarafı; --think-budget'ın karşılığı)")
     p.add_argument("--sufficiency-preamble", action="store_true",
-                   help="ABLASYON (research_log #43): sistem istemine 'önce kaynağın soruyu "
-                        "cevaplayıp cevaplamadığını belirt' satırını ekle. Düşünce ile gelen "
-                        "kazancın BİÇİMDEN mi muhakemeden mi geldiğini ayırmak için. "
-                        "Ana tabloda KULLANILMAZ.")
+                   help="ANA PROTOKOL (ADR-0058): sistem istemine 'önce kaynağın soruyu "
+                        "cevaplayıp cevaplamadığını belirt' satırını ekle. Ana tablodaki HER "
+                        "hücre bu bayrakla üretilir (çıpa: kütle %%62,8 · A1 0,8229). "
+                        "BAYRAKSIZ koşu ABLASYON koludur ve ana tabloya girmez.")
     p.add_argument("--harness-no-gold", action="store_true",
                    help="ADR-0056 Karar 1 — `m2b`'nin harness-AÇIK karşılığı: retriever "
                         "k+1 getirir, ALTIN madde düşürülür, ilk k kalır. Bağlam uzunluğu "
@@ -285,14 +286,16 @@ def generate_completion(model, tokenizer, soru, max_new_tokens, source=None, sou
     return gen[:cut].strip()
 
 
-# ── ABLASYON: kaynak-yeterliliği önsözü (2026-07-29, research_log #43 Bulgu 5) ──
+# ── ANA PROTOKOL: kaynak-yeterliliği önsözü (ADR-0058) ─────────────────────────
+# Kökeni ABLASYON deneyiydi (2026-07-29, research_log #43 Bulgu 5); D1 ile benimsendi.
 # Bütçeli düşünce M2'de tuzak reddini 0.633 → 0.814 çıkardı. İki mekanizma aday:
 # (A) muhakeme kaynağı soruyla karşılaştırıyor · (B) zorunlu kapatma sonrası model kaynağın
 # içeriğini SAYIP DÖKMÜŞ durumda, oradan doğal devam "kaynak bunu kapsamıyor" oluyor.
 # CP0.9 ikisini ayıramadı (70 örneğin 69'u zorla kapatıldı → kendi duran kontrol grubu yok).
 # Bu önsöz (B)'nin BİÇİM kısmını düşünce OLMADAN taklit eder: kazanç buradan geliyorsa aynı
 # sonuç 1× token'la alınır (ADR-0017 maliyet ekseninde doğrudan kaldıraç).
-# ⚠️ Bu bir PROTOKOL DEĞİL, ablasyon kolu — ana tablodaki hiçbir hücre bu bayrakla üretilmez.
+# ✅ ADR-0058 (2026-08-06): ANA PROTOKOL. Ana tablodaki her hücre bu bayrakla üretilir;
+#    bayraksız koşu artık ABLASYON kolu. Çıpa: kütle %62,8 · A1 0,8229.
 SUFFICIENCY_PREAMBLE = (
     "\nCevabına başlamadan ÖNCE, verilen kaynağın soruyu cevaplayıp cevaplamadığını "
     "tek cümleyle belirt. Kaynak soruyu cevaplamıyorsa bunu söyle ve cevap uydurma."
@@ -377,15 +380,33 @@ def generate_http(client, model_name, soru, max_new_tokens, source=None, sources
         # Rakip tarafı: bütçeyi sunucu uyguluyor, zorunlu kapatmaya gerek yok. Toplam
         # bütçe = düşünce + cevap; yoksa düşünce cevabın payını yer (bizde 1024|512 ayrı).
         extra["reasoning"] = {"max_tokens": reasoning_budget}
-    r = client.chat.completions.create(
-        model=model_name,
-        messages=msgs,
-        max_tokens=(reasoning_budget + max_new_tokens) if reasoning_budget
-                   else (think_budget or max_new_tokens),
-        temperature=0.0,
-        seed=3407,
-        extra_body=extra or None,
-    )
+    # ⚠️ GEÇİCİ SAĞLAYICI HATASI (2026-08-06, G2): OpenRouter/Google AI Studio bazen
+    # HTTP **200** döner ama `finish_reason='error'` + BOŞ content verir. SDK'nın kendi
+    # retry'ı (max_retries=8) bunu GÖRMEZ — HTTP katmanında hata yok. Sonuç: 80 kalemlik
+    # ücretli bir koşu 22./32. kalemde ölüyordu (aynı koşu iki kez, FARKLI kalemde →
+    # içeriğe bağlı değil, geçici).
+    # §5 hata felsefesi: geçici altyapı hatası → GERİ-ÇEKİLMELİ RETRY. Deneme hakkı
+    # tükenirse fonksiyon boş metni döndürür ve çağıranın "boş cevap → koşuyu durdur"
+    # kapısı devreye girer — sessiz düşürme YOK, yanlış sayı YOK.
+    # Ölçüm rejimi değişmez: aynı istem, aynı temperature=0, aynı seed.
+    r = None
+    for deneme in range(4):
+        r = client.chat.completions.create(
+            model=model_name,
+            messages=msgs,
+            max_tokens=(reasoning_budget + max_new_tokens) if reasoning_budget
+                       else (think_budget or max_new_tokens),
+            temperature=0.0,
+            seed=3407,
+            extra_body=extra or None,
+        )
+        _ch = r.choices[0]
+        if _ch.finish_reason != "error" or (_ch.message.content or "").strip():
+            break
+        bekle = 2 ** deneme
+        print(f"    ↻ sağlayıcı geçici hatası (finish_reason='error', boş içerik) — "
+              f"{bekle}s sonra yeniden denenecek ({deneme + 1}/4)", flush=True)
+        time.sleep(bekle)
     ch = r.choices[0]
     msg = ch.message
     # reasoning_content OpenAI şemasında yok; llama-server/OpenRouter ekliyor.
@@ -644,9 +665,15 @@ def main():
         print(f"[gen-eval] rakip düşünce bütçesi: reasoning.max_tokens={a.reasoning_budget} "
               f"(toplam {a.reasoning_budget + a.max_new_tokens}) | ort reasoning_tokens "
               f"{rt_sum / max(1, rt_n):.1f}/cevap (bildirilen n={rt_n}/{len(sample)}) — künyeye yazılır")
+    # Why: bayrak künyeye yazılmıyor — log'daki bu satır koşunun hangi kolda olduğunun
+    # TEK izi. İki dalda da basılır ki ana protokol koşusu POZİTİF kanıt bıraksın.
     if a.sufficiency_preamble:
-        print("[gen-eval] ⚠️ ABLASYON: kaynak-yeterliliği önsözü AÇIK — sistem istemi "
-              "ana protokolden FARKLI, bu koşu ana tabloya girmez")
+        print("[gen-eval] ✅ ana protokol: kaynak-yeterliliği önsözü AÇIK — ADR-0058 "
+              "(çıpa: kütle %62,8 · A1 0,8229)")
+    else:
+        print("[gen-eval] ⚠️ bu koşu ABLASYON kolu (ADR-0058): kaynak-yeterliliği önsözü "
+              "KAPALI — sistem istemi ana protokolden FARKLI, bu koşu ana tabloya girmez "
+              "(ana protokol çıpası: kütle %62,8)")
     print(f"[gen-eval] taşıyıcı={'http' if http_client else 'yerel'} | thinking={a.thinking} "
           f"| max_new_tokens={a.max_new_tokens} | seed={a.seed}")
     print(f"[gen-eval] detay → {detail}")

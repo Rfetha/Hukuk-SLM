@@ -164,7 +164,24 @@ ayrı koşu olmadan karşılar).
 
 ---
 
-## ⭐ Eşiklerin türetilmesi — **0.923 / 0.880 / 0.854**
+## ⭐ Eşiklerin türetilmesi — **0.923 / 0.880 / 0.854** ᴷ³
+
+> 🚨 **DAMGA 2026-08-06 (K-2/K-3): bu üç sayı EMEKLİ BİR ALETİN türetmesidir.** Silinmedi.
+> Aşağıdaki türetme `valid_trap_cache.py` + `rescore_abstention_cached.py` ile yapıldı;
+> ikisi de emekli edildi ve **900 klipi bir kategori hatasıydı** (parça sabiti birleşime
+> uygulanmış; hakem cp09 m2b'de 320 kaynağın 147'sini görüyordu, %46). Bugünkü tek aletle:
+>
+> | eşik | formül (ön-kayıtlı, DEĞİŞMEDİ) | bu bölüm | **yürürlükte 2026-08-06** |
+> | :--- | :--- | ---: | ---: |
+> | M2 tekil | base M2 + 0,12 | 0,923 | **0,934** ⚠️ payda ONARILMADI, askıda |
+> | M1 A1 muhafızı | base A1 × 0,90 | 0,880 | **0,8878** *(valid_trap'ten etkilenmez)* |
+> | merge M2b | base M2b × 0,90 | 0,8541 | **0,8649** |
+>
+> ⛔ ADR-0050: formüle/çarpana **dokunulmadı**, yalnız yeniden bölündü.
+> Türetme: `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json` ·
+> [#58](../research_log/2026-08-06-payda-tekillesmesi.md).
+> **Merge onarımı bu yeni eşikte DÜŞÜYOR (0,766 < 0,8649).**
+
 
 ```
 M2 eşiği       = düzeltilmiş base M2 + 12 puan
@@ -796,7 +813,7 @@ llama-server + 3 cevap                             ✅ 3/3 dolu
 | ~~CP2-a uyum kapısı~~ | CP2-a ✅ | **KALDI** — hakemler %58,3-%91,7 arasında dağıldı; ön-eleme **koşulmadı** ([ADR-0048](../../adr/0048-cevaba-kor-tuzak-gecerliligi.md) m.4) |
 | ~~M2b kurgu tabanı~~ | CP2-r ✅ | **GEÇİLDİ: 79/80 ≫ 40/80** → merge onarımı ARA KAPI'nın 2. gözlemi olarak KALIR. *(Kural: cevaba-kör geçerli tuzak < 40/80 ise M2b tasarlandığı mod olmaktan çıkar → ADR-0045'in merge onarım kontrolü **tanımlayıcıya** iner ([ADR-0049](../../adr/0049-sprint2-kalan-kararlarin-kilitlenmesi.md) m.3))* |
 | **CP2-c verim kapısı** | CP2-c | Modal koşusunun **ilk 10 dakikasında** gerçek `s/üretim` okunur; tahminin **2 katını** aşarsa koşu **DURUR**, sayı negatif bulgu olarak yazılır ([ADR-0047](../../adr/0047-cp2-hedef-750-modal-hasat.md) m.3). ⚠️ İki kez düzeltildi: (a) `limit`e takılıp **atlanabiliyordu**, (b) **kümülatif** ortalamayla ölçüyordu → 16:19 koşusunu **hatalı** durdurdu. Artık **kararlı hız** okunur (`saniye_per_uretim_kararli`); **eşik 2,88 değişmedi** |
-| **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.923 · M1 A1 ≥ 0.880** **+** `τ_g+τ_a` merge **M2b ≥ 0.854** — ✅ üçü de CP2-r'de türetildi. Eski 0.934/0.888/0.887'ye karşı da raporlanır |
+| **ARA KAPI** | CP3 | `τ_a` tekil **M2 ≥ 0.923 · M1 A1 ≥ 0.880** **+** `τ_g+τ_a` merge **M2b ≥ 0.854** — ✅ üçü de CP2-r'de türetildi. Eski 0.934/0.888/0.887'ye karşı da raporlanır. 🚨 **ᴷ³ 2026-08-06: yürürlükteki eşikler 0.934 (askıda) / 0.8878 / 0.8649; merge 0,766 ile DÜŞÜYOR** — [#58](../research_log/2026-08-06-payda-tekillesmesi.md) |
 | **Kapı 5** | Sprint 3 | ADR-0037 (3 madde) — referansları burada üretiliyor |
 | **Kapı 6** | Sprint 3 | **ADR-0044 sayıları** — M5 coverage ≤ **%97.5** · ezber kütlesi ≤ **%42.5** (base, bütçeli kip) |
 
@@ -945,24 +962,65 @@ protokolde, aynı veriyle, tekil ölçülmüş → **Sprint 3'ün kafesi kurulab
 ## ARA KAPI: GÜÇLÜ YEŞİL
 
 ```
-1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅
+1. GÖZLEM  τ_a tekil  M2 Rej = 0,984  ≥ 0,923   ✅   ← ᴷ⁴ (payda 66): 0,955 ≥ 0,923 ✅ AYAKTA
            muhafız    M1 A1  = 0,9697 ≥ 0,880   ✅
 2. GÖZLEM  tgta_v1    M2b    = 0,877  ≥ 0,854   ✅   geçerli koşu (kesik %0,4)
 §20 şartı  merge cevaplamayı bıraktı mı?         ❌   HAYIR (71,6% ↔ τ_g 71,4%)
 ```
+
+> 🚨 **ARA KAPI 2. GÖZLEMİ YENİDEN TÜRETİLDİ 2026-08-06 (kusur K-2) — HÜKÜM DEĞİŞTİ.**
+> Yukarıdaki ✅ **o günün aletiyle doğrudur ve silinmedi.** Düzeltilmiş cevaba-kör paydayla
+> (K3 + K-1) aynı ön-kayıtlı formül şunu veriyor:
+> `eşik = 0,90 × base M2b 0,961 = **0,8649**` · `merge (ham TIES) M2b = **0,766**`
+> → **🔴 DÜŞTÜ, 9,9 puan altında.** Eski eşiğe (0,887) karşı da düşüyor. Paydalar eşit
+> (77 ↔ 77), yani kıyas geçerli. ⛔ ADR-0050 gereği eşiğe/çarpana/formüle **dokunulmadı**;
+> bu satırın kendi kuralı (m.1) zaten *"ön-kayıtlı olan formül, sayı değil"* diyordu.
+> Türetme: `outputs/eval/cp2-r-kor-payda/ara_kapi_esikleri_2026-08-06.json` ·
+> [#58](../research_log/2026-08-06-payda-tekillesmesi.md).
+> **Bu kapı CP4-CP5 harcamasını yetkilendiren kapıydı — yetki bugünkü ölçümle YOK.**
+>
+> ⚠️ ~~1. GÖZLEM'in paydası hâlâ modele bağımlı — askıda.~~ → ✅ **ÖDENDİ VE TÜRETİLDİ
+> 2026-08-06 (KARAR-3, hakem $0,1054).** m2 paydası on koşuda birden eşitlendi (**66/70**,
+> eskiden 55-63). Aynı ön-kayıtlı formülle:
+> `eşik = base M2 0,803 + 0,12 = **0,923**` · `τ_a tekil M2 = **0,955**` → **✅ GEÇTİ (+3,2 p)**;
+> muhafız `A1 0,9697 ≥ 0,90 × 0,9777 = 0,8799` → **✅**. Ön-kayıtlı ham sayılara karşı da
+> geçiyor (0,955 ≥ 0,934 · 0,9697 ≥ 0,888). ⛔ ADR-0050: eşiğe/çarpana/formüle dokunulmadı.
+> 🚨 **Not — bu ✅ ilk kez BİRİM-TUTARLI:** yukarıdaki 0,984 ≥ 0,923 kıyası **karışık birimdi**
+> (pay özneye bağlı paydadan, eşik #46'nın kör çıpasından). Şimdi iki taraf da aynı aletten.
+>
+> ### ⇒ ADR-0045 §3'ün ön-kayıtlı tablosunda satır: **✅ ❌ → DUR**
+> *"Kol tek başına iyi ama birleşince taşımıyor; iç iddianın öncülü sorunlu."* Karar iki
+> olası satırda da DUR'du, ama artık **hangi** satır olduğu belli: sorun `τ_a`'nın kalitesi
+> değil, **merge'in onu taşımaması**. CP4-CP5 harcaması bu kapıdan yetki **almıyor**.
+> Türetme: `outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json`.
 
 🛑 **CP4-CP5 koşulmadı** — insan başka bir zamana erteledi. Yeni `/goal` gerektirir.
 
 ## Ölçülen tablo — hepsi aynı protokol, hepsi geçerli koşu
 
 ```
-özne          cevaplanan  aşırı-red      A1   M1 kütle   M2 Rej   M2b Rej   tok/cevap
-base             46/80       0,425   0,9864     56,7%    0,814    0,986       1192
-Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,930    1,000         —
-τ_g v1           66/80       0,175   0,8658     71,4%    0,873    0,607 🔴      —
-τ_a v1           34/80       0,575   0,9697     41,2% 🔴 0,984    0,987       ~1084
-tgta_v1 ⭐       63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅      714
+özne          cevaplanan  aşırı-red      A1   M1 kütle  M2 Rej ᴷ⁴  M2b Rej ᴷ³  tok/cevap
+base             46/80       0,425   0,9864     56,7%    0,803      0,961        1192
+Gemini 3.1 FL    61/80       0,237   0,9561     72,9%    0,848      0,883          —
+τ_g v1           66/80       0,175   0,8658     71,4%    0,833      0,506 🔴       —
+τ_a v1           34/80       0,575   0,9697     41,2% 🔴 0,955      0,987        ~1084
+tgta_v1 ⭐       63/80       0,212   0,9087     71,6% ✅ 0,833      0,766 ✅       714
+
+ᴷ⁴ M2 eski (özneye bağlı payda 55-63): base 0,814 · Gemini 0,930 · τ_g 0,873 · τ_a 0,984 · tgta_v1 0,893
 ```
+
+> 🚨 **DAMGA 2026-08-06 — `M2b Rej` sütununun TAMAMI emekli birimde.** Paydası modelin
+> cevabına bakan hakemden geliyordu (K3, [#57](../research_log/2026-08-06-cekinme-aleti-onarimi.md)).
+> Yürürlükteki payda **77/80**, aynı sınavı paylaşan her kolda eşit. Çeviri:
+> base **0,986 → 0,961** · Gemini **1,000 → 0,883** · `τ_g` **0,607 → 0,506** ·
+> `τ_a` **0,987 → 0,987 (değişmedi)** · `tgta_v1` **0,877 → 0,766** (ve ✅'i **🔴** olur — K-2).
+> ᴷ⁴ ~~`M2 Rej` sütunu HÂLÂ ONARILMADI~~ → **ONARILDI 2026-08-06 (KARAR-3, $0,1054).** Aynı 70
+> kalemlik sınavda on kol **55-63** arası payda gösteriyordu; hepsi **66/70**'e eşitlendi.
+> ⚠️ **Bu düzeltmenin yönü BİZİM LEHİMİZE ve öyle raporlanıyor:** en çok kayan özne **RAKİP**
+> (Gemini −8,2 puan ↔ biz −6,0), `tgta_v1`–Gemini açıklığı **3,7 → 1,5 puana** daralıyor —
+> kirli paydadan en çok Gemini yararlanıyordu (#46'nın aynı sınıftaki bulgusunun **tersi** yön,
+> o tur aleyhimizeydi). Kaynak: `outputs/eval/karar3-m2-payda/m2_payda_2026-08-06.json`.
+> `A1` / `M1 kütle` / `aşırı-red` sütunları `valid_trap`'ten **etkilenmez**, aynen geçerli.
 
 ## Sprint 2'nin dört ana bulgusu
 
@@ -971,7 +1029,13 @@ tgta_v1 ⭐       63/80       0,212   0,9087     71,6% ✅ 0,893    0,877 ✅   
 (41,2% ↔ 56,7%). İç iddianın öncülü artık varsayım değil **veri**.
 
 **2. Merge çatışan becerileri birlikte taşıyor.** `tgta_v1`, `τ_g`'nin grounding'ini **tamamen**
-koruyup (71,4% → 71,6%) onun M2b çöküşünün **%71'ini** onardı (0,607 → 0,877).
+koruyup (71,4% → 71,6%) onun M2b çöküşünün **%57'sini** ~~%71'ini~~ onardı
+(**0,506 → 0,766** ᴷ³ ~~0,607 → 0,877~~).
+
+> 🚨 ᴷ³ **BU SATIRIN M2b SAYILARI ESKİ ALETİN BİRİMİNDEYDİ** (düzeltildi 2026-08-06, kusur K2).
+> Kör-payda onarımı üç girdiyi de yeniledi (base 0,986→0,961 · `τ_g` 0,607→0,506 · merge
+> 0,877→0,766), bu yüzden `(merge − τ_g)/(base − τ_g)` oranı da **%71,2 → %57,1** oldu.
+> Sıçramanın kendisi değişmedi (**+0,26**). Eski sayılar denetim izi olarak duruyor.
 
 **3. ADR-0036'nın hükmü tersine döndü → [ADR-0052](../../adr/0052-merge-norm-dengeleme-hukmu-tersine.md).**
 Norm dengeleme *gerekli* diye yazılmıştı; ölçüm `τ_g`'yi ezdiğini (71,4% → 53,4%) ve yüksek
@@ -1007,5 +1071,5 @@ merge süpürme  GPU $0 · hakem $0,11 · ~2 saat        (3 varyant, DEV)
 - **`scripts/cp3_merge_dene.sh`** — varyant → GGUF → 3 eksen eval → puanlama, tek komut
 - **`merge_ties.py --geri-olcek {ortalama|min|max|<kol>}`** + künyede `geri_olcek_kurali`
 - **Açık soru:** modül-başına normalleştirme denenmedi (`open_questions.md`) — ham TIES'in
-  `τ_a`'yı seyreltmesini (0,987 → 0,877) telafi edebilir
+  `τ_a`'yı seyreltmesini (0,987 → 0,877 ᴷ³ **düzeltilmiş: 0,987 → 0,766**) telafi edebilir
 - **Açık iş:** CP4 (karışık SFT) + CP5 (ardışık SFT) — iç iddianın **gerçek** sınavı

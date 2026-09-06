@@ -8,12 +8,35 @@
 > [`2026-08-05-olcum-bosluklari.md`](docs/superpowers/plans/2026-08-05-olcum-bosluklari.md) ·
 > sonuçlar: [**#56**](docs/record/research_log/2026-08-05-olcum-bosluklari.md).
 > Çıkanlar: M2b iddiası **yapısal olarak öldü** (kapı bu rejimde ateşlenemiyor) → **eğitim borcu** ·
-> B-i önsözü **başarılı** ama benimsenmedi (**YB1**) · `k` büyütmenin bedeli **iki eksende** ölçüldü.
+> B-i önsözü **başarılı** ve **BENİMSENDİ** ([ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md),
+> 2026-08-06 — ana protokol; YB1 kapandı) · `k` büyütmenin bedeli **iki eksende** ölçüldü.
 >
-> **▶ AÇIK SPRINT YOK, AKTİF PLAN YOK. Sıradaki turun hangisi olacağı insan kararı** —
-> adaylar ve ölçülmüş gerekçeleri `ROADMAP.md`'de ve borç kuyruğunda
-> ([`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası): **B10 · B1 · B4 · B8 ·
-> B9 · B6** + **YB1 · YB2 · YB3**).
+> **✅ B10 aşırı-red turu KAPANDI 2026-09-06 — hedef EĞİTİMSİZ karşılandı**
+> ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
+> Görev 0-3 koşuldu, **Görev 4-10 koşulmadı, `τ_a` v2 eğitilmedi.** Kapanış bloğu planda:
+> [`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md).
+>
+> Turun kendi **gözle okuma** adımı hasadın kabul ölçütünü çürüttü
+> ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)); alet onarılıp
+> 80 kalem gözle okununca **B10 14/80 → 8/80** (alet 9/80) ve **kütle %62,8 → %68,4** çıktı
+> ([#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)) — ön-kayıtlı
+> band **8-11/80** idi, yani **hiç eğitim yapılmadan** karşılandı. Hasat verimi de gerçekte
+> **0,0667**; 250 çift **5,3 saat ≈ $5,2** demekti (D10'u aşıyor). ⛔ **Aşırı-red sıfırlanmadı,
+> küçüldü** — 8/80 hâlâ 3.5 FL'ın 6/80'inin üstünde ve MODEL_CARD'da açık sınır.
+>
+> **▶ YENİ BİRİNCİ SIRA: B1 — isabet denetimi (5/80).** Eksen
+> [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)'te belirlendi, **kod hiç açılmadı**.
+> 🔧 B10 turunun aletleri **duruyor ve yeniden kullanılabilir**: `scripts/b10_hasat.py` ·
+> Modal `harvest_b10` (ADR-0047 m.2 taşıyıcısı, L4'te doğrulandı) · sızıntı süzgeci.
+> Borç kuyruğu: [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası)
+> (**B1 · B4 · B8 · B9 · B6** + **YB2 · YB3**).
+>
+> 🚨 **YENİ AÇIK SORU S14:** onarım **ADR-0058'in gerekçesini tersine çevirdi** — önsöz artık
+> kütleyi **düşürüyor** (%68,4 önsözlü ↔ **%73,0** önsözsüz). Protokol **değiştirilmedi**;
+> karar insanın ([`open_questions.md`](docs/open_questions.md) **S14**).
+>
+> **▶ Sıralı plan (v1/v2):** [`2026-09-06-v1-v2-roadmap-taslak.md`](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
+> — *taslak, insan onayı bekliyor.* **v1 = çalışan model release'i · v2 = API · arxiv yan ürün.**
 >
 > Gerekçeler ve ölçülmüş açıklar: **[`ROADMAP.md`](ROADMAP.md)**
 > Her koşudan önce: ⭐ [`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md)
@@ -46,8 +69,15 @@ Tasarım: [`docs/superpowers/specs/2026-08-03-yol-haritasi-design.md`](docs/supe
 
 Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md)'de.
 
-> **Ürünün dürüst sayısı: kütle %61,3** (harness AÇIK, `k=10`, onarılmış korpus) ↔ %71,6
-> (KAPALI = **tavan**, altın madde kurgu gereği verilir). Aradaki 10,2 puan **ayrıştırıldı**:
+> **Ürünün dürüst sayısı: kütle %62,8** (harness AÇIK, `k=10`, onarılmış korpus, kaynak-yeterliliği
+> önsözü — [ADR-0058](docs/adr/0058-b-i-kaynak-yeterliligi-onsozu-benimsendi.md); önsözsüz ablasyon:
+> %61,3) ↔ %71,6 (KAPALI = **tavan**, altın madde kurgu gereği verilir).
+> Kaynak: `outputs/eval/olcum-bi/` · [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) §5 (D1).
+>
+> ⚠️ Bu ayrıştırma **önsözsüz** çıpayla (%61,3) yapılmıştır; ADR-0058 sonrası açık 8,8 puandır ve
+> yeniden ayrıştırılmamıştır.
+>
+> %71,6 → %61,3 aradaki 10,2 puan **ayrıştırıldı**:
 > ≈5,1 erişim ıskası (harness'ın) + ≈4,5 dikkat dağılması (modelin).
 > GPU **$0** · hakem **$0,127** · 7 research_log · 3 ADR · 3 yeni tuzak.
 
@@ -86,11 +116,71 @@ Tam kayıt, kapılar ve değişmezler [`sprint3-part1.md`](docs/_arsiv/sprint3-p
 
 ### 📌 Part 1'in bıraktığı — Part 2'nin girdisi
 
-- **6 açık borç:** B10 (aşırı-red 16/80) · B1 (7/80) · B4 · B5 · B8 · B9 · B6
+- **6 açık borç:** ~~B10 (aşırı-red 14/80; ablasyon 16/80)~~ → **B10 9/80** (gözle okuma 8/80;
+  ablasyon 5/80) — *tur kapandı, birinci sıradan indi, açık sınır olarak durur* ·
+  **B1 (5/80**; ablasyon 7/80) ← **yeni birinci sıra** · B4 · B5 · B8 · B9 · B6
 - **2 ölçüm boşluğu:** `m2b` harness AÇIK **hiç koşulmadı** · rakip harness AÇIK **hiç ölçülmedi**
 
 Sıra ve ölçüm bağlamları: [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md#post-sprint-3-sırası) ·
 Part 2'nin kararları ve ön-kayıtlı tahminleri: [ADR-0056](docs/adr/0056-m2b-harness-acik-protokolu-ve-0055-cipasi.md)
+
+---
+
+## 🔧 FAZ 0 — ucuz düzeltmeler *(Faz 1'i BEKLETMEZ, hepsi paralel)*
+
+Kaynak: [v1/v2 taslağı §5](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md) Faz 0.
+Bedel sütunu taslaktan; **eşikler ve harcama kararı insanındır**.
+
+- [ ] **0.1 [P]** `README.md` + `README.tr.md` çıpalarını **ADR-0058'e taşı** — *dışa dönük ilk
+      belge hâlâ ADR-0058 ÖNCESİ sayıları yayımlıyordu* (borç **D-a**)
+      → **verify:** `grep -c '62,8\|62.8' README*` > 0; %61,3 · 16/80 · 7/80 · 0/118 yalnız
+      **ablasyon** damgasıyla duruyor · **$0**
+- [ ] **0.2 [P]** `scripts/measure_vram_stack.py`'yi **`tgta_v1`'de** koş (borç **D-b**)
+      → **verify:** `outputs/eval/_artefakt/vram_stack.json`'da `tgta_v1` satırı var
+      · **$0 · ~15 dk** ⚠️ bugünkü ölçüm **base GGUF** üzerinde
+- [ ] **0.3 [P]** **M3 paydasını 80/80** yap, yayılımı damgala (**OQ-1**) — cp09'da `54 · 56 · 39`,
+      oysa ADR-0048 m.2 gereği tanım gereği 80/80
+      → **verify:** üç kolda payda 80; eski değerler **damgalı**, silinmemiş · **$0**
+- [ ] **0.4 [P]** `kunye_yaz` bir **script** olsun (borç **D-c**, tuzak 6.12) — bugün künyeler
+      **elle** yazılıyor, `s2-harness-k10-etiketli/`'de künye **hiç yok**
+      → **verify:** yeni koşuda `KUNYE.json` otomatik üretiliyor · **$0**
+- [ ] **0.5 [P]** **ADR-0059 yazılır** (borç **D-e**) — numara rezerve ama belge yok, **altı yer**
+      `ADR-0059 §sapma-1`'e atıf yapıyor
+      → **verify:** `docs/adr/0059-*.md` var, atıflar çözülüyor · **$0**
+- [ ] **0.6** `SOURCE_CLIP` borcunu öde (**YB3**) — `k=10`'un çekinme ekseni bugün **TANIMSIZ**
+      → **verify:** payda, hakemin **gördüğü** bağlamla eşleşiyor · **≈$0,30**
+      🛑 ⚠️ **tüm tarihsel `verdict`leri kıyaslanamaz kılar → insan onayı şart** (karar **S4**)
+
+## ✅ FAZ 1.0 — KAPANDI 2026-09-06 *(tur da kapandı: [ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md))*
+
+- [x] **1.0** ✅ **Hasat kabul ölçütü ONARILDI** ([ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md))
+      — `exact_reject`'in hüküm-yok dalı 11 satırla değişti, `REJECT_RE`'ye **dokunulmadı**
+      → **verify ✓:** `pytest` **112 passed, 2 xfailed** (çıpa 99/1) · 13 yeni vaka geçti · **$0**
+- [x] **1.0b** ✅ **Çıpanın 80 kalemi GÖZLE OKUNDU** — `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md`
+      → **verify ✓:** **B10 14/80 → 8/80** (alet 9/80) · eski 14'ün **6'sı yanlış pozitif**
+      (`id` 19·32·44·53·65·77), **yanlış negatif YOK** · coverage 0,7625 → **0,8250** ·
+      kütle %62,8 → **%68,4** · `recall@10` **değişmedi** · **82 dosya** yeniden puanlandı,
+      82 yedek `*.ONCEKI-20260906` · **$0**
+- [x] **1.2'** ✅ **Pilot onarılmış ölçütle yeniden türetildi — YENİDEN ÜRETİM OLMADAN.**
+      Yeni kabul kümesi eskisinin **alt kümesi** (kodda `assert`, 55/55) ⇒ kaydedilmiş kabuller
+      yeniden süzüldü, ~$0,81 tasarruf
+      → **verify ✓:** `kabul_orani` **0,1733 → 0,0667** (np1) · 0,1933 → **0,0600** (np8)
+      ⇒ 🛑 **D1 gerçekten düşüyor** · KARAR-6: Jaccard 0,5278 → **0,9000**, ayrışma **tek kalem**,
+      ama kesişimin **7/9**'unda metin farklı ⇒ *paralel slot metni değiştiriyor, çekinme
+      kararını değiştirmiyor*. ⛔ Hüküm **insanın** (**S12**)
+- [ ] ~~**1.3-1.8** Görev 4-10~~ — 🛑 **KOŞULMADI, tur kapandı.** Hedef (8-11/80) **eğitimsiz**
+      karşılandı; hasat 250 çift için **5,3 saat ≈ $5,2** (D10'u aşıyor) + eğitim ~$2 isterdi.
+      ⛔ *"Aşırı-red eğitimle ne kadar iner"* sorusu **ÖLÇÜLMEDİ** ve öyle kaydedildi.
+
+## 🚨 YENİ — S14: ADR-0058'in gerekçesi tersine döndü
+
+- [ ] **S14** Ana protokol **önsözlü kalsın mı?** Onarımdan sonra önsöz kütleyi **düşürüyor**:
+      önsözlü **%68,4** ↔ önsözsüz **%73,0** (**−4,6 p**). Kıyas eşleşmiş (aynı 80 id ·
+      **80/80 birebir aynı bağlam** · aynı `recall@10`). Ama A1 (**0,8288 ↔ 0,8110**) ve
+      isabetsizlik (**5/80 ↔ 7/80**) hâlâ önsözün lehine — takas **iki yönlü**
+      → **verify:** karar bir **ADR** olarak yazıldı · ⛔ protokol o zamana dek **değişmez**,
+      resmî sayı **önsözlü %68,4** · ⚠️ −4,6 p'yi koruyan **çözünürlük sınırı yok** (**S5** ile
+      birlikte kararlaştırılmalı) · **$0**
 
 ---
 

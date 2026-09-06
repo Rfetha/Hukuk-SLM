@@ -543,3 +543,187 @@ def spawn_harvest(model: str = "", packed: str = "", out: str = "", adapter: str
                                   adapter=adapter or None, target=target,
                                   batch=batch, max_new_tokens=max_new_tokens)
     print(f"[modal] HARVEST SPAWNED ✓ {call.object_id} | target={target} gpu={GPU}", flush=True)
+
+
+# ── B10 HASADI: aşırı-red toplama (Görev 3 pilot · Görev 4 üretim) ────────────
+# Taşıyıcı gerekçesi `harvest_cp2` ile AYNI (ADR-0047 m.2): dağıtılan kiple hasat.
+# `b10_hasat.py`'nin `DEV_YOLLARI`'sı GÖRELİ ve CLI argümanı yok — sızıntı süzgeci
+# kaynağı bulunamazsa `FileNotFoundError` atar (b10_hasat.py:129). Bu yüzden
+# `data/eval` imaja gömülür ve süreç `/root`ta koşar.
+b10_image = harvest_image.add_local_dir("data/eval", remote_path="/root/data/eval")
+
+
+@app.function(image=b10_image, gpu=GPU, volumes=VOLUMES, timeout=12 * 60 * 60)
+def harvest_b10(gguf: str, havuz: str, out_dir: str, np_list: list[int],
+                limit: int = 0, target: int = 0, ctx_per_slot: int = 8192,
+                seed: int = 3407, commit_every_s: int = 120, notu: str = ""):
+    """B10 aşırı-red hasadı — `-np` kolu başına bir koşu, sunucu kol arası yeniden kurulur.
+
+    Birden fazla `-np` verilirse KARAR-6'nın kıyası üretilir: aynı kart, aynı seed, aynı
+    kalemler; değişen YALNIZ `-np`. ⛔ Bu fonksiyon HÜKÜM KURMAZ — sayıları yazar.
+    """
+    import hashlib
+    import json
+    import os
+    import shutil
+    import subprocess
+    import sys
+    import time
+    import urllib.request
+
+    # ── VERİ KAPISI: GPU ayrılmışken patlamak pahalı, önce dosyalar (tuzak 6.2) ──
+    for etiket, yol in (("gguf", gguf), ("havuz", havuz)):
+        if not os.path.isfile(yol):
+            raise SystemExit(f"[b10] 🚫 {etiket} yok: {yol} — volume'a yüklendi mi?")
+    os.chdir("/root")                      # DEV_YOLLARI göreli — cwd BURASI olmak zorunda
+    for yol in ("data/eval/dev/core_hard.jsonl", "data/eval/canon/core_hard.jsonl"):
+        if not os.path.isfile(yol):
+            raise SystemExit(f"[b10] 🚫 sızıntı süzgeci kaynağı imajda yok: /root/{yol}")
+    binary = shutil.which("llama-server") or "/app/llama-server"
+    if not os.path.isfile(binary):
+        raise SystemExit(f"[b10] 🚫 llama-server bulunamadı ({binary}) — imaj değişti mi?")
+    os.makedirs(out_dir, exist_ok=True)
+
+    with open(gguf, "rb") as fh:                      # taşıyıcı kimliği künyeye girer
+        h = hashlib.sha256()
+        for blok in iter(lambda: fh.read(1 << 24), b""):
+            h.update(blok)
+    gguf_sha = h.hexdigest()
+    kart = subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total", "--format=csv,noheader"],
+                          capture_output=True, text=True).stdout.strip()
+    # Why: `--version` probu da ikilinin kütüphanesine muhtaç; düzeltilmiş env olmadan
+    # çağrılırsa künyeye sürüm yerine linker hatası yazılır (ölçüldü 2026-09-05, pilot koşusu).
+    bin_dir = os.path.dirname(binary) or "/app"
+    srv_env = dict(os.environ)
+    srv_env["LD_LIBRARY_PATH"] = bin_dir + os.pathsep + srv_env.get("LD_LIBRARY_PATH", "")
+    surum = subprocess.run([binary, "--version"], capture_output=True, text=True,
+                           cwd=bin_dir, env=srv_env)
+    surum_s = (surum.stderr or surum.stdout).strip().splitlines()[0] if (surum.stderr or surum.stdout) else "?"
+    print(f"[b10] künye · gguf={os.path.basename(gguf)} sha256={gguf_sha[:16]}… "
+          f"kollar -np {np_list} · {surum_s} · kart={kart}", flush=True)
+
+    # Sunucu ikilinin dizininde koşar (cwd /root'ta, sızıntı süzgecinin göreli yolu için).
+    kollar = {}
+    for np_slots in np_list:
+        ctx = np_slots * ctx_per_slot
+        etiket = f"np{np_slots}"
+        out = os.path.join(out_dir, f"b10_{etiket}.jsonl")
+        log_yolu = os.path.join(out_dir, f"llama_server_{etiket}.log")
+        log = open(log_yolu, "w")
+        srv = subprocess.Popen(
+            [binary, "-m", gguf, "-ngl", "99", "-fa", "on", "--no-context-shift",
+             "--cache-type-k", "q8_0", "--cache-type-v", "q8_0",
+             "-c", str(ctx), "-np", str(np_slots),
+             "--host", "127.0.0.1", "--port", "8080"],
+            stdout=log, stderr=subprocess.STDOUT, cwd=bin_dir, env=srv_env)
+        try:
+            for _ in range(180):                      # 6 dk: ağırlık yükleme + KV ayırma
+                if srv.poll() is not None:
+                    print(open(log_yolu).read()[-4000:], flush=True)
+                    raise SystemExit(f"[b10] 🚫 llama-server öldü (kod {srv.returncode}) · -np {np_slots}")
+                try:
+                    urllib.request.urlopen("http://127.0.0.1:8080/health", timeout=2).read()
+                    break
+                except Exception:
+                    time.sleep(2)
+            else:
+                print(open(log_yolu).read()[-4000:], flush=True)
+                raise SystemExit(f"[b10] 🚫 sunucu 360 s'te açılmadı · -np {np_slots}")
+            print(f"\n[b10] ========== -np {np_slots} · ctx {ctx} ==========", flush=True)
+
+            cmd = [sys.executable, "-u", "/root/scripts/b10_hasat.py",
+                   "--havuz", havuz, "--out", out, "--seed", str(seed),
+                   "--server-url", "http://127.0.0.1:8080/v1",
+                   "--concurrency", str(np_slots),
+                   "--not", f"Modal · kart={kart} · -np {np_slots} · gguf_sha={gguf_sha[:16]} · {notu}"]
+            cmd += ["--limit", str(limit)] if limit else ["--target", str(target)]
+            t0 = time.time()
+            _run_with_commits(cmd, [data_vol], every_s=commit_every_s)
+            sure = time.time() - t0
+        finally:
+            srv.terminate()
+            try:
+                srv.wait(timeout=30)
+            except Exception:
+                srv.kill()
+            log.close()
+
+        kp = out.replace(".jsonl", "_KUNYE.json")
+        kollar[etiket] = {"kunye": json.load(open(kp, encoding="utf-8")) if os.path.exists(kp) else None,
+                          "duvar_saati_s": round(sure, 1), "np": np_slots, "ctx": ctx,
+                          "out": out}
+
+    # ── KARAR-6 kıyası — SAYILAR, hüküm YOK ──────────────────────────────────
+    kiyas = None
+    if len(np_list) > 1:
+        def _yukle(yol):
+            with open(yol, encoding="utf-8") as f:
+                return {json.loads(l)["id"]: json.loads(l)["rejected"]
+                        for l in f if l.strip()}
+        adlar = [f"np{n}" for n in np_list]
+        kumeler = {ad: _yukle(kollar[ad]["out"]) for ad in adlar}
+        a, b = adlar[0], adlar[1]
+        A, B = set(kumeler[a]), set(kumeler[b])
+        kesisim = A & B
+        birebir = sum(1 for i in kesisim if kumeler[a][i] == kumeler[b][i])
+        kiyas = {
+            "kollar": [a, b],
+            f"n_kabul_{a}": len(A), f"n_kabul_{b}": len(B),
+            "n_kesisim": len(kesisim), f"yalniz_{a}": len(A - B), f"yalniz_{b}": len(B - A),
+            "jaccard": round(len(kesisim) / len(A | B), 4) if (A | B) else None,
+            "cevap_metni_birebir_ayni": birebir,
+            "kesisimde_metin_farkli": len(kesisim) - birebir,
+            "not": "⛔ Hüküm KURULMADI — yorumu insan yapar (KARAR-6).",
+        }
+        with open(os.path.join(out_dir, "b10_np_karsilastirma.json"), "w", encoding="utf-8") as f:
+            json.dump(kiyas, f, ensure_ascii=False, indent=2)
+
+    kunye = {
+        "gorev": "B10 hasadı", "karar": "KARAR-6 · ADR-0047 m.2 (taşıyıcı birebir)",
+        "tasiyici": {"runtime": "llama.cpp/llama-server", "surum": surum_s,
+                     "gguf": os.path.basename(gguf), "gguf_sha256": gguf_sha,
+                     "quant": "Q4_K_M", "kv_cache": "q8_0", "flash_attn": True,
+                     "context_shift": False, "ctx_slot": ctx_per_slot,
+                     "gpu_etiket": GPU, "gpu_gercek": kart},
+        "rejim": {"dusunce_butcesi": 1024, "cevap_butcesi": 512, "seed": seed,
+                  "kaynak": "ADR-0043 rejim değişmezi"},
+        "butce": {"limit": limit or None, "target": target or None},
+        "kollar": kollar, "np_karsilastirma": kiyas, "not": notu,
+    }
+    with open(os.path.join(out_dir, "KUNYE.json"), "w", encoding="utf-8") as f:
+        json.dump(kunye, f, ensure_ascii=False, indent=2)
+    data_vol.commit()
+    for ad, k in kollar.items():
+        ky = k["kunye"] or {}
+        print(f"[b10] {ad}: denenen={ky.get('denenen')} kabul={ky.get('kabul')} "
+              f"oran={ky.get('kabul_orani')} · {k['duvar_saati_s']} s", flush=True)
+    if kiyas:
+        print("[b10] KIYAS: " + json.dumps(kiyas, ensure_ascii=False), flush=True)
+    print(f"[b10] bitti → hukuk-data:{out_dir}", flush=True)
+
+
+@app.local_entrypoint()
+def spawn_b10(gguf: str = "", havuz: str = "", out_dir: str = "", np_list: str = "",
+              limit: int = 0, target: int = 0, ctx_per_slot: int = 8192,
+              seed: int = 3407, commit_every_s: int = 120, notu: str = ""):
+    """B10 hasadı — fire-and-forget.
+
+    ⚠️ `modal run --detach` ZORUNLU (tuzak 6.1): efemer app, yerel giriş noktası dönünce
+    kapanır ve `spawn()` ile kuyruğa atılan iş **onunla birlikte ölür** — hata vermeden.
+    """
+    _require("gguf", gguf); _require("havuz", havuz)
+    _require("out-dir", out_dir); _require("np-list", np_list)
+    # tuzak 3.6: yollar KONTEYNER yoludur (`hukuk-data` → /data). Yerelde saniyede patla.
+    for ad, yol in (("gguf", gguf), ("havuz", havuz), ("out-dir", out_dir)):
+        if not yol.startswith("/data/"):
+            raise SystemExit(f"[b10] 🚫 --{ad} konteyner yolu olmalı (/data/…), verilen: {yol}")
+    if bool(limit) == bool(target):
+        raise SystemExit("[b10] 🚫 --limit (üretim bütçesi) YA DA --target (kabul sayısı), biri.")
+    kollar = [int(x) for x in np_list.split()]
+    if len(kollar) > 2:
+        raise SystemExit("[b10] 🚫 en fazla iki kol — kıyas ikili kurulur.")
+    call = harvest_b10.spawn(gguf=gguf, havuz=havuz, out_dir=out_dir, np_list=kollar,
+                             limit=limit, target=target, ctx_per_slot=ctx_per_slot,
+                             seed=seed, commit_every_s=commit_every_s, notu=notu)
+    print(f"[b10] kuyruğa atıldı · call_id={call.object_id} · kollar -np {kollar}")
+    print(f"[b10] izle: modal app logs {app.name}   ·   çıktı: hukuk-data:{out_dir}")

@@ -142,6 +142,15 @@ yer almamakta"* diyor. Örnek (M3, id=7, bağlam boş):
 | m3 gem | 80 | 56 | 1,000 | 1,000 | +0,000 |
 | m3 `τ_g` | 80 | 39 | 0,923 | 0,800 | **+0,123** |
 
+> 🚨 **DAMGA 2026-08-06 (Ö3) — bu tablonun HER İKİ sütunu da EMEKLİ BİRİMDE.** Tablonun
+> **bulgusu** (payda özneye göre kayıyor, hem de tek yönde değil) tam olarak doğrulandı ve iki
+> ayrı onarımla kapatıldı: **ᴷ³** paydayı cevaba **kör** yaptı ([#57](2026-08-06-cekinme-aleti-onarimi.md)) ·
+> **ᴷ⁴** `m2` paydasını **66**'ya eşitledi ([#59](2026-08-06-m2-paydasi-ve-karar-4.md)).
+> Yürürlükteki `RED` değerleri: `m2` base **0,803** · gem **0,848** · `τ_g` **0,833** (payda 66) ·
+> `m2b` base **0,961** · gem **0,883** · `τ_g` **0,506** (payda 77).
+> ⚠️ *"filtresiz"* sütunu bir **karşıolgudur**, yürürlükteki bir ölçüm değil — bugünkü alette
+> payda tanımdan/kör hakemden geliyor, öznenin cevabından değil. Eski sayılar silinmedi.
+
 Filtre her koşuyu **yukarı** çekiyor (payda küçülüyor) ama **eşit değil**:
 
 - **M2b'de rakibi bizden çok kayırıyor** (+0,150 vs +0,082) → `gem` ↔ `τ_g` açığı 0,325 iken

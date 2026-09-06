@@ -194,7 +194,20 @@ tek komut, kapı düşerse zincir kırılır.
 tgta_v1 ⭐      71,6%     0,893    0,877     ← iddianın öznesi = HakHukuk-4B-v0.1
 Taban A            ?        ?        ?      ← CP4
 Taban B            ?        ?        ?      ← CP5
+
+🚨 M2/M2b sütunları EMEKLİ BİRİMDE — yürürlükteki çeviri (ᴷ⁴ payda 66 · ᴷ³ payda 77):
+τ_g v1     0,873 → 0,833     0,607 → 0,506
+τ_a v1     0,984 → 0,955     0,987 → 0,987  (değişmedi)
+tgta_v1    0,893 → 0,833     0,877 → 0,766
 ```
+
+> 🚨 **BİRİM DAMGASI 2026-08-06 (kusur Ö3).** Bu belge **ertelenmiş iddia katmanıdır** (Kapı 5 /
+> CP4-CP5) ve buradaki kıyas noktaları emekli aletten geliyordu. Kapı 5 bir gün koşulursa
+> tabanlar **yürürlükteki** birimde ölçülecek; eski satırlarla kıyaslanırsa **ADR-0057 gereği
+> eşleşmeyen eksen** olur ve hüküm kurulamaz. Eski değerler silinmedi.
+> ⚠️ Ayrıca `tgta_v1` M2'de `τ_g v1` ile **birebir eşit** çıktı (ikisi de 55/66) —
+> merge'in M2'ye katkısı **+0,000**; iddia katmanı kurulursa bu gözlem hesaba katılmalı.
+> ⭐ Çıpa: [`kollar.md`](../record/kollar.md).
 
 ⚠️ Kapı 5 bir **karar kuralıdır, istatistiksel test değil** — güç analizi yok, tek koşu.
 

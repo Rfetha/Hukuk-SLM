@@ -128,6 +128,12 @@ ADR-0040'ın 🟡 hükmü M2 eşiğine (0,814 ≥ 0,78) dayanıyordu; **filtresi
 geçiyor, hüküm değişmiyor.** ARA KAPI ve Kapı 5 eşiklerine dokunulmadı; düzeltme her özneye aynı
 biçimde uygulandığı için kıyas simetrisi korunur.
 
+> 🚨 **ᴷ⁴ ÜÇÜNCÜ KEZ KONTROL EDİLDİ 2026-08-06 (Ö3).** `m2` paydası özneye bağlı olmaktan çıkıp
+> **66/70**'e eşitlendi (KARAR-3, [#59](../record/research_log/2026-08-06-m2-paydasi-ve-karar-4.md)):
+> base M2 **0,814 → 0,803**. **Eşiği hâlâ geçiyor (0,803 ≥ 0,78) → ADR-0040'ın 🟡 hükmü ayakta.**
+> ⛔ Eşiğe dokunulmadı (ADR-0050) — yalnız girdi yeniden puanlandı. Eski değerler silinmedi.
+> ⚠️ ARA KAPI için aynı şey **söylenemez**: 2. gözlem ᴷ³ ile düştü (bkz. ADR-0045 · ADR-0052).
+
 ---
 
 ## Bunun ADR-0047 aritmetiğine etkisi — **lehimize**

@@ -10,6 +10,37 @@
 
 ---
 
+> 🚨 **DAMGA 2026-08-06 (kusur K-3) — bu girişin kör payda sayıları EMEKLİ BİR ALETİN
+> sayılarıdır. SİLİNMEDİ, ama artık yürürlükte değil.**
+>
+> Bu tur `valid_trap_cache.py` + `rescore_abstention_cached.py` ile ölçüldü; ikisi de
+> `score_abstention.py`'den **ayrı** bir kör payda üretiyordu ve klipleri farklıydı. Aynı
+> cp09 koşularında iki alet **çelişen** sayı veriyor (hepsi hakem gürültü tabanının 4-7 katı):
+>
+> | cp09 m2b Rej | cevaba bağlı | **bu giriş** (klip 900) | yürürlükteki alet (klip 3500) | fark |
+> | :--- | ---: | ---: | ---: | ---: |
+> | base | 0,986 | **0,949** | **0,961** | 1,2 p |
+> | Gemini | 1,000 | **0,861** | **0,883** | 2,2 p |
+> | `τ_g` | 0,607 | **0,519** | **0,506** | 1,3 p |
+>
+> **Sebep ölçüldü — 900 bir KATEGORİ HATASIYDI.** ADR-0011'in 900'ü `gen_eval_grounded`'ın
+> **her `[KAYNAK]` parçasına AYRI** uyguladığı üretim-zamanı eval-ayna klipi;
+> `context_shown` zaten kırpılmış parçaların BİRLEŞİMİ. Bu tur o parça sabitini birleşime
+> uyguladı. cp09 m2b'de (n=80, `[KAYNAK` sayımı): tam metinde **320** kaynak · klip 900 ile
+> hakem **147**'sini görüyor (**%46**) · klip 3500 ile **320**'sini (**%100**). Yani bu
+> girişin kör paydası bağlamın **yarısından** karar vermiş.
+>
+> **Ayakta kalanlar:** (a) paydanın cevaba KÖR olması gerektiği hükmü — ADR-0048 yürürlükte;
+> (b) M3'ün **80/80** tanımı — 2026-08-06'da alete alındı (KARAR-2) ve altı koşuya uygulandı;
+> (c) m2b kurgu tabanının geçildiği (79/80 ↔ yürürlükteki alet 77/80, ikisi de ≫ 40).
+> **Yürürlükteki sayılar:** `outputs/eval/cp09-butceli-1024-512/abst_*_summary.json` ·
+> [#57](2026-08-06-cekinme-aleti-onarimi.md) · [#58](2026-08-06-payda-tekillesmesi.md).
+>
+> ⛔ Bu girişteki **eşikler de emekli**: ARA KAPI 2. gözlemi 2026-08-06'da yeniden türetildi
+> ve **hükmü değişti** — bkz. #58 ve [ADR-0045](../../adr/0045-ara-kapi-merge-onarim-kontrolu.md).
+
+---
+
 ## Yapılan
 
 #45 `valid_trap`'in özne başına yeniden yargılandığını göstermişti. ADR-0048 düzeltmeyi karara
@@ -87,6 +118,18 @@ yararlanıyordu (M2b'de 1.000 raporlanmıştı, gerçek **0,861**).
 | m2 | 0,814 → **0,803** (−0,011) | 0,930 → **0,848** (−0,082) | 0,873 → **0,833** (−0,040) |
 | m2b | 0,986 → **0,949** (−0,037) | 1,000 → **0,861** (−0,139) | 0,607 → **0,519** (−0,088) |
 | m3 | 1,000 → 1,000 | 1,000 → 1,000 | 0,923 → **0,800** (−0,123) |
+
+> 🚨 **DAMGA 2026-08-06 (Ö3) — bu tablonun SAĞ tarafı da artık EMEKLİ.** Buradaki *"yeni"*
+> değerler **klip 900** aletinden geliyordu ve o alet K-3'te bir **kategori hatası** olarak
+> çürüdü (parça sabiti birleşik bağlama uygulanmıştı). Yürürlükteki üçüncü sütun
+> ([#57](2026-08-06-cekinme-aleti-onarimi.md) · [#59](2026-08-06-m2-paydasi-ve-karar-4.md)):
+> ```
+>      base            Gemini          τ_g v1        payda
+> m2   0,803 (aynı)    0,848 (aynı)    0,833 (aynı)   66   ᴷ⁴ — iki alet aynı hükümde birleşti
+> m2b  0,949 → 0,961   0,861 → 0,883   0,519 → 0,506  77   ᴷ³
+> ```
+> ⭐ `m2`'de iki alet **aynı paydayı** verdi (66/70) — 900 klipinin zararı yalnız
+> **birleştirilmiş çok-kaynaklı** bağlamda (`m2b`, `h2b`) doğuyor. Eski sayılar silinmedi.
 
 ## 5) `τ_g` hakkında yeni gerçek: açık **raporlanandan büyük**
 
