@@ -174,8 +174,31 @@ cevap metni BİREBİR aynı olan kalem sayısı`.
 | **A** hakem | **$0,1182** | `judge_cost_usd` toplamı (deterministik) |
 | **C** rakip çıkarımı | **≈$0,71** | jeton × `PRICE`; çıktı-only kesin alt sınır **$0,489** |
 | **A+C tur toplamı** | **≈$1,03** | **panel** *"son 24 saat"* |
-| **B** (Modal GPU) | **$0** | Görev 6'ya kadar harcanmıyor |
-| kalan bakiye | **$10,26** | `total_usage` 9,7403 |
+| **B** (Modal GPU) | ~~**$0**~~ → **$0,81** | ⬇️ 2026-09-06'da harcandı (gece pilotu) |
+| kalan bakiye (A+C, OpenRouter) | **$10,26** | `total_usage` 9,7403 |
+
+> 🔄 **BÜTÇE DÜZELTMESİ (2026-09-06) — iki ayrı cüzdan karıştırılmasın.**
+> `$10,26` **OpenRouter** bakiyesidir (cüzdan A hakem + C rakip çıkarımı; `total_credits` 20 −
+> `total_usage` 9,7403). **Modal ayrı bir cüzdandır** ve panelden okunan güncel hâli:
+>
+> | Modal | tutar |
+> | :--- | ---: |
+> | verilen kredi | **$30,00** |
+> | harcanan | **$0,81** ← gece pilotu (iki kol, 300 üretim, ~50 dk L4) |
+> | **kalan** | **$29,19** |
+> | workspace limiti | $42,50 (kalan $41,69) |
+>
+> ⭐ **Ve bu artık ÖLÇÜLMÜŞ bir birim maliyet, tahmin değil:** L4'te ~**$0,97/saat**.
+> Turun kalanı bununla fiyatlanır — **para kısıt değil**, kısıt süre ve D10 kuralıdır.
+>
+> ⚠️ **Görev 4'ün fiyatı kabul oranına bağlı ve ölçüt onarılınca DEĞİŞECEK.** Bugünkü tahmin:
+> ```
+> bozuk ölçütle (0,1733):  1.442 üretim × 5,1 s = 2,0 saat ≈ $2,0   ← D10 (3 sa) altında
+> gözle okumaya göre (~0,07): 3.571 üretim × 5,1 s = 5,1 saat ≈ $4,9  ← 🔴 D10'u AŞAR
+> ```
+> İkincisi **tahmindir** (26 kabulün ~%40'ı gerçek varsayımıyla); kesin sayı onarım sonrası
+> pilottan gelecek. Aşarsa insan kararı gerekir: `-np` yükselt (CP2-c'de 32 kullanılmıştı) ·
+> hedefi 250'den düşür · ya da D10 sınırını bu iş için gevşet.
 
 ⚠️ **Planın bütçe defteri iki şeyi birden ıskalamış:**
 (a) **tavan yanlış kısıttı** — $10 yazıyordu ama Görev 2 başlarken hesapta yalnız **$0,489** vardı;
