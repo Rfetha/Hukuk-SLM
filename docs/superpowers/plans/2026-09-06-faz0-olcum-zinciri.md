@@ -61,13 +61,24 @@ değer kümesi görülür. **Bayrak adlarını buradan al, tahmin etme.**
 açılır ve çıktı içine gömülür — hata vermez, sessizce yanlış yere yazar (2026-09-06'da olan
 budur).
 
+⚠️ **`--cihaz cuda` ŞART** — `recall_olc.py` hazır indeksi kullanmaz, **korpusun tamamını her
+koşuda yeniden gömer** (40.496 madde). Script kendi yorumunda ölçüsünü veriyor (:63):
+**CPU ~4,1 madde/sn → koşu başına ≈2 saat 45 dk**; `hibrit` + `yogun` = **≈5,5 saat**.
+Aynı yorum çareyi de veriyor: *"recall@k CİHAZDAN BAĞIMSIZ bir sayıdır; `--cihaz` yalnız
+indeksleme süresini değiştirir"* — yani GPU sayıyı **değiştirmez**, yalnız hızlandırır.
+⛔ GPU'nun boş olduğunu doğrula (`nvidia-smi`): llama-server açıkken bu koşu VRAM'i böler.
+
 ```bash
-source ~/code/global_venv/bin/activate && \
-set -a && . ./.env && set +a && mkdir -p outputs/eval/f01-erisim && \
-for Y in hibrit bm25 yogun; do
-  python scripts/recall_olc.py --yontem $Y --kapsam korpus --out outputs/eval/f01-erisim
+rm -rf outputs/eval/f01-erisim && mkdir -p outputs/eval/f01-erisim && \
+source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a && \
+export PYTHONUNBUFFERED=1 && \
+for Y in bm25 hibrit yogun; do
+  python scripts/recall_olc.py --yontem "$Y" --kapsam korpus --cihaz cuda \
+    --out outputs/eval/f01-erisim || echo "❌ $Y DURDU"
 done
 ```
+⚠️ Çıktıyı `| tail -N` ile boruya sokma — süreç bitene kadar **hiçbir şey görünmez**,
+koşunun ilerliyor mu takıldı mı olduğu anlaşılmaz (2026-09-06'da olan budur).
 `verify:` hibrit değer **0,875** çıkar (bugünkü çıpa; `g2-fl-harness/KUNYE.json`
 `recall_at_10` ile birebir). Çıkmazsa **DUR** — çıpa kaymış, sebebi bulunmadan devam edilmez.
 
