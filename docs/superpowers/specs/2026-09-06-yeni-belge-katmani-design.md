@@ -235,6 +235,23 @@ koşuludur** ve ROADMAP'te T1'in **önüne** yazılır. Kalan `tgta_v1` (yayıml
 ⚠️ **Silinmiyor, taşınıyor** — `cp2_prefilter.py` / `cp2_harvest.py` B1 turunun
 reddetme-örneklemesinde işe yarayabilir; görünmez kılmak istemiyoruz.
 
+🚨 **DÜZELTME 2026-09-06 — toplu taşıma YAPILAMAZ, ölçüldü.** 16'nın **7'si canlı kodla bağlı**
+ve `cp0_` öneki emekliliği değil *checkpoint-0 dönemi adlandırmasını* gösteriyor:
+
+```
+cp0_thinking_gen.sh    ← modal_train.py · cp3_merge_dene.sh · cp0_thinking_score.sh   🔴 CANLI KOŞUCU
+cp0_thinking_score.sh  ← cp0_thinking_gen.sh · cp09_gemini_gen.sh · watch_cp09.sh     🔴 CANLI PUANLAYICI
+cp2_harvest.py         ← modal_train.py · cp2c_kabul.sh · cp2_pilot.sh                🔴
+cp2c_kabul.sh          ← score_abstention.py · valid_trap_cache.py · cp2c_birlestir.py 🔴
+cp09_tablo.py ← cp1_delta.py   ·   cp1_delta.py ← cp1_rescore_meta.sh   ·   cp2_audit.py ← cp2c_kabul.sh
+```
+
+`cp0_thinking_gen.sh` **harness koşularının canlı koşucusudur** — llama-server'ı açar, künyeyi
+basar, kesiklik kapısını uygular; `outputs/eval/*/kosu.log`'un künye başlığını o yazıyor.
+⇒ **T2 iki kez daraltıldı:** liste **izole 9 dosyaya** indi *ve* **Faz 0'dan sonraya** alındı.
+Gerekçe: ölçümün aletini ölçümden hemen önce oynatmak `yurutme-tuzaklari.md`'nin ana sınıfıdır
+(*"sessiz yanlışlık, çökme değil"*).
+
 `verify:` taşımadan önce `grep -rnE "cp0[59]?_|cp1_|cp2[cr]?_|watch_cp09"` ile çağıran/import
 eden aranır (bulunursa yol güncellenir) · taşımadan sonra `pytest` **112 passed, 2 xfailed**.
 
