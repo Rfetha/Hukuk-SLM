@@ -657,4 +657,4 @@ saydı** — yani sapma **hep bizim lehimize**ydi. Aletin adının *"terazi"* ol
   göre değil: en zor uzunluk diliminde DEV'in payı %12, TEST'in **%50**. Düzeltmek **donmuş
   TEST'i açmak** demek → bugün yapılmıyor. Raporlama tarafı ADR-0069 ile kapatıldı (S15).
 - **Dört belge** (`PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`) + kırık link
-  onarımı + `referans-design-doc.md`'nin silinmesi — Faz 0'ın sayıları geldikten sonra.
+  onarımı + `referans-design-doc.md` ⚰️'nin silinmesi — Faz 0'ın sayıları geldikten sonra.

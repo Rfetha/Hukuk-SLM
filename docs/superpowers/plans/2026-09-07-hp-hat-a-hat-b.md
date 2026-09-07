@@ -1252,7 +1252,7 @@ git commit -m "A7: basit TUI (textual) — answer() üstünde ince kabuk, kapı 
 
 ### Görev 13: `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`
 
-**Dosyalar:** Create (4) · Delete: `referans-design-doc.md` *(spec §9: insan kararı)*
+**Dosyalar:** Create (4) · Delete: `referans-design-doc.md` ⚰️ *(spec §9: insan kararı)*
 
 - [ ] **Adım 1: `PRODUCT.md`** — vatandaş kim · hangi soruyu soruyor · cevap neye benziyor ·
 **VAAT ETMEDİĞİ** (hukuki tavsiye değil · güncellik indeksin işi · %100 doğruluk değil) ·
@@ -1267,7 +1267,7 @@ Her adım: *ne · neden (**hangi ölçülmüş boşluk**) · `verify:` · bedel 
 adımına bağlı. `verify:` her satırda bağlantı var.
 
 - [ ] **Adım 4: `docs/MIMARI.md`** — `v1` zinciri: base → kollar → merge → GGUF → retriever →
-istem → `answer()` → CLI/TUI · `v2` sınırı. `referans-design-doc.md`'nin işlevini devralır.
+istem → `answer()` → CLI/TUI · `v2` sınırı. `referans-design-doc.md` ⚰️'nin işlevini devralır.
 `verify:` her kutu **var olan bir dosyaya** ya da bir `ROADMAP` adımına işaret ediyor
 (döngüyle sınanır, gözle değil).
 

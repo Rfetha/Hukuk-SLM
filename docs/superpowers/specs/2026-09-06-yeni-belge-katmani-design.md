@@ -22,7 +22,7 @@
 | — | `v1.0` çubuğu | **Üç maddeli kapı** · çıpa **Gemini 3.5 Flash (tam)** · **δ = 2 p** | ADR-0064, ön-kayıt |
 | — | Faz 0 sırası | **Erişim onarımı rakip ölçümünden ÖNCE** | ~$1,35 tasarruf, aşağıda gerekçe |
 | **B1** | isabetsizlik yöntemi | **Önce reddetme-örneklemesi** (mevcut alet), GRPO **ertelendi** | ADR-0066 |
-| — | `referans-design-doc.md` | **SİLİNİR**, yerine **`docs/MIMARI.md`** yazılır | bu oturumun kapsamı 3 → 4 belge |
+| — | `referans-design-doc.md` ⚰️ | **SİLİNİR**, yerine **`docs/MIMARI.md`** yazılır | bu oturumun kapsamı 3 → 4 belge |
 
 **AÇIK bırakılanlar** — belgelerde `AÇIK KARAR` damgalı duracak, sessizce kapatılmayacak:
 **S5** (ikili oran çözünürlük sınırı) · **S7** (LoRA adaptörleri HF'ye) · **S8** (indeks dağıtımı) ·
@@ -192,7 +192,7 @@ aletiydi** (14/80 → 8/80). `v1.0` sonrası.
 | **`PRODUCT.md`** | vatandaş kim · hangi soruyu soruyor · cevap neye benziyor · **vaat ETMEDİĞİ** (hukuki tavsiye değil · güncellik indeksin işi · %100 doğruluk değil) · v1↔v2 sınırı · üç maddeli kapı · iki sürüm şeması | her nicelik yanında **kaynak dosya adı** taşır; "vaat etmiyor" bölümü var |
 | **`ROADMAP.md`** | Faz 0 → Hat A ∥ Hat B → kapı → `v1.0` → v2. Her adım: *ne · neden (hangi ölçülmüş boşluk) · `verify:` · bedel · bağımlılık* | kritik yol işaretli; **AÇIK KARAR** damgaları S5·S7·S8·S9·S10·S12 |
 | **`TODO.md`** | yalnız **bugün koşulabilir** kalemler (F0.1-F0.3, A1) | her satır bir ROADMAP adımına bağlı |
-| **`docs/MIMARI.md`** | v1 zinciri: base → kollar → merge → GGUF → retriever → istem → CLI · v2 app katmanı sınırı · `referans-design-doc.md`'nin işlevini devralır | her kutu bir **var olan** dosyaya ya da bir ROADMAP adımına işaret eder |
+| **`docs/MIMARI.md`** | v1 zinciri: base → kollar → merge → GGUF → retriever → istem → CLI · v2 app katmanı sınırı · `referans-design-doc.md` ⚰️'nin işlevini devralır | her kutu bir **var olan** dosyaya ya da bir ROADMAP adımına işaret eder |
 
 **Son adım (belgeler var olduktan SONRA):** `CLAUDE.md` · `MODEL_CARD.md` · `README.md` ·
 `README.tr.md` + kalan dört belgenin kırık linkleri onarılır.
@@ -208,7 +208,7 @@ dosyalara işaret eden isabetler döner.
 | `docs/YARGI_KAYNAKLARI.md` | **KALSIN**, işaretçi onarılsın | sökülmüş API sözleşmeleri; v2 içtihat katmanı buradan başlar |
 | `docs/open_questions.md` ⚰️ | **KALSIN + kendi kuralı uygulansın** | otoritesi `PRODUCT.md`'ye taşınır; kapanan **S1/S2/S11/S14** ADR'lere işlenip **kapanış dizinine** geçer (iz kalır, gövdeden çıkar); S5-S13 canlı kalır |
 | `docs/model-soyagaci.mmd` | **KALSIN**, işaretçi onarılsın | kolların bağımsızlığını ve merge'in zincir **olmadığını** tek bakışta anlatıyor |
-| `referans-design-doc.md` | 🗑️ **SİLİNİR** → yerine `docs/MIMARI.md` | insan kararı: *"güncel hedefe göre yenisi yazılsın"* |
+| `referans-design-doc.md` ⚰️ | 🗑️ **SİLİNİR** → yerine `docs/MIMARI.md` | insan kararı: *"güncel hedefe göre yenisi yazılsın"* |
 
 ## 9b. Aletin adı — `suskunluk_terazisi` (kullanıcı kararı 2026-09-06)
 

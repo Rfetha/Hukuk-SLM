@@ -264,7 +264,7 @@ decision ledger.
   2026-08-03. Authority moved to `ROADMAP.md` + the active plan. Still live for what it
   *measures*: the eval protocol, DEV/TEST split, gates, and **the rejected alternatives with their
   reasons** (§11). Its claim layer (Kapı 5, parity matrix) is arxiv-conditional.
-- **[`referans-design-doc.md`](referans-design-doc.md) — the user's original draft. Kept clean;
+- **`referans-design-doc.md` ⚰️ *(silindi 2026-09-07 — insan kararı; yerine `docs/MIMARI.md` yazılacak, **Görev 13 Adım 4**)* — the user's original draft. Kept clean;
   never edit.** Its numbers were illustrative placeholders and were deliberately NOT carried over.
 - `docs/_arsiv/` ⚰️ *(deleted 2026-09-06)* — closed sprints (**1 · 2 · 3-part-1**), the deferred claim layer
   (`sprint2b.md`), and superseded 12B-era plans. Its `README.md` says why each one is there.
