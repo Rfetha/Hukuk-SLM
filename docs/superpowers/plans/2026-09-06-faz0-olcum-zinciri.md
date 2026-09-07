@@ -74,6 +74,18 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 **Dosyalar:** Create: `outputs/eval/f01-erisim/recall_taban.json` ·
 `outputs/eval/f01-erisim/KACIRILAN_10.md` · Read: `scripts/recall_olc.py` · `scripts/retriever.py`
 
+> 🚨 **KAPANIŞ DENETİMİ 2026-09-07: `recall_taban.json` HİÇ OLUŞMADI.** Adım 1-2 `[x]`
+> işaretliydi ve **ölçüm gerçekten koştu** (sayılar `KACIRILAN_10.md` ve
+> `f01b/SONUC_recall_v1_v2.md`'de, manşet `0,9500` ise `f02-biz-onsozsuz/KUNYE.json`'da) —
+> ama **ham JSON hiçbir yere yazılmadı**: `find outputs -newermt 2026-09-06 -name "recall_*.json"`
+> **boş** döndü. Klasördeki tek dosya `KACIRILAN_10.md`.
+> **Sebebi tuzağın kendisi:** `--out` bir dizindir; yanlış yol verilen koşunun çıktısı
+> temizlik sırasında kayboldu ve kimse fark etmedi, çünkü **sayı `.md`'ye elle geçirilmişti**.
+> ⇒ Bu, *"sayı hatırlanmaz, **kaynaklanır**"* kuralının bu turdaki tek ihlali.
+> **Kapatma:** ölçüm mevcut rejimde ($0, GPU ~15 dk) bir kez daha koşulup dosya **gerçekten**
+> üretilir. **Ders:** `verify:` satırı *"dosya oluştu"* diyorsa, kutucuk işaretlenmeden önce
+> **dosyanın varlığı sınanmalı** — bu turda 39 kutucuğun 38'inde sınandı, birinde sınanmadı.
+
 **Arayüz:** Üretir → `KACIRILAN_10.md` (kaçırılan kalemlerin sınıflaması) ve bir **karar önerisi**.
 ⛔ Bu görev indeksi **değiştirmez**; değişiklik ADR gerektirir (Görev 1b).
 
@@ -374,7 +386,7 @@ python scripts/measure_vram_stack.py \
 
 **Dosyalar:** Create: `docs/adr/0063-yeterlilik-onsozu-kaldirildi.md` ·
 `docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md` ·
-`docs/adr/0065-bolunmus-surumleme-urun-iddia.md` ·
+`docs/adr/0065-bolunmus-surumleme.md` ·
 `docs/adr/0066-b1-yontemi-reddetme-orneklemesi.md` ·
 `docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md` ·
 Modify: `docs/record/research_log/README.md` (**#62** satırı) · `docs/open_questions.md`
