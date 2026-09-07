@@ -1,3 +1,15 @@
+> ⚰️ **SİLİNMESİ KARARLAŞTIRILDI — ama HENÜZ DEĞİL (2026-09-07).**
+>
+> İnsan kararı (spec §9): bu belge **silinir**, yerine `docs/MIMARI.md` yazılır.
+> ⛔ **Engel:** `docs/MIMARI.md` **henüz yok** — sıradaki planın **Görev 13 Adım 4**'ü.
+> Yerine geçecek belge yazılmadan silmek, mimari anlatımı **hiçbir yerde bırakmamak** olurdu.
+>
+> ⚠️ **Bu arada: içeriğine GÜVENME.** 2026-07-29'dan beri dokunulmadı; sayıları
+> *"örnekleyici yer tutucu"*dur ve **bilerek** hiçbir yere taşınmadı. Bugünkü sayılar için
+> [`CLAUDE.md`](CLAUDE.md) manşetine bak.
+>
+> 🔒 Kullanıcının orijinal taslağı — **düzenlenmez**, olduğu gibi durur.
+
 # System Design Document: Local Legal AI Engine (Law-FT Stack)
 
 ## 1. Mimari Vizyon ve Genel Bakış

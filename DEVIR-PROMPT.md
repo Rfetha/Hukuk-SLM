@@ -1,5 +1,19 @@
 # HakHukuk — yeni yön: vatandaşın hukuk danışmanı (açık kaynak ÜRÜN)
 
+> ⚠️ **KISMEN GEÇERSİZ — 2026-09-07. Ne okunacağını buradan seç.**
+>
+> Bu not 2026-09-06'da, belge katmanı silindiğinde yazıldı ve o gün **yönün otoritesiydi**.
+> Artık değil: Faz 0 kapandı, `v1.0` kapısının üç maddesi de sayıyla geçildi ve sıradaki plan yazıldı.
+>
+> | bölüm | durum |
+> | :--- | :--- |
+> | **§5 AÇIK BORÇLAR** | ✅ **HÂLÂ GEÇERLİ ve TEK KAYNAK** — silinen arşivden kurtarılan borç kuyruğu burada |
+> | yön / sıradaki iş | ⚰️ **geçersiz** → [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) |
+> | sayılar (kütle, aşırı-red, bütçe…) | ⚰️ **eski birim** → [`CLAUDE.md`](CLAUDE.md) manşeti · [ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) |
+> | *"7 yeni belge yazılacak"* | 🔄 kısmen yapıldı: spec + 4 plan **var**; `PRODUCT/ROADMAP/TODO/MIMARI` **Görev 13** |
+>
+> 🔒 **Silinmiyor** — §5 taşıyıcı, ve bu not silinen katmanın **tek kurtarma kaydı**.
+
 Repo: `/home/ersoy/code/Hukuk-SLM` · branch **`yeni-yeni`** · çalışma dili **Türkçe**
 (kod tanımlayıcıları İngilizce). Python: `source ~/code/global_venv/bin/activate`
 **aynı komut içinde**.

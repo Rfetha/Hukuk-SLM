@@ -31,7 +31,7 @@
 **A Turkish legal assistant small enough to run on a laptop — built to say "I don't know".**
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[Model card](MODEL_CARD.md) · [Roadmap](ROADMAP.md) · [Türkçe](README.tr.md)
+[Model card](MODEL_CARD.md) · `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)* · [Türkçe](README.tr.md)
 
 ---
 
@@ -133,7 +133,7 @@ distraction** (the model's — even when the gold *is* retrieved, A1 falls 0.909
 *model + retriever + preamble*. The preamble currently lives in one evaluation script and is
 not shipped, and the retriever is not wired into the serving path below — so a plain download
 reproduces the **ablation** column (73.0%), not the headline. Packaging both is the stated
-condition for `v1` ([roadmap](ROADMAP.md)).
+condition for `v1` (`ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*).
 *(Yes — the ablation column is currently the **higher** one. See the ADR-0058 note above: that
 inversion is a live open question, not a reason to ship the ablation as the product.)*
 
@@ -144,7 +144,7 @@ built to catch is empty. The model doesn't invent article numbers; it answers fr
 larger failure is still the opposite one: in **9/80** (ablation: 5/80) questions the model
 abstains *while the gold article is in its context* — and with the harness off it is 17/80, so
 it is a model property, not a retrieval one. Deterministic code cannot close it.
-Details and the full record: [roadmap](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
+Details and the full record: `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)* · `sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` §5**'e kurtarıldı)*.
 
 ✅ **Those counts were 14/80 and 16/80 until 2026-09-06 — they were wrong, and the correction
 is the single most useful thing this round produced.** The detector was repaired, all 80 items

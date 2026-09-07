@@ -2,14 +2,14 @@
 >
 > Bu harita 2026-05-29'da çıkarıldı ve **hâlâ doğru**; ama Faz 2'de bugüne kadar kurulan
 > şey **mevzuat** tarafı: hibrit retriever + 40.496 maddelik indeks
-> ([`sprint3-part1.md`](_arsiv/sprint3-part1.md)). **İçtihat tarafına hiç dokunulmadı.**
+> (`sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` §5**'e kurtarıldı)*). **İçtihat tarafına hiç dokunulmadı.**
 >
 > ⚠️ Aynı `bedesten` backend'i içtihadı da veriyor ([`BEDESTEN_API.md`](BEDESTEN_API.md)) ve
 > sözleşmesi 2026-08-04'te doğrulandı — yani teknik yol açık, **iş yapılmadı**.
 >
 > İçtihadın grafa girip girmeyeceği hâlâ açık soru
 > ([`open_questions.md` §13.6](open_questions.md)); graf'ın ölçülmüş gerekçesi ve
-> **ölçülmüş riski** [`ROADMAP.md` §5.2](../ROADMAP.md)'de.
+> **ölçülmüş riski** `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*'de.
 
 # Yargı/İçtihat Veri Kaynakları — Reverse-Engineered Harita (Faz 2)
 

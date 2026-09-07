@@ -31,7 +31,7 @@
 **Dizüstü bilgisayarda koşacak kadar küçük, "bilmiyorum" demeyi öğrenmiş bir Türkçe hukuk asistanı.**
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[Model kartı](MODEL_CARD.md) · [Yol haritası](ROADMAP.md) · [English](README.md)
+[Model kartı](MODEL_CARD.md) · `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)* · [English](README.md)
 
 ---
 
@@ -130,7 +130,7 @@ konunca A1 0,909 → 0,862 düşüyor).
 üçlüsünün sayısıdır. Önsöz bugün tek bir ölçüm script'inin içinde duruyor ve dağıtılmıyor,
 retriever da aşağıdaki servis yoluna bağlı değil — dolayısıyla modeli düz indiren kişi manşeti
 değil **ablasyon** sütununu (%73,0) yeniden üretir. İkisini de paketlemek `v1`'in ilan edilmiş
-şartıdır ([yol haritası](ROADMAP.md)).
+şartıdır (`ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*).
 *(Evet — ablasyon sütunu şu an **daha yüksek**. Yukarıdaki ADR-0058 şerhine bak: bu tersine
 dönüş **açık bir soru**, ablasyonu ürün diye dağıtmanın gerekçesi değil.)*
 
@@ -140,7 +140,7 @@ kurduk. **Sıfır** uydurulmuş madde numarası buldu — yakalamak için kuruld
 cevaplıyor (**5/80**; önsözsüz ablasyon: 7/80). Asıl büyük hata hâlâ bunun tersi: **9/80**
 (ablasyon: 5/80) soruda model, altın madde **bağlamındayken** çekiniyor — harness kapalıyken
 17/80, yani bir **model** özelliği, erişim özelliği değil. Deterministik kod bunu kapatamaz.
-Ayrıntı ve tam kayıt: [yol haritası](ROADMAP.md) · [`sprint3-part1.md`](docs/_arsiv/sprint3-part1.md).
+Ayrıntı ve tam kayıt: `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)* · `sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` §5**'e kurtarıldı)*.
 
 ✅ **Bu sayılar 2026-09-06'ya kadar 14/80 ve 16/80'di — yanlıştılar, ve bu düzeltme turun
 ürettiği en değerli şey oldu.** Dedektör onarıldı, **80 kalemin tamamı gözle okundu**, gerçek

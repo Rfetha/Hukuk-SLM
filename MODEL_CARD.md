@@ -256,7 +256,7 @@ disk    ~5 GB        model + corpus + index
 > `tgta_v1` is the same architecture, quantization and file-size class (2.59 GiB), so the
 > figures are expected to carry over — but **`tgta_v1` itself has not been measured** and no
 > number here is claimed for it. Closing that costs $0 and ~15 minutes; it is a listed `v1`
-> item ([roadmap](ROADMAP.md), Phase 0.2).
+> item (`ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*, Phase 0.2).
 
 The harness landed and the design rule held in practice: it runs entirely on CPU
 (embedder + 40,496-article index, 759 ms per query) and **never enters the GPU**. That is what

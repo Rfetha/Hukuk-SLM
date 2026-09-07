@@ -1,4 +1,20 @@
-# Yarın devam notu — Faz 0 kapanışı + sıradaki plan
+# ~~Yarın devam notu~~ — ✅ KAPANDI 2026-09-07
+
+> 🟢 **BU NOTUN İŞİ BİTTİ. Yönerge olarak OKUMA — kayıt olarak duruyor.**
+>
+> Anlattığı iki iş de yapıldı: Faz 0 **40/40** kapandı (kapının üç maddesi de sayıyla) ve
+> sıradaki plan yazıldı. ⚠️ İçindeki *"Faz 0 39/40"*, *"kalan tek ölçüm M5"*, *"bütçe ~$8,88"*
+> gibi ifadeler **o günün durumudur**, bugünün değil.
+>
+> | ne arıyorsan | nereye bak |
+> | :--- | :--- |
+> | bugün ne yapılacak | ⭐ [`2026-09-07-hp-hat-a-hat-b.md`](2026-09-07-hp-hat-a-hat-b.md) · [`goal-hp-hat-a-hat-b.md`](goal-hp-hat-a-hat-b.md) |
+> | Faz 0 ne çıkardı | [`2026-09-06-faz0-olcum-zinciri.md`](2026-09-06-faz0-olcum-zinciri.md) §*"FAZ 0 ÖLÇÜM ZİNCİRİ KAPANDI"* |
+> | `v1.0` kapısının hükmü | [ADR-0064](../../adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) — üç madde de ✅ |
+>
+> 🔒 **Silinmiyor:** iki insan kararının (tek GGUF · rakip havuzu) ilk yazıldığı yer burası;
+> ADR-0071/0072 buradan doğdu. Kayıt temizlenmez.
+
 
 **Yazıldı:** 2026-09-07 · **Durum:** Faz 0 **39/40**, 42 commit, ağaç temiz, süreç yok
 

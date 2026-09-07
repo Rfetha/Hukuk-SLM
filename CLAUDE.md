@@ -50,13 +50,13 @@ IS    product → build the best model → same discipline, now a "don't fool yo
 ```
 
 **The goal is the model.** Beat Gemini 3.1 Flash-Lite, then reach Flash and Pro.
-Priorities live in [`ROADMAP.md`](ROADMAP.md), tied to measured gaps.
+Priorities live in `ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)*, tied to measured gaps.
 
 | constraint the reframing removed | now |
 | :--- | :--- |
 | **ONE size point** (ADR-0028, ~4B) | ❌ **lifted** — 8B/12B are open, multiple sizes may ship |
 | **graph-RAG out of scope** (ADR-0019) | ❌ **lifted** — not forbidden, just *unplanned*; no line item in `ROADMAP.md` |
-| **Kapı 5 / CP4-CP5 baselines** | 🔽 **optional** — deferred, [`sprint2b.md`](docs/_arsiv/sprint2b.md) |
+| **Kapı 5 / CP4-CP5 baselines** | 🔽 **optional** — deferred, `docs/_arsiv/sprint2b.md` ⚰️ *(deleted 2026-09-06)* |
 | **frozen TEST seen once** | 🔁 repurposed as a **release acceptance test** |
 | *"never say frontier"* | ❌ moot |
 
@@ -163,14 +163,14 @@ thing (OFF hands the model the gold article by construction).
   retriever and the preamble, because the headline number is not reproducible without them);
   `v2` = the API over that same model; arxiv is a **by-product, not the goal**. Sequenced plan,
   acceptance criteria and rejected options:
-  [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md)
-  (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
+  `specs/2026-09-06-v1-v2-roadmap-taslak.md` ⚰️ *(superseded by [the design spec](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md))*
+  (draft, awaiting human sign-off) · direction stays in `ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)*.
 
 **Status of work: ✅ B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
 training** ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
 Tasks 0-3 ran, Tasks 4-10 **never did**, `τ_a` v2 **was never trained**. The plan carries its
 ✅ closing block:
-[`2026-08-06-asiri-red-tau-a-v2.md`](docs/superpowers/plans/2026-08-06-asiri-red-tau-a-v2.md).
+`plans/2026-08-06-asiri-red-tau-a-v2.md` ⚰️ *(deleted with the doc layer; its closing block is quoted in [ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md))*.
 
 The round set out to train over-refusal down from 14/80 into a pre-registered 8-11/80 band.
 Its own **read-it-by-eye** step (Task 3.8) instead refuted the harvest acceptance criterion —
@@ -193,7 +193,7 @@ items, so the round was closed. ⛔ Over-refusal is **smaller, not gone** — 8/
 broken measurement. The eyeball step caught it. ADR-0051 has now paid for itself twice.
 
 **Not blocked by any of that:** the Phase 0 cheap repairs run in parallel —
-[`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md).
+`ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)* · `TODO.md` ⚰️ *(deleted 2026-09-06 → Görev 13)*.
 
 ### Target audience: the CITIZEN — but read the trap
 
@@ -205,7 +205,7 @@ So: train for correctness and abstention, simplify at the **prompt layer**.
 ## Document map
 
 **Belge türü → yeri.** The authoritative table lives in
-[`docs/_arsiv/README.md`](docs/_arsiv/README.md) and it binds:
+`docs/_arsiv/README.md` ⚰️ *(archive deleted 2026-09-06; the doc-type table below is now the binding one)* and it binds:
 
 | type | where | holds |
 | :--- | :--- | :--- |
@@ -248,9 +248,9 @@ decision ledger.
 
 ### Direction and scope
 
-- [`ROADMAP.md`](ROADMAP.md) — **the authority on direction.** Priorities tied to measured gaps.
-- [`TODO.md`](TODO.md) — the active task list.
-- [`docs/VISION.md`](docs/VISION.md) — mission, design principles, 5-phase evolution
+- `ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)* — **the authority on direction.** Priorities tied to measured gaps.
+- `TODO.md` ⚰️ *(deleted 2026-09-06 → Görev 13)* — the active task list.
+- `docs/VISION.md` ⚰️ *(deleted 2026-09-06 → `PRODUCT.md`, Görev 13)* — mission, design principles, 5-phase evolution
   (SLM → RAG/Graph → niche → agentic → citizen platform). Authoritative for *what* and in what order.
 - [`docs/FINE_TUNING.md`](docs/FINE_TUNING.md) — Phase 1 playbook: hardware, QLoRA/Unsloth stack,
   data pipeline, recipe, ablation matrix. Authoritative for *how*.
@@ -260,13 +260,13 @@ decision ledger.
 
 ### Historical — still load-bearing, no longer authority
 
-- 📁 **[`TASARIM.md`](TASARIM.md) (repo root)** — the thesis-era design doc, flagged historical
+- 📁 **`TASARIM.md` ⚰️ *(deleted 2026-09-06; its eval protocol lives on in `docs/adr/` + `docs/record/`)* (repo root)** — the thesis-era design doc, flagged historical
   2026-08-03. Authority moved to `ROADMAP.md` + the active plan. Still live for what it
   *measures*: the eval protocol, DEV/TEST split, gates, and **the rejected alternatives with their
   reasons** (§11). Its claim layer (Kapı 5, parity matrix) is arxiv-conditional.
 - **[`referans-design-doc.md`](referans-design-doc.md) — the user's original draft. Kept clean;
   never edit.** Its numbers were illustrative placeholders and were deliberately NOT carried over.
-- [`docs/_arsiv/`](docs/_arsiv/) — closed sprints (**1 · 2 · 3-part-1**), the deferred claim layer
+- `docs/_arsiv/` ⚰️ *(deleted 2026-09-06)* — closed sprints (**1 · 2 · 3-part-1**), the deferred claim layer
   (`sprint2b.md`), and superseded 12B-era plans. Its `README.md` says why each one is there.
 - [`docs/record/sprint1/sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md) ·
   [`docs/record/sprint2/defter.md`](docs/record/sprint2/defter.md) — the distilled records of those

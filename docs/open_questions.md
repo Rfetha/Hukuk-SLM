@@ -16,7 +16,7 @@
 
 ## 🆕 v1/v2 SÜRÜM KARARLARI — **S1…S14** *(eklendi 2026-09-06)*
 
-> **Nereden geliyor:** [`docs/superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md`](superpowers/specs/2026-09-06-v1-v2-roadmap-taslak.md) §7.2.
+> **Nereden geliyor:** `v1-v2-roadmap-taslak.md` ⚰️ *(yerine [tasarım spec'i](superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) geçti)* §7.2.
 > Çerçeve: tez değil **ürün** — **v1 = çalışan model release'i · v2 = API · arxiv yan ürün**.
 > **Hepsi insan kararıdır.** Eşik/ölçüt koymak ADR-0050 gereği insanın işidir ve koşudan
 > **önce** ön-kayıtlanır.
@@ -179,7 +179,7 @@ M3   payda 80  →  kuantum 1/80 = 1,25 puan
 **56/66** — yayımlanan `−0,015` farkı **tam olarak bir kalem**, yani aletin ifade edebileceği en
 küçük sıfırdan farklı değer. Bir hakem yargısı dönerse *"Gemini ile M2'de eşitlendik"* yazılır;
 hareket eden şey ölçüm değil, tek bir yargıdır ([`MODEL_CARD.md`](../MODEL_CARD.md) ·
-[`ROADMAP.md`](../ROADMAP.md)'de kuantum şerhi olarak damgalandı).
+`ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*'de kuantum şerhi olarak damgalandı).
 
 ⛔ **Bu turda yeni bir taban UYDURULMADI.** Eşik/taban koymak **insan kararıdır** (ADR-0050'nin
 ruhu: alet düzeltilir, eşik insan tarafından konur). Karar verilene kadar kural: *bu eksenlerde
@@ -297,7 +297,7 @@ Eğitim kolu olarak **değil**, yapısal graf düğümü olarak — içtihat→m
 taşıyor — Bedesten'den ham çekip kendimiz gömmeye göre kısayol olabilir. ⚠️ Ama **chunk
 uyumsuzluğu** hâlâ geçerli: hazır gömüler 3000 karakterde parçalanmış, bizim protokol 900
 (ADR-0011 değişmezi) → değeri *"hazır indeks"* değil, **veri kaynağı**.
-**Ne zaman:** erişim/doğruluk işleri bittikten sonra — graf'ın ölçülmüş gerekçesi ve sınırları [`ROADMAP.md` §5.2](../ROADMAP.md)'de.
+**Ne zaman:** erişim/doğruluk işleri bittikten sonra — graf'ın ölçülmüş gerekçesi ve sınırları `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*'de.
 
 ---
 
@@ -310,7 +310,7 @@ uyumsuzluğu** hâlâ geçerli: hazır gömüler 3000 karakterde parçalanmış,
 >
 > 🔴 **Açık kalan yarı:** cevap doğruluğu %2,7 → %17,4 (**sahipsiz negatif**). Ortak sebep
 > varsayımı düştüğüne göre bu artık **kendi başına** bir soru — ve bugün numaralı borcu var:
-> aşırı-red **B10** ([`sprint3-part1.md`](_arsiv/sprint3-part1.md)). ⚠️ İkisi **birleştirilmedi**:
+> aşırı-red **B10** (`sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` §5**'e kurtarıldı)*). ⚠️ İkisi **birleştirilmedi**:
 > aynı kökten geldikleri **makul ama ölçülmemiş**.
 
 CP6 iki hasar bıraktı ve **ikisi de aynı sebepten olabilir**: cevap doğruluğu %2.7 → %17.4
@@ -404,7 +404,7 @@ Yeni tuzaklar kayda geçti: `yurutme-tuzaklari.md` **4.7** (kabul ölçütü ≠
 
 ### Korpus temizliği — ⭐ **kısmen KAPANDI 2026-08-05 (S2), gerisi borç B9**
 
-Ölçüm ve gerekçe artık [`TASARIM.md` §5.3](../TASARIM.md)'te. Özet: **1.901 saf kabuk (%4.7)** +
+Ölçüm ve gerekçe artık `TASARIM.md` ⚰️ *(2026-09-06'da silindi; ölçüm protokolü `docs/adr/` + `docs/record/` içinde yaşıyor)*'te. Özet: **1.901 saf kabuk (%4.7)** +
 3.101 tadil-kanunu maddesi. **Eğitim ve eval temiz** (sızıntı ölçüldü: %0.06 / sıfır) →
 **yeniden eğitim gerektirmez**; risk yalnız retriever indeksinde.
 
@@ -489,7 +489,7 @@ artık **ham TIES ana yol**, norm-dengeli ablasyon. Test ikisini de doğrulamal�
 | ~~`τ_abstention` Sprint 1'e çekilsin mi~~ | ✅ **konusuz** — Sprint 1 kapandı (2026-07-29), `τ_a` Sprint 2'ye kaldı |
 | Sağlayıcı pinlemesi · rakip üretim maliyeti (Sprint 5 ön koşulu) | [`sprint1-sonuc-tablosu.md`](record/sprint1/sprint1-sonuc-tablosu.md) §Geçerlilik şerhleri |
 | Rakip aileleri için red-regex kalibrasyonu | [`yurutme-tuzaklari.md`](record/yurutme-tuzaklari.md) §2.2 |
-| CP2 tablosundaki 4 sayı uyuşmazlığı (işaretlendi, düzeltilmedi) | [`sprint1.md`](_arsiv/sprint1.md) CP2 · [#41 §6](record/research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
+| CP2 tablosundaki 4 sayı uyuşmazlığı (işaretlendi, düzeltilmedi) | `sprint1.md` ⚰️ *(arşiv silindi; sayıları `docs/record/sprint1/` içinde)* CP2 · [#41 §6](record/research_log/2026-07-29-cp6-tau-grounding-olcumu.md) |
 | H100 hız kaldıracı | [ADR-0033](adr/0033-egitim-hizi-fla-core-checkpointing-batch.md) |
 | Devir paketinin yedeksiz tek nüsha olması | [ADR-0034](adr/0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md) |
 | Doğrulayıcı kalibrasyonu (yanlış-negatif → coverage kaybı) | [ADR-0038](adr/0038-red-kapisi-esigi-kati.md) |

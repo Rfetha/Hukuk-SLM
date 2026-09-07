@@ -24,7 +24,7 @@
 > maliyet sıfır). ⚠️ **Türk IP gerekiyor** — gov firewall yurtdışı/VPN'i engelliyor.
 >
 > Değişmişse: retriever statik korpusla çalışmaya devam eder, ama **güncellik iddiası düşer**
-> ve [`ROADMAP.md`](../ROADMAP.md) ile [`MODEL_CARD.md`](../MODEL_CARD.md) düzeltilir.
+> ve `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)* ile [`MODEL_CARD.md`](../MODEL_CARD.md) düzeltilir.
 
 > `saidsurucu/mevzuat-mcp` (MIT) reposundan çıkarıldı + canlı test edildi (2026-05-29, çalışıyor).
 > **Amaç:** MCP'yi kurmadan, mevzuat (ve ileride içtihat) verisini doğrudan bu temiz JSON API'den çekmek.

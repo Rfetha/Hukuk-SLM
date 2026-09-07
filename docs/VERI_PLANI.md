@@ -8,7 +8,7 @@
 >
 > | | eski | yeni |
 > | :--- | :--- | :--- |
-> | proje | tez, private+proprietary | **OSS, Apache-2.0** ([`../ROADMAP.md`](../ROADMAP.md)) |
+> | proje | tez, private+proprietary | **OSS, Apache-2.0** (`ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*) |
 > | `TEKNIK_PLAN.md` atıfları | aktif plan | **arşivde** → [`_arsiv/`](_arsiv/) |
 > | hedef kitle | uzman (ADR-0010) | **vatandaş** — ama ADR-0010 **hâlâ yürürlükte**: sade dille *eğitmek* doğruluğu düşürdü, sadeleştirme **istem katmanında** yapılır |
 > | "tez kapsamı dışı" ibareleri | tez sınırı | artık **kapsam kararı** — graph-RAG ve içtihat katmanı yeniden açılabilir (ADR-0019 kilidi kalktı) |

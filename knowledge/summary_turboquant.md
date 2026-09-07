@@ -1,6 +1,6 @@
 # TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate
 
-> ⚠️ **LİTERATÜR ÖZETİ — tez döneminde alındı.** Kaynak makalelerin bulguları geçerli; bunlardan çıkarılan **proje kararları** [`../docs/adr/`](../docs/adr/) ve [`../ROADMAP.md`](../ROADMAP.md)'de olabilir ve **değişmiş olabilir** (ör. base artık Qwen3.5-4B, proje OSS).
+> ⚠️ **LİTERATÜR ÖZETİ — tez döneminde alındı.** Kaynak makalelerin bulguları geçerli; bunlardan çıkarılan **proje kararları** [`../docs/adr/`](../docs/adr/) ve `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](../docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*'de olabilir ve **değişmiş olabilir** (ör. base artık Qwen3.5-4B, proje OSS).
 
 **Kaynak:** arXiv:2504.19874 — Zandieh, Daliri, Hadian, Mirrokni (Google Research / DeepMind / NYU)  
 **GitHub (community port):** [0xSero/turboquant](https://github.com/0xSero/turboquant)
