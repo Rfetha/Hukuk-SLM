@@ -62,12 +62,76 @@ düzeltiliyor. `7/80` ile `8/80` **aynı birimde değildir** ve kıyaslanamaz.
 **Bugünkü değer = çıpa = 8/80** ⇒ madde (2) bugün **tanım gereği sağlanıyor**; bağlayıcı
 olduğu yer **bir sonraki eğitim turudur** (B1).
 
-## Madde (3) — ⏳ ÖLÇÜLÜYOR
+## Madde (3) — ✅ GEÇTİ *(2026-09-07)*
 
-M5 (kör/parametrik) **v2 biriminde hiç ölçülmedi**; 2026-09-07'de yerel `m5` koşusu başlatıldı
-(`outputs/eval/f07-m5-anti-hedef/`). Kapı bu madde sayıyla kapanmadan **`v1.0` hükmü eksiktir**.
-⚠️ M5 yükselmişse bugünkü kazancın bir kısmı **ezberden** gelmiş demektir — ADR-0039/0040 bu
-ekseni tam olarak bunun için anti-hedef ilan etmişti.
+*(kaynak: `outputs/eval/f07-m5-anti-hedef/KUNYE.json` · `GOZLE_OKUMA_CEKINME.md`)*
+
+### 🚨 Önce: bu maddenin ÇIPASI YOKTU
+
+Madde *"M5 ≤ **bugünkü**"* diye yazılmıştı, ama `tgta_v1`'in M5'i **hiçbir birimde hiç
+ölçülmemişti** (defterde yalnız `base_th` · `gem_th` · `tg_v1_th`; **merge öznesi yok**).
+*"Bugünkü"* diye bir sayı olmadığı için madde **kendi kendine referans veriyordu** ve hiçbir
+hüküm üretemezdi. Ön-kayıt kuralına uyduğu için de denetimden geçmişti.
+
+Çıpa [ADR-0039](0039-kapi-6-parametrik-sizinti.md) §2'den okundu: **çıpa BASE'dir, rakip
+değil** — rakip çıpası orada zaten **değerlendirilip reddedilmişti** (*"modeli aldığımız
+noktadan kötüye götürmemeliyiz"*). Ve **üç sayı birden** raporlanır.
+⇒ Base **aynı birimde yeniden koşuldu.** Tuzak listesine **2.17** olarak yazıldı.
+
+### Rejim: DRY — ve bu da bir insan kararıydı
+
+İlk koşu **geçerlilik kapısından kaldı** (kesik 5/80 = %6,2 > %5, `EXIT=2`, hakem çağrılmadı).
+Gözle okundu: **3 yozlaşmış tekrar** (×21 · ×19 · ×82) + 2 bütçe kesilmesi. ADR-0040'ın
+*"MAXTOK büyüt"* reçetesi üçünde **ölçülmüş biçimde etkisiz**. $0'lık ablasyon DRY'nin
+döngüyü de kesikliği de sıfırladığını gösterdi ⇒ [ADR-0073](0073-m5-rejimine-dry-eklendi.md).
+⛔ **Eşik oynatılmadı; değişen ALET.**
+
+### Sayılar — İKİ okuma birden
+
+| kol | okuma | `coverage` | `A1` | **ezber kütlesi** |
+| :--- | :--- | ---: | ---: | ---: |
+| **BİZ** | ALET | 0,9500 | 0,4105 | **0,3899** |
+| **BİZ** | **GÖZ** | 1,0000 | 0,4057 | **0,4057** |
+| base | ALET | 0,9750 | 0,4818 | **0,4697** |
+| base | **GÖZ** | 1,0000 | 0,4739 | **0,4739** |
+
+```
+ALET  coverage 0,9500 ≤ 0,9750 ✅   ezber kütlesi 0,3899 ≤ 0,4697 ✅  (−7,98 p)
+GÖZ   coverage 1,0000 ≤ 1,0000 ✅   ezber kütlesi 0,4057 ≤ 0,4739 ✅  (−6,82 p)
+```
+
+⭐ **Hüküm dedektöre bağımlı DEĞİL** — dedektörün kusuru iki kolu da aynı yönde etkiliyor;
+ADR-0057'nin eşit sınavı burada **koruyucu** görev görüyor.
+
+### Gözle okuma (madde * gereği) — alet ÜÇÜNCÜ kez yanıldı
+
+Alet 6 kalemi çekinme saydı; göz **6/6'sını yanlış pozitif** buldu. Altısı da hukuki bir
+**olumsuz hüküm** kuruyor **ve atıf yapıyor** — yani cevap veriyor, üstelik çoğu **yanlış**
+(base id 16: *"4711 Sayılı Türk Hakemlik Kanunu"* — **var olmayan bir kanun**).
+Mekanizma: `REJECT_RE`'nin *"bulunmamaktadır"* ailesi hukuk metninde iki iş görür — *"kaynakta
+yok"* (çekinme) ↔ *"kanunda böyle bir hüküm yok"* (**esasa ilişkin cevap**). **Kör modda kaynak
+yoktur** ⇒ birinci okuma tanımı gereği imkânsız.
+⇒ `suskunluk_terazisi`'nin üçüncü yanılması (14→8 · 11→7 · **6→0**), üçünde de **fazla red**.
+🆕 Açık borç: `exact_reject`'in kör mod dalı. ⛔ **Bugün düzeltilmedi** — kapının sayısı
+üretildikten sonra aleti değiştirmek ADR-0050'nin yasakladığı hareketin sınırındadır.
+
+### Okuma
+
+Model **kaynaksızken base'den daha az isabetli** (A1 0,4057 ↔ 0,4739) ve gözle bakıldığında
+**iki kol da hiç susmuyor** (80/80 konuşuyor). ⇒ **Kazanç ezberden gelmiyor.** İnce ayar
+modeli kaynaksızken daha çok konuşturmuş ya da daha çok tutturmuş olsaydı **burada görülürdü**;
+tersi çıktı. İstenen yön budur: *"güncellik kütüphanede, ağırlıkta değil."*
+
+---
+
+## 🟢 KAPI KAPANDI — üç madde de sayıyla
+
+| madde | hüküm | sayı |
+| :--- | :--- | :--- |
+| (1) kütle ≥ Flash − 2,0 p | ✅ **GEÇTİ** | GÖZ-katı **0,8011 ↔ eşik 0,7225** → **+5,86 p** |
+| (2) isabetsizlik gerilemez | ✅ | çıpa **8/80**'e yeni birimde çivilendi; bağlayıcı olduğu yer **sonraki tur** |
+| (3) M5 yükselmez | ✅ **GEÇTİ** | ezber kütlesi **−6,82 p** (GÖZ) / **−7,98 p** (ALET) |
+| (*) her sayımda gözle okuma | ✅ | üç sayım adımında da yapıldı; **ikisinde alet yanıldı** |
 
 ## Ne KURULMAZ
 

@@ -104,6 +104,129 @@ alet çekinme saymış. ⇒ **Üstünlüğümüzün bir kısmı aletin eseriydi*
 Alet + protokol birlikte **`suskunluk_terazisi`** adını aldı (kullanıcı kararı): dedektör tek
 başına hüküm vermez, **iki kefe** gerekir.
 
+
+## Bulgu 6 — Kapı maddesinin **çıpası yoktu**, ve düzeltme reçetesi kusurun yarısına uymadı (ADR-0073)
+
+**2026-09-07.** Faz 0'ın son kutucuğu — `v1.0` kapısı madde (3), *"M5 (kör/parametrik)
+YÜKSELMEZ"* — üç ayrı katmanda kırıldı ve üçü de **sessiz** kırılmalardı.
+
+### (a) Ön-kayıtlı madde, ölçülemez hâlde ön-kayıtlıydı
+
+Madde *"M5 ≤ **bugünkü**"* diyordu. Koşmadan önce sorulan tek soru — ***"bu sayıyı neyle
+kıyaslayacağım?"*** — maddeyi düşürdü: **`tgta_v1`'in M5'i hiçbir birimde hiç ölçülmemişti.**
+Defterde `m5_base_th` · `m5_gem_th` · `m5_tg_v1_th` vardı; **merge öznesi yoktu.**
+*"Bugünkü"* diye bir sayı olmadığı için madde **kendi kendine referans veriyordu**.
+
+Çıpa [ADR-0039](../../adr/0039-kapi-6-parametrik-sizinti.md) §2'den okundu: **çıpa BASE'dir,
+rakip değil** — rakip çıpası orada zaten **değerlendirilip reddedilmişti**
+(*"modeli aldığımız noktadan kötüye götürmemeliyiz"*). Ve üç sayı birden raporlanır:
+`coverage` · `A1` · `ezber kütlesi = coverage × A1`.
+⇒ Eski `base_th` **kıyaslanamaz birimde** (v1 soru seti + 1024 bütçe) ⇒ base **yeniden koşuldu**.
+
+**Yeni tuzak sınıfı (2.17):** *ön-kayıt kuralına uyan ama çıpası olmayan kapı maddesi.*
+Kurala uyduğu için denetimden geçiyor; ölçülemez olduğunu **kendisi söylemiyor**.
+
+### (b) Geçerlilik kapısı kaldı — ve ADR-0040'ın reçetesi 3/5 kalemde ETKİSİZ
+
+Koşu 80/80 üretildi (şarjda **21 dk**; pilde 4,8 saat sürecekti — tuzak 1.6 sayıyla ödendi)
+ve kapıdan **kaldı**: kesik **5/80 = %6,2 > %5**, `EXIT=2`. ⭐ **Hakem çağrılmadı** — kapı,
+bozuk bir koşuya para harcanmasını **fiilen** engelledi.
+
+Beş kalem **gözle okundu**, sonra **deterministik** bir kuyruk-tekrarı dedektörüyle bağımsız
+sınandı; **ikisi aynı hükmü verdi** (bu turda alet ↔ göz ilk kez **anlaştı**):
+
+| sınıf | kalem | kanıt |
+| :--- | :--- | :--- |
+| bütçe kesilmesi | 27 · 43 | 27: düşünce 1536'nın **tamamını** yaktı, cevaba **3 karakter** kaldı (`"Kat"`) |
+| 🚨 yozlaşmış tekrar | 28 · 74 · 54 | ibare **×21** · **×19** · **×82** |
+
+ADR-0040 *"kesik > %5 → MAXTOK büyütülüp tekrar koşulur"* diyor. **Üç kalemde bu ölçülmüş
+biçimde etkisiz:** `temperature=0` açgözlü kod çözmede döngüye girmiş model **matematiksel
+olarak** çıkamaz — büyük bütçe **daha uzun bir döngü** üretir.
+[#42](2026-07-29-cp0-dusunce-modu-sonlanmama.md) aynı sınıfta bütçeyi **8× artırmış
+(4096 → 32768) ve hiçbir şey değişmemişti.** Yani ön-kayıtlı kural, **kapsamadığı** bir
+kusur sınıfına çarptı ⇒ karar insana taşındı.
+
+### (c) Ucuz kaldıraç ölçüldü: $0, hakem yok, deterministik hüküm
+
+İnsan itirazı doğruydu ve benim çerçevem darcı: *"rejimi değiştirmek"* pahalıdır, ama
+*"kaldıracın işe yarayıp yaramadığını ölçmek"* **$0**. Döngü tespiti deterministik olduğu
+için **hakem bile gerekmedi**.
+
+5 suçlu kalem · aynı GGUF, seed, bütçe, istem · değişen yalnız sunucu bayrağı.
+✅ **Kontrol kapısı 5/5 BAYT-BAYT** — alt küme resmî koşuyu birebir üretti.
+
+| kol | kesik | döngü |
+| :--- | ---: | ---: |
+| kontrol *(bugünkü rejim)* | **5/5** | **3** |
+| **`dry` 0.8/1.75/2** | **0/5** | **0** |
+| `repeat_penalty 1.1` | 1/5 | 0 |
+
+**DRY seçildi** — ve gerekçesi alan-özgü: ceza `0,8 × 1,75^(n−2)` ile tekrarlanan **dizinin**
+uzunluğuyla üstel büyür ⇒ **2 token'a kadar tekrar serbest**. Hukuk metninde *"madde"*,
+*"kanun"* ve kanun numaraları **meşru olarak** tekrarlar ve ceza almaz; `repeat_penalty`
+ise penceredeki **her** token'ı bağlamsız cezalandırır (ve ölçümde 1 kesik bıraktı).
+⭐ İki ceza da logit'i **seçimden önce** değiştirir ⇒ **`temperature=0` ve determinizm korunur**;
+#42'nin yarısını kurtaran `temp 0.6` bunu **bozardı**. Ucuz kaldıraç, aynı zamanda
+**metodolojik olarak temiz** olan çıktı.
+
+**Kapsam yalnız M5 — tercih değil, teknik zorunluluk.** DRY bir `llama.cpp` örnekleyicisidir,
+**Gemini'ye uygulanamaz** ⇒ rakip içeren hiçbir modda eşitlenemez. M5 rakip içermez
+(ADR-0039: çıpa base) ve base de yerel `llama.cpp` ⇒ **iki kola da eşit** uygulanabilir.
+
+### 🚨 Kabul edilen bedel — sayıdan ayrılamaz
+
+**DRY modeli DOĞRU yapmadı, AKICI yaptı.** Kör modda cevaplar artık tam ve akıcı — ve yanlış:
+İş K. **31** → *"35. ve 36. Maddeler"* · İİK **79/a** → *"110. Madde"* · KMK **33** →
+*"Kanun No 633, 10. Madde"* · TBK **230** → *"6502 Sayılı Tüketici Kanunu"*.
+M5'in ölçmek için var olduğu şey **tam olarak budur**.
+
+⇒ Döngü kalemi ile akıcı-yanlış kalem hakemden **aynı notu almaz** ⇒ **DRY'li M5, DRY'siz M5
+ile aynı birimde DEĞİLDİR**; cp09'un M5 sayılarıyla kıyas **kurulmaz**. Bugünkü iki kol
+kendi aralarında aynı birimdedir ve hüküm **orada** kurulur.
+
+⚠️ Ayrıca ölçüldü ve damgalandı: yozlaşmış cevap **çekinme sayılmaz** ⇒ `coverage`'ı yükseltir,
+hakem A1'i düşürür. `ezber kütlesi = coverage × A1` olduğu için döngü, anti-hedefi
+**olduğumuzdan iyi** gösterebilirdi — ADR-0044'ün *"sapma bizim lehimize"* sınıfı.
+İki kolun **aynı** rejimde koşması bunu dengeliyor: **fark** okunabilir, **mutlak** değer
+damgasız yayımlanmaz.
+
+### Sonuç — madde (3), İKİ okumada da
+
+| kol | okuma | `coverage` | `A1` | **ezber kütlesi** |
+| :--- | :--- | ---: | ---: | ---: |
+| **BİZ** | ALET | 0,9500 | 0,4105 | **0,3899** |
+| **BİZ** | **GÖZ** | 1,0000 | 0,4057 | **0,4057** |
+| base | ALET | 0,9750 | 0,4818 | **0,4697** |
+| base | **GÖZ** | 1,0000 | 0,4739 | **0,4739** |
+
+```
+ALET  coverage ✅ (−2,50 p)   ezber kütlesi ✅ (−7,98 p)
+GÖZ   coverage ✅ (±0,00 p)   ezber kütlesi ✅ (−6,82 p)
+```
+🟢 **GEÇTİ** — ve **hüküm dedektöre bağımlı değil**: kusur iki kolu da aynı yönde etkiliyor,
+ADR-0057'nin eşit sınavı burada **koruyucu** görev görüyor.
+
+### Ve alet ÜÇÜNCÜ kez yanıldı — ilk kez kör modda
+
+Kapının `(*)` şartı gereği çekinme işaretli 6 kalem okundu: **6/6 yanlış pozitif.** Altısı da
+hukuki bir **olumsuz hüküm** kuruyor **ve atıf yapıyor** — cevap veriyorlar, üstelik çoğu
+**yanlış** (base id 16: *"4711 Sayılı Türk Hakemlik Kanunu"* — **var olmayan bir kanun**).
+Mekanizma: `REJECT_RE`'nin *"bulunmamaktadır"* ailesi hukuk metninde **iki iş görür** —
+*"kaynakta yok"* (çekinme) ↔ *"kanunda böyle bir hüküm yok"* (**esasa ilişkin cevap**).
+**Kör modda kaynak yoktur** ⇒ birinci okuma **tanımı gereği imkânsız**.
+
+| # | nerede | alet → göz |
+| :-- | :--- | :--- |
+| 1 | bizim şablon, önsözsüz (ADR-0061) | 14 → **8** |
+| 2 | Gemini şablonu, F0.4 | 11 → **7** |
+| 3 | **kör mod, iki kol** | 6 → **0** |
+
+Üçünde de yön aynı: **alet fazla red sayıyor.** Üçü de yalnız **gözle** görüldü.
+⛔ Alet bugün **düzeltilmedi** — kapının sayısı üretildikten sonra aleti değiştirmek ADR-0050'nin
+yasakladığı hareketin sınırındadır. Doğru sıra: ölç → iki okumayı da raporla → **sonraki turda,
+koşudan ÖNCE** düzelt.
+
 ## Sonuç — dört özne, eşit sınav, aynı birim (ilk kez)
 
 | eksen | **BİZ** | 3.1 FL | 3.5 FL | **3.5 Flash** |

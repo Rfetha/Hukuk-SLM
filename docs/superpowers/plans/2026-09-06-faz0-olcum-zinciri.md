@@ -398,7 +398,7 @@ iki yerde işaretle (0058'in kendi dosyasına da şerh). Ölçüm: önsözlü %6
 aynı bağlam**, değişen yalnız istem.
 `verify:` ADR-0058 dosyasında *"gerekçesi ADR-0063 ile tersine döndü"* şerhi var.
 
-- [~] **Adım 2: ADR-0064 — kapı, sayıyla kapanır**  ⏳ **madde (3) M5 ölçümünü bekliyor**
+- [x] **Adım 2: ADR-0064 — kapı, sayıyla kapandı** ✅ *(2026-09-07, üç madde de)*
 
 ```
 (1) kütle ≥ (3.5 Flash kütlesi, F0.4) − 2,0 p
@@ -409,6 +409,18 @@ aynı bağlam**, değişen yalnız istem.
 `verify:` δ=2 p'nin **neden gürültü tabanından türetilemediği** yazılı (taban 0,3 p yalnız A1
 için; kütle = coverage × A1 ve coverage varyansı o tabanda yok) · sayılar F0.3/F0.4'ten
 **alıntı ve dosya adıyla**.
+
+**✅ ALINDI 2026-09-07:**
+- madde (1) **GEÇTİ** — GÖZ-katı 0,8011 ↔ eşik 0,7225 → **+5,86 p**
+- madde (2) çıpa **8/80**'e yeni birimde çivilendi (ADR-0050'nin *"alet değişirse eşik aynı
+  formülle yeni birimde türetilir"* hükmü)
+- madde (3) **GEÇTİ** — ezber kütlesi **−6,82 p** (GÖZ) / **−7,98 p** (ALET), çıpa **base**
+  ⚠️ Yol düz değildi: maddenin **çıpası yoktu** (tuzak 2.17) · ilk koşu geçerlilik kapısından
+  **kaldı** (%6,2) · gözle okuma kesiklerin **3/5'inin yozlaşmış tekrar** olduğunu gösterdi ·
+  $0'lık ablasyon DRY'yi seçti (**ADR-0073**, insan kararı) · iki kol yeniden koşuldu ·
+  gözle okuma dedektörün **6/6 yanlış pozitif** verdiğini buldu ⇒ **iki okuma da raporlandı**
+- (*) gözle okuma **üç sayım adımında da** yapıldı; **ikisinde alet yanıldı**
+- hakem bedeli **$0,0881** · GPU **$0**
 
 - [x] **Adım 3: ADR-0065** (bölünmüş sürümleme) + **ADR-0066** (B1 = reddetme-örneklemesi,
 GRPO **gerekçeli** ertelendi: $10-30 tahmin ↔ Modal $29,19, tahmin ölçülmedi).
@@ -564,6 +576,67 @@ yanlış bayrak/yol çıktı ve üçü de yalnız koşarken görüldü.
 **Bedel:** $0 · ~30-45 dk · **GPU gerekmez** ⛔ ama Faz 0'ın koşuları bitmeden **başlamaz**
 (`cp0_thinking_gen.sh` canlı kullanımda).
 **Bağımlılık:** Faz 0 Görev 7 kapanmış olmalı.
+
+---
+
+## ✅ FAZ 0 ÖLÇÜM ZİNCİRİ KAPANDI — 2026-09-07, **40/40**
+
+*(Görev 9 · T5 bu zincirin **dışında** eklenen temizliktir; ayrı sayılır: 0/8)*
+
+**Harcanan: $1,47** — plan tahmini $1,65 · bugünkü pay **$0,0881** (yalnız M5 hakemi) · GPU **$0**
+**Eğitim koşusu: SIFIR.** `tgta_v1` sabahki artefaktın **aynısı**; hiçbir ağırlık değişmedi.
+
+### Manşet
+
+| eksen | Faz 0 ÖNCESİ | Faz 0 SONRASI | kaynak |
+| :--- | ---: | ---: | :--- |
+| kütle | %68,4 *(önsözlü, v1 soru)* | **%80,1** | `f02-biz-onsozsuz/KUNYE.json` |
+| `recall@10` | 0,8750 | **0,9500** ⁽¹⁾ | `f01b/SONUC_recall_v1_v2.md` · ADR-0068 |
+| aşırı-red *(gözle)* | 8/80 | **4/80** | `f02.../GOZLE_OKUMA_80.md` |
+| isabetsizlik *(gözle)* | — *(hiç sayılmamıştı)* | **8/80** | a.g.e. §2 |
+| uydurulmuş madde | 0/118 | **0/114** | a.g.e. |
+
+⁽¹⁾ İki onarımın toplamı: 0,8750 → **0,9375** soru onarımıyla (ADR-0067) → **0,9500** füzyon
+onarımıyla (ADR-0068).
+
+### Kazanç nereden geldi: **modelden değil, aletten**
+
+| # | kusur | etkisi | ADR |
+| :-- | :--- | :--- | :--- |
+| 1 | Sorular altın maddenin **içinden** üretilmiş, bağlam sıyrılmış | `recall@10` **+6,25 p** | 0067 |
+| 2 | `RRF_K=60` *"iki kolda vasat"*ı *"tek kolda kusursuz"*a tercih ediyordu | +1,25 p (TEST'te **iki katı**) | 0068 |
+| 3 | DEV↔TEST ayrımı kanuna göre katmanlı, **uzunluğa göre değil** | farkın **%81'i** | 0069 |
+| 4 | Üretim bütçemiz **1024**, rakibinki **1536** — eşit sınav değildi | yayımlanmış bir iddiayı (**K2**) çürüttü | 0070 |
+| 5 🆕 | Kapı maddesi (3)'ün **çıpası yoktu** | madde **hüküm üretemiyordu** | 0073 · tuzak **2.17** |
+
+### `v1.0` kapısı (ADR-0064) — 🟢 **ÜÇ MADDE DE GEÇTİ**
+
+| madde | sayı | hüküm |
+| :--- | :--- | :--- |
+| (1) kütle ≥ Flash − 2,0 p | GÖZ-katı **0,8011 ↔ 0,7225** | ✅ **+5,86 p** |
+| (2) isabetsizlik gerilemez | çıpa **8/80** (yeni birim) | ✅ tanım gereği; bağlayıcı yeri **sonraki tur** |
+| (3) M5 yükselmez | ezber kütlesi **−6,82 p** (GÖZ) / −7,98 p (ALET) | ✅ **kazanç ezberden gelmiyor** |
+| (*) her sayımda gözle okuma | üç adımda da yapıldı | ✅ **ikisinde alet yanıldı** |
+
+### Faz 0'ın asıl dersi
+
+**Beş kusurun beşini de sayısal kapı geçirdi.** Yakalayan şey her seferinde ya **gözle okuma**
+ya da koşmadan önce sorulan ***"bu sayıyı neyle, hangi birimde kıyaslayacağım?"*** sorusu oldu.
+`suskunluk_terazisi` bu turda **üç kez** yanıldı (14→8 · 11→7 · 6→0) ve **üçünde de fazla red
+saydı** — yani sapma **hep bizim lehimize**ydi. Aletin adının *"terazi"* olması tesadüf değil:
+**tek kefe hüküm vermiyor.**
+
+⛔ **Ne KURULMAZ:** *"model bu kadar iyileşti"* — kazancın büyük kısmı **ölçümden** geldi.
+*"TEST'te de geçeriz"* — ölçüm **DEV**'de, TEST'in erişim tavanı ≈%75 (ADR-0069).
+*"Hakem panelinden geçmiş bir hüküm"* — hâlâ **tek aile**, κ yok ⇒ sıradaki planın **`HP`** adımı.
+
+### Kapanışta alınan insan kararları
+
+| ADR | karar |
+| :--- | :--- |
+| **0071** | `v1.0` artefaktı: merge edilmiş **TEK GGUF**, ad **kuantizasyon** taşır → `HakHukuk-4B-v1.0-Q4_K_M.gguf` |
+| **0072** | Rakip havuzu **genişler**, ama eşik **oynamaz**; şeklini **aile dışlaması** belirliyor ⇒ **`HP` önce** |
+| **0073** | M5 rejimine **DRY** (kapsam yalnız M5 — teknik zorunluluk: DRY rakibe uygulanamaz) |
 
 ---
 
