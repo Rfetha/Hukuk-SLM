@@ -15,8 +15,13 @@
 - [ ] **3 · Sonnet-5 öznesi** — rakip havuzuna frontier sınıfı girer; kapıyı **etkilemez**
       (ADR-0072 m.2) · **~$0,82** *(ölçüldü)* → [ROADMAP · Faz 4](ROADMAP.md)
 - [ ] **4 · Kabul testi** — ⛔⛔ donmuş TEST **tek kez** açılır, insan onayı şart;
-      ADR-0069 raporlaması zorunlu · **~$0,10** → [ROADMAP · Faz 4](ROADMAP.md)
-- [ ] **5 · Modeli YAYINLA** — 🚨 ağırlıklar bugün **hiçbir yerde yayında değil**;
+      ADR-0069 raporlaması zorunlu · ⛔ **ARAÇSIZ rejimde** (ADR-0076 m.4: rakipler araç
+      kullanamaz, eşit sınav) · **~$0,10** → [ROADMAP · Faz 4](ROADMAP.md)
+- [ ] **5 · Araç katmanı** — 5 deterministik kaldıraç (`ara` · `madde_getir` ·
+      `madde_var_mi` · `kanun_bul` · `yururlukte_mi`) + **sınırlı** döngü + yeni durum
+      `ARAMA_TUKENDI`. ⛔ KAPI'lar tool değildir, döngü dışında koşulsuz çalışır ·
+      **$0** → [ADR-0076](docs/adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)
+- [ ] **6 · Modeli YAYINLA** — 🚨 ağırlıklar bugün **hiçbir yerde yayında değil**;
       HF model reposu + kart + üç belgede indirme yolu · **$0** → [ROADMAP · Faz 4](ROADMAP.md)
 
 ## Sırada — `v2` *(plan henüz yazılmadı)*

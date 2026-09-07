@@ -87,8 +87,25 @@ paketlemek, birkaç hafta sonra atılacak bir iştir.
 | 1 | `KUNYE` taşınabilirlik | `git clone` sonrası **her makinede** `SystemExit` — mutlak yol + `mtime` kilidi | $0 |
 | 2 | TUI gözle doğrulama | ürün yüzü **insan gözüyle hiç görülmedi** | $0 |
 | 3 | **Sonnet-5 öznesi** | havuzda yalnız Gemini var; **frontier sınıfı hiç ölçülmedi** | ~$0,82 |
-| 4 | **Kabul testi** | donmuş TEST **hiç açılmadı** ⇒ `v1.0` verilmedi | ~$0,10 |
-| 5 | 🆕 **Modeli YAYINLA** | 🚨 ağırlıklar **hiçbir yerde yayında değil** — *"açık kaynak model"* iddiası bugün **yarım** | $0 |
+| 4 | **Kabul testi** *(⛔ ARAÇSIZ)* | donmuş TEST **hiç açılmadı** ⇒ `v1.0` verilmedi | ~$0,10 |
+| 5 | 🆕 **Araç katmanı** | model arayıp aramayacağına **karar vermiyor**; isabetsizlik 8/80'in bir kısmı iki maddeyi yan yana okuyamamaktan | $0 |
+| 6 | 🆕 **Modeli YAYINLA** | 🚨 ağırlıklar **hiçbir yerde yayında değil** — *"açık kaynak model"* iddiası bugün **yarım** | $0 |
+
+### 🔧 Araç katmanı — KAPI ↔ KALDIRAÇ *([ADR-0076](docs/adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md))*
+
+| sınıf | ne | kim karar verir |
+| :--- | :--- | :--- |
+| 🔒 **KAPI** | atıf doğrulama · mülga süzgeci · durum sınıflandırma · kesiklik | **hiç kimse** — koşulsuz |
+| 🔧 **KALDIRAÇ** | `ara` · `madde_getir` · `madde_var_mi` · `kanun_bul` · `yururlukte_mi` | **model** |
+
+⭐ `madde_var_mi` en değerlisi: bugün madde numarası ezberden yazılıyor ve hata ancak
+**cevaptan sonra** kapıda anlaşılıyor — yakalanıyor ama **düzeltilmiyor**. Bu araçla model
+**yazmadan önce** kendini denetler ⇒ atlanan `B1` turunun hedefine ikinci yoldan saldırır.
+
+⛔ **Döngü sınırlı, sınıra dayanmak görünür:** `Durum.ARAMA_TUKENDI`. Sessiz tükenme, bu
+hattın en pahalı hata sınıfını (*"hata vermeden yanlış"*, 17 tuzağın hepsi) büyütürdü.
+⛔ **Kapı koşusuna girmez** — %80,1 ve eşik araçsız ölçüldü, rakipler araç kullanamaz
+(ADR-0057 eşit sınav). Sıra: **kabul testi → araç katmanı → yayın.**
 
 ### ⛔ `B1` ve `B4` eğitim turları ATLANDI — [ADR-0075](docs/adr/0075-v1-sft-kapanir-v2-sequential-rl.md)
 

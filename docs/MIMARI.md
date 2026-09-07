@@ -38,7 +38,13 @@
 | [`servis.py`](../hakhukuk/servis.py) | **Derin modül:** `answer(soru) → Cevap`. Retriever + llama-server + istem + terazi **içeride gizli** |
 | [`cli.py`](../hakhukuk/cli.py) | `hakhukuk "soru"` — ince kabuk. `SORUMLULUK_IBARESI`'nin **tek kaynağı** |
 | [`tui.py`](../hakhukuk/tui.py) | `hakhukuk-tui` — `textual` tek ekran, ince kabuk (mantık sızıntısı **testle yasak**) |
+| `araclar.py` | ⏳ **YOK** — 5 deterministik KALDIRAÇ; [ADR-0076](adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md) |
 | `kurulum.py` | ⏳ **YOK** — indeks indirme; [ROADMAP · Görev 8](../ROADMAP.md) |
+
+🔒 **KAPI ↔ KALDIRAÇ:** `terazi.py`'nin kontrolleri (atıf doğrulama · durum sınıflandırma) ve
+`retriever`'ın mülga süzgeci **KAPI**'dır — tool döngüsünün **dışında**, koşulsuz çalışır.
+`araclar.py`'dekiler **KALDIRAÇ**'tır — model çağırır ya da çağırmaz. Karıştırılmaları
+uydurulmuş madde **0/114** garantisini kaybettirir ([ADR-0076](adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)).
 
 \* ⚠️ **Bugünkü tek istisna, bilinçli:** `terazi.py` iki normalizasyonu `scripts/`'ten
 **import ediyor** (`score_abstention.REJECT_RE` · `madde_anahtar.madde_anahtari`).

@@ -28,8 +28,9 @@
                 1. G8 Adım 1b  KUNYE taşınabilirlik   $0
                 2. G12 Adım 6-7 TUI gözle doğrula     $0 · GPU
                 3. G4  Sonnet-5 öznesi                ~$0,82 (ölçüldü)
-                4. G16 Adım 2-4 kabul testi           ~$0,10 ⛔⛔ donmuş TEST
-                5. G17 modeli YAYINLA  🆕              $0 → 🏷️ v1.0 RELEASE
+                4. G16 Adım 2-4 kabul testi           ~$0,10 ⛔⛔ donmuş TEST (ARAÇSIZ)
+                5. G18 araç katmanı  🆕                $0 · KAPI ↔ KALDIRAÇ (ADR-0076)
+                6. G17 modeli YAYINLA  🆕              $0 → 🏷️ v1.0 RELEASE
 ──────────────────────────────────────────────────────────────────────────────
 ⏳ SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
@@ -56,6 +57,22 @@ v2   tgta_v1 (bf16) ──► GRPO + düşünce (thinking) ayarı ──► v2.0
 ve **birbirinden farklı**: `B1`'de rakiplerden **geride değiliz** (8/80 ↔ 8·8·7·8) ve otomatik
 metrik yok; `B4` ise bir **merge** kaybı (`τ_a` tek başına 0,987) ve `v2`'de merge olmadığı
 için **konusuz** kalıyor.
+
+### 🔧 Araç katmanı `v1`'e dahil — [ADR-0076](../adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)
+
+**KAPI ↔ KALDIRAÇ ayrımı:** atıf doğrulama · mülga süzgeci · durum sınıflandırma **TOOL
+DEĞİLDİR** — döngünün dışında **koşulsuz** çalışır (uydurulmuş madde **0/114** garantisi
+oradan gelir). Model yalnız **deterministik kaldıraçları** çağırır: `ara` · `madde_getir` ·
+`madde_var_mi` · `kanun_bul` · `yururlukte_mi`.
+⛔ Döngü **sınırlı** (`AZAMI_ADIM`) ve sınıra dayanmak **görünür**: `Durum.ARAMA_TUKENDI`.
+Sebep: bu hattın en pahalı hata sınıfı *"hata vermeden yanlış"* — 17 tuzağın **hepsi** o
+sınıftan, ve agentic akış tam o riski büyütür.
+⛔ **Kapı koşusuna GİRMEZ** (ADR-0076 m.4): %80,1 ve eşik **araçsız** ölçüldü, rakipler araç
+kullanamaz ⇒ araçlı koşmak ADR-0057'nin eşit sınavını ihlal eder. Sıra: **kabul testi →
+araç katmanı → yayın.**
+⚠️ `v1`'de araç kullanımı **istem katmanındadır** (eğitilmedi, güvenilirliği düşük olacak);
+**öğrenilmesi `v2`'nin işi** — GRPO ödülüne *"doğru aracı doğru anda çağırdı mı"* girer.
+✅ **CLI + TUI yeterli** (insan kararı) — HTTP API ve web arayüzü `v2`.
 
 🚨 **Bedeli:** `τ = θ_ft − θ_base` tanımı tüm kolların aynı base'i paylaşmasını şart koşar ⇒
 `tgta_v1`'i yeni başlangıç almak bunu bozar ⇒ **ADR-0027'nin task-vector hattı `v1`'de

@@ -24,10 +24,16 @@
 | **1** | **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | repo başka dizine kopyalanır, retriever **hatasız yükler**, `recall@10` 0,9500 |
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
 | **3** 🆕 | **G4** — **Sonnet-5 öznesi** rakip havuzuna girer | **~$0,82** *(ölçüldü)* | ✅ `$1` kapısının altında — tam koşu doğrudan koşulabilir |
-| **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** |
-| **5** 🆕 | **G17** — modeli YAYINLA (HF) | $0 | `v1` release; bugün ağırlıklar **hiçbir yerde yayında değil** |
+| **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** · ⛔ **ARAÇSIZ rejimde** (ADR-0076 m.4) |
+| **5** 🆕 | **G18** — araç katmanı (KALDIRAÇ) | $0 | 5 deterministik araç + sınırlı döngü + `ARAMA_TUKENDI` |
+| **6** 🆕 | **G17** — modeli YAYINLA (HF) | $0 | `v1` release; bugün ağırlıklar **hiçbir yerde yayında değil** |
 | — | **G14 · G15** eğitim turları | — | ⛔ **ATLANDI** — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md): `v1` **SFT ile kapanır**, `B4` `v2`'de **konusuz** kalır |
 | — | **G11 Adım 2** — temiz makine kapısı | — | ⏸️ **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
+
+⛔ **Sıra 4 → 5 → 6 BAĞLAYICI** ([ADR-0076](../../adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md) m.4):
+kabul testi **araçsız** koşulur, çünkü yayımlanan %80,1 ve kapı eşiği araçsız rejimde ölçüldü
+ve **rakipler araç kullanamaz** — araçlı koşmak ADR-0057'nin *eşit sınav* kuralını ihlal eder.
+Araç katmanı kapıdan **sonra**, ürün özelliği olarak girer.
 
 🔒 **`v1` = ham base + SFT hattı. KAPANDI — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md) (insan kararı 2026-09-08).**
 Eğitim turları (**G14 · G15**) koşulmaz; `v1` bugünkü `tgta_v1` artefaktıyla kapanır ve
@@ -1676,6 +1682,84 @@ oran `tavan kullanımı = kütle ÷ recall@10`; **her iki setin `recall@10`'u ya
 Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 `verify:` hüküm ADR'de, `research_log`'da ve `MODEL_CARD.md`'de **aynı sayıyla** duruyor.
 - [ ] **Adım 4: Commit + etiket**
+
+---
+
+### Görev 18 🆕: Araç katmanı — KALDIRAÇ *(ADR-0076 · 2026-09-08)*
+
+**Dosyalar:** Create: `hakhukuk/araclar.py` · `tests/test_araclar.py` ·
+Modify: `hakhukuk/servis.py` · `hakhukuk/tipler.py` · `tests/test_tipler.py`
+
+**Neden:** bugünkü akış **tek atış ve sabit** — model arayıp aramayacağına, tekrar
+arayacağına, bir maddenin metnini okuyup okumayacağına **karar vermiyor**.
+
+🚨 **ÖNCE BUNU OKU — bu görevin ilk gerekçesi ÖLÇÜLDÜ ve ÇÜRÜDÜ (2026-09-08):**
+Taslak *"model TBK 214 ile TBK 217'yi yan yana okuyabilseydi görürdü"* diyordu.
+`harness.altin_sirasi` alanı okundu:
+
+| eksen | büyüklük | altın bağlamda mıydı | araç çözer mi |
+| :--- | ---: | :--- | :--- |
+| isabetsizlik | 8/80 | **8/8 EVET** (biri 1. sırada) | ❌ sorun **seçim**, erişim değil |
+| aşırı-red | 4/80 | **4/4 EVET** (üçü 1. sırada) | ❌ model bakıyor, kullanmıyor |
+| uydurulmuş madde | **0**/114 | — | ❌ çözülecek sorun yok |
+| **recall kaybı** | **4/80** | ❌ gelmedi | ✅ `ara` **deneyebilir** — TEK hedef |
+
+⇒ **Eval hedefi 4 kalem, garanti değil.** İnsan kararı (2026-09-08): beş araç da konur,
+ama gerekçe **eval kazancı değil ÜRÜN YETENEĞİ** — ve bu gerekçe **ölçülmemiştir**,
+öyle damgalanır ([ADR-0076](../../adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)).
+⛔ Araç katmanının kazancı **yayımlanan hiçbir sayıya eklenmez**.
+
+🔒 **KAPI ↔ KALDIRAÇ ayrımı bağlayıcı** (ADR-0076): atıf doğrulama · mülga süzgeci · durum
+sınıflandırma **TOOL DEĞİLDİR**, döngünün **dışında** koşulsuz çalışır. Uydurulmuş madde
+**0/114** garantisi buradan geliyor; tool yapılırsa model çağırmayı unuttuğu an buharlaşır.
+
+- [ ] **Adım 1: Failing test — beş araç + KAPI'nın atlanamazlığı**
+
+⚠️ En kritik test: *"model hiç araç çağırmasa bile atıf doğrulama ÇALIŞIR"* ve
+*"model `terazi`'yi atlayamaz"*. Araç testleri deterministik (sahte korpusla, indekssiz).
+
+- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+
+- [ ] **Adım 3: `Durum.ARAMA_TUKENDI` + `tipler.py`**
+
+⚠️ `tests/test_tipler.py::test_durum_dort_hali_var` **kırılacak** — beklenen, davranış
+değişiyor: dört hâl **beşe** çıkıyor. Test güncellenir, gerekçesi yazılır.
+⛔ `KESIK` ile **birleştirilmez**: `KESIK` = *"cümle yarım"*, `ARAMA_TUKENDI` = *"cümle tam,
+dayanağı eksik olabilir"* — kullanıcıya **farklı şey** söylerler.
+
+- [ ] **Adım 4: `hakhukuk/araclar.py` — beş deterministik araç**
+
+| araç | imza | ölçülmüş hedef |
+| :--- | :--- | :--- |
+| `ara` | `(sorgu: str, k: int = 10) -> tuple[Kaynak, ...]` | **4/80** recall kaybı |
+| `madde_getir` | `(kanun_no: str, madde_no: str) -> Kaynak \| None` | ❌ yok — ürün yeteneği |
+| `madde_var_mi` | `(kanun_no: str, madde_no: str) -> bool` | ❌ yok — uydurma zaten **0/114** |
+| `kanun_bul` | `(ad: str) -> tuple[tuple[str, str], ...]` | ❌ yok |
+| `yururlukte_mi` | `(kanun_no: str, madde_no: str) -> Yururluk \| None` | ❌ yok |
+
+⛔ **Hiçbiri LLM çağırmaz** — araç katmanı deterministik kalır, yoksa yeni bir hata kaynağı olur.
+⛔ Kimlik karşılaştırmaları **`madde_anahtari` ile** yapılır (büyük/küçük duyarsız, `Geçici
+Madde` ayrı) — düz metin karşılaştırması korpusun **%22'sinde** yanlış negatif veriyordu.
+`verify:` her araç için birim testi yeşil; hiçbiri ağ ya da model istemiyor; testler sahte
+korpusla koşuyor (indeks gerekmiyor).
+
+- [ ] **Adım 5: `servis.answer()` — çok adımlı mod, SINIRLI döngü**
+
+```python
+AZAMI_ADIM = 4     # ⛔ sınır. Dayanınca Durum.ARAMA_TUKENDI — sessizce teslim EDİLMEZ.
+```
+`verify:` döngü sınırına dayanan senaryo testte `ARAMA_TUKENDI` veriyor · KAPI'lar döngü
+sonrası **her hâlde** çalışıyor (araç çağrılmasa da).
+
+- [ ] **Adım 6: 🚨 REGRESYON KAPISI — araçsız davranış DEĞİŞMEDİ mi**
+
+⛔ Araç katmanı **varsayılanı bozmamalı**: araç kullanılmayan yolda 80 kalemlik sınıflandırma
+çıktısı **birebir aynı** kalmalı (suskunluk `[15, 37, 45, 66, 79]`).
+`verify:` 80 kalem yeniden koşuldu, suskunluk kümesi **değişmedi**.
+
+- [ ] **Adım 7: CLI/TUI'de görünürlük + commit**
+
+`verify:` `ARAMA_TUKENDI` rozeti CLI ve TUI'de **görünüyor**; `python -m pytest` yeşil.
 
 ---
 
