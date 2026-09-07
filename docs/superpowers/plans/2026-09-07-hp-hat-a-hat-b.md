@@ -1,5 +1,37 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
+## 📊 İCRA DURUMU — 2026-09-07 · **60/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+
+> **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
+> ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
+> `/goal` promptu: [`goal-hp-hat-a-hat-b.md`](goal-hp-hat-a-hat-b.md) *(2026-09-07'de yenilendi)*
+
+| | durum |
+| :--- | :--- |
+| ✅ **FAZ 1** · hakem paneli | **G1 · G3 bitti** — ikinci hakem ailesi koştu, κ **ilk kez ölçüldü** (`tam_sadık` **0,534** · `atıf_temiz` **0,409**, aracın eşiği 0,6 ⇒ **ALTINDA**), [ADR-0074](../../adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md) + [#64](../../record/research_log/2026-09-07-hakem-paneli-iki-aile.md) yazıldı |
+| ⛔ **G2 · G4** | **ATLANDI** — insan kararı (bütçe). Bakiye **$3,45** ↔ rakip kolunun ikinci hakemle puanlanması **$2,81**; panel **iki aileli** kaldı ve bu ADR-0074'te **eksiklik olarak** yazılı |
+| ✅ **FAZ 2** · Hat A | **G5·G6·G7·G8b·G9·G10·G12 bitti**, G11 2/3 — `hakhukuk/` paketi doğdu (istem tek kaynak · tipler · terazi · servis · CLI · TUI), mülga süzgeci girdi, yeniden üretim zinciri yazıldı |
+| ⛔ **G8** · indeks dağıtımı | **BEKLETİLİYOR** — korpus **8,4×** büyüyecek (40.496 → ~340.303 madde) |
+| ✅ **FAZ 3** · belge katmanı | **G13 bitti** — `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md` yazıldı, kırık işaretçiler onarıldı, `MODEL_CARD` §7.2/§8/§10 güncellendi |
+| ⏳ **FAZ 4** · Hat B | **G16 Adım 1 bitti** (DEV'de üç madde + Wilson şerhleri); G14 · G15 · G16 Adım 2-4 **kaldı** |
+
+**Ölçülen:** 143 test yeşil · 14 commit · harcanan **$3,155** *(⚠️ raporlanan `judge_cost` $1,977'nin **1,6 katı** — kapı marjı)*.
+
+### 🔢 Kalan 17 kutucuk — LİNEER SIRA, atlanmaz
+
+| sıra | iş | bedel | kapı |
+| :--- | :--- | ---: | :--- |
+| **1** | **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | repo başka dizine kopyalanır, retriever **hatasız yükler**, `recall@10` 0,9500 |
+| **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
+| **3** | **G14** (B1, 6) + **G15** (B4, 4) | Modal ~$6,3 | ⛔ **DUR ve SOR:** koşulsun mu? B1 **8/80** ve rakipler **8·8·7·8** ⇒ geride değiliz |
+| **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** |
+| — | **G11 Adım 2** — temiz makine kapısı | — | ⏸️ **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
+
+⚠️ **Sıra 4 neden en sonda:** donmuş TEST tek kez açılır. Sıra 3 koşulursa model değişir ve
+testin ondan **sonra** açılması gerekir — yoksa iyileşmiş modeli ölçecek el değmemiş set kalmaz.
+
+---
+
 > **Ajan işçiler için:** GEREKLİ ALT-BECERİ: `superpowers:subagent-driven-development` (önerilen)
 > ya da `superpowers:executing-plans`. Adımlar `- [ ]` kutucuklu.
 > ⛔ **Kutucuk yalnız `verify:` çıktısı GERÇEKTEN alındıktan sonra işaretlenir.**
@@ -1074,18 +1106,18 @@ sağlayan **hiçbir sinyal yok**. ⚠️ `CLAUDE.md` *"S2 — carries the validi
 `CLAUDE.md`'nin çekirdek kısıtı *"güncellik kütüphanede, ağırlıkta değil"* diyor; ama kütüphanenin
 **tarihi yok** ve **mülgayı ayırt etmiyor**. İnsan kararı 2026-09-07: **ucuz olan v1'e, inşa v2'ye.**
 
-- [ ] **Adım 1: Failing test yaz** — `tests/test_yururluk.py`
+- [x] **Adım 1: Failing test yaz** — `tests/test_yururluk.py`
 
 İki test: (a) `retriever.getir()` sonuçlarının hiçbirinde `mulga=True` olmayacak — bugün 800
 kaynağın 2'sinde var; (b) `data/corpus/KUNYE.json` **anlık görüntü tarihi** taşıyacak ve
 `kapsam == "kanun"` diyecek — *"bu korpus ne zamana göre günceldir"* sorusu bugün **cevaplanamıyor**.
 Beklenen alanlar: `anlik_goruntu_tarihi` · `kaynak` · `kapsam` · `n_kanun=892` · `n_madde=40496`.
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
 
 Run: `python -m pytest tests/test_yururluk.py -v` → `FAIL` (mülga süzgeci yok · `KUNYE.json` yok)
 
-- [ ] **Adım 3: `retriever.py`'de yürürlük süzgeci — ve kararı GÖRÜNÜR kıl**
+- [x] **Adım 3: `retriever.py`'de yürürlük süzgeci — ve kararı GÖRÜNÜR kıl**
 
 ⚠️ **Süzmek mi damgalamak mı?** İkisi farklı: süzmek mülga maddeyi **kaybeder** (bazen soru tam da
 mülga maddeyle ilgilidir), damgalamak **gösterir ama işaretler**.
@@ -1098,20 +1130,20 @@ mülga maddeyle ilgilidir), damgalamak **gösterir ama işaretler**.
 kaynak hiçbir kalemin **altını değildi**, dolayısıyla süzgeç manşet sayıyı **oynatmamalı**.
 🚨 Oynarsa **DUR**: sebebi bulunmadan devam edilmez (bu, kaçırdığımız bir bağımlılık demektir).
 
-- [ ] **Adım 4: `data/corpus/KUNYE.json` — anlık görüntü künyesi**
+- [x] **Adım 4: `data/corpus/KUNYE.json` — anlık görüntü künyesi**
 
 Zorunlu: `anlik_goruntu_tarihi` · `kaynak: "mevzuat.gov.tr"` · `kapsam: "kanun"` · `n_kanun: 892` ·
 `n_madde: 40496` · `n_mulga: 2547` · `sha256` ·
 ⚠️ `kapsam_disi: ["yönetmelik","tüzük","KHK","tebliğ"]` — **ne KAPSAMADIĞI açıkça yazılır**.
 `verify:` `pytest` yeşil; `MODEL_CARD.md` ve `README*.md` bu tarihi **alıntılıyor**.
 
-- [ ] **Adım 5: Çelişkiyi iki yerde damgala**
+- [x] **Adım 5: Çelişkiyi iki yerde damgala**
 
 `CLAUDE.md`'nin *"S2 — carries the validity field"* cümlesi bugün **yanıltıyor**: alan var,
 **kullanılmıyordu**. Düzeltmeden sonra cümle doğru olur; **düzeltme tarihi** yazılır.
 `verify:` `CLAUDE.md` ile `data/index/.../KUNYE.json` aynı şeyi söylüyor.
 
-- [ ] **Adım 6: Commit**
+- [x] **Adım 6: Commit**
 
 ⛔ **v2'ye kalanlar — burada YAPILMIYOR:** canlı `bedesten` API (**B6**, ⚠️ **TR IP şart** — gov
 firewall yurtdışı/VPN'i bloke ediyor) · **892 → tam kapsam** (yönetmelik/tüzük; **yeniden
@@ -1133,7 +1165,7 @@ indeksleme** turu ister, B9 ile paketlenir) · otomatik tazelik boru hattı.
 istem + terazi **gizli**. ⛔ Harness **GPU'ya girmez** — embedder CPU'da, indeks CPU RAM'de;
 *"sığar/sığmaz"* farkı budur.
 
-- [ ] **Adım 1: Failing test yaz — sunucusuz, sahte taşıyıcıyla**
+- [x] **Adım 1: Failing test yaz — sunucusuz, sahte taşıyıcıyla**
 
 ```python
 # tests/test_servis.py
@@ -1168,11 +1200,11 @@ def test_answer_kesigi_gizlemez(monkeypatch):
     assert servis.answer("x").durum is Durum.KESIK
 ```
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
 
 Run: `python -m pytest tests/test_servis.py -v` → `FAIL`
 
-- [ ] **Adım 3: Uygulama**
+- [x] **Adım 3: Uygulama**
 
 ```python
 # hakhukuk/servis.py
@@ -1240,16 +1272,16 @@ def answer(soru: str, *, k: int = VARSAYILAN_K) -> Cevap:
 adını ve dönüş şeklini oku, koda **onu** yaz. Bu turda üç kez yanlış imza/bayrak çıktı.
 ⚠️ `--max-chunk-chars 900` ölçüm rejiminin değişmezidir; `[:900]` kırpması onunla **aynı** olmalı.
 
-- [ ] **Adım 4: `_uret`'i doldur** — `llama-server`'a `/v1/chat/completions`,
+- [x] **Adım 4: `_uret`'i doldur** — `llama-server`'a `/v1/chat/completions`,
 `temperature=0`, `seed=3407`, `max_tokens=DUSUNCE_BUTCESI + CEVAP_BUTCESI`.
 `verify:` `python -m pytest tests/test_servis.py -v` → **3 passed**.
 
-- [ ] **Adım 5: 🚨 UÇTAN UCA KAPI — gerçek sunucuyla 3 soru**
+- [x] **Adım 5: 🚨 UÇTAN UCA KAPI — gerçek sunucuyla 3 soru**
 
 `verify:` üç soruda da `durum` ∈ {`CEVAP`, `CEKINCELI`} · `kaynaklar` boş değil ·
 her `dogrulandi=True` atıf gerçekten getirilen kaynaklarda **var** (gözle doğrulanır).
 
-- [ ] **Adım 6: Commit**
+- [x] **Adım 6: Commit**
 
 ---
 
@@ -1266,7 +1298,7 @@ eder**, kopyalamaz (S18'in dersi: aynı metin iki yerde durursa sessizce ayrış
 ⚠️ Hâlâ açık: **nihai hukuki metin** — hukukçu görüşü gelince **tek yerden** güncellenir.
 Kodda ve model kartında *"GEÇİCİ — S10 açık"* şerhi durur.
 
-- [ ] **Adım 1: Failing test yaz**
+- [x] **Adım 1: Failing test yaz**
 
 ```python
 # tests/test_cli.py
@@ -1288,15 +1320,15 @@ def test_cli_dort_durumu_ayirt_edilebilir_basar():
         assert ad in r.stdout
 ```
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör** → `FAIL`
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör** → `FAIL`
 
-- [ ] **Adım 3: Uygulama** — `argparse`; çıktıda **durum rozeti** · cevap · **atıflar
+- [x] **Adım 3: Uygulama** — `argparse`; çıktıda **durum rozeti** · cevap · **atıflar
 (doğrulanmamış olanlar ⚠️ ile)** · kaynak listesi · **sorumluluk ibaresi**.
 ⛔ İbare koşullu **değildir**: `Durum` ne olursa olsun basılır.
 
-- [ ] **Adım 4: Testi koş, GEÇTİĞİNİ gör** → **2 passed**
+- [x] **Adım 4: Testi koş, GEÇTİĞİNİ gör** → **2 passed**
 
-- [ ] **Adım 5: Commit**
+- [x] **Adım 5: Commit**
 
 ---
 
@@ -1313,6 +1345,12 @@ geçerlilik kapısı → puanla → `harness_tablo.py`.
 `verify:` script `bash -n` temiz; her adım künyeye **ne yazdığını** basıyor.
 
 - [ ] **Adım 2: 🚨 TEMİZ MAKİNE KAPISI** — `git clone` + `uv sync` + tek komut.
+
+> ⏸️ **ERTELENDİ 2026-09-07 — bugün koşulsa TANIM GEREĞİ düşer.** `git clone` çalışan bir ürün
+> vermiyor çünkü indeks **git'te yok** (`.gitignore:166`, `data/index/**/*.npy` — 79 MB ikili) ve
+> dağıtımı **Görev 8**'e bağlı; o da korpus kararını bekliyor. Bu bir eksiklik değil, **bilinen
+> bir bağımlılık**: [`docs/YENIDEN_URETIM.md`](../../YENIDEN_URETIM.md) engeli açıkça yazıyor.
+> ⇒ Görev 8 açıldığı gün bu adım **onun kapısı** olarak koşulur.
 `verify:` üretilen kütle **%80,1 ± 0,3 p** (hakem gürültü tabanı). ⛔ Dışındaysa **DUR**;
 fark **kaynaklanmadan** yayımlanmaz.
 
@@ -1525,8 +1563,28 @@ aralığı **[4/80 – 15/80]** ⇒ *"gerileme yok"* kuralı **tek kalemlik** oy
 (b) madde (3)'ün ikili ayağında aralıklar **örtüşüyor** ⇒ hüküm nokta tahmine dayanıyor.
 ⚠️ Madde (1)'e Wilson **uygulanmaz** (`kütle = coverage × A1` — binom modeli yanlış olur).
 
-- [ ] **Adım 1: DEV'de üç maddeyi yeniden koş** — ADR-0064 + **ADR-0074**'ün (panel) bağlayıcı
+- [x] **Adım 1: DEV'de üç maddeyi yeniden koş** — ADR-0064 + **ADR-0074**'ün (panel) bağlayıcı
 okumasıyla. `verify:` üç madde de sayıyla; **her sayım adımında gözle okuma**.
+
+> ✅ **TÜRETİLDİ 2026-09-07 ($0, veri diskte).** ADR-0074 bağlayıcı hakemi **değiştirmedi**
+> (`gpt-4o-mini` kaldı) ⇒ üç maddenin sayıları da değişmedi. Kaynak:
+> `outputs/eval/f02-biz-onsozsuz/` (`KUNYE.json` · `harness_tablo.json`).
+>
+> | madde | sayı | Wilson %95 (S5) |
+> | :--- | ---: | :--- |
+> | **(1)** kütle ≥ 3.5 Flash − 2,0 p | **0,8011** ↔ eşik 0,7225 · **+5,86 p** çıpa üstü | ⚠️ **UYGULANMAZ** — kütle = coverage × A1, binom modeli yanlış olur |
+> | **(2)** isabetsizlik kötüleşmesin | **8/80** = 0,1000 | **[0,052 – 0,185]** = [4,1/80 – 14,8/80] |
+> | **(3)** M5 yükselmesin | BİZ 76/80 = 0,9500 ↔ BASE 78/80 = 0,9750 | [0,878–0,980] ↔ [0,913–0,993] |
+>
+> 🚨 **İki şerh ZORUNLU oldu ve kapı hükmünün yanında durur:**
+> 1. Madde (2)'nin aralığı **[4/80 – 15/80]** ⇒ *"gerileme yok"* kuralı **tek kalemlik**
+>    oynamayı ihlal sayamaz.
+> 2. Madde (3)'ün aralıkları **ÖRTÜŞÜYOR** ⇒ hüküm **nokta tahmine** dayanıyor. Geçersiz
+>    kılmaz, **damgalanır**.
+>
+> ⚠️ **Ve artık üçünün yanında ölçülmüş bir kırılganlık var:** ikinci hakem ailesiyle kütle
+> **0,8011 → 0,6940** (κ 0,534). Bu sayı kapıya **girmiyor** (eşit sınav yok — rakip kolu o
+> hakemle puanlanmadı) ama `MODEL_CARD` §7.2'de ve [ADR-0074](../../adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md)'te yazılı.
 - [ ] **Adım 2: Kabul testi — donmuş TEST**
 ⚠️ **ADR-0069 raporlaması zorunlu:** ham kütle **manşet ve bağlayıcı**; yanına **tek** tanısal
 oran `tavan kullanımı = kütle ÷ recall@10`; **her iki setin `recall@10`'u yanında zorunlu**.
