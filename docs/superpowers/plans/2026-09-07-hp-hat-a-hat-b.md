@@ -1436,24 +1436,24 @@ git commit -m "A7: basit TUI (textual) — answer() üstünde ince kabuk, kapı 
 
 **Dosyalar:** Create (4) · Delete: `referans-design-doc.md` ⚰️ *(spec §9: insan kararı)*
 
-- [ ] **Adım 1: `PRODUCT.md`** — vatandaş kim · hangi soruyu soruyor · cevap neye benziyor ·
+- [x] **Adım 1: `PRODUCT.md`** — vatandaş kim · hangi soruyu soruyor · cevap neye benziyor ·
 **VAAT ETMEDİĞİ** (hukuki tavsiye değil · güncellik indeksin işi · %100 doğruluk değil) ·
 `v1`↔`v2` sınırı · üç maddeli kapı · iki sürüm şeması.
 `verify:` her nicelik yanında **kaynak dosya adı** taşıyor · *"vaat etmiyor"* bölümü var.
 
-- [ ] **Adım 2: `ROADMAP.md`** — bu planın fazları: `HP` → Hat A ∥ → Faz 3 → Hat B → `v1.0` → `v2`.
+- [x] **Adım 2: `ROADMAP.md`** — bu planın fazları: `HP` → Hat A ∥ → Faz 3 → Hat B → `v1.0` → `v2`.
 Her adım: *ne · neden (**hangi ölçülmüş boşluk**) · `verify:` · bedel · bağımlılık*.
 `verify:` kritik yol işaretli · **AÇIK KARAR** damgaları **S5·S7·S8·S9·S10·S12·S16·S17·S18**.
 
-- [ ] **Adım 3: `TODO.md`** — yalnız **bugün koşulabilir** kalemler; her satır bir `ROADMAP`
+- [x] **Adım 3: `TODO.md`** — yalnız **bugün koşulabilir** kalemler; her satır bir `ROADMAP`
 adımına bağlı. `verify:` her satırda bağlantı var.
 
-- [ ] **Adım 4: `docs/MIMARI.md`** — `v1` zinciri: base → kollar → merge → GGUF → retriever →
+- [x] **Adım 4: `docs/MIMARI.md`** — `v1` zinciri: base → kollar → merge → GGUF → retriever →
 istem → `answer()` → CLI/TUI · `v2` sınırı. `referans-design-doc.md` ⚰️'nin işlevini devralır.
 `verify:` her kutu **var olan bir dosyaya** ya da bir `ROADMAP` adımına işaret ediyor
 (döngüyle sınanır, gözle değil).
 
-- [ ] **Adım 5: Kırık link onarımı — ⛔ TARİHSEL KAYITLARA DOKUNMA**
+- [x] **Adım 5: Kırık link onarımı — ⛔ TARİHSEL KAYITLARA DOKUNMA**
 
 Güncellenir: `CLAUDE.md` · `MODEL_CARD.md` · `README.md` · `README.tr.md` · `DEVIR-PROMPT.md` *(silindi)*.
 ⛔ **Güncellenmez:** `docs/record/**` · `docs/adr/**` — *"o gün şu belge şunu diyordu"* kaydı;
@@ -1462,13 +1462,13 @@ spec §11'in ilk kuralı **KAYIT TEMİZLENMEZ**.
 çıktısındaki her yol **var olan** bir dosyayı gösteriyor · `git diff --stat docs/record docs/adr`
 → **0 değişiklik**.
 
-- [ ] **Adım 6: `MODEL_CARD.md` tam yazımı** — bugün yalnız *"ESKİ BİRİM"* bandı çakılı.
+- [x] **Adım 6: `MODEL_CARD.md` tam yazımı** — bugün yalnız *"ESKİ BİRİM"* bandı çakılı.
 Yeni manşet · üç maddeli kapının **sayıları** · `HakHukuk-4B-v1.0-Q4_K_M.gguf` ad kuralı
 (ADR-0071) · VRAM tablosu (3,09 / 3,70 / 5,76 GiB) · **Limitations**: üç kabul edilen bedel
 (dış geçerlilik · kapasite sorusu · ADR-0018'in eğrisi) + **tek aile hakem** borcu.
 `verify:` kartta *"ESKİ BİRİM"* bandı **kalmadı**; her sayının yanında kaynak dosya var.
 
-- [ ] **Adım 7: `v0.2` etiketi + commit**
+- [x] **Adım 7: `v0.2` etiketi + commit**
 
 ---
 

@@ -9,8 +9,10 @@
 >
 > **Rebuilt since:** `docs/superpowers/` is **back and live** — two specs, three plans, and
 > [`00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md), the file that says which one is current.
-> **Still missing:** `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`. They are
-> **Görev 13** of the current plan, not an open question.
+> **Rebuilt 2026-09-07 (Görev 13):** [`PRODUCT.md`](PRODUCT.md) — what the product is and what it
+> **does NOT promise** · [`ROADMAP.md`](ROADMAP.md) — direction, every step tied to a *measured* gap ·
+> [`TODO.md`](TODO.md) — only what is runnable today · [`docs/MIMARI.md`](docs/MIMARI.md) — the `v1`
+> chain. `tests/test_belgeler.py` walks every link in them, so a dead pointer now FAILS a test.
 >
 > | you want | read |
 > | :--- | :--- |
@@ -23,9 +25,10 @@
 > **Framing: open-source PRODUCT** — a legal adviser a Turkish citizen can actually ask.
 > `v1` = model layer · `v2` = app layer · arxiv is a **by-product**.
 >
-> ⚠️ Pointers further down still name deleted files (`ROADMAP.md` as *"the authority on
-> direction"*, `docs/_arsiv/README.md` as the doc-type table). Repairing them is **Görev 13
-> Adım 5** — they need somewhere to point first.
+> ✅ **Pointer repair done 2026-09-07 (Görev 13 Adım 5).** `docs/_arsiv/README.md` is still gone;
+> the binding doc-type table is the one further down in this file.
+> ⛔ `docs/record/**` and `docs/adr/**` were deliberately NOT touched — they record *"on that day
+> this document said this"*.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -52,7 +55,7 @@ IS    product → build the best model → same discipline, now a "don't fool yo
 ```
 
 **The goal is the model.** Beat Gemini 3.1 Flash-Lite, then reach Flash and Pro.
-Priorities live in `ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)*, tied to measured gaps.
+Priorities live in [`ROADMAP.md`](ROADMAP.md), tied to measured gaps.
 
 | constraint the reframing removed | now |
 | :--- | :--- |
@@ -166,7 +169,7 @@ thing (OFF hands the model the gold article by construction).
   `v2` = the API over that same model; arxiv is a **by-product, not the goal**. Sequenced plan,
   acceptance criteria and rejected options:
   `specs/2026-09-06-v1-v2-roadmap-taslak.md` ⚰️ *(superseded by [the design spec](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md))*
-  (draft, awaiting human sign-off) · direction stays in `ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)*.
+  (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
 
 **Status of work: ✅ B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
 training** ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
@@ -195,7 +198,7 @@ items, so the round was closed. ⛔ Over-refusal is **smaller, not gone** — 8/
 broken measurement. The eyeball step caught it. ADR-0051 has now paid for itself twice.
 
 **Not blocked by any of that:** the Phase 0 cheap repairs run in parallel —
-`ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)* · `TODO.md` ⚰️ *(deleted 2026-09-06 → Görev 13)*.
+[`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md).
 
 ### Target audience: the CITIZEN — but read the trap
 
@@ -254,9 +257,9 @@ decision ledger.
 
 ### Direction and scope
 
-- `ROADMAP.md` ⚰️ *(deleted 2026-09-06 → [the plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); rewriting it is Görev 13)* — **the authority on direction.** Priorities tied to measured gaps.
-- `TODO.md` ⚰️ *(deleted 2026-09-06 → Görev 13)* — the active task list.
-- `docs/VISION.md` ⚰️ *(deleted 2026-09-06 → `PRODUCT.md`, Görev 13)* — mission, design principles, 5-phase evolution
+- [`ROADMAP.md`](ROADMAP.md) — **the authority on direction.** Priorities tied to measured gaps.
+- [`TODO.md`](TODO.md) — the active task list.
+- [`PRODUCT.md`](PRODUCT.md) — mission, design principles, 5-phase evolution
   (SLM → RAG/Graph → niche → agentic → citizen platform). Authoritative for *what* and in what order.
 - [`docs/FINE_TUNING.md`](docs/FINE_TUNING.md) — Phase 1 playbook: hardware, QLoRA/Unsloth stack,
   data pipeline, recipe, ablation matrix. Authoritative for *how*.
@@ -270,8 +273,7 @@ decision ledger.
   2026-08-03. Authority moved to `ROADMAP.md` + the active plan. Still live for what it
   *measures*: the eval protocol, DEV/TEST split, gates, and **the rejected alternatives with their
   reasons** (§11). Its claim layer (Kapı 5, parity matrix) is arxiv-conditional.
-- **`referans-design-doc.md` ⚰️ *(silindi 2026-09-07 — insan kararı; yerine `docs/MIMARI.md` yazılacak, **Görev 13 Adım 4**)* — the user's original draft. Kept clean;
-  never edit.** Its numbers were illustrative placeholders and were deliberately NOT carried over.
+- **`referans-design-doc.md` ⚰️ *(silindi 2026-09-07)* — the user's original draft. Its function was taken over by [`docs/MIMARI.md`](docs/MIMARI.md) on 2026-09-07 (Görev 13 Adım 4).** Its numbers were illustrative placeholders and were deliberately NOT carried over.
 - `docs/_arsiv/` ⚰️ *(deleted 2026-09-06)* — closed sprints (**1 · 2 · 3-part-1**), the deferred claim layer
   (`sprint2b.md`), and superseded 12B-era plans. Its `README.md` says why each one is there.
 - [`docs/record/sprint1/sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md) ·

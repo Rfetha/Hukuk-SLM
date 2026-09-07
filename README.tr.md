@@ -188,7 +188,7 @@ Sırası **bağlayıcı** (insan kararı 2026-09-07) —
 | :--- | :--- | :--- |
 | **`HP`** — hakem paneli | ikinci + üçüncü hakem ailesi, κ, öz-tercih ölçümü | her sayı tek ailenin hükmü olmaktan çıkar |
 | **Hat A** — paketleme (`HP`'ye paralel) | `hakhukuk/` paketi: istem artefaktı · tipler · servis · CLI · TUI · indeks dağıtımı | **kurulabilir ürün** |
-| **Faz C** — belge katmanı | `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md` (dördü de bugün **yok**) | **`v0.2` YAYIN** |
+| **Faz C** — belge katmanı | ✅ [`PRODUCT.md`](PRODUCT.md) · [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md) · [`docs/MIMARI.md`](docs/MIMARI.md) — yazıldı 2026-09-07 | **`v0.2` YAYIN** |
 | **Hat B** — model | B1 (isabetsizlik) · `τ_a` genliği · kapı koşusu + donmuş TEST kabul testi | **`v1.0` kapısı** |
 
 `v2` = bu modelin üstündeki uygulama/API katmanı. arxiv bir **yan üründür**, hedef değildir.

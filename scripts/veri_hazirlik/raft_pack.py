@@ -17,16 +17,20 @@ import re
 
 # Çok-kaynak (RAFT/distractor) sistem promptu — TEK KAYNAK. Hem eval (gen_eval_grounded M1/M3)
 # hem eğitim (build_sft_v2b) bunu kullanır → eğitim ve eval AYNI talimatı görür (ADR-0013).
-SYSTEM_PROMPT_RAG_MULTI = (
-    "Sen HakHukuk'sun, uzman bir Türk hukuku asistanısın.\n"
-    "Sana NUMARALI birden çok KAYNAK madde verilecek; bazıları soruyla İLGİSİZ olabilir.\n"
-    "Soruyla ilgili kaynağı/kaynakları SEÇ, cevabını YALNIZCA onlara dayandır; ilgisiz "
-    "kaynakları yok say.\n"
-    "İlgili kaynak YOKSA cevap uydurma; 'Verilen kaynaklarda bu konuyu düzenleyen madde "
-    "bulunmuyor' de.\n"
-    "Dayandığın madde no'sunu kaynaktan birebir al (UYDURMA) ve (KANUN ADI, Madde X) biçiminde "
-    "belirt."
-)
+# ── scripts/ yol köprüsü (T5, 2026-09-07) ────────────────────────────────────
+# Kardeş modüller alt klasörlere bölündükten SONRA da bulunsun diye scripts/ kökü, tüm
+# alt klasörleri ve repo kökü sys.path'e girer. Uzantısız `import X` bu köprü olmadan
+# taşımada SESSİZCE kırılır: ImportError çalışma zamanında, bazen GPU koşusunun ortasında.
+# ⚠️ 26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
+import os, sys
+_K = os.path.dirname(os.path.abspath(__file__))
+_K = _K if os.path.basename(_K) == "scripts" else os.path.dirname(_K)
+sys.path[:0] = [_K, *(os.path.join(_K, _d) for _d in sorted(os.listdir(_K))
+                      if os.path.isdir(os.path.join(_K, _d)) and _d[0] not in "_."),
+                os.path.dirname(_K)]
+# ─────────────────────────────────────────────────────────────────────────────
+
+from hakhukuk.istem import SISTEM_COK_KAYNAK as SYSTEM_PROMPT_RAG_MULTI
 
 
 def madde_ord(madde_no):

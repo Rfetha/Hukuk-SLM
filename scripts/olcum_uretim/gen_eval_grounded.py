@@ -35,23 +35,7 @@ from typing import NamedTuple
 from unsloth import FastModel
 import torch
 
-# eval.py ile AYNI system prompt — eğitim/eval/üretim tutarlı olsun.
-SYSTEM_PROMPT = (
-    "Sen HakHukuk'sun. Türk hukuku hakkında sade, anlaşılır Türkçe bilgi verirsin.\n"
-    "Emin olmadığın konularda \"Bu konuda güncel mevzuata veya bir avukata "
-    "danışmanızı öneririm\" dersin.\n"
-    "Asla kanun maddesi veya bilgi uydurmaz, tahmin etmezsin.\n"
-    "Cevabını kısa ve anlaşılır tut; ilgili kanun ve madde numarasını belirt."
-)
 
-# RAG-modu (--with-source): madde metni prompt'a verilir → model EZBERDEN değil VERİLEN
-# kaynaktan cevaplar+atıf yapar. Deploy ortamı (Faz 2 RAG) ile eşleşen ADİL test.
-SYSTEM_PROMPT_RAG = (
-    "Sen HakHukuk'sun. Türk hukuku hakkında sade, anlaşılır Türkçe bilgi verirsin.\n"
-    "Sana bir KAYNAK madde metni verilecek. Cevabını YALNIZCA bu kaynağa dayandır; "
-    "kaynakta olmayan bilgi veya madde numarası UYDURMA.\n"
-    "Cevabını kısa ve anlaşılır tut; dayandığın kanun ve madde numarasını belirt."
-)
 
 # M1/M3 — çok-kaynak (RAFT/distractor) sistem promptu: ortak modülden (eğitim ile AYNI, ADR-0013).
 # ── scripts/ yol köprüsü (T5, 2026-09-07) ────────────────────────────────────
@@ -66,6 +50,12 @@ sys.path[:0] = [_K, *(os.path.join(_K, _d) for _d in sorted(os.listdir(_K))
                       if os.path.isdir(os.path.join(_K, _d)) and _d[0] not in "_."),
                 os.path.dirname(_K)]
 # ─────────────────────────────────────────────────────────────────────────────
+
+# İstem metinleri ürün paketinden gelir — TEK KAYNAK (plan Görev 5 / S18).
+from hakhukuk.istem import (
+    SISTEM_KOR as SYSTEM_PROMPT,
+    SISTEM_TEK_KAYNAK as SYSTEM_PROMPT_RAG,
+)
 
 import raft_pack
 SYSTEM_PROMPT_RAG_MULTI = raft_pack.SYSTEM_PROMPT_RAG_MULTI

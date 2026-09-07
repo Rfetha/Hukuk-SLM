@@ -198,7 +198,7 @@ The order is **binding** (human decision, 2026-09-07) —
 | :--- | :--- | :--- |
 | **`HP`** — judge panel | a second and third judge family, κ, self-preference measurement | no number stays the verdict of one family |
 | **Hat A** — packaging (runs parallel to `HP`) | the `hakhukuk/` package: prompt artifact · types · service · CLI · TUI · index distribution | **an installable product** |
-| **Phase C** — documentation layer | `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md` (none of the four exists today) | **`v0.2` RELEASE** |
+| **Phase C** — documentation layer | ✅ [`PRODUCT.md`](PRODUCT.md) · [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md) · [`docs/MIMARI.md`](docs/MIMARI.md) — written 2026-09-07 | **`v0.2` RELEASE** |
 | **Hat B** — model | B1 (misattribution) · `τ_a` amplitude · gate run + frozen-TEST acceptance test | **the `v1.0` gate** |
 
 `v2` = the application/API layer on top of this same model. arxiv is a **by-product**, not the goal.

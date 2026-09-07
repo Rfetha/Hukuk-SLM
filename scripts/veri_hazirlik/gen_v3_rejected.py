@@ -45,12 +45,7 @@ from score_abstention import REJECT_RE   # deterministik red-ifadesi (eval ile A
 # EVAL M2 = ORACLE tek-kaynak framing (bench_m2_v2b_detail mode="oracle"). SYSTEM_PROMPT_RAG
 # "çekimser kal" DEMEZ → fabrikasyonu tetikler (eval'de v2b fab=0.654). RAG_MULTI ise açıkça
 # reddi teşvik eder → over-abstain. v3 abstain-çifti eval M2'yi hedeflediği için ORACLE kullanılır.
-SYSTEM_PROMPT_RAG = (
-    "Sen HakHukuk'sun. Türk hukuku hakkında sade, anlaşılır Türkçe bilgi verirsin.\n"
-    "Sana bir KAYNAK madde metni verilecek. Cevabını YALNIZCA bu kaynağa dayandır; "
-    "kaynakta olmayan bilgi veya madde numarası UYDURMA.\n"
-    "Cevabını kısa ve anlaşılır tut; dayandığın kanun ve madde numarasını belirt."
-)
+from hakhukuk.istem import SISTEM_TEK_KAYNAK as SYSTEM_PROMPT_RAG
 
 PACKED = "data/_ham_ve_ara/orpo_packed.jsonl"
 OUT = "data/_ham_ve_ara/orpo_rejected.jsonl"

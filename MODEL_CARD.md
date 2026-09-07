@@ -493,15 +493,35 @@ Bu karttaki **bütün** hüküm-ekseni sayıları (`A1`, kütle, `Rej`) tek bir 
 gelir: `openai/gpt-4o-mini`, **runs=1**
 ([`gnd_…_summary.json`](outputs/eval/f02-biz-onsozsuz/gnd_h1_tgta_v1_f02_nb_summary.json)).
 
-- **κ (hakemler arası uyum) YOK** — üç aileli panel ([ADR-0032](docs/adr/0032-hakem-paneli-uc-aile-ve-aile-dislama.md)) **hiç kurulmadı**.
-- **Öz-tercih ÖLÇÜLMEDİ.**
+- 🆕 **κ ÖLÇÜLDÜ 2026-09-07 ve EŞİĞİN ALTINDA ÇIKTI.** İkinci hakem ailesi
+  (`anthropic/claude-sonnet-5`) **aynı 80 cevabı** yeniden puanladı (üretim yeniden koşulmadı,
+  ADR-0017): `tam_sadık` κ = **0,534** · `atıf_temiz` κ = **0,409** — aracın kendi *"makul"*
+  eşiği **0,6**'nın altında. `faithfulness` Pearson r = 0,705.
+- 🚨 **Kayma TEK YÖNLÜ:** Anthropic **24/80** kalemde daha düşük, **8/80**'de daha yüksek not
+  verdi ⇒ rastgele gürültü değil, **sistematik katılık**. A1 farkı **11,33 puan** = gürültü
+  tabanının (0,3) **38 katı**.
+- 🚨 **Manşet hakem seçimine duyarlı:** kütle **0,8011** (`gpt-4o-mini`) ↔ **0,6940**
+  (`sonnet-5`). `coverage` kıpırdamadı (hakemden bağımsız); farkın tamamı `A1`'den.
+- ⛔ **Ama bu ikinci sayı YAYIMLANMIYOR ve kapıya girmiyor** — çünkü kapının eşiği çıpa rakip
+  `3.5 Flash`'ın kütlesinden türetildi ve **o da `gpt-4o-mini`'nin hükmüdür**. İki tarafı
+  farklı hakemlerle kıyaslamak [ADR-0057](docs/adr/0057-harness-rekabet-kapisi-esit-sinav.md)'nin
+  *eşit sınav* kuralının yasakladığı şeydir. Bağlayıcı hakem **`gpt-4o-mini` kaldı** — tercih
+  değil, kuralın sonucu ([ADR-0074](docs/adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md)).
+- ⛔ **Panel İKİ aileli kaldı** ([ADR-0032](docs/adr/0032-hakem-paneli-uc-aile-ve-aile-dislama.md)
+  üç öngörüyordu) — sapmanın sebebi sayıyla: bakiye **$3,45**, rakip kolunun ikinci hakemle
+  puanlanmasının tahmini gerçek faturası **$2,81**, ve donmuş TEST kabul koşusu da aynı
+  bakiyeden ödenecekti. **İnsan kararı: harcanmadı.**
+- **Öz-tercih ÖLÇÜLMEDİ** — ve Google özne ↔ Google hakem hücresi **aile dışlaması gereği
+  hiçbir bütçeyle ölçülemez**.
 - **İnsan-κ kapsam dışı** (DESCOPED).
 - ⚠️ Hakemin yeniden-koşum **gürültü tabanı ~0,3 `A1` puanı**; bundan küçük hiçbir fark
   yorumlanmaz. ⛔ Bu taban **yalnız `A1` için** ölçüldü — **kütle** `= coverage × A1` ve
   `coverage`'ın varyansı o tabanda **yok** ([ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) §δ).
 
-⇒ Bu sayılar **mutlak doğruluk değil, model-vs-model sıralaması** olarak okunmalıdır.
-Panel `v1.0`'ın ilk fazıdır ([plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) `HP`).
+⇒ Bu sayılar **mutlak doğruluk değil, model-vs-model sıralaması** olarak okunmalıdır — ve
+artık *"tek hakem"* bir usul borcu değil, **büyüklüğü ölçülmüş bir kırılganlıktır**: manşet
+hakem değiştiğinde **11 puan** oynuyor.
+[`KAPPA.md`](outputs/eval/hp-hakem-paneli/KAPPA.md) · [#64](docs/record/research_log/2026-09-07-hakem-paneli-iki-aile.md)
 
 ### 7.3 Kabul edilen üç bedel — "gelecek çalışma" değil, KALICI maliyet
 
@@ -630,6 +650,39 @@ sınır **dört özne için de aynıdır**. ⇒ Kaldıraç parametrik bilgi değ
 
 ## 8 · Kullanım
 
+### 🆕 Ürün katmanı — `hakhukuk/` *(2026-09-07)*
+
+Model artık **elle kurulan bir boru hattı değil**; retriever, istem ve atıf doğrulama tek bir
+arayüzün arkasında:
+
+```bash
+llama-server -m models/gguf/tgta_v1-q4_k_m.gguf -ngl 99 -fa on \
+             --cache-type-k q8_0 --cache-type-v q8_0 -c 8192 --port 8080 &
+
+hakhukuk "Askerlik nedeniyle iş sözleşmesi ne olur?"   # CLI
+hakhukuk-tui                                            # tek ekran TUI
+```
+
+```python
+from hakhukuk import servis
+cevap = servis.answer("Kat malikleri kurulu hangi çoğunlukla karar alır?")
+cevap.durum      # Durum.CEVAP | CEKINCELI | SUSKUNLUK | KESIK
+cevap.atiflar    # her atıfta dogrulandi: getirilen kaynakta VAR mı
+cevap.kaynaklar  # modele hangi maddeler verildi
+```
+
+Dört şey **kullanıcı yüzünde** garanti edilir:
+
+| garanti | nasıl |
+| :--- | :--- |
+| Doğrulanmamış atıf **uyarıyla** gösterilir, gizlenmez | `terazi.siniflandir()` — kimlikler `madde_anahtari` ile normalleştirilerek karşılaştırılır |
+| **Kesik** cevap kesik olduğunu söyler | `finish_reason="length"` → `Durum.KESIK`; sessizce yutulmaz |
+| Kaynak bulunamazsa **model çağrılmaz** | `servis.answer()` — üründe M5 (kaynaksız ezber) koşulu **oluşmamalı** |
+| **Mülga madde gösterilmez** | `retriever.getir()` varsayılanı `Yururluk.YALNIZ_YURURLUKTE` — ölçüldü: sızıntı 2 → 0, `recall@10` değişmedi |
+
+⚠️ Sorumluluk ibaresi **koşulsuz** basılır (durum ne olursa olsun) ve metni tek kaynakta durur
+(`hakhukuk/cli.py::SORUMLULUK_IBARESI`). ⛔ **Nihai hukuki metin hâlâ açık — S10.**
+
 ### 🚨 Model, harness'ıyla birlikte gelir
 
 **Yayımlanan sayı retriever + indeks + istem olmadan YENİDEN ÜRETİLEMEZ.** `%80,1` bir
@@ -705,8 +758,15 @@ karşılanır: gerçek madde metni → LLM çift üretir → **doğrulanır**
 
 ## 10 · Yeniden üretilebilirlik
 
+> 🆕 **Tek komut (2026-09-07):** `bash scripts/yeniden_uret.sh` — ön koşul denetimi → üretim →
+> **iki geçerlilik kapısı** (kesiklik %5 · `recall@10` 0,9500) → puanlama → manşet tablo →
+> çıpadan sapma kontrolü. Belgesi: [`docs/YENIDEN_URETIM.md`](docs/YENIDEN_URETIM.md).
+> ⚠️ Bu tarihe kadar manşet **%80,1'i modeli indiren hiç kimse yeniden üretemiyordu**: istem
+> `gen_eval_grounded.py`'nin içindeydi (çözüldü, `hakhukuk/istem.py`), komut zinciri hiçbir
+> yerde tek parça yazılı değildi (çözüldü), indeks **git'te yok** (⛔ **hâlâ açık**).
+
 Her şey bu repoda: kronolojik araştırma kaydı (**negatif sonuçlar ve geçersiz koşular dâhil**),
-**ADR defteri `0001`-`0073`** (⚠️ `0059` rezerve, henüz yazılmadı; `0001`-`0026` tek dosyada:
+**ADR defteri `0001`-`0074`** (⚠️ `0059` rezerve, henüz yazılmadı; `0001`-`0026` tek dosyada:
 [`gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md)), seed ve hash taşıyan koşu künyeleri, ve değerlendirme koşucusu.
 
 ```

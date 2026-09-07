@@ -44,12 +44,7 @@ sys.path[:0] = [_K, *(os.path.join(_K, _d) for _d in sorted(os.listdir(_K))
 from raft_pack import SYSTEM_PROMPT_RAG_MULTI
 
 # ORACLE framing (gen_v3_rejected ile AYNI — abstain-çifti prompt'u eval M2'yi hedefler).
-SYSTEM_PROMPT_RAG = (
-    "Sen HakHukuk'sun. Türk hukuku hakkında sade, anlaşılır Türkçe bilgi verirsin.\n"
-    "Sana bir KAYNAK madde metni verilecek. Cevabını YALNIZCA bu kaynağa dayandır; "
-    "kaynakta olmayan bilgi veya madde numarası UYDURMA.\n"
-    "Cevabını kısa ve anlaşılır tut; dayandığın kanun ve madde numarasını belirt."
-)
+from hakhukuk.istem import SISTEM_TEK_KAYNAK as SYSTEM_PROMPT_RAG
 
 # Grounding-replay rejected placeholder: kısa, ~13 sıradan token, tek-token DEĞİL (NaN-hijyeni).
 # İçeriği loss'a girmez (is_pref=0 → OR maskeli), yalnız concat şeklini sağlar.
