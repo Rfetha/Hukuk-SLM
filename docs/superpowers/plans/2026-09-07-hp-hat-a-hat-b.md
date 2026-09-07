@@ -151,7 +151,7 @@ kurulmadan eklenemez** (aile dışlaması, ADR-0032).
 ⛔ **Üretim YENİDEN KOŞULMAZ.** Panel **hakem** değişkenini ölçüyor; üretimi de değiştirmek
 iki değişkeni birlikte oynatır (ADR-0017). Aynı 80 cevap, farklı hakem.
 
-- [ ] **Adım 1: Hakem kimliğini ve fiyatını koşmadan ÖNCE doğrula**
+- [x] **Adım 1: Hakem kimliğini ve fiyatını koşmadan ÖNCE doğrula**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -171,7 +171,7 @@ for m in d:
 ⛔ Kimliği **tahmin etme** — buradan al. ⚠️ Fiyat `gpt-4o-mini`'den **belirgin yüksekse**
 maliyeti yeniden hesapla ve **$1'ı aşacaksa DUR ve sor**.
 
-- [ ] **Adım 2: Bedeli ölç — 5 kalemlik duman koşusu**
+- [x] **Adım 2: Bedeli ölç — 5 kalemlik duman koşusu**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -186,6 +186,18 @@ python scripts/puanlama/groundedness.py \
 ```
 `verify:` `gnd_h1_tgta_v1_anthropic_duman_summary.json` yazıldı, `n=5`, `judge_cost_usd` **basıldı**.
 Tam koşu tahmini = `judge_cost_usd × 16`. ⛔ **> $1 ise DUR ve sor.**
+
+> 🆕 **ÖLÇÜLDÜ 2026-09-07 — bu adım $1 kapısını GERÇEKTEN tetikledi.**
+> Kimlik `anthropic/claude-sonnet-5` ($2,00/M girdi · $10,00/M çıktı). Duman koşusu
+> `judge_cost_usd` **$0,117** ⇒ tam koşu **$1,87**. ⚠️ Liste fiyatı `gpt-4o-mini`'nin
+> ~14 katı ama **gerçek bedel 45 katı** ($0,0417 ↔ $1,87) — hakem çok daha uzun gerekçe
+> üretiyor. *Fiyat oranından maliyet tahmin etme; duman koşusu şart.*
+> ⛔ **`anthropic/claude-sonnet-5:batch` (yarı fiyat) bu yoldan KULLANILAMAZ** — insan
+> kararıyla denendi, `404: "This model is only available through the Batch API. Use the
+> /api/beta/batches endpoint"`. `llm_client` senkron; batch ayrı taşıyıcı demek. Bedeli $0
+> oldu (hiç çağrı geçmedi) ve olgu `llm_client.py`'ye yorum olarak damgalandı.
+> ⚠️ `llm_client.PRICE` **fiyat kaydı olmayan modeli SystemExit ile reddediyor** — koşudan
+> önce satır eklenmeli. Bu bir kapı, engel değil: yanlış fiyatla maliyet raporlanmasın.
 
 - [ ] **Adım 3: Tam koşu (80 kalem), AYRIK**
 
@@ -454,7 +466,7 @@ tut; ilgili kanun ve madde numarasını belirt."* Yayımlanan **%80,1 dâhil bü
 ⇒ `train_sft.py`:31'deki sürüm **ÖLÜ KOD** (olguyla doğrulandı) → **bu görevde SİLİNİR**.
 ⇒ Feragat cümlesi isteme **girmez**; S10 gereği **çıktı yüzünde** ayrı satır (Görev 10).
 
-- [ ] **Adım 2: Failing test yaz**
+- [x] **Adım 2: Failing test yaz**
 
 ```python
 # tests/test_istem.py
@@ -486,12 +498,12 @@ def test_damga_metinlerin_sha256si():
     assert istem.damga() == beklenen
 ```
 
-- [ ] **Adım 3: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 3: Testi koş, BAŞARISIZ olduğunu gör**
 
 Run: `cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && python -m pytest tests/test_istem.py -v`
 Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'hakhukuk'`
 
-- [ ] **Adım 4: Asgari uygulama**
+- [x] **Adım 4: Asgari uygulama**
 
 ```python
 # hakhukuk/istem.py
@@ -552,7 +564,7 @@ def damga() -> str:
 __version__ = "0.2.0"
 ```
 
-- [ ] **Adım 5: Damgayı hesapla ve dosyaya yaz**
+- [x] **Adım 5: Damgayı hesapla ve dosyaya yaz**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -560,7 +572,7 @@ python -c "from hakhukuk import istem; print(istem.damga())"
 ```
 Çıkan değeri `DAMGA_v1`'e yaz. `verify:` `python -m pytest tests/test_istem.py -v` → **3 passed**.
 
-- [ ] **Adım 6: `scripts/` beş dosyayı TEK KAYNAĞA bağla — SERT ENGEL**
+- [x] **Adım 6: `scripts/` beş dosyayı TEK KAYNAĞA bağla — SERT ENGEL**
 
 Beş dosyadaki literaller **silinir** ve yerine import gelir:
 
@@ -627,7 +639,7 @@ git commit -m "A1: istem artefaktı — beş kopya tek kaynağa indi, 10/10 bire
 *"doğrudan madde yok, bununla birlikte…"* cevap gibi görünür ama değildir.
 *(CLAUDE.md §4: public API'de bool flag yok · §9: kapalı küme → sum type.)*
 
-- [ ] **Adım 1: Failing test yaz**
+- [x] **Adım 1: Failing test yaz**
 
 ```python
 # tests/test_tipler.py
@@ -656,11 +668,11 @@ def test_atif_dogrulanmamis_olarak_baslar():
     assert a.dogrulandi is False
 ```
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
 
 Run: `python -m pytest tests/test_tipler.py -v` → `FAIL` (`No module named 'hakhukuk.tipler'`)
 
-- [ ] **Adım 3: Asgari uygulama**
+- [x] **Adım 3: Asgari uygulama**
 
 ```python
 # hakhukuk/tipler.py
@@ -717,11 +729,11 @@ class Cevap:
     kaynaklar: tuple[Kaynak, ...]
 ```
 
-- [ ] **Adım 4: Testi koş, GEÇTİĞİNİ gör**
+- [x] **Adım 4: Testi koş, GEÇTİĞİNİ gör**
 
 Run: `python -m pytest tests/test_tipler.py -v` → **4 passed**
 
-- [ ] **Adım 5: Commit**
+- [x] **Adım 5: Commit**
 
 ```bash
 git add hakhukuk/tipler.py tests/test_tipler.py && \
@@ -751,7 +763,7 @@ ailesi hukuk metninde **iki iş görür** — *"kaynakta yok, cevaplayamam"* (ç
 **6/6 yanlış pozitif** verdi. ⇒ Ürün sınıflandırıcısı **kaynak var mı** bilgisini
 kullanmak zorundadır; metne tek başına bakarsa **aynı hatayı yapar**.
 
-- [ ] **Adım 1: Failing test yaz — Faz 0'ın GERÇEK vakalarıyla**
+- [x] **Adım 1: Failing test yaz — Faz 0'ın GERÇEK vakalarıyla**
 
 ```python
 # tests/test_terazi.py
@@ -804,11 +816,11 @@ def test_kaynaktaki_atif_dogrulanir():
     assert any(a.dogrulandi for a in atiflar)
 ```
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
 
 Run: `python -m pytest tests/test_terazi.py -v` → `FAIL` (`No module named 'hakhukuk.terazi'`)
 
-- [ ] **Adım 3: Uygulama**
+- [x] **Adım 3: Uygulama**
 
 ```python
 # hakhukuk/terazi.py
@@ -887,12 +899,25 @@ def siniflandir(
     return Durum.CEVAP, atiflar
 ```
 
-- [ ] **Adım 4: Testi koş, GEÇTİĞİNİ gör**
+- [x] **Adım 4: Testi koş, GEÇTİĞİNİ gör**
 
 Run: `python -m pytest tests/test_terazi.py -v` → **5 passed**
 ⚠️ Geçmiyorsa **eşiği değil sınıflandırıcıyı** düzelt; testler Faz 0'ın **gerçek** vakaları.
 
-- [ ] **Adım 5: 🚨 REGRESYON KAPISI — 80 gerçek kalemde alet ↔ göz**
+> 🆕 **UYGULANDI 2026-09-07 — planın yukarıdaki kodunun İKİ kusuru ölçüldü, ikisi de
+> "hata vermeden yanlış sonuç" sınıfından:**
+> 1. `from score_abstention import REJECT_RE` — plan `sys.path`'e yalnız `scripts` ekliyor,
+>    ama dosya **`scripts/puanlama/`** alt klasöründe (T5 bölünmesi). Doğrusu:
+>    `os.path.join(_KOK, "scripts", "puanlama")`.
+> 2. `_ATIF` regex yalnız **anahtar-önce** yazımı tutuyordu (`madde 503`). Gerçek cevaplarda
+>    **sayı-önce** yazım da var (`503. madde` · `33. maddesi`) ve planın kendi ilk testi tam
+>    bu yüzden düşüyordu — atıf çıkmayınca dolu cevap SUSKUNLUK sayılıyordu. İkinci kol eklendi.
+>
+> **Adım 5 sonucu:** suskunluk **5/80**, id'ler `[15, 37, 45, 66, 79]` — `GOZLE_OKUMA_80.md`'nin
+> gözle okuduğu kümeyle **BİREBİR**. Beşincisi (id 79) gözün *"DOĞRU davranış, altın bağlamda
+> yok"* dediği kalem ⇒ **aşırı-red 4/80**, çıpayla tam uyum. CEVAP 33 · ÇEKİNCELİ 38 · KESİK 4.
+
+- [x] **Adım 5: 🚨 REGRESYON KAPISI — 80 gerçek kalemde alet ↔ göz**
 
 ```bash
 source ~/code/global_venv/bin/activate && \
@@ -920,7 +945,7 @@ PY
 `verify:` `SUSKUNLUK` sayısı **4/80 göz çıpasına yakın**. Sapma **> 2 kalemse** her fark eden
 kalem **id'siyle listelenir ve gözle okunur** — sayı düzeltilmeden devam edilmez.
 
-- [ ] **Adım 6: Commit**
+- [x] **Adım 6: Commit**
 
 ```bash
 git add hakhukuk/terazi.py tests/test_terazi.py && \
