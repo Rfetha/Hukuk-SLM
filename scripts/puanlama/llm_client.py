@@ -58,6 +58,15 @@ PRICE = {  # 2026-07-24 itibarıyla
     # faturalanır. `--reasoning-budget 1024` bu yüzden doğrudan maliyet kalemidir.
     "google/gemini-3.1-flash-lite": (0.25 / 1e6, 1.50 / 1e6),
     "google/gemini-3.5-flash-lite": (0.30 / 1e6, 2.50 / 1e6),
+    # ── HP hakem paneli · ikinci aile (Anthropic) ─────────────────────────────────
+    # Birincil kaynak: OpenRouter `GET /api/v1/models` — bu hattın hakem çağrıları
+    # OpenRouter üzerinden faturalanıyor, dolayısıyla liste fiyatı da oradan alınır.
+    # Ölçüldü 2026-09-07 (plan Görev 1 Adım 1): girdi $2,00/M · çıktı $10,00/M.
+    "anthropic/claude-sonnet-5": (2.00 / 1e6, 10.00 / 1e6),
+    # ⛔ `anthropic/claude-sonnet-5:batch` (liste fiyatı tam yarısı) buradan KULLANILAMAZ —
+    # ölçüldü 2026-09-07: senkron chat-completions çağrısı 404 döndürüyor,
+    # "This model is only available through the Batch API. Use /api/beta/batches".
+    # Bu istemci senkron; batch yolu ayrı bir taşıyıcı demek ⇒ kapsam dışı bırakıldı.
 }
 
 # Yalnız bu aileler `response_format={"type":"json_object"}` ile güvenilir çalışıyor kabul
