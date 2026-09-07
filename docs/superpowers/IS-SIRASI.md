@@ -19,9 +19,11 @@
              FAZ 1 HP → FAZ 2 Hat A (paralel) → FAZ 3 belge katmanı → 🏷️ v0.2
              ⛔ Görev 8 (indeks dağıtımı) BURADA KOŞMAZ — aşağı bak
 ──────────────────────────────────────────────────────────────────────────────
-⏳ SONRA   ▸ mevzuat kapsam + tazelik planı              ← spec HAZIR, plan YAZILIYOR
-             spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md
-             bitince → Görev 8 GENİŞLETİLMİŞ korpusla koşar → 🏷️ v0.2 yayını
+⏳ SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
+             spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
+             korpus 40.496 → ~340.303 madde, 5 kat, her kat bir kapıdan
+             ⚠️ G7 kat 4-5 tek adımda >$1 (Modal ~1,5 sa) — DUR ve SOR
+             bitince → ana planın Görev 8'i AÇILIR → 🏷️ v0.2 yayını
 ──────────────────────────────────────────────────────────────────────────────
 ⏳ EN SON  ▸ 2026-09-07-hp-hat-a-hat-b.md · FAZ 4 Hat B   14 kutucuk · ~$7-15
              donmuş TEST kabul koşusu → 🏷️ v1.0 kapısı
@@ -61,7 +63,8 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | ▶️ **AÇIK, 2/89** | Yürüyen ana plan. Borç kuyruğunu ve dokuz açık kararı taşır (yedisi 2026-09-07'de kapandı). |
 | [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | ▶️ **canlı** | Yukarıdaki planın `/goal` promptu. 4000 karakter sınırına sıkıştırılmış. Plan değişince **bu da güncellenir**. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | ✅ **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
-| [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | ⏳ **onaylandı, PLANI YOK** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). Sıradaki plan yazma işi budur. |
+| [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | ✅ **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). ⚠️ Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |
+| [`plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md`](plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md) | plan | ⏳ **yazıldı, 0/62** | Yukarıdaki spec'in uygulaması. Ana plandan **sonra** koşar. |
 
 ---
 
