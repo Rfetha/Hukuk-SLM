@@ -48,6 +48,18 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
   gözcüsü `free`'ye bakıp görevi **öldürdü** (0/80'de). Gerçek bellek sıkıntısı YOKTU.
   ⇒ Uzun koşular `setsid nohup … &` ile **ayrık** başlatılır, `Monitor` ile beklenir.
   ⚠️ WSL2'ye 15,9 GB verilmiş (makinede 32 GB var, `.wslconfig`'de bellek ayarı yok).
+- 🚨 **ANTİ-HEDEF ÇIPASI BOŞTU — 2026-09-07'de yakalandı.** Kapı maddesi *"M5 ≤ **bugünkü**"*
+  yazıyordu, ama `tgta_v1`'in M5'i **hiçbir birimde hiç ölçülmemişti** (mevcut M5 sayıları
+  `base_th` · `gem_th` · `tg_v1_th`; merge öznesi yok). *"Bugünkü"* diye bir sayı yoktu —
+  madde kendi kendine referans veriyordu ve **hiçbir hüküm üretemezdi**.
+  ⇒ Çıpa [ADR-0039](../../adr/0039-kapi-6-parametrik-sizinti.md) §2'den okundu: **çıpa BASE'dir,
+  rakip değil** (*"modeli aldığımız noktadan kötüye götürmemeliyiz"*; rakip çıpası **reddedilmişti**),
+  ve **üç sayı birden** raporlanır: `coverage` · `A1` · `ezber kütlesi = coverage × A1`.
+  ⇒ Eski `base_th` (v1 soru seti + 1024 bütçe) **kıyaslanamaz birimdedir**; base M5 **v2 biriminde
+  yeniden koşuldu** (ADR-0050: *alet değişirse eşik aynı formülle yeni birimde türetilir*).
+  **Tuzak sınıfı:** kapı maddesi ön-kayıtlıydı ama **çıpası yoktu** — sayısal kapı, ölçülemez
+  olduğunu kendisi söylemez; ancak koşmadan önce *"bu sayıyı neyle kıyaslayacağım"* diye
+  sorulunca ortaya çıkar.
 
 ---
 

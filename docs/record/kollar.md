@@ -144,6 +144,11 @@ sebebi); `HakHukuk-4B-v0.1` **dışa dönük** addır (model kartı · makale ·
 **tabanlara karşı henüz sınanmadı**. `v1.0` Kapı 5 geçildikten sonra açılır — geçilmezse zaten
 açılmaz.
 
+🆕 **2026-09-07 — `v1.0` yayın artefaktının adı karara bağlandı ([ADR-0071](../adr/0071-v1-release-artefakti-tek-gguf.md)):**
+adaptörleri merge edilmiş **TEK** GGUF, dosya adı **model + boyut + sürüm + kuantizasyon** taşır →
+`HakHukuk-4B-v1.0-Q4_K_M.gguf`. İç ad `tgta_v1-q4_k_m.gguf` **korunur** — yukarıdaki
+*"iki ad ayrı iş görür"* kuralının doğrudan uygulanmasıdır, ona bir istisna değil.
+
 **Artefakt kimliği** (`tgta_v1`):
 
 ```
