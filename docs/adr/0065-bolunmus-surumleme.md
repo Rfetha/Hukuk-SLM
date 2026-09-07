@@ -28,6 +28,14 @@ yeniden tanımlanmıyor, "yeni ölçütle açıldı" denmiyor. Düşmüş kapı 
 - `v0.2` = Hat A biter bitmez yayımlanabilir (paketleme, $0): ağırlık + retriever + indeks +
   dağıtılan istem + CLI + basit TUI.
 - `v1.0` = ADR-0064'ün üç maddeli kapısı geçilince verilir.
+  🚨 **AÇIKLIK ŞERHİ 2026-09-07 — bu cümle tek başına yanıltıyordu.** Kapı 2026-09-07'de
+  **DEV'de** üç maddesiyle geçildi ([ADR-0064](0064-v1-kapisi-uc-maddeli-on-kayit.md)) ve
+  bu satır harfiyen okunursa *"`v1.0` bugün verilebilir"* çıkar. **Çıkmaz.**
+  ADR-0064'ün kendi *"Ne KURULMAZ"* madde 1'i: **donmuş TEST'in kabul testi KOŞMADI** ve o
+  setin erişim tavanı ≈**%75** (DEV'inki %95 — [ADR-0069](0069-kabul-testi-tavan-kullanimi-raporlamasi.md)).
+  ⇒ **Doğru okuma: `v1.0`, kapı KABUL TESTİNDE geçilince verilir.** DEV'deki geçiş bir
+  **ön koşuldur**, hüküm değil. ⚠️ İkinci ön koşul: her sayı hâlâ **tek hakem ailesinin**
+  hükmü (ADR-0064 *"Ne KURULMAZ"* madde 2) — `HP` turu bunu kapatır.
 - CP4-CP5 ve Kapı 5 / parite matrisi **iddia sürümünde** kalır; arxiv metodoloji paper'ı
   (S11 kararı) bu iddiaya **dayanmaz**, dolayısıyla ondan bağımsız ilerler.
 

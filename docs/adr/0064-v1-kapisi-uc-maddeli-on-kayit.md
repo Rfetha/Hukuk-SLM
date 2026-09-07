@@ -124,7 +124,14 @@ tersi çıktı. İstenen yön budur: *"güncellik kütüphanede, ağırlıkta de
 
 ---
 
-## 🟢 KAPI KAPANDI — üç madde de sayıyla
+## 🟢 KAPI KAPANDI — üç madde de sayıyla · ⚠️ ama **DEV'de**
+
+> 🚨 **Bu başlık `v1.0` demek DEĞİLDİR.** Aşağıdaki üç hüküm **DEV**'de kuruldu.
+> [ADR-0065](0065-bolunmus-surumleme.md)'in *"`v1.0`, ADR-0064'ün kapısı geçilince verilir"*
+> cümlesi bununla birlikte okunursa yanıltır; oraya da karşı şerh düşüldü.
+> **`v1.0` için eksik ikisi:** (a) donmuş TEST'in **kabul testi koşmadı** (tavan ≈%75 ↔ DEV %95,
+> ADR-0069) · (b) her sayı hâlâ **tek hakem ailesinin** hükmü (aşağıdaki *"Ne KURULMAZ"* madde 2).
+
 
 | madde | hüküm | sayı |
 | :--- | :--- | :--- |
