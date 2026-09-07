@@ -221,6 +221,16 @@ iki kefe gerekir"* oldu — dedektör önce **bizim** şablonumuzda 14'ü 8 gös
 
 ### T1 · `models/` — ~20 GB (git'te değil, yeniden üretilebilir)
 
+> 🚨 **AD ÇAKIŞMASI — 2026-09-07'de yakalandı, okumadan önce bunu oku.** Bu belgedeki **T1**
+> `models/` temizliğidir. 2026-09-07'nin devir notu ve `/goal` metni ise *"T1"* diyerek
+> **hakem panelini** kastediyordu (3 aile + aile dışlaması + κ). *"Sıralama: T1 → Hat A →
+> Hat B"* cümlesi bu belgeye bakılarak okunursa, hakem paneli kurulacağı yerde **20 GB model
+> silinir** — üstelik adaptörler **yedeksizken** (aşağıdaki ⚠️).
+> ⇒ **Hakem panelinin etiketi `HP` oldu.** Bu belgedeki `T1`-`T4` temizlik serisidir ve
+> anlamı **değişmedi**. Kilitli sıralamanın doğru okunuşu: **`HP` → Hat A (paralel) → Hat B**.
+> ⚠️ Ayrıca: **hakem paneli bu spec'te HİÇ geçmiyor** — ADR-0064'ün *"Ne KURULMAZ"* madde 2
+> borcundan (tek aile, κ yok, öz-tercih ölçülmedi) doğdu ve sıradaki planın işidir.
+
 Silinecek: `models/merged/tg_ta_modulmin/` · `models/merged/tg_ta_globalmin/`
 (**ADR-0053: modül başına norm kapsamı REDDEDİLDİ** — reddedilmiş varyantlar) ·
 `models/gguf/cp2s-ties-smoke-q4_k_m.gguf` (smoke testi artefaktı).

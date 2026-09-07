@@ -51,15 +51,19 @@ eklemek hakemi değiştirmeyi **ve bugünkü dört sayıyı yeniden koşmayı** 
 `superpowers:writing-plans` ile. Spec hazır:
 `docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`
 
-🔒 **SIRALAMA KİLİTLİ (insan kararı 2026-09-07): T1 → Hat A (paralel, $0) → Hat B**
+🔒 **SIRALAMA KİLİTLİ (insan kararı 2026-09-07): `HP` → Hat A (paralel, $0) → Hat B**
 
-### T1 · Hakem paneli (~$3-5) — ÖNCE
+> 🚨 **ETİKET DÜZELTMESİ 2026-09-07:** bu not ve `/goal` metni hakem paneline *"T1"* diyordu.
+> **`T1` spec §11'de `models/` ~20 GB temizliğidir** — aynı ada iki iş. Hakem paneli artık
+> **`HP`**. Sıralama kararı **değişmedi**, yalnız adı tekilleşti.
+
+### `HP` · Hakem paneli (~$3-5) — ÖNCE  *(eski adı "T1" — spec'in T1'i ile çakışıyordu)*
 Bugünkü **her** sayı tek ailenin (`gpt-4o-mini`) hükmü; **κ yok**, self-preference
 ölçülmedi. Panel kurulmadan yeni rakip eklemek, aynı şüpheli hakemle daha çok sayı
 üretmek olur. 3 aile + aile dışlaması + κ (`scripts/judge_agreement.py` **var**).
-⇒ **B kararının (GPT öznesi) ön koşulu da budur.**
+⇒ **B kararının (GPT öznesi) ön koşulu da budur** — [ADR-0072](../../adr/0072-v1-rakip-havuzu-genisler.md).
 
-### Hat A · Paketleme ($0, GPU yok, T1'e paralel) → `v0.2`
+### Hat A · Paketleme ($0, GPU yok, `HP`'ye paralel) → `v0.2`
 | # | iş |
 | :-- | :--- |
 | A1 | **İstem artefaktı** — YB6, **sert engel**: istem yalnız `gen_eval_grounded.py` içinde |
@@ -83,7 +87,7 @@ Kritik yol işaretli. **AÇIK KARAR** damgaları: S5 · S7 · S8 · S9 · S10 ·
 1. `v1.0` kapısının **bağlayıcı okuması = GÖZ-katı**; ALET/GÖZ-orta yan sütun
 2. Kapı madde (2) çıpası **8/80** (v2 birimi, gözle sayılmış) — kural *"gerileme yok"*
 3. Kapı madde (3) — **M5 yükselmez**
-4. Sıralama **T1 → Hat A ∥ → Hat B**
+4. Sıralama **`HP` → Hat A ∥ → Hat B** *(`HP` = hakem paneli; `T1` spec'te temizliktir)*
 5. Bütçe: ~~OpenRouter **~$8,88**~~ 🚨 **ÖLÇÜLDÜ 2026-09-07: $6,60** (`total_credits` 20 −
    `total_usage` 13,397; $2,28'i bu plan dışından) · Modal **$29,19** · bugün harcanan **$1,38**
 
