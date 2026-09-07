@@ -123,6 +123,14 @@ sayıyı **üretemiyor** (YB6: istem yalnız `gen_eval_grounded.py` içinde).
 
 ## 6. Hat B — model (kütle) → `v1.0`
 
+> 🚨 **BAYAT SAYI — B-2'deki *"7/80"* geçersiz (damgalandı 2026-09-07).** O sayı **v1 soru
+> setinden** geliyordu ve **hiç gözle sayılmamıştı**. v2 biriminde ilk kez tam gözle sayıldı:
+> **8/80** (75 cevaplanan kalemin tamamı tarandı; iki otomatik süzgeç de tek başına yetmiyor).
+> İnsan kararı: çıpa **8/80**'e yeniden çivilendi, kural *"gerileme yok"*
+> ([ADR-0064](../../adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) madde 2 ·
+> [ADR-0066](../../adr/0066-b1-yontemi-reddetme-orneklemesi.md)).
+> ⛔ Eşik **gevşetilmedi**, birimi düzeltildi — `7/80` ile `8/80` **aynı birimde değildir**.
+
 | # | adım | bedel | `verify:` |
 | :-- | :--- | :--- | :--- |
 | **B-1** | Faz 0 (§4) | ~$1,65 | eşik ön-kayıtlı |
