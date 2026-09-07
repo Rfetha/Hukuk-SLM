@@ -1,7 +1,9 @@
 # `docs/superpowers/` — iş sırası
 
 > Bu klasörün **giriş dosyası**. Neyin ne zaman koşacağını söyleyen TEK yer.
-> *(2026-09-08'e kadar adı `IS-SIRASI.md` idi; klasör açılınca görünsün diye `README.md` oldu.)*
+> *(`00-` öneki kasten: dosya adı sıralamasında `plans/` ve `specs/`'in **üstüne**, listenin
+> en başına çıksın diye. 2026-09-08'de kısa bir süre `README.md` idi — GitHub klasör görünümü
+> için doğruydu ama IDE ağacında en dibe düşüp adını kaybediyordu; günlük bakılan yer IDE.)*
 
 > **Bu dosya bir HARİTA, bir plan değil.** Kutucuk taşımaz. Söylediği tek şey: *elimdeki beş
 > belgeden hangisi şimdi, hangisi sonra, ve hangisi neyi bekliyor.*

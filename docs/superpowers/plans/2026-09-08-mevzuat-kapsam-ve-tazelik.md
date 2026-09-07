@@ -18,7 +18,7 @@ kat kat girer.
 `rank_bm25` · `sentence-transformers` (`BAAI/bge-m3`) · `pytest`.
 
 **Kaynak spec:** [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](../specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md)
-(insan onaylı) · **iş sırasındaki yeri:** [`README.md`](../README.md) — ana plandan **sonra**.
+(insan onaylı) · **iş sırasındaki yeri:** [`00-IS-SIRASI.md`](../00-IS-SIRASI.md) — ana plandan **sonra**.
 
 ---
 
@@ -2365,7 +2365,7 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 - Create: `docs/adr/0074-mevzuat-anlik-goruntu-ve-kapsam-kapisi.md`
 - Modify: `docs/record/research_log/README.md` *(yeni satır — **var olan satırlar dokunulmaz**)*
 - Create: `docs/record/research_log/2026-09-08-kapsam-genislemesi.md`
-- Modify: bu plan *(✅ kapanış bloğu)* · `docs/superpowers/README.md` · `CLAUDE.md`
+- Modify: bu plan *(✅ kapanış bloğu)* · `docs/superpowers/00-IS-SIRASI.md` · `CLAUDE.md`
 
 ⛔ **`docs/record/**` ve `docs/adr/**` tarihsel kayıttır** — buraya **EKLEME** yapılır,
 var olan satır **düzenlenmez**.
@@ -2402,9 +2402,9 @@ için: **kapandı** (sayıyla) ya da **açık kaldı** (neden). Özellikle:
 - Yönetmelik düzeyinde eval sorusu yok → **hâlâ açık**, ADR-0067 usulü ayrı tur
 - RAM kaldıraçları (`mmap` · boyut indirgeme) → **hâlâ ölçülmedi**
 
-- [ ] **Adım 4: `README.md` ve `CLAUDE.md` işaretçilerini güncelle**
+- [ ] **Adım 4: `00-IS-SIRASI.md` ve `CLAUDE.md` işaretçilerini güncelle**
 
-- `README.md`: *"Bir bakışta"* kutusu — bu plan ✅, **Görev 8 (indeks dağıtımı) AÇILDI**
+- `00-IS-SIRASI.md`: *"Bir bakışta"* kutusu — bu plan ✅, **Görev 8 (indeks dağıtımı) AÇILDI**
 - `CLAUDE.md`: korpus/indeks satırı (*"892 kanun · 40.496 madde"* → yeni sayı) ·
   *"brute force 8,2 ms, indeks 83 MB"* → **yeni ölçüm** · ADR sayacı **0075**
 

@@ -8,13 +8,13 @@
 > `outputs/eval/**` were **kept** — they are the source of every number published here.
 >
 > **Rebuilt since:** `docs/superpowers/` is **back and live** — two specs, three plans, and
-> [`README.md`](docs/superpowers/README.md), the file that says which one is current.
+> [`00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md), the file that says which one is current.
 > **Still missing:** `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`. They are
 > **Görev 13** of the current plan, not an open question.
 >
 > | you want | read |
 > | :--- | :--- |
-> | **what to do next** | ⭐ [`docs/superpowers/README.md`](docs/superpowers/README.md) — **the work order across all plans**; start here, it says which plan is current |
+> | **what to do next** | ⭐ [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md) — **the work order across all plans**; start here, it says which plan is current |
 > | the current plan itself | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 17 tasks, 89 boxes · ⛔ Görev 8 is HELD (corpus grows 8,4×) |
 > | why it is sequenced that way | [`docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) |
 > | what closed on 2026-09-06/07 | [`docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md`](docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md) — **48/48** |
