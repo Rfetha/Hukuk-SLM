@@ -37,6 +37,9 @@ CTX="${CTX:-8192}"
 MAXTOK="${MAXTOK:-4096}"          # CEVAP bütçesi (bütçeli düşüncede Sprint 1 ile aynı: 512)
 THINK_BUDGET="${THINK_BUDGET:-0}" # >0 → zorunlu kapatma (research_log #42); ÖN-KAYITLI seçilir
 SERVER_URL="${SERVER_URL:-}"      # verilirse sunucu AÇILMAZ, var olan kullanılır
+# Sunucuya geçirilen EK örnekleme bayrakları (ADR-0073). Boş = bugünkü rejim.
+# ⚠️ Künyeye BASILIR: parametre künyede görünmüyorsa koşulmuş sayılmaz (tuzak 6.12).
+SERVER_EXTRA="${SERVER_EXTRA:-}"
 NGL="${NGL:-99}"
 DEV="${DEV:-data/eval/dev}"
 MODES="${MODES:-m1 m4 m2 m2b m3 m5}"
@@ -84,6 +87,7 @@ echo "  etiket    : *_${TAG}"
 echo "  modlar    : $MODES"
 echo "  thinking  : on   | cevap bütçesi: $MAXTOK | düşünce bütçesi: ${THINK_BUDGET:-—} | max_chunk_chars: 900 | seed: 3407"
 echo "  sunucu    : ctx=$CTX  -ngl $NGL -fa on  KV q8_0/q8_0  port=$PORT
+  örnekleme : ${SERVER_EXTRA:-<varsayılan · ceza yok>}
   harness   : ${HARNESS_INDEKS:-KAPALI}${HARNESS_INDEKS:+ · k=${HARNESS_K:-5}}"
 echo "  güç       : $(cat /sys/class/power_supply/AC*/online 2>/dev/null | head -1 | sed 's/1/ŞARJDA/;s/0/PİLDE ⚠️/')"  # tuzak 1.6
 echo
@@ -96,7 +100,7 @@ else
   SERVER_URL="http://127.0.0.1:$PORT/v1"
   "$BIN" -m "$GGUF" -ngl "$NGL" -fa on --no-context-shift \
     --cache-type-k q8_0 --cache-type-v q8_0 -c "$CTX" \
-    --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
+    --host 127.0.0.1 --port "$PORT" ${SERVER_EXTRA:-} > "$LOG" 2>&1 &
   SRV=$!
   stop_server() { kill "$SRV" 2>/dev/null || true; wait "$SRV" 2>/dev/null || true; }
   trap stop_server EXIT
