@@ -23,12 +23,23 @@
 | :--- | :--- | ---: | :--- |
 | **1** | **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | repo başka dizine kopyalanır, retriever **hatasız yükler**, `recall@10` 0,9500 |
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
-| **3** | **G14** (B1, 6) + **G15** (B4, 4) | Modal ~$6,3 | ⛔ **DUR ve SOR:** koşulsun mu? B1 **8/80** ve rakipler **8·8·7·8** ⇒ geride değiliz |
-| **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** |
+| **3** 🆕 | **G4** — **Sonnet-5 öznesi** rakip havuzuna girer | ⚠️ **ÖLÇÜLMEDİ** | duman koşusu (5 kalem) ÖNCE; `>$1` çıkarsa **DUR ve SOR** |
+| **4** | **G14** (B1, 6) + **G15** (B4, 4) | Modal ~$6,3 | ⛔ **DUR ve SOR:** koşulsun mu? B1 **8/80** ve rakipler **8·8·7·8** ⇒ geride değiliz |
+| **5** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** |
 | — | **G11 Adım 2** — temiz makine kapısı | — | ⏸️ **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
 
-⚠️ **Sıra 4 neden en sonda:** donmuş TEST tek kez açılır. Sıra 3 koşulursa model değişir ve
+⚠️ **Sıra 5 neden en sonda:** donmuş TEST tek kez açılır. Sıra 4 koşulursa model değişir ve
 testin ondan **sonra** açılması gerekir — yoksa iyileşmiş modeli ölçecek el değmemiş set kalmaz.
+
+🆕 **Sıra 3 neden burada (karar kilitlendi 2026-09-07, insan):** `anthropic/claude-sonnet-5`
+**özne olarak** rakip havuzuna girer — bugün havuzda yalnız Gemini ailesi var ve **frontier
+sınıfı hiç ölçülmedi**. Kapıyı **etkilemez** (ADR-0072 m.2: eşik oynamaz, çıpa `3.5 Flash`
+kalır; yeni özne yalnız **raporlanır**), eğitim turlarına ve donmuş TEST'e **dokunmaz** ⇒
+bağımsız, ve ucuz olduğu ölçülürse erken koşulabilir.
+⚠️ **Bedeli ÖLÇÜLMEDİ:** planın *"~$0,35"* rakamı **Gemini fiyatlarıyla** hesaplanmıştı;
+Sonnet'in çıkarım fiyatı **4-5 katı** ($2,00/M girdi · $10,00/M çıktı ↔ 3.5 FL $0,30/$2,50)
+ve gerçek fatura ayrıca **1,6×** kapı marjı taşıyor. ⇒ **Önce 5 kalemlik duman koşusu**,
+sonra tam koşu; tahmin **$1'ı aşarsa DUR ve sor**.
 
 ---
 
@@ -407,12 +418,27 @@ iki aileyle notlandığı için hükmün **hangi kısmı** üç aileye dayanıyo
 
 ---
 
-### Görev 4: `v1.0` rakip havuzunun genişletilmesi — ⛔ **ATLANDI 2026-09-07 (insan kararı)**
+### Görev 4: `v1.0` rakip havuzunun genişletilmesi — ▶️ **SIRAYA ALINDI (SIRA 3)**
 
-> ⛔ **KOŞULMADI, aynı bütçe kararıyla** (Görev 2'nin kutusuna bak). S16 kapanmıştı (tek Claude
-> Sonnet öznesi, ~$0,35 liste ⇒ ~$0,56 gerçek) ama bakiye önce donmuş TEST kabul koşusuna ayrıldı.
-> ⇒ ADR-0072 **açık kalıyor**; `v1.0` rakip havuzu bugünkü dört özneyle yayımlanır ve havuzun
-> genişlemediği **eksiklik olarak** yazılır.
+> 🔄 **Karar iki kez değişti, ikisi de insan kararı ve ikisi de burada duruyor:**
+> **(a) 2026-09-07 sabah — ATLANDI:** bakiye $3,45 iken önce donmuş TEST kabul koşusuna ayrıldı.
+> **(b) 2026-09-07 akşam — GERİ ALINDI, sıraya girdi.** Sebebi ölçüldü: kalan planın tamamı
+> OpenRouter'dan yalnız **~$0,30** istiyor (bağlayıcı hakem `gpt-4o-mini` ve 80 kalem puanlama
+> **$0,0417** raporlanan / ~$0,067 gerçek) ⇒ bakiyenin **on katı marjı** var. *"Panel pahalı"*
+> sanısı Sonnet'in **hakem** bedelinden geliyordu ($1,86); **özne** bedeli ayrı bir sayıdır.
+>
+> **Neden değerli:** havuzda bugün yalnız **Gemini ailesi** var. Frontier sınıfı bir öznenin
+> aynı sınavdaki kütlesi **hiç ölçülmedi** — *"2,59 GiB'lık yerel model, frontier'ın ne kadar
+> gerisinde, kaynak verildiğinde?"* sorusunun cevabı bugün **yok**.
+>
+> ⛔ **Kapıyı ETKİLEMEZ** (ADR-0072 m.2): eşik oynamaz, çıpa `3.5 Flash` **kalır**; yeni özne
+> **raporlanır**, eşiği **kurmaz**. ⇒ `v1.0` hükmü bu koşudan bağımsızdır.
+> ⚠️ **GPT sınıfı yine dışarıda** (hakemi değiştirir + bugünkü dört sayıyı yeniden koşturur) ve
+> bu `v1.0` yayınında **eksiklik olarak** yazılır — bütçe bahanesi olarak değil.
+>
+> 🚨 **Bedel ÖLÇÜLMEDİ — Adım 1b bu yüzden eklendi.** Planın *"~$0,35"*'i **Gemini fiyatıyla**
+> hesaplanmıştı; Sonnet **$2,00/M girdi · $10,00/M çıktı** (3.5 FL: $0,30/$2,50) ve gerçek
+> fatura ayrıca **1,6×**. Kaba tahmin $1,0-1,6 ⇒ **duman koşusu şart**.
 
 **Dosyalar:** Create: `outputs/eval/hp-rakip-havuzu/`
 **Bağımlılık:** Görev 3 **bitmiş** olmalı.
@@ -425,8 +451,30 @@ Girdiler [ADR-0072](../../adr/0072-v1-rakip-havuzu-genisler.md)'de: özne başı
 (F0.4'te ölçüldü: üç çıpa **$1,35**) · Anthropic öznesi sorunsuz · **GPT öznesi** hakem
 değişikliği + bugünkü dört sayının **yeniden koşulması** demek.
 
-- [ ] **Adım 1: İnsan kararını al ve künyeye yaz** *(kod yok — karar adımı)*
-`verify:` `KUNYE.json` seçilen özneleri **tam model kimliğiyle** listeliyor.
+- [x] **Adım 1: İnsan kararını al ve künyeye yaz** *(kod yok — karar adımı)* ✅
+**Karar 2026-09-07 (insan): TEK özne, `anthropic/claude-sonnet-5`.** Kimlik ve fiyat
+OpenRouter `/api/v1/models`'ten ölçüldü: **$2,00/M girdi · $10,00/M çıktı**.
+`verify:` `KUNYE.json` seçilen özneyi **tam model kimliğiyle** listeliyor.
+
+- [ ] **Adım 1b 🆕: Bedeli ÖLÇ — 5 kalemlik duman koşusu, tam koşudan ÖNCE**
+
+```bash
+cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
+set -a && . ./.env && set +a && mkdir -p outputs/eval/hp-rakip-havuzu && \
+OPENAI_API_KEY="$OPENROUTER_API_KEY" \
+python scripts/olcum_uretim/gen_eval_grounded.py \
+  --server-url https://openrouter.ai/api/v1 \
+  --server-model anthropic/claude-sonnet-5 \
+  --data data/eval/dev/core_hard.jsonl \
+  --label h1_sonnet5_duman --n 5 --seed 3407 \
+  --harness-indeks data/index/mevzuat_bge_m3_s2 --harness-k 10 \
+  --max-chunk-chars 900 --thinking on --reasoning-budget 1024 \
+  --max-new-tokens 512 --out-dir outputs/eval/hp-rakip-havuzu
+```
+`verify:` 5 kalem üretildi; **bakiye koşu ÖNCESİ ve SONRASI ölçülür** (`/api/v1/credits`) ve
+gerçek fark yazılır. Tam koşu tahmini = fark × 16. ⛔ **> $1 ise DUR ve sor.**
+⚠️ `--think-budget` **KULLANILMAZ** — rakip tarafı `--reasoning-budget` alır (ikisi karşılıklı
+dışlayıcı; künye kanıtı `g2-fl-harness/KUNYE.json` → `"reasoning_budget": 1024`).
 
 - [ ] **Adım 2: Her özne için üretim — F0.4'ün BİREBİR aynı komutu**
 
