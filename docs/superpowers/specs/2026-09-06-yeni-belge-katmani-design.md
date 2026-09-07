@@ -106,6 +106,21 @@ Kayıt: `research_log` **#62** (sıradaki) · ADR'ler **0063 · 0064 · 0065 · 
 
 ## 5. Hat A — paketleme (~$0) → `v0.2`
 
+> 🚨 **A1 ÖLÇÜLDÜ 2026-09-07 — durum spec'in dediğinden KÖTÜ.** Bu bölüm *"istem yalnız
+> `gen_eval_grounded.py` içinde"* diyor (YB6). Sayıldı: `"Sen HakHukuk'sun"` literali
+> **5 dosyada** (`gen_eval_grounded.py` · `train_sft.py` · `raft_pack.py` · `build_orpo_v3.py` ·
+> `gen_v3_rejected.py`). Kopyaların içerikleri karşılaştırıldı:
+> - `SYSTEM_PROMPT_RAG` — **3 tanım, üçü de bayt-bayt aynı** (`bbfdd6613f`) ✅
+> - `SYSTEM_PROMPT_RAG_MULTI` — tek tanım, `gen_eval_grounded` onu **import ediyor** ✅
+> - 🚨 `SYSTEM_PROMPT` — **2 tanım, SÜRÜKLENMİŞ.** Son satırları farklı:
+>   ölçüm `…ilgili kanun ve madde numarasını belirt.` ↔ eğitim
+>   `Bu yanıt hukuki tavsiye değil, bilgilendirme amaçlıdır.`
+>   Bu, **M5'in (kör mod) istemidir** — yani bugün koşulan anti-hedef ölçümünün istemi.
+>
+> ⇒ **A1'in kapsamı büyüyor:** iş *"istemi dosyaya çıkar"* değil, *"beş kopyayı tek kaynağa
+> indir **ve sürüklenmiş olanın hangisinin doğru olduğuna karar ver**"*. İkincisi bir insan
+> kararıdır, mekanik bir refactor değil. Bağlı açık soru: **S18**.
+
 Ürünün altı asıl açığından ikisi burada: servis katmanı **kod olarak yok**
 (`grep -rl "fastapi|uvicorn|flask|gradio" scripts/` → 0 sonuç) ve modeli indiren kişi yayımlanan
 sayıyı **üretemiyor** (YB6: istem yalnız `gen_eval_grounded.py` içinde).

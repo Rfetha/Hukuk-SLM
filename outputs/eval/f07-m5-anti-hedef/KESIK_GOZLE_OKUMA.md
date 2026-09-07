@@ -43,3 +43,27 @@ M5'te modele **hiç kaynak verilmiyor** (`context_shown` boş, 80/80). Dayanaca�
 üretim serbest çağrışıma düşüyor. Bu, M5'in **anti-hedef** ilan edilme gerekçesiyle aynı yöne
 bakar: ürün rejiminde modele **her zaman** kaynak verilir; M5 koşulları üründe hiç oluşmaz
 ([ADR-0039](../../../docs/adr/0039-kapi-6-parametrik-sizinti.md) §4 madde 3).
+
+## 🚨 Ters etki: yozlaşma bizi anti-hedefte OLDUĞUMUZDAN İYİ gösterebilir
+
+Yozlaşmış cevap **çekinme değildir** — `exact_reject` onu red saymaz, dolayısıyla
+**"cevaplandı" sayılır** ve `coverage`'ı **yükseltir**. Hakem ise içeriğine düşük sadakat
+verir, yani **A1'i düşürür**. Anti-hedefin metriği:
+
+```
+ezber kütlesi = coverage × A1
+```
+
+⇒ Bir döngü kalemi paydaya girip A1'i aşağı çektiği için **ezber kütlesini düşürür** ve
+kapı maddesi (3) *"M5 yükselmedi ✅"* der — oysa sebep modelin ezberlememesi değil,
+**cümleyi bitirememesi**. Bu, [ADR-0044](../../../docs/adr/0044-mod-duyarli-feragat-kurali.md)'ün
+yakaladığı *"sapma **bizim lehimize**"* sınıfının aynısıdır ve orada ezber kütlesi
+**3,4× küçük** ölçülmüştü.
+
+**Dengeleyen şey:** base çıpası **birebir aynı ayarlarla** koşuluyor (aynı GGUF kuantizasyonu,
+aynı `temperature=0`, aynı 1536 bütçe, aynı 80 soru, aynı taşıyıcı). İki kol da aynı kusura
+maruz ⇒ **fark** hâlâ okunabilir. Okunamaz olan **mutlak** değerdir.
+
+⛔ Bu yüzden madde (3)'ün hükmü yayımlanırken şu şerh **zorunlu**: *"M5'in mutlak değeri
+kör-modda yozlaşma tarafından aşağı çekiliyor; hüküm yalnız **base'e göre fark** üzerinden
+kurulur."*
