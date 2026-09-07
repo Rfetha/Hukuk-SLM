@@ -54,7 +54,27 @@ imkânsız kılar. `scripts/judge_agreement.py` **hazır**, κ hesabı için yen
   değiştirir. Sorun hakem **seçimi** değil, panelin **yokluğu**.
 - **Havuzu Gemini ile sınırlı bırak** — REDDEDİLDİ: insan kararı açık ve gerekçesi ürün-yönlü.
 
-## Açık kalan
+## ✅ Açık kısım KAPANDI — 2026-09-07 (insan kararı)
+
+**Havuza eklenecek: TEK `anthropic/claude-*-sonnet*` sınıfı özne.**
+
+| girdi | değer |
+| :--- | :--- |
+| ölçülen OpenRouter bakiyesi | **$6,60** |
+| `HP` (hakem paneli) tahmini | ~$3-5 |
+| özne başı bedel (F0.4'te ölçüldü) | ~**$0,35** |
+| aile dışlaması (ADR-0032) | Anthropic özne ↔ OpenAI hakem ✅ **sorunsuz** |
+
+**Gerekçe:** bir özne *"başka sağlayıcıyla da kıyaslandı"* cümlesini **kurar**; üç özne bunu
+daha güçlü yapmaz ama bakiyenin kalanını yer. Anthropic seçimi ayrıca bugünkü **dört sayının
+yeniden koşulmasını gerektirmiyor**.
+
+⚠️ **GPT sınıfı DIŞARIDA kalıyor ve bu `v1.0` yayınında eksiklik olarak yazılır.** Sebebi
+bütçe değil **usul**: GPT öznesi hakemi değiştirmeyi ve panelin tamamının yeniden
+fiyatlandırılmasını gerektirir (yukarıdaki tablo). ⛔ Eşik yine **oynamıyor** — çıpa
+`3.5 Flash` kalır, yeni özne yalnız **raporlanır**.
+
+## Hâlâ açık kalan
 
 - 🆕 **Hangi sağlayıcı(lar), kaç özne** — T1'in çıktısıyla birlikte kararlaştırılır; bedel
   öznebaşı ~$0,35 (F0.4'te ölçüldü: üç rakip çıpası **$1,35**).

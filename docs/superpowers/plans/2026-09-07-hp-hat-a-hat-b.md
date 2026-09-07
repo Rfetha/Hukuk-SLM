@@ -71,9 +71,9 @@ TUI için `textual` (**henüz kurulu değil** — ölçüldü 2026-09-07).
 | **S7** | LoRA adaptörleri HF'ye yüklensin mi? | Faz 0 planı **T1** |
 | **S8** | İndeks nasıl dağıtılır? (80 MB — ölçüldü) | **Görev 8** |
 | **S9** | `v2` nasıl barındırılır? | bu planın **dışında** |
-| **S10** | Avukatlık Kanunu / hukuki sorumluluk sınırı — **hukukçu görüşü** | **Görev 11** |
+| ~~S10~~ | ✅ **KAPANDI** → geçici metin şimdi girer, tek kaynakta; nihai metin hukukçu görüşüne bağlı | ~~Görev 10~~ **açıldı** |
 | **S12** | KARAR-6 paralel slot (`-np`) — bozuk ölçütle toplandı | Görev 13 (taşıyıcı) |
-| **S16** 🆕 | `v1.0` rakip havuzunda hangi sağlayıcı, kaç özne? | **Görev 4** |
+| ~~S16~~ 🆕 | ✅ **KAPANDI** → **tek Claude Sonnet öznesi** (~$0,35); GPT sınıfı usulen dışarıda | ~~Görev 4~~ **açıldı** |
 | **S17** 🆕 | Kuantizasyon eğrisi ölçülsün mü? | bu planın **dışında** |
 | **S18** 🆕 | Sürüklenmiş `SYSTEM_PROMPT`'un hangi hâli kanon? | **Görev 5** |
 
@@ -1389,7 +1389,17 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 
 **Bağlı olduğu:** taslak §4.1 · [`BEDESTEN_API.md`](../../BEDESTEN_API.md)
 
-### 🔓 S10 — bloke ettiği: **Görev 10**
+### ✅ S10 — **KISMEN KAPANDI 2026-09-07** *(insan kararı)*
+
+> **Karar: muhafazakâr GEÇİCİ metin şimdi girer, TEK kaynakta.**
+> `hakhukuk/cli.py` içinde tek sabit (`SORUMLULUK_IBARESI`); `hakhukuk/tui.py` onu **import
+> eder**, kopyalamaz (S18'in dersi: aynı metin iki yerde durursa sessizce ayrışır).
+> Metin bilerek **fazla temkinli**: *"hukuki tavsiye değildir · bilgilendirme amaçlıdır ·
+> avukata danışın"*. ⛔ `Durum` ne olursa olsun **koşulsuz** basılır.
+> ⚠️ **Hâlâ açık olan:** nihai hukuki metin — **hukukçu görüşü** gerekiyor. Geldiğinde
+> **tek yerden** güncellenir. Kodda ve model kartında *"GEÇİCİ — S10 açık"* şerhi durur.
+> ⇒ **Görev 10 ve Görev 12 açıldı.**
+
 
 **Soru:** **Avukatlık Kanunu / hukuki sorumluluk sınırı**
 
@@ -1405,7 +1415,17 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 
 **Bağlı olduğu:** [#60](../../record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)
 
-### 🔓 S16 — bloke ettiği: **Görev 4**
+### ✅ S16 — **KAPANDI 2026-09-07** *(insan kararı)*
+
+> **Karar: TEK `anthropic/claude-*-sonnet*` sınıfı özne.** Gerekçe bütçeden ve aile
+> dışlamasından birlikte çıktı: ölçülen bakiye **$6,60**, `HP` tek başına ~$3-5 yiyor.
+> Anthropic öznesi **aile dışlamasına takılmıyor** ⇒ bugünkü dört sayı **yeniden koşulmaz**;
+> bedeli ~**$0,35**. Bir özne *"başka sağlayıcıyla da kıyaslandı"* cümlesini **kurar**;
+> üç özne bunu daha güçlü yapmaz ama bakiyeyi yer.
+> ⚠️ **GPT sınıfı DIŞARIDA kalıyor** ve bu `v1.0` yayınında **eksiklik olarak yazılır** —
+> sebebi bütçe değil **usul**: GPT öznesi hakemi değiştirir (ADR-0032).
+> ⇒ **Görev 4 açıldı.**
+
 
 **Soru:** **`v1.0` rakip havuzunda hangi sağlayıcı(lar), kaç özne?** Havuzun genişlemesi **karara bağlandı** (insan, 2026-09-07) ama **kimin ekleneceği** açık. 🚨 Şekli **aile dışlaması** belirliyor: hakem `openai/gpt-4o-mini` olduğu için bir **GPT öznesi** hakemi değiştirmeyi **ve bugünkü dört sayıyı yeniden koşmayı** gerektirir; Anthropic öznesi sorunsuz. Bedel öznebaşı ~$0,35 (F0.4'te ölçüldü: üç çıpa $1,35). ⛔ Eşik **oynamaz** — çıpa `3.5 Flash` kalır, yeni özneler yalnız **raporlanır**.
 
