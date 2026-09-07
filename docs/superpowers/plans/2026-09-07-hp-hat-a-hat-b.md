@@ -24,12 +24,26 @@
 | **1** | **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | repo başka dizine kopyalanır, retriever **hatasız yükler**, `recall@10` 0,9500 |
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
 | **3** 🆕 | **G4** — **Sonnet-5 öznesi** rakip havuzuna girer | **~$0,82** *(ölçüldü)* | ✅ `$1` kapısının altında — tam koşu doğrudan koşulabilir |
-| **4** | **G14** (B1, 6) + **G15** (B4, 4) | Modal ~$6,3 | ⛔ **DUR ve SOR:** koşulsun mu? B1 **8/80** ve rakipler **8·8·7·8** ⇒ geride değiliz |
-| **5** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** |
+| **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** |
+| **5** 🆕 | **G17** — modeli YAYINLA (HF) | $0 | `v1` release; bugün ağırlıklar **hiçbir yerde yayında değil** |
+| — | **G14 · G15** eğitim turları | — | ⛔ **ATLANDI** — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md): `v1` **SFT ile kapanır**, `B4` `v2`'de **konusuz** kalır |
 | — | **G11 Adım 2** — temiz makine kapısı | — | ⏸️ **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
 
-⚠️ **Sıra 5 neden en sonda:** donmuş TEST tek kez açılır. Sıra 4 koşulursa model değişir ve
-testin ondan **sonra** açılması gerekir — yoksa iyileşmiş modeli ölçecek el değmemiş set kalmaz.
+🔒 **`v1` = ham base + SFT hattı. KAPANDI — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md) (insan kararı 2026-09-08).**
+Eğitim turları (**G14 · G15**) koşulmaz; `v1` bugünkü `tgta_v1` artefaktıyla kapanır ve
+yayımlanır. **`v2` = `tgta_v1` üstüne sequential RL** (GRPO + düşünce ayarı) — ayrı plan.
+
+| neden | ölçülmüş gerekçe |
+| :--- | :--- |
+| **G14 atlandı** | Hedef eksende **geride değiliz** (biz 8/80 ↔ rakipler 8·8·7·8) ve otomatik vekil metrik **yok** ⇒ her tur **80 kalem gözle okuma** = insan saati. B10 aynı sınıftan bir turdu ve **eğitimsiz** kapandı (ADR-0062) |
+| **G15 atlandı** | Onaracağı şey (`B4`, −22,1 p) bir **merge** kaybıdır; `τ_a` **tek başına 0,987**. Sequential mimaride merge **yok** ⇒ aynı puan ödenmeden geri gelir. Terk edilecek mimariyi onarmak olurdu |
+| **`v1` şimdi yayımlanıyor** | Çalışan ürünü, sonucu belirsiz bir tur için aylarca bekletmek — ADR-0065 bölünmüş sürümlemeyi tam bunu önlemek için kurdu |
+
+🚨 **Bedeli açıkça yazılıdır:** ADR-0027'nin **task-vector hattı `v1`'de DONDURULUR**
+(`τ = θ_ft − θ_base` tüm kolların aynı `θ_base`'i paylaşmasını şart koşar; `tgta_v1`'i yeni
+başlangıç almak bunu bozar ⇒ `v2` **sequential post-training**'dir, task vector değil).
+Ve **G14/G15 değersiz sayılmadı** — koşulmadılar, ne verecekleri **bilinmiyor**; ikisi de
+borç olarak **açık kalır**.
 
 🆕 **Sıra 3 neden burada (karar kilitlendi 2026-09-07, insan):** `anthropic/claude-sonnet-5`
 **özne olarak** rakip havuzuna girer — bugün havuzda yalnız Gemini ailesi var ve **frontier
@@ -1570,7 +1584,14 @@ bugünkü her sayı tek ailenin hükmü; kapıyı **panelsiz** koşmak aynı bor
 
 ---
 
-### Görev 14: `B1` — isabetsizlik, reddetme-örneklemesi (~$5)
+### Görev 14: `B1` — isabetsizlik ⛔ **ATLANDI 2026-09-08 (ADR-0075)**
+
+> ⛔ **KOŞULMADI.** `v1` SFT ile kapanıyor. Gerekçe ölçülmüş: hedef eksende **geride değiliz**
+> (biz **8/80** ↔ rakipler **8 · 8 · 7 · 8**, [#63](../../record/research_log/2026-09-07-skor-karti-bosluklari.md))
+> ve `B1` için **otomatik vekil metrik yok** (süzgeçler 4 ve 3 buluyor, **göz 8** — ADR-0066)
+> ⇒ her tur **80 kalem gözle okuma** ister; bedeli para değil **insan saati**.
+> ⚠️ **`B1` borç olarak AÇIK kalır** — bu bir öncelik kararıdır, ölçüm sonucu değil.
+> Aşağıdaki adımlar, tur açılacağı gün koşulmak üzere **olduğu gibi duruyor**.
 
 **Neden:** Faz 0'da **ilk kez gözle** sayıldı: **8/80**. B10 (aşırı-red) 4/80'e indi ⇒ **B1
 artık birinci sıradaki eksen**. ⚠️ Ve **otomatik vekil metrik YOK**: `faithfulness < 0,6`
@@ -1592,7 +1613,15 @@ etmek **ardışık SFT** üretir, task-vector değil). `verify:` künyede `fresh
 
 ---
 
-### Görev 15: `B4` — `τ_a` genliği (~$1,3) + `YB2` M2b
+### Görev 15: `B4` — `τ_a` genliği ⛔ **ATLANDI 2026-09-08 (ADR-0075)**
+
+> ⛔ **KOŞULMADI — ve sebebi G14'ünkinden farklı.** `B4` bir **merge** kaybıdır, eğitim
+> kalitesi sorunu değil: `τ_a` **tek başına M2b 0,987**, merge sonrası **0,766**.
+> `v2` **sequential** mimariye geçiyor (ADR-0075) ⇒ **merge yok** ⇒ aynı **22,1 puan**
+> ödenmeden geri gelir. Bu turu koşmak, birkaç hafta sonra **terk edilecek bir mimariyi
+> onarmak** olurdu.
+> ⚠️ Teşhis (**genlik**, `‖τ‖` oranı **8,87×**) kayıtta kalır: merge mimarisine dönülürse
+> ilk okunacak yer burasıdır.
 
 **Neden (ölçüldü):** merge'de `τ_a` **0,987 → 0,766** seyreliyor (−22,1 p). Teşhis **genlik**:
 70 adım @1e-5 → `‖τ_a‖` **1,1806** ↔ `‖τ_g‖` **10,4722**, oran **8,87×**.
@@ -1647,6 +1676,68 @@ oran `tavan kullanımı = kütle ÷ recall@10`; **her iki setin `recall@10`'u ya
 Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 `verify:` hüküm ADR'de, `research_log`'da ve `MODEL_CARD.md`'de **aynı sayıyla** duruyor.
 - [ ] **Adım 4: Commit + etiket**
+
+---
+
+### Görev 17 🆕: Modeli YAYINLA — `v1` release *(ADR-0075 · 2026-09-08)*
+
+**Dosyalar:** Create: `hakhukuk/kurulum.py` *(kısmi)* · Modify: `README.md` · `README.tr.md` · `MODEL_CARD.md`
+
+🚨 **Ölçülmüş boşluk — plan bunu HİÇ içermiyordu, insan sorusu ortaya çıkardı (2026-09-08):**
+
+| | durum |
+| :--- | :--- |
+| repo | `github.com/Rfetha/Hukuk-SLM` — kod · veri · araştırma kaydı **public** |
+| ağırlıklar | `models/gguf/tgta_v1-q4_k_m.gguf` · **2,6 GB** · yalnızca **yerel diskte** |
+| git'te mi | ⛔ hayır — `.gitignore:41` `*.gguf` |
+| HF'de mi | ⛔ **hayır** — `README*.md` ve `MODEL_CARD.md`'de **tek bir HF linki yok** |
+
+⇒ *"açık kaynak model"* iddiası bugün **yarım**: kod + veri + kayıt açık, **ağırlıklar değil**.
+[ADR-0071](../../adr/0071-v1-release-artefakti-tek-gguf.md) **ne** yayımlanacağını karara
+bağlamış (tek GGUF + ad kuralı) ama **nasıl ve ne zaman** hiçbir yerde yazılı değildi.
+
+- [ ] **Adım 1: Artefaktı ADR-0071'in adıyla hazırla**
+
+Kapı sonucuna göre ad: geçerse `HakHukuk-4B-v1.0-Q4_K_M.gguf`, geçmezse
+`HakHukuk-4B-v0.2-Q4_K_M.gguf` (ADR-0065 bölünmüş sürümleme buna izin veriyor).
+⛔ İç ad `tgta_v1-q4_k_m.gguf` **korunur** — iki ad ayrı iş görür (`kollar.md`).
+`verify:` `sha256` hesaplandı ve `kollar.md`'ye yazıldı; boyut **2,59 GiB**.
+
+- [ ] **Adım 2: HF model reposu — kart + lisans + ⛔ İNDEKS ŞERHİ**
+
+⚠️ **En kritik satır:** model **tek başına indirildiğinde yayımlanan sayıyı ÜRETEMEZ** —
+`%80,1` bir *harness AÇIK* sayısıdır, bağlamı **retriever** seçmiştir. Kartta bu **ilk
+ekranda** durmalı, dipnotta değil.
+`verify:` HF kartı `MODEL_CARD.md`'nin manşetini **aynı sayıyla** taşıyor · indeks engeli
+(`Görev 8`) **açıkça** yazılı · Apache-2.0 + `NOTICE` yerinde.
+
+- [ ] **Adım 3: `README.md` · `README.tr.md` · `MODEL_CARD.md` — indirme yolu**
+
+`verify:` üç belgede de **çalışan** HF linki var; `tests/test_belgeler.py` yeşil.
+
+- [ ] **Adım 4: Commit + etiket**
+
+⚠️ **Sürüm etiketi kapı sonucuna bağlıdır** — `v1.0` ancak Görev 16 geçerse verilir.
+
+---
+
+## 🔮 `v2` — bundan SONRAKİ tur (bu planın DIŞINDA)
+
+> Karar: [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md) · plan **henüz yazılmadı**.
+
+```
+v1  ham base ──► SFT (τ_g) + ORPO (τ_a) ──► ham TIES ──► tgta_v1 ──► YAYIN  ← bu plan
+v2  tgta_v1 (bf16, models/merged/tgta_v1/, 8,8 GB) ──► GRPO + düşünce ayarı ──► v2.0
+```
+
+**Neden RL bu hatta mümkün:** **doğrulanabilir ödül hazır** — `hakhukuk/terazi.py` atıf
+doğrulamasını **deterministik** yapıyor (atıf getirilen kaynakta var mı: evet/hayır).
+Reward model **gerekmiyor**, LLM-hakem bedeli **yok**.
+
+🚨 **Ön koşul (ADR-0075 m.4):** ödül fonksiyonu **çekinmeyi korumak zorunda**. ADR-0010 ölçtü —
+düz SFT abstention'ı **yok etti**; RL'de risk daha keskindir. Korunacak taban:
+uydurulmuş madde **0/114** · aşırı-red **4/80** · kütle **0,8011**.
+⛔ Tur başlamadan ödül fonksiyonu + hedef bant + **durma kuralı** ön-kayıtlanır (ADR-0050).
 
 ---
 

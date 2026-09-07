@@ -11,11 +11,23 @@
 ✅ Faz 0  ölçüm zinciri onarıldı            48/48 · $1,47
 ✅ Faz 1  hakem paneli (İKİ aile)           $3,155 · ⛔ üçüncü aile ATLANDI (bütçe)
 ✅ Faz 2  Hat A — ürün paketleme            $0 · hakhukuk/ paketi, CLI + TUI
-▶️ Faz 3  belge katmanı                     $0  ────────────────►  🏷️ v0.2
+✅ Faz 3  belge katmanı                     $0  ────────────────►  🏷️ v0.2
+▶️ Faz 4  v1.0 kapısı + YAYIN               ~$1 ────────────────►  🏷️ v1.0 RELEASE
 ⏳        mevzuat kapsam + tazelik           korpus 40.496 → ~340.303 · ayrı plan
-⏳ Faz 4  Hat B — model                      ~$7-15 · Modal  ────►  🏷️ v1.0 kapısı
-⏳ v2     uygulama katmanı                   S9 açık
+⏳ v2     tgta_v1 üstüne GRPO + düşünce RL   ADR-0075 · plan yazılmadı
 ```
+
+## 🔒 `v1` ↔ `v2` — mimari çizgi *(ADR-0075, insan kararı 2026-09-08)*
+
+```
+v1   ham base ──► SFT (τ_g) + ORPO (τ_a) ──► ham TIES ──► tgta_v1 ──► YAYIN
+v2   tgta_v1 (bf16, 8,8 GB) ──► GRPO + düşünce ayarı ──► v2.0
+```
+
+**`v1` SFT ile KAPANIR.** Eğitim turları (`B1` · `B4`) **koşulmaz** — gerekçe aşağıda, Faz 4'te.
+**`v2` sequential RL'dir**, task vector değil: `tgta_v1`'i yeni başlangıç almak
+`τ = θ_ft − θ_base` tanımını bozar ⇒ 🚨 **ADR-0027'nin merge hattı `v1`'de DONDURULUR** ve
+`v2`'ye taşınmaz. `v2`'nin iddiası merge değil, **RL kazancıdır**.
 
 ---
 
@@ -68,21 +80,41 @@ korpusta **tek bir tarih alanı bile yoktu** (2026-09-07'de eklendi: `data/corpu
 paketlemek, birkaç hafta sonra atılacak bir iştir.
 `verify:` [`plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md`](docs/superpowers/plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md)
 
-## ⏳ Faz 4 — Hat B, model *(~$7-15, Modal)* → 🏷️ `v1.0` kapısı
+## ▶️ Faz 4 — `v1.0` kapısı + **YAYIN** *(~$1)* → 🏷️ `v1.0` RELEASE
 
-| ne | neden (ölçülmüş boşluk) | bedel |
-| :--- | :--- | ---: |
-| **B1 — isabetsizlik** | **8/80** ve rakiplerden **iyi değil** (8 ↔ 8 ↔ 7 ↔ 8); hiç çalışılmadı | ~$3-7 |
-| **B4 — `τ_a` merge'de seyreliyor** | 0,987 → 0,766 (**−22,1 p**); ‖τ‖ oranı **8,87×** | ~$3-5 |
-| **Kabul testi** | donmuş TEST **hiç açılmadı** ⇒ `v1.0` verilmedi | ~$0,1 |
+| sıra | ne | neden (ölçülmüş boşluk) | bedel |
+| :--- | :--- | :--- | ---: |
+| 1 | `KUNYE` taşınabilirlik | `git clone` sonrası **her makinede** `SystemExit` — mutlak yol + `mtime` kilidi | $0 |
+| 2 | TUI gözle doğrulama | ürün yüzü **insan gözüyle hiç görülmedi** | $0 |
+| 3 | **Sonnet-5 öznesi** | havuzda yalnız Gemini var; **frontier sınıfı hiç ölçülmedi** | ~$0,82 |
+| 4 | **Kabul testi** | donmuş TEST **hiç açılmadı** ⇒ `v1.0` verilmedi | ~$0,10 |
+| 5 | 🆕 **Modeli YAYINLA** | 🚨 ağırlıklar **hiçbir yerde yayında değil** — *"açık kaynak model"* iddiası bugün **yarım** | $0 |
+
+### ⛔ `B1` ve `B4` eğitim turları ATLANDI — [ADR-0075](docs/adr/0075-v1-sft-kapanir-v2-sequential-rl.md)
+
+| tur | neden koşulmadı |
+| :--- | :--- |
+| **B1** isabetsizlik | Hedef eksende **geride değiliz**: biz **8/80** ↔ rakipler **8 · 8 · 7 · 8**. Ve otomatik vekil metrik **yok** (süzgeçler 4 ve 3, **göz 8**) ⇒ her tur **80 kalem gözle okuma** = insan saati |
+| **B4** `τ_a` genliği | Bu bir **merge** kaybı, eğitim sorunu değil (`τ_a` tek başına **0,987**). `v2` sequential ⇒ **merge yok** ⇒ aynı **22,1 puan** ödenmeden geri gelir |
+
+⚠️ **İkisi de borç olarak AÇIK kalır** — koşulmadıkları için ne verecekleri **bilinmiyor**.
+Bu bir **öncelik** kararıdır, ölçüm sonucu değil.
 
 ⚠️ Kabul testinin erişim tavanı **≈0,75** (DEV 0,95 değil) — ADR-0069'un raporlaması **zorunlu**.
 ⛔ Donmuş TEST **tek kez** açılır.
 
-## ⏳ `v2` — uygulama katmanı
+## ⏳ `v2` — model katmanı **RL** + uygulama katmanı
 
-Canlı `bedesten` API (**B6**, ⚠️ TR IP şart) · tam kapsam · tazelik boru hattı · HTTP API +
-barındırma (**S9 açık**) · tablo/cetvel satırları (**B9** — ~7.966 satır madde diye indeksli).
+**Model tarafı (ADR-0075):** `tgta_v1` yeni başlangıç → **GRPO + düşünce (thinking) ayarı**.
+Mümkün olmasının sebebi: **doğrulanabilir ödül hazır** — `hakhukuk/terazi.py` atıf
+doğrulamasını **deterministik** yapıyor, reward model gerekmiyor, hakem bedeli yok.
+
+🚨 **Ödül fonksiyonu çekinmeyi korumak ZORUNDA** (ADR-0075 m.4): ADR-0010 ölçtü, düz SFT
+abstention'ı yok etti; RL'de risk daha keskindir çünkü model ödülü maksimize etmeyi öğrenir.
+Korunacak taban: uydurulmuş madde **0/114** · aşırı-red **4/80** · kütle **0,8011**.
+
+**Uygulama tarafı:** canlı `bedesten` API (**B6**, ⚠️ TR IP şart) · tam kapsam · tazelik boru
+hattı · HTTP API + barındırma (**S9 açık**) · tablo/cetvel satırları (**B9**, ~7.966 satır).
 
 ---
 

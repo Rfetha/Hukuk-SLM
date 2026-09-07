@@ -67,12 +67,19 @@ Bunlar eksiklik listesi değil, **ürünün sınırı**:
 
 ## `v1` ↔ `v2` sınırı
 
-| | `v1` — model katmanı | `v2` — uygulama katmanı |
+| | `v1` — **SFT** modeli | `v2` — **RL** modeli + uygulama |
 | :--- | :--- | :--- |
-| ne | ağırlıklar + kod + veri + araştırma kaydı, **uçtan uca çalışır** | aynı modelin üstünde API/servis |
+| eğitim | ham base → SFT (`τ_g`) + ORPO (`τ_a`) → ham TIES merge | `tgta_v1` **yeni başlangıç** → GRPO + düşünce ayarı |
+| ne | ağırlıklar + kod + veri + araştırma kaydı, **uçtan uca çalışır** | daha güçlü model + API/servis |
 | arayüz | `hakhukuk "soru"` (CLI) · `hakhukuk-tui` | HTTP API, barındırma (**S9 açık**) |
 | erişim | yerel indeks, anlık görüntü korpus | canlı `bedesten` (B6) · tam kapsam · tazelik |
 | durum | ▶️ bu turda | ⏳ sonra |
+
+🔒 **Çizgi [ADR-0075](docs/adr/0075-v1-sft-kapanir-v2-sequential-rl.md) ile çekildi (2026-09-08):**
+`v1` **SFT ile kapanır** — `B1`/`B4` eğitim turları koşulmaz. `v2` **sequential RL**'dir,
+task vector değil ⇒ ADR-0027'nin merge hattı `v1`'de **dondurulur**.
+`v2`'yi mümkün kılan şey: **doğrulanabilir ödül** zaten yazılmış (`hakhukuk/terazi.py` atıf
+doğrulaması deterministik) ⇒ reward model gerekmiyor.
 
 ## Sürüm şeması — ürün ve iddia AYRI
 

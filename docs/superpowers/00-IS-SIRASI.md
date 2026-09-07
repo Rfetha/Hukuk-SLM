@@ -23,11 +23,13 @@
              başlatıcı: goal-hp-hat-a-hat-b.md  (YENİLENDİ 2026-09-07, 3.873 krk)
              ✅ FAZ 1 HP (G1·G3) · ✅ FAZ 2 Hat A · ✅ FAZ 3 belge → 🏷️ **v0.2 ETİKETLENDİ**
              ⛔ G2·G4 ATLANDI (bütçe, ADR-0074) · ⛔ G8 BEKLETİLİYOR
-             ⏳ KALAN 17 kutucuk, LİNEER SIRA (planın İCRA DURUMU bloğunda):
+             ⛔ G14+G15 EĞİTİM TURLARI ATLANDI (ADR-0075) — v1 SFT ile kapanır
+             ⏳ KALAN LİNEER SIRA (planın İCRA DURUMU bloğunda):
                 1. G8 Adım 1b  KUNYE taşınabilirlik   $0
                 2. G12 Adım 6-7 TUI gözle doğrula     $0 · GPU
-                3. G14+G15 eğitim turları             ~$6,3 ⛔ DUR ve SOR
+                3. G4  Sonnet-5 öznesi                ~$0,82 (ölçüldü)
                 4. G16 Adım 2-4 kabul testi           ~$0,10 ⛔⛔ donmuş TEST
+                5. G17 modeli YAYINLA  🆕              $0 → 🏷️ v1.0 RELEASE
 ──────────────────────────────────────────────────────────────────────────────
 ⏳ SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
@@ -35,9 +37,30 @@
              ⚠️ G7 kat 4-5 tek adımda >$1 (Modal ~1,5 sa) — DUR ve SOR
              bitince → ana planın Görev 8'i AÇILIR → 🏷️ v0.2 yayını
 ──────────────────────────────────────────────────────────────────────────────
-⏳ EN SON  ▸ 2026-09-07-hp-hat-a-hat-b.md · FAZ 4 Hat B   14 kutucuk · ~$7-15
-             donmuş TEST kabul koşusu → 🏷️ v1.0 kapısı
+⏳ EN SON  ▸ v2 — plan HENÜZ YAZILMADI · karar: ADR-0075
+             tgta_v1 (bf16, 8,8 GB) = yeni başlangıç → GRPO + düşünce ayarı → v2.0
+             mümkün çünkü DOĞRULANABİLİR ÖDÜL hazır (terazi.py deterministik)
+             ⛔ ön koşul: ödül fonksiyonu çekinmeyi KORUMALI (ADR-0010'un RL hâli)
 ```
+
+---
+
+## 🔒 `v1` ↔ `v2` çizgisi — insan kararı 2026-09-08 ([ADR-0075](../adr/0075-v1-sft-kapanir-v2-sequential-rl.md))
+
+```
+v1   ham base ──► SFT (τ_g) + ORPO (τ_a) ──► ham TIES ──► tgta_v1 ──► YAYIN
+v2   tgta_v1 (bf16) ──► GRPO + düşünce (thinking) ayarı ──► v2.0
+```
+
+**`v1` SFT ile KAPANIR** — `B1`/`B4` eğitim turları koşulmaz. İkisinin de gerekçesi ölçülmüş
+ve **birbirinden farklı**: `B1`'de rakiplerden **geride değiliz** (8/80 ↔ 8·8·7·8) ve otomatik
+metrik yok; `B4` ise bir **merge** kaybı (`τ_a` tek başına 0,987) ve `v2`'de merge olmadığı
+için **konusuz** kalıyor.
+
+🚨 **Bedeli:** `τ = θ_ft − θ_base` tanımı tüm kolların aynı base'i paylaşmasını şart koşar ⇒
+`tgta_v1`'i yeni başlangıç almak bunu bozar ⇒ **ADR-0027'nin task-vector hattı `v1`'de
+DONDURULUR**, `v2`'ye taşınmaz. `v2`'nin iddiası merge değil **RL kazancıdır**.
+⚠️ `B1` ve `B4` **borç olarak açık kalır** — koşulmadılar, ne verecekleri **bilinmiyor**.
 
 ---
 
