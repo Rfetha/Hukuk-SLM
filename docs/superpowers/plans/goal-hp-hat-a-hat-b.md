@@ -30,8 +30,8 @@ rozet+atıf+kaynak+sorumluluk ibaresi EKRANDA GÖRÜLDÜ.
 ━━ SIRA 3 · G4 — Sonnet-5 ÖZNE olarak rakip havuzuna girer 🆕 (karar KİLİTLİ)
 Havuzda yalnız Gemini var; frontier sınıfı HİÇ ölçülmedi. Kapıyı ETKİLEMEZ (ADR-0072 m.2:
 eşik oynamaz, çıpa 3.5 Flash kalır, yeni özne yalnız RAPORLANIR).
-⚠️ BEDEL ÖLÇÜLMEDİ (planın "~$0,35"i Gemini fiyatıyla; Sonnet 4-5× + fatura 1,6×)
-⇒ ÖNCE Adım 1b duman koşusu (5 kalem), bakiye öncesi/sonrası ölç. >$1 ise DUR ve SOR.
+✅ BEDEL ÖLÇÜLDÜ: tam koşu ~$0,82 (duman 5 kalem = $0,0512, bakiye farkından) ⇒ $1
+kapısının ALTINDA, doğrudan koşulabilir. Planın "~$0,35"i Gemini fiyatıyla, YANLIŞTI.
 Rejim F0.4'ün BİREBİR aynısı: --reasoning-budget 1024 (--think-budget DEĞİL) · k=10 ·
 900 klip · seed 3407 · önsözsüz · n=80.
 KAPI: recall@10 hepsinde 0,9500 — değilse harness eşleşmemiş, HÜKÜM KURULMAZ.
@@ -77,7 +77,7 @@ bir AÇIK KARAR damgasını kendi başına kapatmak.
 | :--- | :--- | :--- |
 | **1** | `KUNYE` taşınabilirlik | **$0, bağımsız, ve bugün ürünü kıran tek şey** — `git clone` yapan herkeste `SystemExit`. Planda zaten *"BEKLEMEZ"* damgalı. |
 | **2** | TUI gözle doğrulama | **$0**, GPU ister ama kısa. Ürün yüzünün insan gözüyle görülmediği tek yer. |
-| **3** 🆕 | Sonnet-5 öznesi | **Bağımsız ve kapıyı etkilemiyor** (ADR-0072 m.2) ⇒ istenen anda koşulabilir; erken konuldu çünkü havuzda **frontier sınıfı hiç yok**. ⚠️ Bedeli ölçülmedi — duman koşusu şart. |
+| **3** 🆕 | Sonnet-5 öznesi | **Bağımsız ve kapıyı etkilemiyor** (ADR-0072 m.2) ⇒ istenen anda koşulabilir; erken konuldu çünkü havuzda **frontier sınıfı hiç yok**. ✅ Bedeli ölçüldü: **~$0,82**. |
 | **4** | `B1` · `B4` eğitim turları | **Para ve saat harcayan tek blok** ⇒ karar noktası. Sonucu belirsiz; atlanırsa 5'e geçilir. |
 | **5** | Donmuş TEST | ⛔ **TEK KEZ açılır.** 4 koşulacaksa model değişir; test ondan **sonra** açılmalı — yoksa iyileşmiş modeli ölçecek el değmemiş set kalmaz. |
 

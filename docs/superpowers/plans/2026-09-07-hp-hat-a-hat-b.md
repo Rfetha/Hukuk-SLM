@@ -23,7 +23,7 @@
 | :--- | :--- | ---: | :--- |
 | **1** | **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | repo başka dizine kopyalanır, retriever **hatasız yükler**, `recall@10` 0,9500 |
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
-| **3** 🆕 | **G4** — **Sonnet-5 öznesi** rakip havuzuna girer | ⚠️ **ÖLÇÜLMEDİ** | duman koşusu (5 kalem) ÖNCE; `>$1` çıkarsa **DUR ve SOR** |
+| **3** 🆕 | **G4** — **Sonnet-5 öznesi** rakip havuzuna girer | **~$0,82** *(ölçüldü)* | ✅ `$1` kapısının altında — tam koşu doğrudan koşulabilir |
 | **4** | **G14** (B1, 6) + **G15** (B4, 4) | Modal ~$6,3 | ⛔ **DUR ve SOR:** koşulsun mu? B1 **8/80** ve rakipler **8·8·7·8** ⇒ geride değiliz |
 | **5** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** |
 | — | **G11 Adım 2** — temiz makine kapısı | — | ⏸️ **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
@@ -36,10 +36,15 @@ testin ondan **sonra** açılması gerekir — yoksa iyileşmiş modeli ölçece
 sınıfı hiç ölçülmedi**. Kapıyı **etkilemez** (ADR-0072 m.2: eşik oynamaz, çıpa `3.5 Flash`
 kalır; yeni özne yalnız **raporlanır**), eğitim turlarına ve donmuş TEST'e **dokunmaz** ⇒
 bağımsız, ve ucuz olduğu ölçülürse erken koşulabilir.
-⚠️ **Bedeli ÖLÇÜLMEDİ:** planın *"~$0,35"* rakamı **Gemini fiyatlarıyla** hesaplanmıştı;
-Sonnet'in çıkarım fiyatı **4-5 katı** ($2,00/M girdi · $10,00/M çıktı ↔ 3.5 FL $0,30/$2,50)
-ve gerçek fatura ayrıca **1,6×** kapı marjı taşıyor. ⇒ **Önce 5 kalemlik duman koşusu**,
-sonra tam koşu; tahmin **$1'ı aşarsa DUR ve sor**.
+✅ **Bedeli ÖLÇÜLDÜ 2026-09-07 akşam: tam koşu ~$0,82** — `$1` kapısının **altında**.
+Ölçüm biçimi kayda değer: duman koşusu (5 kalem) başlatıldı, **iptal edildi ve çıktısı
+yanlışlıkla silindi**, ama bedel **bakiye farkından** okundu — `usage 16,5520 → 16,6032`
+= **$0,0512 / 5 kalem** ⇒ ×16 = **$0,82**. ⚠️ Planın *"~$0,35"* rakamı **Gemini
+fiyatlarıyla** hesaplanmıştı ve **yanlıştı**; Sonnet'in çıkarım fiyatı 4-5 katı
+($2,00/M girdi · $10,00/M çıktı ↔ 3.5 FL $0,30/$2,50).
+⭐ **Ders: harcanan tutar, çıktı kaybolsa bile `/api/v1/credits` farkından ölçülebilir.**
+`judge_cost_usd` liste fiyatının türevidir; **bakiye farkı gerçeğin kendisidir** ve
+aralarında bugün **1,6×** kapı marjı ölçüldü.
 
 ---
 
