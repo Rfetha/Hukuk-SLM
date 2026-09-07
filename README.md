@@ -144,7 +144,7 @@ built to catch is empty. The model doesn't invent article numbers; it answers fr
 larger failure is still the opposite one: in **9/80** (ablation: 5/80) questions the model
 abstains *while the gold article is in its context* — and with the harness off it is 17/80, so
 it is a model property, not a retrieval one. Deterministic code cannot close it.
-Details and the full record: `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)* · `sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` §5**'e kurtarıldı)*.
+Details and the full record: `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)* · `sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` *(silindi)* §5**'e kurtarıldı)*.
 
 ✅ **Those counts were 14/80 and 16/80 until 2026-09-06 — they were wrong, and the correction
 is the single most useful thing this round produced.** The detector was repaired, all 80 items

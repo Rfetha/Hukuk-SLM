@@ -1,6 +1,6 @@
 # Yeni belge katmanı — tasarım (spec)
 
-**Tarih:** 2026-09-06 · **branch:** `yeni-yeni` · **kaynak:** [`DEVIR-PROMPT.md`](../../../DEVIR-PROMPT.md) §10
+**Tarih:** 2026-09-06 · **branch:** `yeni-yeni` · **kaynak:** `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](../plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §10
 **Statü:** insan onaylı (bu oturumda soru-cevapla kilitlendi) · **sonraki adım:** plan (`- [ ]` kutucuklu)
 
 > **Bu belge ne:** silinen ileriye dönük belge katmanının yerine ne yazılacağının tasarımı **ve**

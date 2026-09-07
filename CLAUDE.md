@@ -16,7 +16,7 @@
 > | what to do next | ⭐ [`docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 16 tasks, 82 boxes |
 > | why it is sequenced that way | [`docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) |
 > | what closed on 2026-09-06/07 | [`docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md`](docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md) — **48/48** |
-> | the rescued debt queue | [`DEVIR-PROMPT.md`](DEVIR-PROMPT.md) §5 — ⚠️ its *direction* sections are **superseded** by the plan above |
+> | the rescued debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 — ⚠️ its *direction* sections are **superseded** by the plan above |
 >
 > **Framing: open-source PRODUCT** — a legal adviser a Turkish citizen can actually ask.
 > `v1` = model layer · `v2` = app layer · arxiv is a **by-product**.
@@ -128,7 +128,7 @@ thing (OFF hands the model the gold article by construction).
 | :--- | :--- |
 | every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#62** |
 | what to work on next, tied to measured gaps | ⭐ [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
-| the open debt queue | [`DEVIR-PROMPT.md`](DEVIR-PROMPT.md) §5 *(rescued from the deleted `sprint3-part1.md`)* |
+| the open debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
 | why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0073**, next is **0074** |
 | questions raised and not yet answered | [`docs/open_questions.md`](docs/open_questions.md) — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
 

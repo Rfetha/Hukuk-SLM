@@ -1273,7 +1273,7 @@ istem → `answer()` → CLI/TUI · `v2` sınırı. `referans-design-doc.md`'nin
 
 - [ ] **Adım 5: Kırık link onarımı — ⛔ TARİHSEL KAYITLARA DOKUNMA**
 
-Güncellenir: `CLAUDE.md` · `MODEL_CARD.md` · `README.md` · `README.tr.md` · `DEVIR-PROMPT.md`.
+Güncellenir: `CLAUDE.md` · `MODEL_CARD.md` · `README.md` · `README.tr.md` · `DEVIR-PROMPT.md` *(silindi)*.
 ⛔ **Güncellenmez:** `docs/record/**` · `docs/adr/**` — *"o gün şu belge şunu diyordu"* kaydı;
 spec §11'in ilk kuralı **KAYIT TEMİZLENMEZ**.
 `verify:` `grep -rE '(ROADMAP|TODO|TASARIM|VISION|PAPER_TARGET)\.md' CLAUDE.md README*.md MODEL_CARD.md`
@@ -1348,6 +1348,27 @@ oran `tavan kullanımı = kütle ÷ recall@10`; **her iki setin `recall@10`'u ya
 Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 `verify:` hüküm ADR'de, `research_log`'da ve `MODEL_CARD.md`'de **aynı sayıyla** duruyor.
 - [ ] **Adım 4: Commit + etiket**
+
+---
+
+## 📋 AÇIK BORÇ KUYRUĞU — `DEVIR-PROMPT.md` *(silindi)* §5'ten devralındı (2026-09-07)
+
+> §5'in kendi cümlesi *"yeni roadmap bunları taşımalı"* diyordu. `DEVIR-PROMPT.md` *(silindi)* silindi;
+> kuyruk **buraya** taşındı. Durum sütunu **bugün** yeniden değerlendirildi.
+
+| # | borç | ölçülen büyüklük | bugünkü durum |
+| :-- | :--- | :--- | :--- |
+| **B1** ⭐ | **İsabetsizlik** — gerçek ama soruya uymayan maddeden cevaplama (`ADR-0055`) | ~~5/80~~ → **8/80** *(v2 birimi, ilk kez gözle)* | 🔄 **Görev 14** — birinci sıra eksen |
+| **B4** | `τ_a` merge'de seyreliyor (0,987 → 0,766, **−22,1 p**); çare eğitim **genliğinde** | `‖τ_a‖` **1,1806** ↔ `‖τ_g‖` 10,4722 (8,87×) | 🔄 **Görev 15** |
+| **YB2** | M2b bir **eğitim** borcu — kapı yolu ölçülerek öldü | `h2b@k=4` **0,735 < 0,766** | 🔄 **Görev 15 Adım 3** |
+| **YB6** | 🔴 **Dağıtım istemi artefaktı YOK** | istem 5 dosyada, biri **sürüklenmiş** (S18) | 🔄 **Görev 5** — sert engel |
+| **B8** | Katı kapı **tek karakterlik yazım hatasına** takılıyor (`…ESELERİ…`) | **1/80** · eğri ölçüldü, tolerans **BENİMSENMEDİ** (risk tarafında **0 gözlem**) | ⏸️ **açık, planda YOK** — düşük öncelik, ama kaydı burada |
+| **B9** | Tablo/cetvel parçaları madde diye indeksli (~**7.966** satır) | modele **0/800** blok ulaşıyor | ⏸️ **v2** — indeksi değiştirir, yeniden indeksleme turuyla paketlenir |
+| **B6** | **Canlı `bedesten` katmanı yok** — sözleşme **4/4 geçerli**, ürün çağırmıyor | ⚠️ **TR IP şart** (gov firewall yurtdışı/VPN'i bloke ediyor) | ⏸️ **v2** |
+| ~~B10~~ | Aşırı-red | 9/80 → **4/80** | ✅ **kapandı** — [ADR-0062](../../adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) |
+| ~~YB3~~ | `k`'nın çekinme ekseni **TANIMSIZ** (`SOURCE_CLIP=3500`) | ödendi **$0,78** | ✅ **kapandı** — `SOURCE_CLIP=12000`, `gecerlilik_devralinan` 65→0 |
+| ~~B2·B3·B5·B7~~ | — | — | ✅ kapandı |
+| **ARA KAPI** | 🚨 **DÜŞTÜ** 2026-08-06: merge M2b **0,766** ↔ eşik **0,8649** → **9,9 p** altında | paydalar eşit (77↔77) | ⛔ **CP4-CP5 yetkisi YOK.** Ürün sürümü ayrıldı ([ADR-0065](../../adr/0065-bolunmus-surumleme.md)); **iddia sürümü** buna bağlı kalır |
 
 ---
 

@@ -310,7 +310,7 @@ uyumsuzluğu** hâlâ geçerli: hazır gömüler 3000 karakterde parçalanmış,
 >
 > 🔴 **Açık kalan yarı:** cevap doğruluğu %2,7 → %17,4 (**sahipsiz negatif**). Ortak sebep
 > varsayımı düştüğüne göre bu artık **kendi başına** bir soru — ve bugün numaralı borcu var:
-> aşırı-red **B10** (`sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` §5**'e kurtarıldı)*). ⚠️ İkisi **birleştirilmedi**:
+> aşırı-red **B10** (`sprint3-part1.md` ⚰️ *(arşiv silindi; borç kuyruğu **`DEVIR-PROMPT.md` *(silindi)* §5**'e kurtarıldı)*). ⚠️ İkisi **birleştirilmedi**:
 > aynı kökten geldikleri **makul ama ölçülmemiş**.
 
 CP6 iki hasar bıraktı ve **ikisi de aynı sebepten olabilir**: cevap doğruluğu %2.7 → %17.4

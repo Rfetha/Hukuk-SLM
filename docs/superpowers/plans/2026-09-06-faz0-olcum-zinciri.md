@@ -507,7 +507,7 @@ koşusunun ortasında da patlayabilir. **Bu reponun tam olarak "sessiz yanlışl
 **Maliyet:** **~353 kod referans satırı** (kritik — taşıma anında kırılır) ·
 ~622 belge satırı, ama bunun **~590'ı tarihsel `research_log`/ADR** (*"o gün şu yoldan koşuldu"*
 diyen kayıtlar — ⛔ **güncellenmez**, kayıt temizlenmez) ve yalnız **~30'u** güncel referans
-belgesi (`CLAUDE.md` · `DEVIR-PROMPT.md` · aktif spec) ⇒ **güncellenir**.
+belgesi (`CLAUDE.md` · `DEVIR-PROMPT.md` *(silindi)* · aktif spec) ⇒ **güncellenir**.
 
 ### Önerilen taksonomi (5 grup, işlevden türetildi)
 
@@ -559,7 +559,7 @@ test dosyalarındaki elle `sys.path` satırları oraya devredilir.
 çıktısındaki **her** yol var olan bir dosyayı gösterir (döngüyle sınanır, gözle değil).
 
 - [x] **Adım 6: Güncel belgeleri güncelle, TARİHSEL OLANLARA DOKUNMA** ✅ *(12 belge / 61 satır; `docs/record`+`docs/adr` **0 değişiklik**)*
-Güncellenir: `CLAUDE.md` · `DEVIR-PROMPT.md` · aktif spec (~30 satır).
+Güncellenir: `CLAUDE.md` · `DEVIR-PROMPT.md` *(silindi)* · aktif spec (~30 satır).
 ⛔ **Güncellenmez:** `docs/record/**` · `docs/adr/**` (~590 satır) — bunlar *"o gün şu yoldan
 koşuldu"* diyen **tarihsel kayıtlar**; spec §11'in ilk kuralı: **KAYIT TEMİZLENMEZ.**
 `verify:` `git diff --stat` `docs/record/` ve `docs/adr/` altında **0 değişiklik** gösterir.
