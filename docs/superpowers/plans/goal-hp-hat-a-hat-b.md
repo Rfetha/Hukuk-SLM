@@ -12,6 +12,10 @@
 
 🔒 SIRALAMA KİLİTLİ (insan kararı): HP → Hat A (PARALEL, $0) → Faz 3 → v0.2 → Hat B → v1.0
  FAZ 1 · HP hakem paneli (G1-4, 18 kutucuk, ~$3-5) — ÖNCE
+ 🆕 G8b YÜRÜRLÜK: mülga madde vatandaşa GİTMEZ + korpusa tarih damgası
+     ölçüldü: mulga bayrağı VAR (2.547 madde) ama retriever KULLANMIYOR ⇒ 800 getirilen
+     kaynağın 2'si mülga. Korpusta TARİH ALANI YOK. Bu eksik özellik değil, YANLIŞ CEVAP.
+     ⛔ v2'ye kalan: canlı bedesten API (B6, TR IP şart) · 892→tam kapsam · tazelik boru hattı
  FAZ 2 · Hat A paketleme (G5-12, 43 kutucuk, $0, GPU yok) — HP'ye PARALEL koşabilir
  FAZ 3 · Belge katmanı (G13, 7 kutucuk, $0) → v0.2 YAYIN
  FAZ 4 · Hat B model (G14-16, 14 kutucuk, ~$7-15) → v1.0 kapısı · ⛔ HP bitmeden BAŞLAMAZ

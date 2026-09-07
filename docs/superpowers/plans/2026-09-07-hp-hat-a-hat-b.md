@@ -974,6 +974,74 @@ Karar gelince adımlar bu görevin içine, tam koduyla yazılır.
 
 ---
 
+### Görev 8b 🆕: Yürürlük — mülga madde vatandaşa GİTMEZ + korpusa tarih damgası
+
+**Dosyalar:** Modify: `scripts/erisim_korpus/retriever.py` · `data/index/mevzuat_bge_m3_s2/KUNYE.json` ·
+Create: `tests/test_yururluk.py` · `data/corpus/KUNYE.json`
+
+**Neden — ölçüldü 2026-09-07, tahmin değil:**
+
+| olgu | sayı |
+| :--- | :--- |
+| korpus kapsamı | **892 kanun** · 40.496 madde — **kanun katmanı**; yönetmelik/tüzük **yok** |
+| `mulga` (yürürlükten kalkmış) bayrağı | korpusta **VAR** — 2.547 madde `True` |
+| `retriever.py` bunu kullanıyor mu | 🚨 **HAYIR** — `grep mulga scripts/erisim_korpus/retriever.py` → **0 sonuç** |
+| gerçek koşuda sızıntı | **800 getirilen kaynağın 2'si mülga** (%0,2) · **2/80 kalem** (id 7 · 63) |
+| korpusun güncellik tarihi | 🚨 **YOK** — korpusta **tek bir tarih alanı bile yok** |
+
+⇒ Bugün vatandaşa **yürürlükten kalkmış madde** gösterilebiliyor ve modelin bunu anlamasını
+sağlayan **hiçbir sinyal yok**. ⚠️ `CLAUDE.md` *"S2 — carries the validity field"* diyor —
+**taşıyor ama kullanılmıyor**; bu çelişki iki yerde damgalanmalı.
+
+🚨 **Bu bir "eksik özellik" değil, YANLIŞ CEVAPtır** — bu yüzden `v2`'de değil **burada**.
+`CLAUDE.md`'nin çekirdek kısıtı *"güncellik kütüphanede, ağırlıkta değil"* diyor; ama kütüphanenin
+**tarihi yok** ve **mülgayı ayırt etmiyor**. İnsan kararı 2026-09-07: **ucuz olan v1'e, inşa v2'ye.**
+
+- [ ] **Adım 1: Failing test yaz** — `tests/test_yururluk.py`
+
+İki test: (a) `retriever.getir()` sonuçlarının hiçbirinde `mulga=True` olmayacak — bugün 800
+kaynağın 2'sinde var; (b) `data/corpus/KUNYE.json` **anlık görüntü tarihi** taşıyacak ve
+`kapsam == "kanun"` diyecek — *"bu korpus ne zamana göre günceldir"* sorusu bugün **cevaplanamıyor**.
+Beklenen alanlar: `anlik_goruntu_tarihi` · `kaynak` · `kapsam` · `n_kanun=892` · `n_madde=40496`.
+
+- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+
+Run: `python -m pytest tests/test_yururluk.py -v` → `FAIL` (mülga süzgeci yok · `KUNYE.json` yok)
+
+- [ ] **Adım 3: `retriever.py`'de yürürlük süzgeci — ve kararı GÖRÜNÜR kıl**
+
+⚠️ **Süzmek mi damgalamak mı?** İkisi farklı: süzmek mülga maddeyi **kaybeder** (bazen soru tam da
+mülga maddeyle ilgilidir), damgalamak **gösterir ama işaretler**.
+**Karar: varsayılan SÜZ**, açıkça istenirse getir; ve getirilen her kaynak `mulga` alanını
+**taşısın** ki `hakhukuk/terazi.py` (Görev 7) kullanıcıya rozet gösterebilsin.
+⛔ **Public API'de bool bayrak yok** (CLAUDE.md §4) → `Yururluk` enum: `YALNIZ_YURURLUKTE`
+(varsayılan) · `MULGA_DAHIL`.
+
+`verify:` `pytest tests/test_yururluk.py` yeşil **ve** `recall@10` **0,9500'de KALIR** — o 2 mülga
+kaynak hiçbir kalemin **altını değildi**, dolayısıyla süzgeç manşet sayıyı **oynatmamalı**.
+🚨 Oynarsa **DUR**: sebebi bulunmadan devam edilmez (bu, kaçırdığımız bir bağımlılık demektir).
+
+- [ ] **Adım 4: `data/corpus/KUNYE.json` — anlık görüntü künyesi**
+
+Zorunlu: `anlik_goruntu_tarihi` · `kaynak: "mevzuat.gov.tr"` · `kapsam: "kanun"` · `n_kanun: 892` ·
+`n_madde: 40496` · `n_mulga: 2547` · `sha256` ·
+⚠️ `kapsam_disi: ["yönetmelik","tüzük","KHK","tebliğ"]` — **ne KAPSAMADIĞI açıkça yazılır**.
+`verify:` `pytest` yeşil; `MODEL_CARD.md` ve `README*.md` bu tarihi **alıntılıyor**.
+
+- [ ] **Adım 5: Çelişkiyi iki yerde damgala**
+
+`CLAUDE.md`'nin *"S2 — carries the validity field"* cümlesi bugün **yanıltıyor**: alan var,
+**kullanılmıyordu**. Düzeltmeden sonra cümle doğru olur; **düzeltme tarihi** yazılır.
+`verify:` `CLAUDE.md` ile `data/index/.../KUNYE.json` aynı şeyi söylüyor.
+
+- [ ] **Adım 6: Commit**
+
+⛔ **v2'ye kalanlar — burada YAPILMIYOR:** canlı `bedesten` API (**B6**, ⚠️ **TR IP şart** — gov
+firewall yurtdışı/VPN'i bloke ediyor) · **892 → tam kapsam** (yönetmelik/tüzük; **yeniden
+indeksleme** turu ister, B9 ile paketlenir) · otomatik tazelik boru hattı.
+
+---
+
 ### Görev 9: Servis katmanı — `answer(soru) → Cevap` (**tek derin modül**)
 
 **Dosyalar:** Create: `hakhukuk/servis.py` · `tests/test_servis.py`

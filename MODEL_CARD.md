@@ -588,17 +588,43 @@ Sürüm bu yüzden **ikiye ayrıldı** ([ADR-0065](docs/adr/0065-bolunmus-suruml
 
 ---
 
-### 7.8 ⚠️ Parametrik bilgide rakiplerin GERİSİNDEYİZ — ölçüldü, ve bu bir sınırdır
+### 7.8 Parametrik bilgide gerideyiz — **ama emniyet ağı iddiası ÖLÇÜLDÜ ve ÇÜRÜDÜ**
 
 Kör modda (kaynak verilmeden) `A1`: biz **0,4105** ↔ `3.5 Flash` **0,8241** — **iki katı**
 ([`f10/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) · [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json)).
-Gemini hattı Türk hukukunu **kaynaksızken bizden çok daha iyi biliyor**.
+Gemini hattı Türk hukukunu **kaynaksızken bizden çok daha iyi biliyor**. Bu doğru.
 
-Bu, M5'in **düşük olmasını istememizle çelişmez** — ikisi aynı ölçümün iki yüzüdür (§6). Ürün
-kararımız bilgiyi **ağırlığa değil kütüphaneye** koymaktır, çünkü mevzuat değişir. Ama kararın
-bedeli şudur: **retriever'ın ıskaladığı yerde arkamızda parametrik bir emniyet ağı yok.**
-`recall@10 = 0,9500`'ün dışında kalan **4 kalemde** rakip kendi bilgisinden toparlayabilirken
-bizim kolumuz toparlayamaz. ⇒ **Erişim kalitesi bizde daha kritiktir**, rakipte olduğundan daha.
+⚠️ **Bu karttaki bir önceki sürüm buradan şu sonucu çıkarıyordu:** *"retriever'ın ıskaladığı
+yerde arkamızda parametrik emniyet ağı yok ⇒ erişim kalitesi bizde daha kritik."* Cümle
+**mantıklı görünüyordu; ölçüldü ve VERİ ONU DESTEKLEMEDİ.**
+
+**Ölçüm (2026-09-07):** dört öznenin **dördü de aynı 4 kalemi** kaçırıyor (id **10 · 21 · 51 · 79**)
+— harness özdeş olduğu için (`recall@10 = 0,9500`, dördünde de aynı). O 4 kalemde hakem sadakati:
+
+| özne | kaçan 4 kalemde `A1` | altın **geldiğinde** `A1` |
+| :--- | ---: | ---: |
+| **biz** | **0,000** | **0,885** ⭐ |
+| 3.1 Flash-Lite | 0,125 | 0,756 |
+| 3.5 Flash-Lite | 0,196 | 0,836 |
+| 3.5 Flash | 0,167 | 0,861 |
+
+⇒ **Parametrik üstünlük, harness'ın kaçırdığı yerde işe yaramıyor.** Rakiplerin oradaki sadakati
+**0,13-0,20** — pratikte hepsi başarısız. Ezberden bildikleri hukuku o kalemlerde **yanlış kanuna**
+bağlıyorlar; gözle okuma bunu tek tek gösteriyor: id 10 → altın 6284/10 yerine **HMK 393**,
+id 21 → altın TBK 99 yerine **VUK 215 + Euro Kanunu**
+([`GOZLE_ISABETSIZLIK_3_5_FLASH.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md)).
+
+⭐ **Ve altın geldiğinde tablo tersine dönüyor: kaynağı en iyi kullanan BİZ'iz** (0,885 ↔ 0,861 ↔
+0,836 ↔ 0,756). Ürün rejimi tam olarak bu rejimdir.
+
+**Doğru sınır cümlesi şudur:** parametrik bilgi eksikliği **bir emniyet ağı kaybı değildir** —
+çünkü ölçüldüğünde kimsede öyle bir ağ **çalışmıyor**. Gerçek sınır, **erişimin kendisidir** ve o
+sınır **dört özne için de aynıdır**. ⇒ Kaldıraç parametrik bilgi değil, **retriever** ve
+**getirilemediğinde susma** davranışıdır (bugün 1/4 susuyoruz; rakipler 1-2/4 — fark 4 kalemde,
+**gürültü içinde**).
+
+🚨 **Bu düzeltmenin kendisi kayda geçer:** makul görünen bir çıkarım, ölçülünce çürüdü. Bu kartta
+*"ölçülmemiş bir çıkarımı sınır olarak yazmak"* hatası **bir kez yapıldı ve düzeltildi**.
 
 ---
 
