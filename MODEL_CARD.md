@@ -128,49 +128,76 @@ Sınavın eşit olduğu **varsayılmadı, ölçüldü** — kanıt §4'te.
 
 | eksen | **HakHukuk-4B-v0.1** | `gemini-3.1-flash-lite` | `gemini-3.5-flash-lite` | `gemini-3.5-flash` | `Qwen3.5-4B` (base) | kaynak |
 | :--- | ---: | ---: | ---: | ---: | ---: | :--- |
-| **sadık-cevap kütlesi** ↑ ᵃ | **0,8011** | 0,7058 | 0,7622 | 0,7425 | ölçülmedi ᵇ | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
-| `coverage` (cevaplama oranı) | **0,9375** | 0,8750 | 0,8750 | 0,8375 | ölçülmedi ᵇ | [`harness_tablo*.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) |
-| `A1` · cevaplanan ↑ | **0,8545** | 0,7710 | 0,8199 | 0,8269 | ölçülmedi ᵇ | ↑ |
-| `A1` · altın getirilen ↑ | **0,8902** | 0,7900 | 0,8449 | 0,8523 | ölçülmedi ᵇ | ↑ |
-| `recall@10` (erişim) | 0,9500 | 0,9500 | 0,9500 | 0,9500 | ölçülmedi ᵇ | ↑ |
-| **aşırı-red** ↓ ᶜ | **4/80** | 8/80 | 9/80 | 11/80 | ölçülmedi ᵇ | ↑ (`altin_geldi_cekindi`) |
-| **isabetsizlik** ↓ | **8/80** | ölçülmedi ᵈ | ölçülmedi ᵈ | ölçülmedi ᵈ | ölçülmedi ᵈ | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) §2 |
-| **uydurulmuş madde** ↓ | **0/114** | 1/152 | 4/130 | 4/133 | ölçülmedi ᵇ | [`harness_tablo*.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) |
-| **M5 ezber kütlesi** ↓ ᵉ | **0,4057** | ölçülmedi ᶠ | ölçülmedi ᶠ | ölçülmedi ᶠ | **0,4739** | [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) |
-| **$ / cevap** ↓ | **$0** ᵍ | ölçülmedi ᵍ | ölçülmedi ᵍ | ölçülmedi ᵍ | **$0** ᵍ | [`f02/KUNYE.json`](outputs/eval/f02-biz-onsozsuz/KUNYE.json) |
-| ort. **token / cevap** ↓ | 782,5 | 861,5 | **171,1** | 699,4 | ölçülmedi ʰ | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
+| **sadık-cevap kütlesi** ↑ ᵃ | **0,8011** | 0,7058 | 0,7622 | 0,7425 | ölçülemedi ᵇ | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
+| `coverage` (cevaplama oranı) | **0,9375** | 0,8750 | 0,8750 | 0,8375 | ölçülemedi ᵇ | [`harness_tablo*.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) |
+| `A1` · cevaplanan ↑ | **0,8545** | 0,7710 | 0,8199 | 0,8269 | ölçülemedi ᵇ | ↑ |
+| `A1` · altın getirilen ↑ | **0,8902** | 0,7900 | 0,8449 | 0,8523 | ölçülemedi ᵇ | ↑ |
+| `recall@10` (erişim) | 0,9500 | 0,9500 | 0,9500 | 0,9500 | ölçülemedi ᵇ | ↑ |
+| **aşırı-red** ↓ ᶜ | **4/80** | 8/80 | 9/80 | 11/80 | ölçülemedi ᵇ | ↑ (`altin_geldi_cekindi`) |
+| **isabetsizlik** ↓ ᵈ | 8/80 | 8/80 | **7/80** | 8/80 | ölçülemedi ᵇ | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) · [`GOZLE_ISABETSIZLIK_*.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md) |
+| **uydurulmuş madde** ↓ | **0/114** | 1/152 | 4/130 | 4/133 | ölçülemedi ᵇ | [`harness_tablo*.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) |
+| **M5 ezber kütlesi** ↓ ᵉ | **0,3899** | 0,6710 | 0,7013 | 0,8241 | **0,4697** | [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) · [`f10/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) |
+| **$ / cevap** ↓ ᵍ | **$0** | $0,001895 | **$0,001152** | $0,009914 | **$0** | [`MALIYET.json`](outputs/eval/f09-maliyet/MALIYET.json) |
+| ort. **token / cevap** ↓ | 782,5 | 861,5 | **171,1** | 699,4 | ölçülemedi ᵇ | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
 
 **Dipnotlar — hepsi bir ölçüm hükmüdür, süsleme değildir:**
 
 - **ᵃ** Rakip sütunlarında **bağlayıcı GÖZ-katı** okuması yazılıdır — üç okumanın **en
   muhafazakârı**, yani rakip lehine olanı. Üçü birden aşağıdaki küçük tabloda.
-- **ᵇ** **Base bu sınava hiç sokulmadı.** `Qwen3.5-4B` yalnız **M5 anti-hedefi** için, kendi
-  eşit sınavında koşuldu ([ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md) §2: M5'in çıpası
-  base'dir, rakip değil). Boş bırakmak yerine **"ölçülmedi"** yazılıdır — boşluk *"kötü"* diye
-  okunabilir, "ölçülmedi" okunamaz.
+- **ᵇ** 🚨 **"ölçülmedi" değil, ÖLÇÜLEMEDİ — ve sebebi bir bulgudur.** Base bu sınava
+  **sokuldu ve geçerlilik kapısından kaldı**: kesik **16/80 = %20** ↔ eşik %5
+  ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) ⇒ **hakem çağrılmadı**,
+  hiçbir hüküm-ekseni sayısı üretilmedi
+  ([`f08-base-harness/`](outputs/eval/f08-base-harness/h1_base_h1_v2_detail.jsonl)).
+  16 kesiğin **15'i gerçek kesilme, 1'i döngü** ⇒ [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md)'ün
+  `DRY` kaldıracı burada **işe yaramaz**; sebep şu: base **uzun, kaynak alıntılayan** cevaplar
+  yazıyor ve **1536'ya sığmıyor**.
+  ⭐ Karşılaştırma bir bulgudur: aynı base **kör modda** yalnız **2/80** kesik veriyor
+  ([`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json)) ⇒ şişiren şey **kaynakların
+  kendisi**. Bu, [#42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)'nin
+  *"ince ayar muhakemeyi stabilize etti"* bulgusunun **harness AÇIKKEN** ölçülmüş hâlidir.
+  🔄 **Yer tutucu:** base şu anda Modal'da **daha büyük bir bütçeyle** yeniden koşuluyor. Sonuç
+  gelince **ayrı bir satır** olarak, ⚠️ **"EŞİT SINAV DEĞİL — bütçe 2048 ↔ 1536"** damgasıyla
+  eklenecek. ⛔ **O satırın sayısı bugün YOKTUR ve buraya tahmin yazılmamıştır.**
 - **ᶜ** Tanım dört öznede de **aynı**: *altın madde bağlama girdi, model yine de sustu*
   (`erisim_davranis_caprazi.altin_geldi_cekindi`). Bunlar **ALET** sayılarıdır.
   ⚠️ Gözle okuma bizim kolumuzda **farkı sıfır** buldu (alet 5 çekinme dedi, 1'i *altın gelmedi*
   olduğu için doğru davranıştı ⇒ **4**), rakip kollarda ise dedektörün **fazla red saydığını**
-  buldu — kalibrasyon §4'te.
-- **ᵈ** İsabetsizlik ekseni **yalnız gözle tam taramayla** ölçülebiliyor (otomatik vekil metrik
-  **yok** ve bu ölçüldü — §7.5). 75 cevaplanan kalemimiz tarandı; **rakiplerde bu tarama
-  yapılmadı** ⇒ sütun *"biz kötüyüz/iyiyiz"* diye okunamaz, **sadece bizde ölçülü**.
-- **ᵉ** ⛔ **M5 kendi biriminde, ayrı bir sınavdır** ve satırın tek geçerli kıyası
-  **biz ↔ base**'dir (§6). Kör mod: kaynak verilmez, harness kapalıdır. **Düşük olması iyidir**
-  — bu bir **ANTİ-HEDEF**tir: kazanç ezberden gelmemelidir.
-- **ᶠ** M5 rejimi `DRY` örnekleyicisi içerir ([ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md));
-  `DRY` bir `llama.cpp` bayrağıdır, **Gemini'ye uygulanamaz** ⇒ rakiple **eşitlenemez**
-  ([ADR-0057](docs/adr/0057-harness-rekabet-kapisi-esit-sinav.md)). Ölçülmemesi bir eksiklik
-  değil, eşit sınav kuralının **sonucudur**.
-- **ᵍ** Bizim iki kolumuz **yerelde** koştu (`llama-server`, RTX 5070) ⇒ **çıkarım bedeli $0**.
-  ⚠️ Rakiplerin **cevap başına API bedeli AYRI ÖLÇÜLMEDİ**; ölçülen şey **koşu başı** toplamdır
-  (F0.4'te üç çıpa toplam **$1,35**, öznebaşı ~$0,35 — hakem bedeli **dâhil**, bu yüzden
-  bölerek cevap başına çevirmedim). Hakem bedeli ayrıca kayıtlı: biz $0,0417 · 3.1 FL $0,0452 ·
+  buldu — kalibrasyon §4'te. Gözle düzeltilmiş aşırı-red: 3.5 Flash **7/80**
+  ([`GOZLE_ISABETSIZLIK_3_5_FLASH.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md) §2).
+- **ᵈ** 🚨 **BU SATIRDA "BİZ İYİYİZ" CÜMLESİ KURULMAZ.** Dört öznenin de **80/80'i**, f02'nin §2
+  tanımıyla **birebir aynı** ölçütle, **gözle tam tarandı** (örneklem değil). Sonuç: **ikisiyle
+  berabere, biriyle geride** — `3.5 Flash-Lite` **7/80** ile bizden **iyi** ve bu **olduğu gibi**
+  raporlanır.
+  ⚠️ **Ve taban aynı değil.** Çekinen kalem sınanamaz; her kolun **cevapladığı** kalem sayısı farklı:
+
+  | kol | isabetsizlik | çekinme (gözle) | **cevaplanan tabanda** |
+  | :--- | ---: | ---: | ---: |
+  | BİZ | 8/80 | 5/80 | 8/75 = **%10,7** |
+  | 3.1 FL | 8/80 | 7/80 | 8/73 = **%11,0** *(türetildi)* |
+  | 3.5 FL | 7/80 | 9/80 | 7/71 = **%9,9** *(türetildi)* |
+  | 3.5 Flash | 8/80 | 9/80 | 8/71 = **%11,3** |
+
+  *(%10,7 ve %11,3 dosyada yazılı; diğer ikisi aynı dosyaların çekinme sayılarından **türetildi**.)*
+  ⭐ **Ek bulgu, kendi aleyhimize:** f02'de **bizim** isabetsiz olduğumuz id **32 · 41** rakipte
+  **isabetli**; ve **27 · 42** — öz-denetimde *"soru yazımım komşu maddeye kaydırdı"* dediğimiz
+  iki kalem (§7.7) — rakip o tuzağa **düşmemiş**. ⇒ Kusurun kaynağı soru değil, **model** olabilir.
+- **ᵉ** ⛔ **"M5'te rakipleri yendik" CÜMLESİ KURULMAZ** — sebebi §6'da, ve iki yüzü birden orada.
+  Satır **ALET** okumasıdır (dört öznede kıyaslanabilir tek okuma). Bizim iki kolumuzun **GÖZ**
+  okuması da var: biz **0,4057** ↔ base **0,4739**; hüküm **iki okumada da aynı**.
+- **ᵍ** **Ölçüldü, tahmin edilmedi** — ölçüm bedeli $0,0487
+  ([`MALIYET.json`](outputs/eval/f09-maliyet/MALIYET.json), fiyatlar OpenRouter `/api/v1/models`,
+  2026-09-07). Bizim iki kolumuz **yerelde** koştu (`llama-server`, RTX 5070) ⇒ çıkarım bedeli **$0**.
+  ⭐ **Eşit sınavın maliyet tarafındaki kanıtı:** girdi token'ı üç öznede de **birebir aynı —
+  193.042** (ort. 2.413/kalem), çünkü istem **80/80 bayt-bayt özdeş**. Fark tümüyle **çıktı
+  token'ı ve birim fiyattan** geliyor.
+  ⭐ **Kapı çıpası `3.5 Flash`, `3.5 Flash-Lite`'ın 8,6 katı** ($0,009914 ↔ $0,001152).
+  **Yöntem şerhi:** üç Gemini **aynı tokenizer**'ı kullanıyor (3 kalemde sınandı, `prompt_tokens`
+  birebir: 2842 · 2681 · 2343) ⇒ sayım yalnız **en ucuz** modelde yapıldı, fiyatlar ayrı uygulandı.
+  ⚠️ Hakem bedeli bu satıra **dâhil değil**, ayrıca kayıtlı: biz $0,0417 · 3.1 FL $0,0452 ·
   3.5 FL $0,0410 · 3.5 Flash $0,0434 *(`gnd_*_summary.json`)*.
-  ⛔ **Maliyet-normalize parite iddiası bu karttan KURULMAZ** — ADR-0017'nin istediği ölçüm bu değil.
-- **ʰ** Base'in `h1` token maliyeti ölçülmedi; M5 koşusunda **1811,7** token/cevap üretti, ama o
-  **başka bir mod** ve buraya taşınamaz *(`f07/KUNYE.json`)*.
+  ⛔ **Maliyet-normalize parite iddiası yine de KURULMAZ** — ADR-0017'nin istediği ölçüm bir
+  Pareto eğrisidir, tek satır değil.
 
 ### Rakip sütunlarının üç okuması
 
@@ -301,7 +328,9 @@ sütunu bunu düzeltir.
 3. **"3.1 FL için kesikliğe duyarlı hüküm."** %6,2 ile bizim kolumuzu düşüren eşiğin üstünde;
    [ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md) simetrik uygulanmalı.
 4. **"Model bu kadar iyileşti."** Bkz. §7.1 — kazancın büyük kısmı **ölçümden** geldi.
-5. **"Maliyet-normalize parite."** $/cevap ekseni ölçülmedi (dipnot ᵍ).
+5. **"Maliyet-normalize parite."** `$/cevap` artık **ölçüldü** (dipnot ᵍ), ama parite bir
+   **Pareto eğrisi** iddiasıdır ([ADR-0017](docs/adr/gemma4-12b-dersler.md#adr-0017)); tek bir
+   maliyet satırından **kurulmaz**.
 6. **Rakip havuzu tek sağlayıcıdan.** `v1.0`'da en az bir başka sağlayıcı eklenir; ön koşulu
    hakem panelidir ([ADR-0072](docs/adr/0072-v1-rakip-havuzu-genisler.md), açık karar **S16**).
 
@@ -377,9 +406,40 @@ Kaynak: [`f07-m5-anti-hedef/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.js
 | base | ALET | 0,9750 | 0,4818 | **0,4697** |
 | base | **GÖZ** | 1,0000 | 0,4739 | **0,4739** |
 
-**Okuma:** model kaynaksızken base'den **daha az** isabetli ve gözle bakıldığında **iki kol da
-hiç susmuyor** (80/80 konuşuyor). ⇒ **Kazanç ezberden gelmiyor** — istenen yön budur:
-*güncellik kütüphanede, ağırlıkta değil.*
+**Kapı okuması (biz ↔ base):** model kaynaksızken base'den **daha az** isabetli ve gözle
+bakıldığında **iki kol da hiç susmuyor** (80/80 konuşuyor). ⇒ **Kazanç ezberden gelmiyor** —
+istenen yön budur: *güncellik kütüphanede, ağırlıkta değil.*
+
+### Rakipler de aynı kör sınavda ölçüldü — ve sayının İKİ YÜZÜ var
+
+Kaynak: [`f10-rakip-m5/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) (hakem bedeli $0,1418).
+
+| kol | `coverage` | `A1` | **ezber kütlesi** |
+| :--- | ---: | ---: | ---: |
+| **BİZ** (ALET) | 0,9500 | **0,4105** | **0,3899** |
+| `Qwen3.5-4B` base | 0,9750 | 0,4818 | 0,4697 |
+| `gemini-3.1-flash-lite` | 0,9875 | 0,6795 | 0,6710 |
+| `gemini-3.5-flash-lite` | 1,0000 | 0,7013 | 0,7013 |
+| `gemini-3.5-flash` | 1,0000 | **0,8241** | **0,8241** |
+
+> # 🚨 *"M5'te rakipleri yendik"* CÜMLESİ KURULMAZ
+>
+> **Sebep 1 — bu bir ANTİ-HEDEF ve çıpası BASE'dir, rakip değil.**
+> [ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md) §2 rakip çıpasını **değerlendirip
+> REDDETTİ**: ölçülmek istenen şey *"modeli aldığımız noktadan kötüye götürmedik mi"*dir.
+> Rakibin M5'i bizim kapımızda **hiçbir hüküm üretmez**.
+>
+> **Sebep 2 — aynı sayının ikinci yüzü aleyhimizedir, ve yazılmadan geçilmez.**
+> Düşük M5 **bizim için** *"kaynağa dayanıyoruz, ezbere konuşmuyoruz"* demektir. **Ama tam olarak
+> aynı sayı** şu anlama da gelir: **Gemini, Türk hukukunu kaynaksızken bizden çok daha iyi
+> biliyor.** Kör moddaki `A1`: `3.5 Flash` **0,8241** ↔ biz **0,4105** — **iki katı**.
+> Bu bir parametrik bilgi farkıdır ve **gerçektir**; ürün kararımız (bilgiyi ağırlığa değil
+> kütüphaneye koymak) onu **ortadan kaldırmaz, sadece ürün için önemsizleştirir**.
+
+**DRY şerhi — ölçüldü ki gerekmiyor.** `DRY` rakiplere **uygulanamadı** (bir `llama.cpp`
+örnekleyicisidir). ⭐ Ama üç rakip kolda da **döngü YOK** ve kesiklik **%0 · %0 · %2,5** — hepsi
+eşiğin altında. Yani DRY'nin bizim kolumuzda kırdığı kusur rakiplerde **zaten gözlenmiyor**;
+bu, kıyası geçersiz kılmıyor ama **damgalanıyor**.
 
 > ⚠️ **M5 rejimi ayrıdır ve kendi birimindedir.** Koşu `--dry-multiplier 0.8 --dry-base 1.75
 > --dry-allowed-length 2` ile yapıldı ([ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md));
@@ -388,7 +448,8 @@ hiç susmuyor** (80/80 konuşuyor). ⇒ **Kazanç ezberden gelmiyor** — istene
 > (DRY modeli doğru değil **akıcı** yapar; döngü kalemi ile akıcı-yanlış kalem hakemden aynı notu
 > almaz) ⇒ `cp09`'un M5 sayılarıyla kıyas **kurulmaz**. Hüküm yalnız yukarıdaki iki kol arasında
 > kurulur; iki kol da **aynı** GGUF kuantizasyonu, taşıyıcı, seed, bütçe, istem ve soru setiyle
-> koştu — değişen tek şey **model ağırlıkları**.
+> koştu — değişen tek şey **model ağırlıkları**. Rakip kolları bu şerhin **dışındadır**: onlar
+> DRY'siz koştu (uygulanamıyor) ve yukarıdaki tabloda **ayrı** okunur.
 
 ---
 
@@ -524,6 +585,20 @@ Sürüm bu yüzden **ikiye ayrıldı** ([ADR-0065](docs/adr/0065-bolunmus-suruml
 
 *(ikisi de [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) ·
 [#62](docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md))*
+
+---
+
+### 7.8 ⚠️ Parametrik bilgide rakiplerin GERİSİNDEYİZ — ölçüldü, ve bu bir sınırdır
+
+Kör modda (kaynak verilmeden) `A1`: biz **0,4105** ↔ `3.5 Flash` **0,8241** — **iki katı**
+([`f10/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) · [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json)).
+Gemini hattı Türk hukukunu **kaynaksızken bizden çok daha iyi biliyor**.
+
+Bu, M5'in **düşük olmasını istememizle çelişmez** — ikisi aynı ölçümün iki yüzüdür (§6). Ürün
+kararımız bilgiyi **ağırlığa değil kütüphaneye** koymaktır, çünkü mevzuat değişir. Ama kararın
+bedeli şudur: **retriever'ın ıskaladığı yerde arkamızda parametrik bir emniyet ağı yok.**
+`recall@10 = 0,9500`'ün dışında kalan **4 kalemde** rakip kendi bilgisinden toparlayabilirken
+bizim kolumuz toparlayamaz. ⇒ **Erişim kalitesi bizde daha kritiktir**, rakipte olduğundan daha.
 
 ---
 
@@ -696,7 +771,20 @@ yayımlamak**. ⚠️ Bunun bedeli de ölçülü: donmuş TEST bir **kabul testi
 onu yakar; DEV ise **seçim yapılmış** settir. Hangi alt kümenin, hangi lisansla, hangi anda
 yayımlanacağı **açık**.
 
-**6 · Ölçüm aleti hâlâ onarım altında.**
+**6 · 🚨 Bir ALTIN ETİKET şüphesi kayda geçti — id 46.**
+İki **bağımsız** gözle okuma, **birbirinden habersiz**, aynı kalemi işaretledi: KMK **14** lafzen
+*"Kat mülkiyetine geçişte ayrıca yönetim plânı istenmez"* diyor ⇒ soruyu, altın etiketlenen
+KMK **53**'ten (1965 öncesi geçiş hükmü) **daha iyi karşılıyor**
+([`GOZLE_ISABETSIZLIK_3_1_FL.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_1_FL.md) §3 ·
+[`GOZLE_ISABETSIZLIK_3_5_FL.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FL.md) ·
+[`GOZLE_ISABETSIZLIK_3_5_FLASH.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md) §5).
+Üç kolda da **sınır durum** sayıldı ve **hiçbirinde sayıya katılmadı** ⇒ ⚠️ **üç isabetsizlik
+sayısı da ALT SINIRDIR.** ⛔ Etiket **bugün değiştirilmedi**: sonucu gördükten sonra yer-gerçeğini
+oynatmak, [ADR-0067](docs/adr/0067-soru-onarimi-dev-test-v2.md)'nin yanlılık korumasının doğrudan
+ihlalidir. **Soru:** yer-gerçeği denetimi ayrı, **kör** ve **koşudan önce** yapılan bir adım
+olmalı mı?
+
+**7 · Ölçüm aleti hâlâ onarım altında.**
 Faz 0'da **beş alet kusuru** bulundu ve hiçbiri sayısal kapıya takılmadı (§7.1); dedektör **üç
 kez** yanıldı (§7.1) ve `exact_reject`'in **kör mod dalı bugün de açık borç**. **Soru:** *"gözle
 okuma"* kalıcı bir kapı mı, yoksa aletin olgunlaşmasıyla azalması beklenen bir maliyet mi?
