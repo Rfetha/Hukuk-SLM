@@ -13,10 +13,15 @@ dependencies = [
     "rank-bm25>=0.2.2",
     "sentence-transformers>=5.0",   # bge-m3 gömücü — CPU'da koşar, GPU'ya GİRMEZ
     "huggingface-hub>=1.0",         # indeks dağıtımı (S8 kararı (a))
+    # TUI. Gerekçe: tek ekranlı arayüzü elle yazmak prompt_toolkit/curses seviyesinde KENDİ
+    # MANTIĞINI doğurur; textual bunu hazır verip tui.py'nin answer() üstünde ince kabuk
+    # kalmasını sağlıyor (tests/test_tui.py bunu kapı olarak sınıyor).
+    "textual==8.2.8",              # ölçülen sürüm, 2026-09-07
 ]
 
 [project.scripts]
 hakhukuk = "hakhukuk.cli:main"
+hakhukuk-tui = "hakhukuk.tui:main"
 
 [build-system]
 requires = ["setuptools>=68"]
