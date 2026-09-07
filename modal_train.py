@@ -2,7 +2,7 @@
 """
 HakHukuk — Modal sarmalayıcı (bulut eğitim). **Base-agnostik.**
 
-`scripts/train_sft.py` / `scripts/train_orpo.py`'a DOKUNMADAN onları Modal GPU'sunda
+`scripts/egitim/train_sft.py` / `scripts/egitim/train_orpo.py`'a DOKUNMADAN onları Modal GPU'sunda
 subprocess ile koşar. Yerel kart sadece prototip/eval; gerçek eğitim burada.
 
 ⚠️ **Model adı bu dosyada YOK.** `--model` zorunlu parametre; verilmezse hata verir.
@@ -129,7 +129,7 @@ def train(model: str, data_path: str, run_name: str, user_part: str, assistant_p
           epochs: float = 1.0, max_steps: int = -1, extra_args: list[str] | None = None):
     import sys
     cmd = [
-        sys.executable, "/root/scripts/train_sft.py",
+        sys.executable, "/root/scripts/egitim/train_sft.py",
         "--model", model,
         "--data", data_path,
         "--run-name", run_name,
@@ -158,7 +158,7 @@ def train_orpo(model: str, data_path: str, run_name: str, adapter: str | None = 
                target_modules: str = ""):
     import sys
     cmd = [
-        sys.executable, "/root/scripts/train_orpo.py",
+        sys.executable, "/root/scripts/egitim/train_orpo.py",
         "--model", model,
         "--data", data_path,
         "--run-name", run_name,
@@ -283,7 +283,7 @@ def harvest_cp2(gguf: str, packed: str, madde: str, out_dir: str, types: list[st
         huniler = {}
         for tip in types:
             out = os.path.join(out_dir, f"cp2c_{tip}.jsonl")
-            cmd = [sys.executable, "-u", "/root/scripts/cp2_harvest.py",
+            cmd = [sys.executable, "-u", "/root/scripts/veri_hazirlik/cp2_harvest.py",
                    "--type", tip, "--packed", packed, "--madde-path", madde,
                    "--out", out, "--seed", str(seed),
                    "--server-url", "http://127.0.0.1:8080/v1",
@@ -415,7 +415,7 @@ def harvest_rejected(model: str, packed: str, out: str, adapter: str | None = No
                      target: int = 1500, batch: int = 16, max_new_tokens: int = 96):
     import sys
     cmd = [
-        sys.executable, "/root/scripts/gen_v3_rejected.py",
+        sys.executable, "/root/scripts/veri_hazirlik/gen_v3_rejected.py",
         "--model", model, "--packed", packed, "--out", out,
         "--oracle", "--batch", str(batch), "--target", str(target),
         "--max-new-tokens", str(max_new_tokens),
@@ -631,7 +631,7 @@ def harvest_b10(gguf: str, havuz: str, out_dir: str, np_list: list[int],
                 raise SystemExit(f"[b10] 🚫 sunucu 360 s'te açılmadı · -np {np_slots}")
             print(f"\n[b10] ========== -np {np_slots} · ctx {ctx} ==========", flush=True)
 
-            cmd = [sys.executable, "-u", "/root/scripts/b10_hasat.py",
+            cmd = [sys.executable, "-u", "/root/scripts/veri_hazirlik/b10_hasat.py",
                    "--havuz", havuz, "--out", out, "--seed", str(seed),
                    "--server-url", "http://127.0.0.1:8080/v1",
                    "--concurrency", str(np_slots),
