@@ -1,5 +1,10 @@
 # F0.7 — M5 kesik kalemlerinin GÖZLE OKUNMASI
 
+> ⛔ **Bu okuma GEÇERSİZ ilan edilen koşuya dayanır** (kesik %6,2 > %5) — ham dosya artık
+> [`GECERSIZ-kesik6.2-drysiz/`](GECERSIZ-kesik6.2-drysiz/NEDEN_GECERSIZ.md) altında.
+> Okuma **silinmiyor**: [ADR-0073](../../../docs/adr/0073-m5-rejimine-dry-eklendi.md)'ün
+> gerekçesinin kanıtı budur.
+
 **Tarih:** 2026-09-07 · **koşu:** `m5_tgta_v1_m5_v2` · **ara kayıt:** 62/80 kalem işlenmişken
 
 **Neden:** kesiklik geçerlilik kapısının (%5, ADR-0040) sınırında seyrediyor. Kapı bir

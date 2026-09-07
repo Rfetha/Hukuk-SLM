@@ -8,7 +8,7 @@
 | 2026-09-07 08:12 · **şarjda** koşuldu | ✅ 80/80 üretildi, **21 dakika** (tahmin 57 dk) |
 | geçerlilik kapısı (ADR-0040) | 🚨 **KALDI** — kesik **5/80 = %6,2 > %5**, `EXIT=2` |
 | hakem | **çağrılmadı** — kapı parayı korudu |
-| base çıpası | ⏸️ 2 kalemde durduruldu (bkz. aşağıda, `_YARIM_base_dry_yok.jsonl`) |
+| base çıpası | ⏸️ 2 kalemde durduruldu (bkz. aşağıda, `GECERSIZ-kesik6.2-drysiz/_YARIM_base_dry_yok.jsonl`) |
 
 ## Kapı neden kaldı — ve reçetesi neden uymuyor
 
