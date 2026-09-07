@@ -17,7 +17,18 @@ import json
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# ── scripts/ yol köprüsü (T5, 2026-09-07) ────────────────────────────────────
+# Kardeş modüller alt klasörlere bölündükten SONRA da bulunsun diye scripts/ kökü, tüm
+# alt klasörleri ve repo kökü sys.path'e girer. Uzantısız `import X` bu köprü olmadan
+# taşımada SESSİZCE kırılır: ImportError çalışma zamanında, bazen GPU koşusunun ortasında.
+# ⚠️ 26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
+import os, sys
+_K = os.path.dirname(os.path.abspath(__file__))
+_K = _K if os.path.basename(_K) == "scripts" else os.path.dirname(_K)
+sys.path[:0] = [_K, *(os.path.join(_K, _d) for _d in sorted(os.listdir(_K))
+                      if os.path.isdir(os.path.join(_K, _d)) and _d[0] not in "_."),
+                os.path.dirname(_K)]
+# ─────────────────────────────────────────────────────────────────────────────
 from atif_dogrula import (Dogrulayici, DOGRULANDI, MULGA, KANUN_YOK,  # noqa: E402
                           ASGARI_SONEK_SOZCUK, _ad_normal)
 
