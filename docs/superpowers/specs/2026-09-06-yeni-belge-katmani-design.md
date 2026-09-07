@@ -136,6 +136,20 @@ sayıyı **üretemiyor** (YB6: istem yalnız `gen_eval_grounded.py` içinde).
 | **A7** 🆕 | **Basit TUI** — hazır bir kütüphaneyle (aday: `textual`; `prompt_toolkit` alternatif) tek ekranlı arayüz: soru kutusu · cevap · atıflar · kaynak listesi. ⛔ Web arayüzü, API sunucusu, hesap/oturum **DEĞİL** — onlar v2. Kullanıcı kararı 2026-09-06: *"v1'de belki hazır bir TUI kütüphanesi ile basit bir arayüz olsun"* | terminalde çalışır; `answer()` derin arayüzünün üstüne oturur, kendi mantığı yoktur |
 | **A8** 🆕 | **Ölçüm aletlerini ürün yüzeyine taşı — `suskunluk_terazisi`.** Bugün ölçüm aleti olan üç şey üründe **güven mekanizması** olur: (1) **dürüst suskunluk** — model çekindiğinde vatandaşa açıkça söylenir (`exact_reject` zaten var) · (2) **çekinceli cevap rozeti** — 2026-09-06'da keşfedilen üçüncü sınıf (*"doğrudan madde yok, bununla birlikte…"*) vatandaş için en tehlikelisi: cevap gibi görünüyor ama tam değil · (3) **atıf doğrulama** (`atif_dogrula.py`) — uydurulmuş madde numarası kullanıcıya **gitmeden** yakalanır (bizde 0/114 ↔ rakiplerde 1·4·4). Kullanıcı kararı 2026-09-06. ⛔ Sıfır yeni araştırma, mevcut kodun yeniden kullanımı | CLI/TUI çıktısında üç durum ayırt edilebiliyor: **cevap · çekinceli cevap · suskunluk**; uydurulmuş atıf kullanıcıya ulaşmıyor |
 
+### A2'nin üretim ayarları — 2026-09-07'de ölçümden doğdu (insan sorusu)
+
+Ölçüm rejiminin üç sayısı **ürüne taşınmaz**; üçü de rakip eşitlemesi ya da tanı içindir:
+
+| ayar | ölçümde | **üründe** | gerekçe (ölçülmüş) |
+| :--- | :--- | :--- | :--- |
+| toplam bütçe | **1536** (ADR-0070) | cömert; tavan = **bağlam penceresi** | 1536 rakiple eşitlemek içindi; üründe rakip yok. VRAM: ctx 32.768 yalnız **3,70 GiB** (4.096'da 3,09) ⇒ ~12 GB kartta rahat |
+| düşünce ↔ cevap | **paylaşımlı tek havuz** | 🆕 **AYRI bütçeler** | ölçüldü (id 27, M5): düşünce 1536'nın tamamını yaktı, cevaba **3 karakter** kaldı (`"Kat"`). Paylaşım ADR-0070'in *eşitleme* aracıydı; üründe düşüncenin cevabı **aç bırakması** için hiçbir sebep yok. Bedeli **$0** |
+| tekrar cezası | **yok** (temiz çıpa) | 🆕 **DRY açık** | kör modda yozlaşmış döngü ölçüldü (3/80). ⛔ `repeat_penalty` **değil**: hukuk metninde madde numarası ve terim **meşru olarak** tekrarlar; DRY tekrarlayan **dizileri** cezalandırır. ⭐ İkisi de `temperature=0`'da çalışır ⇒ **determinizm korunur** |
+| kesilme | sayılır, kapı olur | 🆕 kullanıcıya **söylenir** | yarım cümleyi sessizce teslim etmek `suskunluk_terazisi`'nin (A8) ruhuna aykırı: üç durum **cevap · çekinceli cevap · suskunluk** idi; **kesik cevap** dördüncüsü ve ayırt edilmeli |
+
+⚠️ Bunlar **ürün** kararlarıdır ve **ölçüm rejimini değiştirmez**; ölçüm rejimini değiştirmek
+bugüne kadarki bütün sayıları yeniden koşturur (ADR-0057 eşit sınav).
+
 ## 6. Hat B — model (kütle) → `v1.0`
 
 > 🚨 **BAYAT SAYI — B-2'deki *"7/80"* geçersiz (damgalandı 2026-09-07).** O sayı **v1 soru
