@@ -207,7 +207,7 @@ Diğer ikisi **ablasyon**, versiyon numarası almazlar:
 ᴷ³ **M2b 2026-08-06'da yeniden puanlandı.** Eski sayılar, hakemin **modelin cevabına bakarak**
 verdiği bir paydayla üretilmişti — yani aynı sınav her modelde farklı payda veriyordu. Payda artık
 cevaba kör ve kollarda birebir aynı (`valid_traps` bu sınavda 61…80 → **77**). Eski değerler
-[`#57`](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md)'de duruyor; çeviri tablosu orada:
+[`#57`](research_log/2026-08-06-cekinme-aleti-onarimi.md)'de duruyor; çeviri tablosu orada:
 base `0,986 → 0,961` · biz `0,877 → 0,766` · Gemini FL `1,000 → 0,883`.
 ᴷ⁴ **M2 sütunu 2026-08-06'da yeniden puanlandı** (KARAR-3, hakem ≈$0,11): aynı 70 kalemlik
 sınavda on kol **55-63** arası payda gösteriyordu, artık hepsi **66/70**. ⚠️ **Düzeltme BİZİM

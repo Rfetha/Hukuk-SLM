@@ -441,6 +441,132 @@ yolunun **task-vector üretmediği** şerhiyle.
 
 ---
 
+### Görev 9 · T5 — `scripts/` çöp denetimi + alt-klasör düzeni *(insan talebi 2026-09-07)*
+
+**Talep:** *"`scripts` içinde gereksiz çöp script var mı kontrol et, var ise sil; yok ise klasörü
+düzenle — hepsi tek yığında çok kötü, `scripts/abc/abc.py` gibi alt-klasörlere bölünmeli."*
+
+⚠️ **Bu görev Faz 0'ın ÖLÇÜM zincirinin dışındadır** (Görev 8 gibi: paralel, bağımsız temizlik).
+Faz 0'ın manşet sayısı **40/40 ile kapanır**; T5 onun **üstüne** eklenen iştir.
+
+**Envanter — ölçüldü 2026-09-07 (salt okunur, hiçbir dosyaya dokunulmadı):**
+
+| | sayı |
+| :--- | ---: |
+| toplam script (`.py` 51 + `.sh` 21) | **72** · 11.817 satır · ~712 KB |
+| **CANLI-KOD** (script/`modal_train.py`/test çağırıyor ya da import ediyor) | **44** |
+| BELGE-BAĞLI (yalnız `docs/**` ya da `*.md`'de adı geçiyor) | 22 |
+| YETİM (hiçbir yerde adı geçmiyor) | **6** |
+
+### 🚨 Bulgu 1: **silinecek çöp YOK**
+
+Altı yetimin **hiçbiri** çöp değil — docstring'leri okundu, hepsi ya belgelenmiş bir üretim
+hattının halkası ya da bağımsız bir tanı aracı:
+
+| dosya | neden kalır |
+| :--- | :--- |
+| `gen_v2b_answers.py` | `build_sft_v2b pack` → **bu** → `assemble` zincirinin **ortanca halkası** |
+| `build_v3_devset.py` | ORPO hiperparametre dev-set'i (v3 reçetesi Adım 5), sızıntı kontrollü — **yeniden üretim için gerekli** |
+| `score_format.py` | A4 atıf-format metriği, deterministik (LLM'siz) — **CANON'un dört ekseninden biri** |
+| `diag_modal_gpu.py` | Modal imajında GPU görünürlüğü tanısı; CP2-c'de **gerçek bir hatayı yakaladı** |
+| `build_eval_ood_qa.py` | OOD eval seti üreticisi (v3 held-out kanun) |
+| `watch_run.sh` | Modal koşusu yoklayıcı |
+
+⇒ *"Adı başka kodda geçmiyor"* bu repoda **çöp demek değil**: `scripts/`'in çoğu dosyası
+**elle çağrılan giriş noktasıdır**. Silme ölçütü *"referanssız"* olamaz.
+
+### 🚨 Bulgu 2: taşımanın gerçek maliyeti — **sessizce kırılan 65 import**
+
+**18 modül**, ~**65** satır **uzantısız** Python import'uyla çağrılıyor
+(`import runlock` · `from build_sft_v2b import clip_sources_block` · `import raft_pack` …).
+Hepsi `sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))` desenine dayanıyor —
+yani **"kardeş dosya"** varsayıyor (18 dosyada bu satır var, **16'sı birebir aynı**).
+
+⇒ Alt-klasöre bölününce bu import'lar **`ImportError` ile çalışma zamanında** patlar; bir GPU
+koşusunun ortasında da patlayabilir. **Bu reponun tam olarak "sessiz yanlışlık" sınıfı.**
+
+**En çok referans taşıyanlar:** `gen_eval_grounded.py` (19 kod ref) · `score_abstention.py` (18) ·
+`groundedness.py` (15) · `build_sft_v2b.py` (9) · `raft_pack.py` · `llm_client.py` ·
+`rescore_answered.py` (7'şer).
+
+**Gruplar arası köprü gerektiren 7 modül:** `atif_dogrula` · `madde_anahtar` · `raft_pack` ·
+`build_sft_v2b` · `score_abstention` · `llm_client`/`runlock` · `retriever`.
+
+**Maliyet:** **~353 kod referans satırı** (kritik — taşıma anında kırılır) ·
+~622 belge satırı, ama bunun **~590'ı tarihsel `research_log`/ADR** (*"o gün şu yoldan koşuldu"*
+diyen kayıtlar — ⛔ **güncellenmez**, kayıt temizlenmez) ve yalnız **~30'u** güncel referans
+belgesi (`CLAUDE.md` · `DEVIR-PROMPT.md` · aktif spec) ⇒ **güncellenir**.
+
+### Önerilen taksonomi (5 grup, işlevden türetildi)
+
+| klasör | ne | kaç dosya |
+| :--- | :--- | ---: |
+| `scripts/egitim/` | LoRA eğitim · merge · GGUF · kurulum | 6 |
+| `scripts/olcum_uretim/` | harness koşucuları · üretim gövdesi · tanı · VRAM/token ölçümü | 14 |
+| `scripts/puanlama/` | hakemlik · skorlama · tablo · karşılaştırma · `llm_client` · `runlock` | 22 |
+| `scripts/erisim_korpus/` | retriever · recall · korpus bütünlüğü · atıf doğrulama | 10 |
+| `scripts/veri_hazirlik/` | SFT/ORPO/RAFT veri inşası · B8/B10/CP2 hasat hattı | 20 |
+
+### Adımlar
+
+- [ ] **Adım 1: Taşımadan ÖNCE taban ölç** — `pytest` (beklenen **112 passed, 2 xfailed**) ·
+her `.sh` için `bash -n` · `git status` temiz.
+`verify:` üç çıktı da kaydedildi; **taşıma sonrası kıyas çıpası budur**.
+
+- [ ] **Adım 2: `sys.path` desenini ÖNCE düzelt, taşımayı SONRA yap** *(sıra bağlayıcı)*
+
+18 dosyadaki satır, kendi klasörü yerine **`scripts/` kökünü + tüm alt klasörleri** ekleyecek
+hâle getirilir. Böylece dosya **hangi alt klasöre giderse gitsin** kardeşlerini bulur:
+
+```python
+_R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # scripts/
+sys.path[:0] = [_R] + [os.path.join(_R, d) for d in sorted(os.listdir(_R))
+                       if os.path.isdir(os.path.join(_R, d)) and not d.startswith(("_", "."))]
+```
+
+⚠️ **Bu adım taşımadan ÖNCE ve TEK BAŞINA commit edilir.** Henüz alt klasör yokken de doğru
+çalışır (liste boş döner, `_R` = `scripts/`) ⇒ `pytest` bu adımdan sonra **hâlâ yeşil olmalı**.
+Yeşil değilse taşımaya **geçilmez**. *(Beck, Tidy First: yapısal değişiklik davranışı değiştirmez
+ve ayrı commit'lenir.)*
+`verify:` `pytest` **112 passed, 2 xfailed** — Adım 1'in çıpasıyla **birebir aynı**.
+
+- [ ] **Adım 3: `tests/`'in yol kurulumu** — testler de `scripts/`'i `sys.path`'e ekliyor.
+`tests/conftest.py` (yoksa oluştur) `scripts/` kökünü **ve alt klasörlerini** ekler; tekil
+test dosyalarındaki elle `sys.path` satırları oraya devredilir.
+`verify:` `pytest` yeşil, ve `grep -c "sys.path" tests/*.py` **azalmış**.
+
+- [ ] **Adım 4: `git mv` ile taşı** — taksonomiye göre, **grup grup**, her grup **ayrı commit**.
+⛔ Tek seferde hepsini taşıma: kırılma olursa hangi grubun kırdığı anlaşılmaz.
+`verify:` her gruptan sonra `pytest` yeşil **ve** `bash -n` her `.sh` için temiz.
+
+- [ ] **Adım 5: Kod referanslarını güncelle** — `bash scripts/X.sh` · `python scripts/X.py` ·
+`modal_train.py`'nin `cmd` listeleri · Modal imajındaki `/root/scripts/...` yolları.
+🚨 **`modal_train.py` en riskli**: yol string'i orada **çalışma zamanına kadar sessiz kalır**
+(tuzak 6.12: *"bayrak script'e eklenir, çağrı zincirine eklenmez"*).
+`verify:` `grep -rn "scripts/[a-z0-9_]*\.\(py\|sh\)" --include="*.py" --include="*.sh" .`
+çıktısındaki **her** yol var olan bir dosyayı gösterir (döngüyle sınanır, gözle değil).
+
+- [ ] **Adım 6: Güncel belgeleri güncelle, TARİHSEL OLANLARA DOKUNMA**
+Güncellenir: `CLAUDE.md` · `DEVIR-PROMPT.md` · aktif spec (~30 satır).
+⛔ **Güncellenmez:** `docs/record/**` · `docs/adr/**` (~590 satır) — bunlar *"o gün şu yoldan
+koşuldu"* diyen **tarihsel kayıtlar**; spec §11'in ilk kuralı: **KAYIT TEMİZLENMEZ.**
+`verify:` `git diff --stat` `docs/record/` ve `docs/adr/` altında **0 değişiklik** gösterir.
+
+- [ ] **Adım 7: Uçtan uca duman testi** — bir gerçek koşu zinciri kısa `--n` ile çalıştırılır
+(ör. `cp0_thinking_gen.sh` + `cp0_thinking_score.sh`, `N_OVERRIDE=2`).
+**Neden:** `pytest` import'ları yakalar, **`bash` çağrılarını yakalamaz**; bu turda üç kez
+yanlış bayrak/yol çıktı ve üçü de yalnız koşarken görüldü.
+`verify:` zincir uçtan uca hatasız tamamlanır ve künye basılır.
+
+- [ ] **Adım 8: Commit + `docs/record/yurutme-tuzaklari.md`'ye tuzak yaz**
+*"Paylaşılan modülleri alt klasöre taşımak uzantısız import'ları sessizce kırar"*.
+
+**Bedel:** $0 · ~30-45 dk · **GPU gerekmez** ⛔ ama Faz 0'ın koşuları bitmeden **başlamaz**
+(`cp0_thinking_gen.sh` canlı kullanımda).
+**Bağımlılık:** Faz 0 Görev 7 kapanmış olmalı.
+
+---
+
 ## ⏭️ Bu planın DIŞINDA — sonraki plana
 
 - **T1** `models/` ~20 GB temizliği — ⚠️ ön koşulu **AÇIK KARAR S7** (adaptörler HF'ye yüklensin mi);
