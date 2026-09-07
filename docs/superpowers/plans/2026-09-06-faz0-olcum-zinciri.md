@@ -521,11 +521,11 @@ belgesi (`CLAUDE.md` · `DEVIR-PROMPT.md` · aktif spec) ⇒ **güncellenir**.
 
 ### Adımlar
 
-- [ ] **Adım 1: Taşımadan ÖNCE taban ölç** — `pytest` (beklenen **112 passed, 2 xfailed**) ·
+- [x] **Adım 1: Taşımadan ÖNCE taban ölç** ✅ *(112 passed, 2 xfailed — ama önce BİR KIRIK TEST onarıldı: bayat test F0.5'in ödediği kusuru koruyordu)* — `pytest` (beklenen **112 passed, 2 xfailed**) ·
 her `.sh` için `bash -n` · `git status` temiz.
 `verify:` üç çıktı da kaydedildi; **taşıma sonrası kıyas çıpası budur**.
 
-- [ ] **Adım 2: `sys.path` desenini ÖNCE düzelt, taşımayı SONRA yap** *(sıra bağlayıcı)*
+- [x] **Adım 2: `sys.path` desenini ÖNCE düzelt, taşımayı SONRA yap** ✅ *(18 değil **26** dosya — 9'u kardeş import ediyor ama insert'i yoktu)*
 
 18 dosyadaki satır, kendi klasörü yerine **`scripts/` kökünü + tüm alt klasörleri** ekleyecek
 hâle getirilir. Böylece dosya **hangi alt klasöre giderse gitsin** kardeşlerini bulur:

@@ -1,4 +1,3 @@
-import sys; sys.path.insert(0, "scripts")
 from madde_anahtar import madde_anahtari
 
 

@@ -1,6 +1,3 @@
-import sys
-
-sys.path.insert(0, "scripts")
 from atif_dogrula import DOGRULANDI, AYRISTIRILAMADI, MADDE_YOK, KANUN_YOK, \
     atiflari_ayikla, dogrula  # noqa: E402
 

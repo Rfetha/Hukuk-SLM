@@ -1,4 +1,3 @@
-import sys; sys.path.insert(0, "scripts")
 from recall_olc import recall_at_k
 
 

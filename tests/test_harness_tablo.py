@@ -1,8 +1,5 @@
-import sys
 
 import pytest
-
-sys.path.insert(0, "scripts")
 from harness_tablo import k2_bedeli  # noqa: E402
 
 

@@ -1,10 +1,6 @@
 import json
-from pathlib import Path
-import sys
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from eslesmis_a1 import eslesmis_a1, ikili
 
 

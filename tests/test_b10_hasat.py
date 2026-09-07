@@ -1,8 +1,5 @@
 import json
-from pathlib import Path
 import sys
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from b10_hasat import _anahtar, _baglam, _soru, kayit, sizinti_suz
 
 DEV_GERCEK = "data/eval/dev/core_hard.jsonl"

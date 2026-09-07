@@ -1,6 +1,3 @@
-import sys
-
-sys.path.insert(0, "scripts")
 from b8_tolerans_supurme import mesafe  # noqa: E402
 
 

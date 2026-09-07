@@ -1,10 +1,7 @@
 import json
-import sys
 
 import numpy as np
 import pytest
-
-sys.path.insert(0, "scripts")
 from retriever import Retriever, rrf_birlestir  # noqa: E402
 
 

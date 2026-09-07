@@ -6,8 +6,6 @@ Kaynak: G2 Adım 2.1 + 2.4b + 2.6 (2026-08-06), Gemini ailesi kalibrasyonu.
 import sys
 
 import pytest
-
-sys.path.insert(0, "scripts")
 from score_abstention import exact_reject  # noqa: E402
 
 
@@ -382,7 +380,6 @@ def test_onbellek_es_zamanli_yazimda_kalem_KAYBETMEZ(tmp_path):
 
     def yaz(anahtar):
         import sys
-        sys.path.insert(0, "scripts")
         import time
         from score_abstention import onbellek_yaz, onbellek_oku
         onbellek_oku(yol)            # bayat kopya: herkes önce okusun
