@@ -1,0 +1,55 @@
+{
+  "kosu": "F10 — rakip M5 (kör/parametrik), skor kartının son boşluğu",
+  "tarih": "2026-09-07",
+  "amac": "skor kartında M5 satırının rakip hücrelerini kapatmak",
+  "rejim": {
+    "mod": "m5 (kör — kaynak verilmiyor)",
+    "seed": 3407,
+    "thinking": "on",
+    "reasoning_budget": 1024,
+    "max_new_tokens": 512,
+    "toplam_butce": 1536,
+    "max_chunk_chars": 900,
+    "n": 80,
+    "veri": "data/eval/dev/core_hard.jsonl (v2)",
+    "sufficiency_preamble": false,
+    "gecit": "OpenRouter",
+    "hakem": "openai/gpt-4o-mini · LLM_PROVIDER_ORDER=OpenAI"
+  },
+  "dry_serhi": "🚨 DRY UYGULANMADI — uygulanamaz: DRY bir llama.cpp örnekleyicisidir, Gemini'ye geçirilemez (ADR-0073, kapsam yalnız M5 ve yalnız yerel kollar). ⭐ ÖLÇÜLDÜ ki gerekmiyor da: üç kolda da döngü YOK, kesiklik %0 · %0 · %2,5 — hepsi eşiğin altında. Yani DRY'nin bizim kolda kırdığı kusur rakiplerde zaten gözlenmiyor; bu, karşılaştırmayı geçersiz kılmıyor ama damgalanıyor.",
+  "sonuc": {
+    "3_1-flash-lite": {
+      "coverage": 0.9875,
+      "A1": 0.6795,
+      "ezber_kutlesi": 0.671,
+      "n_answered": 79,
+      "n_abstain": 1,
+      "kesik": 0,
+      "ort_completion_tokens": 765.8,
+      "judge_cost_usd": 0.0466
+    },
+    "3_5-flash-lite": {
+      "coverage": 1.0,
+      "A1": 0.7013,
+      "ezber_kutlesi": 0.7013,
+      "n_answered": 80,
+      "n_abstain": 0,
+      "kesik": 0,
+      "ort_completion_tokens": 236.8,
+      "judge_cost_usd": 0.0475
+    },
+    "3_5-flash": {
+      "coverage": 1.0,
+      "A1": 0.8241,
+      "ezber_kutlesi": 0.8241,
+      "n_answered": 80,
+      "n_abstain": 0,
+      "kesik": 2,
+      "ort_completion_tokens": 926.3,
+      "judge_cost_usd": 0.0477
+    }
+  },
+  "kurulmayacak_cumle": "⛔ 'M5'te rakipleri yendik' KURULMAZ. M5 bir ANTİ-HEDEFtir ve kapı çıpası BASE'dir, rakip DEĞİL — ADR-0039 §2 rakip çıpasını değerlendirip REDDETTİ ('modeli aldığımız noktadan kötüye götürmemeliyiz'). Düşük M5 bizim için 'kaynağa dayanıyoruz' demek; aynı sayı aynı zamanda 'Gemini Türk hukukunu kaynaksızken bizden çok daha iyi biliyor' demektir (3.5 Flash A1 0,8241 ↔ biz 0,4105 — iki katı). İki yüzü de raporlanır.",
+  "hakem_bedeli_usd": 0.1418,
+  "git_sha": "223dbab"
+}
