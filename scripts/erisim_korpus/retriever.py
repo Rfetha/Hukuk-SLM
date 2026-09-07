@@ -51,6 +51,22 @@ RRF_K = 10   # ADR-0068 (2026-09-06): 60 → 10.
 # Seçim DEV'de yapıldı; doğrulaması donmuş TEST'tedir.
 
 
+# ── scripts/ yol köprüsü (T5, 2026-09-07) ────────────────────────────────────
+# Kardeş modüller alt klasörlere bölündükten SONRA da bulunsun diye scripts/ kökü, tüm
+# alt klasörleri ve repo kökü sys.path'e girer. Uzantısız `import X` bu köprü olmadan
+# taşımada SESSİZCE kırılır: ImportError çalışma zamanında, bazen GPU koşusunun ortasında.
+# ⚠️ 26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
+import os, sys
+_K = os.path.dirname(os.path.abspath(__file__))
+_K = _K if os.path.basename(_K) == "scripts" else os.path.dirname(_K)
+sys.path[:0] = [_K, *(os.path.join(_K, _d) for _d in sorted(os.listdir(_K))
+                      if os.path.isdir(os.path.join(_K, _d)) and _d[0] not in "_."),
+                os.path.dirname(_K)]
+# ─────────────────────────────────────────────────────────────────────────────
+
+from hakhukuk.tipler import Yururluk
+
+
 def rrf_birlestir(skor_listeleri, rrf_k=RRF_K):
     """Tek sorgu için RRF: her skor dizisini sıraya çevir, 1/(k+sıra) topla.
 
@@ -102,6 +118,9 @@ class Retriever:
         self._kunye = kunye
         self._gomucu = gomucu
         self._cihaz = cihaz
+        # Yürürlük maskesi bir kez kurulur: her sorguda 40.496 kaydı taramak
+        # sessizce çalışır, yalnız yavaştır.
+        self._mulga = np.array([bool(r.get("mulga")) for r in kayitlar])
         from rank_bm25 import BM25Okapi
         self._bm25 = BM25Okapi([_gomulecek_metin(r).lower().split() for r in kayitlar])
 
@@ -157,16 +176,27 @@ class Retriever:
                              f"{gomme.shape[0]} satır — indeks tutarsız")
         return Retriever(kayitlar, gomme, kunye, gomucu, cihaz)
 
-    def getir(self, soru: str, k: int = 10) -> list[dict]:
-        """Soruya en uygun k maddeyi sırayla döndür. Metin **kırpılmadan** gelir (K2)."""
+    def getir(self, soru: str, k: int = 10,
+              yururluk: Yururluk = Yururluk.YALNIZ_YURURLUKTE) -> list[dict]:
+        """Soruya en uygun k maddeyi sırayla döndür. Metin **kırpılmadan** gelir (K2).
+
+        ⚠️ Varsayılan olarak YÜRÜRLÜKTEN KALKMIŞ maddeler elenir. Ölçüldü 2026-09-07:
+        süzgeç yokken 800 getirilen kaynağın 2'si mülgaydı (id 7 · 63) ve vatandaşa
+        gidiyordu. Süzülen kayıt kaybolmaz — `MULGA_DAHIL` ile açıkça istenebilir; ve
+        dönen her kayıt `mulga` alanını taşır ki ürün rozet gösterebilsin.
+        """
         q = self._kodla([soru]).astype(np.float32)[0]
         if q.shape[0] != self._gomme.shape[1]:
             raise SystemExit(f"[retriever] 🚫 gömme boyutu uyuşmuyor: sorgu {q.shape[0]}, "
                              f"indeks {self._gomme.shape[1]} — indeks {self._kunye['model']} "
                              f"ile kuruldu, başka bir modelle sorgulanıyor")
         skor = rrf_birlestir([self._bm25.get_scores(soru.lower().split()), q @ self._gomme.T])
-        k = min(k, len(self._kayitlar))
-        ilk = np.argsort(skor)[::-1][:k]
+        sirali = np.argsort(skor)[::-1]
+        if yururluk is Yururluk.YALNIZ_YURURLUKTE:
+            # ⚠️ Skoru -inf yapmak YETMEZ: yürürlükteki kayıt sayısı k'dan azsa mülga
+            # yine listeye girer (testle yakalandı). Eleme yapılır, bastırma değil.
+            sirali = sirali[~self._mulga[sirali]]
+        ilk = sirali[:k]
         return [dict(self._kayitlar[ix], skor=float(skor[ix]), sira=yer)
                 for yer, ix in enumerate(ilk)]
 

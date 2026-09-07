@@ -18,6 +18,18 @@ class Durum(Enum):
     KESIK = "kesik"            # üretim bütçesi bitti — YARIM cevap, gizlenmez
 
 
+class Yururluk(Enum):
+    """Getirilen maddelerin yürürlük süzgeci.
+
+    ⛔ Public API'de bool bayrak yok (CLAUDE.md §4): `getir(..., mulga_dahil=True)`
+    çağrı yerinde okunmaz olurdu. Varsayılan YALNIZ_YURURLUKTE — çünkü mülga bir maddeyi
+    vatandaşa göstermek eksik özellik değil, YANLIŞ CEVAPtır.
+    """
+
+    YALNIZ_YURURLUKTE = "yalniz_yururlukte"   # varsayılan
+    MULGA_DAHIL = "mulga_dahil"               # soru tam da mülga maddeyle ilgiliyse
+
+
 @dataclass(frozen=True)
 class Kaynak:
     """Retriever'ın getirdiği tek madde."""
