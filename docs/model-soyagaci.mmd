@@ -1,5 +1,5 @@
 %% HakHukuk — MODEL SOYAĞACI: ham base → kollar → yayımlanan model
-%% Güncellendi: 2026-09-07 · Statü: ÖLÇÜLMÜŞ (artık taslak değil)
+%% Güncellendi: 2026-09-08 · Statü: ÖLÇÜLMÜŞ (artık taslak değil)
 %% Künyeler: record/kollar.md · dış yüz: ../MODEL_CARD.md
 %% Sıra: superpowers/IS-SIRASI.md · ölçüm: record/research_log/
 %% ---
@@ -27,19 +27,23 @@ flowchart TD
     TA -.->|"çekinme eğitimi<br/>grounding'i çökertti"| CAT
 
     %% ── MERGE VARYANTLARI — alternatif, DEV'de seçildi ────────────────
-    TG & TA --> M1["norm-dengeli · <code>tg_ta_nb</code><br/>geri ölçek <b>ortalama</b> 5,826"]
-    TG & TA --> M2["norm-dengeli · <code>tg_ta_min</code><br/>geri ölçek <b>min</b> 1,181"]
-    TG & TA --> M3["<b>HAM TIES</b><br/>norm dengeleme KAPALI · ADR-0052"]
+    TG & TA --> MRG_NB["norm-dengeli · <code>tg_ta_nb</code><br/>geri ölçek <b>ortalama</b> 5,826"]
+    TG & TA --> MRG_MIN["norm-dengeli · <code>tg_ta_min</code><br/>geri ölçek <b>min</b> 1,181"]
+    TG & TA --> MRG_HAM["<b>HAM TIES</b><br/>norm dengeleme KAPALI · ADR-0052"]
 
-    M1 --> R1["🛑 <b>DEJENERE</b><br/>tekrarlama döngüsü · kesik %5,2<br/>KOŞU GEÇERSİZ — τ_a 4,9× şişmiş"]
-    M2 --> R2["⚪ ablasyon<br/>M2b 0,987 ✅ · M1 kütle 53,4% 🔴<br/>çekinmeyi aldı, cevaplamayı alamadı"]
-    M3 --> FIN(["<b>🟦 HakHukuk-4B-v0.1</b> · tgta_v1<br/>GGUF Q4_K_M · 2,59 GiB<br/><i>v1 birimi (harness KAPALI):</i><br/>M1 kütle 71,6% · M2 0,833 ᴷ⁴ · M2b <b>0,766</b> ᴷ³"])
+    MRG_NB --> R1["🛑 <b>DEJENERE</b><br/>tekrarlama döngüsü · kesik %5,2<br/>KOŞU GEÇERSİZ — τ_a 4,9× şişmiş"]
+    MRG_MIN --> R2["⚪ ablasyon<br/>M2b 0,987 ✅ · M1 kütle 53,4% 🔴<br/>çekinmeyi aldı, cevaplamayı alamadı"]
+    MRG_HAM --> FIN(["<b>🟦 HakHukuk-4B-v0.1</b> · tgta_v1<br/>GGUF Q4_K_M · 2,59 GiB<br/><i>v1 birimi (harness KAPALI):</i><br/>M1 kütle 71,6% · M2 0,833 ᴷ⁴ · M2b <b>0,766</b> ᴷ³"])
 
     %% ── DÜŞENLER ─────────────────────────────────────────────────────
     BASE -.-> DUS["τ_register ⬛ DÜŞTÜ — Kapı 0/#39 (base zaten 0,96-0,98)<br/>τ_reasoning ⬛ KAPSAM DIŞI — ADR-0035<br/><b>τ_a v2 ⬛ HİÇ EĞİTİLMEDİ</b> — B10 turu eğitimsiz kapandı (ADR-0062)"]
 
-    %% ── TABANLAR — ölü uç, ertelendi ─────────────────────────────────
-    BASE -.->|"⏸️ ERTELENDİ — Kapı 5 / CP4-CP5 opsiyonel"| TAB["Taban A · karışık<br/>Taban B · ardışık<br/><i>ölü uç, kıyas için</i>"]
+    %% ── TABANLAR — ölü uç; İDDİA sürümünde, yetkisi DÜŞMÜŞ bir kapıda ──
+    %% ⚠️ "opsiyonel" DEĞİL, "yetkisiz". Zincir: ARA KAPI düştü (ADR-0045, 0,766 ↔ 0,8649)
+    %%    ⇒ CP4-CP5 yetkisi gitti ⇒ Kapı 5 (ADR-0037) koşulamaz ⇒ Taban A/B koşulmaz.
+    %%    Yetki YALNIZ şu zincirle geri gelir: τ_a v2 eğitilir (S12) → ARA KAPI yeniden
+    %%    koşar → GEÇERSE CP4-CP5 yetkilenir. Eşik oynatılmaz (ADR-0050).
+    BASE -.->|"⏸️ İDDİA sürümünde — ADR-0065"| TAB["<b>Taban A · karışık veri SFT</b><br/><b>Taban B · ardışık SFT</b><br/>Kapı 5'in kıyas kolları (ADR-0037)<br/>🚫 <b>YETKİSİZ</b> — ARA KAPI düştü (ADR-0045)<br/><i>ürünü ve arxiv yazısını BLOKE ETMEZ</i>"]
 
     %% ── HARNESS — VAR ve ürünün varsayılan rejimi ────────────────────
     FIN --> HARN["<b>HARNESS</b> ✅ VAR — hibrit BM25 + bge-m3, RRF_K=10 (ADR-0068)<br/>indeks <code>mevzuat_bge_m3_s2</code> · k=10 · CPU'da, ağırlığa GİRMEZ<br/>önsöz KALDIRILDI (ADR-0063) · üretim bütçesi 1536 (ADR-0070)<br/>⚠️ iki gerekçesi de ÇÜRÜDÜ: atıf doğrulayıcı (sınıf boş) · red kapısı (fire etmiyor)"]
@@ -62,7 +66,7 @@ flowchart TD
 
     class BASE origin
     class TG,TA kol
-    class DUS,TAB,R2,M1,M2,M3 dead
+    class DUS,TAB,R2,MRG_NB,MRG_MIN,MRG_HAM dead
     class R1 bad
     class CAT,KAPI,TEST gate
     class FIN,URUN,V1 star

@@ -31,6 +31,21 @@
 
 ---
 
+## Görev 8 nedir — *"kullanıcı indeksi nereden alacak"*
+
+Retriever olmadan ürün yok, ve retriever **indeks** olmadan çalışmaz. Ama indeks ikili bir
+dosya ve **git'te değil**:
+
+| | |
+| :--- | :--- |
+| indeks | `data/index/mevzuat_bge_m3_s2/gomme.npy` = **79 MB** |
+| git'te mi | ⛔ **hayır** — `.gitignore:166` `data/index/**/*.npy` |
+| korpus | `data/corpus/mevzuat_maddeler.jsonl` = 37 MB, git'te **var** |
+| sıfırdan üretmek | 40.496 maddeyi `bge-m3` ile gömmek: GPU ~10 dk, **CPU ~2 sa 45 dk** |
+
+⇒ `git clone` yapan biri **çalışan bir ürün elde etmiyor**. Görev 8 bu boşluğu kapatıyor:
+`hakhukuk/kurulum.py` indeksi **HF dataset'ten indirir** (karar S8 → **(a)**, 2026-09-07).
+
 ## Neden Görev 8 bekliyor — tek sebep, ölçülmüş
 
 Görev 8 *"indeksi kullanıcıya nasıl dağıtırız"* sorusunu kapatıyor. Bugün cevabı yazsak
@@ -51,7 +66,7 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | iş | neden beklemez |
 | :--- | :--- |
 | **Görev 8b** · mülga madde süzgeci | Bugün 800 getirilen kaynağın 2'si **yürürlükten kalkmış** madde ve vatandaşa gidiyor. Bu eksik özellik değil, **YANLIŞ CEVAP**. Korpus büyüyünce sayı da büyür — erken düzelt. |
-| **Görev 8 Adım 1b** · `KUNYE` taşınabilirlik kilidi | Mutlak yol damgalayan künye başka makinede yeniden üretilemez. Korpus boyutundan bağımsız. |
+| **Görev 8 Adım 1b** · `KUNYE` taşınabilirlik kilidi | `KUNYE.json` **mutlak yol + `mtime`** damgalıyor ve `retriever.py`:143-152 bunu yüklemede doğruluyor ⇒ `git clone` sonrası `mtime` checkout zamanı olur ve **her makinede `SystemExit`**. İndeks 79 MB da olsa 697 MB da olsa aynı çöküş. |
 
 ---
 

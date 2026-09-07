@@ -128,7 +128,7 @@ thing (OFF hands the model the gold article by construction).
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#62** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#63** |
 | what to work on next, tied to measured gaps | ⭐ [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
 | the open debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
 | why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0073**, next is **0074** |
@@ -236,6 +236,10 @@ decision ledger.
   live there. Part (B) is the decision record with each ADR's status in the new line; part (C) is
   entry points into the raw log. Every `ADR-00NN` reference elsewhere still resolves — the file
   carries an anchor per ADR (`#adr-0011`). **Read part A before designing any experiment.**
+- 🌳 **[`docs/model-soyagaci.mmd`](docs/model-soyagaci.mmd) — the model family tree** (Mermaid):
+  raw base → the two branches → the three merge variants → the published artifact → harness →
+  the `v1.0` gate. Renders the *shape* of what `kollar.md` records row by row. ⚠️ **Not a
+  timeline** — branches are independent and merge variants are alternatives, not a chain.
 - ⭐ **[`docs/record/kollar.md`](docs/record/kollar.md) — the artifact registry.** Every trained
   branch AND merge has its identity here; *an artifact with no row is nameless and must not be
   used*. `tg_v1` (‖τ‖ 10,4722 — **and 10,4589 in `kollar.md` is also right**: the first is measured at merge time from the bf16-materialized ΔW, the second from the standalone artifact; the 0,13% gap is bf16 and [#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md) logged it as an *independent cross-check*, not a discrepancy — do not "fix" either) · `ta_v1` (‖τ‖ 1,1806) · **`tgta_v1` = `HakHukuk-4B-v0.1`**. Both
@@ -243,8 +247,8 @@ decision ledger.
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#62**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0062**.
+  record, **authoritative for "what happened."** New findings continue at **#64**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0074**.
   ⚠️ **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
   places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.
 
