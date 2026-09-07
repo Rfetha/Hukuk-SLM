@@ -20,7 +20,7 @@
 > **Güncellik iddiamızın tek dayanağı bu API.** *"Kapalı ağırlıklı rakiplerin yapamadığı şey"*
 > cümlesi buraya bağlı — ve sözleşme iki aydır sınanmadı.
 >
-> Sprint 3'ün **ön-probunda** `recall@k` ile birlikte sınanacak (`scripts/bedesten_probe.py`,
+> Sprint 3'ün **ön-probunda** `recall@k` ile birlikte sınanacak (`scripts/erisim_korpus/bedesten_probe.py`,
 > maliyet sıfır). ⚠️ **Türk IP gerekiyor** — gov firewall yurtdışı/VPN'i engelliyor.
 >
 > Değişmişse: retriever statik korpusla çalışmaya devam eder, ama **güncellik iddiası düşer**
@@ -28,7 +28,7 @@
 
 > `saidsurucu/mevzuat-mcp` (MIT) reposundan çıkarıldı + canlı test edildi (2026-05-29, çalışıyor).
 > **Amaç:** MCP'yi kurmadan, mevzuat (ve ileride içtihat) verisini doğrudan bu temiz JSON API'den çekmek.
-> Çalışan minimal istemci: `scripts/bedesten_probe.py`.
+> Çalışan minimal istemci: `scripts/erisim_korpus/bedesten_probe.py`.
 
 ## Genel
 - **BASE:** `https://bedesten.adalet.gov.tr/mevzuat`

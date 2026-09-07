@@ -76,7 +76,7 @@
 Eksik veri tiplerini (2,3,4,5) üretmenin iki yolu var. **İkisini de kullanırız.**
 
 ### Yol A — Otoriter zemin (HAZIR — scraping gerekmiyor)
-1. **Tercih (canlı):** **`bedesten.adalet.gov.tr/mevzuat` JSON API** — `mevzuat-mcp`'den reverse-engineer edildi + test edildi (çalışıyor). Auth/Playwright yok. Arama + tam metin + madde ağacı. **Hep güncel, tam kapsam.** Contract: **`docs/BEDESTEN_API.md`**, istemci: `scripts/bedesten_probe.py`. **TR IP gerekir.**
+1. **Tercih (canlı):** **`bedesten.adalet.gov.tr/mevzuat` JSON API** — `mevzuat-mcp`'den reverse-engineer edildi + test edildi (çalışıyor). Auth/Playwright yok. Arama + tam metin + madde ağacı. **Hep güncel, tam kapsam.** Contract: **`docs/BEDESTEN_API.md`**, istemci: `scripts/erisim_korpus/bedesten_probe.py`. **TR IP gerekir.**
 2. **Bulk/çevrimdışı:** `muhammetakkurt/mevzuat-gov-dataset` → 907 kanun / 40.853 madde (Eylül 2024 donmuş). Zaten indirildi: `data/raw/mevzuat_maddeler.jsonl`.
 3. **Genişletme (gerekirse):** `mevzuat-gov-scraper` (MIT, Scrapy+Selenium).
 4. (Faz 2) İçtihat: **aynı backend** `bedesten.adalet.gov.tr` (yargi-mcp); contract sırası gelince çıkarılır.
@@ -130,7 +130,7 @@ exact-hash dedup → SemHash semantik dedup (0.75) → FineWeb kalite → GlotLI
 > ⚠️ **SÜPERSED (2026-07-01) → aşağıdaki "Sıradaki" listesi TAMAMLANDI/İPTAL.** v0 koştu (başarısız), grounded v1 üretildi + eğitildi, v2b verisi (19.305, RAFT+replay+truncation-fix) hazır. **32K sadeleştirme (#3) İPTAL** (ADR-0010, app-layer). Güncel sıradaki iş: `docs/V2_PLAN.md §9` + `NEXT_SESSION.md`. Aşağı iz olarak korunuyor.
 
 **⏭️ ~~Sıradaki (WSL2 ortamı kurulduktan sonra)~~ — TARİHSEL:**
-1. **Bulk kanun çekimi:** Bedesten API ile 916 kanunu `data/raw/mevzuat/{TUR}/` altına kategorize kaydet (`scripts/bedesten_probe.py` → genişlet). *(Faz 2'ye ertelendi)*
+1. **Bulk kanun çekimi:** Bedesten API ile 916 kanunu `data/raw/mevzuat/{TUR}/` altına kategorize kaydet (`scripts/erisim_korpus/bedesten_probe.py` → genişlet). *(Faz 2'ye ertelendi)*
 2. **v0 baseline SFT:** 32K uzman veri ile eğit → Muhakim ölç → açığı belirle. ✅ *(başarısız, ders alındı)*
 3. **~~32K sadeleştirme:~~ İPTAL (ADR-0010):** GPT-4o-mini ile uzman cevapları → sade dil (~$13). *(sadeleştirme app-layer)*
 4. **Kanıt koşusu:** 50 örnekle grounded üretim (GPT-4o-mini + gerçek madde) → doğrulama. ✅

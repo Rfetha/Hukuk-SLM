@@ -26,7 +26,7 @@ ADR **0063-0070** · research_log **#62** · S1·S2·S11·S14·S15 kapandı.
 
 ### Adımlar
 1. `outputs/eval/f07-m5-anti-hedef/DURUM.md`'deki komutu koş (`setsid nohup`, ayrık)
-2. Geçerlilik kapısı (kesik ≤%5) → M5'i puanla. **`scripts/cp0_thinking_score.sh` arayüzünü
+2. Geçerlilik kapısı (kesik ≤%5) → M5'i puanla. **`scripts/puanlama/cp0_thinking_score.sh` arayüzünü
    koşmadan ÖNCE oku** (plandaki komut yanlış bayrak taşıyor olabilir — bu tur üç kez oldu)
 3. **ADR-0064 madde (3)**'ü sayıyla kapat: M5 bugünkü değerin **üstüne çıkmamalı**
    (anti-hedef, ADR-0039/0040). Yükselmişse kazancın bir kısmı **ezberden** gelmiştir ve
@@ -60,7 +60,7 @@ eklemek hakemi değiştirmeyi **ve bugünkü dört sayıyı yeniden koşmayı** 
 ### `HP` · Hakem paneli (~$3-5) — ÖNCE  *(eski adı "T1" — spec'in T1'i ile çakışıyordu)*
 Bugünkü **her** sayı tek ailenin (`gpt-4o-mini`) hükmü; **κ yok**, self-preference
 ölçülmedi. Panel kurulmadan yeni rakip eklemek, aynı şüpheli hakemle daha çok sayı
-üretmek olur. 3 aile + aile dışlaması + κ (`scripts/judge_agreement.py` **var**).
+üretmek olur. 3 aile + aile dışlaması + κ (`scripts/puanlama/judge_agreement.py` **var**).
 ⇒ **B kararının (GPT öznesi) ön koşulu da budur** — [ADR-0072](../../adr/0072-v1-rakip-havuzu-genisler.md).
 
 ### Hat A · Paketleme ($0, GPU yok, `HP`'ye paralel) → `v0.2`

@@ -12,9 +12,9 @@ kapısının eşiğini eğitimden **önce** ön-kayıtlamak.
 *"`recall@10` bütün öznelerde birebir aynı"* — indeksi sonradan oynatmak rakip koşularını
 çöpe atar (~$1,35). Her koşu kendi klasörüne + `KUNYE.json`'una yazar.
 
-**Yığın:** llama.cpp (`llama-server`, Q4_K_M, KV q8_0) · `scripts/cp0_thinking_gen.sh` (canlı
+**Yığın:** llama.cpp (`llama-server`, Q4_K_M, KV q8_0) · `scripts/olcum_uretim/cp0_thinking_gen.sh` (canlı
 koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
-`scripts/gen_eval_grounded.py` (tek üretim gövdesi) · `groundedness.py` · `harness_tablo.py` ·
+`scripts/olcum_uretim/gen_eval_grounded.py` (tek üretim gövdesi) · `groundedness.py` · `harness_tablo.py` ·
 `recall_olc.py` · `measure_vram_stack.py` · hakem `openai/gpt-4o-mini` @ openrouter.
 
 ## Global kısıtlar — her görev bunları örtük olarak taşır
@@ -72,7 +72,7 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 ### Görev 1 · F0.1 — erişim teşhisi (`recall@10` neyi kaçırıyor)
 
 **Dosyalar:** Create: `outputs/eval/f01-erisim/recall_taban.json` ·
-`outputs/eval/f01-erisim/KACIRILAN_10.md` · Read: `scripts/recall_olc.py` · `scripts/retriever.py`
+`outputs/eval/f01-erisim/KACIRILAN_10.md` · Read: `scripts/erisim_korpus/recall_olc.py` · `scripts/erisim_korpus/retriever.py`
 
 > 🚨 **KAPANIŞ DENETİMİ 2026-09-07: `recall_taban.json` HİÇ OLUŞMADI.** Adım 1-2 `[x]`
 > işaretliydi ve **ölçüm gerçekten koştu** (sayılar `KACIRILAN_10.md` ve
@@ -94,7 +94,7 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 ```bash
 source ~/code/global_venv/bin/activate && \
 mkdir -p outputs/eval/f01-erisim && \
-python scripts/recall_olc.py --help
+python scripts/erisim_korpus/recall_olc.py --help
 ```
 `verify:` `--yontem` / `--kapsam` / `--model` / `--out` / `--cihaz` bayraklarının gerçek
 değer kümesi görülür. **Bayrak adlarını buradan al, tahmin etme.**
@@ -118,7 +118,7 @@ rm -rf outputs/eval/f01-erisim && mkdir -p outputs/eval/f01-erisim && \
 source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a && \
 export PYTHONUNBUFFERED=1 && \
 for Y in bm25 hibrit yogun; do
-  python scripts/recall_olc.py --yontem "$Y" --kapsam korpus --cihaz cuda \
+  python scripts/erisim_korpus/recall_olc.py --yontem "$Y" --kapsam korpus --cihaz cuda \
     --out outputs/eval/f01-erisim || echo "❌ $Y DURDU"
 done
 ```
@@ -174,7 +174,7 @@ set -a && . ./.env && set +a && \
 OUT_DIR=outputs/eval/f02-biz-onsozsuz \
 MODES="h1" HARNESS_INDEKS=data/index/mevzuat_bge_m3_s2 HARNESS_K=10 \
 THINK_BUDGET=1024 MAXTOK=512 CTX=8192 \
-bash scripts/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf tgta_v1_f02_nb
+bash scripts/olcum_uretim/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf tgta_v1_f02_nb
 ```
 `verify:` künyede **`ekstra : <yok>`** (önsöz YOK — kanıt) · `harness : data/index/... · k=10` ·
 `thinking : on | cevap bütçesi: 512 | düşünce bütçesi: 1024` · geçerlilik kapısı: kesik **≤%5**.
@@ -184,7 +184,7 @@ bash scripts/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf tgta_v1_f02_nb
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
 set -a && . ./.env && set +a && LLM_PROVIDER_ORDER=OpenAI \
-python scripts/groundedness.py \
+python scripts/puanlama/groundedness.py \
   --details outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl \
   --label h1_tgta_v1_f02_nb --mode data --judge-model openai/gpt-4o-mini \
   --out-dir outputs/eval/f02-biz-onsozsuz
@@ -195,7 +195,7 @@ python scripts/groundedness.py \
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
-python scripts/harness_tablo.py \
+python scripts/puanlama/harness_tablo.py \
   --details outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl \
   --gnd outputs/eval/f02-biz-onsozsuz/gnd_h1_tgta_v1_f02_nb.jsonl \
   --korpus data/corpus/mevzuat_maddeler.jsonl \
@@ -211,7 +211,7 @@ python scripts/harness_tablo.py \
 ### Görev 3 · F0.3 — ⭐ önsözsüz rejimin 80 kalemi GÖZLE OKUNUR
 
 **Dosyalar:** Create: `<koşu-klasörü>/GOZLE_OKUMA_80.md` ·
-Read: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md` (kalıp) · `scripts/score_abstention.py`
+Read: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md` (kalıp) · `scripts/puanlama/score_abstention.py`
 
 **Neden:** Bu adım 2026-09-06'da bozuk ölçümü yakalayan tek şeydi. Önsözlü çıpada aletin
 14 dediği yerde göz **8** dedi — **6 yanlış pozitif**. Önsözsüz rejim hiç okunmadı.
@@ -262,7 +262,7 @@ set -a && . ./.env && set +a && export OPENAI_API_KEY="$OPENROUTER_API_KEY" && \
 mkdir -p outputs/eval/f04-rakip-onsozsuz && \
 for M in google/gemini-3.1-flash-lite google/gemini-3.5-flash-lite google/gemini-3.5-flash; do
   TAG="$(echo "$M" | tr '/.' '__' )_nb"
-  python scripts/gen_eval_grounded.py \
+  python scripts/olcum_uretim/gen_eval_grounded.py \
     --server-url https://openrouter.ai/api/v1 --server-model "$M" \
     --thinking on --max-new-tokens 512 --reasoning-budget 1024 \
     `# ⚠️ rakip tarafı --reasoning-budget kullanır, --think-budget DEĞİL: ikisi karşılıklı` \
@@ -318,7 +318,7 @@ kesime duyarlı eksenler **TAVAN/TANIMSIZ** damgası taşır. Ortak kesiksiz alt
 
 ### Görev 5 · F0.5 — `SOURCE_CLIP` ödenir (YB3, ~$0,30)
 
-**Dosyalar:** Modify: `scripts/score_abstention.py` çağrısındaki `SOURCE_CLIP` ·
+**Dosyalar:** Modify: `scripts/puanlama/score_abstention.py` çağrısındaki `SOURCE_CLIP` ·
 Create: `outputs/eval/f05-source-clip/`
 
 **Neden:** `k`'nın **çekinme** ekseni bugün **TANIMSIZ** — kör payda hakemi `k=10`'da
@@ -366,7 +366,7 @@ cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
 # ⚠️ Script'in bayrakları: --ggufs --ctxs --kv-type --out. `--cache-type-k/-v`,
 # `--host`, `--port`, `--no-context-shift` llama-server'ın bayraklarıdır, bu script'in DEĞİL
 # (2026-09-06'da koşmadan önce yakalandı).
-python scripts/measure_vram_stack.py \
+python scripts/olcum_uretim/measure_vram_stack.py \
   --ggufs models/gguf/tgta_v1-q4_k_m.gguf \
   --ctxs 4096 32768 131072 --kv-type q8_0 \
   --out outputs/eval/_artefakt/vram_stack_tgta_v1.json
@@ -442,12 +442,12 @@ GRPO **gerekçeli** ertelendi: $10-30 tahmin ↔ Modal $29,19, tahmin ölçülme
 - [x] **Adım 1: `.gitignore`'a `.pytest_cache/`**
 `verify:` `git check-ignore -q .pytest_cache && echo ignored`
 
-- [x] **Adım 2: `scripts/train_orpo.py` docstring'i gerçeğe çekilir**
+- [x] **Adım 2: `scripts/egitim/train_orpo.py` docstring'i gerçeğe çekilir**
 Bugünkü hâli *"base = v2b ADAPTER'dan DEVAM (grounding taşınır)"* diyor; bu **ardışık SFT**
 kalıbıdır ve `τ = θ_ft − θ_base` tanımına aykırıdır. Gerçek: `τ_a v1` **`--fresh-adapter`** ile
 ham base'den koştu (`docs/record/kollar.md`:64). Docstring bunu söyleyecek, `--adapter`
 yolunun **task-vector üretmediği** şerhiyle.
-`verify:` `grep -n "fresh-adapter" scripts/train_orpo.py` docstring'de eşleşme verir · `pytest` **112 passed, 2 xfailed**.
+`verify:` `grep -n "fresh-adapter" scripts/egitim/train_orpo.py` docstring'de eşleşme verir · `pytest` **112 passed, 2 xfailed**.
 
 - [x] **Adım 3: Commit** (yapısal değişiklik — davranış değişmez, ayrı commit)
 
@@ -542,35 +542,35 @@ Yeşil değilse taşımaya **geçilmez**. *(Beck, Tidy First: yapısal değişik
 ve ayrı commit'lenir.)*
 `verify:` `pytest` **112 passed, 2 xfailed** — Adım 1'in çıpasıyla **birebir aynı**.
 
-- [ ] **Adım 3: `tests/`'in yol kurulumu** — testler de `scripts/`'i `sys.path`'e ekliyor.
+- [x] **Adım 3: `tests/`'in yol kurulumu** ✅ *(11 yer → `conftest.py`; 8'i göreli yoldu)* — testler de `scripts/`'i `sys.path`'e ekliyor.
 `tests/conftest.py` (yoksa oluştur) `scripts/` kökünü **ve alt klasörlerini** ekler; tekil
 test dosyalarındaki elle `sys.path` satırları oraya devredilir.
 `verify:` `pytest` yeşil, ve `grep -c "sys.path" tests/*.py` **azalmış**.
 
-- [ ] **Adım 4: `git mv` ile taşı** — taksonomiye göre, **grup grup**, her grup **ayrı commit**.
+- [x] **Adım 4: `git mv` ile taşı** ✅ *(72/72, geçmiş korundu; kapı 6 kırık yakaladı — alt süreç yolları)* — taksonomiye göre, **grup grup**, her grup **ayrı commit**.
 ⛔ Tek seferde hepsini taşıma: kırılma olursa hangi grubun kırdığı anlaşılmaz.
 `verify:` her gruptan sonra `pytest` yeşil **ve** `bash -n` her `.sh` için temiz.
 
-- [ ] **Adım 5: Kod referanslarını güncelle** — `bash scripts/X.sh` · `python scripts/X.py` ·
+- [x] **Adım 5: Kod referanslarını güncelle** ✅ *(66 dosya, 144 satır; kırık yol 0, döngüyle sınandı)* — `bash scripts/X.sh` · `python scripts/X.py` ·
 `modal_train.py`'nin `cmd` listeleri · Modal imajındaki `/root/scripts/...` yolları.
 🚨 **`modal_train.py` en riskli**: yol string'i orada **çalışma zamanına kadar sessiz kalır**
 (tuzak 6.12: *"bayrak script'e eklenir, çağrı zincirine eklenmez"*).
 `verify:` `grep -rn "scripts/[a-z0-9_]*\.\(py\|sh\)" --include="*.py" --include="*.sh" .`
 çıktısındaki **her** yol var olan bir dosyayı gösterir (döngüyle sınanır, gözle değil).
 
-- [ ] **Adım 6: Güncel belgeleri güncelle, TARİHSEL OLANLARA DOKUNMA**
+- [x] **Adım 6: Güncel belgeleri güncelle, TARİHSEL OLANLARA DOKUNMA** ✅ *(12 belge / 61 satır; `docs/record`+`docs/adr` **0 değişiklik**)*
 Güncellenir: `CLAUDE.md` · `DEVIR-PROMPT.md` · aktif spec (~30 satır).
 ⛔ **Güncellenmez:** `docs/record/**` · `docs/adr/**` (~590 satır) — bunlar *"o gün şu yoldan
 koşuldu"* diyen **tarihsel kayıtlar**; spec §11'in ilk kuralı: **KAYIT TEMİZLENMEZ.**
 `verify:` `git diff --stat` `docs/record/` ve `docs/adr/` altında **0 değişiklik** gösterir.
 
-- [ ] **Adım 7: Uçtan uca duman testi** — bir gerçek koşu zinciri kısa `--n` ile çalıştırılır
+- [x] **Adım 7: Uçtan uca duman testi** ✅ *(`m5` `N_OVERRIDE=2` yeni yoldan koştu, kapı geçti, `GEN_EXIT=0`)* — bir gerçek koşu zinciri kısa `--n` ile çalıştırılır
 (ör. `cp0_thinking_gen.sh` + `cp0_thinking_score.sh`, `N_OVERRIDE=2`).
 **Neden:** `pytest` import'ları yakalar, **`bash` çağrılarını yakalamaz**; bu turda üç kez
 yanlış bayrak/yol çıktı ve üçü de yalnız koşarken görüldü.
 `verify:` zincir uçtan uca hatasız tamamlanır ve künye basılır.
 
-- [ ] **Adım 8: Commit + `docs/record/yurutme-tuzaklari.md`'ye tuzak yaz**
+- [x] **Adım 8: Commit + tuzak yazıldı** ✅ *(**tuzak 5.8**)*
 *"Paylaşılan modülleri alt klasöre taşımak uzantısız import'ları sessizce kırar"*.
 
 **Bedel:** $0 · ~30-45 dk · **GPU gerekmez** ⛔ ama Faz 0'ın koşuları bitmeden **başlamaz**

@@ -114,7 +114,7 @@ bağımlı yapar.
 yazmış. Ve [ADR-0072](../../adr/0072-v1-rakip-havuzu-genisler.md)'nin GPT öznesi **bu panel
 kurulmadan eklenemez** (aile dışlaması, ADR-0032).
 
-**Ölçülmüş boşluk:** `scripts/judge_agreement.py` **hazır** — üç modu var (`cross` · `export` ·
+**Ölçülmüş boşluk:** `scripts/puanlama/judge_agreement.py` **hazır** — üç modu var (`cross` · `export` ·
 `author`), eşik dosyada yazılı: **κ ≥ 0,6 makul · ≥ 0,8 güçlü**. Yeni araç **gerekmiyor**.
 
 ---
@@ -123,7 +123,7 @@ kurulmadan eklenemez** (aile dışlaması, ADR-0032).
 
 **Dosyalar:**
 - Create: `outputs/eval/hp-hakem-paneli/` (+ `KUNYE.json`)
-- Read: `scripts/judge_agreement.py` · `scripts/groundedness.py` · `scripts/llm_client.py`
+- Read: `scripts/puanlama/judge_agreement.py` · `scripts/puanlama/groundedness.py` · `scripts/puanlama/llm_client.py`
 - Girdi (**değişmez, yeniden üretilmez**): `outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl`
 
 **Arayüzler:**
@@ -161,7 +161,7 @@ cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
 set -a && . ./.env && set +a && export OPENAI_API_KEY="$OPENROUTER_API_KEY" && \
 mkdir -p outputs/eval/hp-hakem-paneli && \
 LLM_GATEWAY=openrouter LLM_PROVIDER_ORDER=Anthropic \
-python scripts/groundedness.py \
+python scripts/puanlama/groundedness.py \
   --details outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl \
   --label h1_tgta_v1_anthropic_duman --mode data \
   --judge-model <ADIM-1'DEN GELEN KİMLİK> --n 5 \
@@ -178,7 +178,7 @@ setsid nohup bash -c 'source ~/code/global_venv/bin/activate && \
   set -a && . ./.env && set +a && export OPENAI_API_KEY="$OPENROUTER_API_KEY" && \
   export PYTHONUNBUFFERED=1 && \
   LLM_GATEWAY=openrouter LLM_PROVIDER_ORDER=Anthropic \
-  python scripts/groundedness.py \
+  python scripts/puanlama/groundedness.py \
     --details outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl \
     --label h1_tgta_v1_anthropic --mode data \
     --judge-model <ADIM-1 KİMLİĞİ> \
@@ -263,7 +263,7 @@ o sayı yayımlanamaz.
 **Dosyalar:**
 - Create: `outputs/eval/hp-hakem-paneli/KAPPA.md` · `KUNYE.json`
 - Create: `docs/adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md`
-- Read: `scripts/judge_agreement.py` (üç modu var: `cross` · `export` · `author`)
+- Read: `scripts/puanlama/judge_agreement.py` (üç modu var: `cross` · `export` · `author`)
 
 **Arayüzler:**
 - Tüketir: üç ailenin `gnd_*.jsonl` dosyaları
@@ -279,7 +279,7 @@ for CIFT in "f02-biz-onsozsuz/gnd_h1_tgta_v1_f02_nb:$D/gnd_h1_tgta_v1_anthropic:
             "$D/gnd_h1_tgta_v1_anthropic:$D/gnd_h1_tgta_v1_google:anthropic_google"; do
   A="outputs/eval/${CIFT%%:*}.jsonl"; R="${CIFT#*:}"; B="${R%%:*}.jsonl"; AD="${R#*:}"
   echo "=== $AD ==="
-  python scripts/judge_agreement.py cross --a "$A" --b "$B" --field verdict --kind cat
+  python scripts/puanlama/judge_agreement.py cross --a "$A" --b "$B" --field verdict --kind cat
 done
 ```
 ⚠️ **`--field` adını TAHMİN ETME.** Önce oku:
@@ -402,8 +402,8 @@ kollarında **6 açık yanlış pozitif**, bizde **0**.
 
 **Dosyalar:**
 - Create: `hakhukuk/__init__.py` · `hakhukuk/istem.py` · `tests/test_istem.py`
-- Modify: `scripts/gen_eval_grounded.py:39-58` · `scripts/raft_pack.py:20` ·
-  `scripts/train_sft.py:31` · `scripts/gen_v3_rejected.py:37` · `scripts/build_orpo_v3.py:36`
+- Modify: `scripts/olcum_uretim/gen_eval_grounded.py:39-58` · `scripts/veri_hazirlik/raft_pack.py:20` ·
+  `scripts/egitim/train_sft.py:31` · `scripts/veri_hazirlik/gen_v3_rejected.py:37` · `scripts/veri_hazirlik/build_orpo_v3.py:36`
 
 **Arayüzler:**
 - Üretir: `hakhukuk.istem.SISTEM_KOR` · `SISTEM_TEK_KAYNAK` · `SISTEM_COK_KAYNAK` ·
@@ -505,7 +505,7 @@ SISTEM_TEK_KAYNAK = (
     "Cevabını kısa ve anlaşılır tut; dayandığın kanun ve madde numarasını belirt."
 )
 
-# M1/M3/h1 — çok kaynak (harness). ⚠️ Bu metin bugün scripts/raft_pack.py:20'de duruyor
+# M1/M3/h1 — çok kaynak (harness). ⚠️ Bu metin bugün scripts/veri_hazirlik/raft_pack.py:20'de duruyor
 # ve EĞİTİM VERİSİ onunla paketlendi; buraya BİREBİR kopyalanır, yeniden yazılmaz.
 SISTEM_COK_KAYNAK = "<<< raft_pack.py:20'den BİREBİR kopyalanacak — yeniden yazma >>>"
 
@@ -543,7 +543,7 @@ python -c "from hakhukuk import istem; print(istem.damga())"
 Beş dosyadaki literaller **silinir** ve yerine import gelir:
 
 ```python
-# scripts/gen_eval_grounded.py — satır 39-57 yerine
+# scripts/olcum_uretim/gen_eval_grounded.py — satır 39-57 yerine
 from hakhukuk.istem import (
     SISTEM_KOR as SYSTEM_PROMPT,
     SISTEM_TEK_KAYNAK as SYSTEM_PROMPT_RAG,
@@ -565,7 +565,7 @@ set -a && . ./.env && set +a && \
 OUT_DIR=outputs/eval/a1-istem-kaniti \
 MODES="h1" HARNESS_INDEKS=data/index/mevzuat_bge_m3_s2 HARNESS_K=10 \
 THINK_BUDGET=1024 MAXTOK=512 CTX=8192 N_OVERRIDE=10 \
-bash scripts/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf istem_kaniti
+bash scripts/olcum_uretim/cp0_thinking_gen.sh models/gguf/tgta_v1-q4_k_m.gguf istem_kaniti
 ```
 Sonra 10 kalemi F0.2'nin aynı 10 kalemiyle karşılaştır:
 ```bash
@@ -712,7 +712,7 @@ git commit -m "A2: ürün tipleri — dört durum enum'la ayrıldı (bool ayrım
 
 **Dosyalar:**
 - Create: `hakhukuk/terazi.py` · `tests/test_terazi.py`
-- Read: `scripts/score_abstention.py` (`exact_reject`, `REJECT_RE`) · `scripts/atif_dogrula.py`
+- Read: `scripts/puanlama/score_abstention.py` (`exact_reject`, `REJECT_RE`) · `scripts/erisim_korpus/atif_dogrula.py`
 
 **Arayüzler:**
 - Tüketir: `hakhukuk.tipler` (Görev 6)
@@ -945,7 +945,7 @@ Karar gelince adımlar bu görevin içine, tam koduyla yazılır.
 **Bağımlılık:** Görev 5 · 6 · 7 · 8
 
 **Arayüzler:**
-- Tüketir: `hakhukuk.istem` · `hakhukuk.tipler` · `hakhukuk.terazi` · `scripts/retriever.py`
+- Tüketir: `hakhukuk.istem` · `hakhukuk.tipler` · `hakhukuk.terazi` · `scripts/erisim_korpus/retriever.py`
 - Üretir: `answer(soru: str, *, k: int = 10) -> Cevap` — Görev 10 (CLI) ve 12 (TUI) **yalnız
   bunu** çağırır
 
@@ -1056,7 +1056,7 @@ def answer(soru: str, *, k: int = VARSAYILAN_K) -> Cevap:
     return Cevap(metin=metin, durum=durum, atiflar=atiflar, kaynaklar=kaynaklar)
 ```
 
-⚠️ `retriever.getir` **imzasını TAHMİN ETME** — `scripts/retriever.py`'yi aç, gerçek fonksiyon
+⚠️ `retriever.getir` **imzasını TAHMİN ETME** — `scripts/erisim_korpus/retriever.py`'yi aç, gerçek fonksiyon
 adını ve dönüş şeklini oku, koda **onu** yaz. Bu turda üç kez yanlış imza/bayrak çıktı.
 ⚠️ `--max-chunk-chars 900` ölçüm rejiminin değişmezidir; `[:900]` kırpması onunla **aynı** olmalı.
 
@@ -1303,7 +1303,7 @@ bugünkü her sayı tek ailenin hükmü; kapıyı **panelsiz** koşmak aynı bor
 artık birinci sıradaki eksen**. ⚠️ Ve **otomatik vekil metrik YOK**: `faithfulness < 0,6`
 süzgeci 4 buluyor, *"altın madde atıflarda yok"* süzgeci 3 — **göz 8** buluyor (ADR-0066).
 
-**Alet HAZIR:** `scripts/b10_hasat.py` · Modal `harvest_b10` (ADR-0047 m.2, L4'te doğrulanmış) ·
+**Alet HAZIR:** `scripts/veri_hazirlik/b10_hasat.py` · Modal `harvest_b10` (ADR-0047 m.2, L4'te doğrulanmış) ·
 sızıntı süzgeci (13.350 → 12.914, konteynerde bayt-özdeş). ⛔ **Yeniden kurulmaz.**
 
 - [ ] **Adım 1: Ön-kayıt — hedef bandı ve durma kuralı, KOŞUDAN ÖNCE**

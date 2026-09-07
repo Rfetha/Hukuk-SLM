@@ -154,7 +154,7 @@ items, so the round was closed. ⛔ Over-refusal is **smaller, not gone** — 8/
 ⚠️ **Three things a new session must carry forward from that closure:**
 - **Next first-rank axis is B1** (misattribution, 5/80) — B10 stepped down; the gap between them
   narrowed 2.8× → 1.6×, and B1 has never been worked on.
-- **The round's tooling is intact and reusable** — `scripts/b10_hasat.py`, Modal `harvest_b10`
+- **The round's tooling is intact and reusable** — `scripts/veri_hazirlik/b10_hasat.py`, Modal `harvest_b10`
   (ADR-0047 m.2 carrier, verified on L4), the leakage filter (13,350 → 12,914, byte-identical in
   the container). Do not rebuild it for B1.
 - **The thresholds re-derived under ADR-0061 Karar 2 stand unused** (`aşırı-red < 0.4125`, etc.)
@@ -297,8 +297,24 @@ These are non-negotiable framing from the docs — honor them in any code or rec
 ## Working notes
 
 - Project docs and the working language are **Turkish.** Match that language in docs, comments, and commit messages unless asked otherwise. Code identifiers stay in English. *(This file is the exception — it stayed English.)*
-- This **is a git repository**. Scripts live in `scripts/`, eval outputs in `outputs/eval/`, data in `data/`, tests in `tests/` (`pytest`). There is no formal build/lint setup — add when it earns its keep.
+- This **is a git repository**. Eval outputs in `outputs/eval/`, data in `data/`, tests in `tests/` (`pytest`). There is no formal build/lint setup — add when it earns its keep.
+- **`scripts/` is grouped into five folders by function (T5, 2026-09-07)** — 72 files were a single flat pile:
+
+  | folder | what lives there |
+  | :--- | :--- |
+  | `scripts/egitim/` | training · merge · GGUF · toolchain setup |
+  | `scripts/olcum_uretim/` | harness runners · the single generation body · diagnostics · VRAM/token measurement |
+  | `scripts/puanlama/` | judging · scoring · tables · `llm_client` · `runlock` |
+  | `scripts/erisim_korpus/` | retriever · recall · corpus integrity · citation verification |
+  | `scripts/veri_hazirlik/` | SFT/ORPO/RAFT dataset construction · B8/B10/CP2 harvest chain |
+
+  ⚠️ **Sibling imports are extension-less** (`import runlock`, `from build_sft_v2b import …`) and
+  survive the split only because **26 files carry an identical path-bridge block** — grep it with
+  `grep -rl "yol köprüsü" scripts/`. `tests/conftest.py` mirrors the same logic. **If you change one,
+  change both**, or the tests will exercise a path production never sees.
+  ⛔ Historical paths in `docs/record/**` and `docs/adr/**` were **deliberately left pointing at the old
+  flat layout** — they record *"on that day it was run from this path"*. The record is not cleaned.
 - **Base model = a parameter with a working assumption, not a fixture.** Operative base: **Qwen3.5-4B**. We do our OWN fine-tune. Mecellem stays **cite-only** (ADR-0016/0020) — it is a CPT foundation base, not an assistant, so "we beat it" is a category error and is never claimed. TurboQuant (arXiv:2504.19874) is future-work and **is not in llama.cpp**; today's lever is `--cache-type-k/-v q8_0` (`knowledge/summary_turboquant.md`).
 - **Data hard rule, learned the hard way: EDA-verify every dataset before trusting it** — `newmindai/EuroHPC-Legal` looked great (43K, Apache 2.0) but sampling revealed garbage (mismatched Q&A, hallucinated laws, Ottoman-era content) and was rejected. Scope is **current Republic-of-Turkey legislation only.** Ground truth = Mevzuat.gov.tr. Data we lack (plain-language, citizen-niche, scenario→statute) is produced via **grounded synthetic generation** (real statute text → LLM generates pairs → verify).
-- **Live legislation source: the `bedesten.adalet.gov.tr/mevzuat` JSON API** — reverse-engineered from `saidsurucu/mevzuat-mcp` (MIT), contract verified 4/4. Auth-free, no Playwright. Search + full text + article tree; the same backend also serves case law. Contract: [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md), probe: `scripts/bedesten_probe.py`. **Requires a Turkish IP** (the gov firewall blocks foreign/VPN IPs). ⚠️ The contract works but **the product does not use it yet** — debt B6.
+- **Live legislation source: the `bedesten.adalet.gov.tr/mevzuat` JSON API** — reverse-engineered from `saidsurucu/mevzuat-mcp` (MIT), contract verified 4/4. Auth-free, no Playwright. Search + full text + article tree; the same backend also serves case law. Contract: [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md), probe: `scripts/erisim_korpus/bedesten_probe.py`. **Requires a Turkish IP** (the gov firewall blocks foreign/VPN IPs). ⚠️ The contract works but **the product does not use it yet** — debt B6.
 - **Corpus and index:** `data/corpus/mevzuat_maddeler.jsonl`; the live index is `data/index/mevzuat_bge_m3_s2/` (**S2** — carries the validity field + sub-article identity). The pre-S2 index is kept only to reproduce pre-S2 numbers. Retrieval is hybrid BM25 + `bge-m3` fused with RRF; a vector database was measured and **rejected** (brute force is 8,2 ms/query, index 83 MB).

@@ -223,8 +223,8 @@ iki kefe gerekir"* oldu — dedektör önce **bizim** şablonumuzda 14'ü 8 gös
 
 ## 10. Yan bulgular — bu oturumda ölçüldü, düzeltilmedi
 
-- **TRL zaten kullanılıyor.** `scripts/train_sft.py:28` → `from trl import SFTTrainer, SFTConfig`
-  (`τ_g`) · `scripts/train_orpo.py:27` → `from trl import ORPOTrainer, ORPOConfig` + `MaskedORPOTrainer`
+- **TRL zaten kullanılıyor.** `scripts/egitim/train_sft.py:28` → `from trl import SFTTrainer, SFTConfig`
+  (`τ_g`) · `scripts/egitim/train_orpo.py:27` → `from trl import ORPOTrainer, ORPOConfig` + `MaskedORPOTrainer`
   (`τ_a`) · `trl==0.24.0` pinli. Unsloth TRL'nin **alternatifi değil, altındaki yama katmanı**:
   `PatchDPOTrainer()` TRL trainer'larını Unsloth çekirdeklerine uyarlıyor.
   **REJECTED — `Axolotl`/`LLaMA-Factory`:** TRL+PEFT üstüne YAML sarmalayıcı; yeni yetenek sıfır,
@@ -321,7 +321,7 @@ eden aranır (bulunursa yol güncellenir) · taşımadan sonra `pytest` **112 pa
 
 | yer | bayat olan | eylem |
 | :--- | :--- | :--- |
-| `scripts/train_orpo.py` docstring | *"base = v2b ADAPTER'dan DEVAM"* — bugünkü **ham-base** kuralına aykırı kalıp | docstring gerçeğe çekilir: `τ_a v1` **`--fresh-adapter`** ile koştu (`kollar.md`:64), kural ihlal edilmedi |
+| `scripts/egitim/train_orpo.py` docstring | *"base = v2b ADAPTER'dan DEVAM"* — bugünkü **ham-base** kuralına aykırı kalıp | docstring gerçeğe çekilir: `τ_a v1` **`--fresh-adapter`** ile koştu (`kollar.md`:64), kural ihlal edilmedi |
 | `docs/FINE_TUNING.md` · `VERI_PLANI.md` · `YARGI_KAYNAKLARI.md` · `model-soyagaci.mmd` | silinen dosyalara **kırık işaretçiler** (toplam 9) | yeni belgelere bağlanır (§8 son adım) |
 | `docs/open_questions.md` | otoritesi silinen `TASARIM.md` (20 atıf) · kapanan **S1/S2/S11/S14** gövdede duruyor | otorite `PRODUCT.md`'ye çekilir; kapanan dördü ADR-0063/0064/0065'e işlenip **kapanış dizinine** taşınır |
 | `CLAUDE.md` · `MODEL_CARD.md` · `README*.md` | manşet `%68,4` + kırık işaretçiler | Faz 0 sayısı geldikten sonra güncellenir |

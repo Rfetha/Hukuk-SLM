@@ -173,7 +173,7 @@ ikisini de geri getiriyor — dayanaklandırma tamamen korunuyor, çekinme çök
 
 ```bash
 # 1. llama.cpp kur
-bash scripts/setup_llamacpp.sh
+bash scripts/egitim/setup_llamacpp.sh
 
 # 2. modeli ayağa kaldır
 llama-server -m models/gguf/tgta_v1-q4_k_m.gguf \

@@ -178,7 +178,7 @@ both — grounding fully preserved, **57%** ~~71%~~ of the abstention collapse r
 
 ```bash
 # 1. get llama.cpp
-bash scripts/setup_llamacpp.sh
+bash scripts/egitim/setup_llamacpp.sh
 
 # 2. serve the model
 llama-server -m models/gguf/tgta_v1-q4_k_m.gguf \

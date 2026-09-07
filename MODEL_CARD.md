@@ -235,7 +235,7 @@ below 1.0.
 > 🚨 **Corrected 2026-09-06.** This section previously said the figures were
 > ~~**calculated, not measured**~~ and that *"a measured peak is still owed"*. That was
 > **wrong**: a measurement exists — `outputs/eval/_artefakt/vram_stack.json`, produced by
-> [`scripts/measure_vram_stack.py`](scripts/measure_vram_stack.py). The old prose is struck,
+> [`scripts/olcum_uretim/measure_vram_stack.py`](scripts/olcum_uretim/measure_vram_stack.py). The old prose is struck,
 > not deleted.
 
 **Measured**, `llama-server`, Q4_K_M, KV cache `q8_0`, one slot (⚠️ the GPU model is **not**
