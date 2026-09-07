@@ -199,7 +199,7 @@ Tam koşu tahmini = `judge_cost_usd × 16`. ⛔ **> $1 ise DUR ve sor.**
 > ⚠️ `llm_client.PRICE` **fiyat kaydı olmayan modeli SystemExit ile reddediyor** — koşudan
 > önce satır eklenmeli. Bu bir kapı, engel değil: yanlış fiyatla maliyet raporlanmasın.
 
-- [ ] **Adım 3: Tam koşu (80 kalem), AYRIK**
+- [x] **Adım 3: Tam koşu (80 kalem), AYRIK**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && \
@@ -217,7 +217,7 @@ setsid nohup bash -c 'source ~/code/global_venv/bin/activate && \
 `verify:` `/tmp/hp_anthropic.log` sonunda `EXIT=0` · `gnd_h1_tgta_v1_anthropic_summary.json`
 `n=80` · `judge_cost_usd` künyeye yazılacak.
 
-- [ ] **Adım 4: Commit**
+- [x] **Adım 4: Commit**
 
 ```bash
 git add outputs/eval/hp-hakem-paneli/ && \
@@ -226,7 +226,15 @@ git commit -m "HP: ikinci hakem ailesi (Anthropic) — aynı 80 cevap, farklı h
 
 ---
 
-### Görev 2: Üçüncü hakem ailesi (Google) — ⚠️ AİLE DIŞLAMASI burada ısırır
+### Görev 2: Üçüncü hakem ailesi (Google) — ⛔ **ATLANDI 2026-09-07 (insan kararı)**
+
+> ⛔ **BU GÖREV KOŞULMADI.** Sebep sayıyla: OpenRouter bakiyesi **$3,45**, rakip kolunu ikinci
+> hakemle puanlamanın tahmini gerçek faturası **$2,81** (bakiyenin %81'i) ve donmuş TEST kabul
+> koşusunun puanlaması da aynı bakiyeden ödenecekti. İnsan kararı: *"tek puanlayıcı ile de devam
+> edilebilir; amaç çalışan uçtan uca ürün."*
+> ⇒ Panel **iki aileli** kaldı, ADR-0032'den **sapıldı** ve bu yayında **eksiklik** olarak yazılır
+> ([ADR-0074](../../adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md) · [#64](../../record/research_log/2026-09-07-hakem-paneli-iki-aile.md)).
+> ⚠️ Aşağıdaki adımlar, borç kapanacağı gün koşulmak üzere **olduğu gibi duruyor**.
 
 **Dosyalar:**
 - Create: `outputs/eval/hp-hakem-paneli/gnd_h1_tgta_v1_google*.json*`
@@ -298,7 +306,7 @@ o sayı yayımlanamaz.
 - Tüketir: üç ailenin `gnd_*.jsonl` dosyaları
 - Üretir: her eksen için **κ** ve **bağlayıcı okuma kuralı** — Görev 16'nın kapı koşusu bunu kullanır
 
-- [ ] **Adım 1: İkili κ'ları hesapla — üç çift**
+- [x] **Adım 1: İkili κ'ları hesapla — üç çift**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -316,7 +324,7 @@ done
 — bu turda **üç kez** yanlış bayrak/alan adı çıktı, üçü de yalnız koşarken görüldü.
 `verify:` üç çift için uyum % **ve** κ basıldı.
 
-- [ ] **Adım 2: Öz-tercih ölçümü — "hakem kendi ailesinin cevabını kayırıyor mu"**
+- [x] **Adım 2: Öz-tercih ölçümü — "hakem kendi ailesinin cevabını kayırıyor mu"**
 
 Elimizde **dört özne** var (biz + üç Gemini) ve artık **iki-üç hakem**. Öz-tercih testi:
 *Google hakem, Google öznelerine OpenAI hakemden **sistematik olarak yüksek** not veriyor mu?*
@@ -338,7 +346,7 @@ PY
 ayrı ayrı basıldı. ⚠️ İkisi **ayrı** raporlanır: sistematik kayma ≠ rastgele gürültü.
 🆕 Ölçülemeyen şey (**Google özne ↔ Google hakem**) `KAPPA.md`'ye **açık borç** olarak yazılır.
 
-- [ ] **Adım 3: `KAPPA.md` — üç okuma, ve BAĞLAYICI olanın seçimi**
+- [x] **Adım 3: `KAPPA.md` — üç okuma, ve BAĞLAYICI olanın seçimi**
 
 Zorunlu içerik:
 1. Üç κ değeri + `judge_agreement.py`'nin kendi eşiği (**κ ≥ 0,6 makul · ≥ 0,8 güçlü**)
@@ -350,7 +358,7 @@ Zorunlu içerik:
 
 `verify:` `KAPPA.md` üç κ, aile matrisi ve *"bağlayıcı okuma"* cümlesini içeriyor.
 
-- [ ] **Adım 4: ADR-0074 — bağlayıcı hüküm kuralı, KAPI KOŞUSUNDAN ÖNCE ön-kayıt**
+- [x] **Adım 4: ADR-0074 — bağlayıcı hüküm kuralı, KAPI KOŞUSUNDAN ÖNCE ön-kayıt**
 
 ⛔ Bu ADR **Görev 16'dan önce** yazılır. ADR-0050: raporlama biçimi koşudan **önce**
 ön-kayıtlanır; sayı görüldükten sonra *"şu hakeme göre..."* demek kuralın engellediği şeydir.
@@ -360,14 +368,19 @@ ortalaması** / **en muhafazakârı**), (b) κ eşiğin altında çıkarsa ne ol
 iki aileyle notlandığı için hükmün **hangi kısmı** üç aileye dayanıyor.
 `verify:` ADR'de *"bu kural kapı koşusundan ÖNCE yazıldı"* şerhi ve **tarih** var.
 
-- [ ] **Adım 5: `research_log` #63 + README satırı + commit**
+- [x] **Adım 5: `research_log` #63 + README satırı + commit**
 
 `verify:` `docs/record/research_log/README.md`'de **#63** satırı var; her sayının yanında
 **kaynak dosya adı** duruyor.
 
 ---
 
-### Görev 4: `v1.0` rakip havuzunun genişletilmesi 🔓 **AÇIK KARAR S16**
+### Görev 4: `v1.0` rakip havuzunun genişletilmesi — ⛔ **ATLANDI 2026-09-07 (insan kararı)**
+
+> ⛔ **KOŞULMADI, aynı bütçe kararıyla** (Görev 2'nin kutusuna bak). S16 kapanmıştı (tek Claude
+> Sonnet öznesi, ~$0,35 liste ⇒ ~$0,56 gerçek) ama bakiye önce donmuş TEST kabul koşusuna ayrıldı.
+> ⇒ ADR-0072 **açık kalıyor**; `v1.0` rakip havuzu bugünkü dört özneyle yayımlanır ve havuzun
+> genişlemediği **eksiklik olarak** yazılır.
 
 **Dosyalar:** Create: `outputs/eval/hp-rakip-havuzu/`
 **Bağımlılık:** Görev 3 **bitmiş** olmalı.
@@ -589,7 +602,7 @@ olduğu için kök de eklenmeli. Faz 0 planı **Görev 9 · T5 Adım 2** bu düz
 tanımlıyor — **önce o adım koşulur**, sonra bu adım.
 `verify:` `grep -rc "Sen HakHukuk'sun" scripts/` → **0** · `python -m pytest` **yeşil**.
 
-- [ ] **Adım 7: 🚨 KANIT KAPISI — istem dosyadan okunuyorken sayı BİREBİR aynı mı**
+- [x] **Adım 7: 🚨 KANIT KAPISI — istem dosyadan okunuyorken sayı BİREBİR aynı mı**
 
 ⛔ Bu adım atlanamaz. İstemi taşımak sayıyı **değiştirmemeli**; değiştiyse bir şey kaydı.
 
@@ -616,7 +629,29 @@ PY
 ```
 `verify:` `birebir aynı: 10/10`. ⛔ Değilse **DUR** — metin bayt düzeyinde farklı demektir.
 
-- [ ] **Adım 8: Commit** *(yapısal değişiklik — davranış değişmez, AYRI commit)*
+> 🆕 **KOŞULDU 2026-09-07 — sonuç 8/10, ve planın "değilse metin farklıdır" ÇIKARIMI YANLIŞMIŞ.**
+> İki sapmanın ikisi de sebebe bağlandı, ikisi de istem taşımasına ait **değil**:
+> 1. **Yürürlük süzgeci** (`63b691e`, Görev 8b) getirilen kaynak listesini bir kalemde
+>    değiştirdi: `İŞ KANUNU|Madde 111` **mülga** çıktı ve elendi ⇒ `context_shown` farklı
+>    (7289 → 6538 kar.). Kasıtlı davranış değişikliği. ⚠️ **Sıralama dersi:** kanıt kapısı,
+>    retriever'ı değiştiren bir görevden **ÖNCE** koşulmalıydı — çıpa kirlendi.
+> 2. **Üretim tam deterministik değil.** ⭐ **Gürültü tabanı ÖLÇÜLDÜ:** aynı komut ikinci kez
+>    koşuldu (`outputs/eval/a1-determinizm-tabani/`), aynı kod · aynı istem · aynı retriever,
+>    tek değişken sampling ⇒ **9/10** ve `context_shown` **10/10 birebir**. Farklı olan tek
+>    kalem (`CMK 153`) iki noktalama formu arasında salınıyor ve determinizm koşusu F0.2'nin
+>    **eski formunu birebir yeniden üretti**.
+>
+> ⇒ **8/10 = 1 gürültü + 1 yürürlük süzgeci. İstem taşımasına atfedilebilen sapma: 0/10.**
+> Kapının sorduğu soru (*"istemi taşımak çıktıyı değiştirdi mi"*) **HAYIR** diye cevaplandı.
+> ⚠️ Sınır: n=10, tek tekrar; kararsız kalemin salınım sıklığı ölçülmedi.
+>
+> 🚨 **Ve kapının kendisi bir ürün kusuru buldu** (uçtan uca koşuda): `terazi._atiflari_cikar`
+> atfı daima `f"Madde {n}"` kuruyordu, korpus kimliği ise kendi yazımını taşıyor —
+> **23.766 `Madde` · 8.922 `MADDE` · 7.808 diğer** ⇒ korpusun beşte birine yapılan DOĞRU
+> atıflar *"doğrulanamadı"* çıkıyordu (yanlış NEGATİF). `madde_anahtari` ile normalleştirildi;
+> 80 kalemde **CEVAP 33 → 54 · ÇEKİNCELİ 38 → 17**, suskunluk çıpası **5** değişmedi.
+
+- [x] **Adım 8: Commit** *(yapısal değişiklik — davranış değişmez, AYRI commit)*
 
 ```bash
 git add hakhukuk/ tests/test_istem.py scripts/ outputs/eval/a1-istem-kaniti/ && \
@@ -1273,7 +1308,7 @@ def test_cli_dort_durumu_ayirt_edilebilir_basar():
 istem `gen_eval_grounded.py` içindeydi (Görev 5 çözdü), indeks git'te yok (Görev 8 çözecek),
 ve komut zinciri hiçbir yerde **tek parça** yazılı değil.
 
-- [ ] **Adım 1: Zinciri yaz** — indeks hazırla → llama-server aç → `h1` üret →
+- [x] **Adım 1: Zinciri yaz** — indeks hazırla → llama-server aç → `h1` üret →
 geçerlilik kapısı → puanla → `harness_tablo.py`.
 `verify:` script `bash -n` temiz; her adım künyeye **ne yazdığını** basıyor.
 
@@ -1281,7 +1316,7 @@ geçerlilik kapısı → puanla → `harness_tablo.py`.
 `verify:` üretilen kütle **%80,1 ± 0,3 p** (hakem gürültü tabanı). ⛔ Dışındaysa **DUR**;
 fark **kaynaklanmadan** yayımlanmaz.
 
-- [ ] **Adım 3: Commit**
+- [x] **Adım 3: Commit**
 
 ---
 
@@ -1296,11 +1331,11 @@ mantığını** doğurur; `textual` bunu hazır veriyor ve `answer()`'ın üstü
 kalmasını sağlıyor.
 ⛔ **Web arayüzü, API sunucusu, hesap/oturum DEĞİL** — onlar `v2` (S9).
 
-- [ ] **Adım 1: Bağımlılığı ekle ve sürümü PİNLE**
+- [x] **Adım 1: Bağımlılığı ekle ve sürümü PİNLE**
 `verify:` `python -c "import textual; print(textual.__version__)"` çalışıyor · `pyproject.toml`'da
 **tam sürüm** yazılı.
 
-- [ ] **Adım 2: Failing test** — TUI'nin **kendi mantığı olmadığını** sınar:
+- [x] **Adım 2: Failing test** — TUI'nin **kendi mantığı olmadığını** sınar:
 
 ```python
 # tests/test_tui.py
@@ -1317,11 +1352,11 @@ def test_tui_kendi_mantigi_yok_yalnizca_answer_cagirir():
     assert "answer(" in kaynak
 ```
 
-- [ ] **Adım 3: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 3: Testi koş, BAŞARISIZ olduğunu gör**
 
 Run: `python -m pytest tests/test_tui.py -v` → `FAIL` (`No module named 'hakhukuk.tui'`)
 
-- [ ] **Adım 4: Uygulama — ince kabuk**
+- [x] **Adım 4: Uygulama — ince kabuk**
 
 ```python
 # hakhukuk/tui.py
@@ -1374,7 +1409,7 @@ def main() -> None:
 ⚠️ `SORUMLULUK_IBARESI` **Görev 10'da** `hakhukuk/cli.py`'de tanımlanır ve buradan **import
 edilir** — iki yere yazılmaz (S18'in dersi).
 
-- [ ] **Adım 5: Testi koş, GEÇTİĞİNİ gör**
+- [x] **Adım 5: Testi koş, GEÇTİĞİNİ gör**
 
 Run: `python -m pytest tests/test_tui.py -v` → **1 passed**
 

@@ -1,0 +1,100 @@
+# HakHukuk — ürün tanımı
+
+> **Bir vatandaşın gerçekten sorabileceği hukuk danışmanı.** Açık kaynak, Apache-2.0;
+> ağırlıklar + kod + veri + **araştırma kaydının tamamı** yayında.
+> Her sayının yanında **kaynak dosya adı** vardır; hiçbir sayı hatırlanarak yazılmamıştır.
+
+## Kim için
+
+Hukukçu **değil**. Kanun metnini açtığında ne dediğini anlamayan, "bu benim durumumda ne
+demek" diye soran kişi. Onun sorusu şuna benziyor:
+
+> *"Askerlik nedeniyle işten ayrılırsam sözleşmem ne olur?"*
+> *"Kat malikleri kurulu hangi çoğunlukla karar alır?"*
+> *"Aldığım ürün ayıplı çıktı, hangi haklarım var?"*
+
+Cevap şuna benziyor — **dayanağı gösterilmiş**, uydurmayan, bilmediğinde susan bir metin:
+
+```
+✅ CEVAP — dayanağı getirilen kaynaklarda
+
+Muvazzaf askerlik ödevi dışında manevra veya herhangi bir sebeple silâh altına alınan
+işçinin iş sözleşmesi, bu süre boyunca askıda kalır. …
+
+Atıflar:
+  ✓ 4857/Madde 31
+
+Kaynaklar:
+  [1] İŞ KANUNU Madde 31
+  …
+
+⚖️  Bu yanıt hukuki tavsiye değil, bilgilendirme amaçlıdır. …
+```
+
+## Ne yapar
+
+| | nasıl | kaynak |
+| :--- | :--- | :--- |
+| Soruyu **mevzuata bağlar** | hibrit BM25 + `bge-m3`, RRF füzyon (`RRF_K=10`) | [ADR-0068](docs/adr/) · `recall@10` **0,9500** ([`harness_tablo.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json)) |
+| **Uydurmaz** | atıflar getirilen kaynağa karşı deterministik doğrulanır | uydurulmuş madde **0/114** ↔ rakipler 1 · 4 · 4 ([`KUNYE.json`](outputs/eval/f02-biz-onsozsuz/KUNYE.json)) |
+| **Bilmediğinde susar** | dört durum ayrı: cevap · çekinceli · suskunluk · kesik | `hakhukuk/terazi.py` · aşırı-red **4/80** ([`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md)) |
+| **Yürürlükten kalkmışı göstermez** | mülga madde süzgeci varsayılan | sızıntı **2 → 0**, `recall@10` değişmedi ([#64](docs/record/research_log/)) |
+| **Tüketici donanımında çalışır** | GGUF Q4_K_M, 2,59 GiB; harness GPU'ya **girmez** | [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) |
+
+**Bugünkü manşet:** faithful-answer **kütle %80,1** — `outputs/eval/f02-biz-onsozsuz/KUNYE.json`.
+
+## ⛔ Ne VAAT ETMEZ
+
+Bunlar eksiklik listesi değil, **ürünün sınırı**:
+
+1. **Hukuki tavsiye değildir.** Avukat değildir; çıktısı bir iddiadır, karar değil. Gerçek bir
+   mesele için nitelikli bir avukata danışın. ⚠️ İbarenin **nihai hukuki metni** hâlâ açık
+   (**S10**) — hukukçu görüşü bekliyor.
+2. **%100 doğruluk değil.** Ölçülen kütle %80,1'dir; yani **beş cevaptan biri** dayanağıyla tam
+   örtüşmüyor. Ayrıca *"gerçek ama soruya uymayan maddeden cevaplama"* (isabetsizlik) **8/80**
+   ölçüldü ve bu **rakiplerden iyi değil** (8 ↔ 8 ↔ 7 ↔ 8).
+3. **Güncellik ağırlıkta değil, kütüphanededir.** Mevzuat değişir, ağırlıklar değişmez. Korpus
+   bir **anlık görüntüdür**: `data/corpus/KUNYE.json` → **2026-08-06**, 892 kanun, 40.496 madde.
+   ⛔ **Yönetmelik · tüzük · KHK · tebliğ · genelge · CB kararı KAPSAM DIŞI.**
+4. **Canlı mevzuat bağlantısı yok.** `bedesten.adalet.gov.tr` sözleşmesi doğrulandı (4/4) ama
+   **ürün onu çağırmıyor** (borç B6; ayrıca TR IP şartı var). Tazelik boru hattı `v2`.
+5. **Sayılar tek hakem ailesinin hükmü.** İkinci bir aile aynı 80 cevabı puanladığında kütle
+   %80,1 → **%69,4** düştü (κ = 0,534, eşiğin **altında**). Bu düşüş kapı hükmüne girmiyor
+   çünkü rakip kolu aynı hakemle puanlanmadı — ama **sayının hakem seçimine duyarlı olduğu
+   ölçülmüştür**. [ADR-0074](docs/adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md)
+6. **Tek boyut, tek kuantizasyon.** Bir ~4B modeli, bir `Q4_K_M` artefaktı. *"Daha büyüğü daha
+   iyi olur mu"* ve *"kuantizasyonun bedeli nedir"* **ölçülmedi** (ADR-0018'in eğrisi yok).
+
+## `v1` ↔ `v2` sınırı
+
+| | `v1` — model katmanı | `v2` — uygulama katmanı |
+| :--- | :--- | :--- |
+| ne | ağırlıklar + kod + veri + araştırma kaydı, **uçtan uca çalışır** | aynı modelin üstünde API/servis |
+| arayüz | `hakhukuk "soru"` (CLI) · `hakhukuk-tui` | HTTP API, barındırma (**S9 açık**) |
+| erişim | yerel indeks, anlık görüntü korpus | canlı `bedesten` (B6) · tam kapsam · tazelik |
+| durum | ▶️ bu turda | ⏳ sonra |
+
+## Sürüm şeması — ürün ve iddia AYRI
+
+[ADR-0065](docs/adr/0065-bolunmus-surumleme.md): *ürün sürümü* kullanıcının eline geçen şeyi,
+*iddia sürümü* hangi ölçümün savunulduğunu sayar. İkisi birlikte hareket etmez.
+
+| | bugün | koşulu |
+| :--- | :--- | :--- |
+| **ürün** | `v0.2` | uçtan uca çalışan CLI/TUI + yeniden üretim yolu |
+| **iddia** | `v0.1` | **donmuş TEST kabul koşusu** — henüz koşulmadı |
+
+## `v1.0` kapısı — üç madde
+
+Ön-kayıtlı, [ADR-0064](docs/adr/). DEV'de üçü de **geçti**; `v1.0` yine de **verilmedi**, çünkü
+donmuş TEST kabul koşusu koşulmadı.
+
+| # | madde | DEV sonucu |
+| :-- | :--- | :--- |
+| 1 | kütle ≥ `3.5 Flash` − 2,0 p | **0,8011** ↔ eşik 0,7225 ✅ |
+| 2 | isabetsizlik kötüleşmesin | çıpa 8/80'de yeniden çakıldı ✅ |
+| 3 | M5 (ezber) yükselmesin | BASE'e göre **−6,82 p** ✅ |
+
+⚠️ Kabul testinin erişim tavanı DEV'in 0,95'i değil, **≈0,75**'tir
+([ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)) — ham kütle manşet olur,
+tavan kullanımı **yanında** raporlanır, rakip kıyası o orandan **kurulmaz**.
