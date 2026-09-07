@@ -51,3 +51,20 @@ Tahmin $0,30 idi, gerçek **$0,78**. Sebep: eski koşuda `k=10` hakemi **neredey
   (klip 3500) karışmasın diye devralınmadı.
 - Bu koşu **v1 soru setiyle** üretilmiş h2b kollarında yapıldı (v2'de h2b hiç koşulmadı);
   amaç sayı üretmek değil **ekseni tanımlı kılmaktı**.
+
+
+## 🆕 Yan etki, 2026-09-07'de fark edildi: bir TEST eski kusuru koruyordu
+
+`tests/test_score_abstention.py::test_hakem_isteminden_TASAN_METIN_ANAHTARA_GIRMEZ`,
+klip **3500** iken `k=4` ↔ `k=10` çakışmasını **değişmez olarak** doğruluyordu
+(docstring: *"bedeli KABUL EDİLDİ… aleti değil damgayı taşıyoruz"*). Bu değişiklik o
+bedeli **ödediği** için test düştü — ve **bu koşudan sonra `pytest` koşulmadığı için
+görülmedi**; ancak ertesi gün T5'in taban ölçümünde ortaya çıktı.
+
+**Düzeltme:** test **tersine çevrildi** — artık çakışmanın **yokluğunu** koruyor:
+`gecerlilik_istemi(k4) != gecerlilik_istemi(k10)`. Değişmezin kendisi (*"klibi AŞAN fark
+anahtara girmez"*) ikinci bir blokla **yerinde** tutuldu.
+
+⚠️ **Ders:** aleti değiştiren bir ölçüm turu, o aletin **testlerini** de çalıştırmalı.
+`SOURCE_CLIP` bir sabit değil, **davranış sözleşmesiydi**; sözleşmeyi değiştirmek onu
+belgeleyen testi de değiştirmeyi gerektiriyordu.

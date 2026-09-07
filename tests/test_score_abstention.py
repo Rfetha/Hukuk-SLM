@@ -146,20 +146,36 @@ def test_gecerlilik_anahtari_HAKEM_ISTEMINE_ESIT():
 
 
 def test_hakem_isteminden_TASAN_METIN_ANAHTARA_GIRMEZ():
-    """Aynı değişmezin uçtan uca hâli: `judge_gecerlilik`'in kurduğu istem AYNI iken
-    anahtar da AYNI olmalı. İstem metni ile anahtar arasına klip farkı giremez.
+    """Uçtan uca değişmez: `gecerlilik_istemi` AYNI iken anahtar da AYNI olmalı.
+    İstem metni ile anahtar arasına klip farkı giremez.
 
-    ⚠️ Bedeli KABUL EDİLDİ ve tek yerde tutuluyor (KARAR-4 m.2): `k=4` bağlamı `k=10`
-    bağlamının ÖNEKİ olduğu için ikisi TEK kayda düşer — `k=10`'un paydası bu yüzden
-    **TANIMSIZ** damgalıdır ve ondan hüküm kurulmaz. Aleti değil damgayı taşıyoruz.
+    🚨 SENARYO DEĞİŞTİ 2026-09-07 — bu test eskiden bir KUSURU belgeliyordu.
+    `SOURCE_CLIP = 3500` iken `k=4` bağlamı `k=10`'unkinin ÖNEKİ olduğu için ikisi TEK
+    önbellek kaydına düşüyordu; bedeli "kabul edilmiş" sayılıp `k=10`'un paydası
+    **TANIMSIZ** damgalanmıştı (KARAR-4 m.2). **F0.5 o bedeli ÖDEDİ** (2026-09-07,
+    açık soru S4 / borç YB3): `SOURCE_CLIP` **3500 → 12000**, gözlenen en büyük bağlam
+    10.549 + %14 pay. Ölçülen sonuç: `gecerlilik_devralinan` **65 → 0**, 80/80 kalem
+    kendi bağlamıyla hükme bağlandı (`outputs/eval/f05-source-clip/SONUC.md`).
+
+    ⇒ Test artık çakışmayı DEĞİL, çakışmanın YOKLUĞUNU korur. Aşağıdaki ilk blok
+    F0.5'in satın aldığı şeydir ve geri gelirse bu test düşer.
     """
-    from score_abstention import gecerlilik_anahtari, gecerlilik_istemi
+    from score_abstention import SOURCE_CLIP, gecerlilik_anahtari, gecerlilik_istemi
     soru = "Kat maliki ortak gideri ödemezse ne olur?"
-    k4 = "".join(f"[KAYNAK {i}]\n{'m' * 900}\n" for i in range(1, 5))
-    k10 = k4 + "".join(f"[KAYNAK {i}]\n{'m' * 900}\n" for i in range(5, 11))
-    assert k10.startswith(k4) and len(k4) > 3500          # gerçek şekil korunuyor
-    assert gecerlilik_istemi(soru, k4) == gecerlilik_istemi(soru, k10)
-    assert gecerlilik_anahtari(soru, k4) == gecerlilik_anahtari(soru, k10)
+    kaynak = lambda a, b: "".join(f"[KAYNAK {i}]\n{'m' * 900}\n" for i in range(a, b))
+    k4, k10 = kaynak(1, 5), kaynak(1, 11)
+
+    # (1) F0.5'İN SATIN ALDIĞI: k=4 ↔ k=10 artık AYRI kayıtlar.
+    assert k10.startswith(k4), "gerçek şekil korunuyor: k4, k10'un önekidir"
+    assert len(k10) < SOURCE_CLIP, "k=10 bağlamı klibin İÇİNDE kalmalı (12000)"
+    assert gecerlilik_istemi(soru, k4) != gecerlilik_istemi(soru, k10)
+    assert gecerlilik_anahtari(soru, k4) != gecerlilik_anahtari(soru, k10)
+
+    # (2) DEĞİŞMEZ YERİNDE: klibi AŞAN fark hakeme görünmez ⇒ anahtara da girmez.
+    tasan = kaynak(1, 20)
+    assert len(tasan) > SOURCE_CLIP, "bu blok ancak klip aşılırsa anlamlı"
+    assert gecerlilik_istemi(soru, tasan) == gecerlilik_istemi(soru, tasan + "KUYRUK")
+    assert gecerlilik_anahtari(soru, tasan) == gecerlilik_anahtari(soru, tasan + "KUYRUK")
 
 
 # ── KARAR-2: BOŞ BAĞLAMDA PAYDA TANIM GEREĞİ 80/80 (ADR-0048 m.2) ──────────
