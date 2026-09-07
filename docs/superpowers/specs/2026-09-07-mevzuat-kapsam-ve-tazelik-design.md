@@ -125,11 +125,17 @@ Sessiz düşürme bu repoda hata sınıfının kendisidir.
 Kapsam **kat kat** girer; her kattan sonra **aynı 80 soruyla** `recall@10` yeniden ölçülür
 (**hakem gerekmez, $0**):
 
-| kat | eklenen | yeni belge |
-| :--- | :--- | ---: |
-| 1 | `KHK` + `CB_KARARNAME` | 119 |
-| 2 | `TUZUK` | 110 |
-| 3 | `YONETMELIK` | 172 |
+| kat | eklenen | yeni belge | ≈ madde |
+| :--- | :--- | ---: | ---: |
+| 1 | `KHK` + `CB_KARARNAME` | 119 | ~33.000 |
+| 2 | `TUZUK` | 110 | ~4.000 |
+| 3 | `YONETMELIK` | 172 | ~8.000 |
+| **4** 🆕 | **`CB_KARAR`** | **4.361** | **~76.317** |
+| **5** 🆕 | **`KKY`** | **4.043** | **~126.343** |
+
+⚠️ **Kat 4-5, §7b'deki insan kararıyla 2026-09-07'de EKLENDİ.** Bu tablo başta üç kat
+yazıyordu ve §7 hâlâ `CB_KARAR`+`KKY`'yi eleme satırında gösteriyordu — **o satır artık
+geçersiz** ve çelişki §7'de de damgalandı.
 
 ```
 recall@10 ≥ 0,9500  →  kat GİRER
@@ -170,7 +176,7 @@ Yeni soru yazmak **ayrı bir tur** ve **insan onayı** ister (ADR-0067 usulü) �
 | **Melez: yerel indeks + atıf doğrulaması** | soru sızmaz ama **hangi maddeye baktığı** sızar; ve `terazi.py`'nin **determinizmini** bozar — ağ düşerse cevap değişir |
 | **Kapsamı büyütmemek** | vatandaşın *"nasıl başvururum"* soruları yönetmelikte; ve büyüme ölçüldü, **~1,5×** |
 | **Tüm türleri tek seferde eklemek** | düşerse **hangi katın düşürdüğü bilinmez** — T5'in dersi: grup grup taşındığı için kırılma **hemen** görüldü |
-| **`CB_KARAR` + `KKY` (8.404 belge)** | bu turda **kapsam dışı**: vatandaş sorularına uzak, ve indeksi **~7×** büyütür ⇒ S8 (dağıtım) kararını yeniden açar |
+| ~~`CB_KARAR` + `KKY` (8.404 belge)~~ | ⚠️ **BU ELEME GERİ ALINDI — insan kararı 2026-09-07, §7b:** *"tüm kanunlar, her şey ne varsa gelmeli"*. Gerekçenin **ikinci yarısı doğru çıktı ve duruyor**: indeksi 8,4× büyüttü ve S8'i **gerçekten** yeniden açtı. Bu kabul edilmiş bir maliyet, çürütülmüş bir gerekçe değil. |
 
 ---
 
@@ -224,6 +230,46 @@ sorularda **daha küçük** olabilir. Ama hız tek başına yeterli sebep.
 🆕 **Açık borç — RAM için başka kaldıraçlar:** `np.load(..., mmap_mode="r")` ile diskten eşleme ·
 boyut indirgeme (1024 → 512, PCA/Matryoshka) · ürün ile ölçüm için **ayrı** indeks profilleri.
 ⛔ Üçü de bu spec'in dışında ve **hiçbiri ölçülmedi**.
+
+### 🚨 DÜZELTME 2026-09-07 (plan yazımı) — *"~51 ms"* YALNIZ YOĞUN KOLU SAYIYORDU
+
+Yukarıdaki *"sorgu 6,08 ms → 340k'da ~51 ms"* satırı `q @ gomme.T`'yi ölçtü. Ama retriever
+**hibrit**: BM25 kolu da her sorguda koşuyor ve **baskın maliyet o**. Ölçüldü (aynı makine,
+`rank_bm25.BM25Okapi`, 10 yineleme; 340k korpus = gerçek korpus ×9 kırpılarak sentezlendi):
+
+| kol | 40.496 | 340.303 |
+| :--- | ---: | ---: |
+| **BM25** | **87,7 ms** | **713,8 ms** ← baskın |
+| yoğun (`q @ G.T`) | 5,3 ms | 34,9 ms |
+| RRF + argsort | 8,6 ms | 54,0 ms |
+| **TOPLAM (gömücü hariç)** | **~102 ms** | **~803 ms** |
+
+⇒ Yayımlanan sayı **16× iyimserdi**. İki sonuç:
+
+1. **Karar DEĞİŞMİYOR, gerekçesi değişiyor.** 0,8 sn bir hukuk asistanında hâlâ fark edilmez
+   (model saniyeler harcıyor) ⇒ vektör veritabanı hâlâ gereksiz. Ama *"51 ms"* diye
+   savunulamaz; **~0,8 sn** diye savunulur.
+2. **Optimizasyon yönü TERS ÇEVRİLDİ.** `fp16` tartışması yoğun kolu (%4) kurcalıyordu;
+   asıl yük BM25'te (%89). RAM'de de öyle: BM25 kurulumu 40.496'da **+88 MB** ⇒ 340k'da
+   **~741 MB**, yoğun indeksin 1.394 MB'ının üstüne. **Toplam ~2,1 GB.**
+3. **Yükleme süresi bir borç:** `Retriever.yukle` BM25'i her açılışta yeniden kuruyor
+   (docstring *"~10 sn"* diyor; ölçüldü **4,3 sn**) ⇒ 340k'da **~37 sn**. Kalıcılaştırmak
+   gerekebilir — ölçülmedi, plan Görev 6'da kapıya bağlandı.
+
+### 🚨 DÜZELTME 2026-09-07 — KORPUSTA KARARLI KİMLİK YOK (artımlı gömmenin ön koşulu)
+
+§3 *"yalnız değişen maddeler yeniden gömülür"* diyor. Bunun için maddenin **kararlı bir
+kimliği** olmalı. Ölçüldü — yok:
+
+| aday anahtar | benzersiz | çakışan |
+| :--- | ---: | ---: |
+| `(kanun_no, madde_no)` | 32.281 | 🚨 **3.699** |
+| `(kanun_no, madde_no, text)` | 39.379 | 🚨 **538** *(birebir yinelenen satırlar)* |
+
+Bugün kimlik **satır sırasıdır** — `gomme.npy`'nin *i*. satırı korpusun *i*. satırıdır, başka
+hiçbir bağ yok. Artımlı güncelleme bu zeminde **yanlış satırı tazeler ve hata vermez**: tam
+olarak bu reponun avladığı sınıf. ⇒ Plan, artımlı gömmeden **önce** korpusa bedesten'in kendi
+kimliğini (`mevzuat_id` + `madde_id`) ekliyor (Görev 3).
 
 ### S8 (dağıtım) YENİDEN AÇILIYOR
 
