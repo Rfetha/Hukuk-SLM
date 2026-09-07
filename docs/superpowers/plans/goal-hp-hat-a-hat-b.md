@@ -12,6 +12,9 @@
 
 🔒 SIRALAMA KİLİTLİ (insan kararı): HP → Hat A (PARALEL, $0) → Faz 3 → v0.2 → Hat B → v1.0
  FAZ 1 · HP hakem paneli (G1-4, 18 kutucuk, ~$3-5) — ÖNCE
+ ⛔ G8 (indeks dağıtımı) BEKLETİLİYOR: kapsam CB_KARAR+KKY ile 8,4× büyüyecek
+    (340.303 madde, indeks ~697 MB — ölçüldü) ⇒ önce mevzuat spec'inin planı,
+    v0.2 GENİŞLETİLMİŞ korpusla. ⚠️ G8b (mülga) ve G8/1b (KUNYE kilidi) BEKLEMEZ.
  🆕 G8b YÜRÜRLÜK: mülga madde vatandaşa GİTMEZ + korpusa tarih damgası
      ölçüldü: mulga bayrağı VAR (2.547 madde) ama retriever KULLANMIYOR ⇒ 800 getirilen
      kaynağın 2'si mülga. Korpusta TARİH ALANI YOK. Bu eksik özellik değil, YANLIŞ CEVAP.

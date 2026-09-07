@@ -929,7 +929,24 @@ git commit -m "A8: suskunluk_terazisi ürün yüzeyine taşındı — sınıflan
 
 ---
 
-### Görev 8: İndeks dağıtımı 🔓 **AÇIK KARAR S8**
+### Görev 8: İndeks dağıtımı ⛔ **BEKLETİLİYOR** *(insan kararı 2026-09-07)*
+
+> 🚨 **BU GÖREV ŞİMDİ KOŞULMAZ.** S8 kapandı (**(a) HF dataset**) ama kararın **girdisi değişti**:
+> kapsam `CB_KARAR` + `KKY` dahil genişleyecek ⇒ indeks **79 MB → ~697 MB** (ölçüldü:
+> 9.722 belge ≈ **340.303 madde**, bugün 40.496 — **8,4×**).
+> ⇒ Bugünkü 79 MB'lık indeksi paketlemek, **birkaç hafta sonra atacağımız** bir iştir.
+>
+> **Bağımlılık:** [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](../specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md)
+> planı bitmeden bu görev başlamaz. `v0.2` **genişletilmiş korpusla** çıkar.
+>
+> ⚠️ **Ama Görev 8b (mülga süzgeci) BEKLEMEZ** — o bir doğruluk meselesi ve bugünkü korpusta da
+> geçerli (800 getirilen kaynağın 2'si mülga).
+> ⚠️ Ve **Adım 1b'nin kod borcu da beklemez**: `KUNYE.json`'un mutlak yol + `mtime` kilidi
+> hangi boyutta olursa olsun **başka makinede çöker**.
+>
+> 🔄 **Yeniden okunacak girdiler:** *"dakikalar içinde kurulur"* cümlesi **düşer** ·
+> **(b) kurulumda üret seçeneği FİİLEN ÖLDÜ** (gömme GPU'da ~1,5 sa, **CPU'da ~23 sa**).
+
 
 **Dosyalar:** Create: `hakhukuk/kurulum.py` · `tests/test_kurulum.py`
 
