@@ -112,11 +112,15 @@ künyeyi açıp okumakla yakalandı.
 | 2 | Kusur BM25'te değil **füzyondaydı**: `RRF_K=60`, "iki kolda vasat"ı "bir kolda mükemmel"e tercih ediyordu | `RRF_K` 60 → 10; `recall@10` 0,9375 → **0,9500** | [ADR-0068](docs/adr/0068-rrf-k-60-to-10.md) |
 | 3 | DEV ↔ TEST farkının **%81'i set bileşiminden** (madde uzunluğu katmanlanmamış) | kabul testinin tavanı ≈**%75** olarak ön-kayıtlandı | [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) |
 | 4 | 🚨 **Üretim bütçesi rakiple eşit değildi ve aleyhimizeydi** — biz 1024, rakip fiilen 1532 | tek formüle geçildi: bütçe **1536**, dört öznede aynı | [ADR-0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
-| 5 | Çekinme dedektörü **rakip şablonlarında fazla red sayıyordu** (3.1 FL'de 3, 3.5 FL'de 2, Flash'ta 1 açık yanlış pozitif) | üç okumalı raporlama; **bağlayıcı okuma en muhafazakârı** | [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) · [`f04 kalibrasyonu`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
+| 5 | 🆕 **Kapı maddesinin ÇIPASI YOKTU** — `v1.0` kapısı madde (3) *"M5 ≤ bugünkü"* diyordu, ama `tgta_v1`'in M5'i **hiçbir birimde hiç ölçülmemişti**; madde kendi kendine referans veriyordu | çıpa ADR-0039'dan okundu (**base**, rakip değil), M5 iki kolda birden yeniden koşuldu | [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md) · tuzak **2.17** |
 
-*(Kayıt defterinin başlığı **"dört kusur"** diyor: manşet sayıyı oynatan dördü onlar. Beşincisi
-rakip kalibrasyonunda çıktı, altıncısı ise 2026-09-07'de — `v1.0` kapısının M5 maddesinin
-**çıpası hiç ölçülmemişti**, [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md).)*
+*(Bu beşi **Faz 0'ın** bulgusudur. ⚠️ Altıncı bir alet kusuru **bir gün önce**, B10 turunda
+bulunmuştu: çekinme dedektörü istem rejimine bağımlı çıktı ([ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md),
+[#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)). Onun **rakip
+tarafındaki** yansıması Faz 0 içinde ölçüldü — F0.4 kalibrasyonunda rakip kollarında **6 açık
+yanlış pozitif**, bizim kolda **0**; bu yüzden bağlayıcı okuma **en muhafazakâr** olan seçildi
+([`f04 kalibrasyonu`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md)). Ve aynı dedektör
+2026-09-07'de **üçüncü** kez yanıldı, bu kez kör modda: 6 işaretin **6'sı da yanlış pozitif**.)*
 
 Tam anlatı: [`research_log #62`](docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md)
 

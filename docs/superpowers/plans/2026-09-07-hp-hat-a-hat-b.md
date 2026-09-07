@@ -65,8 +65,25 @@ TUI için `textual` (**henüz kurulu değil** — ölçüldü 2026-09-07).
 
 ### 🔓 AÇIK KARARLAR — insan cevabı olmadan ilgili görev BAŞLAMAZ
 
-| # | soru | bloke ettiği görev |
+| # | durum | bloke ettiği görev |
 | :-- | :--- | :--- |
+| ~~S5~~ | ✅ **KAPANDI** → Wilson **raporlanır**, kapı kuralı **değişmez** (ADR-0050) | ~~Görev 16~~ · iki şerh zorunlu |
+| ~~S7~~ | ✅ **KAPANDI** → adaptör yüklenmez; yalnız **merge edilmiş GGUF** yayımlanır | ~~T1~~ · T1 zaten bağlı değilmiş |
+| ~~S8~~ | ✅ **KAPANDI** → **(a) HF dataset** (79,1 MiB; `huggingface_hub` zaten var) | ~~Görev 8~~ **açıldı** 🆕 + kod borcu |
+| **S9** | 🔓 **AÇIK** — `v2` nasıl barındırılır? | bu planın **dışında** (`v2`) |
+| ~~S10~~ | ✅ **KAPANDI** → geçici muhafazakâr metin, **tek kaynakta** | ~~Görev 10 · 12~~ **açıldı** |
+| ~~S12~~ | ⏸️ **ERTELENDİ** → `τ_a` v2 turuna; `v1.0` yolunda **değil** | ~~Görev 13~~ *(eşleme yanlıştı)* |
+| ~~S16~~ | ✅ **KAPANDI** → **tek Claude Sonnet öznesi** (~$0,35) | ~~Görev 4~~ **açıldı** |
+| **S17** | 🔓 **AÇIK** — kuantizasyon eğrisi ölçülsün mü? | bu planın **dışında** |
+| ~~S18~~ | ✅ **KAPANDI** *(iki katman)* → **ölçülen sürüm kanon**; `τ_g` çift-system **değil** | ~~Görev 5~~ **açıldı** |
+
+⭐ **Grilleme turu 2026-09-07: dokuz sorunun YEDİSİ kapandı, ikisi gerekçeli ertelendi.**
+Bloke edilen görev sayısı **dört → sıfır**. Kapanışların üçü **olguyla** geldi (insan kararı
+gerekmedi): S18'in çift-system katmanı · S8'in gerçek bedeli · S12'nin yanlış eşlemesi.
+🚨 Ve grilleme **planın kendi üç iddiasını çürüttü** — hepsi bu planda yazılıydı:
+*"diskten cevaplanamıyor"* (S18) · *"kurulumda üret ~10 dk"* (S8) · *"Görev 13'ü bloke ediyor"* (S12).
+
+--- | :--- |
 | **S5** | İkili oran çözünürlük sınırı (Wilson aralığı kapı kuralını değiştirir) | Görev 16 (yorum) |
 | **S7** | LoRA adaptörleri HF'ye yüklensin mi? | Faz 0 planı **T1** |
 | **S8** | İndeks nasıl dağıtılır? (80 MB — ölçüldü) | **Görev 8** |
@@ -343,7 +360,10 @@ iki aileyle notlandığı için hükmün **hangi kısmı** üç aileye dayanıyo
 **Dosyalar:** Create: `outputs/eval/hp-rakip-havuzu/`
 **Bağımlılık:** Görev 3 **bitmiş** olmalı.
 
-⛔ **Bu görev insan cevabı olmadan BAŞLAMAZ.** Cevaplanacak: *hangi sağlayıcı(lar), kaç özne?*
+✅ **S16 KAPANDI 2026-09-07: TEK `anthropic/claude-*-sonnet*` sınıfı özne.**
+Aile dışlamasına takılmıyor ⇒ bugünkü dört sayı **yeniden koşulmaz**; bedel ~**$0,35**.
+⚠️ GPT sınıfı **usulen** dışarıda (hakemi değiştirirdi) ve bu `v1.0` yayınında **eksiklik
+olarak yazılır** — bütçe bahanesi olarak değil.
 Girdiler [ADR-0072](../../adr/0072-v1-rakip-havuzu-genisler.md)'de: özne başı **~$0,35**
 (F0.4'te ölçüldü: üç çıpa **$1,35**) · Anthropic öznesi sorunsuz · **GPT öznesi** hakem
 değişikliği + bugünkü dört sayının **yeniden koşulması** demek.
@@ -426,11 +446,13 @@ Sürüklenmenin tam yeri — **son satır**:
 Bu, **M5'in (kör mod) istemidir**. ⇒ İş mekanik refactor değil; **hangi metnin kanon olduğuna
 karar vermek** gerekiyor (**S18**).
 
-- [ ] **Adım 1: Kararı al — hangi `SYSTEM_PROMPT` kanon** *(kod yok)*
+- [x] **Adım 1: Karar ALINDI 2026-09-07 → ölçülen sürüm kanon** ✅
 
-⛔ **İnsan kararı.** Girdiler: ölçüm sürümüyle **bütün M5 sayıları** üretildi (Faz 0 dahil);
-eğitim sürümündeki feragat cümlesi **ürün için değerli** (A6/S10 ile örtüşüyor).
-`verify:` karar `docs/open_questions.md` ⚰️ **S18** satırına ve ADR'ye işlendi.
+**`SISTEM_KOR` = `gen_eval_grounded.py`:39'un metni** — son satırı *"Cevabını kısa ve anlaşılır
+tut; ilgili kanun ve madde numarasını belirt."* Yayımlanan **%80,1 dâhil bütün sayılar** bununla
+üretildi; başka metin kanon olsaydı yayımlanan sayı **yeniden üretilemez** olurdu.
+⇒ `train_sft.py`:31'deki sürüm **ÖLÜ KOD** (olguyla doğrulandı) → **bu görevde SİLİNİR**.
+⇒ Feragat cümlesi isteme **girmez**; S10 gereği **çıktı yüzünde** ayrı satır (Görev 10).
 
 - [ ] **Adım 2: Failing test yaz**
 
@@ -920,8 +942,21 @@ git commit -m "A8: suskunluk_terazisi ürün yüzeyine taşındı — sınıflan
 ⇒ Kullanıcı indeksi repodan **alamıyor**. İki seçenek: **(a)** HF dataset'ten indir ·
 **(b)** kurulumda üret. ⛔ **İnsan kararı olmadan bu görev başlamaz.**
 
-- [ ] **Adım 1: Kararı al ve `docs/open_questions.md` ⚰️ S8'e işle** *(kod yok)*
-`verify:` S8 satırı `✅ KAPANDI → (a)` ya da `(b)` diyor, gerekçesiyle.
+- [x] **Adım 1: Karar ALINDI 2026-09-07 → (a) HF dataset** ✅
+
+79,1 MiB indirme; `huggingface_hub==1.18.0` **zaten bağımlılık**. Reddedilen (b)'nin gerçek
+bedeli ölçüldü: `BAAI/bge-m3` **4,3 GB** + CPU'da **~2 sa 45 dk** (planın *"~10 dk"* etiketi
+**GPU** ölçümüydü — yanlıştı).
+
+- [ ] **Adım 1b 🆕: ÖNCE `KUNYE.json`'un taşınabilirlik kilidini kır** *(kod borcu, karar değil)*
+
+🚨 Bu adım olmadan **her iki seçenek de** başka makinede çöker. `KUNYE.json`'un `korpus` bloğu
+**mutlak yol + `(bayt, mtime)`** taşıyor; `retriever.py`:143-152 yüklemede doğruluyor, uymazsa
+`SystemExit`. `git clone` sonrası `mtime` checkout zamanı olur ⇒ patlar.
+Yapılacak: mutlak yol → **repo-göreli** · `mtime` vekili → **içerik hash'i** · künyeye
+**önek sözleşmesi** (bge-m3 önek almaz; kural bugün `retriever.py`:80-90'da) ve `bge-m3`
+**revision/hash'i** eklenir.
+`verify:` repo başka bir dizine kopyalanır, `retriever` **hatasız yükler**, `recall@10` **0,9500**.
 
 - [ ] **Adım 2: Failing test yaz** — karar (a) ise indirme + `sha256` doğrulama, (b) ise
 üretim + `KUNYE.json` eşleşmesi sınanır. ⚠️ İki durumda da test **künye eşleşmesini** sınar:
@@ -929,7 +964,7 @@ indeksin `KUNYE.json`'u korpusun sürümüyle uyuşmuyorsa `recall@10` sessizce 
 
 - [ ] **Adım 3-5: Uygulama · test yeşil · commit**
 
-🔒 **BU ADIMLAR BİLEREK BOŞ — S8 kapanmadan yazılamazlar.** İki seçenek **farklı kod** ister:
+✅ **S8 KAPANDI 2026-09-07 → (a).** Aşağıdaki iki seçenek kaydı, *neyin reddedildiğini* göstermek için duruyor. İki seçenek **farklı kod** ister:
 - **(a) HF dataset:** `huggingface_hub.hf_hub_download` + `sha256` doğrulama + yeni bağımlılık
 - **(b) kurulumda üret:** `bge-m3` yükle + 40.496 madde göm + `KUNYE.json` yaz (**~2 sa 45 dk
   CPU** / ~10 dk GPU) — yeni bağımlılık yok, ama kurulum saatlerce sürer
@@ -1079,10 +1114,12 @@ her `dogrulandi=True` atıf gerçekten getirilen kaynaklarda **var** (gözle do�
 
 **Arayüzler:** Tüketir `servis.answer` · Üretir `hakhukuk` konsol komutu
 
-⛔ **S10 (Avukatlık Kanunu / sorumluluk sınırı) hukukçu görüşü gerektiriyor ve repoda hiç
-değerlendirilmemiş.** ⚠️ Ama S10'un açık olması **ibarenin girmesini engellemez** — açık olan
-*"metnin tam olarak ne diyeceği"*dir. Bir ilk metinle başlanır, hukukçu görüşü gelince
-**tek yerden** güncellenir.
+✅ **S10 KISMEN KAPANDI 2026-09-07 (insan kararı): geçici muhafazakâr metin ŞİMDİ girer.**
+`hakhukuk/cli.py` içinde **tek sabit** `SORUMLULUK_IBARESI`; `hakhukuk/tui.py` onu **import
+eder**, kopyalamaz (S18'in dersi: aynı metin iki yerde durursa sessizce ayrışır).
+⛔ `Durum` ne olursa olsun **koşulsuz** basılır.
+⚠️ Hâlâ açık: **nihai hukuki metin** — hukukçu görüşü gelince **tek yerden** güncellenir.
+Kodda ve model kartında *"GEÇİCİ — S10 açık"* şerhi durur.
 
 - [ ] **Adım 1: Failing test yaz**
 
@@ -1337,6 +1374,12 @@ Kaldıraç: **aynı ORPO ile daha çok adım / daha yüksek lr**.
 
 ⛔ **DONMUŞ TEST BURADA, TEK KEZ AÇILIR** (`data/eval/canon/`).
 
+🆕 **S5 gereği (2026-09-07): Wilson %95 aralıkları her oranın YANINDA raporlanır; kapı hükmü
+nokta tahminle kurulur (ADR-0050).** İki şerh **zorunlu**: (a) madde (2)'nin çıpası 8/80'in
+aralığı **[4/80 – 15/80]** ⇒ *"gerileme yok"* kuralı **tek kalemlik** oynamayı ihlal sayamaz;
+(b) madde (3)'ün ikili ayağında aralıklar **örtüşüyor** ⇒ hüküm nokta tahmine dayanıyor.
+⚠️ Madde (1)'e Wilson **uygulanmaz** (`kütle = coverage × A1` — binom modeli yanlış olur).
+
 - [ ] **Adım 1: DEV'de üç maddeyi yeniden koş** — ADR-0064 + **ADR-0074**'ün (panel) bağlayıcı
 okumasıyla. `verify:` üç madde de sayıyla; **her sayım adımında gözle okuma**.
 - [ ] **Adım 2: Kabul testi — donmuş TEST**
@@ -1357,7 +1400,33 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 > Canlı 9'u **buraya**, karar için gereken tam bağlamıyla taşındı. **Tek kaynak burasıdır.**
 > ⛔ Bir damga **kendi başına kapatılamaz** — kapanış insan kararıdır ve bir ADR'ye yazılır.
 
-### 🔓 S5 — bloke ettiği: Görev 16 (yorum)
+### ✅ S5 — **KAPANDI 2026-09-07** *(insan kararı)*
+
+> **Karar: Wilson %95 aralığı RAPORLANIR, kapı kuralı DEĞİŞMEZ.** Hüküm nokta tahminle kurulmaya
+> devam eder; aralık **yanında** yayımlanır.
+> **Gerekçe ADR-0050:** kapı sayıları **üretildikten sonra** kural değiştirmek, eşiği sonuçtan
+> sonra oynatmaktır — yönü lehimize bile olsa. ⛔ Aletin düzeltilmesiyle **eşiğin** değiştirilmesi
+> ayrı şeylerdir; bu ikincisidir.
+>
+> **Hesap $0 ve YAPILDI** (`z=1,96`, `n=80`):
+>
+> | oran | pay/payda | nokta | Wilson %95 | genişlik |
+> | :--- | ---: | ---: | :--- | ---: |
+> | coverage BİZ | 75/80 | 0,9375 | [0,862 – 0,973] | 11,1 p |
+> | coverage 3.5 Flash | 67/80 | 0,8375 | [0,742 – 0,903] | 16,1 p |
+> | **isabetsizlik çıpası** (madde 2) | 8/80 | 0,1000 | **[0,052 – 0,185]** | **13,4 p** |
+> | M5 coverage BİZ | 76/80 | 0,9500 | [0,878 – 0,980] | 10,2 p |
+> | M5 coverage base | 78/80 | 0,9750 | [0,913 – 0,993] | 8,0 p |
+>
+> 🚨 **İki şerh ZORUNLU oldu ve kapı hükmünün yanında durur:**
+> 1. **Madde (2)** *"gerileme yok"* diyor, ama 8/80'in aralığı **[4/80 – 15/80]** ⇒ **tek kalemlik**
+>    oynama anlamlı fark değildir; sonraki turda bu kuralın çözünürlüğü yeniden konuşulmalı.
+> 2. **Madde (3)**'ün ikili ayağında aralıklar **ÖRTÜŞÜYOR** (BİZ [0,878–0,980] ↔ base [0,913–0,993])
+>    ⇒ *"M5 yükselmedi"* hükmü **nokta tahmine** dayanıyor. Bu, hükmü geçersiz kılmaz ama
+>    **damgalanır**.
+> ⚠️ **Madde (1)'e Wilson doğrudan UYGULANAMAZ:** `kütle = coverage × A1`, yani ikili bir oranla
+> sürekli-skorlu bir makronun çarpımı — binom modeli yanlış olur.
+
 
 **Soru:** **İkili oran çözünürlük sınırı**
 
@@ -1365,7 +1434,24 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 
 **Bağlı olduğu:** ⬇️ **OQ-2**
 
-### 🔓 S7 — bloke ettiği: Faz 0 planı **T1**
+### ✅ S7 — **KAPANDI 2026-09-07** *(insan kararı)*
+
+> **Karar: adaptörler YÜKLENMEZ. Yayımlanan tek şey merge edilmiş GGUF'tur** — kullanıcı onu
+> indirir ve doğrudan kullanır (ADR-0071 ile aynı yönde).
+>
+> **Olgu düzeltmesi:** T1'in *"adaptör yedeği ön koşuldur"* gerekçesi **ölçümle çürüdü**. T1 yalnız
+> **reddedilmiş varyantları** siliyor (`merged/tg_ta_modulmin` + `merged/tg_ta_globalmin` +
+> `gguf/cp2s-ties-smoke` = **20,2 GB**); `tgta_v1` · `tg_v1` · base **korunuyor**. Disk baskısı da
+> yok (839 GB boş). ⇒ **T1, S7'ye kilitli değil.**
+>
+> 🚨 **KABUL EDİLEN BEDEL — yazılmadan geçilmez:** GGUF yayımlanınca **merge edilmiş model**
+> yedeklenmiş olur, ama `outputs/tg_v1` ve `outputs/ta_v1` **tek kopya** kalır. Ve `τ_g`'nin
+> komut künyesi **yok** (`kollar.md`:76-78 kabul ediyor: `--data` argümanını gösteren künye
+> yok, `raft_scrubbed` seçimi **davranışsal çıkarım**). ⇒ Adaptörler kaybolursa `τ_g`
+> **yeniden üretilemez** ve *"merge ağırlığını değiştirip yeniden birleştirelim"* denemez.
+> `kollar.md`'nin *"yeniden üretilebilir"* gerekçesi bu kol için **kanıtlanmış değildir**.
+> ⚠️ 12B hattında bu tam olarak yaşandı: adaptörler **kalıcı kayıp**.
+
 
 **Soru:** **LoRA adaptörleri HF'ye yüklensin mi?**
 
@@ -1373,7 +1459,27 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 
 **Bağlı olduğu:** [`record/kollar.md`](../../record/kollar.md) · [ADR-0034](../../adr/0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md)
 
-### 🔓 S8 — bloke ettiği: **Görev 8** — adımları BİLEREK boş
+### ✅ S8 — **KAPANDI 2026-09-07** *(insan kararı)* ⇒ **Görev 8 açıldı**
+
+> **Karar: (a) HF dataset'ten indirilir.** `huggingface_hub==1.18.0` **zaten bağımlılık**
+> (`requirements.lock.txt`:31) ⇒ yeni bağımlılık yok.
+>
+> 🚨 **Planın etiketi YANLIŞTI ve düzeltildi.** *"(b) kurulumda üret (~10 dk)"* diyordu; o **10 dk
+> GPU'da** ölçülmüş (`outputs/eval/s3a-on-prob/recall_BAAI_bge-m3.json`: `cihaz: cuda`,
+> `gecen_sure_s: 625.3`). **Ürün yığını CPU** ⇒ gerçek bedel **~2 saat 45 dk**
+> (`recall_olc.py`:74 ölçülmüş yorum: ~4,1 madde/sn × 40.496) **artı** `BAAI/bge-m3` **4,3 GB**
+> indirme. Karşısında (a): **79,1 MiB**.
+>
+> 🚨 **YENİ KOD BORCU — hiç sorulmamıştı, olgu taramasında çıktı.** İndeksin `KUNYE.json`'u
+> **mutlak yol + `(bayt, mtime)`** kilidi taşıyor ve `retriever.py`:143-152 yüklemede bunu
+> doğrulayıp uymazsa `SystemExit` veriyor. ⇒ **Her iki seçenek de bugün başka makinede ÇÖKER**:
+> yol yok, ve `git clone` sonrası `mtime` checkout zamanı olur. Künyenin kendi
+> `mtime_duzeltme_notu` alanı bu vekilin *"içerik-korumalı dokunuşlarda yanlış alarm verdiğini"*
+> zaten yazmış. ⇒ **Görev 8'in ilk adımı bu kilidi taşınabilir hâle getirmektir**
+> (mutlak yol → göreli/içerik hash'i). Bu kod borcudur, insan kararı değil.
+> ⚠️ Ayrıca künyede **önek sözleşmesi** yazılı değil (kural `retriever.py`:80-90'da) ve
+> `bge-m3`'ün **revision/hash'i** yok — dağıtılan indeksin yeniden üretilebilirliği için ikisi de eklenmeli.
+
 
 **Soru:** **İndeks nasıl dağıtılır?** (80 MB)
 
@@ -1407,7 +1513,19 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 
 **Bağlı olduğu:** taslak §4.6
 
-### 🔓 S12 — bloke ettiği: Görev 13 (taşıyıcı)
+### ⏸️ S12 — **ERTELENDİ 2026-09-07** *(insan kararı, gerekçeli)*
+
+> **Karar: `τ_a` v2 turuna ertelendi.** Şimdi $1 ve 50 dk harcanmaz.
+>
+> 🚨 **Planın eşlemesi YANLIŞTI:** *"bloke ettiği: Görev 13"* yazıyordu, ama **Görev 13 belge
+> yazımıdır**, taşıyıcı değil. KARAR-6'nın gerçek tüketicisi `τ_a` v2 hasadıdır — **bu planda yok**.
+> ⇒ `v1.0` kapısının üç maddesinden **hiçbiri** buna bağlı değil.
+>
+> **Olgu:** bozuk ölçüt **onarıldı** (commit `463e8da`, 2026-09-06); `b10_hasat.py`:63 onarılmış
+> `exact_reject`'i **import ediyor** ⇒ düzeltme hasada otomatik yansıyor. Yeniden koşma bedeli
+> **ölçülmüş**: ~50 dk Modal L4 / **~$1**, hakem **$0**, Modal bakiyesi **$29,19** ⇒ bütçe engeli yok.
+> Soru **hazır**, yalnız sırası gelmedi.
+
 
 **Soru:** **KARAR-6 — paralel slot (`-np`)**
 
@@ -1437,7 +1555,31 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 
 **Seçenekler / girdiler:** [ADR-0071](../../adr/0071-v1-release-artefakti-tek-gguf.md) · [ADR-0031](../../adr/0031-precision-inference-q4km-egitim-bf16-lora.md) · [ADR-0018](../../adr/gemma4-12b-dersler.md#adr-0018)
 
-### 🔓 S18 — bloke ettiği: **Görev 5** — Hat A'nın ön koşulu
+### ✅ S18 — **KAPANDI 2026-09-07** *(iki katmanı da)* ⇒ **Görev 5 açıldı**
+
+> **Katman 2 — *"`τ_g` çift-system ile mi eğitildi"* — OLGUYLA kapandı, insan kararı gerekmedi.**
+> Planda *"diskten cevaplanamıyor"* yazıyordu; **yanlıştı**. Qwen3.5 sohbet şablonu
+> (`outputs/ta_v1/chat_template.jinja`:83-86) iki `system` mesajına
+> **`TemplateError: System message must be at the beginning`** veriyor — birleştirmiyor, ikisini
+> de basmıyor, **hata veriyor**. Ve `raft_scrubbed/train.jsonl`'in **17.323/17.323** satırının ilk
+> mesajı `system`. ⇒ `--no-system` verilmeseydi koşu **ilk örnekte çökerdi** ve
+> `outputs/tg_v1/adapter_model.safetensors` (1.083 adım, `‖τ_g‖=10,4589`) **hiç oluşmazdı.**
+> **Hüküm: `τ_g` çift-system ile eğitilmedi.** Kanıt künye değil, **yapısal imkânsızlık**.
+> ⚠️ Tek artık belirsizlik: `tg_v1` kendi tokenizer'ını kaydetmemiş; render 6 gün sonraki
+> `ta_v1` kopyasıyla yapıldı (aynı base). Şablon o 6 günde değiştiyse çıkarım zayıflar — **düşük
+> olasılık, diskten kapatılamıyor.**
+>
+> **Katman 1 — hangi metin kanon: ÖLÇÜLEN SÜRÜM.**
+> `hakhukuk/istem.py::SISTEM_KOR` = `gen_eval_grounded.py`:39'un metni, son satırı
+> *"Cevabını kısa ve anlaşılır tut; ilgili kanun ve madde numarasını belirt."*
+> **Gerekçe:** yayımlanan **%80,1 dâhil bütün sayılar** bu metinle üretildi; başka bir metni kanon
+> yapmak yayımlanan sayıyı **yeniden üretilemez** kılardı.
+> ⇒ `train_sft.py`:31'deki sürüm **ÖLÜ KOD** — olgu taramasıyla doğrulandı: hiçbir artefakta
+> girmemiş (v2b reçetesi `--no-system`'i zorunlu kılıyor **ve** RAFT verisinde çalışması fiziksel
+> olarak imkânsız). **Görev 5'te silinir.**
+> ⇒ Feragat cümlesi isteme **girmez**; S10 gereği **çıktı yüzünde** ayrı satır olarak durur —
+> ikisine birden koymak mükerrer olurdu.
+
 
 **Soru:** **Sürüklenmiş `SYSTEM_PROMPT`'un hangi hâli doğru — ve `τ_g` çift-system ile mi eğitildi?** Ölçüldü 2026-09-07: `SYSTEM_PROMPT` **iki yerde tanımlı ve aynı değil** — ölçüm (`gen_eval_grounded.py`) *"…ilgili kanun ve madde numarasını belirt."* ile bitiyor, eğitim (`train_sft.py`) *"Bu yanıt hukuki tavsiye değil, bilgilendirme amaçlıdır."* ile. Bu **M5'in kör-mod istemidir**. ⚠️ İkinci katman: eğitim verisi (`raft_scrubbed/train.jsonl`) **zaten `system` rolü taşıyor**, `train_sft.py` ise `--no-system` verilmedikçe başa **bir tane daha** ekliyor (`modal_train.py` varsayılanı `no_system=False`; bayrağın yardım metni *"v2b ZORUNLU — veri system'i zaten taşır"* diyor). `τ_g v1` koşusunda verilip verilmediği **diskten cevaplanamıyor**: `outputs/tg_v1/` yalnız `adapter_config.json` + ağırlık taşıyor, **koşu künyesi yok**.
 
@@ -1465,6 +1607,26 @@ Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 | ~~YB3~~ | `k`'nın çekinme ekseni **TANIMSIZ** (`SOURCE_CLIP=3500`) | ödendi **$0,78** | ✅ **kapandı** — `SOURCE_CLIP=12000`, `gecerlilik_devralinan` 65→0 |
 | ~~B2·B3·B5·B7~~ | — | — | ✅ kapandı |
 | **ARA KAPI** | 🚨 **DÜŞTÜ** 2026-08-06: merge M2b **0,766** ↔ eşik **0,8649** → **9,9 p** altında | paydalar eşit (77↔77) | ⛔ **CP4-CP5 yetkisi YOK.** Ürün sürümü ayrıldı ([ADR-0065](../../adr/0065-bolunmus-surumleme.md)); **iddia sürümü** buna bağlı kalır |
+
+---
+
+## 🆕 BORÇ: eval setinde ALTIN ETİKET şüphesi — id 46 *(2026-09-07)*
+
+**İki bağımsız gözle okuma, birbirinden habersiz, AYNI kalemi işaretledi ve AYNI şüpheyi kurdu.**
+
+| kalem | altın etiket | modelin dayandığı | şüphe |
+| :--- | :--- | :--- | :--- |
+| **id 46** | KMK **53** *(1965 öncesi irtifak haklarına dair **geçiş hükmü**)* | KMK **14** | KMK 14 **lafzen** *"Kat mülkiyetine geçişte ayrıca yönetim plânı istenmez"* diyor ⇒ **soruyu doğrudan karşılıyor** |
+
+⇒ Üç kolda da bu kalem *"isabetsizlik mi, altın etiket hatası mı"* diye **sınır durum** sayıldı ve
+**hiçbirinde sayıya katılmadı**. Yani bugün **üç öznenin de sayısı bu kalem yüzünden alt sınırda**.
+
+🚨 **Neden ciddi:** eğer altın etiket yanlışsa, bu bir **model kusuru değil ölçüm kusurudur** ve
+Faz 0'ın bulduğu beş kusurla **aynı sınıftandır** (*"hata vermeden yanlış sayı üretir"*).
+⛔ **Bugün düzeltilmedi** — ADR-0067'nin soru onarımı **insan onayıyla** yapılmıştı; altın etiket
+değiştirmek de aynı usulü ister ve **donmuş TEST'i de ilgilendirir**.
+**Yapılacak:** hukuk metnine bakılarak KMK 53 ↔ KMK 14 kararı verilir; değişirse ADR + üç öznenin
+sayısı yeniden okunur (yeniden **koşulmaz** — yalnız gözle sayım güncellenir, $0).
 
 ---
 
