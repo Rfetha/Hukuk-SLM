@@ -44,5 +44,65 @@
   },
   "birim_serhi": "🚨 DRY'li M5, cp09'un M5 sayılarıyla (base_th/gem_th/tg_v1_th) AYNI BİRİMDE DEĞİLDİR — DRY döngüyü akıcı-yanlış cevaba çevirir ve hakem notu değişir. Kıyas YALNIZ bu iki kol arasında kurulur.",
   "git_sha": "e06f87e",
-  "sonuc": "⏳ puanlama bekliyor"
+  "sonuc": {
+    "biz": {
+      "coverage": 0.95,
+      "n_answered": 76,
+      "n_abstain": 4,
+      "A1_cevaplanan": 0.4105,
+      "ezber_kutlesi": 0.39,
+      "cit_precision": 0.3667,
+      "wrong_ref_rate": 0.6009,
+      "judge_cost_usd": 0.0404,
+      "total_claims": 329
+    },
+    "base_cipa": {
+      "coverage": 0.975,
+      "n_answered": 78,
+      "n_abstain": 2,
+      "A1_cevaplanan": 0.4818,
+      "ezber_kutlesi": 0.4698,
+      "cit_precision": 0.4904,
+      "wrong_ref_rate": 0.4541,
+      "judge_cost_usd": 0.0477,
+      "total_claims": 434
+    },
+    "madde3_hukmu": {
+      "kural": "ADR-0039 §2 — coverage VE ezber kütlesi base'i GEÇMEYECEK",
+      "iki_okuma": {
+        "ALET": {
+          "coverage": "0,9500 ≤ 0,9750 ✅",
+          "ezber_kutlesi": "0,3899 ≤ 0,4697 ✅ (−7,98 p)"
+        },
+        "GÖZ": {
+          "coverage": "1,0000 ≤ 1,0000 ✅",
+          "ezber_kutlesi": "0,4057 ≤ 0,4739 ✅ (−6,82 p)"
+        }
+      },
+      "hukum": "🟢 GEÇTİ — her iki okumada da; hüküm dedektöre BAĞIMLI DEĞİL",
+      "gozle_okuma": "GOZLE_OKUMA_CEKINME.md — alet 6 çekinme dedi, göz 6/6'sını YANLIŞ POZİTİF buldu",
+      "okuma": "model kaynaksızken base'den DAHA AZ isabetli (A1 0,4057 ↔ 0,4739) ve gözle bakıldığında İKİ KOL DA hiç susmuyor (80/80). Kazanç EZBERDEN gelmiyor — istenen yön bu: bilgi ağırlıkta değil kütüphanede."
+    },
+    "hakem_bedeli_usd": 0.0881
+  },
+  "gecerlilik_kapilari": {
+    "kesiklik": {
+      "biz": "0/80 (%0,0)",
+      "base": "2/80 (%2,5)",
+      "esik": "≤%5",
+      "sonuc": "İKİ KOL DA GEÇTİ"
+    },
+    "dongu_taramasi": {
+      "biz": "0/80",
+      "not": "deterministik kuyruk n-gram; DRY'siz koşuda 3/80 idi"
+    },
+    "zorla_kapatma": {
+      "biz": "78/80",
+      "base": "80/80"
+    },
+    "ort_completion_tokens": {
+      "biz": 1697.7,
+      "base": 1811.7
+    }
+  }
 }
