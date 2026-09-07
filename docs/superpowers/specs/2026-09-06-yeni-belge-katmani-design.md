@@ -206,7 +206,7 @@ dosyalara işaret eden isabetler döner.
 | `docs/FINE_TUNING.md` | **KALSIN**, işaretçi onarılsın | yerel donanım + Unsloth/bitsandbytes yığınının tek düzyazı kaynağı; bayat damgası üstünde |
 | `docs/VERI_PLANI.md` | **KALSIN**, işaretçi onarılsın | EDA sert kuralının ve lisans temizliğinin **gerekçesi** yalnız burada |
 | `docs/YARGI_KAYNAKLARI.md` | **KALSIN**, işaretçi onarılsın | sökülmüş API sözleşmeleri; v2 içtihat katmanı buradan başlar |
-| `docs/open_questions.md` | **KALSIN + kendi kuralı uygulansın** | otoritesi `PRODUCT.md`'ye taşınır; kapanan **S1/S2/S11/S14** ADR'lere işlenip **kapanış dizinine** geçer (iz kalır, gövdeden çıkar); S5-S13 canlı kalır |
+| `docs/open_questions.md` ⚰️ | **KALSIN + kendi kuralı uygulansın** | otoritesi `PRODUCT.md`'ye taşınır; kapanan **S1/S2/S11/S14** ADR'lere işlenip **kapanış dizinine** geçer (iz kalır, gövdeden çıkar); S5-S13 canlı kalır |
 | `docs/model-soyagaci.mmd` | **KALSIN**, işaretçi onarılsın | kolların bağımsızlığını ve merge'in zincir **olmadığını** tek bakışta anlatıyor |
 | `referans-design-doc.md` | 🗑️ **SİLİNİR** → yerine `docs/MIMARI.md` | insan kararı: *"güncel hedefe göre yenisi yazılsın"* |
 
@@ -323,7 +323,7 @@ eden aranır (bulunursa yol güncellenir) · taşımadan sonra `pytest` **112 pa
 | :--- | :--- | :--- |
 | `scripts/egitim/train_orpo.py` docstring | *"base = v2b ADAPTER'dan DEVAM"* — bugünkü **ham-base** kuralına aykırı kalıp | docstring gerçeğe çekilir: `τ_a v1` **`--fresh-adapter`** ile koştu (`kollar.md`:64), kural ihlal edilmedi |
 | `docs/FINE_TUNING.md` · `VERI_PLANI.md` · `YARGI_KAYNAKLARI.md` · `model-soyagaci.mmd` | silinen dosyalara **kırık işaretçiler** (toplam 9) | yeni belgelere bağlanır (§8 son adım) |
-| `docs/open_questions.md` | otoritesi silinen `TASARIM.md` (20 atıf) · kapanan **S1/S2/S11/S14** gövdede duruyor | otorite `PRODUCT.md`'ye çekilir; kapanan dördü ADR-0063/0064/0065'e işlenip **kapanış dizinine** taşınır |
+| `docs/open_questions.md` ⚰️ | otoritesi silinen `TASARIM.md` (20 atıf) · kapanan **S1/S2/S11/S14** gövdede duruyor | otorite `PRODUCT.md`'ye çekilir; kapanan dördü ADR-0063/0064/0065'e işlenip **kapanış dizinine** taşınır |
 | `CLAUDE.md` · `MODEL_CARD.md` · `README*.md` | manşet `%68,4` + kırık işaretçiler | Faz 0 sayısı geldikten sonra güncellenir |
 
 **Temizliğin bütün turu için `verify:`**

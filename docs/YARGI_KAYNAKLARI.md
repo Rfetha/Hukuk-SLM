@@ -8,7 +8,7 @@
 > sözleşmesi 2026-08-04'te doğrulandı — yani teknik yol açık, **iş yapılmadı**.
 >
 > İçtihadın grafa girip girmeyeceği hâlâ açık soru
-> ([`open_questions.md` §13.6](open_questions.md)); graf'ın ölçülmüş gerekçesi ve
+> ([açık kararlar](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)*); graf'ın ölçülmüş gerekçesi ve
 > **ölçülmüş riski** `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*'de.
 
 # Yargı/İçtihat Veri Kaynakları — Reverse-Engineered Harita (Faz 2)

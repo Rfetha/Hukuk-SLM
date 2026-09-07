@@ -430,7 +430,7 @@ karar vermek** gerekiyor (**S18**).
 
 ⛔ **İnsan kararı.** Girdiler: ölçüm sürümüyle **bütün M5 sayıları** üretildi (Faz 0 dahil);
 eğitim sürümündeki feragat cümlesi **ürün için değerli** (A6/S10 ile örtüşüyor).
-`verify:` karar `docs/open_questions.md` **S18** satırına ve ADR'ye işlendi.
+`verify:` karar `docs/open_questions.md` ⚰️ **S18** satırına ve ADR'ye işlendi.
 
 - [ ] **Adım 2: Failing test yaz**
 
@@ -920,7 +920,7 @@ git commit -m "A8: suskunluk_terazisi ürün yüzeyine taşındı — sınıflan
 ⇒ Kullanıcı indeksi repodan **alamıyor**. İki seçenek: **(a)** HF dataset'ten indir ·
 **(b)** kurulumda üret. ⛔ **İnsan kararı olmadan bu görev başlamaz.**
 
-- [ ] **Adım 1: Kararı al ve `docs/open_questions.md` S8'e işle** *(kod yok)*
+- [ ] **Adım 1: Kararı al ve `docs/open_questions.md` ⚰️ S8'e işle** *(kod yok)*
 `verify:` S8 satırı `✅ KAPANDI → (a)` ya da `(b)` diyor, gerekçesiyle.
 
 - [ ] **Adım 2: Failing test yaz** — karar (a) ise indirme + `sha256` doğrulama, (b) ise
@@ -1348,6 +1348,82 @@ oran `tavan kullanımı = kütle ÷ recall@10`; **her iki setin `recall@10`'u ya
 Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 `verify:` hüküm ADR'de, `research_log`'da ve `MODEL_CARD.md`'de **aynı sayıyla** duruyor.
 - [ ] **Adım 4: Commit + etiket**
+
+---
+
+## 🔓 AÇIK KARARLAR — tam bağlam *(`docs/open_questions.md` ⚰️'den devralındı 2026-09-07)*
+
+> Dosya silindi: 18 sorunun 9'u kapanmıştı ve kapanışları zaten ADR'lerde yazılı.
+> Canlı 9'u **buraya**, karar için gereken tam bağlamıyla taşındı. **Tek kaynak burasıdır.**
+> ⛔ Bir damga **kendi başına kapatılamaz** — kapanış insan kararıdır ve bir ADR'ye yazılır.
+
+### 🔓 S5 — bloke ettiği: Görev 16 (yorum)
+
+**Soru:** **İkili oran çözünürlük sınırı**
+
+**Seçenekler / girdiler:** (a) `k` kalem kuralı · (b) ölçülmüş taban (hakem maliyeti var) · (c) Wilson aralığı ($0, kapı kuralını değiştirir)
+
+**Bağlı olduğu:** ⬇️ **OQ-2**
+
+### 🔓 S7 — bloke ettiği: Faz 0 planı **T1**
+
+**Soru:** **LoRA adaptörleri HF'ye yüklensin mi?**
+
+**Seçenekler / girdiler:** `kollar.md`'nin *"adaptörler yedeklenmiyor — bilinçli"* kararını **değiştirir** → **ADR gerekir**. ⚠️ 12B hattında adaptörler **kalıcı kaybedildi**; HF yayını ilk gerçek yedek olur
+
+**Bağlı olduğu:** [`record/kollar.md`](../../record/kollar.md) · [ADR-0034](../../adr/0034-emekli-hat-artefaktlarinin-repodan-cikarilmasi.md)
+
+### 🔓 S8 — bloke ettiği: **Görev 8** — adımları BİLEREK boş
+
+**Soru:** **İndeks nasıl dağıtılır?** (80 MB)
+
+**Seçenekler / girdiler:** (a) HF dataset · (b) kurulumda üret (~10 dk)
+
+**Bağlı olduğu:** v1 §C5
+
+### 🔓 S9 — bloke ettiği: bu planın **dışında** (`v2`)
+
+**Soru:** **v2 nasıl barındırılır?**
+
+**Seçenekler / girdiler:** (a) yalnız self-host · (b) + hız-sınırlı vitrin (~$100-300/ay) · (c) hosted-first ⚠️ **mahremiyet vaadini zayıflatır** ⚠️ **TR IP** kısıtı bulut barındırmayı da kısıtlayabilir
+
+**Bağlı olduğu:** taslak §4.1 · [`BEDESTEN_API.md`](../../BEDESTEN_API.md)
+
+### 🔓 S10 — bloke ettiği: **Görev 10**
+
+**Soru:** **Avukatlık Kanunu / hukuki sorumluluk sınırı**
+
+**Seçenekler / girdiler:** **hukukçu görüşü gerekir** — repo'da hiç değerlendirilmemiş
+
+**Bağlı olduğu:** taslak §4.6
+
+### 🔓 S12 — bloke ettiği: Görev 13 (taşıyıcı)
+
+**Soru:** **KARAR-6 — paralel slot (`-np`)**
+
+**Seçenekler / girdiler:** sayılar geldi (Jaccard **0,5278** · birebir **3/19**) ⚠️ **bozuk ölçütle toplandı** → ölçüt onarılınca **yeniden koşulur**, hükmü **insan** kurar
+
+**Bağlı olduğu:** [#60](../../record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md)
+
+### 🔓 S16 — bloke ettiği: **Görev 4**
+
+**Soru:** **`v1.0` rakip havuzunda hangi sağlayıcı(lar), kaç özne?** Havuzun genişlemesi **karara bağlandı** (insan, 2026-09-07) ama **kimin ekleneceği** açık. 🚨 Şekli **aile dışlaması** belirliyor: hakem `openai/gpt-4o-mini` olduğu için bir **GPT öznesi** hakemi değiştirmeyi **ve bugünkü dört sayıyı yeniden koşmayı** gerektirir; Anthropic öznesi sorunsuz. Bedel öznebaşı ~$0,35 (F0.4'te ölçüldü: üç çıpa $1,35). ⛔ Eşik **oynamaz** — çıpa `3.5 Flash` kalır, yeni özneler yalnız **raporlanır**.
+
+**Seçenekler / girdiler:** ⇒ **T1 (hakem paneli) ön koşul** · [ADR-0072](../../adr/0072-v1-rakip-havuzu-genisler.md) · [ADR-0032](../../adr/0032-hakem-paneli-uc-aile-ve-aile-dislama.md)
+
+### 🔓 S17 — bloke ettiği: bu planın **dışında**
+
+**Soru:** **Kuantizasyon eğrisi ölçülsün mü?** `v1.0` **tek** artefakt yayımlıyor: `Q4_K_M` (ADR-0071). `Q5_K_M`/`Q8_0`'ın kütle kaybı **bilinmiyor** — ADR-0031 çıkarım hassasiyetini *seçti* ama **kaybı ölçmedi**. ⚠️ Her kuantizasyon **ayrı artefakttır** ve ADR-0057'nin eşit sınavı gereği **kendi kapı koşusunu** ister ⇒ üç nokta = üç kat ölçüm. ADR-0018'in *"tek nokta, eğri değil"* bedeliyle **aynı sınıf**.
+
+**Seçenekler / girdiler:** [ADR-0071](../../adr/0071-v1-release-artefakti-tek-gguf.md) · [ADR-0031](../../adr/0031-precision-inference-q4km-egitim-bf16-lora.md) · [ADR-0018](../../adr/gemma4-12b-dersler.md#adr-0018)
+
+### 🔓 S18 — bloke ettiği: **Görev 5** — Hat A'nın ön koşulu
+
+**Soru:** **Sürüklenmiş `SYSTEM_PROMPT`'un hangi hâli doğru — ve `τ_g` çift-system ile mi eğitildi?** Ölçüldü 2026-09-07: `SYSTEM_PROMPT` **iki yerde tanımlı ve aynı değil** — ölçüm (`gen_eval_grounded.py`) *"…ilgili kanun ve madde numarasını belirt."* ile bitiyor, eğitim (`train_sft.py`) *"Bu yanıt hukuki tavsiye değil, bilgilendirme amaçlıdır."* ile. Bu **M5'in kör-mod istemidir**. ⚠️ İkinci katman: eğitim verisi (`raft_scrubbed/train.jsonl`) **zaten `system` rolü taşıyor**, `train_sft.py` ise `--no-system` verilmedikçe başa **bir tane daha** ekliyor (`modal_train.py` varsayılanı `no_system=False`; bayrağın yardım metni *"v2b ZORUNLU — veri system'i zaten taşır"* diyor). `τ_g v1` koşusunda verilip verilmediği **diskten cevaplanamıyor**: `outputs/tg_v1/` yalnız `adapter_config.json` + ağırlık taşıyor, **koşu künyesi yok**.
+
+**Seçenekler / girdiler:** ⚠️ **Hat A / A1'in ön koşulu** — beş kopya tek kaynağa inerken hangi metnin kanon olduğu insan kararı. ⛔ `τ_g`'yi yeniden eğitme gerekçesi **değildir**; bulgu **kayda geçer**, düzeltme sıradaki tura yazılır.
+
+**Bağlı olduğu:** [spec §5 damgası](../specs/2026-09-06-yeni-belge-katmani-design.md) · `scripts/egitim/train_sft.py`:31,202 · `scripts/olcum_uretim/gen_eval_grounded.py`:39 · [`kollar.md`](../../record/kollar.md)
 
 ---
 

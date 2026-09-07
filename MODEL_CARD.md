@@ -131,7 +131,7 @@ refuse · A1 = faithfulness of claims, **computed over answered items only** ·
     ⚠️ The **0.3 A1-point** judge noise floor does **not** cover this axis (it was
     derived for the answered-only A1 macro). No substitute floor is asserted here:
     setting one is a human decision, filed as debt in
-    [`docs/open_questions.md`](docs/open_questions.md).
+    [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)*.
 - **This is not a parity claim.** The harness is off, cost is not normalized, and
   the merge configuration was **selected on DEV over 3 variants**. The competitor
   comparison has still never been run with the harness on.
@@ -345,7 +345,7 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
     raised mass and A1, but claims fell 268 → **206** (−23%), total citations 118 → **83**
     (−30%), answers with no citation at all 8 → **13**. Whether that trade is acceptable for a
     legislation assistant — where *auditability* is the promise — is **an open question, not a
-    settled one** ([`docs/open_questions.md`](docs/open_questions.md), OQ-3 / decision S6).
+    settled one** ([açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)*, OQ-3 / decision S6).
 12. ✅ **The over-refusal counts were wrong and have been corrected — 14/80 → 9/80 (8/80 by
     eye).** On 2026-09-06 the abstention detector was found to score a correct, cited answer as
     an abstention: in the no-opening-verdict branch it scanned the whole answer, and our
@@ -367,7 +367,7 @@ measurement — see [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.
     and misattribution (5/80 ↔ 7/80). The pair is a matched exam — same 80 ids,
     byte-identical context in 80/80. Changing the main protocol needs its own ADR and a human
     decision; until then the official number is the **with-preamble** one
-    ([`docs/open_questions.md`](docs/open_questions.md), **S14**).
+    ([açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)*, **S14**).
 
 ## Reproducibility
 

@@ -389,7 +389,7 @@ python scripts/olcum_uretim/measure_vram_stack.py \
 `docs/adr/0065-bolunmus-surumleme.md` ·
 `docs/adr/0066-b1-yontemi-reddetme-orneklemesi.md` ·
 `docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md` ·
-Modify: `docs/record/research_log/README.md` (**#62** satırı) · `docs/open_questions.md`
+Modify: `docs/record/research_log/README.md` (**#62** satırı) · `docs/open_questions.md` ⚰️
 ⚠️ **0059 REZERVE — atlanır.**
 
 - [x] **Adım 1: ADR-0063** — önsöz kaldırıldı. ADR-0058'in gerekçesinin **tersine döndüğünü**

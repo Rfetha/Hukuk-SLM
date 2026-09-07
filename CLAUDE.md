@@ -130,7 +130,7 @@ thing (OFF hands the model the gold article by construction).
 | what to work on next, tied to measured gaps | ⭐ [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
 | the open debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
 | why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0073**, next is **0074** |
-| questions raised and not yet answered | [`docs/open_questions.md`](docs/open_questions.md) — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
+| questions raised and not yet answered | [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -157,7 +157,7 @@ thing (OFF hands the model the gold article by construction).
   contamination size is **unmeasured**. A programmatic probe was wrong in *both* directions, so
   the only closing move is reading all 80 items by eye — decided, scheduled, and pre-registered
   ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
-  [`docs/open_questions.md`](docs/open_questions.md) **S13**).
+  [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* **S13**).
 - 🧭 **Framing, 2026-09-06: the release language is v1/v2.** `v1` = a fine-tuned model release
   that actually works end to end (weights + code + data + research record, shipped with the
   retriever and the preamble, because the headline number is not reproducible without them);
@@ -256,7 +256,7 @@ decision ledger.
   data pipeline, recipe, ablation matrix. Authoritative for *how*.
 - [`docs/VERI_PLANI.md`](docs/VERI_PLANI.md) — **the authoritative data plan.**
 - [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md) — live legislation API contract.
-- [`docs/open_questions.md`](docs/open_questions.md) — questions raised and not yet answered.
+- [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — questions raised and not yet answered.
 
 ### Historical — still load-bearing, no longer authority
 
