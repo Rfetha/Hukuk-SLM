@@ -174,6 +174,65 @@ Yeni soru yazmak **ayrı bir tur** ve **insan onayı** ister (ADR-0067 usulü) �
 
 ---
 
+## 7b · Kapsam "her şey" olunca — ölçüldü 2026-09-07 (insan kararı: `CB_KARAR` + `KKY` DAHİL)
+
+Belge başına madde sayısı **canlı API'den örneklendi** (`mevzuatMaddeTree`, tür başına 6 belge):
+
+| tür | belge | ort. madde | ≈ toplam |
+| :--- | ---: | ---: | ---: |
+| `KANUN` | 917 | 102,7 | 94.145 |
+| `CB_KARARNAME` | 56 | **564,0** | 31.584 |
+| **`CB_KARAR`** | 4.361 | 17,5 | **76.317** |
+| **`KKY`** | 4.043 | 31,2 | **126.343** |
+| `TUZUK` · `YONETMELIK` · `KHK` | 345 | — | 11.914 |
+| **TOPLAM** | **9.722** | | **≈ 340.303** |
+
+🚨 Bugün **40.496** ⇒ **8,4×**. `CB_KARAR` + `KKY` tek başına **202.660 madde** (toplamın %60'ı).
+
+### Kaba kuvvet bu ölçekte AYAKTA — ölçüldü
+
+| | bugün | 340k'da |
+| :--- | ---: | ---: |
+| disk (fp16) | 83 MB | **697 MB** |
+| RAM (fp32) | 166 MB | **1.394 MB** |
+| sorgu | **6,08 ms** *(ölçüldü; `CLAUDE.md` çıpası 8,2 ms)* | **~51 ms** |
+
+⇒ **Vektör veritabanı hâlâ gereksiz.** 51 ms bir hukuk asistanında fark edilmez (model zaten
+saniyeler harcıyor). `CLAUDE.md`'nin *"vektör db ölçüldü ve reddedildi"* kararı bu ölçekte de ayakta.
+
+### 🚨 `fp16` denendi ve REDDEDİLDİ — iki sebeple
+
+RAM'i yarıya indirmek için `retriever.py`:101'in `astype(np.float32)` satırını kaldırmak önerildi.
+Ölçüldü (80 sentetik sorgu × 5 yineleme):
+
+| | fp32 | fp16 |
+| :--- | ---: | ---: |
+| RAM | 166 MB | 83 MB ✅ |
+| sorgu | **6,08 ms** | **270,06 ms** 🚨 **44,4×** |
+| 340k'da | ~51 ms | **~2.269 ms** |
+| ilk-10 **birebir aynı** | — | 🚨 **70/80** |
+
+1. **Hız:** numpy `fp16` matris çarpımı BLAS yolunu kullanamıyor ⇒ 340k'da sorgu **2,3 saniye**.
+2. **Daha ciddi — sonuçlar DEĞİŞİYOR:** 10/80 sorguda ilk-10 sırası farklı (ortak kalem 9,8/10).
+   Bu bir *takas* değil, **ölçüm birimini değiştiren müdahale**: `recall@10` etkilenir ve
+   yayımlanmış **0,9500** yeniden koşulmayı gerektirir.
+
+⚠️ Ölçüm **sentetik** sorgu vektörleriyle yapıldı (gerçek `bge-m3` çıktısıyla değil) ⇒ fark gerçek
+sorularda **daha küçük** olabilir. Ama hız tek başına yeterli sebep.
+**Karar: `fp32` kalır.**
+
+🆕 **Açık borç — RAM için başka kaldıraçlar:** `np.load(..., mmap_mode="r")` ile diskten eşleme ·
+boyut indirgeme (1024 → 512, PCA/Matryoshka) · ürün ile ölçüm için **ayrı** indeks profilleri.
+⛔ Üçü de bu spec'in dışında ve **hiçbiri ölçülmedi**.
+
+### S8 (dağıtım) YENİDEN AÇILIYOR
+
+*"HF dataset'ten 79 MB indir"* kararı **697 MB**'a taşındı. Karar hâlâ (a) olabilir ama
+*"dakikalar içinde kurulur"* cümlesi **düşer**; gömme süresi GPU'da ~1,5 saat, CPU'da ~23 saat
+⇒ **(b) kurulumda üret seçeneği fiilen ölür.**
+
+---
+
 ## 8 · Açık kalan — bu spec'in KAPATMADIĞI
 
 - 🔓 **`kayitTarihi` gerçekten değişim sinyali mi** — §6'nın testi bunu ölçecek; **çıkmazsa
@@ -182,5 +241,8 @@ Yeni soru yazmak **ayrı bir tur** ve **insan onayı** ister (ADR-0067 usulü) �
 - 🔓 **Yönetmelik düzeyinde eval sorusu yok** — kapı *"yeniyi buluyor"* diyemiyor (§5)
 - 🔓 **Tazeleme sıklığı** — haftalık mı, aylık mı? Bugün veri yok: `kayitTarihi` dağılımı
   değişim **hızını** değil **yeniden alım** hızını gösteriyor olabilir
+- 🔓 **Kat 3'ün FAYDASI ölçülemiyor** — insan kararı 2026-09-07: önce **$0'lık vekil**
+  (*"yeni tür ilk-10'a giriyor mu, alakalı mı"*), **sonra** ADR-0067 usulüyle yeni soru turu
+- 🔓 **RAM kaldıraçları ölçülmedi** — `mmap` · boyut indirgeme · ayrı indeks profilleri
 - ⚠️ **Kapsam büyürse S8 yeniden okunur:** indeks 79 MB → ~120 MB tahmini; HF dataset kararı
   bu boyutta **ayakta**, ama `CB_KARAR`/`KKY` eklenirse **değil**
