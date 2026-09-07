@@ -581,7 +581,7 @@ yanlış bayrak/yol çıktı ve üçü de yalnız koşarken görüldü.
 
 ## ✅ FAZ 0 ÖLÇÜM ZİNCİRİ KAPANDI — 2026-09-07, **40/40**
 
-*(Görev 9 · T5 bu zincirin **dışında** eklenen temizliktir; ayrı sayılır: 0/8)*
+*(Görev 9 · T5 bu zincirin **dışında** eklenen temizliktir; ayrı sayılır: **8/8 ✅ 2026-09-07**)*
 
 **Harcanan: $1,47** — plan tahmini $1,65 · bugünkü pay **$0,0881** (yalnız M5 hakemi) · GPU **$0**
 **Eğitim koşusu: SIFIR.** `tgta_v1` sabahki artefaktın **aynısı**; hiçbir ağırlık değişmedi.

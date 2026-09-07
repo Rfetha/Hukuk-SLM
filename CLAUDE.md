@@ -7,13 +7,15 @@
 > The measurement record (`docs/record/**`), the decision ledger (`docs/adr/**`) and
 > `outputs/eval/**` were **kept** — they are the source of every number published here.
 >
-> **Rebuilt since:** `docs/superpowers/` is **back and live** — one spec plus four plans.
+> **Rebuilt since:** `docs/superpowers/` is **back and live** — two specs, three plans, and
+> [`IS-SIRASI.md`](docs/superpowers/IS-SIRASI.md), the file that says which one is current.
 > **Still missing:** `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`. They are
 > **Görev 13** of the current plan, not an open question.
 >
 > | you want | read |
 > | :--- | :--- |
-> | what to do next | ⭐ [`docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 16 tasks, 82 boxes |
+> | **what to do next** | ⭐ [`docs/superpowers/IS-SIRASI.md`](docs/superpowers/IS-SIRASI.md) — **the work order across all plans**; start here, it says which plan is current |
+> | the current plan itself | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 17 tasks, 89 boxes · ⛔ Görev 8 is HELD (corpus grows 8,4×) |
 > | why it is sequenced that way | [`docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) |
 > | what closed on 2026-09-06/07 | [`docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md`](docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md) — **48/48** |
 > | the rescued debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 — ⚠️ its *direction* sections are **superseded** by the plan above |
