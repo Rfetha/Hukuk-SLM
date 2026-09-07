@@ -1,23 +1,29 @@
 # CLAUDE.md
 
-> 🚨 **2026-09-06 — THE FORWARD-LOOKING DOC LAYER WAS DELETED. Read
-> [`DEVIR-PROMPT.md`](DEVIR-PROMPT.md) FIRST; it is the handoff note.**
+> 🚨 **2026-09-07 — the doc layer is HALF rebuilt. Read this box before trusting a pointer.**
 >
-> Deleted (human decision, preserved on a backup branch): `ROADMAP.md` · `TODO.md` ·
-> `TASARIM.md` · `docs/VISION.md` · `docs/PAPER_TARGET.md` · `docs/superpowers/**` ·
-> `docs/_arsiv/**`. **Every link to those from this file is dead** until the new doc layer is
-> written. The measurement record (`docs/record/**`), the decision ledger (`docs/adr/**`) and
+> Deleted 2026-09-06 (human decision, on a backup branch): `ROADMAP.md` · `TODO.md` ·
+> `TASARIM.md` · `docs/VISION.md` · `docs/PAPER_TARGET.md` · `docs/_arsiv/**`.
+> The measurement record (`docs/record/**`), the decision ledger (`docs/adr/**`) and
 > `outputs/eval/**` were **kept** — they are the source of every number published here.
 >
-> **Framing is now: open-source PRODUCT — a legal adviser a Turkish citizen can actually ask.**
-> `v1` = model layer · `v2` = app layer · arxiv is a **by-product**. The v1/v2 roadmap, the
-> product doc and the new specs/plans are being written from scratch; until they exist,
-> `DEVIR-PROMPT.md` is the authority on direction, and the numbers below still stand.
+> **Rebuilt since:** `docs/superpowers/` is **back and live** — one spec plus four plans.
+> **Still missing:** `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`. They are
+> **Görev 13** of the current plan, not an open question.
 >
-> ⚠️ Some pointers further down still name deleted files (`ROADMAP.md` as *"the authority on
-> direction"*, `docs/_arsiv/README.md` as the binding doc-type table, `sprint3-part1.md` as the
-> debt queue). The debt queue was rescued into `DEVIR-PROMPT.md` §5. Fixing these pointers is
-> the **last** step of the rewrite, not the first — they need somewhere to point.
+> | you want | read |
+> | :--- | :--- |
+> | what to do next | ⭐ [`docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 16 tasks, 82 boxes |
+> | why it is sequenced that way | [`docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) |
+> | what closed on 2026-09-06/07 | [`docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md`](docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md) — **48/48** |
+> | the rescued debt queue | [`DEVIR-PROMPT.md`](DEVIR-PROMPT.md) §5 — ⚠️ its *direction* sections are **superseded** by the plan above |
+>
+> **Framing: open-source PRODUCT** — a legal adviser a Turkish citizen can actually ask.
+> `v1` = model layer · `v2` = app layer · arxiv is a **by-product**.
+>
+> ⚠️ Pointers further down still name deleted files (`ROADMAP.md` as *"the authority on
+> direction"*, `docs/_arsiv/README.md` as the doc-type table). Repairing them is **Görev 13
+> Adım 5** — they need somewhere to point first.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -69,39 +75,62 @@ independently from the raw base, merged as task vectors with **raw TIES**.
 Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: ⭐ [`docs/record/kollar.md`](docs/record/kollar.md).
 
 ```
-product number (harness ON, k=10, S2 corpus, sufficiency preamble — ADR-0058)
-                            faithful-answer mass  68.4%   (ablation, no preamble: 73.0%)
-🚨 SUPERSEDED 2026-09-07 — v2 unit: mass **80.1%** · recall@10 0.9500 · over-refusal 4/80.
-   Four instrument defects were found and fixed with ZERO training (question set · RRF fusion ·
-   DEV↔TEST composition · a production budget that was NOT equal to the competitor's).
-   Equal-exam table (binding GÖZ-katı reading): US 0.8011 ↔ 3.1 FL 0.7058 ↔ 3.5 FL 0.7622 ↔
-   3.5 Flash 0.7425 → v1.0 gate clause (1) PASSED by +5.86 p.
-   → docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md · ADR-0064·0067·0068·0070
-ceiling        (harness OFF, gold guaranteed)     71.6%
+product number — v2 unit, 2026-09-07 (harness ON, k=10, S2 corpus, NO preamble — ADR-0063)
+             faithful-answer mass          80.1%      ← headline, binding
+             recall@10                     0.9500     ← mass cannot exceed this
+             over-refusal (by eye)          4/80
+             misattribution (by eye)        8/80      ← next first-rank axis (B1)
+             fabricated article numbers     0/114     ↔ competitors 1 · 4 · 4
+
+🟢 v1.0 GATE CLOSED 2026-09-07 — all three clauses, with numbers (ADR-0064):
+   (1) mass ≥ 3.5 Flash − 2,0 p   0.8011 ↔ threshold 0.7225        ✅ +5.86 p
+   (2) misattribution no worse    anchor re-nailed at 8/80          ✅
+   (3) M5 must not rise           memorised mass −6.82 p vs BASE    ✅
+   (*) eye-reading at every counting step — the tool was wrong TWICE
+
+⚠️ The gain came from the INSTRUMENT, not the model. Weights never changed. Five defects were
+   found, each of the "produces a wrong number without erroring" class: question set (ADR-0067)
+   · RRF fusion (0068) · DEV↔TEST composition (0069) · a production budget that was NOT equal
+   to the competitor's (0070) · a gate clause with NO ANCHOR (0073, trap 2.17).
+   → docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md (#62)
+
+~~previous headline: mass 68.4% with the sufficiency preamble (ADR-0058)~~ — SUPERSEDED.
+   The preamble was removed (ADR-0063): it was adopted for RAISING mass and was measured to
+   LOWER it. Old unit = v1 question set + 1024 budget; NOT comparable, and no comparison is made.
+ceiling        (harness OFF, gold guaranteed)     71.6%  ⚠️ pre-Faz 0, old unit
 ```
 
 🚨 **Both ON figures were rescored on 2026-09-06 and two things flipped.** The abstention
 detector scanned the whole answer in one branch, so our template's discarded-sources rationale
 read as a refusal — a bug **specific to our own answer template**, which is why fixing it moved
 our numbers (62.8% → 68.4%) and left the competitor's untouched (measured, not assumed).
-⚠️ And the ablation is now the **higher** column, which **inverts ADR-0058's own rationale**
-(the preamble was adopted for raising mass; it now lowers it by 4.6 points, while still
-improving A1 and misattribution). The protocol was **not** changed — open question **S14**.
+⚠️ The ablation turned out to be the **higher** column, which **inverted ADR-0058's own
+rationale** (the preamble was adopted for raising mass; it lowered it by 4.6 points).
+✅ **S14 is CLOSED 2026-09-06 → the preamble was REMOVED** ([ADR-0063](docs/adr/0063-yeterlilik-onsozu-kaldirildi.md)):
+the product's default regime is now **preamble-free** and the preamble run became the ablation.
+Binding metric is **mass** — an unanswered question is worthless to a citizen; misattribution
+is paid on **its own axis** (B1), not with a prompt patch.
 [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
 [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
-⚠️ `v0.1` not `v1.0` **on purpose**: the merge config was selected on DEV and has **not** been
-tested against the baselines. The OFF number is a **ceiling, not a rival** — the two settings do
-not measure the same thing (OFF hands the model the gold article by construction).
+⚠️ Still `v0.1`, not `v1.0` — **and the reason changed on 2026-09-07.** The gate's three
+clauses now **pass on DEV** (above), but two things are still missing: the **acceptance test on
+the frozen TEST** has not run (its retrieval ceiling is ≈75%, not DEV's 95% — [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)),
+and **every number is still one judge family's verdict** (`gpt-4o-mini`, no κ, self-preference
+unmeasured — ADR-0064 *"Ne KURULMAZ"* clause 2). Product vs. claim versioning is split:
+[ADR-0065](docs/adr/0065-bolunmus-surumleme.md).
+⚠️ The OFF number is a **ceiling, not a rival** — the two settings do not measure the same
+thing (OFF hands the model the gold article by construction).
 
 **Where the numbers actually live — do not re-derive them here:**
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#61** |
-| the harness round's full story + **open debt queue** | [`docs/_arsiv/sprint3-part1.md`](docs/_arsiv/sprint3-part1.md) |
-| what to work on next, tied to measured gaps | [`ROADMAP.md`](ROADMAP.md) |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0061** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#62** |
+| what to work on next, tied to measured gaps | ⭐ [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
+| the open debt queue | [`DEVIR-PROMPT.md`](DEVIR-PROMPT.md) §5 *(rescued from the deleted `sprint3-part1.md`)* |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0073**, next is **0074** |
+| questions raised and not yet answered | [`docs/open_questions.md`](docs/open_questions.md) — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
