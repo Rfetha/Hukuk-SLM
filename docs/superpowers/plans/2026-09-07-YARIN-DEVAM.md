@@ -84,7 +84,8 @@ Kritik yol işaretli. **AÇIK KARAR** damgaları: S5 · S7 · S8 · S9 · S10 ·
 2. Kapı madde (2) çıpası **8/80** (v2 birimi, gözle sayılmış) — kural *"gerileme yok"*
 3. Kapı madde (3) — **M5 yükselmez**
 4. Sıralama **T1 → Hat A ∥ → Hat B**
-5. Bütçe: OpenRouter **~$8,88** · Modal **$29,19** · bugün harcanan **$1,38**
+5. Bütçe: ~~OpenRouter **~$8,88**~~ 🚨 **ÖLÇÜLDÜ 2026-09-07: $6,60** (`total_credits` 20 −
+   `total_usage` 13,397; $2,28'i bu plan dışından) · Modal **$29,19** · bugün harcanan **$1,38**
 
 ## Çalışma kuralları
 - Yolda çıkan sorunu **açık bırakma**, çözerek git; her tuzağı plana yaz

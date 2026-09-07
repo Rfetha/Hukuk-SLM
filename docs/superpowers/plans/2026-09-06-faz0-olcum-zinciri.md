@@ -32,6 +32,12 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 - **Donmuş TEST'e dokunulmaz:** her şey `data/eval/dev/`. `data/eval/canon/` **açılmaz**.
 - **Her koşudan önce** `docs/record/yurutme-tuzaklari.md` okunur.
 - **Bütçe:** Modal $29,19 · OpenRouter $10,26. Bu plan **~$1,65** harcar.
+  🚨 **DÜZELTME 2026-09-07 — bütçe hatırlanmıştı, ölçülmemişti.** Devir notu *"OpenRouter
+  ~$8,88"* diyordu ($10,26 − bugünkü $1,38). **Ölçülen gerçek bakiye: $6,60**
+  (`/api/v1/credits`: `total_credits` 20 − `total_usage` 13,397) — **$2,28 fark**, kaynağı
+  bu planın dışındaki harcamalar. ⇒ Aşama 2'nin T1 tahmini (~$3-5) bakiyenin **yarısından
+  fazlası**; sıralama kararı bu sayıyla yeniden okunmalı. **Ders:** para da bir sayıdır ve
+  bu repoda sayı hatırlanmaz, **kaynaklanır**.
 - ⭐ **Gözle okuma bir kapıdır** — sayısal kapı bozuk ölçümü bir kez geçirdi.
 - 🔌 **PİLDE ÖLÇÜM KOŞMA — sayısı ölçüldü (2026-09-07).** `cp0_thinking_gen.sh` künyeye
   `güç : PİLDE ⚠️` basıyor ve bu **boş bir uyarı değil**: pilde GPU **P5 · SM clock 180 MHz**'e
