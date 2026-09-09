@@ -43,19 +43,19 @@ Kaynaklar:
 
 **Bugünkü manşet:** faithful-answer **kütle %80,1** — `outputs/eval/f02-biz-onsozsuz/KUNYE.json`.
 
-## ⛔ Ne VAAT ETMEZ
+## Ne VAAT ETMEZ
 
 Bunlar eksiklik listesi değil, **ürünün sınırı**:
 
 1. **Hukuki tavsiye değildir.** Avukat değildir; çıktısı bir iddiadır, karar değil. Gerçek bir
-   mesele için nitelikli bir avukata danışın. ⚠️ İbarenin **nihai hukuki metni** hâlâ açık
+   mesele için nitelikli bir avukata danışın. İbarenin **nihai hukuki metni** hâlâ açık
    (**S10**) — hukukçu görüşü bekliyor.
 2. **%100 doğruluk değil.** Ölçülen kütle %80,1'dir; yani **beş cevaptan biri** dayanağıyla tam
    örtüşmüyor. Ayrıca *"gerçek ama soruya uymayan maddeden cevaplama"* (isabetsizlik) **8/80**
    ölçüldü ve bu **rakiplerden iyi değil** (8 ↔ 8 ↔ 7 ↔ 8).
 3. **Güncellik ağırlıkta değil, kütüphanededir.** Mevzuat değişir, ağırlıklar değişmez. Korpus
    bir **anlık görüntüdür**: `data/corpus/KUNYE.json` → **2026-08-06**, 892 kanun, 40.496 madde.
-   ⛔ **Yönetmelik · tüzük · KHK · tebliğ · genelge · CB kararı KAPSAM DIŞI.**
+   **Yönetmelik · tüzük · KHK · tebliğ · genelge · CB kararı KAPSAM DIŞI.**
 4. **Canlı mevzuat bağlantısı yok.** `bedesten.adalet.gov.tr` sözleşmesi doğrulandı (4/4) ama
    **ürün onu çağırmıyor** (borç B6; ayrıca TR IP şartı var). Tazelik boru hattı `v2`.
 5. **Sayılar tek hakem ailesinin hükmü.** İkinci bir aile aynı 80 cevabı puanladığında kütle
@@ -74,9 +74,9 @@ Bunlar eksiklik listesi değil, **ürünün sınırı**:
 | arayüz | `hakhukuk "soru"` (CLI) · `hakhukuk-tui` — **yeterli** (insan kararı) | HTTP API, web (**S9 açık**) |
 | araçlar | 5 **deterministik** kaldıraç, istem katmanında ([ADR-0076](docs/adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)) | araç kullanımının **eğitimi** (GRPO ödülü) |
 | erişim | yerel indeks, anlık görüntü korpus | canlı `bedesten` (B6) · tam kapsam · tazelik |
-| durum | ▶️ bu turda | ⏳ sonra |
+| durum | bu turda | sonra |
 
-🔒 **Çizgi [ADR-0075](docs/adr/0075-v1-sft-kapanir-v2-sequential-rl.md) ile çekildi (2026-09-08):**
+**Çizgi [ADR-0075](docs/adr/0075-v1-sft-kapanir-v2-sequential-rl.md) ile çekildi (2026-09-08):**
 `v1` **SFT ile kapanır** — `B1`/`B4` eğitim turları koşulmaz. `v2` **sequential RL**'dir,
 task vector değil ⇒ ADR-0027'nin merge hattı `v1`'de **dondurulur**.
 `v2`'yi mümkün kılan şey: **doğrulanabilir ödül** zaten yazılmış (`hakhukuk/terazi.py` atıf
@@ -99,10 +99,10 @@ donmuş TEST kabul koşusu koşulmadı.
 
 | # | madde | DEV sonucu |
 | :-- | :--- | :--- |
-| 1 | kütle ≥ `3.5 Flash` − 2,0 p | **0,8011** ↔ eşik 0,7225 ✅ |
-| 2 | isabetsizlik kötüleşmesin | çıpa 8/80'de yeniden çakıldı ✅ |
-| 3 | M5 (ezber) yükselmesin | BASE'e göre **−6,82 p** ✅ |
+| 1 | kütle ≥ `3.5 Flash` − 2,0 p | **0,8011** ↔ eşik 0,7225 |
+| 2 | isabetsizlik kötüleşmesin | çıpa 8/80'de yeniden çakıldı |
+| 3 | M5 (ezber) yükselmesin | BASE'e göre **−6,82 p** |
 
-⚠️ Kabul testinin erişim tavanı DEV'in 0,95'i değil, **≈0,75**'tir
+Kabul testinin erişim tavanı DEV'in 0,95'i değil, **≈0,75**'tir
 ([ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)) — ham kütle manşet olur,
 tavan kullanımı **yanında** raporlanır, rakip kıyası o orandan **kurulmaz**.

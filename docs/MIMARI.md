@@ -13,7 +13,7 @@
   │        │                             │        │    │                                 │
   │        ├──► QLoRA τ_g  (1.083 adım)  │        │    ▼                                 │
   │        └──► QLoRA τ_a  (70 adım)     │        │  retriever.py  (CPU · GPU'ya GİRMEZ) │
-  │             ⚠️ İKİSİ DE ham base'den │        │    · BM25 + bge-m3, RRF (K=10)       │
+  │                İKİSİ DE ham base'den │        │    · BM25 + bge-m3, RRF (K=10)       │
   │                BAĞIMSIZ              │        │    · yürürlük süzgeci (mülga elenir) │
   │        ▼                             │        │    ▼                                 │
   │  ham TIES (eşzamanlı 2-yollu)        │        │  istem.py  (TEK kaynak + sha256)     │
@@ -38,15 +38,15 @@
 | [`servis.py`](../hakhukuk/servis.py) | **Derin modül:** `answer(soru) → Cevap`. Retriever + llama-server + istem + terazi **içeride gizli** |
 | [`cli.py`](../hakhukuk/cli.py) | `hakhukuk "soru"` — ince kabuk. `SORUMLULUK_IBARESI`'nin **tek kaynağı** |
 | [`tui.py`](../hakhukuk/tui.py) | `hakhukuk-tui` — `textual` tek ekran, ince kabuk (mantık sızıntısı **testle yasak**) |
-| `araclar.py` | ⏳ **YOK** — 5 deterministik KALDIRAÇ; [ADR-0076](adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md) |
-| `kurulum.py` | ⏳ **YOK** — indeks indirme; [ROADMAP · Görev 8](../ROADMAP.md) |
+| `araclar.py` | **YOK** — 5 deterministik KALDIRAÇ; [ADR-0076](adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md) |
+| `kurulum.py` | **YOK** — indeks indirme; [ROADMAP · Görev 8](../ROADMAP.md) |
 
-🔒 **KAPI ↔ KALDIRAÇ:** `terazi.py`'nin kontrolleri (atıf doğrulama · durum sınıflandırma) ve
+**KAPI ↔ KALDIRAÇ:** `terazi.py`'nin kontrolleri (atıf doğrulama · durum sınıflandırma) ve
 `retriever`'ın mülga süzgeci **KAPI**'dır — tool döngüsünün **dışında**, koşulsuz çalışır.
 `araclar.py`'dekiler **KALDIRAÇ**'tır — model çağırır ya da çağırmaz. Karıştırılmaları
 uydurulmuş madde **0/114** garantisini kaybettirir ([ADR-0076](adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)).
 
-\* ⚠️ **Bugünkü tek istisna, bilinçli:** `terazi.py` iki normalizasyonu `scripts/`'ten
+\* **Bugünkü tek istisna, bilinçli:** `terazi.py` iki normalizasyonu `scripts/`'ten
 **import ediyor** (`score_abstention.REJECT_RE` · `madde_anahtar.madde_anahtari`).
 Gerekçe: bunlar ölçüm hattının kalbi ve kopyalanırlarsa **sessizce ayrışırlar** — istem
 sürüklenmesinin (S18) aynısı olurdu. **Bedeli:** ürün paketi bugün `scripts/`'siz tam
@@ -63,7 +63,7 @@ sürüklenmesinin (S18) aynısı olurdu. **Bedeli:** ürün paketi bugün `scrip
 | `veri_hazirlik/` | SFT/ORPO/RAFT veri kurulumu · hasat zinciri |
 | [`yeniden_uret.sh`](../scripts/yeniden_uret.sh) | manşet sayıyı sıfırdan üretir — [`docs/YENIDEN_URETIM.md`](YENIDEN_URETIM.md) |
 
-⚠️ Kardeş import'lar **uzantısız** ve **27 dosyada aynı yol köprüsü** var
+Kardeş import'lar **uzantısız** ve **27 dosyada aynı yol köprüsü** var
 (`grep -rl "yol köprüsü" scripts/`). `tests/conftest.py` aynı mantığı yansıtır —
 **birini değiştiren ötekini de değiştirir**.
 
@@ -71,11 +71,11 @@ sürüklenmesinin (S18) aynısı olurdu. **Bedeli:** ürün paketi bugün `scrip
 
 | yol | ne | git'te mi |
 | :--- | :--- | :--- |
-| `data/corpus/mevzuat_maddeler.jsonl` | 892 kanun · 40.496 madde · 2.547 mülga | ✅ (37 MB) |
-| `data/corpus/KUNYE.json` | **anlık görüntü künyesi** — tarih · kapsam · kapsam **dışı** · `sha256` | ✅ |
-| `data/index/mevzuat_bge_m3_s2/` | `bge-m3` gömme + `KUNYE.json` | ⛔ **hayır** — `.gitignore:166` |
-| `data/eval/dev/core_hard.jsonl` | DEV, 80 kalem (v2) | ✅ |
-| `data/eval/canon/` | **donmuş TEST** — tek kez açılır | ✅ |
+| `data/corpus/mevzuat_maddeler.jsonl` | 892 kanun · 40.496 madde · 2.547 mülga | (37 MB) |
+| `data/corpus/KUNYE.json` | **anlık görüntü künyesi** — tarih · kapsam · kapsam **dışı** · `sha256` | Evet |
+| `data/index/mevzuat_bge_m3_s2/` | `bge-m3` gömme + `KUNYE.json` | **hayır** — `.gitignore:166` |
+| `data/eval/dev/core_hard.jsonl` | DEV, 80 kalem (v2) | Evet |
+| `data/eval/canon/` | **donmuş TEST** — tek kez açılır | Evet |
 
 ## Rejim değişmezleri — uyuşmazlık hata VERMEZ, kıyası geçersiz kılar
 

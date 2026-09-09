@@ -3,7 +3,23 @@
 > **Türkçe bir hukuk asistanı: dizüstünde koşacak kadar küçük, "bu kaynaklarda yok" demeyi öğrenmiş 4B'lik bir model.**
 > Açık kaynak **ürün** — ağırlık + kod + veri + **araştırma kaydının tamamı**. Tez değil.
 
-[Model kartı](MODEL_CARD.md) · [English](README.md) · [Yol haritası / plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) · [Lisans](LICENSE)
+[Model kartı](MODEL_CARD.md) · [English](README.md) · [Yol haritası / plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) · [Hugging Face'te ağırlıklar](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) · [Lisans](LICENSE)
+
+## Ağırlıklar
+
+2026-09-09'da yayımlandı: [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) — tek GGUF,
+`HakHukuk-4B-v0.3-Q4_K_M.gguf`, 2.783.446.720 bayt (2,592 GiB),
+`sha256 755e15e92e9f7021934f2d5eada6c1f02fcc92be23f0536b0c2a0a9586e7bffc`.
+
+```bash
+hf download Rfetha/HakHukuk-4B-v0.3-Q4_K_M HakHukuk-4B-v0.3-Q4_K_M.gguf --local-dir models/gguf
+```
+
+Kullanmadan önce oradaki model kartı okunmalıdır. İki kısıt kartın ilk ekranında
+bildirilmiştir: model tek başına bildirilen başarımı üretemez (arama indeksi henüz
+dağıtılmamıştır) ve ürün yolunda cevapların yaklaşık %5'i boş dönmektedir — kaydedilmiş,
+gizlenmemiş bir sonlanmama kusurudur. Örnek çıktılar aynı depodaki `ORNEK_CEVAPLAR.md`
+dosyasındadır.
 
 Bir hukuk asistanının işinin büyük kısmı cevap vermek değil, **kaynak desteklemiyorken
 cevap vermemektir.** Kendinden emin ve yanlış bir madde numarası sessizlikten kötüdür —
@@ -16,18 +32,18 @@ kapsamıyorsa **çekin**.
 
 ---
 
-## ⛔ Bugün kurup çalıştırabilir miyim? — **HAYIR**
+## Bugün kurup çalıştırabilir miyim? — **HAYIR**
 
 İlk sorunun dürüst cevabı budur. **Model ölçüldü, ürün paketlenmedi.**
 
 | parça | durum | kanıt (ölçüldü, 2026-09-07) |
 | :--- | :--- | :--- |
-| Model ağırlıkları (Q4_K_M GGUF, **2,59 GiB**) | ✅ var ve ölçüldü — ⛔ **henüz hiçbir yerde yayımlanmadı** | boyut: [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) · `git ls-files models/` → **0 dosya**; adaptörler bilinçli olarak repoda tutulmuyor |
-| Erişim indeksi (**40.496** madde) | ✅ yerelde var — ⛔ **git'te yok**, dağıtım biçimi karara bağlı | `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**; `git ls-files data/index` → yalnız 2 `KUNYE.json`; **açık karar S8** (plan §S8) |
-| Servis katmanı (API / CLI / TUI) | ❌ **kod olarak yok** | `grep -rlE "fastapi\|uvicorn\|flask\|gradio" scripts/` → **0**; `hakhukuk/` dizini **yok** |
-| İstem (prompt) | ❌ dağıtılabilir artefakt değil — ölçüm script'lerinin içinde | plan **Görev 5** · **açık karar S18** |
+| Model ağırlıkları (Q4_K_M GGUF, **2,59 GiB**) | var ve ölçüldü — **henüz hiçbir yerde yayımlanmadı** | boyut: [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) · `git ls-files models/` → **0 dosya**; adaptörler bilinçli olarak repoda tutulmuyor |
+| Erişim indeksi (**40.496** madde) | yerelde var — **git'te yok**, dağıtım biçimi karara bağlı | `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**; `git ls-files data/index` → yalnız 2 `KUNYE.json`; **açık karar S8** (plan §S8) |
+| Servis katmanı (API / CLI / TUI) | **kod olarak yok** | `grep -rlE "fastapi\|uvicorn\|flask\|gradio" scripts/` → **0**; `hakhukuk/` dizini **yok** |
+| İstem (prompt) | dağıtılabilir artefakt değil — ölçüm script'lerinin içinde | plan **Görev 5** · **açık karar S18** |
 
-⚠️ **Manşet sayı `model + retriever + istem` üçlüsünün sayısıdır.** Üçü bir arada
+**Manşet sayı `model + retriever + istem` üçlüsünün sayısıdır.** Üçü bir arada
 paketlenmeden yeniden üretilemez. Paketleme işi planın **Hat A** fazıdır ve çıktısı
 `v0.2`'dir ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
 
@@ -53,7 +69,7 @@ paketlenmeden yeniden üretilemez. Paketleme işi planın **Hat A** fazıdır ve
 | ortalama completion token | 782,5 | [`outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
 | VRAM (ctx 4.096 / 32.768 / 131.072) | 3,09 / 3,70 / 5,76 GiB | `outputs/eval/_artefakt/vram_stack_tgta_v1.json` ([ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md)) |
 
-⛔ **Harness KAPALI ("tavan") rejimi bu birimde YENİDEN ÖLÇÜLMEDİ.** Eski `v1` birimindeki
+**Harness KAPALI ("tavan") rejimi bu birimde YENİDEN ÖLÇÜLMEDİ.** Eski `v1` birimindeki
 tavan sayısı bugünküyle kıyaslanamaz ve bu belgede tekrarlanmıyor.
 
 ---
@@ -87,7 +103,7 @@ Diğer eksenler (ham alet sayıları, aynı dosya):
 | kesik kalem | 4 (%5,0) | 5 (%6,2) | 0 | 4 (%5,0) |
 | ort. completion token | 782,5 | 861,5 | **171,1** | 699,4 |
 
-### ⚠️ Bu tablodan **kurulmayan** cümleler
+### Bu tablodan **kurulmayan** cümleler
 
 1. **"TEST'te de geçeriz."** Ölçüm **DEV**'de. Donmuş TEST'in erişim tavanı ≈%75
    ([ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)) ve kabul testi
@@ -99,7 +115,7 @@ Diğer eksenler (ham alet sayıları, aynı dosya):
 
 ---
 
-## 🚨 Kazanç nereden geldi: **ağırlıklar hiç değişmedi**
+## Kazanç nereden geldi: **ağırlıklar hiç değişmedi**
 
 Faz 0'da **tek bir eğitim koşusu yapılmadı** ve sayı %68,4'ten **%80,1**'e çıktı.
 Bulunan şey model değil, **ölçüm aletinin kusurlarıydı** — beşi de *"hata vermeden yanlış
@@ -111,10 +127,10 @@ künyeyi açıp okumakla yakalandı.
 | 1 | Soruların **bağlamı sökülmüştü** — 5/10 erişim ıskası aslında soruyu tek başına okuyanın altın maddeyi adlandıramamasıydı | `recall@10` 0,8750 → **0,9375** | [ADR-0067](docs/adr/0067-soru-onarimi-dev-test-v2.md) |
 | 2 | Kusur BM25'te değil **füzyondaydı**: `RRF_K=60`, "iki kolda vasat"ı "bir kolda mükemmel"e tercih ediyordu | `RRF_K` 60 → 10; `recall@10` 0,9375 → **0,9500** | [ADR-0068](docs/adr/0068-rrf-k-60-to-10.md) |
 | 3 | DEV ↔ TEST farkının **%81'i set bileşiminden** (madde uzunluğu katmanlanmamış) | kabul testinin tavanı ≈**%75** olarak ön-kayıtlandı | [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) |
-| 4 | 🚨 **Üretim bütçesi rakiple eşit değildi ve aleyhimizeydi** — biz 1024, rakip fiilen 1532 | tek formüle geçildi: bütçe **1536**, dört öznede aynı | [ADR-0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
-| 5 | 🆕 **Kapı maddesinin ÇIPASI YOKTU** — `v1.0` kapısı madde (3) *"M5 ≤ bugünkü"* diyordu, ama `tgta_v1`'in M5'i **hiçbir birimde hiç ölçülmemişti**; madde kendi kendine referans veriyordu | çıpa ADR-0039'dan okundu (**base**, rakip değil), M5 iki kolda birden yeniden koşuldu | [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md) · tuzak **2.17** |
+| 4 | **Üretim bütçesi rakiple eşit değildi ve aleyhimizeydi** — biz 1024, rakip fiilen 1532 | tek formüle geçildi: bütçe **1536**, dört öznede aynı | [ADR-0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
+| 5 | **Kapı maddesinin ÇIPASI YOKTU** — `v1.0` kapısı madde (3) *"M5 ≤ bugünkü"* diyordu, ama `tgta_v1`'in M5'i **hiçbir birimde hiç ölçülmemişti**; madde kendi kendine referans veriyordu | çıpa ADR-0039'dan okundu (**base**, rakip değil), M5 iki kolda birden yeniden koşuldu | [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md) · tuzak **2.17** |
 
-*(Bu beşi **Faz 0'ın** bulgusudur. ⚠️ Altıncı bir alet kusuru **bir gün önce**, B10 turunda
+*(Bu beşi **Faz 0'ın** bulgusudur. Altıncı bir alet kusuru **bir gün önce**, B10 turunda
 bulunmuştu: çekinme dedektörü istem rejimine bağımlı çıktı ([ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md),
 [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)). Onun **rakip
 tarafındaki** yansıması Faz 0 içinde ölçüldü — F0.4 kalibrasyonunda rakip kollarında **6 açık
@@ -133,29 +149,29 @@ Formül **rakip sayıları görülmeden** yazıldı; sayılar mekanik olarak tü
 
 | madde | hüküm | sayı | kaynak |
 | :--- | :--- | :--- | :--- |
-| **(1)** kütle ≥ 3.5 Flash − 2,0 puan | ✅ **GEÇTİ** | GÖZ-katı: **0,8011 ↔ eşik 0,7225** → **+5,86 p** | [`f04 özeti`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
-| **(2)** isabetsizlik gerilemez | ✅ (bugün tanım gereği) | çıpa yeni birimde **8/80**'e çivilendi; bağlayıcı olduğu yer **sonraki eğitim turu** | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) |
-| **(3)** M5 (kör/parametrik) **yükselmez** — anti-hedef | ✅ **GEÇTİ** | ezber kütlesi **0,3899 ↔ base 0,4697** (ALET) · **0,4057 ↔ 0,4739** (GÖZ) | [`outputs/eval/f07-m5-anti-hedef/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) · [`GOZLE_OKUMA_CEKINME.md`](outputs/eval/f07-m5-anti-hedef/GOZLE_OKUMA_CEKINME.md) |
+| **(1)** kütle ≥ 3.5 Flash − 2,0 puan | **GEÇTİ** | GÖZ-katı: **0,8011 ↔ eşik 0,7225** → **+5,86 p** | [`f04 özeti`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
+| **(2)** isabetsizlik gerilemez | (bugün tanım gereği) | çıpa yeni birimde **8/80**'e çivilendi; bağlayıcı olduğu yer **sonraki eğitim turu** | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) |
+| **(3)** M5 (kör/parametrik) **yükselmez** — anti-hedef | **GEÇTİ** | ezber kütlesi **0,3899 ↔ base 0,4697** (ALET) · **0,4057 ↔ 0,4739** (GÖZ) | [`outputs/eval/f07-m5-anti-hedef/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) · [`GOZLE_OKUMA_CEKINME.md`](outputs/eval/f07-m5-anti-hedef/GOZLE_OKUMA_CEKINME.md) |
 
-⚠️ **Sürüm yine de `v0.1`.** Sürümleme bilerek ikiye ayrıldı
+**Sürüm yine de `v0.1`.** Sürümleme bilerek ikiye ayrıldı
 ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)): **ürün sürümü** `v0.2 → v1.0` ürünün kendi
 kapısından geçer; **iddia sürümü** ise 2026-08-06'da **düşen ARA KAPI'ya** bağlı kalır
-([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)). ⛔ Düşmüş kapı düşmüş kalır;
+([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)). Düşmüş kapı düşmüş kalır;
 gevşetilmedi, yeniden tanımlanmadı.
 
 ---
 
 ## Ne vaat **etmiyor**
 
-- ⛔ **Hukuki tavsiye değildir.** Avukat değildir; çıktısı hukuki tavsiye yerine geçmez.
+- **Hukuki tavsiye değildir.** Avukat değildir; çıktısı hukuki tavsiye yerine geçmez.
   Ürettiği her madde numarasını [mevzuat.gov.tr](https://www.mevzuat.gov.tr) üzerinden doğrulayın.
-- ⛔ **%100 doğruluk değildir.** 80 soruluk DEV kümesinde **8 isabetsizlik** ve **4 aşırı-red**
+- **%100 doğruluk değildir.** 80 soruluk DEV kümesinde **8 isabetsizlik** ve **4 aşırı-red**
   ölçüldü (yukarıdaki tablo). Ölçüm **tek hakem ailesinin** hükmüdür.
-- ⛔ **Güncellik ağırlıkta değil, kütüphanededir.** Mevzuat değişir, ağırlıklar değişmez;
+- **Güncellik ağırlıkta değil, kütüphanededir.** Mevzuat değişir, ağırlıklar değişmez;
   güncellik erişim (RAG) katmanının işidir. Bu bir tasarım kararıdır, eksiklik değil.
-- ⛔ **Kapsam: yalnız güncel Türkiye Cumhuriyeti mevzuatı.** Osmanlı dönemi, içtihat yorumu
+- **Kapsam: yalnız güncel Türkiye Cumhuriyeti mevzuatı.** Osmanlı dönemi, içtihat yorumu
   ve yabancı hukuk kapsam dışı.
-- ⛔ **Parite iddiası yok.** Yukarıdaki kıyas **DEV**'de, tek hakem ailesiyle, maliyet
+- **Parite iddiası yok.** Yukarıdaki kıyas **DEV**'de, tek hakem ailesiyle, maliyet
   normalize edilmeden yapıldı.
 
 ---
@@ -174,7 +190,7 @@ Birbiriyle **fiilen çatışan** iki beceri: dayanaklandırma için eğitmek çe
 değil**; merge ikisini de geri getiriyor. Her kol **ham base'den bağımsız** eğitilir — görev
 vektörü tanımı (`τ = θ_ft − θ_base`) bunu zorunlu kılar.
 
-⚠️ Bu bölümdeki oranlar **eski (`v1`) birimde** ölçüldü ve yukarıdaki manşet sayılarla
+Bu bölümdeki oranlar **eski (`v1`) birimde** ölçüldü ve yukarıdaki manşet sayılarla
 kıyaslanamaz; kol kol dökümü ve künyeler: [`docs/record/kollar.md`](docs/record/kollar.md).
 
 ---
@@ -188,7 +204,7 @@ Sırası **bağlayıcı** (insan kararı 2026-09-07) —
 | :--- | :--- | :--- |
 | **`HP`** — hakem paneli | ikinci + üçüncü hakem ailesi, κ, öz-tercih ölçümü | her sayı tek ailenin hükmü olmaktan çıkar |
 | **Hat A** — paketleme (`HP`'ye paralel) | `hakhukuk/` paketi: istem artefaktı · tipler · servis · CLI · TUI · indeks dağıtımı | **kurulabilir ürün** |
-| **Faz C** — belge katmanı | ✅ [`PRODUCT.md`](PRODUCT.md) · [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md) · [`docs/MIMARI.md`](docs/MIMARI.md) — yazıldı 2026-09-07 | **`v0.2` YAYIN** |
+| **Faz C** — belge katmanı | [`PRODUCT.md`](PRODUCT.md) · [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md) · [`docs/MIMARI.md`](docs/MIMARI.md) — yazıldı 2026-09-07 | **`v0.2` YAYIN** |
 | **Hat B** — model | B1 (isabetsizlik) · `τ_a` genliği · kapı koşusu + donmuş TEST kabul testi | **`v1.0` kapısı** |
 
 `v2` = bu modelin üstündeki uygulama/API katmanı. arxiv bir **yan üründür**, hedef değildir.
@@ -199,7 +215,7 @@ Sırası **bağlayıcı** (insan kararı 2026-09-07) —
 
 | yer | ne |
 | :--- | :--- |
-| `hakhukuk/` | ⛔ **henüz yok** — ürün paketi; Hat A yazacak |
+| `hakhukuk/` | **henüz yok** — ürün paketi; Hat A yazacak |
 | [`scripts/`](scripts/) | **ölçüm aleti** (üründen ayrı, bilinçli). Beş alt klasör: [`egitim/`](scripts/egitim/) · [`olcum_uretim/`](scripts/olcum_uretim/) · [`puanlama/`](scripts/puanlama/) · [`erisim_korpus/`](scripts/erisim_korpus/) · [`veri_hazirlik/`](scripts/veri_hazirlik/) |
 | [`docs/record/research_log/`](docs/record/research_log/) | **araştırma kaydı** — ne olduğu, kronolojik, her sayıyla; son giriş **#62** |
 | [`docs/adr/`](docs/adr/) | **karar defteri** — 46 numaralı dosya, numaralandırma **0073**'e kadar (`0001-0026` tek dosyada: [`gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md); **0059 rezerve**) |
@@ -234,7 +250,7 @@ dosyası koşu künyesinde (`KUNYE.json`) sabitlenmiştir.
   gerçek mevzuat metninden üretilip **doğrulanmış** sentetik çiftler.
   Veri planı: [`docs/VERI_PLANI.md`](docs/VERI_PLANI.md) · eğitim reçetesi:
   [`docs/FINE_TUNING.md`](docs/FINE_TUNING.md).
-- ⛔ **Hiçbir aşamada ticari hukuk veritabanı kullanılmadı** (Lexpera, Kazancı vb.) — telif
+- **Hiçbir aşamada ticari hukuk veritabanı kullanılmadı** (Lexpera, Kazancı vb.) — telif
   zehri. Bu, sonradan yapılan bir temizlik değil, ilk günden konmuş bir kuraldı.
 - Eğitim verisinde PII maskelenir.
 - **Lisans: Apache-2.0** ([`LICENSE`](LICENSE)). Base model `Qwen/Qwen3.5-4B` Apache-2.0'dır;

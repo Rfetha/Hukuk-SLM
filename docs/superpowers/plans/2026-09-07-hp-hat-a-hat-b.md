@@ -1,6 +1,6 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
-## 📊 İCRA DURUMU — 2026-09-09 · **75/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+## 📊 İCRA DURUMU — 2026-09-09 · **76/89 kutucuk** · 🏷️ `v0.2` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -25,7 +25,7 @@
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
 | ~~**3**~~ 🆕 | ✅ **G4** — Sonnet-5 rakip havuzunda | **$1,1932** *(gerçekleşen, tahmin $0,82 idi)* | ✅ **BİTTİ 2026-09-09** — 🚨 **Sonnet-5 ÖNDE**: kütle 0,8348 ↔ bizim 0,8011 (GÖZ-katı). Kapı **etkilenmez** (ADR-0072 m.2) |
 | **4** ⏳ | **G16** — kabul testi **KOŞTU** (Adım 2 ✅), **hüküm İNSANDA** | $0,0195 | ⛔ TEST açıldı 2026-09-09 · ham kütle **0,5804** (tavan 0,7500) ↔ DEV 0,8011 (tavan 0,9500). **Ön-kayıtlı eşik YOK** ⇒ `v1.0` hükmü insan kararı |
-| **5** 🆕 | **G18** — araç katmanı (KALDIRAÇ) | $0 | 5 deterministik araç + sınırlı döngü + `ARAMA_TUKENDI` |
+| ~~**5**~~ 🆕 | ✅ **G18** — araç katmanı | $0 | ✅ **BİTTİ 2026-09-09** — 5 kaldıraç · sınırlı döngü · `ARAMA_TUKENDI` · regresyon kapısı **80/80 birebir**. 🚨 Yan ürün: ürün yolu ölçüm hattından **farklı** (%5 boş cevap) — yeni borç |
 | **6** 🆕 | **G17** — modeli YAYINLA (HF) | $0 | `v1` release; bugün ağırlıklar **hiçbir yerde yayında değil** |
 | — | **G14 · G15** eğitim turları | — | ⛔ **ATLANDI** — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md): `v1` **SFT ile kapanır**, `B4` `v2`'de **konusuz** kalır |
 | — | **G11 Adım 2** — temiz makine kapısı | — | ⏸️ **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
@@ -1949,11 +1949,51 @@ llama-server tarafında tool-calling açılana kadar araçlı yol tek atış dav
 demet döndürmek *"model araç istemedi"* ile *"taşıyıcı aracı taşımıyor"*u aynı şeye çevirirdi
 ⇒ **borç, gizlenmedi.**
 
-- [ ] **Adım 6: 🚨 REGRESYON KAPISI — araçsız davranış DEĞİŞMEDİ mi**
+- [x] **Adım 6: REGRESYON KAPISI — araçsız davranış DEĞİŞMEDİ mi** ✅ **GEÇTİ 2026-09-09**
 
 ⛔ Araç katmanı **varsayılanı bozmamalı**: araç kullanılmayan yolda 80 kalemlik sınıflandırma
 çıktısı **birebir aynı** kalmalı (suskunluk `[15, 37, 45, 66, 79]`).
 `verify:` 80 kalem yeniden koşuldu, suskunluk kümesi **değişmedi**.
+
+**✅ ALINDI 2026-09-09 — ölçülerek, iddiayla değil.** Aynı betik, aynı sunucuya karşı, iki
+kez koşuldu: bir kez bu görevin kodunda, bir kez `4d69388`'de (görev öncesi, ayrı `git
+worktree`). Sonuç:
+
+> **80/80 kalem BİREBİR AYNI** — `durum` · `atif` · `kaynak` · `metin`, dördü de özdeş.
+
+Artefaktlar: [`aracsiz_yol_80.json`](../../../outputs/eval/g18-arac-katmani/aracsiz_yol_80.json)
+(sonrası) · [`aracsiz_yol_80_ONCESI.json`](../../../outputs/eval/g18-arac-katmani/aracsiz_yol_80_ONCESI.json)
+(öncesi) · betik `scripts/olcum_uretim/regresyon_aracsiz_yol.py`.
+
+**⚠️ Kapı önce KIRMIZI yandı ve sebebi kayda geçer: karşılaştırma yanlıştı, kod değil.**
+Betiğin ilk sürümü suskunluk kümesini planın ön-kayıtlı `[15, 37, 45, 66, 79]` kümesiyle
+karşılaştırıyordu. O küme **ölçüm hattının** kümesidir (`gen_eval_grounded.py` +
+`exact_reject`) ve öncesi/sonrası koşusu bunu kesinleştirdi: **öncesi de aynı kümeyi
+veriyor** ([10, 34, 63]). Betik onarıldı; artık tek koşudan hüküm kurmuyor.
+
+---
+
+🚨 **BU KOŞUNUN YAN ÜRÜNÜ: ÜRÜN YOLU İLE ÖLÇÜM HATTI AYNI ŞEYİ ÇALIŞTIRMIYOR**
+*(yeni borç — bu görevin kırdığı bir şey değil, öncesi koşusuyla kanıtlandı)*
+
+| | ürün yolu (`servis.answer`) | ölçüm hattı (**yayımlanan 0,8011 buradan**) |
+| :--- | ---: | ---: |
+| kesik/boş cevap | **7/80 = %8,75** | 4/80 = %5,0 |
+| **tamamen BOŞ metin** | **4/80 = %5,0** (id 7 · 64 · 65 · 66) | **0** |
+| suskunluk kümesi | [10, 34, 63] | [15, 37, 45, 66, 79] |
+
+Yedi kesik kalemin **yedisi de** ölçüm hattında `finish=stop` ile tamamlanıyor (485-892
+token) ⇒ sorun soruların zorluğu değil, **bütçe mimarisi**. Ölçüm hattı düşünceyi 1024'te
+**zorla kapatıp** cevaba ayrı 512 veriyor; ürün yolu ikisini tek havuzda (1536) yarıştırıyor.
+Sonuç `research_log` #42'nin ölçtüğü **sonlanmama**: model `</think>`'i hiç kapatmıyor,
+bütçeyi düşünce kanalında bitiriyor, **HTTP 200 ile boş içerik** dönüyor.
+
+⚠️ Boş cevap **gizlenmiyor** (durum `KESIK`, rozet *"cevap YARIM"*) ama vatandaş için sonuç
+boş ekran. 🚨 **ADR-0040'ın geçerlilik kapısı %5'tir; ölçüm hattı tam eşikte geçiyor, ürün
+yolu %8,75 ile GEÇEMEZDİ.**
+⛔ **Bugün düzeltilmedi:** ürün yoluna zorunlu kapatma koymak **rejim değişikliğidir** ⇒
+insan kararı + yeniden ölçüm ister (goal kuralı: *"yeni rejim → DUR ve SOR"*).
+Model kartında ve HF kartında **açıkça** yazılıdır.
 
 - [x] **Adım 7: CLI/TUI'de görünürlük** ✅ `🔍 ARAMA TÜKENDİ` (CLI) · `🔵 ARAMA TÜKENDİ` (TUI); `test_cli_bes_durumu…` yeşil
 

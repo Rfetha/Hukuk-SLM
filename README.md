@@ -3,7 +3,22 @@
 > **A Turkish legal assistant: a 4B model small enough to run on a laptop, trained to say "that is not in these sources."**
 > An open-source **product** — weights + code + data + **the entire research record**. Not a thesis.
 
-[Model card](MODEL_CARD.md) · [Türkçe](README.tr.md) · [Roadmap / plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) · [License](LICENSE)
+[Model card](MODEL_CARD.md) · [Türkçe](README.tr.md) · [Roadmap / plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) · [Weights on Hugging Face](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) · [License](LICENSE)
+
+## Weights
+
+Published 2026-09-09: [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) — a single GGUF,
+`HakHukuk-4B-v0.3-Q4_K_M.gguf`, 2.783.446.720 bytes (2,592 GiB),
+`sha256 755e15e92e9f7021934f2d5eada6c1f02fcc92be23f0536b0c2a0a9586e7bffc`.
+
+```bash
+hf download Rfetha/HakHukuk-4B-v0.3-Q4_K_M HakHukuk-4B-v0.3-Q4_K_M.gguf --local-dir models/gguf
+```
+
+Read the model card there before use. Two constraints are stated on its first screen: the
+model cannot reproduce the published figure on its own (the retrieval index is not yet
+distributed), and in the product path roughly 5% of answers come back empty — a
+non-termination defect that is recorded, not hidden.
 
 Most of the work in a legal assistant is not answering. It is **refusing to answer when the
 sources do not support one.** A confident, wrong article number is worse than silence — it is
@@ -16,18 +31,18 @@ working on Turkish legal NLP (the record goal).
 
 ---
 
-## ⛔ Can I install and run it today? — **NO**
+## Can I install and run it today? — **NO**
 
 That is the honest answer to the first question. **The model is measured; the product is not packaged.**
 
 | piece | status | evidence (measured, 2026-09-07) |
 | :--- | :--- | :--- |
-| Model weights (Q4_K_M GGUF, **2.59 GiB**) | ✅ exist and are measured — ⛔ **not published anywhere yet** | size: [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) · `git ls-files models/` → **0 files**; adapters are deliberately not kept in the repo |
-| Retrieval index (**40,496** articles) | ✅ exists locally — ⛔ **not in git**, distribution format undecided | `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**; `git ls-files data/index` → only 2 `KUNYE.json` files; **open decision S8** (plan §S8) |
-| Serving layer (API / CLI / TUI) | ❌ **does not exist as code** | `grep -rlE "fastapi\|uvicorn\|flask\|gradio" scripts/` → **0**; there is no `hakhukuk/` directory |
-| Prompt | ❌ not a shippable artifact — it lives inside the evaluation scripts | plan **Task 5** · **open decision S18** |
+| Model weights (Q4_K_M GGUF, **2.59 GiB**) | exist and are measured — **not published anywhere yet** | size: [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) · `git ls-files models/` → **0 files**; adapters are deliberately not kept in the repo |
+| Retrieval index (**40,496** articles) | exists locally — **not in git**, distribution format undecided | `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**; `git ls-files data/index` → only 2 `KUNYE.json` files; **open decision S8** (plan §S8) |
+| Serving layer (API / CLI / TUI) | **does not exist as code** | `grep -rlE "fastapi\|uvicorn\|flask\|gradio" scripts/` → **0**; there is no `hakhukuk/` directory |
+| Prompt | not a shippable artifact — it lives inside the evaluation scripts | plan **Task 5** · **open decision S18** |
 
-⚠️ **The headline number is produced by `model + retriever + prompt`.** It cannot be reproduced
+**The headline number is produced by `model + retriever + prompt`.** It cannot be reproduced
 until all three are packaged together. That packaging is the plan's **Hat A** phase, and its
 output is `v0.2` ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
 
@@ -53,7 +68,7 @@ budget **1536** · judge `openai/gpt-4o-mini`.
 | mean completion tokens | 782.5 | [`outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
 | VRAM (ctx 4,096 / 32,768 / 131,072) | 3.09 / 3.70 / 5.76 GiB | `outputs/eval/_artefakt/vram_stack_tgta_v1.json` ([ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md)) |
 
-⛔ **The harness-OFF ("ceiling") regime was NOT re-measured in this unit.** The old `v1`-unit
+**The harness-OFF ("ceiling") regime was NOT re-measured in this unit.** The old `v1`-unit
 ceiling figure is not comparable to today's numbers and is not repeated in this document.
 
 ---
@@ -90,7 +105,7 @@ Other axes (raw tool numbers, same file):
 | truncated items | 4 (5.0%) | 5 (6.2%) | 0 | 4 (5.0%) |
 | mean completion tokens | 782.5 | 861.5 | **171.1** | 699.4 |
 
-### ⚠️ Sentences this table does **not** support
+### Sentences this table does **not** support
 
 1. **"We would pass on TEST too."** The measurement is on **DEV**. The frozen TEST set's
    retrieval ceiling is ≈75%
@@ -104,7 +119,7 @@ Other axes (raw tool numbers, same file):
 
 ---
 
-## 🚨 Where the gain came from: **the weights never changed**
+## Where the gain came from: **the weights never changed**
 
 Phase 0 ran **zero training runs** and the number moved from 68.4% to **80.1%**. What was found
 was not a better model but **defects in the measuring instrument** — five of them, every one in
@@ -116,10 +131,10 @@ gate**, and every one caught only by **reading by eye** or by opening and readin
 | 1 | The questions had been **stripped of their context** — 5/10 retrieval misses were really "a lawyer reading this question alone cannot name the gold article" | `recall@10` 0.8750 → **0.9375** | [ADR-0067](docs/adr/0067-soru-onarimi-dev-test-v2.md) |
 | 2 | The defect was not in BM25 but in **fusion**: at `RRF_K=60`, "mediocre in both arms" beat "perfect in one arm" | `RRF_K` 60 → 10; `recall@10` 0.9375 → **0.9500** | [ADR-0068](docs/adr/0068-rrf-k-60-to-10.md) |
 | 3 | **81% of the DEV ↔ TEST gap came from set composition** (not stratified by article length) | the acceptance test's ceiling was pre-registered at ≈**75%** | [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) |
-| 4 | 🚨 **The generation budget was not equal to the competitor's, and it was against us** — ours 1024, theirs effectively 1532 | one formula for everyone: budget **1536**, identical across all four subjects | [ADR-0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
-| 5 | 🆕 **The gate clause had NO ANCHOR** — `v1.0` clause (3) said *"M5 must not rise above today's"*, but `tgta_v1`'s M5 had **never been measured in any unit**; the clause referred to itself | anchor read from ADR-0039 (**base**, not the competitor); M5 re-run on both arms | [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md) · trap **2.17** |
+| 4 | **The generation budget was not equal to the competitor's, and it was against us** — ours 1024, theirs effectively 1532 | one formula for everyone: budget **1536**, identical across all four subjects | [ADR-0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
+| 5 | **The gate clause had NO ANCHOR** — `v1.0` clause (3) said *"M5 must not rise above today's"*, but `tgta_v1`'s M5 had **never been measured in any unit**; the clause referred to itself | anchor read from ADR-0039 (**base**, not the competitor); M5 re-run on both arms | [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md) · trap **2.17** |
 
-*(These five are **Faz 0's** findings. ⚠️ A sixth instrument defect was found **the day
+*(These five are **Faz 0's** findings. A sixth instrument defect was found **the day
 before**, in the B10 round: the abstention detector turned out to be prompt-regime dependent
 ([ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md),
 [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)). Its **competitor-side**
@@ -140,31 +155,31 @@ mechanically ([ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md)).
 
 | clause | verdict | number | source |
 | :--- | :--- | :--- | :--- |
-| **(1)** mass ≥ 3.5 Flash − 2.0 points | ✅ **PASSED** | strict-by-eye: **0.8011 ↔ threshold 0.7225** → **+5.86 p** | [`f04 summary`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
-| **(2)** misattribution does not regress | ✅ (true by definition today) | anchor re-pinned at **8/80** in the new unit; it binds at the **next training round** | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) |
-| **(3)** M5 (blind/parametric) does **not** rise — anti-target | ✅ **PASSED** | memorized mass **0.3899 ↔ base 0.4697** (tool) · **0.4057 ↔ 0.4739** (by eye) | [`outputs/eval/f07-m5-anti-hedef/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) · [`GOZLE_OKUMA_CEKINME.md`](outputs/eval/f07-m5-anti-hedef/GOZLE_OKUMA_CEKINME.md) |
+| **(1)** mass ≥ 3.5 Flash − 2.0 points | **PASSED** | strict-by-eye: **0.8011 ↔ threshold 0.7225** → **+5.86 p** | [`f04 summary`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
+| **(2)** misattribution does not regress | (true by definition today) | anchor re-pinned at **8/80** in the new unit; it binds at the **next training round** | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) |
+| **(3)** M5 (blind/parametric) does **not** rise — anti-target | **PASSED** | memorized mass **0.3899 ↔ base 0.4697** (tool) · **0.4057 ↔ 0.4739** (by eye) | [`outputs/eval/f07-m5-anti-hedef/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) · [`GOZLE_OKUMA_CEKINME.md`](outputs/eval/f07-m5-anti-hedef/GOZLE_OKUMA_CEKINME.md) |
 
-⚠️ **The version is still `v0.1`, on purpose.** Versioning was deliberately split
+**The version is still `v0.1`, on purpose.** Versioning was deliberately split
 ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)): the **product version** (`v0.2 → v1.0`) passes
 through the product's own gate, while the **claim version** stays tied to the mid-gate that
 **failed** on 2026-08-06
-([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)). ⛔ A failed gate stays failed —
+([ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md)). A failed gate stays failed —
 it was neither loosened nor redefined.
 
 ---
 
 ## What it does **not** promise
 
-- ⛔ **It is not legal advice.** It is not a lawyer and its output does not substitute for legal
+- **It is not legal advice.** It is not a lawyer and its output does not substitute for legal
   advice. Verify every article number against [mevzuat.gov.tr](https://www.mevzuat.gov.tr).
-- ⛔ **It is not 100% accurate.** On the 80-question DEV set, **8 misattributions** and
+- **It is not 100% accurate.** On the 80-question DEV set, **8 misattributions** and
   **4 over-refusals** were measured (tables above). The measurement is the verdict of a
   **single judge family**.
-- ⛔ **Currency lives in the library, not in the weights.** Legislation changes; weights do not.
+- **Currency lives in the library, not in the weights.** Legislation changes; weights do not.
   Keeping statutes current is the retrieval layer's job. This is a design decision, not a gap.
-- ⛔ **Scope: current Republic-of-Türkiye legislation only.** Ottoman-era material, case-law
+- **Scope: current Republic-of-Türkiye legislation only.** Ottoman-era material, case-law
   interpretation and foreign law are out of scope.
-- ⛔ **No parity claim.** The comparison above is on **DEV**, with a single judge family, and
+- **No parity claim.** The comparison above is on **DEV**, with a single judge family, and
   cost is not normalized.
 
 ---
@@ -183,7 +198,7 @@ training for abstention collapses grounding. **Neither branch is usable alone**;
 restores both. Every branch is trained **independently from the raw base** — the task-vector
 definition (`τ = θ_ft − θ_base`) requires it.
 
-⚠️ The ratios behind this section were measured in the **old (`v1`) unit** and are not comparable
+The ratios behind this section were measured in the **old (`v1`) unit** and are not comparable
 to the headline numbers above; per-branch figures and manifests live in
 [`docs/record/kollar.md`](docs/record/kollar.md).
 
@@ -198,7 +213,7 @@ The order is **binding** (human decision, 2026-09-07) —
 | :--- | :--- | :--- |
 | **`HP`** — judge panel | a second and third judge family, κ, self-preference measurement | no number stays the verdict of one family |
 | **Hat A** — packaging (runs parallel to `HP`) | the `hakhukuk/` package: prompt artifact · types · service · CLI · TUI · index distribution | **an installable product** |
-| **Phase C** — documentation layer | ✅ [`PRODUCT.md`](PRODUCT.md) · [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md) · [`docs/MIMARI.md`](docs/MIMARI.md) — written 2026-09-07 | **`v0.2` RELEASE** |
+| **Phase C** — documentation layer | [`PRODUCT.md`](PRODUCT.md) · [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md) · [`docs/MIMARI.md`](docs/MIMARI.md) — written 2026-09-07 | **`v0.2` RELEASE** |
 | **Hat B** — model | B1 (misattribution) · `τ_a` amplitude · gate run + frozen-TEST acceptance test | **the `v1.0` gate** |
 
 `v2` = the application/API layer on top of this same model. arxiv is a **by-product**, not the goal.
@@ -209,7 +224,7 @@ The order is **binding** (human decision, 2026-09-07) —
 
 | location | what |
 | :--- | :--- |
-| `hakhukuk/` | ⛔ **does not exist yet** — the product package; Hat A will write it |
+| `hakhukuk/` | **does not exist yet** — the product package; Hat A will write it |
 | [`scripts/`](scripts/) | the **measuring instrument** (deliberately separate from the product). Five subfolders: [`egitim/`](scripts/egitim/) · [`olcum_uretim/`](scripts/olcum_uretim/) · [`puanlama/`](scripts/puanlama/) · [`erisim_korpus/`](scripts/erisim_korpus/) · [`veri_hazirlik/`](scripts/veri_hazirlik/) |
 | [`docs/record/research_log/`](docs/record/research_log/) | the **research record** — what happened, chronologically, with every number; latest entry **#62** |
 | [`docs/adr/`](docs/adr/) | the **decision ledger** — 46 numbered files, numbering runs to **0073** (`0001-0026` live in one file: [`gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md); **0059 is reserved**) |
@@ -244,7 +259,7 @@ are pinned in the run manifest (`KUNYE.json`).
   Apache-2.0 Hugging Face datasets · synthetic pairs generated **from** real statute text and
   verified. Data plan: [`docs/VERI_PLANI.md`](docs/VERI_PLANI.md) · training recipe:
   [`docs/FINE_TUNING.md`](docs/FINE_TUNING.md).
-- ⛔ **No commercial legal database was used at any point** (Lexpera, Kazancı, etc.) — copyright
+- **No commercial legal database was used at any point** (Lexpera, Kazancı, etc.) — copyright
   poison. This was a rule from day one, not a later cleanup.
 - PII is masked in training data.
 - **License: Apache-2.0** ([`LICENSE`](LICENSE)). The base model `Qwen/Qwen3.5-4B` is

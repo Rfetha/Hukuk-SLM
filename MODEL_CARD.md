@@ -3,8 +3,12 @@
 > Türkçe mevzuat için, tüketici sınıfı bir dizüstü GPU'sunda çalışan **4B**'lik bir hukuk
 > asistanı. İki LoRA kolu ham base'den **bağımsız** eğitildi ve **görev vektörü** olarak
 > **ham TIES** ile birleştirildi.
+>
+> **Ağırlıklar yayımlandı (2026-09-09):** [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) ·
+> `HakHukuk-4B-v0.3-Q4_K_M.gguf` · 2.783.446.720 bayt ·
+> `sha256 755e15e9…86e7bffc`. Örnek çıktılar aynı depoda `ORNEK_CEVAPLAR.md`.
 
-> ## ⚠️ BU HUKUKİ TAVSİYE DEĞİLDİR
+> ## BU HUKUKİ TAVSİYE DEĞİLDİR
 >
 > HakHukuk, hukuk metnini **anlaşılır kılmak** için yapılmış bir araştırma artefaktıdır.
 > Avukat **değildir**, çıktısı hukuki tavsiye **değildir**. Gerçek bir hukuki mesele
@@ -15,7 +19,7 @@
 > numarasını [mevzuat.gov.tr](https://www.mevzuat.gov.tr) üzerinden **doğrulanması gereken
 > bir iddia** olarak görün.
 >
-> ⚠️ **Bu ibarenin NİHAİ metni henüz kararlaştırılmadı.** Avukatlık Kanunu ve hukuki
+> **Bu ibarenin NİHAİ metni henüz kararlaştırılmadı.** Avukatlık Kanunu ve hukuki
 > sorumluluk sınırı repoda **hiç değerlendirilmedi** ve **hukukçu görüşü gerektiriyor** —
 > açık karar **S10**
 > ([plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) §S10, Görev 10/11'i bloke ediyor).
@@ -51,7 +55,7 @@ adaptörleri merge edilmiş **TEK** GGUF, adı **model + boyut + sürüm + kuant
 HakHukuk-4B-v1.0-Q4_K_M.gguf
 ```
 
-> 🚨 **Bu ad HENÜZ KULLANILMIYOR.** Bugünkü artefakt `v0.1`'dir; `v1.0` **verilmedi**.
+> **Bu ad HENÜZ KULLANILMIYOR.** Bugünkü artefakt `v0.1`'dir; `v1.0` **verilmedi**.
 > ADR-0071 adı *kararlaştırır*, sürümü *vermez* — `v1.0` adı ADR-0064'ün kapısı **donmuş TEST
 > kabul testinde** koşulmadan kullanılmaz ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md) ·
 > [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) *"Açık kalan"*). Bkz. §5.
@@ -80,10 +84,10 @@ ham base ──┬── LoRA SFT   (grounding)   → τ_g
 | çatışan parametre oranı | 0,022541 | [`KUNYE_tgta_v1.json`](outputs/eval/cp3d-merge/KUNYE_tgta_v1.json) |
 | sıfır kalan oran | 0,645798 | [`KUNYE_tgta_v1.json`](outputs/eval/cp3d-merge/KUNYE_tgta_v1.json) |
 
-⚠️ **`τ_g` için iki norm değeri de DOĞRUDUR, biri diğerinin düzeltmesi değildir.** İlki merge
+**`τ_g` için iki norm değeri de DOĞRUDUR, biri diğerinin düzeltmesi değildir.** İlki merge
 anında bf16'da materyalize edilen ΔW'den, ikincisi bağımsız artefakttan ölçüldü; %0,13'lük fark
 bf16'dan gelir ve kayda **bağımsız çapraz kontrol** olarak geçti
-([#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md)). ⛔ İkisinden biri "düzeltilmez".
+([#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md)). İkisinden biri "düzeltilmez".
 
 ### Neden iki kol BAĞIMSIZ eğitildi — geçerlilik şartı, üslup tercihi değil
 
@@ -106,16 +110,16 @@ Norm dengeleme **KAPALI**'dır (`norm_dengeleme: false`,
 
 | varyant | M1 kütle | M2b Rej | hüküm | kaynak |
 | :--- | ---: | ---: | :--- | :--- |
-| **ham TIES** (`tgta_v1`) | **%71,6** | **0,766** | 🟢 ana sonuç | [`kollar.md`](docs/record/kollar.md) |
+| **ham TIES** (`tgta_v1`) | **%71,6** | **0,766** | ana sonuç | [`kollar.md`](docs/record/kollar.md) |
 | norm-dengeli `min` (`tg_ta_min`) | %53,4 | 0,987 | ablasyon — grounding ezildi | [`kollar.md`](docs/record/kollar.md) |
-| norm-dengeli `ortalama` (`tg_ta_nb`) | — | — | 🛑 dejenere, koşu geçersiz | [`kollar.md`](docs/record/kollar.md) |
+| norm-dengeli `ortalama` (`tg_ta_nb`) | — | — | dejenere, koşu geçersiz | [`kollar.md`](docs/record/kollar.md) |
 
 Ham TIES `τ_a`'yı **silmedi**: `τ_g`'nin M2b çöküşünün **%57,1**'ini onardı
 (0,506 → 0,766, sıçrama **+0,26**); dengeleme ise `τ_g`'yi ezdi (%71,4 → %53,4).
 *(merge M2b: [`abst_m2b_tg_ta_ham_th_summary.json`](outputs/eval/cp3-supurme-ham/abst_m2b_tg_ta_ham_th_summary.json)
 `rejection_rate` · `τ_g` M2b ve onarım oranı: [`kollar.md`](docs/record/kollar.md) ᴷ³ bölümü ·
 yeniden puanlama: [#57](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md))*
-⚠️ **Bu satırdaki sayılar `v1` birimindedir** (harness **KAPALI**, v1 soru seti, 1024 bütçe) ve
+**Bu satırdaki sayılar `v1` birimindedir** (harness **KAPALI**, v1 soru seti, 1024 bütçe) ve
 §3'ün manşet sayılarıyla **KIYASLANAMAZ** — §7.1'e bakın.
 
 ---
@@ -144,7 +148,7 @@ Sınavın eşit olduğu **varsayılmadı, ölçüldü** — kanıt §4'te.
 
 - **ᵃ** Rakip sütunlarında **bağlayıcı GÖZ-katı** okuması yazılıdır — üç okumanın **en
   muhafazakârı**, yani rakip lehine olanı. Üçü birden aşağıdaki küçük tabloda.
-- **ᵇ** 🚨 **"ölçülmedi" değil, ÖLÇÜLEMEDİ — ve sebebi bir bulgudur.** Base bu sınava
+- **ᵇ** **"ölçülmedi" değil, ÖLÇÜLEMEDİ — ve sebebi bir bulgudur.** Base bu sınava
   **sokuldu ve geçerlilik kapısından kaldı**: kesik **16/80 = %20** ↔ eşik %5
   ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) ⇒ **hakem çağrılmadı**,
   hiçbir hüküm-ekseni sayısı üretilmedi
@@ -152,24 +156,24 @@ Sınavın eşit olduğu **varsayılmadı, ölçüldü** — kanıt §4'te.
   16 kesiğin **15'i gerçek kesilme, 1'i döngü** ⇒ [ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md)'ün
   `DRY` kaldıracı burada **işe yaramaz**; sebep şu: base **uzun, kaynak alıntılayan** cevaplar
   yazıyor ve **1536'ya sığmıyor**.
-  ⭐ Karşılaştırma bir bulgudur: aynı base **kör modda** yalnız **2/80** kesik veriyor
+  Karşılaştırma bir bulgudur: aynı base **kör modda** yalnız **2/80** kesik veriyor
   ([`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json)) ⇒ şişiren şey **kaynakların
   kendisi**. Bu, [#42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)'nin
   *"ince ayar muhakemeyi stabilize etti"* bulgusunun **harness AÇIKKEN** ölçülmüş hâlidir.
-  🔄 **Yer tutucu:** base şu anda Modal'da **daha büyük bir bütçeyle** yeniden koşuluyor. Sonuç
-  gelince **ayrı bir satır** olarak, ⚠️ **"EŞİT SINAV DEĞİL — bütçe 2048 ↔ 1536"** damgasıyla
-  eklenecek. ⛔ **O satırın sayısı bugün YOKTUR ve buraya tahmin yazılmamıştır.**
+  **Yer tutucu:** base şu anda Modal'da **daha büyük bir bütçeyle** yeniden koşuluyor. Sonuç
+  gelince **ayrı bir satır** olarak, **"EŞİT SINAV DEĞİL — bütçe 2048 ↔ 1536"** damgasıyla
+  eklenecek. **O satırın sayısı bugün YOKTUR ve buraya tahmin yazılmamıştır.**
 - **ᶜ** Tanım dört öznede de **aynı**: *altın madde bağlama girdi, model yine de sustu*
   (`erisim_davranis_caprazi.altin_geldi_cekindi`). Bunlar **ALET** sayılarıdır.
-  ⚠️ Gözle okuma bizim kolumuzda **farkı sıfır** buldu (alet 5 çekinme dedi, 1'i *altın gelmedi*
+  Gözle okuma bizim kolumuzda **farkı sıfır** buldu (alet 5 çekinme dedi, 1'i *altın gelmedi*
   olduğu için doğru davranıştı ⇒ **4**), rakip kollarda ise dedektörün **fazla red saydığını**
   buldu — kalibrasyon §4'te. Gözle düzeltilmiş aşırı-red: 3.5 Flash **7/80**
   ([`GOZLE_ISABETSIZLIK_3_5_FLASH.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md) §2).
-- **ᵈ** 🚨 **BU SATIRDA "BİZ İYİYİZ" CÜMLESİ KURULMAZ.** Dört öznenin de **80/80'i**, f02'nin §2
+- **ᵈ** **BU SATIRDA "BİZ İYİYİZ" CÜMLESİ KURULMAZ.** Dört öznenin de **80/80'i**, f02'nin §2
   tanımıyla **birebir aynı** ölçütle, **gözle tam tarandı** (örneklem değil). Sonuç: **ikisiyle
   berabere, biriyle geride** — `3.5 Flash-Lite` **7/80** ile bizden **iyi** ve bu **olduğu gibi**
   raporlanır.
-  ⚠️ **Ve taban aynı değil.** Çekinen kalem sınanamaz; her kolun **cevapladığı** kalem sayısı farklı:
+  **Ve taban aynı değil.** Çekinen kalem sınanamaz; her kolun **cevapladığı** kalem sayısı farklı:
 
   | kol | isabetsizlik | çekinme (gözle) | **cevaplanan tabanda** |
   | :--- | ---: | ---: | ---: |
@@ -179,24 +183,24 @@ Sınavın eşit olduğu **varsayılmadı, ölçüldü** — kanıt §4'te.
   | 3.5 Flash | 8/80 | 9/80 | 8/71 = **%11,3** |
 
   *(%10,7 ve %11,3 dosyada yazılı; diğer ikisi aynı dosyaların çekinme sayılarından **türetildi**.)*
-  ⭐ **Ek bulgu, kendi aleyhimize:** f02'de **bizim** isabetsiz olduğumuz id **32 · 41** rakipte
+  **Ek bulgu, kendi aleyhimize:** f02'de **bizim** isabetsiz olduğumuz id **32 · 41** rakipte
   **isabetli**; ve **27 · 42** — öz-denetimde *"soru yazımım komşu maddeye kaydırdı"* dediğimiz
   iki kalem (§7.7) — rakip o tuzağa **düşmemiş**. ⇒ Kusurun kaynağı soru değil, **model** olabilir.
-- **ᵉ** ⛔ **"M5'te rakipleri yendik" CÜMLESİ KURULMAZ** — sebebi §6'da, ve iki yüzü birden orada.
+- **ᵉ** **"M5'te rakipleri yendik" CÜMLESİ KURULMAZ** — sebebi §6'da, ve iki yüzü birden orada.
   Satır **ALET** okumasıdır (dört öznede kıyaslanabilir tek okuma). Bizim iki kolumuzun **GÖZ**
   okuması da var: biz **0,4057** ↔ base **0,4739**; hüküm **iki okumada da aynı**.
 - **ᵍ** **Ölçüldü, tahmin edilmedi** — ölçüm bedeli $0,0487
   ([`MALIYET.json`](outputs/eval/f09-maliyet/MALIYET.json), fiyatlar OpenRouter `/api/v1/models`,
   2026-09-07). Bizim iki kolumuz **yerelde** koştu (`llama-server`, RTX 5070) ⇒ çıkarım bedeli **$0**.
-  ⭐ **Eşit sınavın maliyet tarafındaki kanıtı:** girdi token'ı üç öznede de **birebir aynı —
+  **Eşit sınavın maliyet tarafındaki kanıtı:** girdi token'ı üç öznede de **birebir aynı —
   193.042** (ort. 2.413/kalem), çünkü istem **80/80 bayt-bayt özdeş**. Fark tümüyle **çıktı
   token'ı ve birim fiyattan** geliyor.
-  ⭐ **Kapı çıpası `3.5 Flash`, `3.5 Flash-Lite`'ın 8,6 katı** ($0,009914 ↔ $0,001152).
+  **Kapı çıpası `3.5 Flash`, `3.5 Flash-Lite`'ın 8,6 katı** ($0,009914 ↔ $0,001152).
   **Yöntem şerhi:** üç Gemini **aynı tokenizer**'ı kullanıyor (3 kalemde sınandı, `prompt_tokens`
   birebir: 2842 · 2681 · 2343) ⇒ sayım yalnız **en ucuz** modelde yapıldı, fiyatlar ayrı uygulandı.
-  ⚠️ Hakem bedeli bu satıra **dâhil değil**, ayrıca kayıtlı: biz $0,0417 · 3.1 FL $0,0452 ·
+  Hakem bedeli bu satıra **dâhil değil**, ayrıca kayıtlı: biz $0,0417 · 3.1 FL $0,0452 ·
   3.5 FL $0,0410 · 3.5 Flash $0,0434 *(`gnd_*_summary.json`)*.
-  ⛔ **Maliyet-normalize parite iddiası yine de KURULMAZ** — ADR-0017'nin istediği ölçüm bir
+  **Maliyet-normalize parite iddiası yine de KURULMAZ** — ADR-0017'nin istediği ölçüm bir
   Pareto eğrisidir, tek satır değil.
 
 ### Rakip sütunlarının üç okuması
@@ -211,7 +215,7 @@ Ana tabloda **yalnız bağlayıcı olan** (GÖZ-katı) var; üçü birden burada
 | `gemini-3.5-flash-lite` | 0,7174 | 0,7403 | **0,7622** |
 | `gemini-3.5-flash` | 0,6925 | 0,7050 | 0,7425 |
 
-> ⭐ **Neden bağlayıcı olan EN MUHAFAZAKÂR okuma** (insan kararı,
+> **Neden bağlayıcı olan EN MUHAFAZAKÂR okuma** (insan kararı,
 > [ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md)): GÖZ-katı'da rakiplerin
 > *çekinceli cevapları* da **cevap** sayılır ⇒ onların kütlesi **en yüksek**, bizim farkımız
 > **en dar** çıkar. Seçim gerekçesi tam olarak budur — *"kendi lehine okudun"* denemesin diye.
@@ -222,14 +226,14 @@ Ana tabloda **yalnız bağlayıcı olan** (GÖZ-katı) var; üçü birden burada
 
 ## 3.1 · Bu satırlar ne ölçüyor
 
-> 🚨 **BUNLAR STANDART BENCHMARK DEĞİLDİR.** Yukarıdaki her sayı **kendi CANON setimizden**
+> **BUNLAR STANDART BENCHMARK DEĞİLDİR.** Yukarıdaki her sayı **kendi CANON setimizden**
 > gelir: **6 mod**, `n=80` **DEV** kalemi, Türkçe, güncel TC mevzuatı.
 > **MMLU · LegalBench · BigLaw-Bench gibi hiçbir dış benchmark koşulmadı** ve bu bir eksiklik
 > değil, **kayıtlı bir karardır** ([ADR-0016](docs/adr/gemma4-12b-dersler.md#adr-0016)):
 > BigLaw/LegalBench **İngilizce/ABD common-law** setleridir ve *"yanlış sınavda düşük not model
 > kötü demek değildir"* — TR medeni-hukuk modelinde **yorumlanamazlar**, o yüzden yalnız
 > Related Work atfı olarak kalırlar. `alibayram/turkish_mmlu` ise **lisans zehri** (CC BY-NC +
-> telif beyanı) diye dışarıda. ⭐ ADR-0016'nın kendi tespiti: *"üretken TR hukuki cevabın
+> telif beyanı) diye dışarıda. ADR-0016'nın kendi tespiti: *"üretken TR hukuki cevabın
 > grounding/abstention/citation kalitesini ölçen tanınmış benchmark **YOK**"* — bu boşluk
 > projenin katkı alanıdır, ama aynı zamanda **dış karşılaştırılabilirliğin neden olmadığıdır**
 > (§11).
@@ -259,7 +263,7 @@ DEV/TEST ayrımı eklendi) — bu kartın sayıları **`h1`**'den (M1'in harness
 | **aşırı-red** | Altın madde **bağlamdayken** yine de sustuğu kalem sayısı | Erişimin **çözemeyeceği**, modelin kendi kusuru. Vatandaş için: *"kaynak elindeydi ve yine de yardım etmedi"* |
 | **isabetsizlik** | **Yanlış maddeye** dayanarak cevaplaması (atıf doğrulanır, cevap yine de soruya oturmaz) | Vatandaş için **en tehlikeli** kusur sınıfı — doğrulayıcı bunu yakalayamaz |
 | **uydurulmuş madde** | Var olmayan kanun/madde numarası üretmesi | **Deterministik** olarak doğrulanır (hakem gerekmez); sınıfın **boş** çıkması bir bulgudur (§7.5) |
-| **M5 ezber kütlesi** | Kaynak **verilmeden** ne kadar konuşup ne kadar tutturduğu | ⛔ **ANTİ-HEDEF** — yükselmesi *"bilgi ağırlığa kaçtı"* demektir; ilke: **güncellik kütüphanede, ağırlıkta değil** |
+| **M5 ezber kütlesi** | Kaynak **verilmeden** ne kadar konuşup ne kadar tutturduğu | **ANTİ-HEDEF** — yükselmesi *"bilgi ağırlığa kaçtı"* demektir; ilke: **güncellik kütüphanede, ağırlıkta değil** |
 | **$ / cevap** · **token / cevap** | Çıkarım bedeli | Ürünün **erişilebilirlik** ekseni: dizüstünde çalışmak bir tasarım şartıdır |
 
 ---
@@ -289,7 +293,7 @@ eşleşmiş eksenlerde** hüküm verir; eşleşmeyen eksen **TAVAN/tanımsız** 
 | taşıyıcı (bizim kol) | `llama-server`, Q4_K_M, ctx 8192, KV `q8_0/q8_0`, **yerel** | [`KUNYE.json`](outputs/eval/f02-biz-onsozsuz/KUNYE.json) |
 | hakem | `openai/gpt-4o-mini` · OpenRouter, `OpenAI` pinli · **runs=1** | [`gnd_…_summary.json`](outputs/eval/f02-biz-onsozsuz/gnd_h1_tgta_v1_f02_nb_summary.json) |
 
-### ⚠️ Zorunlu ön adım: red dedektörü rakip ailelerde kalibre edildi
+### Zorunlu ön adım: red dedektörü rakip ailelerde kalibre edildi
 
 `CLAUDE.md` kuralı gereği **28 rakip çekinme kalemi tek tek gözle okundu**. Dedektörün Gemini
 şablonunda **sistematik olarak fazla red saydığı** bulundu:
@@ -309,8 +313,8 @@ sütunu bunu düzeltir.
 
 | kapı | değer | eşik | hüküm |
 | :--- | ---: | ---: | :--- |
-| kesiklik ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) | **%5,0** | ≤ %5 | ✅ ⚠️ **TAM EŞİKTE, payı yok** |
-| `recall@10` sapması | 0,9500 | 0,9500 | ✅ birebir — harness oynamamış |
+| kesiklik ([ADR-0040](docs/adr/0040-dusunce-modu-olculecek-on-kayitli-kural.md)) | **%5,0** | ≤ %5 | **TAM EŞİKTE, payı yok** |
+| `recall@10` sapması | 0,9500 | 0,9500 | birebir — harness oynamamış |
 | zorla kapatma | 3/80 | — | (önceki koşuda 5/80) |
 | doğrulanan atıf / atıfsız geçen | 114 / **7 kalem** | — | atıfsızlık ayrı bir borç (§7.6) |
 | `recall@1 / @3 / @5` | 0,5250 / 0,7625 / 0,8250 | — | tavan kullanımı **0,8433** |
@@ -319,7 +323,7 @@ sütunu bunu düzeltir.
 [`harness_tablo.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) ·
 [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md))*
 
-### ⛔ Bu skor kartından KURULMAYAN cümleler
+### Bu skor kartından KURULMAYAN cümleler
 
 1. **"TEST'te de geçeriz."** Ölçüm **DEV**'de; TEST'in erişim tavanı **≈%75**
    ([ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)) ve kabul testi **koşulmadı** (§5).
@@ -351,10 +355,10 @@ sütunu bunu düzeltir.
 
 | madde | hüküm | sayı | kaynak |
 | :--- | :--- | :--- | :--- |
-| **(1)** kütle | ✅ **GEÇTİ** (üç okumanın üçünde de) | GÖZ-katı: **0,8011 ↔ eşik 0,7225** → **+5,86 p** | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
-| **(2)** isabetsizlik | ✅ *(tanım gereği)* | çıpa yeni birimde **8/80**'e çivilendi | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) |
-| **(3)** M5 | ✅ **GEÇTİ** (iki okumada da) | ezber kütlesi **−6,82 p** (GÖZ) / **−7,98 p** (ALET) | [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) |
-| **(*)** gözle okuma | ✅ | üç sayım adımında da yapıldı; **ikisinde alet yanıldı** | ↑ |
+| **(1)** kütle | **GEÇTİ** (üç okumanın üçünde de) | GÖZ-katı: **0,8011 ↔ eşik 0,7225** → **+5,86 p** | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
+| **(2)** isabetsizlik | *(tanım gereği)* | çıpa yeni birimde **8/80**'e çivilendi | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) |
+| **(3)** M5 | **GEÇTİ** (iki okumada da) | ezber kütlesi **−6,82 p** (GÖZ) / **−7,98 p** (ALET) | [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) |
+| **(*)** gözle okuma | Evet | üç sayım adımında da yapıldı; **ikisinde alet yanıldı** | ↑ |
 
 **Madde (1) üç okumada da geçiyor** — hüküm okuma seçimine bağlı değil:
 
@@ -375,7 +379,7 @@ kalemin tamamı tarandı). Eşik **gevşetilmedi, birimi düzeltildi** — `7/80
 birimde değildir** ([ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) madde (2)).
 Madde bugün tanım gereği sağlanıyor; **bağlayıcı olduğu yer bir sonraki eğitim turudur (B1)**.
 
-### ✅ Kapı DEV'de geçildi · ⛔ donmuş TEST **KOŞTU 2026-09-09** — ama `v1.0` **VERİLMEDİ**
+### Kapı DEV'de geçildi · donmuş TEST **KOŞTU 2026-09-09** — ama `v1.0` **VERİLMEDİ**
 
 | set | `recall@10` | ⇒ **kütle tavanı** | kaynak |
 | :--- | ---: | ---: | :--- |
@@ -398,18 +402,18 @@ eksende birebir, **araçsız** (ADR-0076 m.4). Geçerlilik kapısı geçildi (ke
 | **ham kütle — MANŞET** *(ADR-0069 m.1)* | **0,5804** | 0,8011 |
 | tavan (`recall@10`) | 0,7500 | 0,9500 |
 | **tavan kullanımı** | **0,7739** | 0,8433 |
-| **uydurulmuş madde numarası** | **0/52** ✅ | 0/114 |
+| **uydurulmuş madde numarası** | **0/52** | 0/114 |
 | `wrong_ref_rate_micro` | 0,2424 | 0,0769 |
-| aşırı-red | 5/40 [0,055–0,261] | 4/80 [0,020–0,122] ⚠️ *aralıklar örtüşüyor* |
+| aşırı-red | 5/40 [0,055–0,261] | 4/80 [0,020–0,122] *aralıklar örtüşüyor* |
 
 **Düşüşün ayrıştırılması** — süslenmedi: toplam **−22,07 p**; tavan-eşdeğer beklenti 0,6324 ⇒
 tavanın açıkladığı **−16,87 p (%76)**, **AÇIKLAMADIĞI −5,20 p (%24)**. ADR-0069'un öngörüsü
 doğrulandı **ama tam değil**: model görülmemiş veride tavanını da daha kötü kullanıyor.
-⛔ *"Hepsi bileşim"* **denmiyor**.
+*"Hepsi bileşim"* **denmiyor**.
 
 **Gözle okuma kapısı:** 9/40 çekinmenin dokuzu da okundu, açık yanlış pozitif **0** ⇒ ALET = GÖZ.
 
-⛔ **`v1.0` VERİLMEDİ; ürün sürümü `v0.3`.** Gerekçe yeni bir eşik değil — donmuş TEST için
+**`v1.0` VERİLMEDİ; ürün sürümü `v0.3`.** Gerekçe yeni bir eşik değil — donmuş TEST için
 **ön-kayıtlı sayısal eşik yoktu** ve sayı görüldükten sonra eşik yazmak ADR-0050'nin yasağıdır.
 Hüküm [ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md)'ün **kendi metnine** dayanır:
 orada `v1.0` için eksik iki şey sayılı — **(a) kabul testi koşmadı → BUGÜN KAPANDI**,
@@ -448,7 +452,7 @@ Kaynak: [`f10-rakip-m5/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) (hakem
 | `gemini-3.5-flash-lite` | 1,0000 | 0,7013 | 0,7013 |
 | `gemini-3.5-flash` | 1,0000 | **0,8241** | **0,8241** |
 
-> # 🚨 *"M5'te rakipleri yendik"* CÜMLESİ KURULMAZ
+> # *"M5'te rakipleri yendik"* CÜMLESİ KURULMAZ
 >
 > **Sebep 1 — bu bir ANTİ-HEDEF ve çıpası BASE'dir, rakip değil.**
 > [ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md) §2 rakip çıpasını **değerlendirip
@@ -463,14 +467,14 @@ Kaynak: [`f10-rakip-m5/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) (hakem
 > kütüphaneye koymak) onu **ortadan kaldırmaz, sadece ürün için önemsizleştirir**.
 
 **DRY şerhi — ölçüldü ki gerekmiyor.** `DRY` rakiplere **uygulanamadı** (bir `llama.cpp`
-örnekleyicisidir). ⭐ Ama üç rakip kolda da **döngü YOK** ve kesiklik **%0 · %0 · %2,5** — hepsi
+örnekleyicisidir). Ama üç rakip kolda da **döngü YOK** ve kesiklik **%0 · %0 · %2,5** — hepsi
 eşiğin altında. Yani DRY'nin bizim kolumuzda kırdığı kusur rakiplerde **zaten gözlenmiyor**;
 bu, kıyası geçersiz kılmıyor ama **damgalanıyor**.
 
-> ⚠️ **M5 rejimi ayrıdır ve kendi birimindedir.** Koşu `--dry-multiplier 0.8 --dry-base 1.75
+> **M5 rejimi ayrıdır ve kendi birimindedir.** Koşu `--dry-multiplier 0.8 --dry-base 1.75
 > --dry-allowed-length 2` ile yapıldı ([ADR-0073](docs/adr/0073-m5-rejimine-dry-eklendi.md));
 > kapsam **yalnız M5** — DRY bir `llama.cpp` örnekleyicisidir, Gemini'ye uygulanamaz, dolayısıyla
-> rakip içeren hiçbir modda eşitlenemez. 🚨 **DRY'li M5, DRY'siz M5 ile aynı birimde DEĞİLDİR**
+> rakip içeren hiçbir modda eşitlenemez. **DRY'li M5, DRY'siz M5 ile aynı birimde DEĞİLDİR**
 > (DRY modeli doğru değil **akıcı** yapar; döngü kalemi ile akıcı-yanlış kalem hakemden aynı notu
 > almaz) ⇒ `cp09`'un M5 sayılarıyla kıyas **kurulmaz**. Hüküm yalnız yukarıdaki iki kol arasında
 > kurulur; iki kol da **aynı** GGUF kuantizasyonu, taşıyıcı, seed, bütçe, istem ve soru setiyle
@@ -481,7 +485,7 @@ bu, kıyası geçersiz kılmıyor ama **damgalanıyor**.
 
 ## 7 · Sınırlar
 
-### 7.1 🚨 Kazancın büyük kısmı MODELDEN DEĞİL, ÖLÇÜMDEN geldi
+### 7.1 Kazancın büyük kısmı MODELDEN DEĞİL, ÖLÇÜMDEN geldi
 
 Faz 0'da (2026-09-06/07) **beş alet kusuru** bulundu. **Eğitim koşusu: SIFIR.**
 `tgta_v1`'in ağırlıkları **hiç değişmedi** — bugünkü artefakt, turun başındaki artefaktın aynısı.
@@ -491,9 +495,9 @@ Kütle **%68,4 → %80,1**'e bu şekilde çıktı.
 | # | kusur | ne bulundu | etkisi | ADR |
 | :-- | :--- | :--- | :--- | :--- |
 | **1** | **Soru seti** | Kaçırılan 10 kalemin **5'inde soru altın maddeyi belirlemiyordu** — sorular altın maddenin *içinden* üretilmiş, bağlamları sökülmüştü. En ağırı: İİK 31/a **gemi sicili** hakkında, sorusu *"Mahkeme benim lehime karar verirse ne olur?"* | DEV 13 + TEST 2 soru yeniden yazıldı (insan onaylı). `recall@10` **0,8750 → 0,9375** | [0067](docs/adr/0067-soru-onarimi-dev-test-v2.md) |
-| **2** | **RRF füzyonu** | Kusur BM25'te değil **füzyondaydı**: dört kalemde bir kol altını **0. sırada** bulmuştu, `RRF_K=60` ikisini toplayınca ilk 10'un dışına itiyordu. *"İki kolda vasat olmak, bir kolda mükemmel olmayı yeniyor."* | `RRF_K` **60 → 10** (plato ortası). `recall@10` **0,9375 → 0,9500**. ⭐ Genelleme **donmuş TEST'te, seçimden SONRA** doğrulandı (+2,5 p, DEV'dekinin iki katı) | [0068](docs/adr/0068-rrf-k-60-to-10.md) |
+| **2** | **RRF füzyonu** | Kusur BM25'te değil **füzyondaydı**: dört kalemde bir kol altını **0. sırada** bulmuştu, `RRF_K=60` ikisini toplayınca ilk 10'un dışına itiyordu. *"İki kolda vasat olmak, bir kolda mükemmel olmayı yeniyor."* | `RRF_K` **60 → 10** (plato ortası). `recall@10` **0,9375 → 0,9500**. Genelleme **donmuş TEST'te, seçimden SONRA** doğrulandı (+2,5 p, DEV'dekinin iki katı) | [0068](docs/adr/0068-rrf-k-60-to-10.md) |
 | **3** | **DEV ↔ TEST bileşimi** | TEST'in `recall@10`'u ~15 p düşük; sebep zorluk değil **bileşim** — ayrım madde **uzunluğuna göre katmanlanmamış**, en zor dilimde DEV %12 ↔ TEST %50. Bileşim farkın **%81**'ini açıklıyor | Kabul testinin kütle tavanı **≈%75**, DEV'in %95'i değil. Raporlama biçimi kabul testi **koşmadan önce** ön-kayıtlandı | [0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) |
-| **4** | **Üretim bütçesi rakiple EŞİT DEĞİLDİ** | Rakip `1536` bütçeyle koşuyordu, **biz yaygın durumda `1024`** ile. Kod ADR-0043'e **sadıktı**; kusur protokolün kendisindeydi. Sapma **bizim aleyhimizeydi** (3.1 FL'nin 36/80 kalemi 1024'ü fiilen aşıyordu). 🚨 Bu, **yayımlanmış bir hükmü çürüttü** (`g2-fl-harness/OZET.md` §K2) | Tek formül: `max_tokens = (reasoning_budget or think_budget or 0) + max_new_tokens` = **1536**, iki tarafta da | [0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
+| **4** | **Üretim bütçesi rakiple EŞİT DEĞİLDİ** | Rakip `1536` bütçeyle koşuyordu, **biz yaygın durumda `1024`** ile. Kod ADR-0043'e **sadıktı**; kusur protokolün kendisindeydi. Sapma **bizim aleyhimizeydi** (3.1 FL'nin 36/80 kalemi 1024'ü fiilen aşıyordu). Bu, **yayımlanmış bir hükmü çürüttü** (`g2-fl-harness/OZET.md` §K2) | Tek formül: `max_tokens = (reasoning_budget or think_budget or 0) + max_new_tokens` = **1536**, iki tarafta da | [0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
 | **5** | **Kapı maddesinin ÇIPASI YOKTU** | Madde (3) *"M5 ≤ **bugünkü**"* diyordu, ama `tgta_v1`'in M5'i **hiçbir birimde hiç ölçülmemişti** — madde **kendi kendine referans veriyordu** ve hiçbir hüküm üretemezdi. Ön-kayıt kuralına uyduğu için denetimden geçmişti. Ayrıca ADR-0040'ın *"MAXTOK büyüt"* reçetesi yozlaşmış tekrarda **ölçülmüş biçimde etkisiz** çıktı | Çıpa ADR-0039 §2'den okundu (**base**), base aynı birimde yeniden koşuldu; M5 rejimine **DRY** eklendi. Yeni tuzak sınıfı **2.17** | [0073](docs/adr/0073-m5-rejimine-dry-eklendi.md) |
 
 > **Ders:** beş kusurun beşi de *"hata vermeden yanlış sayı üreten"* sınıftandı. **Sayısal
@@ -508,40 +512,40 @@ Kütle **%68,4 → %80,1**'e bu şekilde çıktı.
 | 2 | Gemini şablonu, F0.4 | 11 → **7** | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
 | 3 | kör mod, iki kol | 6 → **0** | [`GOZLE_OKUMA_CEKINME.md`](outputs/eval/f07-m5-anti-hedef/GOZLE_OKUMA_CEKINME.md) |
 
-🆕 Açık borç: `exact_reject`'in **kör mod dalı**. ⛔ Bugün düzeltilmedi — kapının sayısı
+Açık borç: `exact_reject`'in **kör mod dalı**. Bugün düzeltilmedi — kapının sayısı
 üretildikten sonra aleti değiştirmek [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)'nin
 yasakladığı hareketin sınırındadır. Doğru sıra: ölç → iki okumayı da raporla → **sonraki turda,
 koşudan ÖNCE** düzelt.
 
-### 7.2 🚨 Her sayı hâlâ TEK hakem ailesinin hükmü
+### 7.2 Her sayı hâlâ TEK hakem ailesinin hükmü
 
 Bu karttaki **bütün** hüküm-ekseni sayıları (`A1`, kütle, `Rej`) tek bir LLM hakem ailesinden
 gelir: `openai/gpt-4o-mini`, **runs=1**
 ([`gnd_…_summary.json`](outputs/eval/f02-biz-onsozsuz/gnd_h1_tgta_v1_f02_nb_summary.json)).
 
-- 🆕 **κ ÖLÇÜLDÜ 2026-09-07 ve EŞİĞİN ALTINDA ÇIKTI.** İkinci hakem ailesi
+- **κ ÖLÇÜLDÜ 2026-09-07 ve EŞİĞİN ALTINDA ÇIKTI.** İkinci hakem ailesi
   (`anthropic/claude-sonnet-5`) **aynı 80 cevabı** yeniden puanladı (üretim yeniden koşulmadı,
   ADR-0017): `tam_sadık` κ = **0,534** · `atıf_temiz` κ = **0,409** — aracın kendi *"makul"*
   eşiği **0,6**'nın altında. `faithfulness` Pearson r = 0,705.
-- 🚨 **Kayma TEK YÖNLÜ:** Anthropic **24/80** kalemde daha düşük, **8/80**'de daha yüksek not
+- **Kayma TEK YÖNLÜ:** Anthropic **24/80** kalemde daha düşük, **8/80**'de daha yüksek not
   verdi ⇒ rastgele gürültü değil, **sistematik katılık**. A1 farkı **11,33 puan** = gürültü
   tabanının (0,3) **38 katı**.
-- 🚨 **Manşet hakem seçimine duyarlı:** kütle **0,8011** (`gpt-4o-mini`) ↔ **0,6940**
+- **Manşet hakem seçimine duyarlı:** kütle **0,8011** (`gpt-4o-mini`) ↔ **0,6940**
   (`sonnet-5`). `coverage` kıpırdamadı (hakemden bağımsız); farkın tamamı `A1`'den.
-- ⛔ **Ama bu ikinci sayı YAYIMLANMIYOR ve kapıya girmiyor** — çünkü kapının eşiği çıpa rakip
+- **Ama bu ikinci sayı YAYIMLANMIYOR ve kapıya girmiyor** — çünkü kapının eşiği çıpa rakip
   `3.5 Flash`'ın kütlesinden türetildi ve **o da `gpt-4o-mini`'nin hükmüdür**. İki tarafı
   farklı hakemlerle kıyaslamak [ADR-0057](docs/adr/0057-harness-rekabet-kapisi-esit-sinav.md)'nin
   *eşit sınav* kuralının yasakladığı şeydir. Bağlayıcı hakem **`gpt-4o-mini` kaldı** — tercih
   değil, kuralın sonucu ([ADR-0074](docs/adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md)).
-- ⛔ **Panel İKİ aileli kaldı** ([ADR-0032](docs/adr/0032-hakem-paneli-uc-aile-ve-aile-dislama.md)
+- **Panel İKİ aileli kaldı** ([ADR-0032](docs/adr/0032-hakem-paneli-uc-aile-ve-aile-dislama.md)
   üç öngörüyordu) — sapmanın sebebi sayıyla: bakiye **$3,45**, rakip kolunun ikinci hakemle
   puanlanmasının tahmini gerçek faturası **$2,81**, ve donmuş TEST kabul koşusu da aynı
   bakiyeden ödenecekti. **İnsan kararı: harcanmadı.**
 - **Öz-tercih ÖLÇÜLMEDİ** — ve Google özne ↔ Google hakem hücresi **aile dışlaması gereği
   hiçbir bütçeyle ölçülemez**.
 - **İnsan-κ kapsam dışı** (DESCOPED).
-- ⚠️ Hakemin yeniden-koşum **gürültü tabanı ~0,3 `A1` puanı**; bundan küçük hiçbir fark
-  yorumlanmaz. ⛔ Bu taban **yalnız `A1` için** ölçüldü — **kütle** `= coverage × A1` ve
+- Hakemin yeniden-koşum **gürültü tabanı ~0,3 `A1` puanı**; bundan küçük hiçbir fark
+  yorumlanmaz. Bu taban **yalnız `A1` için** ölçüldü — **kütle** `= coverage × A1` ve
   `coverage`'ın varyansı o tabanda **yok** ([ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) §δ).
 
 ⇒ Bu sayılar **mutlak doğruluk değil, model-vs-model sıralaması** olarak okunmalıdır — ve
@@ -560,7 +564,7 @@ Tek boyut noktası (~4B) ve tek base kararının bedelleri; `CLAUDE.md` bunları
 | **b** | **Kapasite sorusu ÖLÇÜLEMEZ** | *"Beceri çatışması kapasite büyüdükçe küçülüyor mu?"* tek boyut noktasında **sorulamaz** bile. |
 | **c** | **[ADR-0018](docs/adr/gemma4-12b-dersler.md#adr-0018)'in EĞRİSİ yok** | Maliyet-başarım **eğrisi** yerine **tek işaretli nokta** raporlanıyor. |
 
-### 7.4 🚨 ARA KAPI DÜŞTÜ — iddia sürümü buna bağlı
+### 7.4 ARA KAPI DÜŞTÜ — iddia sürümü buna bağlı
 
 **2026-08-06:** ön-kayıtlı olan **formüldü** (`merge M2b ≥ 0,90 × base'in cevaba-kör M2b'si`),
 sayı değil. Tek onarılmış aletle yeniden türetildi:
@@ -569,9 +573,9 @@ sayı değil. Tek onarılmış aletle yeniden türetildi:
 | :--- | ---: | :--- |
 | eşik | **0,8649** | [ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) |
 | merge M2b | **0,766** | [`abst_m2b_tg_ta_ham_th_summary.json`](outputs/eval/cp3-supurme-ham/abst_m2b_tg_ta_ham_th_summary.json) |
-| **fark** | **−9,9 puan** ❌ | [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md) |
+| **fark** | **−9,9 puan** | [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md) |
 
-Paydalar eşit (77 ↔ 77); eski 0,887 eşiğini de geçemiyor. ⛔ [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)
+Paydalar eşit (77 ↔ 77); eski 0,887 eşiğini de geçemiyor. [ADR-0050](docs/adr/0050-verim-kapisi-tahmin-edici-duzeltmesi.md)
 gereği **alet** düzeltildi, **eşik oynatılmadı**.
 
 **Sonucu:** bu kapı CP4-CP5 taban harcamasını yetkilendiren kapıydı — **o yetki yok**.
@@ -585,23 +589,23 @@ Sürüm bu yüzden **ikiye ayrıldı** ([ADR-0065](docs/adr/0065-bolunmus-suruml
 İDDİA sürümü   ARA KAPI'ya bağlı kalır — CP4-CP5 yetkisi geri gelmeden ilerlemez
 ```
 
-⛔ **Düşmüş kapı düşmüş kalır.** Gevşetilmedi, yeniden tanımlanmadı.
+**Düşmüş kapı düşmüş kalır.** Gevşetilmedi, yeniden tanımlanmadı.
 
 ### 7.5 Açık borçlar
 
 | borç | bugünkü değer | not | kaynak |
 | :--- | :--- | :--- | :--- |
-| **isabetsizlik (B1)** — **birinci sıra eksen** | **8/80** | Model **yanlış maddeye** dayanıyor; atıf doğrulanıyor, kapı geçiriyor, cevap yine de soruya oturmuyor. ⚠️ **Otomatik vekil metrik YOK ve bu ölçüldü:** `faith<0,6` süzgeci 4, *"altın atıflarda yok"* süzgeci 3, **gözle tam tarama 8** buluyor. [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)'in kodu hiç açılmadı | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) §2 |
+| **isabetsizlik (B1)** — **birinci sıra eksen** | **8/80** | Model **yanlış maddeye** dayanıyor; atıf doğrulanıyor, kapı geçiriyor, cevap yine de soruya oturmuyor. **Otomatik vekil metrik YOK ve bu ölçüldü:** `faith<0,6` süzgeci 4, *"altın atıflarda yok"* süzgeci 3, **gözle tam tarama 8** buluyor. [ADR-0055](docs/adr/0055-isabet-denetimi-ekseni.md)'in kodu hiç açılmadı | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) §2 |
 | **uzun madde chunk'lama** | ölçülmedi | Erişim madde uzunluğunda **U biçimli** (Q4 dilimi `recall@10` **0,6667**). B9'dan ayrı bir borç: orada **bozuk** chunk, burada **doğru ama çok uzun** chunk ([ADR-0054](docs/adr/0054-harness-tasarim-kararlari-k2-k5.md)/K2'nin ilk ölçülen bedeli) | [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) · [ANALIZ](outputs/eval/f01c-dev-test-farki/ANALIZ.md) |
-| **DEV/TEST ayrımı katmanlanmamış** | — | Ayrım kanuna göre kusursuz katmanlı (2:1) ama **madde uzunluğuna göre değil**. ⛔ Donmuş TEST'i yeniden katmanlamak **reddedildi** — usulü kırar | [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) |
-| **M2b — en zayıf eksen; planlanan çözüm ÖLÇÜLEREK ÖLDÜ** | **0,766** | Yalnız distractor verildiğinde model yine de cevaplıyor. **Red kapısı** bu kusurun çözümü olarak kurulmuştu; 2026-08-05'te **eşleşmiş sınavda** koşuldu ve 🚨 **ekseni kötüleştirdi: 0,735 ↔ 0,766** (işaret ᴷ³ yeniden puanlamasından sonra da aynı). Mekanizması da **ölçülerek boş** çıktı: `KANUN_YOK 0` · `MADDE_YOK 0` — model etiketi bağlamdan **kopyalıyor**, dolayısıyla atıfları doğrulanıyor ve kapı onları geçiriyor. ⇒ Deterministik kod bu rejimde M2b'yi **kapatamaz**; borç **eğitime** taşındı | [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) · [`abst_h2b_…_summary.json`](outputs/eval/g2b-m2b-onsozlu/abst_h2b_tgta_v1_onsozlu_k4_summary.json) |
+| **DEV/TEST ayrımı katmanlanmamış** | — | Ayrım kanuna göre kusursuz katmanlı (2:1) ama **madde uzunluğuna göre değil**. Donmuş TEST'i yeniden katmanlamak **reddedildi** — usulü kırar | [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) |
+| **M2b — en zayıf eksen; planlanan çözüm ÖLÇÜLEREK ÖLDÜ** | **0,766** | Yalnız distractor verildiğinde model yine de cevaplıyor. **Red kapısı** bu kusurun çözümü olarak kurulmuştu; 2026-08-05'te **eşleşmiş sınavda** koşuldu ve **ekseni kötüleştirdi: 0,735 ↔ 0,766** (işaret ᴷ³ yeniden puanlamasından sonra da aynı). Mekanizması da **ölçülerek boş** çıktı: `KANUN_YOK 0` · `MADDE_YOK 0` — model etiketi bağlamdan **kopyalıyor**, dolayısıyla atıfları doğrulanıyor ve kapı onları geçiriyor. ⇒ Deterministik kod bu rejimde M2b'yi **kapatamaz**; borç **eğitime** taşındı | [#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md) · [`abst_h2b_…_summary.json`](outputs/eval/g2b-m2b-onsozlu/abst_h2b_tgta_v1_onsozlu_k4_summary.json) |
 | **aşırı-red küçüldü, ÇÖZÜLMEDİ** | 4/80 | B10 turu **eğitimsiz** kapandı; *"eğitim bunu ne kadar aşağı çekerdi"* **hiç ölçülmedi** | [ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) |
 | **`exact_reject` kör mod dalı** | — | §7.1'de damgalandı; sonraki turda **koşudan önce** düzeltilir | [`GOZLE_OKUMA_CEKINME.md`](outputs/eval/f07-m5-anti-hedef/GOZLE_OKUMA_CEKINME.md) |
 | **kuantizasyon eğrisi** | ölçülmedi | `Q5_K_M`/`Q8_0`'ın kütle kaybı **bilinmiyor**; [ADR-0031](docs/adr/0031-precision-inference-q4km-egitim-bf16-lora.md) hassasiyeti *seçti*, **kaybı ölçmedi**. Açık karar **S17** | [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) |
 | **ürün paketi (CLI/TUI)** | yok | Yayımlanan sayı bugün yalnız **eval koşucusuyla** yeniden üretilebilir; paketleme Hat A'nın işi (`v0.2`) | [plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) |
 | **bedesten canlı mevzuat API'si** | bağlanmadı | Sözleşme doğrulandı (4/4) ama **ürün henüz kullanmıyor** — borç **B6** | [`BEDESTEN_API.md`](docs/BEDESTEN_API.md) |
 
-> 🚨 **Harness'ın kendi gerekçelerinden İKİSİ de çürütüldü, ve bu kartın okunma biçimini
+> **Harness'ın kendi gerekçelerinden İKİSİ de çürütüldü, ve bu kartın okunma biçimini
 > değiştirir.** (1) *"Atıf doğrulayıcı isabetsizliği kapatır"* — **ölü**: uydurulmuş madde
 > numarası **0/114**, yani sınıf **boş**; doğrulayıcının kapattığı kusur zaten olmuyordu.
 > (2) *"Red kapısı M2b'yi kapatır"* — **sınandı ve kapı düştü** (yukarıdaki satır).
@@ -618,12 +622,12 @@ Sürüm bu yüzden **ikiye ayrıldı** ([ADR-0065](docs/adr/0065-bolunmus-suruml
 | 5 | **7/80 cevap hiç atıf taşımıyor** | denetlenebilirlik vaadinin doğrudan bedeli | [`harness_tablo.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) |
 | 6 | **`A1` TEK altın maddeye göre puanlanıyor** | başka **gerçek** bir maddeden doğru cevaplamak **sadakatsiz** sayılır ⇒ ON/OFF kıyasında **altın getirilen alt küme** satırı kullanılır | [`harness_tablo.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) `not` |
 
-### 7.7 ⚠️ Kendi aleyhimize iki kayıt
+### 7.7 Kendi aleyhimize iki kayıt
 
 1. **8 isabetsizliğin 2'si (id 27 · 42) BENİM yeniden yazdığım sorularda.** Durumu tarif
    ederken **komşu maddenin dilini** kullanmışım (KMK 25'in açılışı · TBK 214'ün ifadesi) —
    [ADR-0067](docs/adr/0067-soru-onarimi-dev-test-v2.md)'nin yanlılık koruması **ters yönde**
-   işledi. Sayıyı şişirmedi, **aleyhimize** çalıştı. ⛔ Sorular **düzeltilmedi**: geri almak,
+   işledi. Sayıyı şişirmedi, **aleyhimize** çalıştı. Sorular **düzeltilmedi**: geri almak,
    eval sorusunu sonucu gördükten sonra ayarlamak olurdu.
 2. **Bir erişim kaybı geri ALINMADI (id 79).** Eski soru öncülsüzdü ama içindeki *"eğitim"*
    sözcüğü maddeyle eşleşiyordu; yeni soru o sözcüksel çıpayı kaybetti ve kalem
@@ -640,7 +644,7 @@ Kör modda (kaynak verilmeden) `A1`: biz **0,4105** ↔ `3.5 Flash` **0,8241** �
 ([`f10/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) · [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json)).
 Gemini hattı Türk hukukunu **kaynaksızken bizden çok daha iyi biliyor**. Bu doğru.
 
-⚠️ **Bu karttaki bir önceki sürüm buradan şu sonucu çıkarıyordu:** *"retriever'ın ıskaladığı
+**Bu karttaki bir önceki sürüm buradan şu sonucu çıkarıyordu:** *"retriever'ın ıskaladığı
 yerde arkamızda parametrik emniyet ağı yok ⇒ erişim kalitesi bizde daha kritik."* Cümle
 **mantıklı görünüyordu; ölçüldü ve VERİ ONU DESTEKLEMEDİ.**
 
@@ -649,7 +653,7 @@ yerde arkamızda parametrik emniyet ağı yok ⇒ erişim kalitesi bizde daha kr
 
 | özne | kaçan 4 kalemde `A1` | altın **geldiğinde** `A1` |
 | :--- | ---: | ---: |
-| **biz** | **0,000** | **0,885** ⭐ |
+| **biz** | **0,000** | **0,885** |
 | 3.1 Flash-Lite | 0,125 | 0,756 |
 | 3.5 Flash-Lite | 0,196 | 0,836 |
 | 3.5 Flash | 0,167 | 0,861 |
@@ -660,7 +664,7 @@ bağlıyorlar; gözle okuma bunu tek tek gösteriyor: id 10 → altın 6284/10 y
 id 21 → altın TBK 99 yerine **VUK 215 + Euro Kanunu**
 ([`GOZLE_ISABETSIZLIK_3_5_FLASH.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md)).
 
-⭐ **Ve altın geldiğinde tablo tersine dönüyor: kaynağı en iyi kullanan BİZ'iz** (0,885 ↔ 0,861 ↔
+**Ve altın geldiğinde tablo tersine dönüyor: kaynağı en iyi kullanan BİZ'iz** (0,885 ↔ 0,861 ↔
 0,836 ↔ 0,756). Ürün rejimi tam olarak bu rejimdir.
 
 **Doğru sınır cümlesi şudur:** parametrik bilgi eksikliği **bir emniyet ağı kaybı değildir** —
@@ -669,14 +673,14 @@ sınır **dört özne için de aynıdır**. ⇒ Kaldıraç parametrik bilgi değ
 **getirilemediğinde susma** davranışıdır (bugün 1/4 susuyoruz; rakipler 1-2/4 — fark 4 kalemde,
 **gürültü içinde**).
 
-🚨 **Bu düzeltmenin kendisi kayda geçer:** makul görünen bir çıkarım, ölçülünce çürüdü. Bu kartta
+**Bu düzeltmenin kendisi kayda geçer:** makul görünen bir çıkarım, ölçülünce çürüdü. Bu kartta
 *"ölçülmemiş bir çıkarımı sınır olarak yazmak"* hatası **bir kez yapıldı ve düzeltildi**.
 
 ---
 
 ## 8 · Kullanım
 
-### 🆕 Ürün katmanı — `hakhukuk/` *(2026-09-07)*
+### Ürün katmanı — `hakhukuk/` *(2026-09-07)*
 
 Model artık **elle kurulan bir boru hattı değil**; retriever, istem ve atıf doğrulama tek bir
 arayüzün arkasında:
@@ -706,10 +710,10 @@ Dört şey **kullanıcı yüzünde** garanti edilir:
 | Kaynak bulunamazsa **model çağrılmaz** | `servis.answer()` — üründe M5 (kaynaksız ezber) koşulu **oluşmamalı** |
 | **Mülga madde gösterilmez** | `retriever.getir()` varsayılanı `Yururluk.YALNIZ_YURURLUKTE` — ölçüldü: sızıntı 2 → 0, `recall@10` değişmedi |
 
-⚠️ Sorumluluk ibaresi **koşulsuz** basılır (durum ne olursa olsun) ve metni tek kaynakta durur
-(`hakhukuk/cli.py::SORUMLULUK_IBARESI`). ⛔ **Nihai hukuki metin hâlâ açık — S10.**
+Sorumluluk ibaresi **koşulsuz** basılır (durum ne olursa olsun) ve metni tek kaynakta durur
+(`hakhukuk/cli.py::SORUMLULUK_IBARESI`). **Nihai hukuki metin hâlâ açık — S10.**
 
-### 🚨 Model, harness'ıyla birlikte gelir
+### Model, harness'ıyla birlikte gelir
 
 **Yayımlanan sayı retriever + indeks + istem olmadan YENİDEN ÜRETİLEMEZ.** `%80,1` bir
 *harness AÇIK* sayısıdır: bağlamı elle kurulmuş değil, **retriever** seçmiştir. Modeli
@@ -723,9 +727,9 @@ tek başına indirip aynı sayıyı beklemek **kategori hatasıdır**.
 | istem | **önsözsüz** | [ADR-0063](docs/adr/0063-yeterlilik-onsozu-kaldirildi.md) |
 | bütçe | 1536 (`think 1024 + cevap 512`) | [ADR-0070](docs/adr/0070-uretim-butcesi-esitlendi.md) |
 
-⭐ **Harness GPU'ya HİÇ girmez** — gömücü CPU'da, indeks CPU RAM/diskte. Dizüstüne sığmakla
+**Harness GPU'ya HİÇ girmez** — gömücü CPU'da, indeks CPU RAM/diskte. Dizüstüne sığmakla
 sığmamak arasındaki fark budur. *(Vektör veritabanı ölçülüp **reddedildi**: kaba kuvvet
-**8,2 ms/sorgu**, CPU, 50 sorgu ortalaması — ⚠️ **S2 ÖNCESİ** indekste ölçüldü, S2 indeksinde
+**8,2 ms/sorgu**, CPU, 50 sorgu ortalaması — **S2 ÖNCESİ** indekste ölçüldü, S2 indeksinde
 yeniden ölçülmedi: [#49](docs/record/research_log/2026-08-04-s3a-on-prob.md))*
 
 ### Donanım — ÖLÇÜLDÜ, hesaplanmadı
@@ -741,7 +745,7 @@ kendisinde** (`tgta_v1-q4_k_m.gguf`) ölçüldü:
 | 131.072 | 5,76 GiB | 6.796 MiB |
 
 ⇒ `CLAUDE.md`'nin **≤8 GB yumuşak kapısı 128K bağlamda bile geçiliyor.**
-⚠️ Çıktı dosyasında **GPU modeli kayıtlı değil** — yalnız pstate, saat, güç ve sıcaklık var.
+Çıktı dosyasında **GPU modeli kayıtlı değil** — yalnız pstate, saat, güç ve sıcaklık var.
 
 ### Ne için — ve ne için DEĞİL
 
@@ -754,7 +758,7 @@ Modele **bir soru** ve **kaynak hukuk metni** verilir; model ya
 model hukukta işe yaramazdan da kötüdür: kendinden emin **yanlış bir madde numarası**,
 *"bilmiyorum"*dan daha tehlikelidir.
 
-⚠️ **Sade dil bir EĞİTİM HEDEFİ DEĞİL, doğru cevabın sunum katmanıdır.** Sade/kısa cevaba
+**Sade dil bir EĞİTİM HEDEFİ DEĞİL, doğru cevabın sunum katmanıdır.** Sade/kısa cevaba
 doğru eğitmek denendi ve **isabeti düşürdü**; vatandaş-register turu base'i yakalarken çekinme
 çöktü ([ADR-0010](docs/adr/gemma4-12b-dersler.md#adr-0010), yürürlükte). Eğitim hedefi
 **doğruluk ve çekinme**; sadeleştirme **istem katmanında** yapılır.
@@ -767,10 +771,10 @@ doğru eğitmek denendi ve **isabeti düşürdü**; vatandaş-register turu base
 | :--- | :--- |
 | **Lisans** | **Apache-2.0** — ağırlık + kod + veri + araştırma kaydı, **tamamı açık** ([`LICENSE`](LICENSE) · [`NOTICE`](NOTICE)) |
 | **Base lisansı** | `Qwen/Qwen3.5-4B` · Apache-2.0 |
-| **Kapsam** | ⛔ **yalnız güncel Türkiye Cumhuriyeti mevzuatı** |
+| **Kapsam** | **yalnız güncel Türkiye Cumhuriyeti mevzuatı** |
 | **Yer gerçeği** | Mevzuat.gov.tr |
 | **İzinli kaynaklar** | Mevzuat.gov.tr · Resmî Gazete · Yargıtay açık portalı · açık Kaggle/HF setleri |
-| **⛔ YASAK** | **Lexpera · Kazancı — ASLA.** Telif zehri. |
+| **YASAK** | **Lexpera · Kazancı — ASLA.** Telif zehri. |
 | **PII** | eğitim verisinde maskelenir |
 
 **Veri sertliği, pahalı öğrenilmiş:** her veri seti kullanılmadan önce **EDA ile doğrulanır**.
@@ -784,15 +788,15 @@ karşılanır: gerçek madde metni → LLM çift üretir → **doğrulanır**
 
 ## 10 · Yeniden üretilebilirlik
 
-> 🆕 **Tek komut (2026-09-07):** `bash scripts/yeniden_uret.sh` — ön koşul denetimi → üretim →
+> **Tek komut (2026-09-07):** `bash scripts/yeniden_uret.sh` — ön koşul denetimi → üretim →
 > **iki geçerlilik kapısı** (kesiklik %5 · `recall@10` 0,9500) → puanlama → manşet tablo →
 > çıpadan sapma kontrolü. Belgesi: [`docs/YENIDEN_URETIM.md`](docs/YENIDEN_URETIM.md).
-> ⚠️ Bu tarihe kadar manşet **%80,1'i modeli indiren hiç kimse yeniden üretemiyordu**: istem
+> Bu tarihe kadar manşet **%80,1'i modeli indiren hiç kimse yeniden üretemiyordu**: istem
 > `gen_eval_grounded.py`'nin içindeydi (çözüldü, `hakhukuk/istem.py`), komut zinciri hiçbir
-> yerde tek parça yazılı değildi (çözüldü), indeks **git'te yok** (⛔ **hâlâ açık**).
+> yerde tek parça yazılı değildi (çözüldü), indeks **git'te yok** (**hâlâ açık**).
 
 Her şey bu repoda: kronolojik araştırma kaydı (**negatif sonuçlar ve geçersiz koşular dâhil**),
-**ADR defteri `0001`-`0074`** (⚠️ `0059` rezerve, henüz yazılmadı; `0001`-`0026` tek dosyada:
+**ADR defteri `0001`-`0074`** (`0059` rezerve, henüz yazılmadı; `0001`-`0026` tek dosyada:
 [`gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md)), seed ve hash taşıyan koşu künyeleri, ve değerlendirme koşucusu.
 
 ```
@@ -811,20 +815,20 @@ python scripts/merge_ties.py --base Qwen/Qwen3.5-4B \
        --no-norm-balance --out models/merged/tgta_v1     # ham TIES, ADR-0052
 ```
 
-⚠️ `models/merged/` ve `models/gguf/` **yeniden üretilebilir**; asıl artefakt **adaptördür**
+`models/merged/` ve `models/gguf/` **yeniden üretilebilir**; asıl artefakt **adaptördür**
 (`outputs/<kol>/`). Adaptörler git'te **değil** (114 MB > GitHub'ın 100 MB sınırı) ve
 **yedeklenmiyor** — bilinçli karar: veri + reçete + seed sabitken yeniden üretilebilirler.
 
 **Rejim değişmezleri — uyuşmazlık HATA VERMEZ, kıyası GEÇERSİZ kılar:**
 `seed 3407` · `max-chunk-chars 900` · `thinking on` · toplam bütçe **1536** · `n 80` ·
 veri `data/eval/dev/core_hard.jsonl` **v2** · indeks `mevzuat_bge_m3_s2` · `harness-k 10` ·
-`RRF_K 10` · **önsözsüz**. ⛔ **Donmuş TEST'e (`data/eval/canon/`) dokunulmaz.**
+`RRF_K 10` · **önsözsüz**. **Donmuş TEST'e (`data/eval/canon/`) dokunulmaz.**
 
 ---
 
 ## 11 · İleriye not: benchmark'larımızı geliştirmeli miyiz?
 
-> ⛔ **Bu bölüm bir SORU bölümüdür, cevap değil.** Hiçbiri burada karara bağlanmıyor; hepsi
+> **Bu bölüm bir SORU bölümüdür, cevap değil.** Hiçbiri burada karara bağlanmıyor; hepsi
 > **ölçülmüş** ya da **açıkça türetilmiş** açık kalemlerdir. Karar mercii insandır.
 
 **1 · Set küçük ve dar: `n=80`, tek dil, tek alan.**
@@ -837,7 +841,7 @@ Güven aralıkları buna göre geniştir. Bugünkü iki oranın **Wilson %95** a
 | aşırı-red 4/80 | 0,0500 | [0,0196 – 0,1216] ≈ [2/80 – 10/80] | 10,2 puan |
 
 ⇒ *"8/80 ↔ 6/80"* gibi farklar bu genişliğin **çok altındadır**. **Soru:** kaç kalem, hangi
-çeşitlilikte yeterlidir? ⚠️ İkili oranların çözünürlük sınırı zaten **açık karar S5**'tir
+çeşitlilikte yeterlidir? İkili oranların çözünürlük sınırı zaten **açık karar S5**'tir
 ([plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md)); aynı sınıfta ölçülmüş ikinci bir
 örnek: M2'nin kuantumu `1/66 = 1,52 puan`, yani `+0,000` ile `±1 kalem` **ayırt edilemiyor**
 ([#59](docs/record/research_log/2026-08-06-m2-paydasi-ve-karar-4.md) · [`kollar.md`](docs/record/kollar.md)).
@@ -854,7 +858,7 @@ Fark setin zorluğundan değil **bileşiminden**: ayrım kanuna göre kusursuz k
 ([ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md) ·
 [ANALIZ](outputs/eval/f01c-dev-test-farki/ANALIZ.md)). **Soru:** ayrım **uzunluğa göre de**
 katmanlanmalı mı — ve bu, donmuş TEST'i açmadan nasıl yapılır?
-(⛔ Yeniden katmanlama [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)'da
+(Yeniden katmanlama [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)'da
 *"donmuş TEST'i açar, usulü kırar"* diye **reddedilmişti** — soru bu redde rağmen açıktır.)
 
 **3 · Her sayı tek hakem ailesinin hükmü.**
@@ -879,19 +883,19 @@ tamamen yayımlandı ne de üçüncü taraf bir çıpa var. Dış benchmark'lara
 [ADR-0016](docs/adr/gemma4-12b-dersler.md#adr-0016)'nın **kayıtlı kararıdır** ve gerekçesi
 sağlamdır (yanlış sınav yorumlanamaz), ama bedeli de gerçektir: **doğrulanabilirlik**.
 **Seçeneklerden biri** — karar değil, seçenek — CANON'un **kamuya açık bir alt kümesini
-yayımlamak**. ⚠️ Bunun bedeli de ölçülü: donmuş TEST bir **kabul testidir** ve yayımlanması
+yayımlamak**. Bunun bedeli de ölçülü: donmuş TEST bir **kabul testidir** ve yayımlanması
 onu yakar; DEV ise **seçim yapılmış** settir. Hangi alt kümenin, hangi lisansla, hangi anda
 yayımlanacağı **açık**.
 
-**6 · 🚨 Bir ALTIN ETİKET şüphesi kayda geçti — id 46.**
+**6 · Bir ALTIN ETİKET şüphesi kayda geçti — id 46.**
 İki **bağımsız** gözle okuma, **birbirinden habersiz**, aynı kalemi işaretledi: KMK **14** lafzen
 *"Kat mülkiyetine geçişte ayrıca yönetim plânı istenmez"* diyor ⇒ soruyu, altın etiketlenen
 KMK **53**'ten (1965 öncesi geçiş hükmü) **daha iyi karşılıyor**
 ([`GOZLE_ISABETSIZLIK_3_1_FL.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_1_FL.md) §3 ·
 [`GOZLE_ISABETSIZLIK_3_5_FL.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FL.md) ·
 [`GOZLE_ISABETSIZLIK_3_5_FLASH.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md) §5).
-Üç kolda da **sınır durum** sayıldı ve **hiçbirinde sayıya katılmadı** ⇒ ⚠️ **üç isabetsizlik
-sayısı da ALT SINIRDIR.** ⛔ Etiket **bugün değiştirilmedi**: sonucu gördükten sonra yer-gerçeğini
+Üç kolda da **sınır durum** sayıldı ve **hiçbirinde sayıya katılmadı** ⇒ **üç isabetsizlik
+sayısı da ALT SINIRDIR.** Etiket **bugün değiştirilmedi**: sonucu gördükten sonra yer-gerçeğini
 oynatmak, [ADR-0067](docs/adr/0067-soru-onarimi-dev-test-v2.md)'nin yanlılık korumasının doğrudan
 ihlalidir. **Soru:** yer-gerçeği denetimi ayrı, **kör** ve **koşudan önce** yapılan bir adım
 olmalı mı?

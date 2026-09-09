@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-> 🚨 **2026-09-07 — the doc layer is HALF rebuilt. Read this box before trusting a pointer.**
+> **2026-09-07 — the doc layer is HALF rebuilt. Read this box before trusting a pointer.**
 >
 > Deleted 2026-09-06 (human decision, on a backup branch): `ROADMAP.md` · `TODO.md` ·
 > `TASARIM.md` · `docs/VISION.md` · `docs/PAPER_TARGET.md` · `docs/_arsiv/**`.
@@ -16,18 +16,18 @@
 >
 > | you want | read |
 > | :--- | :--- |
-> | **what to do next** | ⭐ [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md) — **the work order across all plans**; start here, it says which plan is current |
-> | the current plan itself | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 17 tasks, 89 boxes · ⛔ Görev 8 is HELD (corpus grows 8,4×) |
+> | **what to do next** | [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md) — **the work order across all plans**; start here, it says which plan is current |
+> | the current plan itself | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 17 tasks, 89 boxes · Görev 8 is HELD (corpus grows 8,4×) |
 > | why it is sequenced that way | [`docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) |
 > | what closed on 2026-09-06/07 | [`docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md`](docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md) — **48/48** |
-> | the rescued debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 — ⚠️ its *direction* sections are **superseded** by the plan above |
+> | the rescued debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 — its *direction* sections are **superseded** by the plan above |
 >
 > **Framing: open-source PRODUCT** — a legal adviser a Turkish citizen can actually ask.
 > `v1` = model layer · `v2` = app layer · arxiv is a **by-product**.
 >
-> ✅ **Pointer repair done 2026-09-07 (Görev 13 Adım 5).** `docs/_arsiv/README.md` is still gone;
+> **Pointer repair done 2026-09-07 (Görev 13 Adım 5).** `docs/_arsiv/README.md` is still gone;
 > the binding doc-type table is the one further down in this file.
-> ⛔ `docs/record/**` and `docs/adr/**` were deliberately NOT touched — they record *"on that day
+> `docs/record/**` and `docs/adr/**` were deliberately NOT touched — they record *"on that day
 > this document said this"*.
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -43,7 +43,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **HakHukuk** — an open-source Turkish legal assistant built on a small language
 model. Mission: make legal language legible to the citizen.
 
-**⚠️ FRAMING CHANGED 2026-08-03 — read this before anything else.**
+**FRAMING CHANGED 2026-08-03 — read this before anything else.**
 
 This was a **master's thesis** project (private repo, proprietary licence, claim-driven).
 It is now a **fully public open-source product**: Apache-2.0, weights + code + data +
@@ -59,11 +59,11 @@ Priorities live in [`ROADMAP.md`](ROADMAP.md), tied to measured gaps.
 
 | constraint the reframing removed | now |
 | :--- | :--- |
-| **ONE size point** (ADR-0028, ~4B) | ❌ **lifted** — 8B/12B are open, multiple sizes may ship |
-| **graph-RAG out of scope** (ADR-0019) | ❌ **lifted** — not forbidden, just *unplanned*; no line item in `ROADMAP.md` |
-| **Kapı 5 / CP4-CP5 baselines** | 🔽 **optional** — deferred, `docs/_arsiv/sprint2b.md` ⚰️ *(deleted 2026-09-06)* |
-| **frozen TEST seen once** | 🔁 repurposed as a **release acceptance test** |
-| *"never say frontier"* | ❌ moot |
+| **ONE size point** (ADR-0028, ~4B) | **lifted** — 8B/12B are open, multiple sizes may ship |
+| **graph-RAG out of scope** (ADR-0019) | **lifted** — not forbidden, just *unplanned*; no line item in `ROADMAP.md` |
+| **Kapı 5 / CP4-CP5 baselines** | **optional** — deferred, `docs/_arsiv/sprint2b.md` ⚰️ *(deleted 2026-09-06)* |
+| **frozen TEST seen once** | repurposed as a **release acceptance test** |
+| *"never say frontier"* | moot |
 
 **What it keeps — all of it.** Fixed seeds · logged runs · run manifests (`KUNYE.json`) ·
 pre-registered gates · same-day research log · an ADR per decision · the trap list.
@@ -77,7 +77,7 @@ stated justifications.
 
 **Artifact: `HakHukuk-4B-v0.1`** (internal id `tgta_v1`) — two LoRA branches trained
 independently from the raw base, merged as task vectors with **raw TIES**.
-Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: ⭐ [`docs/record/kollar.md`](docs/record/kollar.md).
+Card: [`MODEL_CARD.md`](MODEL_CARD.md) · registry: [`docs/record/kollar.md`](docs/record/kollar.md).
 
 ```
 product number — v2 unit, 2026-09-07 (harness ON, k=10, S2 corpus, NO preamble — ADR-0063)
@@ -87,13 +87,13 @@ product number — v2 unit, 2026-09-07 (harness ON, k=10, S2 corpus, NO preamble
              misattribution (by eye)        8/80      ← next first-rank axis (B1)
              fabricated article numbers     0/114     ↔ competitors 1 · 4 · 4
 
-🟢 v1.0 GATE CLOSED 2026-09-07 — all three clauses, with numbers (ADR-0064):
-   (1) mass ≥ 3.5 Flash − 2,0 p   0.8011 ↔ threshold 0.7225        ✅ +5.86 p
-   (2) misattribution no worse    anchor re-nailed at 8/80          ✅
-   (3) M5 must not rise           memorised mass −6.82 p vs BASE    ✅
+   v1.0 GATE CLOSED 2026-09-07 — all three clauses, with numbers (ADR-0064):
+   (1) mass ≥ 3.5 Flash − 2,0 p   0.8011 ↔ threshold 0.7225   PASSED  +5.86 p
+   (2) misattribution no worse    anchor re-nailed at 8/80      PASSED
+   (3) M5 must not rise           memorised mass −6.82 p vs BASE PASSED
    (*) eye-reading at every counting step — the tool was wrong TWICE
 
-⚠️ The gain came from the INSTRUMENT, not the model. Weights never changed. Five defects were
+   The gain came from the INSTRUMENT, not the model. Weights never changed. Five defects were
    found, each of the "produces a wrong number without erroring" class: question set (ADR-0067)
    · RRF fusion (0068) · DEV↔TEST composition (0069) · a production budget that was NOT equal
    to the competitor's (0070) · a gate clause with NO ANCHOR (0073, trap 2.17).
@@ -102,29 +102,29 @@ product number — v2 unit, 2026-09-07 (harness ON, k=10, S2 corpus, NO preamble
 ~~previous headline: mass 68.4% with the sufficiency preamble (ADR-0058)~~ — SUPERSEDED.
    The preamble was removed (ADR-0063): it was adopted for RAISING mass and was measured to
    LOWER it. Old unit = v1 question set + 1024 budget; NOT comparable, and no comparison is made.
-ceiling        (harness OFF, gold guaranteed)     71.6%  ⚠️ pre-Faz 0, old unit
+ceiling        (harness OFF, gold guaranteed)     71.6%     pre-Faz 0, old unit
 ```
 
-🚨 **Both ON figures were rescored on 2026-09-06 and two things flipped.** The abstention
+**Both ON figures were rescored on 2026-09-06 and two things flipped.** The abstention
 detector scanned the whole answer in one branch, so our template's discarded-sources rationale
 read as a refusal — a bug **specific to our own answer template**, which is why fixing it moved
 our numbers (62.8% → 68.4%) and left the competitor's untouched (measured, not assumed).
-⚠️ The ablation turned out to be the **higher** column, which **inverted ADR-0058's own
+The ablation turned out to be the **higher** column, which **inverted ADR-0058's own
 rationale** (the preamble was adopted for raising mass; it lowered it by 4.6 points).
-✅ **S14 is CLOSED 2026-09-06 → the preamble was REMOVED** ([ADR-0063](docs/adr/0063-yeterlilik-onsozu-kaldirildi.md)):
+**S14 is CLOSED 2026-09-06 → the preamble was REMOVED** ([ADR-0063](docs/adr/0063-yeterlilik-onsozu-kaldirildi.md)):
 the product's default regime is now **preamble-free** and the preamble run became the ablation.
 Binding metric is **mass** — an unanswered question is worthless to a citizen; misattribution
 is paid on **its own axis** (B1), not with a prompt patch.
 [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
 [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
-⚠️ Still `v0.1`, not `v1.0` — **and the reason changed on 2026-09-07.** The gate's three
+Still `v0.1`, not `v1.0` — **and the reason changed on 2026-09-07.** The gate's three
 clauses now **pass on DEV** (above), but two things are still missing: the **acceptance test on
 the frozen TEST** has not run (its retrieval ceiling is ≈75%, not DEV's 95% — [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)),
 and **every number is still one judge family's verdict** (`gpt-4o-mini`, no κ, self-preference
 unmeasured — ADR-0064 *"Ne KURULMAZ"* clause 2). Product vs. claim versioning is split:
 [ADR-0065](docs/adr/0065-bolunmus-surumleme.md).
-⚠️ The OFF number is a **ceiling, not a rival** — the two settings do not measure the same
+The OFF number is a **ceiling, not a rival** — the two settings do not measure the same
 thing (OFF hands the model the gold article by construction).
 
 **Where the numbers actually live — do not re-derive them here:**
@@ -132,30 +132,30 @@ thing (OFF hands the model the gold article by construction).
 | you want | read |
 | :--- | :--- |
 | every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#63** |
-| what to work on next, tied to measured gaps | ⭐ [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
+| what to work on next, tied to measured gaps | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
 | the open debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
 | why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0073**, next is **0074** |
 | questions raised and not yet answered | [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
-- 🚨 **Both of the harness's stated justifications are refuted.** *"The citation verifier closes
+- **Both of the harness's stated justifications are refuted.** *"The citation verifier closes
   A1"* — dead: fabricated article numbers are **0/118**, the class was empty. *"The rejection gate
   closes M2b"* — tested 2026-08-05 and **the gate failed**: on a matched exam the harness-ON arm
   scored *below* the OFF anchor, and the gate cannot even fire in this regime
   ([#56](docs/record/research_log/2026-08-05-olcum-bosluklari.md)). What survived is *"without a
   retriever there is no product"* plus a set of measured mechanisms. M2b is now a **training** debt.
-- 🚨 **The ARA KAPI (mid-gate) verdict flipped on 2026-08-06 — it now FAILS.** The
+- **The ARA KAPI (mid-gate) verdict flipped on 2026-08-06 — it now FAILS.** The
   pre-registered thing was the *formula* (`merge M2b ≥ 0,90 × base's answer-blind M2b`),
   not the number. Re-derived with the single repaired tool: threshold **0,8649** ↔ merge
   **0,766** → **fails by 9,9 points** (and fails the old 0,887 threshold too; denominators
-  are equal, 77 ↔ 77). ⛔ ADR-0050: the *tool* was fixed, the threshold was **not touched**.
+  are equal, 77 ↔ 77). ADR-0050: the *tool* was fixed, the threshold was **not touched**.
   This is the gate that authorized CP4-CP5 spending — **that authorization is gone.**
   [ADR-0045](docs/adr/0045-ara-kapi-merge-onarim-kontrolu.md) ·
   [#58](docs/record/research_log/2026-08-06-payda-tekillesmesi.md).
-- ⚠️ **The biggest single loss is over-refusal, and the model owns it** — the gold article is *in
+- **The biggest single loss is over-refusal, and the model owns it** — the gold article is *in
   context* and the model abstains anyway. Retrieval cannot fix this. Debt **B10**.
-- 🚨 **The abstention DETECTOR itself is under repair — do not quote B10's counts as settled.**
+- **The abstention DETECTOR itself is under repair — do not quote B10's counts as settled.**
   Measured 2026-09-06: in the no-preamble regime `exact_reject` scores a correct, cited answer
   as an abstention, because it scans the whole answer and the discarded-sources rationale trips
   the refusal regex. The official anchor holds at least one verified false positive and the
@@ -171,10 +171,10 @@ thing (OFF hands the model the gold article by construction).
   `specs/2026-09-06-v1-v2-roadmap-taslak.md` ⚰️ *(superseded by [the design spec](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md))*
   (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
 
-**Status of work: ✅ B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
+**Status of work: B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
 training** ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
 Tasks 0-3 ran, Tasks 4-10 **never did**, `τ_a` v2 **was never trained**. The plan carries its
-✅ closing block:
+closing block:
 `plans/2026-08-06-asiri-red-tau-a-v2.md` ⚰️ *(deleted with the doc layer; its closing block is quoted in [ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md))*.
 
 The round set out to train over-refusal down from 14/80 into a pre-registered 8-11/80 band.
@@ -182,10 +182,10 @@ Its own **read-it-by-eye** step (Task 3.8) instead refuted the harvest acceptanc
 6 of 10 sampled "abstentions" were full, cited answers — and repairing the detector put the
 true number at **8/80 by eye (9/80 by tool) with nothing trained**: **43% of the "problem" was
 the measuring instrument.** Harvesting anyway would have cost 5.3 h and ≈$5.2 for a gap of two
-items, so the round was closed. ⛔ Over-refusal is **smaller, not gone** — 8/80 still sits above
+items, so the round was closed. Over-refusal is **smaller, not gone** — 8/80 still sits above
 3.5 Flash-Lite's 6/80, and *"how far would training push it"* was **never measured**.
 
-⚠️ **Three things a new session must carry forward from that closure:**
+**Three things a new session must carry forward from that closure:**
 - **Next first-rank axis is B1** (misattribution, 5/80) — B10 stepped down; the gap between them
   narrowed 2.8× → 1.6×, and B1 has never been worked on.
 - **The round's tooling is intact and reusable** — `scripts/veri_hazirlik/b10_hasat.py`, Modal `harvest_b10`
@@ -217,23 +217,23 @@ So: train for correctness and abstention, simplify at the **prompt layer**.
 | **record** | `docs/record/` | *what happened, what the number was* — retrospective, no checkboxes |
 | **decision** | `docs/adr/` | *why this way, which alternative was eliminated* |
 | **spec** | `docs/superpowers/specs/` | *what we will build* — `brainstorming`/`grill` output |
-| **plan** | `docs/superpowers/plans/` | *what will be done* — `- [ ]` boxes; gets an ✅ closing block when executed |
+| **plan** | `docs/superpowers/plans/` | *what will be done* — `- [ ]` boxes; gets an closing block when executed |
 | **execution** | repo root `sprint*.md` | **only the OPEN sprint's** live doc |
 | **archive** | `docs/_arsiv/` | anything of any type no longer in force |
 
 Two rules: a doc that says *"what's next"* is a **plan** and cannot sit under `record/`; and a
 **closed execution doc moves to the archive** — the root holds only what is open.
-⚠️ `docs/record/` and `docs/adr/` are **NOT archives** — they are the live research record and
+`docs/record/` and `docs/adr/` are **NOT archives** — they are the live research record and
 decision ledger.
 
 ### Read before doing anything
 
-- ⭐ **[`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) — before ANY run.**
+- **[`docs/record/yurutme-tuzaklari.md`](docs/record/yurutme-tuzaklari.md) — before ANY run.**
   The list of *"produces a wrong number without erroring"* patterns, every one of which has
   actually bitten: dropped `--data`/`--thinking off`, uncalibrated refusal regex, missing
   `--target-modules`, `set -e` swallowing the error, half-finished quantization that still leaves
   a file on disk. **This line's failure class is silent wrongness, not crashes.**
-- ⭐ **[`docs/adr/gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md) — the retired 12B line's
+- **[`docs/adr/gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md) — the retired 12B line's
   26 ADRs (0001-0026) in one file.** Part **(A) lessons** is base-agnostic and is what you read —
   *"plain SFT destroys abstention"*, *"the eval mirror is mandatory"*, *"`spawn()` not `remote()`"*
   live there. Part (B) is the decision record with each ADR's status in the new line; part (C) is
@@ -241,9 +241,9 @@ decision ledger.
   carries an anchor per ADR (`#adr-0011`). **Read part A before designing any experiment.**
 - 🌳 **[`docs/model-soyagaci.mmd`](docs/model-soyagaci.mmd) — the model family tree** (Mermaid):
   raw base → the two branches → the three merge variants → the published artifact → harness →
-  the `v1.0` gate. Renders the *shape* of what `kollar.md` records row by row. ⚠️ **Not a
+  the `v1.0` gate. Renders the *shape* of what `kollar.md` records row by row. **Not a
   timeline** — branches are independent and merge variants are alternatives, not a chain.
-- ⭐ **[`docs/record/kollar.md`](docs/record/kollar.md) — the artifact registry.** Every trained
+- **[`docs/record/kollar.md`](docs/record/kollar.md) — the artifact registry.** Every trained
   branch AND merge has its identity here; *an artifact with no row is nameless and must not be
   used*. `tg_v1` (‖τ‖ 10,4722 — **and 10,4589 in `kollar.md` is also right**: the first is measured at merge time from the bf16-materialized ΔW, the second from the standalone artifact; the 0,13% gap is bf16 and [#47](docs/record/research_log/2026-07-30-cp2s-boru-hatti.md) logged it as an *independent cross-check*, not a discrepancy — do not "fix" either) · `ta_v1` (‖τ‖ 1,1806) · **`tgta_v1` = `HakHukuk-4B-v0.1`**. Both
   names stay and do different jobs: `tgta_v1` is internal traceability (*which branch, which
@@ -252,7 +252,7 @@ decision ledger.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
   record, **authoritative for "what happened."** New findings continue at **#64**.
 - [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0074**.
-  ⚠️ **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
+  **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
   places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.
 
 ### Direction and scope
@@ -279,7 +279,7 @@ decision ledger.
 - [`docs/record/sprint1/sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md) ·
   [`docs/record/sprint2/defter.md`](docs/record/sprint2/defter.md) — the distilled records of those
   sprints. Sprint 1's table is **not a parity claim** (harness off, cost not normalized).
-- **⚠️ Kapı 5 lost clause (d) on 2026-07-29** —
+- **Kapı 5 lost clause (d) on 2026-07-29** —
   [ADR-0039](docs/adr/0039-kapi-6-parametrik-sizinti.md): M5 (parametric leakage) became its own
   **Kapı 6**, anchored at **base** (not the competitor): coverage ≤ 37.5%, memorized-mass ≤ 10.7%.
   Not a loosening — `τ_g` fails it today and that is reported, and every cell is *also* reported
@@ -305,8 +305,8 @@ These are non-negotiable framing from the docs — honor them in any code or rec
 - **Accessibility over raw performance.** Product target = run on consumer GPUs. **The base is a PARAMETER, not a decision (ADR-0026): no script carries a default; an undefined base must fail EARLY** — silently falling back to the wrong model turns a multi-hour run into invisible garbage. Current **working assumption** = a ~4B-class instruct model (ADR-0027, supersedes ADR-0003's Gemma 4 12B), and **no run starts before it clears the 6-item verification gate** in `TASARIM.md` §8: llama.cpp architecture support (ADR-0025 is now a *base selection criterion*) · chat-template render verified **by eye** (`research_log` #38: minja mis-rendered a branch, the model never stopped, and a CANON run was silently wasted) · turn-marker assert · Unsloth/sm_120 · quantization (**Q4_K_M** absent an official QAT checkpoint — ADR-0023's pure-Q4_0 was QAT-specific and does **not** transfer) · license.
   **≤8 GB = SOFT GATE (not a hard limit):** preferred band ≤8 GB, but configurations above it (12/16/24 GB) are still reported, *at a cost on the accessibility axis* — a cost-performance **curve**, not a single point (ADR-0018). ADR-0028's one-size-point narrowing was **LIFTED 2026-08-03** along with the thesis. What survives is the *engineering* reason it was attractive: a ~4B base trains on the local RTX 5070 at **$0** (the 12B line had to send every run to Modal), so the recipe is cheapest to develop there. **Sequencing preference, not a lock:** push 4B toward its ceiling first, then port the recipe up — the recipe transfers upward, measurements do not transfer downward.
   **Three costs are accepted and must appear in Limitations, not be glossed as "future work":** (a) the **external-validity gap does not close** — "are these findings specific to this base?" stays unanswered; (b) the **capacity question is unmeasurable** — "does the skill conflict shrink as capacity grows?" cannot be asked at one size point; (c) **ADR-0018's curve requirement is not met** — a single marked point is reported, not a measured curve. The same-family rule from ADR-0027 is **deferred, not cancelled**: whenever that second pass happens, family and size must not change together, or the difference is attributable to neither (ADR-0017).
-  Harness never enters the GPU (embedder on CPU, index in CPU RAM/disk) — that is the fits/doesn't-fit difference. ⚠️ Historical note: the "bottleneck is KV-cache, not weights" claim was **measured false for the 12B base** (KV was 18% of weights); re-measure per base, never assume.
-- **Actual dev machine (corrected 2026-05-29): RTX 5070 Laptop, ~12 GB VRAM, Blackwell (sm_120), CUDA 13.1** — NOT the RTX 4070 / 8 GB the older docs assume. ⚠️ Blackwell/sm_120 + CUDA 13.1 is bleeding-edge: PyTorch, `bitsandbytes`, `flash-attn`, `Unsloth` all need recent Blackwell-compatible builds. The 8 GB figure in older docs is the *end-user accessibility target*, not our training rig.
+  Harness never enters the GPU (embedder on CPU, index in CPU RAM/disk) — that is the fits/doesn't-fit difference. Historical note: the "bottleneck is KV-cache, not weights" claim was **measured false for the 12B base** (KV was 18% of weights); re-measure per base, never assume.
+- **Actual dev machine (corrected 2026-05-29): RTX 5070 Laptop, ~12 GB VRAM, Blackwell (sm_120), CUDA 13.1** — NOT the RTX 4070 / 8 GB the older docs assume. Blackwell/sm_120 + CUDA 13.1 is bleeding-edge: PyTorch, `bitsandbytes`, `flash-attn`, `Unsloth` all need recent Blackwell-compatible builds. The 8 GB figure in older docs is the *end-user accessibility target*, not our training rig.
 - **Local machine is for prototyping; real training runs go to the cloud** (Modal; Colab/Kaggle/RunPod as alternatives). Validate the pipeline locally on tiny models before spending cloud quota.
 - **Currency lives in the library, not the model's brain.** Laws change; weights don't. Keep legal-currency concerns for the RAG layer — do not try to bake current statutes into fine-tuning.
 - **Expert register is the training target; citizen plain-language is an app-layer prompt mode** (ADR-0010, in force — see the trap above). Correctness/grounding comes from RAG. Register held at ~1.0 across the 12B line.
@@ -318,16 +318,16 @@ These are non-negotiable framing from the docs — honor them in any code or rec
 - **Training:** PyTorch 2.4+, Unsloth (primary; fall back to TRL+PEFT+transformers), bitsandbytes 0.43+ (NF4 4-bit), FlashAttention-2.
 - **Method: QLoRA per branch, then task-vector merge (ADR-0027).** Per-branch QLoRA — `r=16`, `lora_alpha=32`, `target_modules="all-linear"`, `lora_dropout=0.05`, `batch=1`, `gradient_checkpointing=True`. **Every branch trains from the RAW BASE, independently.** This is a validity requirement, not a style choice: a task vector is defined as `τ = θ_ft − θ_base`, so all branches must share one `θ_base`. Training one branch on top of another produces sequential SFT, not a task vector — it destroys the very thing we set out to measure.
   Merging is **simultaneous k-way** TIES/DARE, not iterative — `TIES(TIES(τg,τa),τr) ≠ TIES(τg,τa,τr)`, because TIES trims, elects signs and averages across *all* vectors at once. Each LoRA is materialized as `ΔW = (α/r)·BA` in **bf16**, merged in **full weight space**, and quantized **last**. Merging runs on **host RAM, streaming tensor-by-tensor** — never on the GPU.
-  **⚠️ The main result is RAW TIES; norm-balanced is the ablation — [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md) reversed ADR-0036's prescription.** ADR-0036's *premise* was confirmed and still holds: branches train at very different scales (`τ_g` 1.083 steps @1e-4 · `τ_a` 70 steps @1e-5, ‖τ‖ ratio **8,87×**) and TIES' sign-election is mass-weighted. Its *inference* — "without normalization the small branch is erased" — was **measured false**: raw TIES did not erase `τ_a` (0,506 → 0,766 — **re-scored 2026-08-06**, [#57](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md); the old tool read 0,607 → 0,877 and the **jump is unchanged at +0,26**); balancing crushed `τ_g` instead. `‖τ‖` is measured and reported **unconditionally** for every branch.
+  **The main result is RAW TIES; norm-balanced is the ablation — [ADR-0052](docs/adr/0052-merge-norm-dengeleme-hukmu-tersine.md) reversed ADR-0036's prescription.** ADR-0036's *premise* was confirmed and still holds: branches train at very different scales (`τ_g` 1.083 steps @1e-4 · `τ_a` 70 steps @1e-5, ‖τ‖ ratio **8,87×**) and TIES' sign-election is mass-weighted. Its *inference* — "without normalization the small branch is erased" — was **measured false**: raw TIES did not erase `τ_a` (0,506 → 0,766 — **re-scored 2026-08-06**, [#57](docs/record/research_log/2026-08-06-cekinme-aleti-onarimi.md); the old tool read 0,607 → 0,877 and the **jump is unchanged at +0,26**); balancing crushed `τ_g` instead. `‖τ‖` is measured and reported **unconditionally** for every branch.
   **Merging itself costs no training compute** — that is what makes sweeping merge techniques realistic. But sweep on **DEV**, never on the frozen CANON test set.
 - **Deploy pipeline:** per-branch QLoRA (NF4) → materialize ΔW (bf16) → k-way merge (full weight space, host RAM) → quantize via llama.cpp (**Q4_K_M**) → GGUF → consumer GPU.
-- **⚠️ Multimodal / OCR is NOT a base-selection argument and never was measured.** For Turkish the right architecture is a **separate OCR preprocessor, not native VLM OCR**: dedicated engines beat general VLMs on Turkish, and `ğ→˘g` / `ş→¸s` / `İ→Ì` breakages corrupt RAG matching in legal text (OCRTurk, arXiv:2602.03693).
+- **Multimodal / OCR is NOT a base-selection argument and never was measured.** For Turkish the right architecture is a **separate OCR preprocessor, not native VLM OCR**: dedicated engines beat general VLMs on Turkish, and `ğ→˘g` / `ş→¸s` / `İ→Ì` breakages corrupt RAG matching in legal text (OCRTurk, arXiv:2602.03693).
 - **Data format:** chat-template JSON (`messages` with `user`/`assistant` roles).
 - **Eval: 6-mode CANON (ADR-0011), extended by ADR-0027 with a DEV/TEST split.** Modes: M1 distractor-faithfulness · M4 oracle ceiling · M2 near-miss refusal · M2b multi-source-miss refusal · M3 empty-context refusal · **M5 blind/parametric = ANTI-TARGET** (must NOT rise). Harness-ON counterparts: `h1`, `h2b`.
   **Regime invariants — a mismatch does not error, it just voids the comparison:** seed **3407** · eval-mirror **900-char** chunk clip · A1 = **answered-only** macro · **thinking ON with a budgeted forced close: 1024 thinking + 512 answer tokens** (ADR-0043).
-  ⚠️ **Why forced closure exists** (`research_log` #42): under `--thinking on` the bare base **never closes `</think>`** in M1/M2/M5 — it oscillates between answering and abstaining and returns an empty `content` with HTTP 200. **Non-termination, not truncation**: raising the budget 8× changed nothing. `τ_g` *does* terminate on its own — fine-tuning stabilized the reasoning. Cost of the mode: **249 → ~1198 tokens/answer (~4.8×)**.
+  **Why forced closure exists** (`research_log` #42): under `--thinking on` the bare base **never closes `</think>`** in M1/M2/M5 — it oscillates between answering and abstaining and returns an empty `content` with HTTP 200. **Non-termination, not truncation**: raising the budget 8× changed nothing. `τ_g` *does* terminate on its own — fine-tuning stabilized the reasoning. Cost of the mode: **249 → ~1198 tokens/answer (~4.8×)**.
   **TEST = `data/eval/canon/` (40+35), frozen. DEV = CANON-protocol items**, and all merge/hyperparameter selection happens there — sweeping against the frozen set would burn it for selection and make every number optimistic.
-  **Judge = four-layer defense:** judge-free backbone (regex abstention + deterministic citation verification) · a 3-family panel only on judgment axes (M1/M4), κ via `judge_agreement.py` · **family exclusion** (no subject graded by its own family's judge) · self-preference measured. **Human-κ DESCOPED.** ⚠️ The judge's **re-run noise floor is ~0,3 A1 points** — nothing smaller is interpreted.
+  **Judge = four-layer defense:** judge-free backbone (regex abstention + deterministic citation verification) · a 3-family panel only on judgment axes (M1/M4), κ via `judge_agreement.py` · **family exclusion** (no subject graded by its own family's judge) · self-preference measured. **Human-κ DESCOPED.** The judge's **re-run noise floor is ~0,3 A1 points** — nothing smaller is interpreted.
   **Mandatory pre-step:** calibrate the refusal-detection regex on *every* competitor family. Left uncalibrated it undercounts their refusals and shifts scores **in our favor**.
 - **Comparison fairness — [ADR-0057](docs/adr/0057-harness-rekabet-kapisi-esit-sinav.md), "eşit sınav".** An ON ↔ OFF comparison delivers a verdict **only on matched axes**: same questions · **same source count** · same gold condition · same regime. Unmatched axes are reported with a **CEILING/undefined** stamp, and the sentence *"ON is behind here"* is **not constructed** for them.
 
@@ -345,13 +345,13 @@ These are non-negotiable framing from the docs — honor them in any code or rec
   | `scripts/erisim_korpus/` | retriever · recall · corpus integrity · citation verification |
   | `scripts/veri_hazirlik/` | SFT/ORPO/RAFT dataset construction · B8/B10/CP2 harvest chain |
 
-  ⚠️ **Sibling imports are extension-less** (`import runlock`, `from build_sft_v2b import …`) and
+  **Sibling imports are extension-less** (`import runlock`, `from build_sft_v2b import …`) and
   survive the split only because **26 files carry an identical path-bridge block** — grep it with
   `grep -rl "yol köprüsü" scripts/`. `tests/conftest.py` mirrors the same logic. **If you change one,
   change both**, or the tests will exercise a path production never sees.
-  ⛔ Historical paths in `docs/record/**` and `docs/adr/**` were **deliberately left pointing at the old
+  Historical paths in `docs/record/**` and `docs/adr/**` were **deliberately left pointing at the old
   flat layout** — they record *"on that day it was run from this path"*. The record is not cleaned.
 - **Base model = a parameter with a working assumption, not a fixture.** Operative base: **Qwen3.5-4B**. We do our OWN fine-tune. Mecellem stays **cite-only** (ADR-0016/0020) — it is a CPT foundation base, not an assistant, so "we beat it" is a category error and is never claimed. TurboQuant (arXiv:2504.19874) is future-work and **is not in llama.cpp**; today's lever is `--cache-type-k/-v q8_0` (`knowledge/summary_turboquant.md`).
 - **Data hard rule, learned the hard way: EDA-verify every dataset before trusting it** — `newmindai/EuroHPC-Legal` looked great (43K, Apache 2.0) but sampling revealed garbage (mismatched Q&A, hallucinated laws, Ottoman-era content) and was rejected. Scope is **current Republic-of-Turkey legislation only.** Ground truth = Mevzuat.gov.tr. Data we lack (plain-language, citizen-niche, scenario→statute) is produced via **grounded synthetic generation** (real statute text → LLM generates pairs → verify).
-- **Live legislation source: the `bedesten.adalet.gov.tr/mevzuat` JSON API** — reverse-engineered from `saidsurucu/mevzuat-mcp` (MIT), contract verified 4/4. Auth-free, no Playwright. Search + full text + article tree; the same backend also serves case law. Contract: [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md), probe: `scripts/erisim_korpus/bedesten_probe.py`. **Requires a Turkish IP** (the gov firewall blocks foreign/VPN IPs). ⚠️ The contract works but **the product does not use it yet** — debt B6.
-- **Corpus and index:** `data/corpus/mevzuat_maddeler.jsonl`; the live index is `data/index/mevzuat_bge_m3_s2/` (**S2** — carries the validity field + sub-article identity), and **since 2026-09-07 the retriever actually USES it**: `getir()` defaults to `Yururluk.YALNIZ_YURURLUKTE` and drops repealed articles. ⚠️ Until that day this line MISLED — the field was carried but never read, and 2 of 800 retrieved sources on a real run were repealed articles served to the citizen. Measured: the filter left `recall@10` at **0,9500** and took the leak from **2 → 0**. The corpus now also carries a snapshot manifest (`data/corpus/KUNYE.json`: 2026-08-06 · 892 laws · 40.496 articles · 2.547 repealed · scope = statutes only). The pre-S2 index is kept only to reproduce pre-S2 numbers. Retrieval is hybrid BM25 + `bge-m3` fused with RRF; a vector database was measured and **rejected** (brute force is 8,2 ms/query, index 83 MB).
+- **Live legislation source: the `bedesten.adalet.gov.tr/mevzuat` JSON API** — reverse-engineered from `saidsurucu/mevzuat-mcp` (MIT), contract verified 4/4. Auth-free, no Playwright. Search + full text + article tree; the same backend also serves case law. Contract: [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md), probe: `scripts/erisim_korpus/bedesten_probe.py`. **Requires a Turkish IP** (the gov firewall blocks foreign/VPN IPs). The contract works but **the product does not use it yet** — debt B6.
+- **Corpus and index:** `data/corpus/mevzuat_maddeler.jsonl`; the live index is `data/index/mevzuat_bge_m3_s2/` (**S2** — carries the validity field + sub-article identity), and **since 2026-09-07 the retriever actually USES it**: `getir()` defaults to `Yururluk.YALNIZ_YURURLUKTE` and drops repealed articles. Until that day this line MISLED — the field was carried but never read, and 2 of 800 retrieved sources on a real run were repealed articles served to the citizen. Measured: the filter left `recall@10` at **0,9500** and took the leak from **2 → 0**. The corpus now also carries a snapshot manifest (`data/corpus/KUNYE.json`: 2026-08-06 · 892 laws · 40.496 articles · 2.547 repealed · scope = statutes only). The pre-S2 index is kept only to reproduce pre-S2 numbers. Retrieval is hybrid BM25 + `bge-m3` fused with RRF; a vector database was measured and **rejected** (brute force is 8,2 ms/query, index 83 MB).
