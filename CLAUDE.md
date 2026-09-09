@@ -20,7 +20,7 @@
 > | the current plan itself | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 17 tasks, 89 boxes · Görev 8 is HELD (corpus grows 8,4×) |
 > | why it is sequenced that way | [`docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) |
 > | what closed on 2026-09-06/07 | [`docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md`](docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md) — **48/48** |
-> | the rescued debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 — its *direction* sections are **superseded** by the plan above |
+> | the rescued debt queue | `DEVIR-PROMPT.md` *(silindi)* *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 — its *direction* sections are **superseded** by the plan above |
 >
 > **Framing: open-source PRODUCT** — a legal adviser a Turkish citizen can actually ask.
 > `v1` = model layer · `v2` = app layer · arxiv is a **by-product**.
@@ -61,7 +61,7 @@ Priorities live in [`ROADMAP.md`](ROADMAP.md), tied to measured gaps.
 | :--- | :--- |
 | **ONE size point** (ADR-0028, ~4B) | **lifted** — 8B/12B are open, multiple sizes may ship |
 | **graph-RAG out of scope** (ADR-0019) | **lifted** — not forbidden, just *unplanned*; no line item in `ROADMAP.md` |
-| **Kapı 5 / CP4-CP5 baselines** | **optional** — deferred, `docs/_arsiv/sprint2b.md` ⚰️ *(deleted 2026-09-06)* |
+| **Kapı 5 / CP4-CP5 baselines** | **optional** — deferred, `docs/_arsiv/sprint2b.md` *(deleted 2026-09-06)* |
 | **frozen TEST seen once** | repurposed as a **release acceptance test** |
 | *"never say frontier"* | moot |
 
@@ -125,10 +125,10 @@ figure is still one judge family's verdict and κ is **0,534**, below the tool's
 ([ADR-0077](docs/adr/0077-v1-0-verilmedi-v0-3.md) · [#65](docs/record/research_log/2026-09-09-kabul-testi-ve-frontier-kiyasi.md)).
 Weights are published at `Rfetha/HakHukuk-4B-v0.3-Q4_K_M` and are **currently private** while
 open defects are resolved ([tickets](docs/superpowers/plans/post-hp-hat-b-tickets.md)).
-🚨 **A frontier subject entered the pool and is AHEAD:** `claude-sonnet-5` mass **0,8348** ↔ ours
+**A frontier subject entered the pool and is AHEAD:** `claude-sonnet-5` mass **0,8348** ↔ ours
 **0,8011** (eye-corrected reading). The claim *"we are not behind on B1"* held only in the Gemini
 pool: `wrong_ref_rate` **0,0769 ↔ 0,0083**.
-🚨 **The product path is NOT the measured path:** `hakhukuk.servis.answer()` returns a **blank
+**The product path is NOT the measured path:** `hakhukuk.servis.answer()` returns a **blank
 answer on ~5% of questions** (4/80, non-termination) and would fail ADR-0040's own 5% validity
 gate. Recorded, not fixed — `MODEL_CARD` §7.9.
 
@@ -147,9 +147,9 @@ thing (OFF hands the model the gold article by construction).
 | :--- | :--- |
 | every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#65** |
 | what to work on next, tied to measured gaps | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
-| the open debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
+| the open debt queue | `DEVIR-PROMPT.md` *(silindi)* *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
 | why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0077**, next is **0078** |
-| questions raised and not yet answered | [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
+| questions raised and not yet answered | [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -176,20 +176,20 @@ thing (OFF hands the model the gold article by construction).
   contamination size is **unmeasured**. A programmatic probe was wrong in *both* directions, so
   the only closing move is reading all 80 items by eye — decided, scheduled, and pre-registered
   ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
-  [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* **S13**).
+  [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` 2026-09-07'de silindi; canlı 9 soru plana taşındı)* **S13**).
 - 🧭 **Framing, 2026-09-06: the release language is v1/v2.** `v1` = a fine-tuned model release
   that actually works end to end (weights + code + data + research record, shipped with the
   retriever and the preamble, because the headline number is not reproducible without them);
   `v2` = the API over that same model; arxiv is a **by-product, not the goal**. Sequenced plan,
   acceptance criteria and rejected options:
-  `specs/2026-09-06-v1-v2-roadmap-taslak.md` ⚰️ *(superseded by [the design spec](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md))*
+  `specs/2026-09-06-v1-v2-roadmap-taslak.md` *(superseded by [the design spec](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md))*
   (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
 
 **Status of work: B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
 training** ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
 Tasks 0-3 ran, Tasks 4-10 **never did**, `τ_a` v2 **was never trained**. The plan carries its
 closing block:
-`plans/2026-08-06-asiri-red-tau-a-v2.md` ⚰️ *(deleted with the doc layer; its closing block is quoted in [ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md))*.
+`plans/2026-08-06-asiri-red-tau-a-v2.md` *(deleted with the doc layer; its closing block is quoted in [ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md))*.
 
 The round set out to train over-refusal down from 14/80 into a pre-registered 8-11/80 band.
 Its own **read-it-by-eye** step (Task 3.8) instead refuted the harvest acceptance criterion —
@@ -224,7 +224,7 @@ So: train for correctness and abstention, simplify at the **prompt layer**.
 ## Document map
 
 **Belge türü → yeri.** The authoritative table lives in
-`docs/_arsiv/README.md` ⚰️ *(archive deleted 2026-09-06; the doc-type table below is now the binding one)* and it binds:
+`docs/_arsiv/README.md` *(archive deleted 2026-09-06; the doc-type table below is now the binding one)* and it binds:
 
 | type | where | holds |
 | :--- | :--- | :--- |
@@ -279,16 +279,16 @@ decision ledger.
   data pipeline, recipe, ablation matrix. Authoritative for *how*.
 - [`docs/VERI_PLANI.md`](docs/VERI_PLANI.md) — **the authoritative data plan.**
 - [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md) — live legislation API contract.
-- [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — questions raised and not yet answered.
+- [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — questions raised and not yet answered.
 
 ### Historical — still load-bearing, no longer authority
 
-- 📁 **`TASARIM.md` ⚰️ *(deleted 2026-09-06; its eval protocol lives on in `docs/adr/` + `docs/record/`)* (repo root)** — the thesis-era design doc, flagged historical
+- **`TASARIM.md` *(deleted 2026-09-06; its eval protocol lives on in `docs/adr/` + `docs/record/`)* (repo root)** — the thesis-era design doc, flagged historical
   2026-08-03. Authority moved to `ROADMAP.md` + the active plan. Still live for what it
   *measures*: the eval protocol, DEV/TEST split, gates, and **the rejected alternatives with their
   reasons** (§11). Its claim layer (Kapı 5, parity matrix) is arxiv-conditional.
-- **`referans-design-doc.md` ⚰️ *(silindi 2026-09-07)* — the user's original draft. Its function was taken over by [`docs/MIMARI.md`](docs/MIMARI.md) on 2026-09-07 (Görev 13 Adım 4).** Its numbers were illustrative placeholders and were deliberately NOT carried over.
-- `docs/_arsiv/` ⚰️ *(deleted 2026-09-06)* — closed sprints (**1 · 2 · 3-part-1**), the deferred claim layer
+- **`referans-design-doc.md` *(silindi 2026-09-07)* — the user's original draft. Its function was taken over by [`docs/MIMARI.md`](docs/MIMARI.md) on 2026-09-07 (Görev 13 Adım 4).** Its numbers were illustrative placeholders and were deliberately NOT carried over.
+- `docs/_arsiv/` *(deleted 2026-09-06)* — closed sprints (**1 · 2 · 3-part-1**), the deferred claim layer
   (`sprint2b.md`), and superseded 12B-era plans. Its `README.md` says why each one is there.
 - [`docs/record/sprint1/sprint1-sonuc-tablosu.md`](docs/record/sprint1/sprint1-sonuc-tablosu.md) ·
   [`docs/record/sprint2/defter.md`](docs/record/sprint2/defter.md) — the distilled records of those

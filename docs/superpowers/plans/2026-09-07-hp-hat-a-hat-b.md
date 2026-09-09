@@ -39,7 +39,7 @@ sekiz kutucuğun ikisi SIRA 2, altısı Görev 19.
 **Bitmiş görevlerde talimat silindi, bulgu tutuldu** (aynı gün, 16 blok / 18 KB): *"şu dosyayı
 yaz"* diyen kod kopyaları ve `git commit` reçeteleri çıkarıldı — karşılıkları repoda ve git
 geçmişinde, üstelik kopyalar **bayatlamıştı** (`tui.py`'ye `__main__` bloğu, `servis.py`'ye
-`answer_arac`, `tipler.py`'ye beşinci durum eklendi). ⛔ Koşu komutları **silinmedi**: onlar
+`answer_arac`, `tipler.py`'ye beşinci durum eklendi). Koşu komutları **silinmedi**: onlar
 talimat değil **rejim künyesidir**, ve bu hattın disiplini künyede görünmeyen bayrağın sessizce
 düştüğü üzerine kuruludur.
 
@@ -55,7 +55,7 @@ düştüğü üzerine kuruludur.
 | ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
 | **7** | **G19** — HTTP API (FastAPI) | **AÇIK** | dokuz karar kilitlendi 2026-09-09; kapıları görevin içinde |
 
-⛔ **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
+**SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
 ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
 test bunu görmemişti — kaynak denetimi mantığın sızmadığına bakar, programın çalıştığına değil.
 
@@ -1913,11 +1913,11 @@ sayısı yeniden okunur (yeniden **koşulmaz** — yalnız gözle sayım güncel
 
 **Dosyalar:** Create: `hakhukuk/api.py` · `tests/test_api.py` · Modify: `pyproject.toml`
 
-🚨 **KAPSAM İNSAN KARARIYLA GENİŞLETİLDİ ve çelişki iki yerde damgalandı.** Bu planın başlığı
+**KAPSAM İNSAN KARARIYLA GENİŞLETİLDİ ve çelişki iki yerde damgalandı.** Bu planın başlığı
 `v0.2 → v0.3`'tür ve [`00-IS-SIRASI.md`](../00-IS-SIRASI.md) bugüne kadar *"CLI + TUI yeterli
 (insan kararı) — HTTP API ve web arayüzü **v2**"* diyordu. O cümle **artık geçerli değil**:
 API `v1` tarafına alındı. Gerekçe teknik değil, insan tercihidir; öyle yazılır.
-⛔ **S9 AÇILMADI:** API **yerel ve tek kullanıcı**dır (`127.0.0.1`). Barındırma, kimlik, hız
+**S9 AÇILMADI:** API **yerel ve tek kullanıcı**dır (`127.0.0.1`). Barındırma, kimlik, hız
 sınırı ve mahremiyet vaadi soruları **açılmıyor** — S9 `v2`'de açık soru olarak duruyor.
 
 **Neden ince kabuk.** `cli.py` ve `tui.py` ile aynı ilke: API'nin **kendi mantığı olmaz**.
@@ -1933,7 +1933,7 @@ yerde durursa sessizce ayrışır).
 | 2 | Yapısal alanlar **+ hazır `sunum` dizesi** | Tembel tüketici tek alanı bassa bile rozet + atıf + kaynak + ibare gider; dürüstlük sözleşmesi HTTP'de düşmez |
 | 3 | Yalnız **`answer()`** | `answer_arac()` taşıyıcıda araç çağrısı ayrıştırmıyor ⇒ açılırsa tüketici araç kullanıldığını **sanır** |
 | 4 | Boş metin → **503**, dolu KESİK → **200** | *"HTTP 200 ile boş içerik"* bu hattın #42'de ölçtüğü kusurun adıdır; sınırı geçmesine izin verilmez |
-| 5 | Boş/boşluk sorgu → **422** | Ölçüldü: `_getir("")` sabit gürültü döndürüyor. ⛔ Uydurulmuş uzunluk eşiği **YOK** |
+| 5 | Boş/boşluk sorgu → **422** | Ölçüldü: `_getir("")` sabit gürültü döndürüyor. Uydurulmuş uzunluk eşiği **YOK** |
 | 6 | **Serileştirilmiş** tek istek · opsiyonel ekstra `hakhukuk[api]` | Tekilin evre güvenliği **ölçülmedi**; ölçüm rejimi sıralı istekti. Çekirdek kurulum şişmez (`pyproject.toml` ilk satırındaki karar) |
 
 - [ ] **Adım 1: Failing test** — `tests/test_api.py`, `TestClient` ile, **sunucu ve model YOK**
@@ -1954,8 +1954,8 @@ geçmiyor (ince kabuk kapısı, `test_tui.py`'nin aynısı).
 
 - [ ] **Adım 6: Gözle doğrula** — `hakhukuk-api` ile aç, bir soru sor, cevabı **gör**.
 `verify:` `sunum` alanı ekranda rozet + atıf + kaynak + ibare taşıyor; boş sorgu 422 dönüyor.
-⛔ Bu da bir **insan gözü kapısıdır** (SIRA 2 ile aynı sınıf).
+Bu da bir **insan gözü kapısıdır** (SIRA 2 ile aynı sınıf).
 
-⚠️ **Bu görev ticket 1 ve 3'ü ÇÖZMEZ.** Boş cevap kusuru (~%5) API'de 503 olarak **görünür**
+**Bu görev ticket 1 ve 3'ü ÇÖZMEZ.** Boş cevap kusuru (~%5) API'de 503 olarak **görünür**
 hâle gelir ama **giderilmez**; donma sorunu API'de yoktur çünkü istek serileştirilir ve istemci
 bekler. İkisi de [`post-hp-hat-b-tickets.md`](post-hp-hat-b-tickets.md)'de açık kalır.

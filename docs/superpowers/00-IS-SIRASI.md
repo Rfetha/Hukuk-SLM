@@ -76,9 +76,9 @@ araç katmanı → yayın.**
 `v1`'de araç kullanımı **istem katmanındadır** (eğitilmedi, güvenilirliği düşük olacak);
 **öğrenilmesi `v2`'nin işi** — GRPO ödülüne *"doğru aracı doğru anda çağırdı mı"* girer.
 ~~**CLI + TUI yeterli** (insan kararı) — HTTP API ve web arayüzü `v2`.~~
-🚨 **BU CÜMLE 2026-09-09'da DEĞİŞTİ (insan kararı):** HTTP API `v1` tarafına alındı ve ana plana
+**BU CÜMLE 2026-09-09'da DEĞİŞTİ (insan kararı):** HTTP API `v1` tarafına alındı ve ana plana
 **Görev 19** olarak girdi. Gerekçe teknik değil, tercihtir; öyle yazılıyor.
-⛔ **S9 açılmadı:** API **yerel ve tek kullanıcı** (`127.0.0.1`, kimlik yok, hız sınırı yok).
+**S9 açılmadı:** API **yerel ve tek kullanıcı** (`127.0.0.1`, kimlik yok, hız sınırı yok).
 Barındırma, mahremiyet vaadi ve TR IP kısıtı soruları `v2`'de açık duruyor. Web arayüzü hâlâ `v2`.
 
 **Bedeli:** `τ = θ_ft − θ_base` tanımı tüm kolların aynı base'i paylaşmasını şart koşar ⇒
@@ -132,7 +132,7 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | belge | tür | durum | ne der |
 | :--- | :--- | :--- | :--- |
 | [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
-| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 79/89** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. Lineer sıranın altısından beşi kapandı; açık olan tek kapı **SIRA 2**, insan gözüyle TUI doğrulaması. |
+| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 82/90** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık ikisi: **SIRA 2** (insan gözüyle TUI doğrulaması) ve **SIRA 7** (Görev 19, HTTP API — kararları kilitli, kodu yazılmadı). |
 | [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 10 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
 | [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-09** | Planın `/goal` promptu (3.675 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli altı sıralık lineer düzeni taşıyor ve beşi kapandı. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |

@@ -726,7 +726,7 @@ yapılandırma sabitken geçerlidir; bu şerh oraya da düşmelidir.
 Bağlayıcı yapılandırma: `-ngl 99 -fa on --no-context-shift --cache-type-k q8_0
 --cache-type-v q8_0 -c 8192`. HF kartının 3. bölümüne yazıldı.
 
-⚠️ **Farkın 80 kalemdeki toplam etkisi ÖLÇÜLMEDİ.** Dolayısıyla varsayılan KV ile 0,8011'in
+**Farkın 80 kalemdeki toplam etkisi ÖLÇÜLMEDİ.** Dolayısıyla varsayılan KV ile 0,8011'in
 korunacağı **iddia edilmiyor**. Açık borç; ölçümü $0 ve ~1 saat GPU.
 
 ---

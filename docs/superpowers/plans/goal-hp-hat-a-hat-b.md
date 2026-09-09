@@ -20,7 +20,7 @@ answer_arac taşıyıcıda araç ayrıştırmıyor, açılırsa tüketici araç 
 geçmesin) · (5) boş sorgu → 422, UYDURULMUŞ UZUNLUK EŞİĞİ YOK · (6) serileştirilmiş tek istek
 (tekilin evre güvenliği ÖLÇÜLMEDİ) + opsiyonel ekstra hakhukuk[api], giriş noktası hakhukuk-api.
 TDD: failing test (TestClient, sunucu/model YOK, servis.answer monkeypatch) → koş → gör → kod.
-Adım 6 de bir GÖZ KAPISI. ⛔ Ticket 1 ve 3'ü ÇÖZMEZ; boş cevap 503 olarak GÖRÜNÜR, giderilmez.
+Adım 6 de bir GÖZ KAPISI. Ticket 1 ve 3'ü ÇÖZMEZ; boş cevap 503 olarak GÖRÜNÜR, giderilmez.
 
 ━━ SIRA 8 · tickets — plans/post-hp-hat-b-tickets.md, on ticket, hiçbiri planda değil
 En ağır üçü: (1) ürün yolunda cevapların ~%5'i TAMAMEN BOŞ (4/80, sonlanmama) ve ADR-0040'ın
