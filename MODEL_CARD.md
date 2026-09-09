@@ -375,7 +375,7 @@ kalemin tamamı tarandı). Eşik **gevşetilmedi, birimi düzeltildi** — `7/80
 birimde değildir** ([ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md) madde (2)).
 Madde bugün tanım gereği sağlanıyor; **bağlayıcı olduğu yer bir sonraki eğitim turudur (B1)**.
 
-### 🚨 Kapı **DEV**'de geçildi — donmuş TEST kabul testi **KOŞMADI**
+### ✅ Kapı DEV'de geçildi · ⛔ donmuş TEST **KOŞTU 2026-09-09** — ama `v1.0` **VERİLMEDİ**
 
 | set | `recall@10` | ⇒ **kütle tavanı** | kaynak |
 | :--- | ---: | ---: | :--- |
@@ -388,8 +388,34 @@ içermesinden değil **bileşimden** geliyor: ayrım kanuna göre katmanlı ama 
 göre katmanlanmamış**; en zor uzunluk diliminde DEV'in payı %12, TEST'in **%50** — bileşim
 farkın **%81**'ini açıklıyor ([ANALIZ](outputs/eval/f01c-dev-test-farki/ANALIZ.md)).
 
-⇒ Bu kartın **hiçbir sayısı** donmuş TEST'te doğrulanmamıştır. `v1.0` adı bu yüzden **henüz
-verilmedi** ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
+#### Kabul testi KOŞTU — ham sonuç ([ADR-0077](docs/adr/0077-v1-0-verilmedi-v0-3.md) · [koşu](outputs/eval/g16-kabul-testi/OZET.md))
+
+Donmuş TEST **2026-09-09'da açık insan onayıyla, tek kez** açıldı. Rejim DEV koşusuyla her
+eksende birebir, **araçsız** (ADR-0076 m.4). Geçerlilik kapısı geçildi (kesiklik **%2,5**).
+
+| | **TEST** (40) | **DEV** (80) |
+| :--- | ---: | ---: |
+| **ham kütle — MANŞET** *(ADR-0069 m.1)* | **0,5804** | 0,8011 |
+| tavan (`recall@10`) | 0,7500 | 0,9500 |
+| **tavan kullanımı** | **0,7739** | 0,8433 |
+| **uydurulmuş madde numarası** | **0/52** ✅ | 0/114 |
+| `wrong_ref_rate_micro` | 0,2424 | 0,0769 |
+| aşırı-red | 5/40 [0,055–0,261] | 4/80 [0,020–0,122] ⚠️ *aralıklar örtüşüyor* |
+
+**Düşüşün ayrıştırılması** — süslenmedi: toplam **−22,07 p**; tavan-eşdeğer beklenti 0,6324 ⇒
+tavanın açıkladığı **−16,87 p (%76)**, **AÇIKLAMADIĞI −5,20 p (%24)**. ADR-0069'un öngörüsü
+doğrulandı **ama tam değil**: model görülmemiş veride tavanını da daha kötü kullanıyor.
+⛔ *"Hepsi bileşim"* **denmiyor**.
+
+**Gözle okuma kapısı:** 9/40 çekinmenin dokuzu da okundu, açık yanlış pozitif **0** ⇒ ALET = GÖZ.
+
+⛔ **`v1.0` VERİLMEDİ; ürün sürümü `v0.3`.** Gerekçe yeni bir eşik değil — donmuş TEST için
+**ön-kayıtlı sayısal eşik yoktu** ve sayı görüldükten sonra eşik yazmak ADR-0050'nin yasağıdır.
+Hüküm [ADR-0064](docs/adr/0064-v1-kapisi-uc-maddeli-on-kayit.md)'ün **kendi metnine** dayanır:
+orada `v1.0` için eksik iki şey sayılı — **(a) kabul testi koşmadı → BUGÜN KAPANDI**,
+**(b) her sayı tek hakem ailesinin hükmü → HÂLÂ AÇIK** (κ **0,534** < 0,6, üçüncü hakem
+bütçe kararıyla atlandı — §7.2).
+⇒ **`v1.0`'ı bloke eden model değil, ölçüm aygıtıdır.**
 
 ---
 

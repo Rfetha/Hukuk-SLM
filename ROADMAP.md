@@ -87,7 +87,7 @@ paketlemek, birkaç hafta sonra atılacak bir iştir.
 | ~~1~~ | ✅ `KUNYE` taşınabilirlik | ~~`git clone` sonrası **her makinede** `SystemExit`~~ — **kapandı 2026-09-09**: yol göreli, `mtime` → içerik hash'i; `recall@10` **0,9500** | $0 |
 | 2 | TUI gözle doğrulama | ürün yüzü **insan gözüyle hiç görülmedi** | $0 |
 | ~~3~~ | ✅ **Sonnet-5 öznesi** | ~~frontier sınıfı hiç ölçülmedi~~ — **ölçüldü 2026-09-09: Sonnet-5 ÖNDE** (kütle 0,8348 ↔ 0,8011). Kapı etkilenmez | $1,1932 |
-| 4 | **Kabul testi** *(⛔ ARAÇSIZ)* | donmuş TEST **hiç açılmadı** ⇒ `v1.0` verilmedi | ~$0,10 |
+| ~~4~~ | ✅ **Kabul testi** *(ARAÇSIZ)* | ~~donmuş TEST hiç açılmadı~~ — **açıldı 2026-09-09**: ham kütle **0,5804** (tavan 0,7500). ⛔ `v1.0` **verilmedi → `v0.3`**; engel **hakem paneli**, model değil (ADR-0077) | $0,0195 |
 | 5 | 🆕 **Araç katmanı** | model arayıp aramayacağına **karar vermiyor**; isabetsizlik 8/80'in bir kısmı iki maddeyi yan yana okuyamamaktan | $0 |
 | 6 | 🆕 **Modeli YAYINLA** | 🚨 ağırlıklar **hiçbir yerde yayında değil** — *"açık kaynak model"* iddiası bugün **yarım** | $0 |
 

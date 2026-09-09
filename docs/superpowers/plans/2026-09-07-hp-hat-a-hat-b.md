@@ -1,6 +1,6 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
-## 📊 İCRA DURUMU — 2026-09-09 · **67/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+## 📊 İCRA DURUMU — 2026-09-09 · **68/89 kutucuk** · 🏷️ `v0.2` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -1838,7 +1838,16 @@ tek `kanun_no` içinde vardı, adaylar arasında yoktu. TEST atıf **DOGRULANDI 
 ⛔ Manşet **değişmedi** (kütle bu doğrulayıcıdan gelmiyor) · geçmiş sayılar **oynamadı**
 (DEV 114, Sonnet 161+2 aynı).
 
-- [ ] **Adım 3: Hüküm** — ⛔ **KURULMADI · İNSAN KARARI BEKLİYOR**
+- [x] **Adım 3: Hüküm** ✅ **VERİLDİ 2026-09-09 → [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md)**
+
+⛔ **`v1.0` VERİLMEDİ; ürün sürümü `v0.3`.** İnsana soruldu, *"tercih yok"* denerek **devredildi**
+⇒ karar **model tarafından** verildi ve ADR'de böyle damgalandı (insan **tersine çevirebilir**).
+Gerekçe **yeni bir eşik değil**, ADR-0064'ün kendi metni: `v1.0` için eksik iki şeyden
+**(a) kabul testi koşmadı → KAPANDI**, **(b) tek hakem ailesi → AÇIK** (κ 0,534 < 0,6, G2
+atlandı) ⇒ **`v1.0`'ı bloke eden model değil, ölçüm aygıtı.**
+`verify:` hüküm **aynı sayıyla** üç yerde: [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md) ·
+[log #65](../../record/research_log/2026-09-09-kabul-testi-ve-frontier-kiyasi.md) ·
+`MODEL_CARD.md` §5. ✅
 
 🚨 **Ön-kayıtlı sayısal kabul eşiği YOK — bu bir bulgudur, mazeret değil:**
 ADR-0064 m.(1) eşiği `3.5 Flash − 2,0 p`; o çıpa **DEV**'de ölçüldü, rakipler donmuş TEST'te
