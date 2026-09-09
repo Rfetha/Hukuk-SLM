@@ -1,6 +1,6 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
-## 📊 İCRA DURUMU — 2026-09-09 · **61/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+## 📊 İCRA DURUMU — 2026-09-09 · **66/89 kutucuk** · 🏷️ `v0.2` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -23,7 +23,7 @@
 | :--- | :--- | ---: | :--- |
 | ~~**1**~~ | ✅ **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | ✅ **BİTTİ 2026-09-09** — kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** (76/80) |
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
-| **3** 🆕 | **G4** — **Sonnet-5 öznesi** rakip havuzuna girer | **~$0,82** *(ölçüldü)* | ✅ `$1` kapısının altında — tam koşu doğrudan koşulabilir |
+| ~~**3**~~ 🆕 | ✅ **G4** — Sonnet-5 rakip havuzunda | **$1,1932** *(gerçekleşen, tahmin $0,82 idi)* | ✅ **BİTTİ 2026-09-09** — 🚨 **Sonnet-5 ÖNDE**: kütle 0,8348 ↔ bizim 0,8011 (GÖZ-katı). Kapı **etkilenmez** (ADR-0072 m.2) |
 | **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** · ⛔ **ARAÇSIZ rejimde** (ADR-0076 m.4) |
 | **5** 🆕 | **G18** — araç katmanı (KALDIRAÇ) | $0 | 5 deterministik araç + sınırlı döngü + `ARAMA_TUKENDI` |
 | **6** 🆕 | **G17** — modeli YAYINLA (HF) | $0 | `v1` release; bugün ağırlıklar **hiçbir yerde yayında değil** |
@@ -41,7 +41,7 @@ yayımlanır. **`v2` = `tgta_v1` üstüne sequential RL** (GRPO + düşünce aya
 
 | neden | ölçülmüş gerekçe |
 | :--- | :--- |
-| **G14 atlandı** | Hedef eksende **geride değiliz** (biz 8/80 ↔ rakipler 8·8·7·8) ve otomatik vekil metrik **yok** ⇒ her tur **80 kalem gözle okuma** = insan saati. B10 aynı sınıftan bir turdu ve **eğitimsiz** kapandı (ADR-0062) |
+| **G14 atlandı** | ~~Hedef eksende **geride değiliz** (biz 8/80 ↔ rakipler 8·8·7·8)~~ 🚨 **BU CÜMLE 2026-09-09'da ÇÜRÜDÜ** — o kıyas yalnız **Gemini havuzunaydı**; Sonnet-5 karşısında `wrong_ref` **0,0769 ↔ 0,0083 = 9,3× GERİDEYİZ** ([OZET](../../../outputs/eval/hp-rakip-havuzu/OZET.md)). Karar **değişmiyor** (G14 yine koşulmuyor, ADR-0075) ama **gerekçesi düştü**: bugün tek gerekçe otomatik vekil metriğin **yok** oluşu ⇒ her tur **80 kalem gözle okuma** = insan saati. B10 aynı sınıftan bir turdu ve **eğitimsiz** kapandı (ADR-0062) |
 | **G15 atlandı** | Onaracağı şey (`B4`, −22,1 p) bir **merge** kaybıdır; `τ_a` **tek başına 0,987**. Sequential mimaride merge **yok** ⇒ aynı puan ödenmeden geri gelir. Terk edilecek mimariyi onarmak olurdu |
 | **`v1` şimdi yayımlanıyor** | Çalışan ürünü, sonucu belirsiz bir tur için aylarca bekletmek — ADR-0065 bölünmüş sürümlemeyi tam bunu önlemek için kurdu |
 
@@ -481,7 +481,7 @@ değişikliği + bugünkü dört sayının **yeniden koşulması** demek.
 OpenRouter `/api/v1/models`'ten ölçüldü: **$2,00/M girdi · $10,00/M çıktı**.
 `verify:` `KUNYE.json` seçilen özneyi **tam model kimliğiyle** listeliyor.
 
-- [ ] **Adım 1b 🆕: Bedeli ÖLÇ — 5 kalemlik duman koşusu, tam koşudan ÖNCE**
+- [x] **Adım 1b 🆕: Bedeli ÖLÇ — 5 kalemlik duman koşusu, tam koşudan ÖNCE** ✅ **BİTTİ 2026-09-07**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -501,14 +501,45 @@ gerçek fark yazılır. Tam koşu tahmini = fark × 16. ⛔ **> $1 ise DUR ve so
 ⚠️ `--think-budget` **KULLANILMAZ** — rakip tarafı `--reasoning-budget` alır (ikisi karşılıklı
 dışlayıcı; künye kanıtı `g2-fl-harness/KUNYE.json` → `"reasoning_budget": 1024`).
 
-- [ ] **Adım 2: Her özne için üretim — F0.4'ün BİREBİR aynı komutu**
+**✅ ÖLÇÜLDÜ 2026-09-07 akşam — ama ölçüm biçimi kayda geçer:** duman koşusu başlatıldı,
+**iptal edildi ve çıktısı yanlışlıkla silindi**; bedel yine de **bakiye farkından** okundu —
+`total_usage 16,5520 → 16,6032` = **$0,0512 / 5 kalem** ⇒ ×16 = **~$0,82**. `$1` kapısının
+**altında** ⇒ tam koşu doğrudan koşulur.
+⚠️ Bu, tahmin değil **gerçek fatura** farkıdır: OpenRouter'ın 1,6× marjı **zaten içinde**.
+Dolayısıyla `judge_cost_usd`'ye uygulanan 1,6× çarpanı bu sayıya **UYGULANMAZ** — iki kez
+sayılırdı.
+⛔ **Artefakt yok:** duman koşusunun `_detail.jsonl`'i silindi, yalnız bakiye kaydı var.
+Tam koşunun künyesi bunu böyle yazar.
+
+- [x] **Adım 2: Her özne için üretim — F0.4'ün BİREBİR aynı komutu** ✅ **BİTTİ 2026-09-09**
 
 ⚠️ Rakip tarafı **`--reasoning-budget 1024`** kullanır, `--think-budget` **DEĞİL** (ikisi
 karşılıklı dışlayıcı; `--think-budget` istemci-taraflı zorunlu kapatmadır ve **yalnız bizim
 kolda**). Künye kanıtı: `g2-fl-harness/KUNYE.json` → `"reasoning_budget": 1024`.
 `verify:` her özne için `h1_*_detail.jsonl` **80 satır** · komutta `--sufficiency-preamble` **yok**.
 
-- [ ] **Adım 3: Eşit sınav kapısı — `recall@10` birebir aynı mı**
+**✅ ALINDI 2026-09-09** — `outputs/eval/hp-rakip-havuzu/h1_sonnet_5_nb_detail.jsonl`, **80 satır**,
+`anthropic/claude-sonnet-5`, seed 3407 · k=10 · 900 klip · `--reasoning-budget 1024` ·
+önsözsüz (koşu çıktısı: *"kaynak-yeterliliği önsözü KAPALI"*) · süre ~17 dk.
+Künyeye giren üretim sayıları: `completion_tokens` ort **706,6/cevap** (toplam 56.530) ·
+`reasoning_tokens` ort **70,7/cevap** (80/80 bildirildi) · **4/80 kalem `finish_reason='length'`**
+⇒ kesiklik damgası Adım 4'te taşınır.
+
+🚨 **BEDEL KAPIYI AŞTI — $1,1932, tahmin $0,82 idi (+%45).** Bakiye ölçüldü:
+`total_usage 16,60321828 → 17,79643028`; kalan **$2,2036**.
+Sebep ölçülebilir: duman koşusunun 5 kalemi ($0,0512 ⇒ ×16 = $0,82) **temsili değilmiş** —
+tam koşuda cevap başına 706,6 completion token çıktı ve Sonnet'in çıktı fiyatı $10,00/M.
+⛔ **Ders, kural olarak yazılır:** `n=5`'lik duman koşusundan **×16 ile** doğrusal ekstrapolasyon,
+uzunluğu soruya göre değişen bir özne için **kapı kurmaya yetmez**; duman koşusu ya
+**tabakalanmış** (kısa/orta/uzun) seçilir ya da kapıya **%50 emniyet payı** konur.
+⚠️ Hüküm üzerindeki etkisi **YOK**: bu koşu ADR-0072 m.2 gereği yalnız **raporlanır**, `v1.0`
+eşiğini kurmaz. Ama bütçe artık **$2,20** ve kalan planın ihtiyacı ~$0,10.
+
+- [ ] **Adım 2b 🆕 (bu koşudan doğdu): duman-koşusu ekstrapolasyonu bir KAPI değil, TAHMİNDİR**
+Bir sonraki yeni özne/aile için ya tabakalanmış duman koşusu ya da %50 emniyet payı.
+Bu satır **borç** olarak açık kalır; bugün koşulacak yeni özne yok.
+
+- [x] **Adım 3: Eşit sınav kapısı — `recall@10` birebir aynı mı** ✅ **GEÇTİ 2026-09-09**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -524,15 +555,81 @@ done
 `verify:` **hepsinde 0,9500** ve bizim kolla birebir. Farklıysa 🚨 **DUR** — harness eşleşmemiş,
 hüküm kurulmaz (ADR-0057).
 
-- [ ] **Adım 4: Puanlama (panel hakemleriyle) + kesiklik damgası + gözle kalibrasyon**
+🚨 **YUKARIDAKİ KOMUT BOZUK — sessizce 0,0000 yazdırıyor. Düzeltilmiş hâli aşağıda.**
+`_detail.jsonl` şemasında `gold_retrieved` da `altin_getirildi` de **YOKTUR**; alan
+`harness.altin_sirasi`'dır (`harness_tablo.py`:115 bunu kullanır). Komut hata vermeden
+`recall@10=0,0000` bastı ⇒ *"eşit sınav kapısı ÇÖKTÜ"* diye okunabilirdi. Bu, bu hattın
+**sessiz yanlışlık** sınıfının bir örneğidir ve komut burada onarıldı:
+
+```python
+s = [json.loads(l)["harness"]["altin_sirasi"] for l in open(yol, encoding="utf-8") if l.strip()]
+print(f"recall@10 = {sum(1 for x in s if x is not None and x < 10)/len(s):.4f}")
+```
+
+**✅ KAPI GEÇTİ 2026-09-09 — ölçüldü:**
+
+| | recall@1 | recall@3 | recall@5 | **recall@10** |
+| :--- | ---: | ---: | ---: | ---: |
+| **Sonnet-5 (yeni)** | 0,5250 | 0,7625 | 0,8250 | **0,9500** |
+| 3.5 Flash-Lite (F0.4 çıpası) | 0,5250 | 0,7625 | 0,8250 | **0,9500** |
+
+Dört basamağın **dördü de** birebir aynı — beklenen, çünkü erişim modelden bağımsız (aynı
+indeks · aynı k · aynı sorular). `altin_dusuruldu` = **0** ⇒ mülga süzgeci altını düşürmedi.
+⇒ Sınav eşit, **hüküm kurulabilir** (ADR-0057).
+
+- [x] **Adım 4: Puanlama + kesiklik damgası + gözle kalibrasyon** ✅ **BİTTİ 2026-09-09**
 
 ⚠️ **Red-regex her yeni özne ailesinde kalibre EDİLMELİ.** Kalibresiz bırakmak onların
 reddini **eksik** sayar ve puanı **bizim lehimize** kaydırır. F0.4'te ölçüldü: Gemini
 kollarında **6 açık yanlış pozitif**, bizde **0**.
 `verify:` özne başına **ALET / GÖZ-orta / GÖZ-katı** üç okuma da raporlandı.
 
-- [ ] **Adım 5: `OZET.md` + commit** — ⛔ `v1.0` kapısının eşiği **oynamaz**; çıpa
-`3.5 Flash` kalır (ADR-0072 madde 2). Yeni özneler **raporlanır**, eşiği **kurmaz**.
+**✅ ALINDI 2026-09-09.** Hakem `openai/gpt-4o-mini` (aile dışlaması sağlandı: Anthropic özne
+↔ OpenAI hakem) · `judge_cost_usd` **$0,0588**. Kesiklik damgası: **4/80 `length`** — BİZ ve
+3.5 Flash kollarıyla **birebir aynı** (4/80), yani kesiklik kıyası bozmuyor.
+
+**Kalibrasyon (8/8 kalem gözle okundu →** `outputs/eval/hp-rakip-havuzu/GOZLE_KALIBRASYON_sonnet_5.json`**):**
+
+| kol | alet | temiz çekinme | çekinceli cevap | **açık yanlış pozitif** |
+| :--- | ---: | ---: | ---: | ---: |
+| **BİZ** | 4 | 4 | 0 | **0** |
+| 3.5 Flash | 11 | 7 | 3 | **1** |
+| **Sonnet-5** | **8** | **4** | **1** | **3** — id 17 · 35 · 41 |
+
+Kusur **ADR-0061'in birebir aynı sınıfı**, aile değişti: dedektör **son esaslı ibareyi** tarıyor,
+bu ailenin şablonu cevabı **şerh cümlesiyle** kapatıyor. id 35: *"nafaka davaları basit
+yargılama usulüne tabidir"* açılışı, *"…açıkça başka bir usul **belirtilmediği** sürece…"*
+kapanışı ⇒ **olumlu hükmün içindeki olumsuzlama** red sayılmış. ⛔ `REJECT_RE`'ye dokunulmadı.
+
+**⛔ HÜKÜM — üç okuma altında kütle:**
+
+| okuma | BİZ `tgta_v1` | **Sonnet-5** | fark |
+| :--- | ---: | ---: | ---: |
+| ALET (ham) | **0,8011** | 0,7911 | +1,00 p bize |
+| GÖZ-orta | 0,8011 | **0,8223** | **−2,12 p** |
+| **GÖZ-katı** | 0,8011 | **0,8348** | **−3,37 p** |
+
+🚨 **Sonnet-5 ÖNDE.** Öne geçtiğimiz tek okuma, önde olmadığımızı bildiğimiz okumadır:
+alette Sonnet aleyhine **3 yanlış pozitif** var, bizde **0**. Aynı düzeltmeyi F0.4'te Gemini
+ailesinin **lehine** yapmıştık; burada kendi **aleyhimize** uygulandı. Hakem gürültü tabanı
+~0,3 A1 puanı ⇒ −2,12 ve −3,37 puan **anlamlı**.
+
+**Önde olduğumuz tek eksen:** uydurma madde numarası **0/114 ↔ 2/163**.
+`coverage` (ALET) 0,9375 ↔ 0,9000 da bizde, ama GÖZ-katı'da Sonnet 0,9500'e çıkıyor.
+
+- [ ] **Adım 4b 🆕 — 🚨 B1 HAKKINDAKİ CÜMLEMİZ ÇÜRÜDÜ, borç açık kalır**
+`wrong_ref_rate_micro`: **BİZ 0,0769 ↔ Sonnet-5 0,0083** — **9,3× geride**. Deterministik
+doğrulayıcı ise *"var olmayan madde"* ekseninde bizi **0/114** ile önde gösteriyor (Sonnet
+2/163). İkisi çelişmiyor, **farklı şey sayıyorlar**: madde **uydurmuyoruz**, var olan
+**YANLIŞ** maddeye atıf yapıyoruz. ⇒ Planın *"B1'de rakiplerden geride değiliz"* hükmü
+**yalnız Gemini havuzunda** doğruydu; frontier havuzunda **geçmiyor**. `v2`'nin gerekçesi
+güçlendi. Bugün kapatılmaz (G14 atlandı, ADR-0075) — **borç**.
+
+- [x] **Adım 5: `OZET.md` + commit** ✅ **BİTTİ 2026-09-09** →
+`outputs/eval/hp-rakip-havuzu/OZET.md`. ⛔ Eşik **oynamadı**, çıpa `3.5 Flash` **kaldı**.
+
+⛔ `v1.0` kapısının eşiği **oynamaz**; çıpa `3.5 Flash` kalır (ADR-0072 madde 2).
+Yeni özneler **raporlanır**, eşiği **kurmaz**.
 
 ---
 

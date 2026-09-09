@@ -13,8 +13,10 @@
       → [plan · Görev 8 Adım 1b](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md)
 - [ ] **2 · TUI gözle doğrulama** — `python -m hakhukuk.tui`, üç soru, gözle gör ·
       **$0** (GPU) → [ROADMAP · Faz 4](ROADMAP.md)
-- [ ] **3 · Sonnet-5 öznesi** — rakip havuzuna frontier sınıfı girer; kapıyı **etkilemez**
-      (ADR-0072 m.2) · **~$0,82** *(ölçüldü)* → [ROADMAP · Faz 4](ROADMAP.md)
+- [x] **3 · Sonnet-5 öznesi** ✅ **2026-09-09** — 🚨 **Sonnet-5 ÖNDE**: kütle **0,8348** ↔
+      bizim **0,8011** (GÖZ-katı). Sınav eşit (`recall@10` 0,9500 birebir). Kapı
+      **etkilenmedi**, çıpa `3.5 Flash` kaldı (ADR-0072 m.2). Bedel **$1,1932**
+      *(tahmin $0,82 idi)* → [OZET](outputs/eval/hp-rakip-havuzu/OZET.md)
 - [ ] **4 · Kabul testi** — ⛔⛔ donmuş TEST **tek kez** açılır, insan onayı şart;
       ADR-0069 raporlaması zorunlu · ⛔ **ARAÇSIZ rejimde** (ADR-0076 m.4: rakipler araç
       kullanamaz, eşit sınav) · **~$0,10** → [ROADMAP · Faz 4](ROADMAP.md)
