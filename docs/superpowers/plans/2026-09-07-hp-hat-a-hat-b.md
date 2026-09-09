@@ -93,7 +93,7 @@ Hat A (paketleme, $0)  ─────┘                                       
 **Yığın:** Python 3.11 + `uv` · `source ~/code/global_venv/bin/activate` ·
 llama.cpp (`llama-server`, Q4_K_M, KV q8_0) · `sentence-transformers` (`bge-m3`, CPU) ·
 BM25 + dense hibrit, RRF (`RRF_K=10`) · `pytest` · hakem geçidi OpenRouter ·
-TUI için `textual` (**henüz kurulu değil** — ölçüldü 2026-09-07).
+TUI için `textual` (~~henüz kurulu değil~~ → **8.2.8 KURULU**, ölçüldü 2026-09-09).
 
 ---
 
@@ -543,7 +543,7 @@ kollarında **6 açık yanlış pozitif**, bizde **0**.
 **Ölçülmüş boşluk (2026-09-07):**
 - Servis katmanı **kod olarak yok**: `grep -rlE "fastapi|uvicorn|flask|gradio" scripts/` → **0**
 - Modeli indiren kişi yayımlanan sayıyı **üretemiyor** (YB6)
-- `textual` **kurulu değil**
+- ~~`textual` **kurulu değil**~~ → **8.2.8 kurulu** *(2026-09-09)*
 - İndeks **80 MB** ve `.gitignore:166` gereği git'te **yok** ⇒ S8 gerçek bir soru
 
 ---
@@ -1436,7 +1436,8 @@ fark **kaynaklanmadan** yayımlanmaz.
 **Dosyalar:** Create: `hakhukuk/tui.py` · `tests/test_tui.py` · Modify: `pyproject.toml`
 **Bağımlılık:** Görev 9 · 10
 
-⚠️ **`textual` kurulu DEĞİL** (ölçüldü 2026-09-07: `ModuleNotFoundError`). Yeni bağımlılık ⇒
+⚠️ ~~**`textual` kurulu DEĞİL** (ölçüldü 2026-09-07: `ModuleNotFoundError`)~~ → **kuruldu, 8.2.8**
+(ölçüldü 2026-09-09; Adım 1'in kapısı bu ölçümle geçti). Yeni bağımlılık ⇒
 gerekçe: tek ekranlı arayüzü elle yazmak `prompt_toolkit`/`curses` seviyesinde **kendi
 mantığını** doğurur; `textual` bunu hazır veriyor ve `answer()`'ın üstünde **ince kabuk**
 kalmasını sağlıyor.
