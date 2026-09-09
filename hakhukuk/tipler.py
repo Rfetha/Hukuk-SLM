@@ -16,6 +16,12 @@ class Durum(Enum):
     CEKINCELI = "cekinceli"    # kısmen dayanaklı — rozetle gösterilir
     SUSKUNLUK = "suskunluk"    # dürüst "bilmiyorum"
     KESIK = "kesik"            # üretim bütçesi bitti — YARIM cevap, gizlenmez
+    ARAMA_TUKENDI = "arama_tukendi"   # araç döngüsü SINIRA dayandı — dayanak eksik OLABİLİR
+
+    # ⛔ ARAMA_TUKENDI, KESIK ile BİRLEŞTİRİLMEZ (ADR-0076). İkisi vatandaşa FARKLI şey söyler:
+    #   KESIK          = "cümle yarım kaldı"        → metne güvenme
+    #   ARAMA_TUKENDI  = "cümle tam, dayanağı eksik" → metne güven, DAYANAĞINA güvenme
+    # Tek hâle indirmek, sınırın GÖRÜNÜR olması şartını (ADR-0076) sessizce kaldırırdı.
 
 
 class Yururluk(Enum):

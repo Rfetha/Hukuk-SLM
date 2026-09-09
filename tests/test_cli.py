@@ -14,11 +14,12 @@ def test_cli_sorumluluk_ibaresini_HER_cevapta_basar():
     assert "hukuki tavsiye değil" in r.stdout.lower()
 
 
-def test_cli_dort_durumu_ayirt_edilebilir_basar():
+def test_cli_bes_durumu_ayirt_edilebilir_basar():
     r = subprocess.run([sys.executable, "-m", "hakhukuk.cli", "--durumlari-listele"],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
-    for ad in ("CEVAP", "CEKINCELI", "SUSKUNLUK", "KESIK"):
+    # ⚠️ Dört → BEŞ (2026-09-09, ADR-0076): araç döngüsünün sınırı GÖRÜNÜR olmalı.
+    for ad in ("CEVAP", "CEKINCELI", "SUSKUNLUK", "KESIK", "ARAMA_TUKENDI"):
         assert ad in r.stdout
 
 

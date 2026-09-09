@@ -4,8 +4,16 @@ import pytest
 from hakhukuk.tipler import Atif, Cevap, Durum, Kaynak
 
 
-def test_durum_dort_hali_var():
-    assert {d.name for d in Durum} == {"CEVAP", "CEKINCELI", "SUSKUNLUK", "KESIK"}
+def test_durum_bes_hali_var():
+    """⚠️ Dört hâl BEŞE çıktı (2026-09-09, Görev 18 · ADR-0076): araç döngüsü sınıra
+    dayanabilir ve bu, dört hâlin hiçbiriyle aynı şey değildir. Davranış değişti, test de
+    değişti — sessizce değil, gerekçesiyle.
+
+    ⛔ `ARAMA_TUKENDI` `KESIK`'e katlanmaz: `KESIK` *"cümle yarım"*, `ARAMA_TUKENDI`
+    *"cümle tam, dayanağı eksik olabilir"* demektir.
+    """
+    assert {d.name for d in Durum} == {"CEVAP", "CEKINCELI", "SUSKUNLUK", "KESIK",
+                                       "ARAMA_TUKENDI"}
 
 
 def test_cevap_donmus_ve_degistirilemez():

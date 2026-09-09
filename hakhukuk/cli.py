@@ -21,6 +21,8 @@ ROZET = {
     Durum.CEKINCELI: "⚠️ ÇEKİNCELİ — kısmen dayanaklı; atıfları kendiniz doğrulayın",
     Durum.SUSKUNLUK: "🤐 SUSKUNLUK — kaynaklarda karşılık bulunamadı",
     Durum.KESIK: "✂️ KESİK — üretim bütçesi bitti, cevap YARIM",
+    # ⛔ KESİK'ten AYRI (ADR-0076): orada cümle yarım, burada cümle tam ama DAYANAĞI eksik.
+    Durum.ARAMA_TUKENDI: "🔍 ARAMA TÜKENDİ — arama sınırına dayanıldı, dayanak EKSİK olabilir",
 }
 
 

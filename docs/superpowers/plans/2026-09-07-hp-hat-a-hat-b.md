@@ -1,6 +1,6 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
-## 📊 İCRA DURUMU — 2026-09-09 · **68/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+## 📊 İCRA DURUMU — 2026-09-09 · **75/89 kutucuk** · 🏷️ `v0.2` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -1890,21 +1890,21 @@ ama gerekçe **eval kazancı değil ÜRÜN YETENEĞİ** — ve bu gerekçe **öl
 sınıflandırma **TOOL DEĞİLDİR**, döngünün **dışında** koşulsuz çalışır. Uydurulmuş madde
 **0/114** garantisi buradan geliyor; tool yapılırsa model çağırmayı unuttuğu an buharlaşır.
 
-- [ ] **Adım 1: Failing test — beş araç + KAPI'nın atlanamazlığı**
+- [x] **Adım 1: Failing test — beş araç + KAPI'nın atlanamazlığı** ✅ **2026-09-09** — `tests/test_araclar.py` (8 test) + `tests/test_servis.py`'ye 5 araç testi
 
 ⚠️ En kritik test: *"model hiç araç çağırmasa bile atıf doğrulama ÇALIŞIR"* ve
 *"model `terazi`'yi atlayamaz"*. Araç testleri deterministik (sahte korpusla, indekssiz).
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör** ✅ `ModuleNotFoundError: hakhukuk.araclar` — kırmızı görüldü
 
-- [ ] **Adım 3: `Durum.ARAMA_TUKENDI` + `tipler.py`**
+- [x] **Adım 3: `Durum.ARAMA_TUKENDI` + `tipler.py`** ✅ dört hâl **beşe** çıktı; `test_durum_dort_hali_var` → `test_durum_bes_hali_var`, gerekçesi testin docstring'inde
 
 ⚠️ `tests/test_tipler.py::test_durum_dort_hali_var` **kırılacak** — beklenen, davranış
 değişiyor: dört hâl **beşe** çıkıyor. Test güncellenir, gerekçesi yazılır.
 ⛔ `KESIK` ile **birleştirilmez**: `KESIK` = *"cümle yarım"*, `ARAMA_TUKENDI` = *"cümle tam,
 dayanağı eksik olabilir"* — kullanıcıya **farklı şey** söylerler.
 
-- [ ] **Adım 4: `hakhukuk/araclar.py` — beş deterministik araç**
+- [x] **Adım 4: `hakhukuk/araclar.py` — beş deterministik araç** ✅ `Araclar` sınıfı
 
 | araç | imza | ölçülmüş hedef |
 | :--- | :--- | :--- |
@@ -1920,7 +1920,18 @@ Madde` ayrı) — düz metin karşılaştırması korpusun **%22'sinde** yanlı�
 `verify:` her araç için birim testi yeşil; hiçbiri ağ ya da model istemiyor; testler sahte
 korpusla koşuyor (indeks gerekmiyor).
 
-- [ ] **Adım 5: `servis.answer()` — çok adımlı mod, SINIRLI döngü**
+**✅ ALINDI 2026-09-09 — 8 test yeşil, ağ/model/indeks YOK.**
+⚠️ **Plandan sapma, damgalanır:** planın imzaları modül fonksiyonu (`ara(sorgu, k=10)`);
+uygulama bir **sınıf** (`Araclar`) — metot imzaları **birebir aynı**, ama korpus enjekte
+edilebilir olduğu için testler sahte korpusla, monkeypatch'siz koşuyor. Modül fonksiyonu
+gizli bir tekil (singleton) isterdi ve testte onu yamamak gerekirdi.
+🚨 **Donmuş TEST'in dersi araç katmanına taşındı:** `kanun_bul` ada uyan **BÜTÜN** kanunları
+döndürür — tek numara döndürmek, `atif_dogrula.py`'de bugün onardığımız kusurun (alfabetik
+ilk aday = mülga 1475) araç katmanında yeniden üretilmesi olurdu.
+⛔ `ara`, retriever verilmemişse **açıkça patlar**: sessiz boş liste *"sonuç yok"* ile
+*"arama hiç çalışmadı"*yı vatandaş için aynı şeye çevirirdi.
+
+- [x] **Adım 5: çok adımlı mod, SINIRLI döngü** ✅ `servis.answer_arac()` — AYRI fonksiyon
 
 ```python
 AZAMI_ADIM = 4     # ⛔ sınır. Dayanınca Durum.ARAMA_TUKENDI — sessizce teslim EDİLMEZ.
@@ -1928,13 +1939,23 @@ AZAMI_ADIM = 4     # ⛔ sınır. Dayanınca Durum.ARAMA_TUKENDI — sessizce te
 `verify:` döngü sınırına dayanan senaryo testte `ARAMA_TUKENDI` veriyor · KAPI'lar döngü
 sonrası **her hâlde** çalışıyor (araç çağrılmasa da).
 
+**✅ ALINDI 2026-09-09.** ⚠️ **Plandan sapma:** `answer()`'a bayrak eklenmedi, **AYRI
+fonksiyon** yazıldı — `servis.answer_arac()`. Sebebi iki katlı: (1) CLAUDE.md §4 public
+API'de bool bayrağı yasaklıyor; (2) ayrılık **regresyon kapısını yapısal olarak** kazanıyor —
+`git diff` `servis.py` için **120 ekleme, 0 silme**, yani araçsız yolun kodu **hiç
+dokunulmadı**.
+⚠️ **Bugün taşıyıcı araç çağrısı AYRIŞTIRMIYOR** ve bu `_uret_arac`'ta açıkça yazılı:
+llama-server tarafında tool-calling açılana kadar araçlı yol tek atış davranır. Sessiz boş
+demet döndürmek *"model araç istemedi"* ile *"taşıyıcı aracı taşımıyor"*u aynı şeye çevirirdi
+⇒ **borç, gizlenmedi.**
+
 - [ ] **Adım 6: 🚨 REGRESYON KAPISI — araçsız davranış DEĞİŞMEDİ mi**
 
 ⛔ Araç katmanı **varsayılanı bozmamalı**: araç kullanılmayan yolda 80 kalemlik sınıflandırma
 çıktısı **birebir aynı** kalmalı (suskunluk `[15, 37, 45, 66, 79]`).
 `verify:` 80 kalem yeniden koşuldu, suskunluk kümesi **değişmedi**.
 
-- [ ] **Adım 7: CLI/TUI'de görünürlük + commit**
+- [x] **Adım 7: CLI/TUI'de görünürlük** ✅ `🔍 ARAMA TÜKENDİ` (CLI) · `🔵 ARAMA TÜKENDİ` (TUI); `test_cli_bes_durumu…` yeşil
 
 `verify:` `ARAMA_TUKENDI` rozeti CLI ve TUI'de **görünüyor**; `python -m pytest` yeşil.
 
@@ -1957,12 +1978,22 @@ sonrası **her hâlde** çalışıyor (araç çağrılmasa da).
 [ADR-0071](../../adr/0071-v1-release-artefakti-tek-gguf.md) **ne** yayımlanacağını karara
 bağlamış (tek GGUF + ad kuralı) ama **nasıl ve ne zaman** hiçbir yerde yazılı değildi.
 
-- [ ] **Adım 1: Artefaktı ADR-0071'in adıyla hazırla**
+- [x] **Adım 1: Artefaktı ADR-0071'in adıyla hazırla** ✅ **BİTTİ 2026-09-09**
 
 Kapı sonucuna göre ad: geçerse `HakHukuk-4B-v1.0-Q4_K_M.gguf`, geçmezse
 `HakHukuk-4B-v0.2-Q4_K_M.gguf` (ADR-0065 bölünmüş sürümleme buna izin veriyor).
 ⛔ İç ad `tgta_v1-q4_k_m.gguf` **korunur** — iki ad ayrı iş görür (`kollar.md`).
 `verify:` `sha256` hesaplandı ve `kollar.md`'ye yazıldı; boyut **2,59 GiB**.
+
+**✅ ALINDI 2026-09-09** → [`kollar.md`](../../record/kollar.md) *(2026-09-09 bloğu)*
+`sha256` **`755e15e92e9f7021934f2d5eada6c1f02fcc92be23f0536b0c2a0a9586e7bffc`** ·
+**2.783.446.720 bayt = 2,592 GiB** (ADR-0071'in 2,59 GiB'iyle tutuyor).
+⚠️ **Ad, plandan SAPIYOR ve sebebi yazılı:** plan bu dalda *"`v0.2`"* diyordu; `v1.0` kapısı
+geçilmedi (ADR-0077) ve ürün sürümü **`v0.3`** oldu — `v0.2` git'te **zaten etiketli**, bugün
+yapılan yayına verilemez ⇒ **`HakHukuk-4B-v0.3-Q4_K_M.gguf`**.
+⛔ Dosya kopyalanmadı: 2,6 GB'lık ikinci kopyanın karşılığı yok, ad yükleme anında verilir.
+⚠️ `docs/record/kollar.md`'ye **yeni tarihli blok eklendi**, geçmiş satır **yeniden
+yazılmadı** — kaydın *"o gün bu belge bunu diyordu"* niteliği korundu.
 
 - [ ] **Adım 2: HF model reposu — kart + lisans + ⛔ İNDEKS ŞERHİ**
 

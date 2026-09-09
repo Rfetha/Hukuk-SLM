@@ -149,11 +149,28 @@ adaptörleri merge edilmiş **TEK** GGUF, dosya adı **model + boyut + sürüm +
 `HakHukuk-4B-v1.0-Q4_K_M.gguf`. İç ad `tgta_v1-q4_k_m.gguf` **korunur** — yukarıdaki
 *"iki ad ayrı iş görür"* kuralının doğrudan uygulanmasıdır, ona bir istisna değil.
 
+🆕 **2026-09-09 — yayın adı BELİRLENDİ ve artefakt kimliği ÖLÇÜLDÜ (Görev 17 Adım 1).**
+`v1.0` kapısı geçilmedi ([ADR-0077](../adr/0077-v1-0-verilmedi-v0-3.md)) ⇒ ürün sürümü
+**`v0.3`** ve yayın adı **`HakHukuk-4B-v0.3-Q4_K_M.gguf`**.
+⚠️ Plan bu dalda *"`v0.2`"* yazıyordu; o ad **yazıldığı gün** güncel olan ürün sürümüydü ve
+`v0.2` git'te **zaten etiketli** ⇒ bugün yapılan yayına verilemez. Sapma burada damgalıdır.
+
+| | değer |
+| :--- | :--- |
+| **yayın adı** | `HakHukuk-4B-v0.3-Q4_K_M.gguf` |
+| iç ad *(korunur)* | `tgta_v1-q4_k_m.gguf` |
+| **`sha256`** | `755e15e92e9f7021934f2d5eada6c1f02fcc92be23f0536b0c2a0a9586e7bffc` |
+| boyut | **2.783.446.720 bayt = 2,592 GiB** (ADR-0071'in *"2,59 GiB"*i ile tutuyor) |
+
+⛔ Dosya **kopyalanmadı/yeniden adlandırılmadı** — 2,6 GB'lık ikinci bir kopya diskte
+karşılığı olmayan bir maliyettir; ad, yükleme anında verilir. Bağlayıcı kimlik **`sha256`**.
+
 **Artefakt kimliği** (`tgta_v1`):
 
 ```
 models/merged/tgta_v1/                   merge edilmiş bf16 (8,8 GB)
 models/gguf/tgta_v1-q4_k_m.gguf          taşıyıcı, 2,59 GiB (base ile aynı boyut)
+                                         sha256 755e15e9…86e7bffc (ölçüldü 2026-09-09)
 outputs/eval/cp3d-merge/KUNYE_tgta_v1.json   merge künyesi (normlar, TIES istatistikleri)
 ```
 
