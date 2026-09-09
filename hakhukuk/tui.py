@@ -45,3 +45,11 @@ class HakHukukTUI(App):
 
 def main() -> None:
     HakHukukTUI().run()
+
+
+# ⚠️ Bu blok olmadan `python -m hakhukuk.tui` modülü içe aktarıp SESSİZCE çıkıyordu:
+# `main()` tanımlıydı ama çağrılmıyordu. `cli.py`'de vardı, burada yoktu ve hiçbir test
+# yakalamadı — kaynak denetimi mantığın sızmadığına bakar, programın çalıştığına değil.
+# Gözle doğrulama kapısında yakalandı (2026-09-09); `tests/test_tui.py` artık çiviliyor.
+if __name__ == "__main__":
+    main()

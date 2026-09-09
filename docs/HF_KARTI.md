@@ -129,7 +129,7 @@ Sürümü sınırlayan etken modelin başarımı değil, ölçüm aygıtının g
 Karşılaştırma tek bir ölçüt üzerinden yapılmamıştır. Beş özne aynı sınava girmiştir: v2 soru
 seti (n=80, geliştirme kümesi), önsözsüz istem, erişim katmanı etkin (k=10), üretim bütçesi
 1536 belirteç, seed 3407, hakem `gpt-4o-mini`. Sınavın eşit olduğu varsayılmamış, ölçülmüştür
-(bölüm 7.2).
+(bölüm 7.3).
 
 | Eksen | **HakHukuk-4B** | `gemini-3.1-flash-lite` | `gemini-3.5-flash-lite` | `gemini-3.5-flash` | `claude-sonnet-5` | `Qwen3.5-4B` (temel) |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -149,7 +149,26 @@ Sonnet-5 kütle, `A1` ve atıf kalitesi eksenlerinde öndedir. HakHukuk cevaplam
 uydurulmuş madde numarasında öndedir; aşırı çekinmede iki model eşittir. Fark, kaynak verilen
 bir sınavda ölçülmüştür; kaynaksız bir karşılaştırma değildir.
 
-### 7.1 Kütlenin üç okuması
+### 7.1 Eksenler ne ölçüyor
+
+| Eksen | Tanım |
+| :--- | :--- |
+| **Sadık cevap kütlesi** | `cevaplama oranı × A1`. Tüm soru kümesine oranla, model tarafından üretilmiş **ve** kaynaklarca desteklenen cevapların payı. Bağlayıcı ölçüt budur: cevaplanmayan soru vatandaş için değersizdir, bu yüzden çekinmeler de paydada kalır. |
+| **Cevaplama oranı** (`coverage`) | 80 sorunun kaçında modelin çekinmek yerine cevap ürettiği. Tek başına bir başarı ölçütü değildir; yanlış cevap da bu oranı yükseltir. |
+| **`A1`, cevaplanan** | Yalnız cevap verilen kalemler üzerinde hakemin ölçtüğü sadakat makro ortalaması: cevaptaki iddiaların verilen kaynaklarca desteklenme oranı. Çekinmeler bu ortalamaya **girmez** — girerse ölçüt çekinmeyi ödüllendirir. |
+| **`A1`, altın getirilen** | Aynı ölçüt, yalnız doğru maddenin bağlama **girdiği** kalemlerde. Erişim başarısızlığını modelin kusurundan ayırır. |
+| **`recall@10`** | Doğru maddenin, erişim katmanının getirdiği ilk on kaynak arasında bulunma oranı. Modelden bağımsızdır ve **kütlenin üst sınırıdır**: bağlama girmeyen maddeden doğru cevap üretilemez. |
+| **Aşırı çekinme** | Doğru madde bağlamda olduğu hâlde modelin cevap vermediği kalem sayısı. Erişim kusuru değildir; modelin kendi kararıdır. Değerler gözle sayılmıştır. |
+| **İsabetsiz atıf** | Cevabın, bağlamdaki **yanlış** maddeye dayandırıldığı kalem sayısı. Madde uydurma ile karıştırılmamalıdır: atfedilen madde gerçektir, ancak soruyu karşılamaz. Dört öznede 80/80 kalem tek tek gözle okunarak sayılmıştır. |
+| **Uydurulmuş madde numarası** | Cevapta anılan ve korpusta **karşılığı bulunmayan** madde numarası sayısı. Hakem değil, deterministik doğrulama sayar. Payda, o koldaki toplam atıf sayısıdır; bu yüzden kollar arasında paydalar farklıdır. |
+| **Ezber kütlesi (M5)** | Modele **kaynak verilmeden** ölçülen kütle. Anti-hedeftir: yüksek değer, modelin ezberden hüküm kurduğunu gösterir ve mevzuat değiştiğinde sessizce yanlışa döner. |
+| **Cevap başına maliyet** | Bir cevabın çıkarım bedeli. Yerel model tüketici sınıfı bir GPU'da koştuğu için sıfırdır; rakiplerde OpenRouter liste fiyatından ölçülmüştür. Hakem bedeli bu satıra dâhil değildir. |
+| **Ortalama belirteç / cevap** | Cevap başına üretilen belirteç sayısı, düşünce kanalı dâhil. Maliyet ve gecikme ekseni; doğruluk ölçütü değildir. |
+
+Bu ölçütlerin hiçbiri standart bir ölçüt kümesinden gelmez; tanımları bu projeye aittir ve
+kaynakları GitHub deposundaki `docs/adr/` ile `docs/record/` altındadır.
+
+### 7.2 Kütlenin üç okuması
 
 Ana tabloda bağlayıcı olan (GÖZ-katı) okuma yer almaktadır. Üçü birlikte:
 
@@ -171,7 +190,7 @@ okuma kullanılmamıştır: çekinme dedektörü Sonnet-5 kolunda sekiz çekinme
 saymaktadır (tam ve atıflı üç doğru cevap), HakHukuk kolunda ise yanlış pozitif yoktur.
 Düzeltme uygulandığında sıralama değişmektedir.
 
-### 7.2 Sınavın eşit olduğunun kanıtı
+### 7.3 Sınavın eşit olduğunun kanıtı
 
 | Eksen | HakHukuk | Gemini kolları | Sonnet-5 |
 | :--- | ---: | ---: | ---: |
@@ -181,9 +200,9 @@ Düzeltme uygulandığında sıralama değişmektedir.
 | İstem | önsözsüz | aynı | aynı |
 | Üretim bütçesi | 1536 | 1536 | 1536 |
 
-### 7.3 Dipnotlar
+### 7.4 Dipnotlar
 
-- **ᵃ** Rakip sütunlarında bağlayıcı GÖZ-katı okuması yazılıdır (bölüm 7.1).
+- **ᵃ** Rakip sütunlarında bağlayıcı GÖZ-katı okuması yazılıdır (bölüm 7.2).
 - **ᵇ** Temel model ölçülmedi değil, **ölçülemedi**: sınava sokulmuş ve geçerlilik kapısından
   kalmıştır (kesik cevap 16/80 = %20, eşik %5), dolayısıyla hakem çağrılmamıştır. Nedeni
   ölçülmüştür: temel model uzun, kaynak alıntılayan cevaplar üretmekte ve 1536 belirtece

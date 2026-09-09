@@ -16,3 +16,23 @@ def test_sorumluluk_ibaresi_TEK_kaynaktan_geliyor():
     """S18'in dersi: aynı metin iki yerde durursa sessizce ayrışır."""
     from hakhukuk.cli import SORUMLULUK_IBARESI
     assert tui.SORUMLULUK_IBARESI is SORUMLULUK_IBARESI
+
+
+def test_modul_calistirilinca_uygulama_GERCEKTEN_baslar(monkeypatch):
+    """`python -m hakhukuk.tui` HİÇBİR ŞEY YAPMIYORDU — gözle yakalandı 2026-09-09.
+
+    `main()` tanımlıydı ama `if __name__ == "__main__":` bloğu yoktu; modül içe aktarılıp
+    sessizce çıkıyordu. `cli.py`'de bu blok vardı, TUI'de yoktu.
+
+    Yukarıdaki kaynak-denetimi testi bunu YAKALAYAMAZ: o, mantığın sızmadığına bakar,
+    programın çalıştığına değil. Ürün yüzünün insan gözüyle hiç görülmemiş olması, kusurun
+    aylarca fark edilmemesinin sebebidir — bu test o boşluğu kapatıyor.
+    """
+    import runpy
+
+    from textual.app import App
+
+    baslatildi = []
+    monkeypatch.setattr(App, "run", lambda self, *a, **k: baslatildi.append(type(self).__name__))
+    runpy.run_module("hakhukuk.tui", run_name="__main__")
+    assert baslatildi == ["HakHukukTUI"], "modül koşturuldu ama uygulama başlamadı"
