@@ -60,6 +60,11 @@ def _uret(mesajlar: list[dict]) -> tuple[str, str]:
     """llama-server'a tek istek. Döner: (metin, finish_reason).
 
     Deterministik: temperature=0, sabit tohum — aynı soru aynı cevabı verir.
+    ⚠️ Bu değişmez SUNUCU YAPILANDIRMASI SABİTKEN geçerlidir. Ölçüldü 2026-09-09: yalnız KV
+    önbelleğinin kuantizasyonunu değiştirmek (q8_0 ↔ varsayılan fp16) aynı soruda durum
+    sınıfını SUSKUNLUK'tan ÇEKİNCELİ'ye çeviriyor. Yayımlanan sayıların bağlayıcı
+    yapılandırması: `-ngl 99 -fa on --no-context-shift --cache-type-k q8_0
+    --cache-type-v q8_0 -c 8192` (MODEL_CARD §7.10).
     ⚠️ Bütçe TEK havuzdur (düşünce + cevap). Ölçüm hattı iki geçişli zorunlu kapatma
     kullanıyor; ürün kullanmıyor çünkü kesiklik burada GİZLENMİYOR: bütçe biterse
     `finish_reason="length"` gelir ve terazi cevabı KESİK olarak damgalar.

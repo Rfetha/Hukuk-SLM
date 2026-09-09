@@ -131,6 +131,28 @@ Ağırlıklar ilk kez yayımlandı: `Rfetha/HakHukuk-4B-v0.3-Q4_K_M`. Model kart
 ilk üç bölümü şu kısıtları bildiriyor: model tek başına bildirilen başarımı üretemez (indeks
 dağıtılmadı), cevapların ~%5'i boş döner, hukuki tavsiye değildir.
 
+## 8. Sunucu bayrakları cevabı değiştiriyor — yayından SONRA yakalandı
+
+TUI ekran görüntüsü alınırken aynı sorunun daha önceki başsız koşuda ÇEKİNCELİ, şimdi
+SUSKUNLUK döndüğü görüldü. Belirsizlik sanıldı, **ölçülerek çürütüldü**: aynı sunucuda iki
+koşu birebir aynı (`sha256 79b6915a…`). Kontrollü deneyde 8081'de varsayılan KV'li ikinci
+bir sunucu açıldı:
+
+| KV önbelleği | durum | `sha256` | uzunluk |
+| :--- | :--- | :--- | ---: |
+| `q8_0` (ölçümlerin yapıldığı) | SUSKUNLUK | `79b6915a…` | 201 |
+| varsayılan (fp16) | ÇEKİNCELİ | `e97a2b85…` | 622 |
+
+⇒ Ürünün cevabı **sunucu yapılandırmasına bağlı**. Ağırlıklar bu bulgudan **önce**
+yayımlanmıştı ve kartta sunucu bayrakları **yazmıyordu**; yani indiren kişi ölçtüğümüzden
+başka bir ürün koşacaktı. Kart aynı gün düzeltildi (bölüm 3, bağlayıcı bayraklar).
+
+⚠️ Farkın 80 kalemdeki toplam etkisi **ölçülmedi**; varsayılan KV ile 0,8011'in korunacağı
+iddia edilmiyor. Açık borç ($0, ~1 sa GPU).
+⭐ Ders: *"aynı soru aynı cevabı verir"* değişmezi **yapılandırma sabitken** geçerlidir ve
+yayımlanan bir artefaktta yapılandırma sabit **değildir** — indiren kişi kendi bayraklarını
+seçer. Yayın kartı, ölçüm künyesinin yerine geçmez; künyeyi **taşımak** zorundadır.
+
 ## Paper eşlemesi
 
 Methodology (kabul testi + tavan kullanımı) · **Negatif bulgu** (frontier önde; B1 hükmümüz

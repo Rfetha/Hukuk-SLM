@@ -59,7 +59,32 @@ uyarısı gösterilir. Bununla birlikte kullanıcı açısından sonuç boş bir
 açık borç olarak kaydedilmiştir; düzeltilmesi ürün davranışını değiştireceğinden yeniden
 ölçüm yapılmadan uygulanmayacaktır.
 
-## 3. Hukuki tavsiye değildir
+## 3. Nasıl koşulmalı — sunucu bayrakları sonucu DEĞİŞTİRİR
+
+Bildirilen değerler aşağıdaki `llama-server` yapılandırmasıyla üretilmiştir. Bayraklar
+belgelendirme ayrıntısı değildir: ölçülmüştür ki farklı bir yapılandırma **farklı cevap**
+üretmektedir.
+
+```bash
+llama-server -m HakHukuk-4B-v0.3-Q4_K_M.gguf \
+  -ngl 99 -fa on --no-context-shift \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  -c 8192 --host 127.0.0.1 --port 8080
+```
+
+Kontrollü ölçüm (2026-09-09, aynı soru, aynı kod, seed 3407, sıcaklık 0):
+
+| KV önbelleği | Durum sınıfı | Cevap `sha256` | Uzunluk |
+| :--- | :--- | :--- | ---: |
+| `q8_0` (bildirilen değerlerin ölçüldüğü) | SUSKUNLUK | `79b6915a…` | 201 |
+| varsayılan (fp16) | ÇEKİNCELİ CEVAP | `e97a2b85…` | 622 |
+
+Aynı yapılandırmada üretim yinelenebilirdir (iki koşu, özdeş `sha256`). Değişen tek etken
+KV önbelleğinin kuantizasyonudur. Bu farkın 80 kalemlik kümedeki toplam etkisi
+**ölçülmemiştir**; dolayısıyla varsayılan KV ile bildirilen %80,1'in korunacağı
+**iddia edilmemektedir**.
+
+## 4. Hukuki tavsiye değildir
 
 HakHukuk, hukuk metnini anlaşılır kılmak amacıyla geliştirilmiş bir araştırma artefaktıdır.
 Avukat değildir ve çıktısı hukuki tavsiye niteliği taşımaz. Ürettiği her madde numarası,
@@ -67,7 +92,7 @@ Avukat değildir ve çıktısı hukuki tavsiye niteliği taşımaz. Ürettiği h
 değerlendirilmelidir. Mevzuat değişir, ağırlıklar değişmez; güncellik erişim katmanının
 sorumluluğundadır.
 
-## 4. Ölçüm sonuçları
+## 5. Ölçüm sonuçları
 
 Geliştirme kümesi (n=80, erişim katmanı etkin, k=10, önsözsüz istem, hakem `gpt-4o-mini`):
 
@@ -92,19 +117,19 @@ Donmuş test kümesi (n=40, tek kez açıldı, 2026-09-09):
 bileşiminden kaynaklanmakta, %24'ü kaynaklanmamaktadır. Model, görülmemiş veride üst sınırını
 da daha düşük oranda kullanmaktadır.
 
-## 5. Sürüm neden v1.0 değil
+## 6. Sürüm neden v1.0 değil
 
 Sürüm kapısının üç maddesi geliştirme kümesinde geçilmiş ve kabul testi koşulmuştur. v1.0 adı
 yine de verilmemiştir: bildirilen her değer tek bir hakem ailesinin (`gpt-4o-mini`) hükmüdür
 ve iki hakem ailesi arasında ölçülen uyum κ = 0,534 olup aracın 0,6 eşiğinin altındadır.
 Sürümü sınırlayan etken modelin başarımı değil, ölçüm aygıtının güvenilirliğidir.
 
-## 6. Karşılaştırma — skor kartı
+## 7. Karşılaştırma — skor kartı
 
 Karşılaştırma tek bir ölçüt üzerinden yapılmamıştır. Beş özne aynı sınava girmiştir: v2 soru
 seti (n=80, geliştirme kümesi), önsözsüz istem, erişim katmanı etkin (k=10), üretim bütçesi
 1536 belirteç, seed 3407, hakem `gpt-4o-mini`. Sınavın eşit olduğu varsayılmamış, ölçülmüştür
-(bölüm 6.2).
+(bölüm 7.2).
 
 | Eksen | **HakHukuk-4B** | `gemini-3.1-flash-lite` | `gemini-3.5-flash-lite` | `gemini-3.5-flash` | `claude-sonnet-5` | `Qwen3.5-4B` (temel) |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -124,7 +149,7 @@ Sonnet-5 kütle, `A1` ve atıf kalitesi eksenlerinde öndedir. HakHukuk cevaplam
 uydurulmuş madde numarasında öndedir; aşırı çekinmede iki model eşittir. Fark, kaynak verilen
 bir sınavda ölçülmüştür; kaynaksız bir karşılaştırma değildir.
 
-### 6.1 Kütlenin üç okuması
+### 7.1 Kütlenin üç okuması
 
 Ana tabloda bağlayıcı olan (GÖZ-katı) okuma yer almaktadır. Üçü birlikte:
 
@@ -146,7 +171,7 @@ okuma kullanılmamıştır: çekinme dedektörü Sonnet-5 kolunda sekiz çekinme
 saymaktadır (tam ve atıflı üç doğru cevap), HakHukuk kolunda ise yanlış pozitif yoktur.
 Düzeltme uygulandığında sıralama değişmektedir.
 
-### 6.2 Sınavın eşit olduğunun kanıtı
+### 7.2 Sınavın eşit olduğunun kanıtı
 
 | Eksen | HakHukuk | Gemini kolları | Sonnet-5 |
 | :--- | ---: | ---: | ---: |
@@ -156,9 +181,9 @@ Düzeltme uygulandığında sıralama değişmektedir.
 | İstem | önsözsüz | aynı | aynı |
 | Üretim bütçesi | 1536 | 1536 | 1536 |
 
-### 6.3 Dipnotlar
+### 7.3 Dipnotlar
 
-- **ᵃ** Rakip sütunlarında bağlayıcı GÖZ-katı okuması yazılıdır (bölüm 6.1).
+- **ᵃ** Rakip sütunlarında bağlayıcı GÖZ-katı okuması yazılıdır (bölüm 7.1).
 - **ᵇ** Temel model ölçülmedi değil, **ölçülemedi**: sınava sokulmuş ve geçerlilik kapısından
   kalmıştır (kesik cevap 16/80 = %20, eşik %5), dolayısıyla hakem çağrılmamıştır. Nedeni
   ölçülmüştür: temel model uzun, kaynak alıntılayan cevaplar üretmekte ve 1536 belirtece
@@ -179,14 +204,14 @@ Türkiye Cumhuriyeti mevzuatı üzerine kurulmuş kendi CANON kümemizden üreti
 LegalBench ve BigLaw-Bench gibi dış ölçütler koşulmamıştır; bu bir eksiklik değil kayıtlı bir
 karardır (söz konusu kümeler İngilizce ve ABD common-law temellidir).
 
-## 7. Yöntem
+## 8. Yöntem
 
 İki LoRA kolu ham temel modelden bağımsız eğitilmiştir; görev vektörü tanımı
 (`τ = θ_ft − θ_base`) bunu zorunlu kılar. Birleştirme, eşzamanlı k-yollu ham TIES ile tam
 ağırlık uzayında yapılmış, kuantizasyon en sona bırakılmıştır. Norm dengeleme ana sonuç değil
 ablasyondur; ölçüm, önceki kararın çıkarımını tersine çevirmiştir.
 
-## 8. Dosya
+## 9. Dosya
 
 | | |
 | :--- | :--- |
@@ -195,7 +220,7 @@ ablasyondur; ölçüm, önceki kararın çıkarımını tersine çevirmiştir.
 | Boyut | 2.783.446.720 bayt (2,592 GiB) |
 | İç ad (izlenebilirlik) | `tgta_v1-q4_k_m.gguf` |
 
-## 9. Sınırlar
+## 10. Sınırlar
 
 - Kapsam yalnızca yürürlükteki Türkiye Cumhuriyeti kanunlarıdır (892 kanun, 40.496 madde).
   Yönetmelik, tüzük, KHK ve tebliğ kapsam dışıdır.

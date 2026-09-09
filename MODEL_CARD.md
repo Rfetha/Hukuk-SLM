@@ -707,6 +707,28 @@ ister. Açık borç olarak kayıtlıdır. Ölçüm artefaktları:
 
 ---
 
+### 7.10 Sunucu bayrakları sonucu DEĞİŞTİRİR — yayımlanan artefakt için bağlayıcı
+
+**Ölçüldü 2026-09-09**, kontrollü deney: aynı soru, aynı kod, seed 3407, sıcaklık 0; değişen
+tek etken `llama-server`'ın KV önbelleği kuantizasyonu.
+
+| KV önbelleği | durum sınıfı | cevap `sha256` | uzunluk |
+| :--- | :--- | :--- | ---: |
+| `q8_0` *(bütün ölçümlerin yapıldığı)* | SUSKUNLUK | `79b6915a…` | 201 |
+| varsayılan (fp16) | ÇEKİNCELİ | `e97a2b85…` | 622 |
+
+Aynı yapılandırmada üretim **yinelenebilir** (iki koşu, özdeş `sha256`) ⇒ bu belirsizlik değil,
+**yapılandırmanın sonucudur**. `servis.py`'nin *"aynı soru aynı cevabı verir"* değişmezi
+yapılandırma sabitken geçerlidir; bu şerh oraya da düşmelidir.
+
+Bağlayıcı yapılandırma: `-ngl 99 -fa on --no-context-shift --cache-type-k q8_0
+--cache-type-v q8_0 -c 8192`. HF kartının 3. bölümüne yazıldı.
+
+⚠️ **Farkın 80 kalemdeki toplam etkisi ÖLÇÜLMEDİ.** Dolayısıyla varsayılan KV ile 0,8011'in
+korunacağı **iddia edilmiyor**. Açık borç; ölçümü $0 ve ~1 saat GPU.
+
+---
+
 ## 8 · Kullanım
 
 ### Ürün katmanı — `hakhukuk/` *(2026-09-07)*
