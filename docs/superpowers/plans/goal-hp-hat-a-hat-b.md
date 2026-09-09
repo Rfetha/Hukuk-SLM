@@ -1,8 +1,9 @@
 /goal Planı BİTİR: docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md
 ÖNCE OKU: planın İCRA DURUMU + İŞ SIRASI blokları (82/90) · plans/post-hp-hat-b-tickets.md.
 DURUM 2026-09-09: yedi sıradan beşi kapandı. Sürüm v0.3; v1.0 VERİLMEDİ (ADR-0077) — engel model
-değil ÖLÇÜM AYGITI (tek hakem ailesi, κ 0,534 < 0,6). 164 test yeşil. 16 commit YEREL, push
-EDİLMEDİ. Ağırlıklar HF'te ama ÖZEL. Bakiye $2,20. ATLANDI, açma: G2 · G14 · G15 · G8.
+değil ÖLÇÜM AYGITI (tek hakem ailesi, κ 0,534 < 0,6). 164 test yeşil. Dal: MASTER, origin ile
+eşit, ağaç temiz, v0.3 etiketi push edildi. Ağırlıklar HF'te ama ÖZEL. Bakiye $2,20.
+ATLANDI, açma: G2 · G14 · G15 · G8.
 
 ━━ SIRA 2 · G12/6-7 — TUI gözle doğrula · $0 · GPU · İNSAN GÖZÜ KAPISI
 llama-server aç (bayraklar aşağıda), `python -m hakhukuk.tui`, ÜÇ soru sor.
@@ -28,8 +29,8 @@ En ağır üçü: (1) ürün yolunda cevapların ~%5'i TAMAMEN BOŞ (4/80, sonla
 (2) sunucu KV ayarı cevabı DEĞİŞTİRİYOR (ölçüldü), 80 kalemdeki etkisi ÖLÇÜLMEDİ, $0 ~1 sa ·
 (4) boş sorgu reddedilmiyor, sabit gürültü dönüyor.
 
-━━ İNSAN KARARI BEKLEYENLER: SIRA 2 onayı · push + master merge · ticket 1/3 düzeltilsin mi ·
-ticket 2 ölçülsün mü · HF ne zaman herkese açılsın.
+━━ İNSAN KARARI BEKLEYENLER: SIRA 2 onayı · ticket 1/3 düzeltilsin mi · ticket 2 ölçülsün mü ·
+HF ne zaman herkese açılsın · ta_v1+tg_v1 adaptörleri (2x114 MB) silinsin mi (T1).
 
 ━━ BAĞLAYICI SUNUCU YAPILANDIRMASI (değiştirmek CEVABI değiştirir, ölçüldü)
 llama-server -m models/gguf/tgta_v1-q4_k_m.gguf -ngl 99 -fa on --no-context-shift
