@@ -1,6 +1,6 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
-## 📊 İCRA DURUMU — 2026-09-09 · **76/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+## 📊 İCRA DURUMU — 2026-09-09 · **79/89 kutucuk** · 🏷️ `v0.2` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -26,7 +26,7 @@
 | ~~**3**~~ 🆕 | ✅ **G4** — Sonnet-5 rakip havuzunda | **$1,1932** *(gerçekleşen, tahmin $0,82 idi)* | ✅ **BİTTİ 2026-09-09** — 🚨 **Sonnet-5 ÖNDE**: kütle 0,8348 ↔ bizim 0,8011 (GÖZ-katı). Kapı **etkilenmez** (ADR-0072 m.2) |
 | **4** ⏳ | **G16** — kabul testi **KOŞTU** (Adım 2 ✅), **hüküm İNSANDA** | $0,0195 | ⛔ TEST açıldı 2026-09-09 · ham kütle **0,5804** (tavan 0,7500) ↔ DEV 0,8011 (tavan 0,9500). **Ön-kayıtlı eşik YOK** ⇒ `v1.0` hükmü insan kararı |
 | ~~**5**~~ 🆕 | ✅ **G18** — araç katmanı | $0 | ✅ **BİTTİ 2026-09-09** — 5 kaldıraç · sınırlı döngü · `ARAMA_TUKENDI` · regresyon kapısı **80/80 birebir**. 🚨 Yan ürün: ürün yolu ölçüm hattından **farklı** (%5 boş cevap) — yeni borç |
-| **6** 🆕 | **G17** — modeli YAYINLA (HF) | $0 | `v1` release; bugün ağırlıklar **hiçbir yerde yayında değil** |
+| ~~**6**~~ 🆕 | **G17** — modeli YAYINLA (HF) | $0 | **BİTTİ 2026-09-09** — `Rfetha/HakHukuk-4B-v0.3-Q4_K_M` yayında, `sha256` birebir doğrulandı |
 | — | **G14 · G15** eğitim turları | — | ⛔ **ATLANDI** — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md): `v1` **SFT ile kapanır**, `B4` `v2`'de **konusuz** kalır |
 | — | **G11 Adım 2** — temiz makine kapısı | — | ⏸️ **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
 
@@ -1858,7 +1858,7 @@ tanımsız**. Sayıyı gördükten sonra eşik yazmak ADR-0050'nin yasakladığ�
 Geçerse **`v1.0`** + `HakHukuk-4B-v1.0-Q4_K_M.gguf` (ADR-0071).
 Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 `verify:` hüküm ADR'de, `research_log`'da ve `MODEL_CARD.md`'de **aynı sayıyla** duruyor.
-- [ ] **Adım 4: Commit + etiket**
+- [x] **Adım 4: Commit + etiket** BİTTİ **2026-09-09** — etiket `v0.3` (kapı geçilmedi, ADR-0077)
 
 ---
 
@@ -2035,7 +2035,7 @@ yapılan yayına verilemez ⇒ **`HakHukuk-4B-v0.3-Q4_K_M.gguf`**.
 ⚠️ `docs/record/kollar.md`'ye **yeni tarihli blok eklendi**, geçmiş satır **yeniden
 yazılmadı** — kaydın *"o gün bu belge bunu diyordu"* niteliği korundu.
 
-- [ ] **Adım 2: HF model reposu — kart + lisans + ⛔ İNDEKS ŞERHİ**
+- [x] **Adım 2: HF model reposu — kart + lisans + İNDEKS ŞERHİ** BİTTİ **2026-09-09**
 
 ⚠️ **En kritik satır:** model **tek başına indirildiğinde yayımlanan sayıyı ÜRETEMEZ** —
 `%80,1` bir *harness AÇIK* sayısıdır, bağlamı **retriever** seçmiştir. Kartta bu **ilk
@@ -2043,7 +2043,22 @@ ekranda** durmalı, dipnotta değil.
 `verify:` HF kartı `MODEL_CARD.md`'nin manşetini **aynı sayıyla** taşıyor · indeks engeli
 (`Görev 8`) **açıkça** yazılı · Apache-2.0 + `NOTICE` yerinde.
 
-- [ ] **Adım 3: `README.md` · `README.tr.md` · `MODEL_CARD.md` — indirme yolu**
+**ALINDI 2026-09-09** → **https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M** (public).
+Yüklenenler: `HakHukuk-4B-v0.3-Q4_K_M.gguf` · `README.md` (model kartı) ·
+`ORNEK_CEVAPLAR.md` · `LICENSE` · `NOTICE`.
+
+**Bütünlük kanıtı — iddia değil, ölçüm:** HF'teki dosyanın boyutu **2.783.446.720 bayt** ve
+`sha256` değeri **`755e15e92e9f7021…`**, yereldeki artefaktla **birebir** (`kollar.md`,
+2026-09-09 bloğu). Yükleme bozulmadı.
+
+Kartın **ilk üç bölümü** şu kısıtları taşıyor: (1) model tek başına bildirilen başarımı
+**üretemez**, indeks dağıtılmadı (Görev 8); (2) ürün yolunda cevapların **~%5'i boş** döner
+(Görev 18 Adım 6'nın yan ürünü); (3) hukuki tavsiye değildir.
+Karşılaştırma bölümü tek sütunluk kütle tablosundan **tam skor kartına** genişletildi:
+11 eksen × 5 özne + temel model sütunu, kütlenin üç okuması ve eşit sınav kanıtı ayrı
+tablolarda. Sonnet-5'te ölçülmeyen iki eksen *"ölçülmedi"* yazıldı, tahmin yazılmadı.
+
+- [x] **Adım 3: `README.md` · `README.tr.md` · `MODEL_CARD.md` — indirme yolu** BİTTİ **2026-09-09**
 
 `verify:` üç belgede de **çalışan** HF linki var; `tests/test_belgeler.py` yeşil.
 

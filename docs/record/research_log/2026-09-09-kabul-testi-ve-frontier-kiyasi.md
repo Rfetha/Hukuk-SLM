@@ -95,6 +95,42 @@ eksik iki şey sayılı — *(a) kabul testi koşmadı* **bugün kapandı**, *(b
 **açık** (κ 0,534 < 0,6, üçüncü hakem atlandı). ⇒ `v1.0`'ı bloke eden **model değil, ölçüm
 aygıtı**.
 
+
+## 6. Araç katmanı ve regresyon kapısı — ve kapının yan ürünü olan yeni borç
+
+Araç katmanı (ADR-0076) yazıldı: beş deterministik kaldıraç, `AZAMI_ADIM=4` ile sınırlı döngü,
+yeni durum `ARAMA_TUKENDI`. Kapılar (atıf doğrulama, mülga süzgeci, durum sınıflandırma)
+döngünün dışında, koşulsuz. `answer()`'a bayrak eklenmedi; ayrı fonksiyon (`answer_arac`)
+yazıldı — `servis.py` için diff **120 ekleme, 0 silme**.
+
+**Regresyon kapısı ölçülerek geçildi.** Aynı betik aynı sunucuya karşı iki kez koşuldu: bu
+görevin kodunda ve `4d69388`'de (görev öncesi, ayrı `git worktree`). Sonuç: **80/80 kalem
+birebir aynı** — `durum`, `atif`, `kaynak`, `metin`.
+
+⚠️ Kapı önce KIRMIZI yandı; sebebi **karşılaştırmanın yanlışlığıydı, kodun değil**. Betiğin ilk
+sürümü suskunluk kümesini planın ön-kayıtlı `[15, 37, 45, 66, 79]` kümesiyle karşılaştırıyordu;
+o küme **ölçüm hattının** kümesidir. Öncesi koşusu da `[10, 34, 63]` verdi ⇒ fark koddan değil.
+
+🚨 **Yan ürün — yeni borç: ürün yolu ile ölçüm hattı aynı şeyi çalıştırmıyor.**
+
+| | ürün yolu | ölçüm hattı |
+| :--- | ---: | ---: |
+| kesik veya boş | **7/80 = %8,75** | 4/80 = %5,0 |
+| tamamen boş metin | **4/80** (id 7·64·65·66) | 0 |
+
+Yedi kesik kalemin yedisi de ölçüm hattında `stop` ile tamamlanıyor (485-892 belirteç) ⇒ sorun
+bütçe mimarisi: ölçüm hattı düşünceyi 1024'te **zorla kapatıyor**, ürün yolu kapatmıyor ve
+#42'nin **sonlanmama** kusuru üründe yeniden ortaya çıkıyor (HTTP 200, boş içerik).
+**ADR-0040'ın %5'lik geçerlilik kapısını ürün yolu geçemezdi.** Düzeltme rejim değişikliği
+olduğundan bugün yapılmadı; `MODEL_CARD` §7.9'da ve HF kartında yazılıdır.
+
+## 7. Yayın
+
+Ağırlıklar ilk kez yayımlandı: `Rfetha/HakHukuk-4B-v0.3-Q4_K_M`. Model kartı, örnek çıktılar
+(dokuz kalem, dört durum sınıfı, boş cevap örneği dahil), lisans ve NOTICE yüklendi. Kartın
+ilk üç bölümü şu kısıtları bildiriyor: model tek başına bildirilen başarımı üretemez (indeks
+dağıtılmadı), cevapların ~%5'i boş döner, hukuki tavsiye değildir.
+
 ## Paper eşlemesi
 
 Methodology (kabul testi + tavan kullanımı) · **Negatif bulgu** (frontier önde; B1 hükmümüz

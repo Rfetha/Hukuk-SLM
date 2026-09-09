@@ -678,6 +678,35 @@ sınır **dört özne için de aynıdır**. ⇒ Kaldıraç parametrik bilgi değ
 
 ---
 
+### 7.9 Ürün yolu ile ölçüm hattı aynı şeyi çalıştırmıyor — cevapların %5'i BOŞ
+
+**Ölçüldü 2026-09-09**, 80 kalemlik DEV kümesinde, `hakhukuk.servis.answer()` ile.
+Bu, bu kartın manşet sayısının üretildiği hat **değildir**.
+
+| | ürün yolu | ölçüm hattı *(0,8011 buradan)* |
+| :--- | ---: | ---: |
+| kesik veya boş cevap | **7/80 = %8,75** | 4/80 = %5,0 |
+| **tamamen boş metin** | **4/80 = %5,0** (id 7 · 64 · 65 · 66) | **0** |
+| suskunluk kümesi | [10, 34, 63] | [15, 37, 45, 66, 79] |
+
+Yedi kesik kalemin **yedisi de** ölçüm hattında `finish=stop` ile tamamlanıyor (485-892
+belirteç) ⇒ sorun soruların zorluğu değil, **bütçe mimarisi**. Ölçüm hattı düşünceyi 1024'te
+zorla kapatıp cevaba ayrı 512 veriyor; ürün yolu ikisini tek havuzda (1536) yarıştırıyor.
+Sonuç [#42](docs/record/research_log/2026-07-29-cp0-dusunce-modu-sonlanmama.md)'nin ölçtüğü
+**sonlanmama**: model `</think>` etiketini kapatmıyor, bütçeyi düşünce kanalında bitiriyor,
+HTTP 200 ile **boş içerik** dönüyor.
+
+Boş cevap **gizlenmiyor** — durum `KESIK` damgalanır, arayüzde *"cevap YARIM"* uyarısı çıkar.
+Ama kullanıcı için sonuç boş ekrandır. **ADR-0040'ın geçerlilik kapısı %5'tir; ölçüm hattı tam
+eşikte geçmekte, ürün yolu %8,75 ile geçememektedir.**
+
+Düzeltilmedi: ürün yoluna zorunlu kapatma koymak bir **rejim değişikliğidir** ve yeniden ölçüm
+ister. Açık borç olarak kayıtlıdır. Ölçüm artefaktları:
+[`aracsiz_yol_80.json`](outputs/eval/g18-arac-katmani/aracsiz_yol_80.json) ·
+[`ORNEK_CEVAPLAR.md`](outputs/eval/g18-arac-katmani/ORNEK_CEVAPLAR.md).
+
+---
+
 ## 8 · Kullanım
 
 ### Ürün katmanı — `hakhukuk/` *(2026-09-07)*
