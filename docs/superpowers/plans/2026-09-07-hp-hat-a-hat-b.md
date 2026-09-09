@@ -1,6 +1,6 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
-## 📊 İCRA DURUMU — 2026-09-09 · **66/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+## 📊 İCRA DURUMU — 2026-09-09 · **67/89 kutucuk** · 🏷️ `v0.2` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -24,7 +24,7 @@
 | ~~**1**~~ | ✅ **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | ✅ **BİTTİ 2026-09-09** — kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** (76/80) |
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
 | ~~**3**~~ 🆕 | ✅ **G4** — Sonnet-5 rakip havuzunda | **$1,1932** *(gerçekleşen, tahmin $0,82 idi)* | ✅ **BİTTİ 2026-09-09** — 🚨 **Sonnet-5 ÖNDE**: kütle 0,8348 ↔ bizim 0,8011 (GÖZ-katı). Kapı **etkilenmez** (ADR-0072 m.2) |
-| **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** · ⛔ **ARAÇSIZ rejimde** (ADR-0076 m.4) |
+| **4** ⏳ | **G16** — kabul testi **KOŞTU** (Adım 2 ✅), **hüküm İNSANDA** | $0,0195 | ⛔ TEST açıldı 2026-09-09 · ham kütle **0,5804** (tavan 0,7500) ↔ DEV 0,8011 (tavan 0,9500). **Ön-kayıtlı eşik YOK** ⇒ `v1.0` hükmü insan kararı |
 | **5** 🆕 | **G18** — araç katmanı (KALDIRAÇ) | $0 | 5 deterministik araç + sınırlı döngü + `ARAMA_TUKENDI` |
 | **6** 🆕 | **G17** — modeli YAYINLA (HF) | $0 | `v1` release; bugün ağırlıklar **hiçbir yerde yayında değil** |
 | — | **G14 · G15** eğitim turları | — | ⛔ **ATLANDI** — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md): `v1` **SFT ile kapanır**, `B4` `v2`'de **konusuz** kalır |
@@ -1798,12 +1798,55 @@ okumasıyla. `verify:` üç madde de sayıyla; **her sayım adımında gözle ok
 > ⚠️ **Ve artık üçünün yanında ölçülmüş bir kırılganlık var:** ikinci hakem ailesiyle kütle
 > **0,8011 → 0,6940** (κ 0,534). Bu sayı kapıya **girmiyor** (eşit sınav yok — rakip kolu o
 > hakemle puanlanmadı) ama `MODEL_CARD` §7.2'de ve [ADR-0074](../../adr/0074-hakem-paneli-kuruldu-baglayici-hukum.md)'te yazılı.
-- [ ] **Adım 2: Kabul testi — donmuş TEST**
+- [x] **Adım 2: Kabul testi — donmuş TEST** ✅ **KOŞULDU 2026-09-09 · insan onaylı, TEK KEZ**
 ⚠️ **ADR-0069 raporlaması zorunlu:** ham kütle **manşet ve bağlayıcı**; yanına **tek** tanısal
 oran `tavan kullanımı = kütle ÷ recall@10`; **her iki setin `recall@10`'u yanında zorunlu**.
 ⛔ Rakip kıyas cümlesi bu orandan **KURULMAZ**. TEST'in tavanı **≈%75**, DEV'inki **%95**.
 `verify:` `OZET.md` ham kütleyi manşet yapıyor; tavan görünmeden oran yayımlanmamış.
-- [ ] **Adım 3: Hüküm** — geçerse **`v1.0`** + `HakHukuk-4B-v1.0-Q4_K_M.gguf` (ADR-0071).
+
+**✅ ALINDI** → [`outputs/eval/g16-kabul-testi/OZET.md`](../../../outputs/eval/g16-kabul-testi/OZET.md) ·
+[`KUNYE.json`](../../../outputs/eval/g16-kabul-testi/KUNYE.json)
+Rejim `f02-biz-onsozsuz/KUNYE.json` ile **her eksende birebir**; kanonik koşucu kullanıldı.
+✅ Geçerlilik kapısı: kesiklik **1/40 = %2,5** (eşik %5; DEV tam eşikteydi).
+
+| | **TEST** (40, donmuş) | **DEV** (80) |
+| :--- | ---: | ---: |
+| **ham kütle — MANŞET** | **0,5804** | 0,8011 |
+| `recall@10` = tavan | **0,7500** | 0,9500 |
+| tavan kullanımı | **0,7739** | 0,8433 |
+| coverage | 0,7750 [0,625–0,877] | 0,9375 [0,862–0,973] |
+| aşırı-red | **5/40** [0,055–0,261] | 4/80 [0,020–0,122] ⚠️ **aralıklar ÖRTÜŞÜYOR** |
+| **uydurulmuş madde no** | **0/52** ✅ | 0/114 |
+| `wrong_ref_rate` | **0,2424** | 0,0769 🚨 3,2× kötü |
+
+**Düşüşün ayrıştırılması:** toplam **−22,07 p**; tavan-eşdeğer beklenti 0,6324 ⇒ tavanın
+açıkladığı **−16,87 p (%76)**, **açıklamadığı −5,20 p (%24)**. ADR-0069'un öngörüsü
+doğrulandı **ama tam değil** — model görülmemiş veride tavanını **daha kötü** kullanıyor.
+*"Hepsi bileşim"* denmedi.
+
+**Gözle okuma kapısı (ADR-0064 m.\*):** 9/40 çekinmenin dokuzu da okundu, **yanlış pozitif 0**
+⇒ ALET = GÖZ, kütle üç okumada da 0,5804.
+
+**⚠️ ADR-0069 kendi içinde çelişiyor, damgalanır:** oranı `kütle ÷ recall@10` diye tanımlıyor,
+örneğinde `0,730 ÷ 0,9375` (coverage) kullanıyor. Tanım esas alındı; coverage paydasıyla
+TEST 0,7489 ↔ DEV 0,8545. ⛔ ADR'ye dokunulmadı.
+
+**🚨 DONMUŞ TEST BİR KUSUR YAKALADI ve düzeltildi (TDD):** `atif_dogrula.py` çok anlamlı kanun
+adında adayları `sorted()` ile geziyordu; `İŞ KANUNU` için bu **1475 (mülga)** demekti ve
+**doğru cevap MÜLGA damgası yiyordu** (id 32, altın 4857/111, 1. sırada). Kodun kendi ilkesi
+tek `kanun_no` içinde vardı, adaylar arasında yoktu. TEST atıf **DOGRULANDI 50→52 · MULGA 2→0**.
+⛔ Manşet **değişmedi** (kütle bu doğrulayıcıdan gelmiyor) · geçmiş sayılar **oynamadı**
+(DEV 114, Sonnet 161+2 aynı).
+
+- [ ] **Adım 3: Hüküm** — ⛔ **KURULMADI · İNSAN KARARI BEKLİYOR**
+
+🚨 **Ön-kayıtlı sayısal kabul eşiği YOK — bu bir bulgudur, mazeret değil:**
+ADR-0064 m.(1) eşiği `3.5 Flash − 2,0 p`; o çıpa **DEV**'de ölçüldü, rakipler donmuş TEST'te
+**hiç koşmadı** ⇒ eşik TEST'te **türetilemiyor**. ADR-0069 m.3 tavan kullanımını **kapı
+olmaktan men ediyor**. Planın kendi cümlesi yalnız *"geçerse `v1.0`"* diyor ve **"geçmek"
+tanımsız**. Sayıyı gördükten sonra eşik yazmak ADR-0050'nin yasakladığı şeydir.
+⇒ `v1.0` mü, `v0.3` mü — **insan verir** (ADR-0065 ikisini de mümkün kılıyor).
+Geçerse **`v1.0`** + `HakHukuk-4B-v1.0-Q4_K_M.gguf` (ADR-0071).
 Geçmezse sayı **damgalanarak yayımlanır** ve `v0.x` devam eder (ADR-0065).
 `verify:` hüküm ADR'de, `research_log`'da ve `MODEL_CARD.md`'de **aynı sayıyla** duruyor.
 - [ ] **Adım 4: Commit + etiket**

@@ -157,14 +157,20 @@ def _hukum(atif: Atif, adlar: dict, indeks: dict) -> Hukum:
     if not adaylar:
         return Hukum(atif, KANUN_YOK)
     # Ad çok anlamlıysa maddeyi TAŞIYAN kanun doğrular; hangisi olduğu hükme yazılır.
-    for kn in sorted(adaylar):
-        satirlar = indeks.get((kn, atif.tip, atif.madde))
-        if satirlar:
-            # Why `all`: anahtar birden çok satıra düşebiliyor (korpusta madde kimliği
-            # yinelenebiliyor — research_log #52). Yürürlükte TEK bir satır bile varsa
-            # atıf mülga sayılmaz; aksi hâlde geçerli atıfları yanlışlıkla reddederiz.
-            hukum = MULGA if all(r.get("mulga") for r in satirlar) else DOGRULANDI
-            return Hukum(atif, hukum, kn)
+    # Why `all`: anahtar birden çok satıra düşebiliyor (korpusta madde kimliği yinelenebiliyor
+    # — research_log #52). Yürürlükte TEK bir satır bile varsa atıf mülga sayılmaz; aksi hâlde
+    # geçerli atıfları yanlışlıkla reddederiz.
+    # ⚠️ Ve aynı ilke ADAYLAR ARASINDA da uygulanır. Eskiden `sorted(adaylar)` ilk taşıyanı
+    # döndürüyordu; `İŞ KANUNU` için bu **1475** (mülga), oysa yürürlükteki **4857** de aynı
+    # maddeyi taşıyor ⇒ DOĞRU cevap MÜLGA damgası yiyordu. Donmuş TEST'te yakalandı
+    # (2026-09-09, id 32) ve vatandaşa giden rozeti etkiliyordu — sessiz değil, GÖRÜNÜR hata.
+    tasiyan = [(kn, indeks[(kn, atif.tip, atif.madde)]) for kn in sorted(adaylar)
+               if indeks.get((kn, atif.tip, atif.madde))]
+    for kn, satirlar in tasiyan:
+        if not all(r.get("mulga") for r in satirlar):
+            return Hukum(atif, DOGRULANDI, kn)
+    if tasiyan:
+        return Hukum(atif, MULGA, tasiyan[0][0])
     return Hukum(atif, MADDE_YOK, sorted(adaylar)[0])
 
 

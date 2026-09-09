@@ -1,4 +1,4 @@
-from atif_dogrula import DOGRULANDI, AYRISTIRILAMADI, MADDE_YOK, KANUN_YOK, \
+from atif_dogrula import DOGRULANDI, AYRISTIRILAMADI, MADDE_YOK, KANUN_YOK, MULGA, \
     atiflari_ayikla, dogrula  # noqa: E402
 
 KORPUS = [
@@ -146,3 +146,32 @@ def test_dogrula_tek_sozcuklu_sonek_her_kanuna_uymaz():
     korpus = [{"kanun_no": "2004", "kanun_adi": "İCRA VE İFLAS KANUNU",
                "madde_no": "Madde 85", "text": "haciz"}]
     assert dogrula(atiflari_ayikla("Kanunu Madde 85")[0], korpus).hukum == KANUN_YOK
+
+
+def test_cok_anlamli_ad_yururlukteki_kanunu_secer_alfabetik_ilkini_degil():
+    """⚠️ Donmuş TEST'te yakalandı (2026-09-09, G16 kabul testi · id 32).
+
+    `İŞ KANUNU` hem **4857** (yürürlükte) hem **1475** (mülga) için geçerli bir addır.
+    Model kanun numarası yazmadan *"İş Kanunu Madde 111"* dedi; `sorted(adaylar)` **1475**'i
+    önce döndürdüğü için doğru cevap **MÜLGA** damgası yedi. Kusur alfabetik sıra:
+    yürürlük ölçütü tek bir `kanun_no` İÇİNDE uygulanıyordu, adaylar ARASINDA değil.
+    Vatandaşa gidecek rozet buna bağlı ⇒ sessiz değil, GÖRÜNÜR yanlışlık.
+    """
+    kayitlar = [
+        {"kanun_no": "1475", "kanun_adi": "İŞ KANUNU", "madde_no": "Madde 111",
+         "text": "…", "mulga": True},
+        {"kanun_no": "4857", "kanun_adi": "İŞ KANUNU", "madde_no": "Madde 111",
+         "text": "…", "mulga": False},
+    ]
+    h = dogrula(atiflari_ayikla("(İş Kanunu, Madde 111)")[0], kayitlar)
+    assert h.hukum == DOGRULANDI, f"yürürlükteki 4857 seçilmeliydi, hüküm: {h}"
+    assert h.kanun_no == "4857"
+
+
+def test_cok_anlamli_ad_hepsi_mulgaysa_MULGA_kalir():
+    """Düzeltme mülga tespitini KÖRLEŞTİRMEZ: tek aday da mülgaysa hüküm MULGA."""
+    kayitlar = [
+        {"kanun_no": "1475", "kanun_adi": "İŞ KANUNU", "madde_no": "Madde 111",
+         "text": "…", "mulga": True},
+    ]
+    assert dogrula(atiflari_ayikla("(İş Kanunu, Madde 111)")[0], kayitlar).hukum == MULGA
