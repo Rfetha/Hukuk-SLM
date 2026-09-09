@@ -19,7 +19,7 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          89 kutucuk · 79 bitti
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          90 kutucuk · 82 bitti
           başlatıcı: goal-hp-hat-a-hat-b.md  (3.675 karakter)
           FAZ 1-2-3 bitti · FAZ 4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
           G2 ATLANDI (bütçe, ADR-0074) · G8 BEKLETİLİYOR (Adım 1b hariç, o bitti)
@@ -32,6 +32,7 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
                                                    v1.0 VERİLMEDİ → v0.3 (ADR-0077)
              5. G18 araç katmanı                   BİTTİ · regresyon 80/80 birebir
              6. G17 modeli YAYINLA                 BİTTİ · HF'te, şu an ÖZEL
+             7. G19 HTTP API (FastAPI)             AÇIK — 6 karar kilitlendi
           AÇIK KUSURLAR: plans/post-hp-hat-b-tickets.md (on ticket)
 ──────────────────────────────────────────────────────────────────────────────
    SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
@@ -74,7 +75,11 @@ kullanamaz ⇒ araçlı koşmak ADR-0057'nin eşit sınavını ihlal eder. Sıra
 araç katmanı → yayın.**
 `v1`'de araç kullanımı **istem katmanındadır** (eğitilmedi, güvenilirliği düşük olacak);
 **öğrenilmesi `v2`'nin işi** — GRPO ödülüne *"doğru aracı doğru anda çağırdı mı"* girer.
-**CLI + TUI yeterli** (insan kararı) — HTTP API ve web arayüzü `v2`.
+~~**CLI + TUI yeterli** (insan kararı) — HTTP API ve web arayüzü `v2`.~~
+🚨 **BU CÜMLE 2026-09-09'da DEĞİŞTİ (insan kararı):** HTTP API `v1` tarafına alındı ve ana plana
+**Görev 19** olarak girdi. Gerekçe teknik değil, tercihtir; öyle yazılıyor.
+⛔ **S9 açılmadı:** API **yerel ve tek kullanıcı** (`127.0.0.1`, kimlik yok, hız sınırı yok).
+Barındırma, mahremiyet vaadi ve TR IP kısıtı soruları `v2`'de açık duruyor. Web arayüzü hâlâ `v2`.
 
 **Bedeli:** `τ = θ_ft − θ_base` tanımı tüm kolların aynı base'i paylaşmasını şart koşar ⇒
 `tgta_v1`'i yeni başlangıç almak bunu bozar ⇒ **ADR-0027'nin task-vector hattı `v1`'de

@@ -2,7 +2,7 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-09 · **79/89 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-09 · **82/90 kutucuk** · `v0.3` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -18,20 +18,51 @@
 | **FAZ 3** · belge katmanı | **G13 bitti** — `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md` yazıldı, kırık işaretçiler onarıldı, `MODEL_CARD` §7.2/§8/§10 güncellendi |
 | **FAZ 4** · Hat B | **KAPANDI 2026-09-09** — G16 (kabul testi, `v0.3`) · G4 (Sonnet-5) · G18 (araç katmanı) · G17 (yayın) bitti. G14 · G15 **atlandı** (ADR-0075). Açık kalan tek kapı: **G12 Adım 6**, insan gözü |
 
-**Ölçülen:** 143 test yeşil · 14 commit · harcanan **$3,155** *(raporlanan `judge_cost` $1,977'nin **1,6 katı** — kapı marjı)*.
+**Ölçülen 2026-09-09:** **164 test yeşil**, 2 xfail · **16 commit** (yerelde, push edilmedi) ·
+`v0.3` etiketli · toplam harcanan **$4,37** (bugün $1,21) · OpenRouter bakiye **$2,20**.
+*(Not: raporlanan `judge_cost` gerçekte düşenin 1/1,6'sı — kapı marjı ADR-0072 m.2'de yazılı.)*
 
-### Kalan 17 kutucuk — LİNEER SIRA, atlanmaz
+### Payda 2026-09-09'da düzeltildi — 89'dan 84'e, sonra Görev 19 ile 90'a
 
-| sıra | iş | bedel | kapı |
-| :--- | :--- | ---: | :--- |
-| ~~**1**~~ | **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | **BİTTİ 2026-09-09** — kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** (76/80) |
-| **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | **AÇIK — tek kalan kapı.** `llama-server` hazır; üç soruda rozet + atıf + kaynak + ibare **ekranda görülmeli**. Programatik prob bu kapının yerine GEÇMEZ (#60) |
-| ~~**3**~~ | **G4** — Sonnet-5 rakip havuzunda | **$1,1932** *(gerçekleşen, tahmin $0,82 idi)* | **BİTTİ 2026-09-09** — **Sonnet-5 ÖNDE**: kütle 0,8348 ↔ bizim 0,8011 (GÖZ-katı). Kapı **etkilenmez** (ADR-0072 m.2) |
-| ~~**4**~~ | **G16** — `v1.0` kabul testi | $0,0195 | **BİTTİ 2026-09-09** — donmuş TEST tek kez açıldı; ham kütle **0,5804** (tavan 0,7500) ↔ DEV 0,8011 (tavan 0,9500). Hüküm: **`v1.0` VERİLMEDİ → `v0.3`** ([ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md)); engel **hakem paneli**, model değil |
-| ~~**5**~~ | **G18** — araç katmanı | $0 | **BİTTİ 2026-09-09** — 5 kaldıraç · sınırlı döngü · `ARAMA_TUKENDI` · regresyon kapısı **80/80 birebir**. Yan ürün: ürün yolu ölçüm hattından **farklı** (%5 boş cevap) — yeni borç |
-| ~~**6**~~ | **G17** — modeli YAYINLA (HF) | $0 | **BİTTİ 2026-09-09** — `Rfetha/HakHukuk-4B-v0.3-Q4_K_M` yayında, `sha256` birebir doğrulandı |
-| — | **G14 · G15** eğitim turları | — | **ATLANDI** — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md): `v1` **SFT ile kapanır**, `B4` `v2`'de **konusuz** kalır |
-| — | **G11 Adım 2** — temiz makine kapısı | — | **ERTELENDİ**: G8'e bağlı, indeks git'te yok ⇒ bugün **tanım gereği düşer** |
+Plan 89 kutucukla açılmıştı ve 79'u işaretliydi; okuyan on iş kaldığını sanıyordu. Gerçek iki
+işti. Aradaki 19 kutucuk, kapatılmış kararların kalıntısıydı: G2 (üçüncü hakem, bütçe kararı) ·
+G14 ve G15 (eğitim turları, ADR-0075) · G8'in iki adımı (korpus planına bağlı) · G11 Adım 2
+(G8'e bağlı) · Görev 4'e sonradan yazılan iki **borç** satırı.
+
+Bunlar **silinmedi** — metin ve gerekçe aynen duruyor, çünkü *"ne koşulmadı ve niçin"* bu planın
+en değerli kaydı. Yalnız `- [ ]` olmaktan çıkıp durum etiketli düz maddeye indiler; bir daha
+işaretlenmeyecek bir kutucuk, paydayı kirletmekten başka iş görmüyordu.
+Ayrıca Görev 17 Adım 4 açık görünüyordu ama iş bitmişti (`v0.3` etiketi atıldı); düzeltildi.
+Aynı gün **Görev 19** (HTTP API) insan kararıyla eklendi ve payda 84'ten **90**'a çıktı; açık
+sekiz kutucuğun ikisi SIRA 2, altısı Görev 19.
+
+**Bitmiş görevlerde talimat silindi, bulgu tutuldu** (aynı gün, 16 blok / 18 KB): *"şu dosyayı
+yaz"* diyen kod kopyaları ve `git commit` reçeteleri çıkarıldı — karşılıkları repoda ve git
+geçmişinde, üstelik kopyalar **bayatlamıştı** (`tui.py`'ye `__main__` bloğu, `servis.py`'ye
+`answer_arac`, `tipler.py`'ye beşinci durum eklendi). ⛔ Koşu komutları **silinmedi**: onlar
+talimat değil **rejim künyesidir**, ve bu hattın disiplini künyede görünmeyen bayrağın sessizce
+düştüğü üzerine kuruludur.
+
+### İŞ SIRASI
+
+| sıra | iş | durum | kapı |
+| :--- | :--- | :--- | :--- |
+| ~~1~~ | **G8 Adım 1b** — `KUNYE` taşınabilirlik | BİTTİ | kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** |
+| **2** | **G12 Adım 6-7** — TUI gözle doğrula | **AÇIK** | üç soruda rozet + atıf + kaynak + ibare **ekranda görüldü**, insan teyit etti |
+| ~~3~~ | **G4** — Sonnet-5 rakip havuzunda | BİTTİ | eşit sınav kanıtlı; **Sonnet-5 ÖNDE** (0,8348 ↔ 0,8011) · $1,1932 |
+| ~~4~~ | **G16** — `v1.0` kabul testi | BİTTİ | donmuş TEST tek kez açıldı; kütle **0,5804** · `v1.0` VERİLMEDİ → `v0.3` (ADR-0077) |
+| ~~5~~ | **G18** — araç katmanı | BİTTİ | 5 kaldıraç · sınırlı döngü · regresyon **80/80 birebir** |
+| ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
+| **7** | **G19** — HTTP API (FastAPI) | **AÇIK** | dokuz karar kilitlendi 2026-09-09; kapıları görevin içinde |
+
+⛔ **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
+ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
+test bunu görmemişti — kaynak denetimi mantığın sızmadığına bakar, programın çalıştığına değil.
+
+**Plan kapsamı dışındaki açık kusurlar:** [`post-hp-hat-b-tickets.md`](post-hp-hat-b-tickets.md)
+— on ticket. En ağırı: ürün yolunda cevapların **~%5'i boş** dönüyor ve bu, ADR-0040'ın kendi
+geçerlilik kapısını geçmez.
+
 
 **Sıra 4 → 5 → 6 BAĞLAYICI** ([ADR-0076](../../adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md) m.4):
 kabul testi **araçsız** koşulur, çünkü yayımlanan %80,1 ve kapı eşiği araçsız rejimde ölçüldü
@@ -290,10 +321,7 @@ setsid nohup bash -c 'source ~/code/global_venv/bin/activate && \
 
 - [x] **Adım 4: Commit**
 
-```bash
-git add outputs/eval/hp-hakem-paneli/ && \
-git commit -m "HP: ikinci hakem ailesi (Anthropic) — aynı 80 cevap, farklı hakem"
-```
+*(commit komutu 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 ---
 
@@ -326,14 +354,14 @@ git commit -m "HP: ikinci hakem ailesi (Anthropic) — aynı 80 cevap, farklı h
 notlanır. Bu bir eksiklik değil, **ADR-0032'nin kuralının doğrudan sonucudur** ve raporda
 **açıkça** yazılır.
 
-- [ ] **Adım 1: Kimlik + fiyat doğrula** — Görev 1 Adım 1'in aynısı, `gemini` filtresiyle.
+- **ATLANDI** · **Adım 1: Kimlik + fiyat doğrula** — Görev 1 Adım 1'in aynısı, `gemini` filtresiyle.
 `verify:` kimlik ve fiyat basıldı.
 
-- [ ] **Adım 2: Tam koşu (80 kalem), AYRIK** — Görev 1 Adım 3'ün aynısı;
+- **ATLANDI** · **Adım 2: Tam koşu (80 kalem), AYRIK** — Görev 1 Adım 3'ün aynısı;
 `LLM_PROVIDER_ORDER=Google`, `--label h1_tgta_v1_google`.
 `verify:` `EXIT=0` · `n=80` · `judge_cost_usd` basıldı.
 
-- [ ] **Adım 3: Aile dışlaması denetimi — otomatik, gözle değil**
+- **ATLANDI** · **Adım 3: Aile dışlaması denetimi — otomatik, gözle değil**
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
@@ -362,7 +390,7 @@ PY
 `verify:` çıktı `aile dışlaması ihlali: 0` ve **çıkış kodu 0**. İhlal varsa **DUR** —
 o sayı yayımlanamaz.
 
-- [ ] **Adım 4: Commit**
+- **ATLANDI** · **Adım 4: Commit**
 
 ---
 
@@ -538,7 +566,7 @@ uzunluğu soruya göre değişen bir özne için **kapı kurmaya yetmez**; duman
 Hüküm üzerindeki etkisi **YOK**: bu koşu ADR-0072 m.2 gereği yalnız **raporlanır**, `v1.0`
 eşiğini kurmaz. Ama bütçe artık **$2,20** ve kalan planın ihtiyacı ~$0,10.
 
-- [ ] **Adım 2b (bu koşudan doğdu): duman-koşusu ekstrapolasyonu bir KAPI değil, TAHMİNDİR**
+- **BORÇ** · **Adım 2b (bu koşudan doğdu): duman-koşusu ekstrapolasyonu bir KAPI değil, TAHMİNDİR**
 Bir sonraki yeni özne/aile için ya tabakalanmış duman koşusu ya da %50 emniyet payı.
 Bu satır **borç** olarak açık kalır; bugün koşulacak yeni özne yok.
 
@@ -620,7 +648,7 @@ ailesinin **lehine** yapmıştık; burada kendi **aleyhimize** uygulandı. Hakem
 **Önde olduğumuz tek eksen:** uydurma madde numarası **0/114 ↔ 2/163**.
 `coverage` (ALET) 0,9375 ↔ 0,9000 da bizde, ama GÖZ-katı'da Sonnet 0,9500'e çıkıyor.
 
-- [ ] **Adım 4b — B1 HAKKINDAKİ CÜMLEMİZ ÇÜRÜDÜ, borç açık kalır**
+- **BORÇ** · **Adım 4b — B1 HAKKINDAKİ CÜMLEMİZ ÇÜRÜDÜ, borç açık kalır**
 `wrong_ref_rate_micro`: **BİZ 0,0769 ↔ Sonnet-5 0,0083** — **9,3× geride**. Deterministik
 doğrulayıcı ise *"var olmayan madde"* ekseninde bizi **0/114** ile önde gösteriyor (Sonnet
 2/163). İkisi çelişmiyor, **farklı şey sayıyorlar**: madde **uydurmuyoruz**, var olan
@@ -686,35 +714,7 @@ tut; ilgili kanun ve madde numarasını belirt."* Yayımlanan **%80,1 dâhil bü
 
 - [x] **Adım 2: Failing test yaz**
 
-```python
-# tests/test_istem.py
-import hashlib
-from hakhukuk import istem
-
-
-def test_istem_surumu_ve_damgasi_sabittir():
-    """İstem değişirse damga değişir → yayımlanan sayı yeniden üretilemez hâle gelir.
-
-    Bu test bir KAPIDIR: damgayı bilerek güncellemeden istemi değiştiremezsin.
-    """
-    assert istem.ISTEM_SURUMU == "v1"
-    assert istem.damga() == istem.DAMGA_v1
-
-
-def test_uc_istem_de_bos_degil_ve_farklidir():
-    metinler = [istem.SISTEM_KOR, istem.SISTEM_TEK_KAYNAK, istem.SISTEM_COK_KAYNAK]
-    assert all(m.strip() for m in metinler)
-    assert len(set(metinler)) == 3
-
-
-def test_damga_metinlerin_sha256si():
-    beklenen = hashlib.sha256(
-        "\n---\n".join(
-            [istem.SISTEM_KOR, istem.SISTEM_TEK_KAYNAK, istem.SISTEM_COK_KAYNAK]
-        ).encode("utf-8")
-    ).hexdigest()[:16]
-    assert istem.damga() == beklenen
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 3: Testi koş, BAŞARISIZ olduğunu gör**
 
@@ -723,64 +723,9 @@ Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'hakhukuk'`
 
 - [x] **Adım 4: Asgari uygulama**
 
-```python
-# hakhukuk/istem.py
-"""Ürünün istem metinlerinin TEK kaynağı.
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
-   Neden bu dosya var (ölçüldü 2026-09-07): `"Sen HakHukuk'sun"` literali repoda BEŞ
-dosyada bulundu ve `SYSTEM_PROMPT` ölçüm ile eğitim arasında SÜRÜKLENMİŞTİ (son satırları
-farklıydı). Sürüklenme hata vermez — yalnız modelin eğitildiği istem ile ölçüldüğü istem
-sessizce ayrışır. Bkz. açık soru S18.
-
-   Metni değiştirirsen DAMGA_v1 de değişmeli ve ISTEM_SURUMU yükselmeli; aksi hâlde
-tests/test_istem.py kırılır. Bu bir kapıdır, engel değil: yayımlanmış bir sayı,
-üretildiği istem olmadan yeniden üretilemez.
-"""
-import hashlib
-
-ISTEM_SURUMU = "v1"
-
-# M5 / kör mod — modele KAYNAK VERİLMEZ. (S18 kararının uygulandığı yer.)
-SISTEM_KOR = (
-    "Sen HakHukuk'sun. Türk hukuku hakkında sade, anlaşılır Türkçe bilgi verirsin.\n"
-    "Emin olmadığın konularda \"Bu konuda güncel mevzuata veya bir avukata "
-    "danışmanızı öneririm\" dersin.\n"
-    "Asla kanun maddesi veya bilgi uydurmaz, tahmin etmezsin.\n"
-    "Cevabını kısa ve anlaşılır tut; ilgili kanun ve madde numarasını belirt."
-)
-
-# M4 — tek altın kaynak verilir.
-SISTEM_TEK_KAYNAK = (
-    "Sen HakHukuk'sun. Türk hukuku hakkında sade, anlaşılır Türkçe bilgi verirsin.\n"
-    "Sana bir KAYNAK madde metni verilecek. Cevabını YALNIZCA bu kaynağa dayandır; "
-    "kaynakta olmayan bilgi veya madde numarası UYDURMA.\n"
-    "Cevabını kısa ve anlaşılır tut; dayandığın kanun ve madde numarasını belirt."
-)
-
-# M1/M3/h1 — çok kaynak (harness).    Bu metin bugün scripts/veri_hazirlik/raft_pack.py:20'de duruyor
-# ve EĞİTİM VERİSİ onunla paketlendi; buraya BİREBİR kopyalanır, yeniden yazılmaz.
-SISTEM_COK_KAYNAK = "<<< raft_pack.py:20'den BİREBİR kopyalanacak — yeniden yazma >>>"
-
-DAMGA_v1 = "<<< Adım 5'te hesaplanıp buraya yazılacak >>>"
-
-
-def damga() -> str:
-    """Üç istemin birleşik sha256'sının ilk 16 hanesi. Künyeye bu yazılır."""
-    return hashlib.sha256(
-        "\n---\n".join([SISTEM_KOR, SISTEM_TEK_KAYNAK, SISTEM_COK_KAYNAK]).encode("utf-8")
-    ).hexdigest()[:16]
-```
-
-```python
-# hakhukuk/__init__.py
-"""HakHukuk — açık kaynak Türk hukuku asistanı (ürün katmanı).
-
-   Bu paket ÜRÜNDÜR; `scripts/` ÖLÇÜM ALETİDİR. Ayrı olmalarının ölçülmüş sebebi:
-`scripts/` 72 dosya ve 18 modül uzantısız import'la birbirine bağlı (envanter 2026-09-07).
-Ürünü oraya koymak, kullanıcının kurulumunu ölçüm hattının tamamına bağımlı yapardı.
-"""
-__version__ = "0.2.0"
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 5: Damgayı hesapla ve dosyaya yaz**
 
@@ -858,10 +803,7 @@ PY
 
 - [x] **Adım 8: Commit** *(yapısal değişiklik — davranış değişmez, AYRI commit)*
 
-```bash
-git add hakhukuk/ tests/test_istem.py scripts/ outputs/eval/a1-istem-kaniti/ && \
-git commit -m "A1: istem artefaktı — beş kopya tek kaynağa indi, 10/10 birebir kanıtlandı"
-```
+*(commit komutu 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 ---
 
@@ -881,32 +823,7 @@ git commit -m "A1: istem artefaktı — beş kopya tek kaynağa indi, 10/10 bire
 
 - [x] **Adım 1: Failing test yaz**
 
-```python
-# tests/test_tipler.py
-import pytest
-from hakhukuk.tipler import Atif, Cevap, Durum, Kaynak
-
-
-def test_durum_dort_hali_var():
-    assert {d.name for d in Durum} == {"CEVAP", "CEKINCELI", "SUSKUNLUK", "KESIK"}
-
-
-def test_cevap_donmus_ve_degistirilemez():
-    c = Cevap(metin="x", durum=Durum.CEVAP, atiflar=(), kaynaklar=())
-    with pytest.raises(Exception):
-        c.metin = "y"
-
-
-def test_kaynak_kimligi_kanun_madde_ciftidir():
-    k = Kaynak(kanun_adi="İŞ KANUNU", kanun_no="4857", madde_no="Madde 31",
-               metin="…", sira=1)
-    assert k.kimlik == "4857/Madde 31"
-
-
-def test_atif_dogrulanmamis_olarak_baslar():
-    a = Atif(kanun_no="4857", madde_no="Madde 31")
-    assert a.dogrulandi is False
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
 
@@ -914,60 +831,7 @@ Run: `python -m pytest tests/test_tipler.py -v` → `FAIL` (`No module named 'ha
 
 - [x] **Adım 3: Asgari uygulama**
 
-```python
-# hakhukuk/tipler.py
-"""Ürün yüzeyinin veri tipleri. Donmuş — cevap üretildikten sonra değiştirilemez.
-
-   Neden `Durum` bir enum, `bool` değil (ölçüldü 2026-09-06/07): çekinme dedektörü ÜÇ kez
-yanıldı çünkü dünya ikili değil. `suskunluk_terazisi` üç hâl buldu (cevap · çekinceli cevap ·
-suskunluk); Faz 0 dördüncüyü ölçtü (kesik). Vatandaş için en tehlikelisi ORTADAKİdir:
-"doğrudan madde yok, bununla birlikte…" — cevap gibi görünür, değildir.
-"""
-from dataclasses import dataclass
-from enum import Enum
-
-
-class Durum(Enum):
-    """Bir cevabın vatandaşa ne söylediği. Kapalı küme."""
-
-    CEVAP = "cevap"            # dayanağı var, atıflı
-    CEKINCELI = "cekinceli"    # kısmen dayanaklı — rozetle gösterilir
-    SUSKUNLUK = "suskunluk"    # dürüst "bilmiyorum"
-    KESIK = "kesik"            # üretim bütçesi bitti — YARIM cevap, gizlenmez
-
-
-@dataclass(frozen=True)
-class Kaynak:
-    """Retriever'ın getirdiği tek madde."""
-
-    kanun_adi: str
-    kanun_no: str
-    madde_no: str
-    metin: str
-    sira: int
-
-    @property
-    def kimlik(self) -> str:
-        """`kanun_no/madde_no` — korpustaki anahtar (bkz. tuzak 7.6: %22,7 yineleniyor)."""
-        return f"{self.kanun_no}/{self.madde_no}"
-
-
-@dataclass(frozen=True)
-class Atif:
-    """Modelin cevapta andığı madde. `dogrulandi` deterministik olarak doldurulur."""
-
-    kanun_no: str
-    madde_no: str
-    dogrulandi: bool = False
-
-
-@dataclass(frozen=True)
-class Cevap:
-    metin: str
-    durum: Durum
-    atiflar: tuple[Atif, ...]
-    kaynaklar: tuple[Kaynak, ...]
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 4: Testi koş, GEÇTİĞİNİ gör**
 
@@ -975,10 +839,7 @@ Run: `python -m pytest tests/test_tipler.py -v` → **4 passed**
 
 - [x] **Adım 5: Commit**
 
-```bash
-git add hakhukuk/tipler.py tests/test_tipler.py && \
-git commit -m "A2: ürün tipleri — dört durum enum'la ayrıldı (bool ayrımı kaybediyordu)"
-```
+*(commit komutu 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 ---
 
@@ -1005,56 +866,7 @@ kullanmak zorundadır; metne tek başına bakarsa **aynı hatayı yapar**.
 
 - [x] **Adım 1: Failing test yaz — Faz 0'ın GERÇEK vakalarıyla**
 
-```python
-# tests/test_terazi.py
-from hakhukuk.terazi import siniflandir
-from hakhukuk.tipler import Durum, Kaynak
-
-IS_K_31 = Kaynak(kanun_adi="İŞ KANUNU", kanun_no="4857", madde_no="Madde 31",
-                 metin="Muvazzaf askerlik ödevi dışında manevra veya herhangi bir "
-                       "sebeple silâh altına alınan …", sira=1)
-
-
-def test_olumsuz_hukum_kaynak_VARKEN_cevaptir_cekinme_degildir():
-    """2026-09-07 · GERÇEK vaka (BİZ id=37): alet bunu çekinme saydı, göz CEVAP dedi.
-
-    "…zorunlu bir şart bulunmamaktadır" bir HUKUKİ HÜKÜMDÜR, red değil.
-    """
-    metin = ("Vesayet altındaki bir kişi için aile meclisinin kurulmasının zorunlu bir "
-             "şartı bulunmamaktadır. Vesayet, mahkeme kararıyla atanır. "
-             "**İlgili Kanun:** Türk Medeni Kanunu, 503. madde.")
-    durum, atiflar = siniflandir(metin, kaynaklar=(IS_K_31,), finish_reason="stop")
-    assert durum is not Durum.SUSKUNLUK
-
-
-def test_kaynak_YOKKEN_ayni_metin_suskunluk_sayilabilir():
-    """Aynı metin, kaynak yokken: "kaynakta yok" okuması artık MÜMKÜN."""
-    metin = "Bu konuda elimdeki kaynaklarda bir hüküm bulunmamaktadır."
-    durum, _ = siniflandir(metin, kaynaklar=(), finish_reason="stop")
-    assert durum is Durum.SUSKUNLUK
-
-
-def test_kesik_cevap_gizlenmez():
-    """Faz 0 · id 43: yarım cümle sessizce teslim edilmez."""
-    durum, _ = siniflandir("İddianame, Cumhuriyet Başsavcılığı tarafından mahkemeye "
-                           "sunulur ve mahkeme tarafından kabul edilirse",
-                           kaynaklar=(IS_K_31,), finish_reason="length")
-    assert durum is Durum.KESIK
-
-
-def test_uydurulmus_atif_dogrulanmadi_isaretlenir():
-    """Faz 0 · base id=16: "4711 Sayılı Türk Hakemlik Kanunu" — var olmayan kanun."""
-    metin = "Karşı oy yer almaz. 4711 Sayılı Türk Hakemlik Kanunu'nun 33. maddesi."
-    _, atiflar = siniflandir(metin, kaynaklar=(IS_K_31,), finish_reason="stop")
-    assert atiflar, "atıf çıkarılamadı"
-    assert all(not a.dogrulandi for a in atiflar), "getirilen kaynakta olmayan atıf doğrulanmış"
-
-
-def test_kaynaktaki_atif_dogrulanir():
-    metin = "İş Kanunu Madde 31 uyarınca sözleşme askıya alınır."
-    _, atiflar = siniflandir(metin, kaynaklar=(IS_K_31,), finish_reason="stop")
-    assert any(a.dogrulandi for a in atiflar)
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
 
@@ -1062,82 +874,7 @@ Run: `python -m pytest tests/test_terazi.py -v` → `FAIL` (`No module named 'ha
 
 - [x] **Adım 3: Uygulama**
 
-```python
-# hakhukuk/terazi.py
-"""suskunluk_terazisi — ürün yüzeyi.
-
-   NEDEN VAR (üç kez ölçüldü, üçünde de alet FAZLA RED saydı):
-   2026-09-06  bizim şablon, önsözsüz    alet 14 → göz  8   (ADR-0061)
-   2026-09-06  Gemini şablonu, F0.4      alet 11 → göz  7
-   2026-09-07  kör mod, iki kol          alet  6 → göz  0   (6/6 yanlış pozitif)
-
-Kök sebep: "…bulunmamaktadır" ailesi hukuk metninde İKİ iş görür —
-  (a) "kaynakta yok, cevaplayamam"  = çekinme
-  (b) "kanunda böyle bir hüküm yok" = ESASA İLİŞKİN CEVAP
-Metne tek başına bakan bir sınıflandırıcı bunları ayıramaz. Bu modül `kaynaklar`ı da
-görür: kaynak YOKSA (a) mümkündür, kaynak VARSA (b) çok daha olasıdır.
-"""
-import os
-import re
-import sys
-
-from hakhukuk.tipler import Atif, Durum, Kaynak
-
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
-from score_abstention import REJECT_RE  # noqa: E402  — TEK KAYNAK, kopyalanmaz
-
-# "Kanunda hüküm yok" kalıbı: olumsuzlama + hemen ardından bir madde/kanun atfı.
-# Bu birleşim bir CEVAPTIR; tek başına olumsuzlama değildir.
-_ESASA_ILISKIN = re.compile(
-    r"(bulunmamakta|belirtilmemiş|yer almaz|düzenlenmemiş)", re.IGNORECASE)
-_ATIF = re.compile(
-    r"(?:(\d{3,5})\s*[Ss]ayılı[^.]{0,60}?)?"
-    r"(?:madde|md\.?)\s*[:\s]*([0-9]+(?:/[a-zA-Z])?)", re.IGNORECASE)
-
-
-def _atiflari_cikar(metin: str, kaynaklar: tuple[Kaynak, ...]) -> tuple[Atif, ...]:
-    """Metindeki madde atıflarını çıkar ve GETİRİLEN kaynaklara karşı doğrula.
-
-    Doğrulama deterministik: atıf, getirilen kaynakların kimlik kümesinde varsa doğrudur.
-    Yoksa `dogrulandi=False` — bu, kullanıcıya UYARIYLA gösterilir, sessizce geçilmez.
-    """
-    kimlikler = {k.kimlik for k in kaynaklar}
-    kanunlar = {k.kanun_no for k in kaynaklar}
-    out: list[Atif] = []
-    for kanun_no, madde in _ATIF.findall(metin):
-        kn = kanun_no or (next(iter(kanunlar)) if len(kanunlar) == 1 else "")
-        mn = f"Madde {madde}"
-        out.append(Atif(kanun_no=kn, madde_no=mn, dogrulandi=f"{kn}/{mn}" in kimlikler))
-    return tuple(out)
-
-
-def siniflandir(
-    metin: str, kaynaklar: tuple[Kaynak, ...], finish_reason: str
-) -> tuple[Durum, tuple[Atif, ...]]:
-    """Cevabı dört durumdan birine ayır ve atıflarını doğrula.
-
-    Yan etkisi yok, idempotent. `finish_reason` üretimden GELDİĞİ GİBİ verilir —
-    "length" sessizce yutulmaz (Faz 0: yarım cümle teslim edilmişti).
-    """
-    atiflar = _atiflari_cikar(metin, kaynaklar)
-
-    if finish_reason == "length":
-        return Durum.KESIK, atiflar
-
-    red = bool(REJECT_RE.search(metin))
-    esasa = bool(_ESASA_ILISKIN.search(metin))
-
-    if red and not kaynaklar:
-        # Kaynak yok ⇒ "kaynakta yok, cevaplayamam" okuması MÜMKÜN.
-        return Durum.SUSKUNLUK, atiflar
-    if red and kaynaklar and not atiflar:
-        # Kaynak var ama model hiçbirine dayanmadı ⇒ gerçek çekinme.
-        return Durum.SUSKUNLUK, atiflar
-    if esasa or any(not a.dogrulandi for a in atiflar):
-        # Olumsuz hüküm ya da doğrulanamayan atıf ⇒ çekinceli: cevap gibi görünür, tam değildir.
-        return Durum.CEKINCELI, atiflar
-    return Durum.CEVAP, atiflar
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 4: Testi koş, GEÇTİĞİNİ gör**
 
@@ -1187,10 +924,7 @@ kalem **id'siyle listelenir ve gözle okunur** — sayı düzeltilmeden devam ed
 
 - [x] **Adım 6: Commit**
 
-```bash
-git add hakhukuk/terazi.py tests/test_terazi.py && \
-git commit -m "A8: suskunluk_terazisi ürün yüzeyine taşındı — sınıflandırıcı artık kaynağı da görüyor"
-```
+*(commit komutu 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 ---
 
@@ -1267,11 +1001,11 @@ dünkü gibi yüklenmiyor; tek fark hükmün okunur olması: *"eski biçim … y
 gömer** ve diskteki indekse hiç bakmaz ⇒ *"dağıtılan indeks doğru mu"* sorusu bugüne kadar
 **ölçülemiyordu**. Bu betik onu ölçer ve verify'ı yeniden koşulabilir kılar.
 
-- [ ] **Adım 2: Failing test yaz** — karar (a) ise indirme + `sha256` doğrulama, (b) ise
+- **BEKLETİLİYOR** · **Adım 2: Failing test yaz** — karar (a) ise indirme + `sha256` doğrulama, (b) ise
 üretim + `KUNYE.json` eşleşmesi sınanır. İki durumda da test **künye eşleşmesini** sınar:
 indeksin `KUNYE.json`'u korpusun sürümüyle uyuşmuyorsa `recall@10` sessizce düşer.
 
-- [ ] **Adım 3-5: Uygulama · test yeşil · commit**
+- **BEKLETİLİYOR** · **Adım 3-5: Uygulama · test yeşil · commit**
 
 **S8 KAPANDI 2026-09-07 → (a).** Aşağıdaki iki seçenek kaydı, *neyin reddedildiğini* göstermek için duruyor. İki seçenek **farklı kod** ister:
 - **(a) HF dataset:** `huggingface_hub.hf_hub_download` + `sha256` doğrulama + yeni bağımlılık
@@ -1367,38 +1101,7 @@ istem + terazi **gizli**. Harness **GPU'ya girmez** — embedder CPU'da, indeks 
 
 - [x] **Adım 1: Failing test yaz — sunucusuz, sahte taşıyıcıyla**
 
-```python
-# tests/test_servis.py
-from hakhukuk import servis
-from hakhukuk.tipler import Durum, Kaynak
-
-IS_K_31 = Kaynak(kanun_adi="İŞ KANUNU", kanun_no="4857", madde_no="Madde 31",
-                 metin="Muvazzaf askerlik ödevi dışında …", sira=1)
-
-
-def test_answer_kaynaklari_ve_atiflari_dondurur(monkeypatch):
-    monkeypatch.setattr(servis, "_getir", lambda soru, k: (IS_K_31,))
-    monkeypatch.setattr(servis, "_uret",
-                        lambda mesajlar: ("İş Kanunu Madde 31 uyarınca askıya alınır.", "stop"))
-    c = servis.answer("Askerlik nedeniyle iş sözleşmesi ne olur?")
-    assert c.durum is Durum.CEVAP
-    assert c.kaynaklar == (IS_K_31,)
-    assert any(a.dogrulandi for a in c.atiflar)
-
-
-def test_answer_bos_getirmede_susar(monkeypatch):
-    """Retriever boş dönerse model konuşturulmaz — üründe M5 koşulu OLUŞMAMALI."""
-    monkeypatch.setattr(servis, "_getir", lambda soru, k: ())
-    c = servis.answer("İlgisiz soru")
-    assert c.durum is Durum.SUSKUNLUK
-    assert c.kaynaklar == ()
-
-
-def test_answer_kesigi_gizlemez(monkeypatch):
-    monkeypatch.setattr(servis, "_getir", lambda soru, k: (IS_K_31,))
-    monkeypatch.setattr(servis, "_uret", lambda mesajlar: ("Yarım cüm", "length"))
-    assert servis.answer("x").durum is Durum.KESIK
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
 
@@ -1406,67 +1109,7 @@ Run: `python -m pytest tests/test_servis.py -v` → `FAIL`
 
 - [x] **Adım 3: Uygulama**
 
-```python
-# hakhukuk/servis.py
-"""Ürünün tek derin modülü: answer(soru) → Cevap.
-
-Arayüz tek fonksiyon; retriever, llama-server, istem ve terazi ARKASINDA gizli.
-   Harness GPU'ya GİRMEZ (embedder CPU, indeks CPU RAM/disk) — "sığar/sığmaz" farkı budur.
-
-   Retriever boş dönerse model ÇAĞRILMAZ. Sebebi ölçülmüştür: kaynaksız (M5) koşullarda
-model kendinden emin ve YANLIŞ hukuk üretiyor (2026-09-07: İş K. 31 → "35. ve 36. madde",
-İİK 79/a → "110. madde", TBK 230 → "6502 Sayılı Tüketici Kanunu"). Üründe bu koşul
-OLUŞMAMALIDIR.
-"""
-from hakhukuk.istem import SISTEM_COK_KAYNAK
-from hakhukuk.terazi import siniflandir
-from hakhukuk.tipler import Cevap, Durum, Kaynak
-
-VARSAYILAN_K = 10          # ADR-0068 · RRF_K=10 ile ölçülen recall@10 = 0,9500
-DUSUNCE_BUTCESI = 1024     #    Üründe cevap bütçesinden AYRI (Faz 0: paylaşımlı havuz
-CEVAP_BUTCESI = 1024       #    düşünceye yanıp cevaba 3 karakter bırakmıştı)
-
-
-def _getir(soru: str, k: int) -> tuple[Kaynak, ...]:
-    """Hibrit BM25 + bge-m3, RRF ile füzyon. CPU'da çalışır."""
-    import os
-    import sys
-    sys.path.insert(0, os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts"))
-    import retriever  # noqa: PLC0415 — ağır bağımlılık, ithalat gecikmeli
-    ham = retriever.getir(soru, k=k)
-    return tuple(
-        Kaynak(kanun_adi=h["kanun_adi"], kanun_no=str(h["kanun_no"]),
-               madde_no=h["madde_no"], metin=h["metin"], sira=i + 1)
-        for i, h in enumerate(ham)
-    )
-
-
-def _uret(mesajlar: list[dict]) -> tuple[str, str]:
-    """llama-server'a tek istek. Döner: (metin, finish_reason)."""
-    raise NotImplementedError("Adım 4'te doldurulacak")
-
-
-def answer(soru: str, *, k: int = VARSAYILAN_K) -> Cevap:
-    """Bir soruya kaynaklı, atıfları doğrulanmış cevap üret.
-
-    Boş getirmede model çağrılmaz; dürüst suskunluk döner.
-    """
-    kaynaklar = _getir(soru, k)
-    if not kaynaklar:
-        return Cevap(
-            metin="Elimdeki mevzuat kaynaklarında bu soruyu karşılayan bir hüküm bulamadım. "
-                  "Güncel mevzuata veya bir avukata danışmanızı öneririm.",
-            durum=Durum.SUSKUNLUK, atiflar=(), kaynaklar=())
-
-    blok = "\n\n".join(
-        f"[KAYNAK {s.sira}] {s.kanun_adi} {s.madde_no}\n{s.metin[:900]}" for s in kaynaklar)
-    mesajlar = [{"role": "system", "content": SISTEM_COK_KAYNAK},
-                {"role": "user", "content": f"KAYNAKLAR:\n{blok}\n\nSORU: {soru}"}]
-    metin, finish = _uret(mesajlar)
-    durum, atiflar = siniflandir(metin, kaynaklar, finish)
-    return Cevap(metin=metin, durum=durum, atiflar=atiflar, kaynaklar=kaynaklar)
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 `retriever.getir` **imzasını TAHMİN ETME** — `scripts/erisim_korpus/retriever.py`'yi aç, gerçek fonksiyon
 adını ve dönüş şeklini oku, koda **onu** yaz. Bu turda üç kez yanlış imza/bayrak çıktı.
@@ -1500,25 +1143,7 @@ Kodda ve model kartında *"GEÇİCİ — S10 açık"* şerhi durur.
 
 - [x] **Adım 1: Failing test yaz**
 
-```python
-# tests/test_cli.py
-import subprocess
-import sys
-
-
-def test_cli_sorumluluk_ibaresini_HER_cevapta_basar():
-    r = subprocess.run([sys.executable, "-m", "hakhukuk.cli", "--kuru-calisma", "test"],
-                       capture_output=True, text=True)
-    assert r.returncode == 0
-    assert "hukuki tavsiye değil" in r.stdout.lower()
-
-
-def test_cli_dort_durumu_ayirt_edilebilir_basar():
-    r = subprocess.run([sys.executable, "-m", "hakhukuk.cli", "--durumlari-listele"],
-                       capture_output=True, text=True)
-    for ad in ("CEVAP", "CEKINCELI", "SUSKUNLUK", "KESIK"):
-        assert ad in r.stdout
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör** → `FAIL`
 
@@ -1544,7 +1169,7 @@ ve komut zinciri hiçbir yerde **tek parça** yazılı değil.
 geçerlilik kapısı → puanla → `harness_tablo.py`.
 `verify:` script `bash -n` temiz; her adım künyeye **ne yazdığını** basıyor.
 
-- [ ] **Adım 2: TEMİZ MAKİNE KAPISI** — `git clone` + `uv sync` + tek komut.
+- **ERTELENDİ** · **Adım 2: TEMİZ MAKİNE KAPISI** — `git clone` + `uv sync` + tek komut.
 
 > **ERTELENDİ 2026-09-07 — bugün koşulsa TANIM GEREĞİ düşer.** `git clone` çalışan bir ürün
 > vermiyor çünkü indeks **git'te yok** (`.gitignore:166`, `data/index/**/*.npy` — 79 MB ikili) ve
@@ -1576,20 +1201,7 @@ kalmasını sağlıyor.
 
 - [x] **Adım 2: Failing test** — TUI'nin **kendi mantığı olmadığını** sınar:
 
-```python
-# tests/test_tui.py
-import inspect
-
-from hakhukuk import tui
-
-
-def test_tui_kendi_mantigi_yok_yalnizca_answer_cagirir():
-    """TUI ince kabuktur. Sınıflandırma/atıf mantığı BURAYA sızarsa iki yerde bakım olur."""
-    kaynak = inspect.getsource(tui)
-    for yasak in ("REJECT_RE", "re.compile", "siniflandir(", "_getir(", "_uret("):
-        assert yasak not in kaynak, f"TUI'ye mantık sızmış: {yasak}"
-    assert "answer(" in kaynak
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 - [x] **Adım 3: Testi koş, BAŞARISIZ olduğunu gör**
 
@@ -1597,53 +1209,7 @@ Run: `python -m pytest tests/test_tui.py -v` → `FAIL` (`No module named 'hakhu
 
 - [x] **Adım 4: Uygulama — ince kabuk**
 
-```python
-# hakhukuk/tui.py
-"""Tek ekranlı terminal arayüzü. answer() üstünde İNCE KABUK — kendi mantığı YOKTUR.
-
-   Sınıflandırma/atıf mantığı buraya sızarsa iki yerde bakım olur ve ikisi sessizce
-ayrışır (bkz. istem sürüklenmesi, S18: aynı metin beş dosyada, ikisi farklıydı).
-tests/test_tui.py bunu bir KAPI olarak sınar.
-"""
-from textual.app import App, ComposeResult
-from textual.containers import VerticalScroll
-from textual.widgets import Footer, Header, Input, Static
-
-from hakhukuk.cli import SORUMLULUK_IBARESI
-from hakhukuk.servis import answer
-from hakhukuk.tipler import Durum
-
-ROZET = {
-    Durum.CEVAP: "   CEVAP",
-    Durum.CEKINCELI: "   ÇEKİNCELİ CEVAP — doğrudan hüküm bulunamadı",
-    Durum.SUSKUNLUK: "   SUSKUNLUK — dayanak bulunamadı",
-    Durum.KESIK: "   KESİK — üretim bütçesi bitti, cevap YARIM",
-}
-
-
-class HakHukukTUI(App):
-    TITLE = "HakHukuk"
-
-    def compose(self) -> ComposeResult:
-        yield Header()
-        yield Input(placeholder="Hukuki sorunuzu yazın…", id="soru")
-        yield VerticalScroll(Static("", id="cikti"))
-        yield Footer()
-
-    def on_input_submitted(self, olay: Input.Submitted) -> None:
-        c = answer(olay.value)
-        atif = "\n".join(
-            f"  {'  ' if a.dogrulandi else '   DOĞRULANAMADI'} {a.kanun_no} {a.madde_no}"
-            for a in c.atiflar) or "  (atıf yok)"
-        kaynak = "\n".join(f"  {k.sira}. {k.kanun_adi} {k.madde_no}" for k in c.kaynaklar)
-        self.query_one("#cikti", Static).update(
-            f"{ROZET[c.durum]}\n\n{c.metin}\n\nATIFLAR:\n{atif}\n\n"
-            f"KAYNAKLAR:\n{kaynak}\n\n{SORUMLULUK_IBARESI}")
-
-
-def main() -> None:
-    HakHukukTUI().run()
-```
+*(kod 2026-09-09'da silindi — karşılığı repoda ve git geçmişinde; plandaki kopya artık güncel değildi.)*
 
 `SORUMLULUK_IBARESI` **Görev 10'da** `hakhukuk/cli.py`'de tanımlanır ve buradan **import
 edilir** — iki yere yazılmaz (S18'in dersi).
@@ -1734,16 +1300,16 @@ süzgeci 4 buluyor, *"altın madde atıflarda yok"* süzgeci 3 — **göz 8** bu
 **Alet HAZIR:** `scripts/veri_hazirlik/b10_hasat.py` · Modal `harvest_b10` (ADR-0047 m.2, L4'te doğrulanmış) ·
 sızıntı süzgeci (13.350 → 12.914, konteynerde bayt-özdeş). **Yeniden kurulmaz.**
 
-- [ ] **Adım 1: Ön-kayıt — hedef bandı ve durma kuralı, KOŞUDAN ÖNCE**
+- **ATLANDI** · **Adım 1: Ön-kayıt — hedef bandı ve durma kuralı, KOŞUDAN ÖNCE**
 `verify:` ADR'de hedef bant, durma kuralı ve *"kaç kalem kazanç $X'e değer"* eşiği yazılı.
 B10 turunun dersi: hedef **iki kalemlik** bir boşluğa daralmıştı ve tur **kapatıldı**.
 
-- [ ] **Adım 2: Hasat** (Modal, AYRIK) — `verify:` kabul oranı + sızıntı süzgeci sayıları künyede.
-- [ ] **Adım 3: Eğitim** — `--fresh-adapter` **ZORUNLU** (`τ = θ_ft − θ_base`; adaptörden devam
+- **ATLANDI** · **Adım 2: Hasat** (Modal, AYRIK) — `verify:` kabul oranı + sızıntı süzgeci sayıları künyede.
+- **ATLANDI** · **Adım 3: Eğitim** — `--fresh-adapter` **ZORUNLU** (`τ = θ_ft − θ_base`; adaptörden devam
 etmek **ardışık SFT** üretir, task-vector değil). `verify:` künyede `fresh_adapter: true`.
-- [ ] **Adım 4: Merge (ham TIES) + GGUF** — `verify:` `‖τ‖` ölçüldü ve `kollar.md`'ye satır eklendi.
-- [ ] **Adım 5: Ölç + GÖZLE OKU** — `verify:` isabetsizlik **gözle** sayıldı; alet↔göz deltası yazıldı.
-- [ ] **Adım 6: Commit + `kollar.md` + `research_log`**
+- **ATLANDI** · **Adım 4: Merge (ham TIES) + GGUF** — `verify:` `‖τ‖` ölçüldü ve `kollar.md`'ye satır eklendi.
+- **ATLANDI** · **Adım 5: Ölç + GÖZLE OKU** — `verify:` isabetsizlik **gözle** sayıldı; alet↔göz deltası yazıldı.
+- **ATLANDI** · **Adım 6: Commit + `kollar.md` + `research_log`**
 
 ---
 
@@ -1762,10 +1328,10 @@ etmek **ardışık SFT** üretir, task-vector değil). `verify:` künyede `fresh
 Kaldıraç: **aynı ORPO ile daha çok adım / daha yüksek lr**.
 Yöntemi de değiştirmek **iki değişkeni birlikte** oynatır (ADR-0017).
 
-- [ ] **Adım 1: Ön-kayıt** — hangi `‖τ_a‖` değeri hedefleniyor, hangi M2b eşiği bekleniyor.
-- [ ] **Adım 2: Eğitim** (`--fresh-adapter`) — `verify:` `‖τ_a‖` **ölçüldü ve raporlandı**.
-- [ ] **Adım 3: Merge + M2b ölçümü** — `verify:` merge sonrası M2b **yeni çıpanın üstünde**.
-- [ ] **Adım 4: Commit**
+- **ATLANDI** · **Adım 1: Ön-kayıt** — hangi `‖τ_a‖` değeri hedefleniyor, hangi M2b eşiği bekleniyor.
+- **ATLANDI** · **Adım 2: Eğitim** (`--fresh-adapter`) — `verify:` `‖τ_a‖` **ölçüldü ve raporlandı**.
+- **ATLANDI** · **Adım 3: Merge + M2b ölçümü** — `verify:` merge sonrası M2b **yeni çıpanın üstünde**.
+- **ATLANDI** · **Adım 4: Commit**
 
 ---
 
@@ -2067,7 +1633,7 @@ tablolarda. Sonnet-5'te ölçülmeyen iki eksen *"ölçülmedi"* yazıldı, tahm
 
 `verify:` üç belgede de **çalışan** HF linki var; `tests/test_belgeler.py` yeşil.
 
-- [ ] **Adım 4: Commit + etiket**
+- [x] **Adım 4: Commit + etiket** BİTTİ **2026-09-09** — `v0.3` etiketi atıldı, 16 commit yerelde (push insan kararı bekliyor)
 
 **Sürüm etiketi kapı sonucuna bağlıdır** — `v1.0` ancak Görev 16 geçerse verilir.
 
@@ -2340,3 +1906,56 @@ sayısı yeniden okunur (yeniden **koşulmaz** — yalnız gözle sayım güncel
   ADR-0050'nin sınırında). Sıradaki turda **koşudan ÖNCE** düzeltilir.
 - **`recall_taban.json`** — Faz 0'ın tek *"kaynaklanmadı"* ihlali; ölçüm mevcut rejimde
   ($0, ~15 dk) yeniden koşulup dosya **gerçekten** üretilir.
+
+---
+
+### Görev 19 : HTTP API — `answer()` üstünde ince kabuk *(insan kararı 2026-09-09)*
+
+**Dosyalar:** Create: `hakhukuk/api.py` · `tests/test_api.py` · Modify: `pyproject.toml`
+
+🚨 **KAPSAM İNSAN KARARIYLA GENİŞLETİLDİ ve çelişki iki yerde damgalandı.** Bu planın başlığı
+`v0.2 → v0.3`'tür ve [`00-IS-SIRASI.md`](../00-IS-SIRASI.md) bugüne kadar *"CLI + TUI yeterli
+(insan kararı) — HTTP API ve web arayüzü **v2**"* diyordu. O cümle **artık geçerli değil**:
+API `v1` tarafına alındı. Gerekçe teknik değil, insan tercihidir; öyle yazılır.
+⛔ **S9 AÇILMADI:** API **yerel ve tek kullanıcı**dır (`127.0.0.1`). Barındırma, kimlik, hız
+sınırı ve mahremiyet vaadi soruları **açılmıyor** — S9 `v2`'de açık soru olarak duruyor.
+
+**Neden ince kabuk.** `cli.py` ve `tui.py` ile aynı ilke: API'nin **kendi mantığı olmaz**.
+Sınıflandırma, atıf doğrulama ve kaynak seçimi `answer()`'ın içindedir; API yalnız taşır.
+`SORUMLULUK_IBARESI` `cli.py`'den **import edilir, kopyalanmaz** (S18'in dersi: aynı metin iki
+yerde durursa sessizce ayrışır).
+
+**Kilitlenen altı karar — grill oturumu, 2026-09-09:**
+
+| # | karar | gerekçe |
+| :--- | :--- | :--- |
+| 1 | **Yerel, tek kullanıcı** (`127.0.0.1`, kimlik yok) | S9'u açmaz, mahremiyet vaadine dokunmaz |
+| 2 | Yapısal alanlar **+ hazır `sunum` dizesi** | Tembel tüketici tek alanı bassa bile rozet + atıf + kaynak + ibare gider; dürüstlük sözleşmesi HTTP'de düşmez |
+| 3 | Yalnız **`answer()`** | `answer_arac()` taşıyıcıda araç çağrısı ayrıştırmıyor ⇒ açılırsa tüketici araç kullanıldığını **sanır** |
+| 4 | Boş metin → **503**, dolu KESİK → **200** | *"HTTP 200 ile boş içerik"* bu hattın #42'de ölçtüğü kusurun adıdır; sınırı geçmesine izin verilmez |
+| 5 | Boş/boşluk sorgu → **422** | Ölçüldü: `_getir("")` sabit gürültü döndürüyor. ⛔ Uydurulmuş uzunluk eşiği **YOK** |
+| 6 | **Serileştirilmiş** tek istek · opsiyonel ekstra `hakhukuk[api]` | Tekilin evre güvenliği **ölçülmedi**; ölçüm rejimi sıralı istekti. Çekirdek kurulum şişmez (`pyproject.toml` ilk satırındaki karar) |
+
+- [ ] **Adım 1: Failing test** — `tests/test_api.py`, `TestClient` ile, **sunucu ve model YOK**
+(`servis.answer` monkeypatch'lenir). Sınanacaklar: `sunum` dizesi dört parçayı da taşıyor ·
+boş sorgu 422 · boş metin 503 · dolu KESİK 200 · API'nin kendi mantığı yok (kaynak denetimi).
+
+- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+
+- [ ] **Adım 3: Bağımlılığı opsiyonel ekstra olarak ekle**
+`verify:` `pip install -e .` çekirdek bağımlılıkları **değiştirmiyor**; `[api]` ekstrası
+`fastapi` ve `uvicorn`'u getiriyor, sürümler **kurulu ortamdan okunarak** pinlenir.
+
+- [ ] **Adım 4: `hakhukuk/api.py` — uygulama**
+`verify:` her altı karar testle çivili; `api.py` içinde `REJECT_RE`, `siniflandir(`, `_getir(`
+geçmiyor (ince kabuk kapısı, `test_tui.py`'nin aynısı).
+
+- [ ] **Adım 5: Testi koş, GEÇTİĞİNİ gör + commit**
+
+- [ ] **Adım 6: Gözle doğrula** — `hakhukuk-api` ile aç, bir soru sor, cevabı **gör**.
+`verify:` `sunum` alanı ekranda rozet + atıf + kaynak + ibare taşıyor; boş sorgu 422 dönüyor.
+⛔ Bu da bir **insan gözü kapısıdır** (SIRA 2 ile aynı sınıf).
+
+⚠️ **Bu görev ticket 1 ve 3'ü ÇÖZMEZ.** Boş cevap kusuru (~%5) API'de 503 olarak **görünür**
+hâle gelir ama **giderilmez**; donma sorunu API'de yoktur çünkü istek serileştirilir ve istemci
+bekler. İkisi de [`post-hp-hat-b-tickets.md`](post-hp-hat-b-tickets.md)'de açık kalır.
