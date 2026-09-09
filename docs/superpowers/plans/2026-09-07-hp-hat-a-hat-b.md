@@ -1,6 +1,6 @@
 # `HP` → Hat A → Hat B — uygulama planı (`v0.2` → `v1.0`)
 
-## 📊 İCRA DURUMU — 2026-09-07 · **60/89 kutucuk** · 🏷️ `v0.2` etiketlendi
+## 📊 İCRA DURUMU — 2026-09-09 · **61/89 kutucuk** · 🏷️ `v0.2` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -21,7 +21,7 @@
 
 | sıra | iş | bedel | kapı |
 | :--- | :--- | ---: | :--- |
-| **1** | **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | repo başka dizine kopyalanır, retriever **hatasız yükler**, `recall@10` 0,9500 |
+| ~~**1**~~ | ✅ **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | ✅ **BİTTİ 2026-09-09** — kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** (76/80) |
 | **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
 | **3** 🆕 | **G4** — **Sonnet-5 öznesi** rakip havuzuna girer | **~$0,82** *(ölçüldü)* | ✅ `$1` kapısının altında — tam koşu doğrudan koşulabilir |
 | **4** | **G16 Adım 2-4** — `v1.0` kabul testi | ~$0,10 | ⛔⛔ **donmuş TEST TEK KEZ açılır — insan onayı şart** · ⛔ **ARAÇSIZ rejimde** (ADR-0076 m.4) |
@@ -1130,7 +1130,7 @@ git commit -m "A8: suskunluk_terazisi ürün yüzeyine taşındı — sınıflan
 bedeli ölçüldü: `BAAI/bge-m3` **4,3 GB** + CPU'da **~2 sa 45 dk** (planın *"~10 dk"* etiketi
 **GPU** ölçümüydü — yanlıştı).
 
-- [ ] **Adım 1b 🆕: ÖNCE `KUNYE.json`'un taşınabilirlik kilidini kır** *(kod borcu, karar değil)*
+- [x] **Adım 1b 🆕: ÖNCE `KUNYE.json`'un taşınabilirlik kilidini kır** ✅ **BİTTİ 2026-09-09**
 
 🚨 Bu adım olmadan **her iki seçenek de** başka makinede çöker. `KUNYE.json`'un `korpus` bloğu
 **mutlak yol + `(bayt, mtime)`** taşıyor; `retriever.py`:143-152 yüklemede doğruluyor, uymazsa
@@ -1139,6 +1139,33 @@ Yapılacak: mutlak yol → **repo-göreli** · `mtime` vekili → **içerik hash
 **önek sözleşmesi** (bge-m3 önek almaz; kural bugün `retriever.py`:80-90'da) ve `bge-m3`
 **revision/hash'i** eklenir.
 `verify:` repo başka bir dizine kopyalanır, `retriever` **hatasız yükler**, `recall@10` **0,9500**.
+
+**✅ `verify:` ALINDI — ölçüldü, hatırlanmadı:**
+
+| ne | sonuç |
+| :--- | :--- |
+| kopyalanmış ağaç *(scratchpad, repo dışı)* + korpus `mtime`'ı `git checkout` gibi tazelendi | `retriever` **hatasız yükledi** |
+| `recall@10`, **kurulu indeksten**, DEV n=80, `Yururluk.YALNIZ_YURURLUKTE` | **0,9500** (76/80) — çıpayla birebir |
+| kontrol: HEAD'deki kod, ikinci makine koşullarında | `🚫 korpus bulunamadı: /home/baskabir/...` ⇒ **hata gerçekti** |
+| test | **148 geçti**, 2 xfail *(öncesi 143)* — 5 yeni test |
+
+**⚠️ Plandan iki sapma, ikisi de burada damgalanıyor:**
+1. **Yol `repo`-göreli değil, `indeks dizini`-göreli** (`../../corpus/mevzuat_maddeler.jsonl`).
+   Sebep: repo kökünü keşfetmek yeni bir kavram ister ve HF'ten inen indeks repo ağacının
+   içinde olmayabilir; indeks↔korpus bağıntısı ise sabittir. Taşınabilirlik ölçütü aynen
+   karşılanıyor, üstelik testlerde `tmp_path` altında da çalışıyor.
+2. **`model_revision` = `null`.** İndeks 2026-08-05 17:30'da kuruldu, yerel HF önbelleği
+   2026-09-06 18:07'de doldu (**iki** snapshot var) ⇒ önbellekteki commit o günkü kolun
+   **kanıtı değildir** ve uydurulmadı. Bundan sonra kurulan her indeks bu alanı `retriever.kur`
+   içinde **ölçerek** yazar (`_model_revizyonu`).
+
+⛔ **`data/index/mevzuat_bge_m3/` (pre-S2) bilerek ESKİ BİÇİMDE bırakıldı** — işaret ettiği
+korpus sürümü diskte yok (37.903.062 ≠ 38.751.499 bayt), içerik hash'i **bilinemez**. Bugün de
+dünkü gibi yüklenmiyor; tek fark hükmün okunur olması: *"eski biçim … yeniden kur"*.
+
+🆕 **`scripts/erisim_korpus/recall_indeksten.py`** eklendi: `recall_olc.py` korpusu **sıfırdan
+gömer** ve diskteki indekse hiç bakmaz ⇒ *"dağıtılan indeks doğru mu"* sorusu bugüne kadar
+**ölçülemiyordu**. Bu betik onu ölçer ve verify'ı yeniden koşulabilir kılar.
 
 - [ ] **Adım 2: Failing test yaz** — karar (a) ise indirme + `sha256` doğrulama, (b) ise
 üretim + `KUNYE.json` eşleşmesi sınanır. ⚠️ İki durumda da test **künye eşleşmesini** sınar:

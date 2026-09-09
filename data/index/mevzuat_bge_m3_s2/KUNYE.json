@@ -8,10 +8,11 @@
   "n": 40496,
   "boyut": 1024,
   "korpus": {
-    "yol": "/home/ersoy/code/Hukuk-SLM/data/corpus/mevzuat_maddeler.jsonl",
+    "yol": "../../corpus/mevzuat_maddeler.jsonl",
     "bayt": 38751499,
-    "mtime": 1786009165,
-    "mtime_duzeltme_notu": "2026-08-06: mtime 1785939073 -> 1786009165 olarak duzeltildi. BAYT AYNI (38751499) ve icerik KRIPTOGRAFIK OLARAK AYNI: worktree blob == HEAD blob == 6083ddb161a3c2a62a4ba2352a9a64b28a5fbfa5. Korpusun icerigini degistiren son commit 64ed4b9 (2026-08-05 17:14), gomme.npy 2026-08-05 17:30'da kuruldu -> indeks BU icerikten uretildi. mtime'i degistiren sey bugunku (12:39:25) git checkout'u; retriever'in (bayt,mtime) vekili icerik-korumali dokunuslarda YANLIS ALARM veriyor. Indeks YENIDEN KURULMADI - kurulmasi gerekmiyordu."
+    "sha256": "a35e6efc16123f70c4d0eaf48951f0e4d5bd3134a6faa942964222117c0af468",
+    "_gecis_notu": "2026-09-09 · G8 Adım 1b: bu blok MUTLAK YOL + mtime taşıyordu ⇒ retriever her `git clone` sonrası SystemExit veriyordu. Yol indeks dizinine GÖRELİ, mtime vekili İÇERİK HASH'i oldu. İndeks YENİDEN KURULMADI, kurulması gerekmiyordu: bayt 38751499 aynı ve sha256 `data/corpus/KUNYE.json`'un 2026-09-07'de yazdığı değerle BİREBİR aynı ⇒ içerik indeksin kurulduğu andaki içerik.",
+    "_eski_mtime_notu": "2026-08-06: mtime 1785939073 -> 1786009165 olarak duzeltildi. BAYT AYNI (38751499) ve icerik KRIPTOGRAFIK OLARAK AYNI: worktree blob == HEAD blob == 6083ddb161a3c2a62a4ba2352a9a64b28a5fbfa5. Korpusun icerigini degistiren son commit 64ed4b9 (2026-08-05 17:14), gomme.npy 2026-08-05 17:30'da kuruldu -> indeks BU icerikten uretildi. mtime'i degistiren sey bugunku (12:39:25) git checkout'u; retriever'in (bayt,mtime) vekili icerik-korumali dokunuslarda YANLIS ALARM veriyor. Indeks YENIDEN KURULMADI - kurulmasi gerekmiyordu."
   },
   "secim_gerekcesi": "S3a ön-probu, research_log #49 — recall@10 0,875",
   "yururluk": {
@@ -26,5 +27,11 @@
       "veri": "data/eval/dev/core_hard.jsonl"
     },
     "korpus_kunyesi": "data/corpus/KUNYE.json"
-  }
+  },
+  "onek": {
+    "sorgu": "",
+    "belge": ""
+  },
+  "model_revision": null,
+  "model_revision_notu": "ÖLÇÜLMEDİ, uydurulmadı. İndeks 2026-08-05 17:30'da kuruldu; yerel HF önbelleği 2026-09-06 18:07'de doldu (iki snapshot var) ⇒ önbellekteki commit o günkü kolun KANITI DEĞİLDİR. Bundan sonra kurulan her indeks `retriever.kur` ile bu alanı ölçerek yazar."
 }

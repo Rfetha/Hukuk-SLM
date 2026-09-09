@@ -1,8 +1,11 @@
+import hashlib
 import json
+import os
+import shutil
 
 import numpy as np
 import pytest
-from retriever import Retriever, rrf_birlestir  # noqa: E402
+from retriever import ONEK, Retriever, rrf_birlestir  # noqa: E402
 
 
 KORPUS = [
@@ -89,3 +92,71 @@ def test_rrf_iki_kaynakta_da_ustte_olan_kazanir():
     a = np.array([9.0, 8.0, 1.0])
     b = np.array([1.0, 9.0, 8.0])
     assert int(np.argmax(rrf_birlestir([a, b], rrf_k=60))) == 1
+
+
+# ── Taşınabilirlik kilidi (G8 Adım 1b) ───────────────────────────────────────
+# ⚠️ Bu blok bir ÜRÜN hatasını çiviler: künye MUTLAK YOL + `mtime` damgalıyordu.
+# `git clone` sonrası mtime checkout zamanı olur ⇒ retriever HER MAKİNEDE SystemExit
+# veriyordu. Sessiz değil ama ölümcül: indeks 83 MB ve yeniden kurmak CPU'da ~2 sa 45 dk.
+
+def test_kunye_korpus_yolu_gorelidir_mutlak_degil(tmp_path):
+    korpus = _korpus_yaz(tmp_path)
+    idx = str(tmp_path / "indeks")
+    Retriever.kur(korpus, idx, gomucu=_sahte_gomucu)
+    imza = json.load(open(f"{idx}/KUNYE.json", encoding="utf-8"))["korpus"]
+    assert not os.path.isabs(imza["yol"])
+    assert "mtime" not in imza
+    assert imza["sha256"] == hashlib.sha256(open(korpus, "rb").read()).hexdigest()
+
+
+def test_yukle_indeks_baska_dizine_kopyalaninca_calisir(tmp_path):
+    # verify ölçütünün küçük ölçekli hâli: ağaç OLDUĞU GİBİ başka yere kopyalanır.
+    korpus = _korpus_yaz(tmp_path)
+    kaynak = tmp_path / "repo"
+    kaynak.mkdir()
+    os.rename(korpus, kaynak / "korpus.jsonl")
+    idx = str(kaynak / "indeks")
+    Retriever.kur(str(kaynak / "korpus.jsonl"), idx, gomucu=_sahte_gomucu)
+
+    hedef = tmp_path / "baska" / "repo"
+    shutil.copytree(kaynak, hedef)
+    r = Retriever.yukle(str(hedef / "indeks"), gomucu=_sahte_gomucu)
+    assert r.getir("Cumhuriyet savcısı", k=1)[0]["madde_no"] == "Madde 161"
+
+
+def test_yukle_icerigi_degismemis_korpusa_yanlis_alarm_vermez(tmp_path):
+    # ⚠️ 2026-08-06'da BİREBİR bu oldu: `git checkout` mtime'ı değiştirdi, bayt ve
+    # içerik aynıydı, retriever "korpus DEĞİŞTİ" dedi. Vekil yanlıştı, indeks değil.
+    korpus = _korpus_yaz(tmp_path)
+    idx = str(tmp_path / "indeks")
+    Retriever.kur(korpus, idx, gomucu=_sahte_gomucu)
+    os.utime(korpus, (0, 0))
+    assert Retriever.yukle(idx, gomucu=_sahte_gomucu).getir("işçi", k=1)
+
+
+def test_yukle_onek_sozlesmesi_uymazsa_patlar(tmp_path):
+    # Önek DÜŞERSE hata çıkmaz, yalnız recall düşer — sessiz yanlışlık sınıfı.
+    korpus = _korpus_yaz(tmp_path)
+    idx = str(tmp_path / "indeks")
+    Retriever.kur(korpus, idx, gomucu=_sahte_gomucu)
+    assert json.load(open(f"{idx}/KUNYE.json", encoding="utf-8"))["onek"] == ONEK
+    _kunye_yaz(idx, onek={"sorgu": "query: ", "belge": "passage: "})
+    with pytest.raises(SystemExit, match="önek"):
+        Retriever.yukle(idx, gomucu=_sahte_gomucu)
+
+
+def test_yukle_eski_bicim_kunyeyi_acikca_reddeder(tmp_path):
+    # data/index/mevzuat_bge_m3/ bugün bu biçimde; KeyError yerine okunur hüküm.
+    korpus = _korpus_yaz(tmp_path)
+    idx = str(tmp_path / "indeks")
+    Retriever.kur(korpus, idx, gomucu=_sahte_gomucu)
+    _kunye_yaz(idx, korpus={"yol": os.path.abspath(korpus), "bayt": 1, "mtime": 2})
+    with pytest.raises(SystemExit, match="eski biçim"):
+        Retriever.yukle(idx, gomucu=_sahte_gomucu)
+
+
+def _kunye_yaz(idx, **alanlar):
+    yol = f"{idx}/KUNYE.json"
+    k = json.load(open(yol, encoding="utf-8"))
+    k.update(alanlar)
+    json.dump(k, open(yol, "w", encoding="utf-8"), ensure_ascii=False, indent=2)

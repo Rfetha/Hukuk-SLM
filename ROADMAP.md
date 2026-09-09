@@ -84,7 +84,7 @@ paketlemek, birkaç hafta sonra atılacak bir iştir.
 
 | sıra | ne | neden (ölçülmüş boşluk) | bedel |
 | :--- | :--- | :--- | ---: |
-| 1 | `KUNYE` taşınabilirlik | `git clone` sonrası **her makinede** `SystemExit` — mutlak yol + `mtime` kilidi | $0 |
+| ~~1~~ | ✅ `KUNYE` taşınabilirlik | ~~`git clone` sonrası **her makinede** `SystemExit`~~ — **kapandı 2026-09-09**: yol göreli, `mtime` → içerik hash'i; `recall@10` **0,9500** | $0 |
 | 2 | TUI gözle doğrulama | ürün yüzü **insan gözüyle hiç görülmedi** | $0 |
 | 3 | **Sonnet-5 öznesi** | havuzda yalnız Gemini var; **frontier sınıfı hiç ölçülmedi** | ~$0,82 |
 | 4 | **Kabul testi** *(⛔ ARAÇSIZ)* | donmuş TEST **hiç açılmadı** ⇒ `v1.0` verilmedi | ~$0,10 |

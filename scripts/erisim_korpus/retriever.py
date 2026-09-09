@@ -32,6 +32,7 @@ Kullanım:
                                     --soru "İşe iade davası ne zaman açılır?" -k 5
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -49,6 +50,13 @@ RRF_K = 10   # ADR-0068 (2026-09-06): 60 → 10.
 # Seçim gerekçesi PLATO, sivrilik değil: r@5 = 0,8250 k∈[5,20] boyunca sabit (k=30'da
 # 0,8125, k=60'ta 0,7875); k=10 o platonun ORTASI. r@10'daki fazladan kalem BONUSTUR.
 # Seçim DEV'de yapıldı; doğrulaması donmuş TEST'tedir.
+
+# Önek sözleşmesi. `bge-m3` sorgu/belge öneki ALMAZ — gömülen metin `_gomulecek_metin`'in
+# ürettiğinin AYNISIDIR, sorgu da çıplak gider.
+# Why künyeye yazılıyor: E5 ailesi "query: "/"passage: " ister ve önek DÜŞERSE hiçbir hata
+# çıkmaz, yalnız recall düşer. İndeksi başka bir makinede/kodla kullanan, sorguyu hangi
+# sözleşmeyle kodlayacağını künyeden okur; `yukle` kodun bugünkü sözleşmesiyle karşılaştırır.
+ONEK = {"sorgu": "", "belge": ""}
 
 
 # ── scripts/ yol köprüsü (T5, 2026-09-07) ────────────────────────────────────
@@ -83,9 +91,28 @@ def rrf_birlestir(skor_listeleri, rrf_k=RRF_K):
     return toplam
 
 
-def _korpus_imzasi(yol: str) -> dict:
-    st = os.stat(yol)
-    return {"yol": os.path.abspath(yol), "bayt": st.st_size, "mtime": int(st.st_mtime)}
+def _korpus_imzasi(yol: str, indeks_dizini: str) -> dict:
+    """Korpusun TAŞINABİLİR kimliği: indekse göreli yol + içerik hash'i.
+
+    ⚠️ Ne mutlak yol ne `mtime` — ikisi de makineye bağlıdır. `git clone`/`checkout`
+    mtime'ı içeriğe dokunmadan değiştirir; 2026-08-06'da bu tam olarak oldu ve
+    yanlış alarm verdi (o gün elle düzeltildi, kök neden burada kapanıyor).
+    """
+    ham = open(yol, "rb").read()
+    return {"yol": os.path.relpath(os.path.abspath(yol), os.path.abspath(indeks_dizini)),
+            "bayt": len(ham), "sha256": hashlib.sha256(ham).hexdigest()}
+
+
+def _korpus_yolu(indeks_dizini: str, imza: dict) -> str:
+    return os.path.normpath(os.path.join(indeks_dizini, imza["yol"]))
+
+
+def _model_revizyonu(model_adi: str) -> str | None:
+    """Modelin yerel HF önbelleğindeki commit'i. Bilinmiyorsa `None` — uydurulmaz."""
+    from huggingface_hub.constants import HF_HUB_CACHE
+    ref = os.path.join(HF_HUB_CACHE, "models--" + model_adi.replace("/", "--"),
+                       "refs", "main")
+    return open(ref).read().strip() if os.path.exists(ref) else None
 
 
 def _gomulecek_metin(r: dict) -> str:
@@ -147,7 +174,9 @@ class Retriever:
             "chunk": "tam madde (ADR-0054/K2)",
             "gomulen_metin": "kanun_adi + madde_no + text",
             "n": len(kayitlar), "boyut": int(gomme.shape[1]),
-            "korpus": _korpus_imzasi(korpus_yolu),
+            "korpus": _korpus_imzasi(korpus_yolu, indeks_dizini),
+            "onek": ONEK,
+            "model_revision": _model_revizyonu(model_adi),
             "secim_gerekcesi": "S3a ön-probu, research_log #49 — recall@10 0,875",
         }
         json.dump(kunye, open(os.path.join(indeks_dizini, "KUNYE.json"), "w", encoding="utf-8"),
@@ -160,16 +189,27 @@ class Retriever:
         """İndeksi yükle. Korpus değiştiyse ERKEN patlar — bayat indeks sessiz yanlışlıktır."""
         kunye = json.load(open(os.path.join(indeks_dizini, "KUNYE.json"), encoding="utf-8"))
         imza = kunye["korpus"]
-        if not os.path.exists(imza["yol"]):
-            raise SystemExit(f"[retriever] 🚫 korpus bulunamadı: {imza['yol']}")
-        simdi = _korpus_imzasi(imza["yol"])
-        if (simdi["bayt"], simdi["mtime"]) != (imza["bayt"], imza["mtime"]):
+        if "sha256" not in imza:
+            raise SystemExit(
+                f"[retriever] 🚫 {indeks_dizini}/KUNYE.json eski biçim (mutlak yol + mtime) "
+                f"— taşınabilir değil, yeniden kur (G8 Adım 1b)")
+        if kunye.get("onek") != ONEK:
+            raise SystemExit(
+                f"[retriever] 🚫 önek sözleşmesi uyuşmuyor: indeks {kunye.get('onek')} ↔ "
+                f"kod {ONEK} — sorgu bu indeksin kodlandığı gibi kodlanmıyor, recall SESSİZCE "
+                f"düşer; indeksi yeniden kur")
+        korpus_yolu = _korpus_yolu(indeks_dizini, imza)
+        if not os.path.exists(korpus_yolu):
+            raise SystemExit(f"[retriever] 🚫 korpus bulunamadı: {korpus_yolu}")
+        simdi = _korpus_imzasi(korpus_yolu, indeks_dizini)
+        if simdi["sha256"] != imza["sha256"]:
             raise SystemExit(
                 f"[retriever] 🚫 korpus indeks kurulduğundan beri DEĞİŞTİ "
-                f"({imza['bayt']}→{simdi['bayt']} bayt) — indeks bayat, yeniden kur:\n"
-                f"   python scripts/erisim_korpus/retriever.py kur --korpus {imza['yol']} "
+                f"({imza['bayt']}→{simdi['bayt']} bayt, sha256 {imza['sha256'][:12]}→"
+                f"{simdi['sha256'][:12]}) — indeks bayat, yeniden kur:\n"
+                f"   python scripts/erisim_korpus/retriever.py kur --korpus {korpus_yolu} "
                 f"--indeks {indeks_dizini}")
-        kayitlar = [json.loads(l) for l in open(imza["yol"], encoding="utf-8") if l.strip()]
+        kayitlar = [json.loads(l) for l in open(korpus_yolu, encoding="utf-8") if l.strip()]
         gomme = np.load(os.path.join(indeks_dizini, "gomme.npy"))
         if len(kayitlar) != gomme.shape[0]:
             raise SystemExit(f"[retriever] 🚫 korpus {len(kayitlar)} kayıt, gömme "

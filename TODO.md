@@ -7,9 +7,10 @@
 
 ## Şimdi — Faz 4, LİNEER SIRA → 🏷️ `v1.0` RELEASE
 
-- [ ] **1 · `KUNYE` taşınabilirlik** — `KUNYE.json` mutlak yol + `mtime` damgalıyor,
-      `retriever.py`:143-152 doğruluyor ⇒ `git clone` sonrası **her makinede** `SystemExit`.
-      Yol repo-göreli, `mtime` → içerik hash · **$0** → [ROADMAP · Faz 4](ROADMAP.md)
+- [x] **1 · `KUNYE` taşınabilirlik** ✅ **2026-09-09** — yol artık indeks dizinine göreli,
+      `mtime` vekili yerine **içerik hash'i**; künye `onek` sözleşmesini de taşıyor.
+      `verify:` kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** (76/80) · **$0**
+      → [plan · Görev 8 Adım 1b](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md)
 - [ ] **2 · TUI gözle doğrulama** — `python -m hakhukuk.tui`, üç soru, gözle gör ·
       **$0** (GPU) → [ROADMAP · Faz 4](ROADMAP.md)
 - [ ] **3 · Sonnet-5 öznesi** — rakip havuzuna frontier sınıfı girer; kapıyı **etkilemez**
