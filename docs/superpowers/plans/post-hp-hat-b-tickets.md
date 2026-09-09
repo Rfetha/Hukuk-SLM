@@ -162,5 +162,3 @@ Kapının varlık sebebi tam olarak budur.
 - **Hugging Face.** Depo 2026-09-09'da insan kararıyla **özele** alındı; açık kusurlar giderilene
   kadar böyle kalacak. Yükleme ve `sha256` doğrulaması tamamlanmıştır, geri alınan yalnız
   görünürlüktür.
-- **GitHub Pages.** Repoda Pages sitesi yoktur. Açılış sayfası olarak `README.md` güncellenmiştir;
-  ayrı bir Pages sitesi kurulacaksa bu ayrı bir iştir ve planda yoktur.
