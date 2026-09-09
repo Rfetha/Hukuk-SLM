@@ -13,7 +13,7 @@
 | ✅ **FAZ 2** · Hat A | **G5·G6·G7·G8b·G9·G10·G12 bitti**, G11 2/3 — `hakhukuk/` paketi doğdu (istem tek kaynak · tipler · terazi · servis · CLI · TUI), mülga süzgeci girdi, yeniden üretim zinciri yazıldı |
 | ⛔ **G8** · indeks dağıtımı | **BEKLETİLİYOR** — korpus **8,4×** büyüyecek (40.496 → ~340.303 madde) |
 | ✅ **FAZ 3** · belge katmanı | **G13 bitti** — `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md` yazıldı, kırık işaretçiler onarıldı, `MODEL_CARD` §7.2/§8/§10 güncellendi |
-| ⏳ **FAZ 4** · Hat B | **G16 Adım 1 bitti** (DEV'de üç madde + Wilson şerhleri); G14 · G15 · G16 Adım 2-4 **kaldı** |
+| **FAZ 4** · Hat B | **KAPANDI 2026-09-09** — G16 (kabul testi, `v0.3`) · G4 (Sonnet-5) · G18 (araç katmanı) · G17 (yayın) bitti. G14 · G15 **atlandı** (ADR-0075). Açık kalan tek kapı: **G12 Adım 6**, insan gözü |
 
 **Ölçülen:** 143 test yeşil · 14 commit · harcanan **$3,155** *(⚠️ raporlanan `judge_cost` $1,977'nin **1,6 katı** — kapı marjı)*.
 
@@ -22,9 +22,9 @@
 | sıra | iş | bedel | kapı |
 | :--- | :--- | ---: | :--- |
 | ~~**1**~~ | ✅ **G8 Adım 1b** — `KUNYE` taşınabilirlik kilidi | $0 | ✅ **BİTTİ 2026-09-09** — kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** (76/80) |
-| **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | üç soruda rozet+atıf+kaynak+ibare **ekranda görüldü** |
+| **2** | **G12 Adım 6-7** — TUI gözle doğrula + commit | $0 · GPU | **AÇIK — tek kalan kapı.** `llama-server` hazır; üç soruda rozet + atıf + kaynak + ibare **ekranda görülmeli**. Programatik prob bu kapının yerine GEÇMEZ (#60) |
 | ~~**3**~~ 🆕 | ✅ **G4** — Sonnet-5 rakip havuzunda | **$1,1932** *(gerçekleşen, tahmin $0,82 idi)* | ✅ **BİTTİ 2026-09-09** — 🚨 **Sonnet-5 ÖNDE**: kütle 0,8348 ↔ bizim 0,8011 (GÖZ-katı). Kapı **etkilenmez** (ADR-0072 m.2) |
-| **4** ⏳ | **G16** — kabul testi **KOŞTU** (Adım 2 ✅), **hüküm İNSANDA** | $0,0195 | ⛔ TEST açıldı 2026-09-09 · ham kütle **0,5804** (tavan 0,7500) ↔ DEV 0,8011 (tavan 0,9500). **Ön-kayıtlı eşik YOK** ⇒ `v1.0` hükmü insan kararı |
+| ~~**4**~~ | **G16** — `v1.0` kabul testi | $0,0195 | **BİTTİ 2026-09-09** — donmuş TEST tek kez açıldı; ham kütle **0,5804** (tavan 0,7500) ↔ DEV 0,8011 (tavan 0,9500). Hüküm: **`v1.0` VERİLMEDİ → `v0.3`** ([ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md)); engel **hakem paneli**, model değil |
 | ~~**5**~~ 🆕 | ✅ **G18** — araç katmanı | $0 | ✅ **BİTTİ 2026-09-09** — 5 kaldıraç · sınırlı döngü · `ARAMA_TUKENDI` · regresyon kapısı **80/80 birebir**. 🚨 Yan ürün: ürün yolu ölçüm hattından **farklı** (%5 boş cevap) — yeni borç |
 | ~~**6**~~ 🆕 | **G17** — modeli YAYINLA (HF) | $0 | **BİTTİ 2026-09-09** — `Rfetha/HakHukuk-4B-v0.3-Q4_K_M` yayında, `sha256` birebir doğrulandı |
 | — | **G14 · G15** eğitim turları | — | ⛔ **ATLANDI** — [ADR-0075](../../adr/0075-v1-sft-kapanir-v2-sequential-rl.md): `v1` **SFT ile kapanır**, `B4` `v2`'de **konusuz** kalır |
