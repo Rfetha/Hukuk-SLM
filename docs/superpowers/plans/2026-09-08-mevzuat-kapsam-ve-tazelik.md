@@ -34,16 +34,16 @@ Her görevin gereksinimleri bunları **örtük olarak içerir**. Değerler spec'
 | RRF | `RRF_K = 10` (ADR-0068) — ölçüm ile ürün **aynı** yolu kullanır | `retriever.py`:43 |
 | Seed | **3407** | ADR-0043 |
 | Chunk | **tam madde** (ADR-0054/K2) — indeks kırpılmaz | `retriever.py`:18 |
-| TR IP | **şart**, ⛔ **cihaz içi fallback YOK** — `TrIpGerekli` atılır, yutulmaz | spec §4 |
-| Yazma | ⛔ **hepsi ya da hiçbiri** — kısmi tazeleme diske yazılmaz | spec §4 |
-| Bool bayrak | ⛔ public API'de yok — `Tazelik` enum | `CLAUDE.md` §4 |
-| Kapsam kapısı | `recall@10 ≥ 0,9500` → kat girer; altında ⛔ **girmez** | spec §5, ön-kayıtlı |
-| Veri lisansı | yalnız açık kaynak (bedesten/Mevzuat.gov.tr). ⛔ Lexpera · Kazancı **asla** | `CLAUDE.md` |
+| TR IP | **şart**, **cihaz içi fallback YOK** — `TrIpGerekli` atılır, yutulmaz | spec §4 |
+| Yazma | **hepsi ya da hiçbiri** — kısmi tazeleme diske yazılmaz | spec §4 |
+| Bool bayrak | public API'de yok — `Tazelik` enum | `CLAUDE.md` §4 |
+| Kapsam kapısı | `recall@10 ≥ 0,9500` → kat girer; altında **girmez** | spec §5, ön-kayıtlı |
+| Veri lisansı | yalnız açık kaynak (bedesten/Mevzuat.gov.tr). Lexpera · Kazancı **asla** | `CLAUDE.md` |
 | Dil | belge ve commit **Türkçe**, kod tanımlayıcıları **İngilizce** | `CLAUDE.md` |
-| Dokunulmaz | ⛔ `docs/record/**` · `docs/adr/**` — tarihsel kayıt | `CLAUDE.md` |
-| ADR numarası | sıradaki **0074**; ⛔ **0059 REZERVE** | `CLAUDE.md` |
+| Dokunulmaz | `docs/record/**` · `docs/adr/**` — tarihsel kayıt | `CLAUDE.md` |
+| ADR numarası | sıradaki **0074**; **0059 REZERVE** | `CLAUDE.md` |
 
-### ⛔ DUR ve SOR — bu planda tetiklenecek yerler
+### DUR ve SOR — bu planda tetiklenecek yerler
 
 - **Görev 7'nin gömme koşusu tek adımda >$1'dır** (Modal GPU ~1,5 sa). Koşmadan **sor**.
 - Bir kat kapıdan **kalarsa** eşiği değil aleti düzelt (ADR-0050); kat girmez, **insana sor**.
@@ -58,7 +58,7 @@ Her görevin gereksinimleri bunları **örtük olarak içerir**. Değerler spec'
 | `hakhukuk/mevzuat/__init__.py` | `tazele()` · `Tazelik` · `Rapor` — paketin **tek** dış yüzü |
 | `hakhukuk/mevzuat/kaynak.py` | **bedesten sözleşmesi**. Sayfalama (max 20), `{"data":…}` sarmalaması, TR IP tespiti, geri çekilmeli retry **burada gizli** |
 | `hakhukuk/mevzuat/tipler.py` | `Kayit` · `Fark` · `Kunye` · `Rapor` · `Tazelik` · `TrIpGerekli` — donmuş veri tipleri |
-| `hakhukuk/mevzuat/tazelik.py` | **fark taraması** — yerel künye ↔ uzak `kayitTarihi`. ⛔ **ağa kendisi dokunmaz** |
+| `hakhukuk/mevzuat/tazelik.py` | **fark taraması** — yerel künye ↔ uzak `kayitTarihi`. **ağa kendisi dokunmaz** |
 | `hakhukuk/mevzuat/anlik.py` | **anlık görüntü** — sürümleme · künye · `sha256` · atomik yazma · geri alma |
 | `hakhukuk/mevzuat/indeksle.py` | **artımlı gömme** — yalnız değişen `madde_id`'ler; indeks künyesini korpus künyesine bağlar |
 | `scripts/erisim_korpus/kapsam_kapisi.py` | kapsam kapısının **aleti**: ürün retriever'ıyla `recall@10`, hakem yok, $0 |
@@ -72,7 +72,7 @@ korpusun kendisini tarif eder.
 
 ---
 
-## 🚨 Bu planın devraldığı iki ölçülmüş sürpriz
+## Bu planın devraldığı iki ölçülmüş sürpriz
 
 Bunlar spec yazıldıktan **sonra** ölçüldü ve spec'e damgalandı (§7b). Plan bunların üstüne kuruluyor.
 
@@ -104,7 +104,7 @@ G1 kapsam kapısı aleti + ÇIPA   ← her şeyden ÖNCE: kapının çıpası yo
  └── G4 tipler + tazelik.py (saf, ağsız)        ─┘
         └── G5 anlik.py (atomik anlık görüntü + kayitTarihi sinyal testi)
               └── G6 indeksle.py (artımlı) + ÖLÇEK KAPISI
-                    └── G7 kat kat kapsam girişi  ⚠️ >$1, DUR ve SOR
+                    └── G7 kat kat kapsam girişi     >$1, DUR ve SOR
                           └── G8 tazele() ana arayüz + CLI
                                 └── G9 ADR + kayıt + kapanış
 ```
@@ -122,12 +122,12 @@ G1 kapsam kapısı aleti + ÇIPA   ← her şeyden ÖNCE: kapının çıpası yo
 - Tüketir: `retriever.Retriever` (`yukle` · `getir`) · `madde_anahtar.madde_anahtari`
 - Üretir: `recall_olc(retriever, sorular, k=10) -> dict` — Görev 7 her katta bunu çağırır
 
-**🚨 Neden bu görev BİRİNCİ:** Faz 0'ın en pahalı dersi **tuzak 2.17** idi — *"ön-kayıtlı bir
+**Neden bu görev BİRİNCİ:** Faz 0'ın en pahalı dersi **tuzak 2.17** idi — *"ön-kayıtlı bir
 kapı maddesi, çıpası olmadan yazılmıştı"*. Spec'in kapısı `recall@10 ≥ 0,9500` diyor; bu sayı
 **bugünkü indeksten, ürün retriever'ıyla yeniden üretilebilmeli**, yoksa Görev 7'nin ölçtüğü
 şeyin ne olduğu bilinmiyor.
 
-⛔ **`recall_olc.py` bu iş için KULLANILAMAZ.** O betiğin kendi `rrf_birlestir`'i var ve
+**`recall_olc.py` bu iş için KULLANILAMAZ.** O betiğin kendi `rrf_birlestir`'i var ve
 varsayılanı `rrf_k=60`; ürün `retriever.py` ise `RRF_K=10` kullanıyor (ADR-0068). Aynı isimli
 iki farklı ölçüm birimi — Faz 0'da tam bu sınıftan beş kusur çıktı.
 
@@ -137,7 +137,7 @@ iki farklı ölçüm birimi — Faz 0'da tam bu sınıftan beş kusur çıktı.
 # tests/test_kapsam_kapisi.py
 """Kapsam kapısının aleti — ürün retriever'ıyla recall@k.
 
-⚠️ Sahte retriever kullanılır: gerçek bge-m3 CPU'da 80 sorgu için dakikalar sürer ve
+   Sahte retriever kullanılır: gerçek bge-m3 CPU'da 80 sorgu için dakikalar sürer ve
 testin ölçtüğü şey RECALL ARİTMETİĞİdir, gömme kalitesi değil.
 """
 import pytest
@@ -176,7 +176,7 @@ def test_altin_hic_getirilmezse_sira_None_ve_recall_sifir():
 
 
 def test_gecici_madde_normal_maddeden_AYRI_sayilir():
-    """⚠️ Sessiz şişme kaynağı: 'Geçici Madde 1' ile 'Madde 1' aynı sayılırsa recall
+    """   Sessiz şişme kaynağı: 'Geçici Madde 1' ile 'Madde 1' aynı sayılırsa recall
     şişer ve hiçbir yerde hata çıkmaz (madde_anahtar.py'nin kendi uyarısı)."""
     r = SahteRetriever({"s1": [_kayit("4857", "Madde 1")]})
     sonuc = recall_olc(r, [{"soru": "s1", "kanun_no": "4857", "madde_no": "Geçici Madde 1"}], k=10)
@@ -208,11 +208,11 @@ Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'kapsam_kapisi'`
 #!/usr/bin/env python3
 """Kapsam kapısı — ürün retriever'ıyla recall@k. Hakem YOK, model YOK, $0.
 
-⛔ `recall_olc.py` bu işi YAPAMAZ: onun kendi `rrf_birlestir`'i var ve varsayılanı
+   `recall_olc.py` bu işi YAPAMAZ: onun kendi `rrf_birlestir`'i var ve varsayılanı
 `rrf_k=60`. Ürün `retriever.py` `RRF_K=10` kullanıyor (ADR-0068). Aynı isimli iki
 farklı ölçüm birimi — kapı, ÜRÜNÜN gördüğü sırayı ölçmeli.
 
-⚠️ Bu betiğin tek işi ARİTMETİK. Gömme, füzyon, sıralama hep `Retriever`'ın içinde.
+   Bu betiğin tek işi ARİTMETİK. Gömme, füzyon, sıralama hep `Retriever`'ın içinde.
 
 Kullanım:
   python scripts/erisim_korpus/kapsam_kapisi.py \
@@ -229,7 +229,7 @@ import sys
 # Kardeş modüller alt klasörlere bölündükten SONRA da bulunsun diye scripts/ kökü, tüm
 # alt klasörleri ve repo kökü sys.path'e girer. Uzantısız `import X` bu köprü olmadan
 # taşımada SESSİZCE kırılır: ImportError çalışma zamanında, bazen GPU koşusunun ortasında.
-# ⚠️ 26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
+#    26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
 import os, sys
 _K = os.path.dirname(os.path.abspath(__file__))
 _K = _K if os.path.basename(_K) == "scripts" else os.path.dirname(_K)
@@ -239,7 +239,7 @@ sys.path[:0] = [_K, *(os.path.join(_K, _d) for _d in sorted(os.listdir(_K))
 # ─────────────────────────────────────────────────────────────────────────────
 from madde_anahtar import madde_anahtari  # noqa: E402
 
-ESIK = 0.9500   # ⛔ ÖN-KAYITLI (spec §5). Sonucu gördükten sonra DEĞİŞTİRİLEMEZ (ADR-0050).
+ESIK = 0.9500   #    ÖN-KAYITLI (spec §5). Sonucu gördükten sonra DEĞİŞTİRİLEMEZ (ADR-0050).
 KLER = (1, 5, 10)
 
 
@@ -298,7 +298,7 @@ def main():
     for j in KLER:
         if f"recall@{j}" in sonuc:
             print(f"  recall@{j:<3} {sonuc[f'recall@{j}']:.4f}")
-    damga = "✅ GEÇTİ" if sonuc["gecti"] else "⛔ KALDI"
+    damga = "   GEÇTİ" if sonuc["gecti"] else "   KALDI"
     print(f"[kapsam] {damga} — recall@{a.k} {sonuc[f'recall@{a.k}']:.4f} ↔ eşik {ESIK:.4f}")
     return 0 if sonuc["gecti"] else 2
 
@@ -312,7 +312,7 @@ if __name__ == "__main__":
 Run: `python -m pytest tests/test_kapsam_kapisi.py -v`
 Beklenen: `5 passed`
 
-- [ ] **Adım 5: 🚨 ÇIPAYI KOŞ — bugünkü indeks 0,9500 üretiyor mu**
+- [ ] **Adım 5: ÇIPAYI KOŞ — bugünkü indeks 0,9500 üretiyor mu**
 
 ```bash
 source ~/code/global_venv/bin/activate
@@ -325,7 +325,7 @@ python scripts/erisim_korpus/kapsam_kapisi.py \
 
 Beklenen: `recall@10 0.9500` (76/80) · `EXIT=0`
 
-⛔ **0,9500 çıkmazsa DUR ve Görev 7'ye GEÇME.** İki ihtimal var ve ayırt edilmeli:
+**0,9500 çıkmazsa DUR ve Görev 7'ye GEÇME.** İki ihtimal var ve ayırt edilmeli:
 (a) alet ürünün gördüğünden başka bir şey ölçüyor — **aleti düzelt**;
 (b) yayımlanmış 0,9500 bu yoldan üretilmemiş — **o zaman kapının çıpası yok demektir ve
 bu, tuzak 2.17'nin aynısıdır**. İkisi de insana sorulur; eşik **oynatılmaz**.
@@ -372,7 +372,7 @@ yeni bağımlılık gerekçe ister (`CLAUDE.md` §2) ve burada gerekçe yok.
 # tests/test_mevzuat_kaynak.py
 """bedesten sözleşmesi — AĞA DOKUNMADAN sınanır.
 
-⚠️ Ağa dokunan test TR IP olmayan makinede kırmızı yanar ve CI'yı yalan söyler.
+   Ağa dokunan test TR IP olmayan makinede kırmızı yanar ve CI'yı yalan söyler.
 Gerçek API'ye karşı doğrulama ayrı bir betiktir (bedesten_probe.py).
 """
 import base64
@@ -396,7 +396,7 @@ def _sayfa(adet, baslangic=0):
 
 
 def test_sayfalama_20_lik_sinirla_hepsini_toplar():
-    """⚠️ pageSize max 20 — 50 ve 100 BOŞ döner (ölçüldü). 25 kayıt = 2 istek."""
+    """   pageSize max 20 — 50 ve 100 BOŞ döner (ölçüldü). 25 kayıt = 2 istek."""
     cagrilar = []
 
     def sahte_post(yol, ic, paging=False):
@@ -420,7 +420,7 @@ def test_kayit_donmus_ve_kayit_tarihi_tasiniyor():
 
 
 def test_TR_IP_YOKSA_TrIpGerekli_ATILIR_fallback_YOK():
-    """⛔ Sert kural (spec §4): sessiz düşürme bu repoda hata sınıfının kendisidir."""
+    """   Sert kural (spec §4): sessiz düşürme bu repoda hata sınıfının kendisidir."""
     import urllib.error
 
     def sahte_post(*a, **kw):
@@ -463,7 +463,7 @@ def test_madde_metni_base64_html_cozulur_ve_etiketler_temizlenir():
 
 
 def test_madde_agaci_ic_ice_children_duzlestirilir():
-    """⚠️ maddeler ağacın YAPRAKLARINDA değil, herhangi bir düzeyinde olabilir."""
+    """   maddeler ağacın YAPRAKLARINDA değil, herhangi bir düzeyinde olabilir."""
     agac = _sarmala({"children": [
         {"maddeNo": None, "title": "BİRİNCİ KISIM", "children": [
             {"maddeId": "m1", "maddeNo": "Madde 1", "title": "Amaç", "children": []},
@@ -485,7 +485,7 @@ Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'hakhukuk'`
 # hakhukuk/mevzuat/tipler.py
 """Mevzuat katmanının veri tipleri ve hataları. Hepsi DONMUŞ.
 
-⚠️ `hakhukuk/tipler.py` ile karıştırma: o, vatandaşa dönen CEVABI tarif eder
+   `hakhukuk/tipler.py` ile karıştırma: o, vatandaşa dönen CEVABI tarif eder
 (`Durum` · `Cevap` · `Atif`); bu, KORPUSUN KENDİSİNİ tarif eder.
 """
 from dataclasses import dataclass, field
@@ -493,7 +493,7 @@ from enum import Enum
 
 
 class Tazelik(Enum):
-    """⛔ Bool bayrak yok (CLAUDE.md §4): "sor" hâli bir bool ile ifade edilemez."""
+    """   Bool bayrak yok (CLAUDE.md §4): "sor" hâli bir bool ile ifade edilemez."""
 
     SOR = "sor"
     OTOMATIK = "otomatik"
@@ -508,7 +508,7 @@ class Durum(Enum):
 
 
 class TrIpGerekli(Exception):
-    """bedesten TR dışından erişimi engelledi. ⛔ YUTULMAZ — fallback yoktur."""
+    """bedesten TR dışından erişimi engelledi.    YUTULMAZ — fallback yoktur."""
 
 
 class BedestenHatasi(Exception):
@@ -542,7 +542,7 @@ class Fark:
 
 @dataclass(frozen=True)
 class Rapor:
-    """`tazele()`'nin dönüşü. ⚠️ `korpus_tarihi` HER hâlde doludur — kullanıcı asla
+    """`tazele()`'nin dönüşü.    `korpus_tarihi` HER hâlde doludur — kullanıcı asla
     tarihsiz kalmaz (spec §2)."""
 
     durum: Durum
@@ -561,7 +561,7 @@ Silme testi (POSD): bu modül silinirse bedesten'in tuhaflıkları DÖRT çağı
 yayılır — `pageSize` max 20 · `{"data": …, "applicationName": …}` sarmalaması ·
 base64+HTML gövde · TR IP şartı · `guncellemeTarihi`'nin boş olması.
 
-⚠️ Ölçüldü 2026-09-07: `guncellemeTarihi` alanı VAR ama 60/60 örnekte None. Bu modül
+   Ölçüldü 2026-09-07: `guncellemeTarihi` alanı VAR ama 60/60 örnekte None. Bu modül
 onu OKUMAZ; değişim sinyali `kayitTarihi`dir (100/100 dolu). Şemada alan görüp dolu
 varsaymak bu reponun avladığı hata sınıfıdır.
 
@@ -580,7 +580,7 @@ import urllib.request
 from .tipler import BedestenHatasi, Kayit, TrIpGerekli
 
 BASE = "https://bedesten.adalet.gov.tr/mevzuat"
-SAYFA = 20   # ⚠️ ölçüldü: 50 ve 100 BOŞ döner. Büyütmek sessizce sıfır kayıt getirir.
+SAYFA = 20   #    ölçüldü: 50 ve 100 BOŞ döner. Büyütmek sessizce sıfır kayıt getirir.
 DENEME = 3
 HEADERS = {
     "Content-Type": "application/json",
@@ -617,7 +617,7 @@ class Kaynak:
         self._bekle = bekle
 
     def _cagir(self, yol: str, ic: dict, paging: bool = False) -> dict:
-        """Geri çekilmeli retry. ⛔ 403 retry EDİLMEZ — TR IP kalıcı bir durumdur."""
+        """Geri çekilmeli retry.    403 retry EDİLMEZ — TR IP kalıcı bir durumdur."""
         son = None
         for deneme in range(DENEME):
             try:
@@ -653,7 +653,7 @@ class Kaynak:
             sayfa += 1
 
     def maddeler(self, mevzuat_id: str) -> list[dict]:
-        """Madde ağacını düzleştir. ⚠️ `maddeNo is None` olan düğüm BÖLÜM başlığıdır."""
+        """Madde ağacını düzleştir.    `maddeNo is None` olan düğüm BÖLÜM başlığıdır."""
         govde = self._cagir("/mevzuatMaddeTree", {"mevzuatId": mevzuat_id})
         cikti = []
 
@@ -721,12 +721,12 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 - Üretir: korpus satırlarında `mevzuat_id: str | None` · `madde_id: str | None`
   — Görev 6 (artımlı gömme) ve Görev 7 (kat girişi) bunlara dayanır
 
-**🚨 Sorun — ölçüldü, tahmin değil:**
+**Sorun — ölçüldü, tahmin değil:**
 
 | aday anahtar | benzersiz | çakışan |
 | :--- | ---: | ---: |
-| `(kanun_no, madde_no)` | 32.281 | 🚨 **3.699** |
-| `(kanun_no, madde_no, text)` | 39.379 | 🚨 **538** |
+| `(kanun_no, madde_no)` | 32.281 | **3.699** |
+| `(kanun_no, madde_no, text)` | 39.379 | **538** |
 
 Bugün kimlik **satır sırasıdır**: `gomme.npy`'nin *i*. satırı korpusun *i*. satırıdır, başka
 hiçbir bağ yok. Artımlı güncelleme bu zeminde **yanlış satırı tazeler ve hata vermez.**
@@ -748,7 +748,7 @@ hiçbir bağ yok. Artımlı güncelleme bu zeminde **yanlış satırı tazeler v
 # tests/test_korpus_kimlik.py
 """Korpusa kimlik geri doldurma — metin ve satır sırası KORUNARAK.
 
-⚠️ Bu dosyadaki her test bir SESSİZ bozulmayı hedefliyor. Kimlik yanlış eşlenirse
+   Bu dosyadaki her test bir SESSİZ bozulmayı hedefliyor. Kimlik yanlış eşlenirse
 artımlı tazeleme yanlış maddeyi günceller ve hiçbir yerde hata çıkmaz.
 """
 import json
@@ -773,7 +773,7 @@ def test_tek_esleme_kimlik_yazilir():
 
 
 def test_CAKISAN_anahtar_None_birakilir_ve_SAYILIR():
-    """⛔ 3.699 gerçek çakışma var. Uydurmak, yanlış satırı tazelemektir."""
+    """   3.699 gerçek çakışma var. Uydurmak, yanlış satırı tazelemektir."""
     korpus = [_satir("7452", "MADDE 1", "birinci"), _satir("7452", "MADDE 1", "ikinci")]
     uzak = {"7452": [{"madde_id": "m-a", "madde_no": "MADDE 1"}]}
     yeni, rapor = kimlik_doldur(korpus, uzak, {"7452": "mv-7452"})
@@ -789,7 +789,7 @@ def test_uzakta_olmayan_madde_None_kalir_patlamaz():
 
 
 def test_SATIR_SIRASI_korunur():
-    """⛔ İndeks satır sırasına bağlı — sıra bozulursa 40.496 gömme yanlış maddeye bakar."""
+    """   İndeks satır sırasına bağlı — sıra bozulursa 40.496 gömme yanlış maddeye bakar."""
     korpus = [_satir("1", "Madde 1"), _satir("2", "Madde 2"), _satir("3", "Madde 3")]
     yeni, _ = kimlik_doldur(korpus, {}, {})
     assert [s["kanun_no"] for s in yeni] == ["1", "2", "3"]
@@ -797,7 +797,7 @@ def test_SATIR_SIRASI_korunur():
 
 
 def test_GOMULEN_METIN_degismez():
-    """⭐ Kritik: gömme `kanun_adi + madde_no + text`'ten üretildi. Bu üçü aynı kalırsa
+    """   Kritik: gömme `kanun_adi + madde_no + text`'ten üretildi. Bu üçü aynı kalırsa
     gomme.npy geçerli kalır ve 340k'lık yeniden gömme GEREKMEZ."""
     korpus = [_satir("4857", "Madde 31", "İşçi askere gider.")]
     once = gomulen_metin_ozeti(korpus)
@@ -825,13 +825,13 @@ Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'korpus_kimlik'`
 #!/usr/bin/env python3
 """Korpusa bedesten kimliğini (mevzuat_id · madde_id) geri doldurur.
 
-🚨 Neden gerekli — ölçüldü 2026-09-07: korpusta KARARLI KİMLİK YOK.
+   Neden gerekli — ölçüldü 2026-09-07: korpusta KARARLI KİMLİK YOK.
    (kanun_no, madde_no)        → 3.699 çakışma
    (kanun_no, madde_no, text)  → 538 çakışma
 Bugünkü kimlik SATIR SIRASIdır. Artımlı gömme bu zeminde yanlış satırı tazeler
 ve hata vermez — tam olarak bu reponun avladığı sınıf.
 
-⛔ ÜÇ DEĞİŞMEZ:
+   ÜÇ DEĞİŞMEZ:
   1. `kanun_adi`, `madde_no`, `text` DOKUNULMAZ  → gomme.npy geçerli kalır
   2. satır sırası DOKUNULMAZ                     → indeks satır sırasına bağlı
   3. belirsiz eşleşme None bırakılır ve SAYILIR  → uydurmak sessiz bozulmadır
@@ -853,7 +853,7 @@ from collections import Counter, defaultdict
 # Kardeş modüller alt klasörlere bölündükten SONRA da bulunsun diye scripts/ kökü, tüm
 # alt klasörleri ve repo kökü sys.path'e girer. Uzantısız `import X` bu köprü olmadan
 # taşımada SESSİZCE kırılır: ImportError çalışma zamanında, bazen GPU koşusunun ortasında.
-# ⚠️ 26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
+#    26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
 import os, sys
 _K = os.path.dirname(os.path.abspath(__file__))
 _K = _K if os.path.basename(_K) == "scripts" else os.path.dirname(_K)
@@ -896,7 +896,7 @@ def kimlik_doldur(korpus: list[dict], uzak_maddeler: dict[str, list[dict]],
     for r in korpus:
         anahtar = madde_anahtari(r["kanun_no"], r["madde_no"])
         adaylar = uzak_idx.get(anahtar, [])
-        # ⛔ Belirsizlik İKİ yönlü: yerelde ya da uzakta birden fazlaysa eşleme yapılmaz.
+        #    Belirsizlik İKİ yönlü: yerelde ya da uzakta birden fazlaysa eşleme yapılmaz.
         if yerel_sayim[anahtar] > 1 or len(adaylar) > 1:
             madde_id = None
             rapor["belirsiz"] += 1
@@ -928,7 +928,7 @@ def main():
     # Why tek tek arama: `listele("KANUN")` mevzuatId veriyor ama bizim korpusun anahtarı
     # `kanun_no` ve bedesten o eşlemeyi liste sonucunda vermiyor. `mevzuatNo` ile arama
     # destekleniyor (bedesten_probe.py:46) ⇒ 892 istek + 892 madde ağacı ≈ 1.784 çağrı,
-    # tek seferlik. ⚠️ Uzun sürer; `setsid nohup` ile koş.
+    # tek seferlik.    Uzun sürer; `setsid nohup` ile koş.
     for kanun_no in sorted(kanunlar):
         govde = kaynak._cagir("/searchDocuments", {
             "pageSize": 20, "pageNumber": 1, "mevzuatNo": str(kanun_no),
@@ -974,7 +974,7 @@ if __name__ == "__main__":
 Run: `python -m pytest tests/test_korpus_kimlik.py -v`
 Beklenen: `6 passed`
 
-- [ ] **Adım 5: ⚠️ TR IP ile KURU koş — hiçbir şey yazmadan sayıyı gör**
+- [ ] **Adım 5: TR IP ile KURU koş — hiçbir şey yazmadan sayıyı gör**
 
 ```bash
 source ~/code/global_venv/bin/activate
@@ -983,9 +983,9 @@ python scripts/erisim_korpus/korpus_kimlik.py --kuru
 
 Beklenen biçim: `[kimlik] eşleşen N · belirsiz M · eşleşmeyen P / 40.496`
 
-⚠️ **`belirsiz` sayısı ~3.699 civarında beklenir** (ölçülen çakışma). Çok daha büyük çıkarsa
+**`belirsiz` sayısı ~3.699 civarında beklenir** (ölçülen çakışma). Çok daha büyük çıkarsa
 `madde_no` biçimleri uzakta farklıdır — **normalleştirmeyi düzelt, sayıyı kabul etme**.
-⛔ TR IP yoksa `TrIpGerekli` alırsın; bu **beklenen** davranıştır, bu adım o zaman **bekler**.
+TR IP yoksa `TrIpGerekli` alırsın; bu **beklenen** davranıştır, bu adım o zaman **bekler**.
 
 - [ ] **Adım 6: Gerçek koş + indeks künyesini yenile**
 
@@ -1008,7 +1008,7 @@ print("künye yenilendi")
 PY
 ```
 
-- [ ] **Adım 7: 🚨 ÇIPAYI YENİDEN KOŞ — recall DEĞİŞMEMELİ**
+- [ ] **Adım 7: ÇIPAYI YENİDEN KOŞ — recall DEĞİŞMEMELİ**
 
 ```bash
 python scripts/erisim_korpus/kapsam_kapisi.py \
@@ -1018,7 +1018,7 @@ python scripts/erisim_korpus/kapsam_kapisi.py \
 ```
 
 Beklenen: **`recall@10 0.9500` — Adım 5'teki çıpayla BİREBİR aynı.**
-⛔ Farklıysa metin ya da sıra değişmiştir; `git checkout` ile korpusu geri al ve **DUR**.
+Farklıysa metin ya da sıra değişmiştir; `git checkout` ile korpusu geri al ve **DUR**.
 
 - [ ] **Adım 8: Commit**
 
@@ -1065,7 +1065,7 @@ TR IP olmayan makinede de koşar.
 # tests/test_mevzuat_tazelik.py
 """Fark taraması — saf, ağsız.
 
-⚠️ `kayitTarihi`'nin bir DEĞİŞİM sinyali olduğu henüz KANITLANMADI (spec §8).
+   `kayitTarihi`'nin bir DEĞİŞİM sinyali olduğu henüz KANITLANMADI (spec §8).
 Bu dosya sinyalin ARİTMETİĞİNİ sınar; sinyalin kendisi Görev 5 Adım 5'te ölçülür.
 """
 from hakhukuk.mevzuat.tazelik import fark_bul
@@ -1096,7 +1096,7 @@ def test_kayit_tarihi_farkliysa_DEGISENDIR():
 
 
 def test_yerelde_olup_uzakta_olmayan_KAYBOLANDIR():
-    """⚠️ Kaybolan SİLİNMEZ — yalnız raporlanır. Bir belgenin aramadan düşmesi
+    """   Kaybolan SİLİNMEZ — yalnız raporlanır. Bir belgenin aramadan düşmesi
     yürürlükten kalkması demek DEĞİLDİR; API tarafı bir değişiklik de olabilir."""
     fark = fark_bul({"a": "2026-05-22T10:00:00"}, [])
     assert fark.kaybolan == ("a",)
@@ -1113,7 +1113,7 @@ def test_uc_senaryo_ayni_anda_ayrisir():
 
 
 def test_uzak_kayit_tarihi_BOSSA_degisen_SAYILMAZ():
-    """⛔ Boş `kayitTarihi` "değişti" demek değildir — her taramada tüm korpusu
+    """   Boş `kayitTarihi` "değişti" demek değildir — her taramada tüm korpusu
     yeniden indirmeye yol açar. Sinyal yoksa DOKUNULMAZ."""
     fark = fark_bul({"a": "2026-05-22T10:00:00"}, [_k("a", "")])
     assert fark.bos_mu()
@@ -1138,10 +1138,10 @@ Beklenen: `FAIL` — `ImportError: cannot import name 'fark_bul'`
 # hakhukuk/mevzuat/tazelik.py
 """Fark taraması — yerel künye ↔ uzak `kayitTarihi`.
 
-⛔ Bu modül AĞA DOKUNMAZ. Ağ `kaynak.py`'de, karar burada; ayrılık üç senaryonun da
+   Bu modül AĞA DOKUNMAZ. Ağ `kaynak.py`'de, karar burada; ayrılık üç senaryonun da
 milisaniyelerde ve TR IP olmadan sınanabilmesi için.
 
-⚠️ `kayitTarihi`'nin gerçekten bir DEĞİŞİM sinyali olduğu KANITLANMADI (spec §8):
+   `kayitTarihi`'nin gerçekten bir DEĞİŞİM sinyali olduğu KANITLANMADI (spec §8):
 100/100 dolu ve benzersiz, ama kümeleniyor — toplu yeniden alım da olabilir.
 Görev 5 Adım 5 bunu ölçüyor; çıkmazsa TASARIM DEĞİŞİR (içerik sha256'sına geçilir).
 """
@@ -1153,7 +1153,7 @@ def fark_bul(yerel: dict[str, str], uzak: list[Kayit]) -> Fark:
     uzak_idx = {k.mevzuat_id: k for k in uzak}
 
     yeni = [k for mid, k in uzak_idx.items() if mid not in yerel]
-    # ⛔ Boş kayit_tarihi "değişti" DEĞİLDİR: sinyal yoksa dokunulmaz, yoksa her
+    #    Boş kayit_tarihi "değişti" DEĞİLDİR: sinyal yoksa dokunulmaz, yoksa her
     # tarama tüm korpusu yeniden indirir.
     degisen = [k for mid, k in uzak_idx.items()
                if mid in yerel and k.kayit_tarihi and k.kayit_tarihi != yerel[mid]]
@@ -1200,7 +1200,7 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
   - `Anlik.yaz(kayitlar, kunye)` — **atomik**
   - Görev 6 (`indeksle`) ve Görev 8 (`tazele`) bunları çağırır
 
-**⛔ Sert kural (spec §4):** *"14 belgeden 9'u inip ağ koparsa korpus **bayt-bayt eski
+**Sert kural (spec §4):** *"14 belgeden 9'u inip ağ koparsa korpus **bayt-bayt eski
 hâlinde** kalır."* Aksi hâlde künyedeki tarih ile içerik ayrışır — ve o ayrışma **hata
 vermez**, yalnız sessizce yanlış olur.
 
@@ -1210,7 +1210,7 @@ vermez**, yalnız sessizce yanlış olur.
 # tests/test_mevzuat_anlik.py
 """Anlık görüntü — atomik yazma, künye, geri alma.
 
-⛔ En kritik test `test_yazma_ortasinda_hata_KORPUSU_DEGISTIRMEZ`. Kısmi yazma
+   En kritik test `test_yazma_ortasinda_hata_KORPUSU_DEGISTIRMEZ`. Kısmi yazma
 künye tarihi ile içeriği ayrıştırır ve o ayrışma HATA VERMEZ.
 """
 import hashlib
@@ -1266,7 +1266,7 @@ def test_bozulmus_korpus_yuklemede_ERKEN_patlar(tmp_path):
 
 
 def test_yazma_ortasinda_hata_KORPUSU_DEGISTIRMEZ(tmp_path, monkeypatch):
-    """⛔ Hepsi ya da hiçbiri. Ağ 9/14'te koparsa korpus bayt-bayt eski kalmalı."""
+    """   Hepsi ya da hiçbiri. Ağ 9/14'te koparsa korpus bayt-bayt eski kalmalı."""
     yol = tmp_path / "korpus.jsonl"
     Anlik.yaz(str(yol), _kayitlar(), _kunye("ESKI"))
     once_korpus = yol.read_bytes()
@@ -1319,7 +1319,7 @@ Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'hakhukuk.mevzuat.anl
 # hakhukuk/mevzuat/anlik.py
 """Korpusun sürümlenmiş anlık görüntüsü — künye · sha256 · atomik yazma · geri alma.
 
-⛔ HEPSİ YA DA HİÇBİRİ. 14 belgeden 9'u inip ağ koparsa korpus BAYT-BAYT eski hâlinde
+   HEPSİ YA DA HİÇBİRİ. 14 belgeden 9'u inip ağ koparsa korpus BAYT-BAYT eski hâlinde
 kalır. Aksi hâlde künyedeki tarih ile içerik ayrışır ve o ayrışma HATA VERMEZ —
 yalnız sessizce yanlış olur (spec §4).
 
@@ -1360,7 +1360,7 @@ class Anlik:
 
     @property
     def tarih(self) -> str:
-        """⚠️ HER hâlde doludur — kullanıcı asla tarihsiz kalmaz (spec §2)."""
+        """   HER hâlde doludur — kullanıcı asla tarihsiz kalmaz (spec §2)."""
         return self.kunye["tarih"]
 
     def belge_tarihleri(self) -> dict[str, str]:
@@ -1431,7 +1431,7 @@ class Anlik:
 Run: `python -m pytest tests/test_mevzuat_anlik.py -v`
 Beklenen: `8 passed`
 
-- [ ] **Adım 5: 🚨 `kayitTarihi` GERÇEKTEN bir değişim sinyali mi — ÖLÇ**
+- [ ] **Adım 5: `kayitTarihi` GERÇEKTEN bir değişim sinyali mi — ÖLÇ**
 
 Bu, spec'in **yıldızlı** testi (§6) ve **açık kalanı** (§8). Bugün kanıtlanmadı.
 
@@ -1444,7 +1444,7 @@ Yöntem: kayitTarihi'ne göre en yeni 30 KANUN'u al. Her biri için madde metinl
 indir ve korpustaki metinle karşılaştır. kayitTarihi bir değişim sinyaliyse bu
 belgelerin metinlerinde korpusa göre FARK olmalı.
 
-⛔ Bu ölçüm bir ŞEY KANITLAMAZ tek başına — korpusun kendi tarihi bilinmiyor.
+   Bu ölçüm bir ŞEY KANITLAMAZ tek başına — korpusun kendi tarihi bilinmiyor.
 Ölçtüğü şey: "yeni kayitTarihi'li belgeler bizden farklı mı?" Hayırsa sinyal
 gürültülüdür ve tasarım değişir (içerik sha256'sına geçilir).
 """
@@ -1478,7 +1478,7 @@ print(sonuc)
 PY
 ```
 
-⛔ **`metni_ayni` baskın çıkarsa DUR ve insana sor.** Sinyal gürültülü demektir; spec §8
+**`metni_ayni` baskın çıkarsa DUR ve insana sor.** Sinyal gürültülü demektir; spec §8
 bunun sonucunu yazmış: *"o zaman içerik sha256 karşılaştırması gerekir, yani her belgeyi
 indirmek"* — bu **tasarım değişikliğidir**, tek başına yapılmaz.
 
@@ -1516,7 +1516,7 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 **Neden artımlı:** Tam gömme **GPU'da ~1,5 saat, CPU'da ~23 saat** (spec §7b). Haftalık
 tazelemede 14 belge değiştiyse 340.303 maddeyi yeniden gömmek **saçmadır**.
 
-**⛔ Ön koşul:** Görev 3. Kararlı `madde_id` olmadan artımlı gömme **yanlış satırı tazeler
+**Ön koşul:** Görev 3. Kararlı `madde_id` olmadan artımlı gömme **yanlış satırı tazeler
 ve hata vermez.** `madde_id is None` olan satırlar artımlıya **girmez** — yeniden gömülür.
 
 - [ ] **Adım 1: Failing test yaz**
@@ -1525,7 +1525,7 @@ ve hata vermez.** `madde_id is None` olan satırlar artımlıya **girmez** — y
 # tests/test_mevzuat_indeksle.py
 """Artımlı gömme — yalnız değişen maddeler yeniden gömülür.
 
-⚠️ Her test bir SESSİZ bozulmayı hedefliyor: yanlış satırın tazelenmesi, satır
+   Her test bir SESSİZ bozulmayı hedefliyor: yanlış satırın tazelenmesi, satır
 sırasının kayması, kimliksiz satırın yanlışlıkla yeniden kullanılması.
 """
 import numpy as np
@@ -1568,7 +1568,7 @@ def test_yalnizca_METNI_DEGISEN_madde_yeniden_gomulur():
 
 
 def test_YENI_madde_eklenince_satir_SIRASI_yeni_korpusu_izler():
-    """⛔ gomme.npy'nin i. satırı korpusun i. satırıdır — sıra kayarsa hepsi kayar."""
+    """   gomme.npy'nin i. satırı korpusun i. satırıdır — sıra kayarsa hepsi kayar."""
     eski = [_k("m1", "a")]
     eski_g = np.array([[1., 1., 0., 0.]], dtype=np.float32)
     yeni = [_k("m0", "zz"), _k("m1", "a")]
@@ -1586,7 +1586,7 @@ def test_SILINEN_madde_gommeden_de_duser():
 
 
 def test_KIMLIKSIZ_satir_ASLA_yeniden_kullanilmaz():
-    """⛔ madde_id=None olan 3.699+ satır var. Kimliksiz satırı eşleştirmek,
+    """   madde_id=None olan 3.699+ satır var. Kimliksiz satırı eşleştirmek,
     yanlış maddenin gömmesini kullanmaktır — ve hata vermez."""
     eski = [_k(None, "a")]
     eski_g = np.array([[9., 9., 9., 9.]], dtype=np.float32)
@@ -1597,7 +1597,7 @@ def test_KIMLIKSIZ_satir_ASLA_yeniden_kullanilmaz():
 
 
 def test_gomme_dtype_fp32_KALIR():
-    """⛔ fp16 ölçüldü ve REDDEDİLDİ: 44,4× yavaş ve 10/80 sorguda ilk-10 değişiyor."""
+    """   fp16 ölçüldü ve REDDEDİLDİ: 44,4× yavaş ve 10/80 sorguda ilk-10 değişiyor."""
     yeni_g = artimli_gom([], np.zeros((0, 4), np.float32), [_k("m1", "a")], _gomucu([]))
     assert yeni_g.dtype == np.float32
 
@@ -1623,10 +1623,10 @@ Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'hakhukuk.mevzuat.ind
 Neden: tam gömme GPU'da ~1,5 saat, CPU'da ~23 saat (spec §7b). Haftalık tazelemede
 14 belge değiştiyse 340.303 maddeyi yeniden gömmek saçmadır.
 
-⛔ ÖN KOŞUL: kararlı `madde_id` (korpus_kimlik.py). Kimlik yoksa artımlı gömme YANLIŞ
+   ÖN KOŞUL: kararlı `madde_id` (korpus_kimlik.py). Kimlik yoksa artımlı gömme YANLIŞ
 SATIRI tazeler ve HATA VERMEZ. `madde_id is None` olan satır artımlıya GİRMEZ.
 
-⛔ dtype `fp32` KALIR — fp16 ölçüldü ve reddedildi (44,4× yavaş, 10/80 sorguda ilk-10
+   dtype `fp32` KALIR — fp16 ölçüldü ve reddedildi (44,4× yavaş, 10/80 sorguda ilk-10
 değişiyor). Bu bir takas değil, ölçüm birimini değiştiren müdahale (spec §7b).
 """
 from __future__ import annotations
@@ -1635,7 +1635,7 @@ import numpy as np
 
 
 def _gomulecek_metin(r: dict) -> str:
-    """⚠️ `retriever._gomulecek_metin` ile BİREBİR aynı olmalı. Ayrışırsa artımlı
+    """   `retriever._gomulecek_metin` ile BİREBİR aynı olmalı. Ayrışırsa artımlı
     gömme ile tam gömme farklı vektörler üretir ve fark hiçbir yerde görünmez."""
     return f"{r['kanun_adi']} {r['madde_no']} {r['text']}"
 
@@ -1651,7 +1651,7 @@ def artimli_gom(eski_kayitlar: list[dict], eski_gomme: np.ndarray,
     for i, r in enumerate(eski_kayitlar):
         mid = r.get("madde_id")
         if mid is None:
-            continue          # ⛔ kimliksiz satır ASLA yeniden kullanılmaz
+            continue          #    kimliksiz satır ASLA yeniden kullanılmaz
         eski_idx[(mid, _gomulecek_metin(r))] = i
 
     boyut = eski_gomme.shape[1] if eski_gomme.size else None
@@ -1681,7 +1681,7 @@ def artimli_gom(eski_kayitlar: list[dict], eski_gomme: np.ndarray,
 Run: `python -m pytest tests/test_mevzuat_indeksle.py -v`
 Beklenen: `7 passed`
 
-- [ ] **Adım 5: 🚨 ÖLÇEK KAPISI — 340k'da erişim hâlâ kullanılabilir mi**
+- [ ] **Adım 5: ÖLÇEK KAPISI — 340k'da erişim hâlâ kullanılabilir mi**
 
 Spec'in *"~51 ms"*'i **yalnız yoğun kolu** sayıyordu; ölçülen toplam **~803 ms** ve baskın
 yük **BM25**'te. Kat kat büyürken bu **ön-kayıtlı** bir kapıya bağlanır:
@@ -1692,7 +1692,7 @@ yükleme (BM25 kurulumu) ≤   90  sn  → kat GİRER
 RAM (yoğun + BM25)      ≤ 4.000 MB  → kat GİRER
 ```
 
-⛔ **Eşikler koşudan ÖNCE yazıldı** (ADR-0050). Gerekçe: 340k tahmini sırasıyla
+**Eşikler koşudan ÖNCE yazıldı** (ADR-0050). Gerekçe: 340k tahmini sırasıyla
 ~803 ms · ~37 sn · ~2,1 GB; eşikler bunun **~2,5×**'i — büyümenin tahminden sapmasına pay,
 ama *"vektör db gerekmiyor"* iddiasını hâlâ savunabilecek bir tavan.
 
@@ -1701,7 +1701,7 @@ source ~/code/global_venv/bin/activate
 python - <<'PY'
 """Ölçek kapısı: mevcut korpus çoğaltılarak 340k'da erişim maliyeti ölçülür.
 
-⚠️ SENTETİK: sorgu vektörleri rastgele, metinler korpusun kendisinin tekrarı.
+   SENTETİK: sorgu vektörleri rastgele, metinler korpusun kendisinin tekrarı.
 Ölçtüğü şey ARİTMETİK MALİYET, erişim KALİTESİ değil. Kalite kapısı ayrı
 (recall@10, kapsam_kapisi.py).
 """
@@ -1746,7 +1746,7 @@ print(json.dumps(sonuc, ensure_ascii=False, indent=2))
 PY
 ```
 
-⛔ **Kapı kalırsa Görev 7'ye GEÇME.** Sonuç bir **tasarım kararını** yeniden açar: BM25'i
+**Kapı kalırsa Görev 7'ye GEÇME.** Sonuç bir **tasarım kararını** yeniden açar: BM25'i
 kalıcılaştırmak · `mmap_mode="r"` · boyut indirgeme (spec §7b'nin *"açık borç"*u, hiçbiri
 ölçülmedi). Bunlar bu planın dışında ⇒ **insana sor**.
 
@@ -1770,7 +1770,7 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 
 ---
 
-### Görev 7: Kapsam KAT KAT girer — her kat bir kapıdan ⚠️ **>$1, DUR ve SOR**
+### Görev 7: Kapsam KAT KAT girer — her kat bir kapıdan **>$1, DUR ve SOR**
 
 **Dosyalar:**
 - Create: `scripts/erisim_korpus/kat_ekle.py`
@@ -1782,7 +1782,7 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 - Tüketir: `kaynak.Kaynak` · `anlik.Anlik` · `indeksle.artimli_gom` · `kapsam_kapisi.recall_olc`
 - Üretir: kat başına bir korpus sürümü + bir kapı raporu
 
-**⛔ DUR VE SOR — bu görev tek adımda >$1 harcar.** Kat 4-5 (`CB_KARAR` + `KKY`,
+**DUR VE SOR — bu görev tek adımda >$1 harcar.** Kat 4-5 (`CB_KARAR` + `KKY`,
 **202.660 madde**) gömmesi Modal GPU'da ~1,5 saattir. Koşmadan **insana sor**.
 
 **Katlar (spec §5, insan kararıyla 5'e çıktı):**
@@ -1796,11 +1796,11 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 | 5 | `KKY` | 4.043 | ~126.343 |
 
 ```
-recall@10 ≥ 0,9500  →  kat GİRER          ⛔ eşik ön-kayıtlı, ADR-0050
+recall@10 ≥ 0,9500  →  kat GİRER             eşik ön-kayıtlı, ADR-0050
 recall@10 <  0,9500  →  kat GİRMEZ, geri alınır, sebebi bulunana kadar
 ```
 
-**🚨 Kapının sınırı — baştan yazılıyor (spec §5):** Kapı yalnız ***"eskiyi bozmadı"*** der;
+**Kapının sınırı — baştan yazılıyor (spec §5):** Kapı yalnız ***"eskiyi bozmadı"*** der;
 ***"yeniyi buluyor"* DEMEZ.** 80 sorunun **hepsi kanun düzeyinde**; yönetmelik düzeyinde
 cevaplanan sorumuz **yok**. Kat 3 geçse bile *"yönetmelik eklemek işe yaradı"* **kurulamaz.**
 
@@ -1810,7 +1810,7 @@ cevaplanan sorumuz **yok**. Kat 3 geçse bile *"yönetmelik eklemek işe yaradı
 # tests/test_kat_ekle.py
 """Kat ekleme — birleştirme mantığı, ağa dokunmadan.
 
-⚠️ Testin ölçtüğü şey BİRLEŞTİRMEdir: mükerrer eklenmemesi, sıranın korunması,
+   Testin ölçtüğü şey BİRLEŞTİRMEdir: mükerrer eklenmemesi, sıranın korunması,
 kapı kalınca geri alınması.
 """
 import pytest
@@ -1824,7 +1824,7 @@ def _m(mid, kanun_no, text="t"):
 
 
 def test_yeni_kat_MEVCUDUN_SONUNA_eklenir():
-    """⛔ Mevcut satırlar yerinde kalmalı — artımlı gömme onların vektörünü kopyalıyor."""
+    """   Mevcut satırlar yerinde kalmalı — artımlı gömme onların vektörünü kopyalıyor."""
     mevcut = [_m("a", "1"), _m("b", "2")]
     yeni = kati_birlestir(mevcut, [_m("c", "3")])
     assert [r["madde_id"] for r in yeni] == ["a", "b", "c"]
@@ -1837,7 +1837,7 @@ def test_ayni_madde_id_MUKERRER_eklenmez():
 
 
 def test_kimliksiz_yeni_madde_REDDEDILIR():
-    """⛔ Yeni gelen her maddenin bedesten kimliği olmalı — kimliksiz satır
+    """   Yeni gelen her maddenin bedesten kimliği olmalı — kimliksiz satır
     artımlı tazelemeye giremez ve sessizce her turda yeniden gömülür."""
     with pytest.raises(ValueError, match="madde_id"):
         kati_birlestir([_m("a", "1")], [_m(None, "2")])
@@ -1859,10 +1859,10 @@ Beklenen: `FAIL` — `ModuleNotFoundError: No module named 'kat_ekle'`
 #!/usr/bin/env python3
 """Kapsamı KAT KAT büyütür; her kat ön-kayıtlı kapıdan geçer.
 
-⛔ Eşik: recall@10 ≥ 0,9500. Koşudan ÖNCE yazıldı (spec §5, ADR-0050).
-⛔ Kapı yalnız "eskiyi bozmadı" der; "yeniyi buluyor" DEMEZ — 80 sorunun hepsi
+   Eşik: recall@10 ≥ 0,9500. Koşudan ÖNCE yazıldı (spec §5, ADR-0050).
+   Kapı yalnız "eskiyi bozmadı" der; "yeniyi buluyor" DEMEZ — 80 sorunun hepsi
    kanun düzeyinde, yönetmelik düzeyinde cevaplanan sorumuz YOK.
-⚠️ Tek seferde tüm türleri eklemek REDDEDİLDİ: düşerse hangi katın düşürdüğü
+   Tek seferde tüm türleri eklemek REDDEDİLDİ: düşerse hangi katın düşürdüğü
    bilinmez (T5'in dersi — grup grup taşındığı için kırılma hemen görüldü).
 
 Kullanım:
@@ -1880,7 +1880,7 @@ import numpy as np
 # Kardeş modüller alt klasörlere bölündükten SONRA da bulunsun diye scripts/ kökü, tüm
 # alt klasörleri ve repo kökü sys.path'e girer. Uzantısız `import X` bu köprü olmadan
 # taşımada SESSİZCE kırılır: ImportError çalışma zamanında, bazen GPU koşusunun ortasında.
-# ⚠️ 26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
+#    26 dosyada BİREBİR aynı; değiştirirsen hepsinde değiştir (grep: "yol köprüsü").
 import os, sys
 _K = os.path.dirname(os.path.abspath(__file__))
 _K = _K if os.path.basename(_K) == "scripts" else os.path.dirname(_K)
@@ -1972,9 +1972,9 @@ def main():
     json.dump(sonuc, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
     if sonuc["gecti"]:
-        print(f"[kat{a.kat}] ✅ GEÇTİ — recall@10 {sonuc['recall@10']:.4f} ≥ {ESIK}")
+        print(f"[kat{a.kat}]    GEÇTİ — recall@10 {sonuc['recall@10']:.4f} ≥ {ESIK}")
         return 0
-    print(f"[kat{a.kat}] ⛔ KALDI — recall@10 {sonuc['recall@10']:.4f} < {ESIK}\n"
+    print(f"[kat{a.kat}]    KALDI — recall@10 {sonuc['recall@10']:.4f} < {ESIK}\n"
           f"   korpus GERİ ALINIYOR; indeksi yeniden kurmak GEREKİR:\n"
           f"   python scripts/erisim_korpus/retriever.py kur --korpus {a.korpus} "
           f"--indeks {a.indeks} --cihaz cuda")
@@ -1991,7 +1991,7 @@ if __name__ == "__main__":
 Run: `python -m pytest tests/test_kat_ekle.py -v`
 Beklenen: `4 passed`
 
-- [ ] **Adım 5: ⚠️ İNSANA SOR — kat 4-5 bütçesi**
+- [ ] **Adım 5: İNSANA SOR — kat 4-5 bütçesi**
 
 Kat 1-3 (~45.000 madde) yerel GPU'da makul. **Kat 4-5 202.660 madde** ⇒ Modal GPU ~1,5 sa,
 **>$1**. Sormadan koşma. Sorulacak somut şey: *"kat 4-5 şimdi mi, yoksa kat 1-3 kapıdan
@@ -2006,8 +2006,8 @@ setsid nohup python scripts/erisim_korpus/kat_ekle.py --kat 1 \
     > outputs/eval/f12-kapsam-kapisi/kat1.log 2>&1 &
 ```
 
-⚡ **GPU koşusundan ÖNCE künyede `güç : ŞARJDA` DOĞRULA** — pilde GPU 180 MHz'e kısılıyor.
-Beklenen: `[kat1] ✅ GEÇTİ — recall@10 0.9xxx ≥ 0.95` · `EXIT=0`
+**GPU koşusundan ÖNCE künyede `güç : ŞARJDA` DOĞRULA** — pilde GPU 180 MHz'e kısılıyor.
+Beklenen: `[kat1] GEÇTİ — recall@10 0.9xxx ≥ 0.95` · `EXIT=0`
 
 - [ ] **Adım 7: Kat 2 — `TUZUK`** *(kat 1 geçmeden başlama)*
 
@@ -2048,14 +2048,14 @@ git add data/corpus/mevzuat_maddeler.jsonl data/corpus/mevzuat_maddeler.KUNYE.js
 git commit -m "Kapsam kat N: <TÜRLER> girdi — recall@10 0,9xxx ≥ 0,9500
 
 Korpus N → M madde. Kapı ön-kayıtlıydı, eşik oynatılmadı.
-⚠️ Kapı yalnız 'eskiyi bozmadı' diyor; 'yeniyi buluyor' DEMİYOR — 80 sorunun
+   Kapı yalnız 'eskiyi bozmadı' diyor; 'yeniyi buluyor' DEMİYOR — 80 sorunun
 hepsi kanun düzeyinde, bu türde cevaplanan sorumuz yok (spec §5).
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 ```
 
-⛔ **Bir kat kalırsa:** betik korpusu **geri alır** ama indeks kat'ın gömmesini taşır ⇒
+**Bir kat kalırsa:** betik korpusu **geri alır** ama indeks kat'ın gömmesini taşır ⇒
 `retriever.py kur` ile **yeniden kur**, sonra `kapsam_kapisi.py` ile çıpanın geri geldiğini
 doğrula. Sonra **insana sor** — eşik oynatılmaz.
 
@@ -2078,11 +2078,11 @@ tazele(mod: Tazelik = Tazelik.SOR) -> Rapor
 ```
 
 `Tazelik`: **`SOR`** (varsayılan — *"14 belge değişmiş, güncelleyeyim mi"*) · `OTOMATIK` · `KAPALI`.
-⛔ **Bool bayrak yok** (`CLAUDE.md` §4): *"sor"* hâli bir `bool` ile ifade edilemez.
+**Bool bayrak yok** (`CLAUDE.md` §4): *"sor"* hâli bir `bool` ile ifade edilemez.
 
 **İki sert kural, ikisi de testle çivilenir:**
-1. ⛔ TR IP yoksa **fallback YOK** — `Rapor.durum = IP_YOK`, korpus tarihi yine gösterilir.
-2. ⛔ Kısmi tazeleme **diske yazılmaz** — hepsi ya da hiçbiri.
+1. TR IP yoksa **fallback YOK** — `Rapor.durum = IP_YOK`, korpus tarihi yine gösterilir.
+2. Kısmi tazeleme **diske yazılmaz** — hepsi ya da hiçbiri.
 
 - [ ] **Adım 1: Failing test yaz**
 
@@ -2090,7 +2090,7 @@ tazele(mod: Tazelik = Tazelik.SOR) -> Rapor
 # tests/test_mevzuat_tazele.py
 """`tazele()` — ana arayüz. Ağa dokunmadan, sahte kaynakla.
 
-⛔ Bu dosyanın iki testi SERT KURAL sınıyor: IP_YOK'ta fallback olmaması ve
+   Bu dosyanın iki testi SERT KURAL sınıyor: IP_YOK'ta fallback olmaması ve
 kısmi indirmede diske yazılmaması.
 """
 import json
@@ -2142,7 +2142,7 @@ def test_degisiklik_yoksa_GUNCEL_doner_ve_disk_DEGISMEZ(tmp_path):
 
 
 def test_TR_IP_YOKSA_IP_YOK_doner_ve_TARIH_YINE_GORUNUR(tmp_path):
-    """⛔ Sert kural: fallback yok, ama kullanıcı ASLA tarihsiz kalmaz (spec §2)."""
+    """   Sert kural: fallback yok, ama kullanıcı ASLA tarihsiz kalmaz (spec §2)."""
     class IpsizKaynak:
         def listele(self, tur):
             raise TrIpGerekli("403")
@@ -2183,7 +2183,7 @@ def test_SOR_modda_ONAY_VERILINCE_yazilir(tmp_path):
 
 
 def test_ORTADA_AG_KOPARSA_KORPUS_BAYT_BAYT_ESKI_KALIR(tmp_path):
-    """⛔ En kritik test: 14 belgeden 9'u inip ağ koparsa hiçbir şey yazılmaz."""
+    """   En kritik test: 14 belgeden 9'u inip ağ koparsa hiçbir şey yazılmaz."""
     yol = _kur(tmp_path)
     once = open(yol, "rb").read()
     kaynak = SahteKaynak(
@@ -2215,10 +2215,10 @@ Beklenen: `FAIL` — `ImportError: cannot import name 'tazele'`
 """`tazele()` — mevzuat katmanının tek giriş noktası.
 
 İKİ SERT KURAL (spec §4), ikisi de testle çivili:
-  ⛔ TR IP yoksa fallback YOK — Rapor.durum = IP_YOK, korpus tarihi YİNE gösterilir
-  ⛔ Kısmi tazeleme diske YAZILMAZ — hepsi ya da hiçbiri
+     TR IP yoksa fallback YOK — Rapor.durum = IP_YOK, korpus tarihi YİNE gösterilir
+     Kısmi tazeleme diske YAZILMAZ — hepsi ya da hiçbiri
 
-⭐ Mahremiyet: tazelik çağrısı SORUYU TAŞIMAZ. `searchDocuments` yalnız "şu türde hangi
+   Mahremiyet: tazelik çağrısı SORUYU TAŞIMAZ. `searchDocuments` yalnız "şu türde hangi
 belgeler var, kayitTarihi ne" diye sorar. Sızan tek şey "bu IP korpusunu tazeliyor".
 """
 from __future__ import annotations
@@ -2244,7 +2244,7 @@ def tazele(mod: Tazelik = Tazelik.SOR, *, korpus_yolu: str = KORPUS,
     """Korpusu canlı bedesten'e karşı tazele.
 
     `mod`: SOR (varsayılan, kullanıcıya sorar) · OTOMATIK · KAPALI.
-    ⛔ Bool bayrak yok: "sor" hâli bir bool ile ifade edilemez (CLAUDE.md §4).
+       Bool bayrak yok: "sor" hâli bir bool ile ifade edilemez (CLAUDE.md §4).
     """
     anlik = Anlik.yukle(korpus_yolu)
 
@@ -2260,7 +2260,7 @@ def tazele(mod: Tazelik = Tazelik.SOR, *, korpus_yolu: str = KORPUS,
     try:
         uzak = [k for tur in turler for k in kaynak.listele(tur)]
     except TrIpGerekli as e:
-        # ⛔ YUTULMAZ ama ÜRÜNÜ DÜŞÜRMEZ: kullanıcı korpusuyla çalışmaya devam eder
+        #    YUTULMAZ ama ÜRÜNÜ DÜŞÜRMEZ: kullanıcı korpusuyla çalışmaya devam eder
         # ve TARİHİNİ GÖRÜR. Sessiz düşürme olmayan şey, tarihin gizlenmesidir.
         return Rapor(durum=Durum.IP_YOK, korpus_tarihi=anlik.tarih,
                      mesaj=f"tazeleme yapılamadı (TR IP gerekiyor); "
@@ -2278,7 +2278,7 @@ def tazele(mod: Tazelik = Tazelik.SOR, *, korpus_yolu: str = KORPUS,
         return Rapor(durum=Durum.GUNCEL, korpus_tarihi=anlik.tarih, fark=fark,
                      mesaj="kullanıcı güncellemeyi reddetti")
 
-    # ── İNDİRME ── ⛔ hepsi bellekte biriktirilir; TEK BİR hata varsa disk el değmez
+    # ── İNDİRME ──    hepsi bellekte biriktirilir; TEK BİR hata varsa disk el değmez
     guncel = {k.mevzuat_id: k for k in [*fark.yeni, *fark.degisen]}
     try:
         taze_satirlar = []
@@ -2310,7 +2310,7 @@ def tazele(mod: Tazelik = Tazelik.SOR, *, korpus_yolu: str = KORPUS,
 
     return Rapor(durum=Durum.TAZELENDI, korpus_tarihi=yeni_tarih, fark=fark,
                  mesaj=f"{fark.toplam()} belge tazelendi; "
-                       f"⚠️ indeks BAYAT — `python -m hakhukuk.mevzuat indeksle` gerekiyor")
+                       f"   indeks BAYAT — `python -m hakhukuk.mevzuat indeksle` gerekiyor")
 ```
 
 - [ ] **Adım 4: `__init__.py`'yi yaz — paketin tek dış yüzü**
@@ -2365,14 +2365,14 @@ Claude-Session: https://claude.ai/code/session_01DgANwHgkTBaaNYpWvczNB5"
 - Create: `docs/adr/0074-mevzuat-anlik-goruntu-ve-kapsam-kapisi.md`
 - Modify: `docs/record/research_log/README.md` *(yeni satır — **var olan satırlar dokunulmaz**)*
 - Create: `docs/record/research_log/2026-09-08-kapsam-genislemesi.md`
-- Modify: bu plan *(✅ kapanış bloğu)* · `docs/superpowers/00-IS-SIRASI.md` · `CLAUDE.md`
+- Modify: bu plan *(kapanış bloğu)* · `docs/superpowers/00-IS-SIRASI.md` · `CLAUDE.md`
 
-⛔ **`docs/record/**` ve `docs/adr/**` tarihsel kayıttır** — buraya **EKLEME** yapılır,
+**`docs/record/**` ve `docs/adr/**` tarihsel kayıttır** — buraya **EKLEME** yapılır,
 var olan satır **düzenlenmez**.
 
 - [ ] **Adım 1: ADR-0074'ü yaz**
 
-⚠️ Sıradaki numara **0074**; **0059 REZERVE** (τ_a v2 veri-simetrisi ADR'si, Görev 10'da yazılacak).
+Sıradaki numara **0074**; **0059 REZERVE** (τ_a v2 veri-simetrisi ADR'si, Görev 10'da yazılacak).
 
 İçermesi gerekenler — her biri bu planda **ölçüldü**:
 - **Karar:** korpus sürümlenmiş bir anlık görüntüdür; canlılık ürünün dışındadır
@@ -2396,7 +2396,7 @@ README'ye **tek satır** eklenir; var olan satırlara dokunulmaz.
 
 - [ ] **Adım 3: Spec'in açık kalanlarını GÜNCELLE**
 
-`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md` §8'deki altı 🔓 maddesinin her biri
+`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md` §8'deki altı maddesinin her biri
 için: **kapandı** (sayıyla) ya da **açık kaldı** (neden). Özellikle:
 - `kayitTarihi` sinyal mi → Görev 5 Adım 5 ölçtü
 - Yönetmelik düzeyinde eval sorusu yok → **hâlâ açık**, ADR-0067 usulü ayrı tur
@@ -2404,11 +2404,11 @@ için: **kapandı** (sayıyla) ya da **açık kaldı** (neden). Özellikle:
 
 - [ ] **Adım 4: `00-IS-SIRASI.md` ve `CLAUDE.md` işaretçilerini güncelle**
 
-- `00-IS-SIRASI.md`: *"Bir bakışta"* kutusu — bu plan ✅, **Görev 8 (indeks dağıtımı) AÇILDI**
+- `00-IS-SIRASI.md`: *"Bir bakışta"* kutusu — bu plan , **Görev 8 (indeks dağıtımı) AÇILDI**
 - `CLAUDE.md`: korpus/indeks satırı (*"892 kanun · 40.496 madde"* → yeni sayı) ·
   *"brute force 8,2 ms, indeks 83 MB"* → **yeni ölçüm** · ADR sayacı **0075**
 
-- [ ] **Adım 5: Bu planın ✅ kapanış bloğunu yaz**
+- [ ] **Adım 5: Bu planın kapanış bloğunu yaz**
 
 Faz 0 planının biçimi: kaç kutucuk · ne harcandı · **hangi iddia çürütüldü** · ne açık kaldı.
 

@@ -2,7 +2,7 @@
 
 > **Ajan işçiler için:** GEREKLİ ALT-BECERİ: `superpowers:executing-plans` ya da
 > `superpowers:subagent-driven-development`. Adımlar `- [ ]` kutucuklu.
-> ⛔ **Kutucuk yalnız `verify:` çıktısı GERÇEKTEN alındıktan sonra işaretlenir.**
+> **Kutucuk yalnız `verify:` çıktısı GERÇEKTEN alındıktan sonra işaretlenir.**
 
 **Amaç:** `PRODUCT.md`'nin manşet sayısını çivilemek — yeni varsayılan (önsözsüz) rejimin
 sayısını gözle doğrulanmış hâle getirmek, rakip çıpalarını aynı rejimde ölçmek ve `v1.0`
@@ -32,29 +32,29 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 - **Donmuş TEST'e dokunulmaz:** her şey `data/eval/dev/`. `data/eval/canon/` **açılmaz**.
 - **Her koşudan önce** `docs/record/yurutme-tuzaklari.md` okunur.
 - **Bütçe:** Modal $29,19 · OpenRouter $10,26. Bu plan **~$1,65** harcar.
-  🚨 **DÜZELTME 2026-09-07 — bütçe hatırlanmıştı, ölçülmemişti.** Devir notu *"OpenRouter
+  **DÜZELTME 2026-09-07 — bütçe hatırlanmıştı, ölçülmemişti.** Devir notu *"OpenRouter
   ~$8,88"* diyordu ($10,26 − bugünkü $1,38). **Ölçülen gerçek bakiye: $6,60**
   (`/api/v1/credits`: `total_credits` 20 − `total_usage` 13,397) — **$2,28 fark**, kaynağı
   bu planın dışındaki harcamalar. ⇒ Aşama 2'nin T1 tahmini (~$3-5) bakiyenin **yarısından
   fazlası**; sıralama kararı bu sayıyla yeniden okunmalı. **Ders:** para da bir sayıdır ve
   bu repoda sayı hatırlanmaz, **kaynaklanır**.
-- ⭐ **Gözle okuma bir kapıdır** — sayısal kapı bozuk ölçümü bir kez geçirdi.
+- **Gözle okuma bir kapıdır** — sayısal kapı bozuk ölçümü bir kez geçirdi.
 - 🔌 **PİLDE ÖLÇÜM KOŞMA — sayısı ölçüldü (2026-09-07).** `cp0_thinking_gen.sh` künyeye
-  `güç : PİLDE ⚠️` basıyor ve bu **boş bir uyarı değil**: pilde GPU **P5 · SM clock 180 MHz**'e
+  `güç : PİLDE ` basıyor ve bu **boş bir uyarı değil**: pilde GPU **P5 · SM clock 180 MHz**'e
   kısılıyor (şarjda ~2.000 MHz), üretim **8,4 t/s** (şarjda ~42 t/s) ⇒ **~5-11× yavaş**.
   Ölçülmüş etki: M5'in 80 kalemi **şarjda ~57 dk, pilde ~4,8 saat**.
-  ⚠️ Sayı DEĞİŞMEZ (`temperature=0`, seed 3407) — değişen yalnız süre; ama saatlerce süren bir
+  Sayı DEĞİŞMEZ (`temperature=0`, seed 3407) — değişen yalnız süre; ama saatlerce süren bir
   koşu, teşhisi de imkânsızlaştırıyor (*"takıldı mı yavaş mı"* ayrımı yapılamıyor).
-  ⭐ Ayrıca ölçüldü: **M5'te kalem başına İKİ üretim** gerekiyor — model kör modda `</think>`'i
+  Ayrıca ölçüldü: **M5'te kalem başına İKİ üretim** gerekiyor — model kör modda `</think>`'i
   bütçe içinde kapatmıyor, zorla-kapatma yolu devreye giriyor (research_log #42'nin kalıntısı).
   M5 kalem başına ~1800 token, diğer modların **iki katı**.
-- 🚨 **Uzun koşuyu harness'ın arka plan görevi olarak başlatma.** Ölçüldü 2026-09-06: koşunun
+- **Uzun koşuyu harness'ın arka plan görevi olarak başlatma.** Ölçüldü 2026-09-06: koşunun
   tepe kullanımı **7,2 GB / 15,9 GB** (llama-server 1,65 + python 3,65) ve `available` **9 GB**
   iken, Linux kalanı sayfa önbelleğine aldığı için **`free` 0'a düşüyor**; harness'ın bellek
   gözcüsü `free`'ye bakıp görevi **öldürdü** (0/80'de). Gerçek bellek sıkıntısı YOKTU.
   ⇒ Uzun koşular `setsid nohup … &` ile **ayrık** başlatılır, `Monitor` ile beklenir.
-  ⚠️ WSL2'ye 15,9 GB verilmiş (makinede 32 GB var, `.wslconfig`'de bellek ayarı yok).
-- 🚨 **ANTİ-HEDEF ÇIPASI BOŞTU — 2026-09-07'de yakalandı.** Kapı maddesi *"M5 ≤ **bugünkü**"*
+  WSL2'ye 15,9 GB verilmiş (makinede 32 GB var, `.wslconfig`'de bellek ayarı yok).
+- **ANTİ-HEDEF ÇIPASI BOŞTU — 2026-09-07'de yakalandı.** Kapı maddesi *"M5 ≤ **bugünkü**"*
   yazıyordu, ama `tgta_v1`'in M5'i **hiçbir birimde hiç ölçülmemişti** (mevcut M5 sayıları
   `base_th` · `gem_th` · `tg_v1_th`; merge öznesi yok). *"Bugünkü"* diye bir sayı yoktu —
   madde kendi kendine referans veriyordu ve **hiçbir hüküm üretemezdi**.
@@ -74,7 +74,7 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 **Dosyalar:** Create: `outputs/eval/f01-erisim/recall_taban.json` ·
 `outputs/eval/f01-erisim/KACIRILAN_10.md` · Read: `scripts/erisim_korpus/recall_olc.py` · `scripts/erisim_korpus/retriever.py`
 
-> 🚨 **KAPANIŞ DENETİMİ 2026-09-07: `recall_taban.json` HİÇ OLUŞMADI.** Adım 1-2 `[x]`
+> **KAPANIŞ DENETİMİ 2026-09-07: `recall_taban.json` HİÇ OLUŞMADI.** Adım 1-2 `[x]`
 > işaretliydi ve **ölçüm gerçekten koştu** (sayılar `KACIRILAN_10.md` ve
 > `f01b/SONUC_recall_v1_v2.md`'de, manşet `0,9500` ise `f02-biz-onsozsuz/KUNYE.json`'da) —
 > ama **ham JSON hiçbir yere yazılmadı**: `find outputs -newermt 2026-09-06 -name "recall_*.json"`
@@ -87,7 +87,7 @@ koşucu; llama-server'ı açar, künyeyi basar, kesiklik kapısını uygular) ·
 > **dosyanın varlığı sınanmalı** — bu turda 39 kutucuğun 38'inde sınandı, birinde sınanmadı.
 
 **Arayüz:** Üretir → `KACIRILAN_10.md` (kaçırılan kalemlerin sınıflaması) ve bir **karar önerisi**.
-⛔ Bu görev indeksi **değiştirmez**; değişiklik ADR gerektirir (Görev 1b).
+Bu görev indeksi **değiştirmez**; değişiklik ADR gerektirir (Görev 1b).
 
 - [x] **Adım 1: Taban ölçümü — üç yöntem ayrı ayrı**
 
@@ -101,17 +101,17 @@ değer kümesi görülür. **Bayrak adlarını buradan al, tahmin etme.**
 
 - [x] **Adım 2: `recall@10`'u yöntem başına bas**
 
-⚠️ **`--out` bir DİZİNDİR, dosya değil** (`recall_olc.py`:134 `os.makedirs(a.out)` · :204
+**`--out` bir DİZİNDİR, dosya değil** (`recall_olc.py`:134 `os.makedirs(a.out)` · :204
 `os.path.join(a.out, f"recall_{etiket}.json")`). Dosya yolu verilirse o adda bir **klasör**
 açılır ve çıktı içine gömülür — hata vermez, sessizce yanlış yere yazar (2026-09-06'da olan
 budur).
 
-⚠️ **`--cihaz cuda` ŞART** — `recall_olc.py` hazır indeksi kullanmaz, **korpusun tamamını her
+**`--cihaz cuda` ŞART** — `recall_olc.py` hazır indeksi kullanmaz, **korpusun tamamını her
 koşuda yeniden gömer** (40.496 madde). Script kendi yorumunda ölçüsünü veriyor (:63):
 **CPU ~4,1 madde/sn → koşu başına ≈2 saat 45 dk**; `hibrit` + `yogun` = **≈5,5 saat**.
 Aynı yorum çareyi de veriyor: *"recall@k CİHAZDAN BAĞIMSIZ bir sayıdır; `--cihaz` yalnız
 indeksleme süresini değiştirir"* — yani GPU sayıyı **değiştirmez**, yalnız hızlandırır.
-⛔ GPU'nun boş olduğunu doğrula (`nvidia-smi`): llama-server açıkken bu koşu VRAM'i böler.
+GPU'nun boş olduğunu doğrula (`nvidia-smi`): llama-server açıkken bu koşu VRAM'i böler.
 
 ```bash
 rm -rf outputs/eval/f01-erisim && mkdir -p outputs/eval/f01-erisim && \
@@ -119,10 +119,10 @@ source ~/code/global_venv/bin/activate && set -a && . ./.env && set +a && \
 export PYTHONUNBUFFERED=1 && \
 for Y in bm25 hibrit yogun; do
   python scripts/erisim_korpus/recall_olc.py --yontem "$Y" --kapsam korpus --cihaz cuda \
-    --out outputs/eval/f01-erisim || echo "❌ $Y DURDU"
+    --out outputs/eval/f01-erisim || echo "   $Y DURDU"
 done
 ```
-⚠️ Çıktıyı `| tail -N` ile boruya sokma — süreç bitene kadar **hiçbir şey görünmez**,
+Çıktıyı `| tail -N` ile boruya sokma — süreç bitene kadar **hiçbir şey görünmez**,
 koşunun ilerliyor mu takıldı mı olduğu anlaşılmaz (2026-09-06'da olan budur).
 `verify:` hibrit değer **0,875** çıkar (bugünkü çıpa; `g2-fl-harness/KUNYE.json`
 `recall_at_10` ile birebir). Çıkmazsa **DUR** — çıpa kaymış, sebebi bulunmadan devam edilmez.
@@ -139,7 +139,7 @@ yok · (b) altın madde chunk'ı bölünmüş/tablo (borç **B9**) · (c) yürü
 - [x] **Adım 4: Karar önerisi yaz, UYGULAMA**
 
 `KACIRILAN_10.md` sonuna: sınıf dağılımı · en ucuz müdahale · **beklenen kazanç** ·
-⚠️ *"indeks değişirse rakip kolları yeniden koşulmalı"* şerhi.
+*"indeks değişirse rakip kolları yeniden koşulmalı"* şerhi.
 `verify:` öneri tek cümlelik bir eylem + tahmini `recall@10` içeriyor.
 
 - [x] **Adım 5: Commit**
@@ -154,15 +154,15 @@ git commit -m "F0.1 erişim teşhisi — kaçırılan 10 kalem gözle sınıflan
 
 ---
 
-### Görev 1b · soru onarımı — ✅ TAMAM *(planda yoktu, Görev 1'in bulgusundan doğdu)*
+### Görev 1b · soru onarımı — TAMAM *(planda yoktu, Görev 1'in bulgusundan doğdu)*
 
 - [x] 155 sorunun tamamı belirlenebilirlik ölçütüyle tarandı → DEV 13 · TEST 2 kusurlu
 - [x] 15 öneri yalnız altın madde metninden yazıldı, **insan onayına** sunuldu, onaylandı
 - [x] Uygulandı: DEV+TEST `core_hard` **v2**, yedekler `.v1-2026-09-06`, `KUNYE_soru_onarimi_2026-09-06.json`
 - [x] Etki ölçüldü: `recall@10` **0,8750 → 0,9375** (kaçan 10→5) · kontrol grubu çıpayı birebir üretti
-- [x] ⛔ id 79 bulunuyorken kaçtı — **geri alınmadı** (eval sorusunu retriever lehine ayarlamak olurdu)
+- [x] id 79 bulunuyorken kaçtı — **geri alınmadı** (eval sorusunu retriever lehine ayarlamak olurdu)
 
-### Görev 2 · F0.2 — bizim kolun yeniden üretimi 🚨 **ZORUNLU** *(sorular değişti; eski koşullu hüküm geçersiz)*
+### Görev 2 · F0.2 — bizim kolun yeniden üretimi **ZORUNLU** *(sorular değişti; eski koşullu hüküm geçersiz)*
 
 **Dosyalar:** Create: `outputs/eval/f02-biz-onsozsuz/` (+ `KUNYE.json`)
 
@@ -208,7 +208,7 @@ python scripts/puanlama/harness_tablo.py \
 
 ---
 
-### Görev 3 · F0.3 — ⭐ önsözsüz rejimin 80 kalemi GÖZLE OKUNUR
+### Görev 3 · F0.3 — önsözsüz rejimin 80 kalemi GÖZLE OKUNUR
 
 **Dosyalar:** Create: `<koşu-klasörü>/GOZLE_OKUMA_80.md` ·
 Read: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md` (kalıp) · `scripts/puanlama/score_abstention.py`
@@ -224,12 +224,12 @@ Read: `outputs/eval/olcum-bi/B10_GOZLE_OKUMA_80.md` (kalıp) · `scripts/puanlam
 Kaynak: geçerli koşunun `h1_*_detail.jsonl` (Görev 2 koştuysa `f02`, koşmadıysa
 `outputs/eval/s2-harness-k10-etiketli/h1_tgta_v1_h1_k10_et_detail.jsonl`).
 Her kalem: id · altın geldi mi · model sustu mu **(göz)** · alet ne dedi · atıf doğru mu ·
-**isabetsizlik mi** (gerçek ama yanlış madde). ⛔ Örneklem değil, **80/80**.
+**isabetsizlik mi** (gerçek ama yanlış madde). Örneklem değil, **80/80**.
 `verify:` dosyada 80 satır var; `aşırı-red (göz)` ve `isabetsizlik (göz)` sayıları basıldı.
 
 - [x] **Adım 3: Alet ↔ göz deltasını raporla**
 
-Tablo: alet 5/80 ↔ göz ?/80 · yanlış pozitif · yanlış negatif. ⚠️ Delta **sıfır bile olsa**
+Tablo: alet 5/80 ↔ göz ?/80 · yanlış pozitif · yanlış negatif. Delta **sıfır bile olsa**
 yazılır — negatif sonuç birinci sınıftır.
 `verify:` delta tablosu var; delta ≠ 0 ise **her fark eden kalem** id'siyle listelenmiş.
 
@@ -265,16 +265,16 @@ for M in google/gemini-3.1-flash-lite google/gemini-3.5-flash-lite google/gemini
   python scripts/olcum_uretim/gen_eval_grounded.py \
     --server-url https://openrouter.ai/api/v1 --server-model "$M" \
     --thinking on --max-new-tokens 512 --reasoning-budget 1024 \
-    `# ⚠️ rakip tarafı --reasoning-budget kullanır, --think-budget DEĞİL: ikisi karşılıklı` \
+    `#    rakip tarafı --reasoning-budget kullanır, --think-budget DEĞİL: ikisi karşılıklı` \
     `# dışlayıcı; --think-budget istemci-taraflı zorunlu kapatmadır ve yalnız bizim kolda.` \
     `# Künye kanıtı: g2-fl-harness/KUNYE.json → "reasoning_budget": 1024` \
     --max-chunk-chars 900 --seed 3407 --n 80 \
     --data data/eval/dev/core_hard.jsonl \
     --harness-indeks data/index/mevzuat_bge_m3_s2 --harness-k 10 \
-    --label "h1_${TAG}" --out-dir outputs/eval/f04-rakip-onsozsuz || { echo "❌ $M DURDU"; break; }
+    --label "h1_${TAG}" --out-dir outputs/eval/f04-rakip-onsozsuz || { echo "   $M DURDU"; break; }
 done
 ```
-`verify:` üç `h1_*_detail.jsonl` dosyası, her biri **80 satır**. ⛔ `--sufficiency-preamble`
+`verify:` üç `h1_*_detail.jsonl` dosyası, her biri **80 satır**. `--sufficiency-preamble`
 komutta **yok** — bizim rejimle eşleşmenin şartı bu.
 
 - [x] **Adım 2: Eşit sınav kapısı — `recall@10` birebir aynı mı**
@@ -290,8 +290,8 @@ print(f"{sys.argv[1].split('/')[-1]:<52} n={len(rows)} recall@10={hit/len(rows):
 PY
 done
 ```
-`verify:` üç öznede de **aynı** değer, ve bizim kolun değeriyle birebir. Farklıysa 🚨 **DUR** —
-harness eşleşmemiş, hüküm kurulmaz (ADR-0057). ⚠️ Alan adı çıkmazsa `detail.jsonl`'in
+`verify:` üç öznede de **aynı** değer, ve bizim kolun değeriyle birebir. Farklıysa **DUR** —
+harness eşleşmemiş, hüküm kurulmaz (ADR-0057). Alan adı çıkmazsa `detail.jsonl`'in
 anahtarlarını `head -1 | python -m json.tool` ile oku, tahmin etme.
 
 - [x] **Adım 3: Puanlama — üçü de aynı hakem yığınında**
@@ -302,7 +302,7 @@ Her özne için `groundedness.py --mode data --judge-model openai/gpt-4o-mini` +
 
 - [x] **Adım 4: Kesiklik damgası (tuzak 1.9 · K2)**
 
-`finish_reason == "length"` oranı özne başına basılır. ⚠️ Rakipte muhakeme bütçesi
+`finish_reason == "length"` oranı özne başına basılır. Rakipte muhakeme bütçesi
 sağlayıcı tarafından **yok sayılıyor** (K2) — kesik >%5 ise sayı raporlanır ama
 kesime duyarlı eksenler **TAVAN/TANIMSIZ** damgası taşır. Ortak kesiksiz alt kümede de hesapla.
 `verify:` özne başına kesik oranı + ortak kesiksiz `n` yazıldı.
@@ -311,7 +311,7 @@ kesime duyarlı eksenler **TAVAN/TANIMSIZ** damgası taşır. Ortak kesiksiz alt
 
 `OZET.md`: eşit sınav kanıt tablosu · kademe tablosu (her satırda hüküm) ·
 `$/cevap` **girdi+çıktı** (yalnız çıktıya bakmak sıralamayı ters gösterir — Ö7) ·
-⛔ *"ölçülmedi"* olan hiçbir şeye hüküm yazılmaz.
+*"ölçülmedi"* olan hiçbir şeye hüküm yazılmaz.
 `verify:` `git commit` sonrası `OZET.md` üç öznenin kütlesini ve **bizim kütlemizi** yan yana gösterir.
 
 ---
@@ -340,11 +340,11 @@ kaldırılır (kod sabitiyse **ortam değişkenine** çıkarılır, varsayılan 
 davranış değişmeden ölçüm mümkün olsun). Koşu `k=10` kolunda, **aynı hakem yığını**
 (`openai/gpt-4o-mini`, `LLM_PROVIDER_ORDER=OpenAI`) ve **aynı önbellek anahtarı** (ADR-0060:
 anahtar hakem istemine eşitlendi — istem değişirse önbellek ıskalar, sessizce eski sayı gelmez).
-⛔ Çıktı **yeni klasöre** (`outputs/eval/f05-source-clip/`), eski özet dosyasının üzerine yazılmaz.
+Çıktı **yeni klasöre** (`outputs/eval/f05-source-clip/`), eski özet dosyasının üzerine yazılmaz.
 `verify:` yeni `valid_traps` paydası basıldı ve **eski değerin yanında** durur; önbellek
 isabet/ıska sayısı log'da görülür (ıska ≈ %100 beklenir — istem değişti).
 
-- [x] **Adım 3: Şerh yaz** — ⚠️ tarihsel `verdict`'ler artık kıyaslanamaz; eski sayılar
+- [x] **Adım 3: Şerh yaz** — tarihsel `verdict`'ler artık kıyaslanamaz; eski sayılar
 `~üstü çizili~` olarak korunur, **silinmez**.
 `verify:` şerh dosyada; eski/yeni iki sütun yan yana.
 
@@ -363,7 +363,7 @@ artefaktın kendisi ölçülmedi.
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \
-# ⚠️ Script'in bayrakları: --ggufs --ctxs --kv-type --out. `--cache-type-k/-v`,
+#    Script'in bayrakları: --ggufs --ctxs --kv-type --out. `--cache-type-k/-v`,
 # `--host`, `--port`, `--no-context-shift` llama-server'ın bayraklarıdır, bu script'in DEĞİL
 # (2026-09-06'da koşmadan önce yakalandı).
 python scripts/olcum_uretim/measure_vram_stack.py \
@@ -372,7 +372,7 @@ python scripts/olcum_uretim/measure_vram_stack.py \
   --out outputs/eval/_artefakt/vram_stack_tgta_v1.json
 ```
 `verify:` üç ctx için sunucu GiB + tepe MiB basıldı. Base ile kıyas: ctx 4.096 → base **3,09 GiB**.
-⚠️ Fark **%1'den büyükse** sebebi yazılır (aynı boyut Q4_K_M olmalı: base 2.783.446.752 B ↔
+Fark **%1'den büyükse** sebebi yazılır (aynı boyut Q4_K_M olmalı: base 2.783.446.752 B ↔
 `tgta_v1` 2.783.446.720 B).
 
 - [x] **Adım 2: `≤8 GB` yumuşak kapısına göre hüküm** — hangi ctx'e kadar bandın içinde.
@@ -389,8 +389,8 @@ python scripts/olcum_uretim/measure_vram_stack.py \
 `docs/adr/0065-bolunmus-surumleme.md` ·
 `docs/adr/0066-b1-yontemi-reddetme-orneklemesi.md` ·
 `docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md` ·
-Modify: `docs/record/research_log/README.md` (**#62** satırı) · `docs/open_questions.md` ⚰️
-⚠️ **0059 REZERVE — atlanır.**
+Modify: `docs/record/research_log/README.md` (**#62** satırı) · `docs/open_questions.md`
+**0059 REZERVE — atlanır.**
 
 - [x] **Adım 1: ADR-0063** — önsöz kaldırıldı. ADR-0058'in gerekçesinin **tersine döndüğünü**
 iki yerde işaretle (0058'in kendi dosyasına da şerh). Ölçüm: önsözlü %68,4 ↔ önsözsüz %73,0
@@ -398,7 +398,7 @@ iki yerde işaretle (0058'in kendi dosyasına da şerh). Ölçüm: önsözlü %6
 aynı bağlam**, değişen yalnız istem.
 `verify:` ADR-0058 dosyasında *"gerekçesi ADR-0063 ile tersine döndü"* şerhi var.
 
-- [x] **Adım 2: ADR-0064 — kapı, sayıyla kapandı** ✅ *(2026-09-07, üç madde de)*
+- [x] **Adım 2: ADR-0064 — kapı, sayıyla kapandı** *(2026-09-07, üç madde de)*
 
 ```
 (1) kütle ≥ (3.5 Flash kütlesi, F0.4) − 2,0 p
@@ -410,12 +410,12 @@ aynı bağlam**, değişen yalnız istem.
 için; kütle = coverage × A1 ve coverage varyansı o tabanda yok) · sayılar F0.3/F0.4'ten
 **alıntı ve dosya adıyla**.
 
-**✅ ALINDI 2026-09-07:**
+**ALINDI 2026-09-07:**
 - madde (1) **GEÇTİ** — GÖZ-katı 0,8011 ↔ eşik 0,7225 → **+5,86 p**
 - madde (2) çıpa **8/80**'e yeni birimde çivilendi (ADR-0050'nin *"alet değişirse eşik aynı
   formülle yeni birimde türetilir"* hükmü)
 - madde (3) **GEÇTİ** — ezber kütlesi **−6,82 p** (GÖZ) / **−7,98 p** (ALET), çıpa **base**
-  ⚠️ Yol düz değildi: maddenin **çıpası yoktu** (tuzak 2.17) · ilk koşu geçerlilik kapısından
+  Yol düz değildi: maddenin **çıpası yoktu** (tuzak 2.17) · ilk koşu geçerlilik kapısından
   **kaldı** (%6,2) · gözle okuma kesiklerin **3/5'inin yozlaşmış tekrar** olduğunu gösterdi ·
   $0'lık ablasyon DRY'yi seçti (**ADR-0073**, insan kararı) · iki kol yeniden koşuldu ·
   gözle okuma dedektörün **6/6 yanlış pozitif** verdiğini buldu ⇒ **iki okuma da raporlandı**
@@ -458,7 +458,7 @@ yolunun **task-vector üretmediği** şerhiyle.
 **Talep:** *"`scripts` içinde gereksiz çöp script var mı kontrol et, var ise sil; yok ise klasörü
 düzenle — hepsi tek yığında çok kötü, `scripts/abc/abc.py` gibi alt-klasörlere bölünmeli."*
 
-⚠️ **Bu görev Faz 0'ın ÖLÇÜM zincirinin dışındadır** (Görev 8 gibi: paralel, bağımsız temizlik).
+**Bu görev Faz 0'ın ÖLÇÜM zincirinin dışındadır** (Görev 8 gibi: paralel, bağımsız temizlik).
 Faz 0'ın manşet sayısı **40/40 ile kapanır**; T5 onun **üstüne** eklenen iştir.
 
 **Envanter — ölçüldü 2026-09-07 (salt okunur, hiçbir dosyaya dokunulmadı):**
@@ -470,7 +470,7 @@ Faz 0'ın manşet sayısı **40/40 ile kapanır**; T5 onun **üstüne** eklenen 
 | BELGE-BAĞLI (yalnız `docs/**` ya da `*.md`'de adı geçiyor) | 22 |
 | YETİM (hiçbir yerde adı geçmiyor) | **6** |
 
-### 🚨 Bulgu 1: **silinecek çöp YOK**
+### Bulgu 1: **silinecek çöp YOK**
 
 Altı yetimin **hiçbiri** çöp değil — docstring'leri okundu, hepsi ya belgelenmiş bir üretim
 hattının halkası ya da bağımsız bir tanı aracı:
@@ -487,7 +487,7 @@ hattının halkası ya da bağımsız bir tanı aracı:
 ⇒ *"Adı başka kodda geçmiyor"* bu repoda **çöp demek değil**: `scripts/`'in çoğu dosyası
 **elle çağrılan giriş noktasıdır**. Silme ölçütü *"referanssız"* olamaz.
 
-### 🚨 Bulgu 2: taşımanın gerçek maliyeti — **sessizce kırılan 65 import**
+### Bulgu 2: taşımanın gerçek maliyeti — **sessizce kırılan 65 import**
 
 **18 modül**, ~**65** satır **uzantısız** Python import'uyla çağrılıyor
 (`import runlock` · `from build_sft_v2b import clip_sources_block` · `import raft_pack` …).
@@ -506,7 +506,7 @@ koşusunun ortasında da patlayabilir. **Bu reponun tam olarak "sessiz yanlışl
 
 **Maliyet:** **~353 kod referans satırı** (kritik — taşıma anında kırılır) ·
 ~622 belge satırı, ama bunun **~590'ı tarihsel `research_log`/ADR** (*"o gün şu yoldan koşuldu"*
-diyen kayıtlar — ⛔ **güncellenmez**, kayıt temizlenmez) ve yalnız **~30'u** güncel referans
+diyen kayıtlar — **güncellenmez**, kayıt temizlenmez) ve yalnız **~30'u** güncel referans
 belgesi (`CLAUDE.md` · `DEVIR-PROMPT.md` *(silindi)* · aktif spec) ⇒ **güncellenir**.
 
 ### Önerilen taksonomi (5 grup, işlevden türetildi)
@@ -521,11 +521,11 @@ belgesi (`CLAUDE.md` · `DEVIR-PROMPT.md` *(silindi)* · aktif spec) ⇒ **günc
 
 ### Adımlar
 
-- [x] **Adım 1: Taşımadan ÖNCE taban ölç** ✅ *(112 passed, 2 xfailed — ama önce BİR KIRIK TEST onarıldı: bayat test F0.5'in ödediği kusuru koruyordu)* — `pytest` (beklenen **112 passed, 2 xfailed**) ·
+- [x] **Adım 1: Taşımadan ÖNCE taban ölç** *(112 passed, 2 xfailed — ama önce BİR KIRIK TEST onarıldı: bayat test F0.5'in ödediği kusuru koruyordu)* — `pytest` (beklenen **112 passed, 2 xfailed**) ·
 her `.sh` için `bash -n` · `git status` temiz.
 `verify:` üç çıktı da kaydedildi; **taşıma sonrası kıyas çıpası budur**.
 
-- [x] **Adım 2: `sys.path` desenini ÖNCE düzelt, taşımayı SONRA yap** ✅ *(18 değil **26** dosya — 9'u kardeş import ediyor ama insert'i yoktu)*
+- [x] **Adım 2: `sys.path` desenini ÖNCE düzelt, taşımayı SONRA yap** *(18 değil **26** dosya — 9'u kardeş import ediyor ama insert'i yoktu)*
 
 18 dosyadaki satır, kendi klasörü yerine **`scripts/` kökünü + tüm alt klasörleri** ekleyecek
 hâle getirilir. Böylece dosya **hangi alt klasöre giderse gitsin** kardeşlerini bulur:
@@ -536,52 +536,52 @@ sys.path[:0] = [_R] + [os.path.join(_R, d) for d in sorted(os.listdir(_R))
                        if os.path.isdir(os.path.join(_R, d)) and not d.startswith(("_", "."))]
 ```
 
-⚠️ **Bu adım taşımadan ÖNCE ve TEK BAŞINA commit edilir.** Henüz alt klasör yokken de doğru
+**Bu adım taşımadan ÖNCE ve TEK BAŞINA commit edilir.** Henüz alt klasör yokken de doğru
 çalışır (liste boş döner, `_R` = `scripts/`) ⇒ `pytest` bu adımdan sonra **hâlâ yeşil olmalı**.
 Yeşil değilse taşımaya **geçilmez**. *(Beck, Tidy First: yapısal değişiklik davranışı değiştirmez
 ve ayrı commit'lenir.)*
 `verify:` `pytest` **112 passed, 2 xfailed** — Adım 1'in çıpasıyla **birebir aynı**.
 
-- [x] **Adım 3: `tests/`'in yol kurulumu** ✅ *(11 yer → `conftest.py`; 8'i göreli yoldu)* — testler de `scripts/`'i `sys.path`'e ekliyor.
+- [x] **Adım 3: `tests/`'in yol kurulumu** *(11 yer → `conftest.py`; 8'i göreli yoldu)* — testler de `scripts/`'i `sys.path`'e ekliyor.
 `tests/conftest.py` (yoksa oluştur) `scripts/` kökünü **ve alt klasörlerini** ekler; tekil
 test dosyalarındaki elle `sys.path` satırları oraya devredilir.
 `verify:` `pytest` yeşil, ve `grep -c "sys.path" tests/*.py` **azalmış**.
 
-- [x] **Adım 4: `git mv` ile taşı** ✅ *(72/72, geçmiş korundu; kapı 6 kırık yakaladı — alt süreç yolları)* — taksonomiye göre, **grup grup**, her grup **ayrı commit**.
-⛔ Tek seferde hepsini taşıma: kırılma olursa hangi grubun kırdığı anlaşılmaz.
+- [x] **Adım 4: `git mv` ile taşı** *(72/72, geçmiş korundu; kapı 6 kırık yakaladı — alt süreç yolları)* — taksonomiye göre, **grup grup**, her grup **ayrı commit**.
+Tek seferde hepsini taşıma: kırılma olursa hangi grubun kırdığı anlaşılmaz.
 `verify:` her gruptan sonra `pytest` yeşil **ve** `bash -n` her `.sh` için temiz.
 
-- [x] **Adım 5: Kod referanslarını güncelle** ✅ *(66 dosya, 144 satır; kırık yol 0, döngüyle sınandı)* — `bash scripts/X.sh` · `python scripts/X.py` ·
+- [x] **Adım 5: Kod referanslarını güncelle** *(66 dosya, 144 satır; kırık yol 0, döngüyle sınandı)* — `bash scripts/X.sh` · `python scripts/X.py` ·
 `modal_train.py`'nin `cmd` listeleri · Modal imajındaki `/root/scripts/...` yolları.
-🚨 **`modal_train.py` en riskli**: yol string'i orada **çalışma zamanına kadar sessiz kalır**
+**`modal_train.py` en riskli**: yol string'i orada **çalışma zamanına kadar sessiz kalır**
 (tuzak 6.12: *"bayrak script'e eklenir, çağrı zincirine eklenmez"*).
 `verify:` `grep -rn "scripts/[a-z0-9_]*\.\(py\|sh\)" --include="*.py" --include="*.sh" .`
 çıktısındaki **her** yol var olan bir dosyayı gösterir (döngüyle sınanır, gözle değil).
 
-- [x] **Adım 6: Güncel belgeleri güncelle, TARİHSEL OLANLARA DOKUNMA** ✅ *(12 belge / 61 satır; `docs/record`+`docs/adr` **0 değişiklik**)*
+- [x] **Adım 6: Güncel belgeleri güncelle, TARİHSEL OLANLARA DOKUNMA** *(12 belge / 61 satır; `docs/record`+`docs/adr` **0 değişiklik**)*
 Güncellenir: `CLAUDE.md` · `DEVIR-PROMPT.md` *(silindi)* · aktif spec (~30 satır).
-⛔ **Güncellenmez:** `docs/record/**` · `docs/adr/**` (~590 satır) — bunlar *"o gün şu yoldan
+**Güncellenmez:** `docs/record/**` · `docs/adr/**` (~590 satır) — bunlar *"o gün şu yoldan
 koşuldu"* diyen **tarihsel kayıtlar**; spec §11'in ilk kuralı: **KAYIT TEMİZLENMEZ.**
 `verify:` `git diff --stat` `docs/record/` ve `docs/adr/` altında **0 değişiklik** gösterir.
 
-- [x] **Adım 7: Uçtan uca duman testi** ✅ *(`m5` `N_OVERRIDE=2` yeni yoldan koştu, kapı geçti, `GEN_EXIT=0`)* — bir gerçek koşu zinciri kısa `--n` ile çalıştırılır
+- [x] **Adım 7: Uçtan uca duman testi** *(`m5` `N_OVERRIDE=2` yeni yoldan koştu, kapı geçti, `GEN_EXIT=0`)* — bir gerçek koşu zinciri kısa `--n` ile çalıştırılır
 (ör. `cp0_thinking_gen.sh` + `cp0_thinking_score.sh`, `N_OVERRIDE=2`).
 **Neden:** `pytest` import'ları yakalar, **`bash` çağrılarını yakalamaz**; bu turda üç kez
 yanlış bayrak/yol çıktı ve üçü de yalnız koşarken görüldü.
 `verify:` zincir uçtan uca hatasız tamamlanır ve künye basılır.
 
-- [x] **Adım 8: Commit + tuzak yazıldı** ✅ *(**tuzak 5.8**)*
+- [x] **Adım 8: Commit + tuzak yazıldı** *(**tuzak 5.8**)*
 *"Paylaşılan modülleri alt klasöre taşımak uzantısız import'ları sessizce kırar"*.
 
-**Bedel:** $0 · ~30-45 dk · **GPU gerekmez** ⛔ ama Faz 0'ın koşuları bitmeden **başlamaz**
+**Bedel:** $0 · ~30-45 dk · **GPU gerekmez** ama Faz 0'ın koşuları bitmeden **başlamaz**
 (`cp0_thinking_gen.sh` canlı kullanımda).
 **Bağımlılık:** Faz 0 Görev 7 kapanmış olmalı.
 
 ---
 
-## ✅ FAZ 0 ÖLÇÜM ZİNCİRİ KAPANDI — 2026-09-07, **40/40**
+## FAZ 0 ÖLÇÜM ZİNCİRİ KAPANDI — 2026-09-07, **40/40**
 
-*(Görev 9 · T5 bu zincirin **dışında** eklenen temizliktir; ayrı sayılır: **8/8 ✅ 2026-09-07**)*
+*(Görev 9 · T5 bu zincirin **dışında** eklenen temizliktir; ayrı sayılır: **8/8 2026-09-07**)*
 
 **Harcanan: $1,47** — plan tahmini $1,65 · bugünkü pay **$0,0881** (yalnız M5 hakemi) · GPU **$0**
 **Eğitim koşusu: SIFIR.** `tgta_v1` sabahki artefaktın **aynısı**; hiçbir ağırlık değişmedi.
@@ -607,16 +607,16 @@ onarımıyla (ADR-0068).
 | 2 | `RRF_K=60` *"iki kolda vasat"*ı *"tek kolda kusursuz"*a tercih ediyordu | +1,25 p (TEST'te **iki katı**) | 0068 |
 | 3 | DEV↔TEST ayrımı kanuna göre katmanlı, **uzunluğa göre değil** | farkın **%81'i** | 0069 |
 | 4 | Üretim bütçemiz **1024**, rakibinki **1536** — eşit sınav değildi | yayımlanmış bir iddiayı (**K2**) çürüttü | 0070 |
-| 5 🆕 | Kapı maddesi (3)'ün **çıpası yoktu** | madde **hüküm üretemiyordu** | 0073 · tuzak **2.17** |
+| 5 | Kapı maddesi (3)'ün **çıpası yoktu** | madde **hüküm üretemiyordu** | 0073 · tuzak **2.17** |
 
-### `v1.0` kapısı (ADR-0064) — 🟢 **ÜÇ MADDE DE GEÇTİ**
+### `v1.0` kapısı (ADR-0064) — **ÜÇ MADDE DE GEÇTİ**
 
 | madde | sayı | hüküm |
 | :--- | :--- | :--- |
-| (1) kütle ≥ Flash − 2,0 p | GÖZ-katı **0,8011 ↔ 0,7225** | ✅ **+5,86 p** |
-| (2) isabetsizlik gerilemez | çıpa **8/80** (yeni birim) | ✅ tanım gereği; bağlayıcı yeri **sonraki tur** |
-| (3) M5 yükselmez | ezber kütlesi **−6,82 p** (GÖZ) / −7,98 p (ALET) | ✅ **kazanç ezberden gelmiyor** |
-| (*) her sayımda gözle okuma | üç adımda da yapıldı | ✅ **ikisinde alet yanıldı** |
+| (1) kütle ≥ Flash − 2,0 p | GÖZ-katı **0,8011 ↔ 0,7225** | **+5,86 p** |
+| (2) isabetsizlik gerilemez | çıpa **8/80** (yeni birim) | tanım gereği; bağlayıcı yeri **sonraki tur** |
+| (3) M5 yükselmez | ezber kütlesi **−6,82 p** (GÖZ) / −7,98 p (ALET) | **kazanç ezberden gelmiyor** |
+| (*) her sayımda gözle okuma | üç adımda da yapıldı | **ikisinde alet yanıldı** |
 
 ### Faz 0'ın asıl dersi
 
@@ -626,7 +626,7 @@ ya da koşmadan önce sorulan ***"bu sayıyı neyle, hangi birimde kıyaslayaca�
 saydı** — yani sapma **hep bizim lehimize**ydi. Aletin adının *"terazi"* olması tesadüf değil:
 **tek kefe hüküm vermiyor.**
 
-⛔ **Ne KURULMAZ:** *"model bu kadar iyileşti"* — kazancın büyük kısmı **ölçümden** geldi.
+**Ne KURULMAZ:** *"model bu kadar iyileşti"* — kazancın büyük kısmı **ölçümden** geldi.
 *"TEST'te de geçeriz"* — ölçüm **DEV**'de, TEST'in erişim tavanı ≈%75 (ADR-0069).
 *"Hakem panelinden geçmiş bir hüküm"* — hâlâ **tek aile**, κ yok ⇒ sıradaki planın **`HP`** adımı.
 
@@ -640,21 +640,21 @@ saydı** — yani sapma **hep bizim lehimize**ydi. Aletin adının *"terazi"* ol
 
 ---
 
-## ⏭️ Bu planın DIŞINDA — sonraki plana
+## Bu planın DIŞINDA — sonraki plana
 
-- **T1** `models/` ~20 GB temizliği — ⚠️ ön koşulu **AÇIK KARAR S7** (adaptörler HF'ye yüklensin mi);
+- **T1** `models/` ~20 GB temizliği — ön koşulu **AÇIK KARAR S7** (adaptörler HF'ye yüklensin mi);
   adaptörler yedeksizken türevleri silmek yıkım yarıçapını büyütür.
-- **T2** 16 script'in arşivi — 🚨 **ölçüldü ve toplu taşıma YAPILAMAZ**: 7'si canlı kodla bağlı
+- **T2** 16 script'in arşivi — **ölçüldü ve toplu taşıma YAPILAMAZ**: 7'si canlı kodla bağlı
   (`cp0_thinking_gen.sh` ← `modal_train.py` + `cp3_merge_dene.sh` · `cp2_harvest.py` ←
   `modal_train.py` · `cp2c_kabul.sh` ← `score_abstention.py`). Liste **izole 9'a** indi ve
   **Faz 0'dan sonraya** alındı — ölçümün aletini ölçümden önce oynatmıyoruz.
-- 🆕 **Borç: uzun madde chunk'lama.** Ölçüldü 2026-09-06: `_src_len` en uzun çeyreğinde
+- **Borç: uzun madde chunk'lama.** Ölçüldü 2026-09-06: `_src_len` en uzun çeyreğinde
   `recall@10` = **0,6667** (Q2/Q3'te 0,9333). İlişki **U biçimli** — en kısa çeyrek de 0,8000.
   Sebep: chunk = **tam madde** (ADR-0054/K2); uzun madde çok konuyu kapsar, tek gömme seyrelir,
-  BM25 uzunluk normalizasyonu cezalandırır. ⚠️ **B9'dan AYRI**: orada *bozuk* chunk var
+  BM25 uzunluk normalizasyonu cezalandırır. **B9'dan AYRI**: orada *bozuk* chunk var
   (tablo/cetvel parçaları), burada **doğru ama çok uzun** chunk.
-- 🆕 **Borç: DEV/TEST ayrımı katmanlanmamış.** Kanuna göre kusursuz 2:1, ama madde uzunluğuna
+- **Borç: DEV/TEST ayrımı katmanlanmamış.** Kanuna göre kusursuz 2:1, ama madde uzunluğuna
   göre değil: en zor uzunluk diliminde DEV'in payı %12, TEST'in **%50**. Düzeltmek **donmuş
   TEST'i açmak** demek → bugün yapılmıyor. Raporlama tarafı ADR-0069 ile kapatıldı (S15).
 - **Dört belge** (`PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md`) + kırık link
-  onarımı + `referans-design-doc.md` ⚰️'nin silinmesi — Faz 0'ın sayıları geldikten sonra.
+  onarımı + `referans-design-doc.md` 'nin silinmesi — Faz 0'ın sayıları geldikten sonra.

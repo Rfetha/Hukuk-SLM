@@ -118,7 +118,21 @@ is paid on **its own axis** (B1), not with a prompt patch.
 [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
 [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
-Still `v0.1`, not `v1.0` — **and the reason changed on 2026-09-07.** The gate's three
+**Product version is `v0.3` (tagged 2026-09-09); the model artifact is still `HakHukuk-4B-v0.1`.**
+`v1.0` was NOT granted — the acceptance test on the frozen TEST ran (raw mass **0,5804**, ceiling
+`recall@10` **0,7500**) and the blocker is **the measuring instrument, not the model**: every
+figure is still one judge family's verdict and κ is **0,534**, below the tool's 0,6 threshold
+([ADR-0077](docs/adr/0077-v1-0-verilmedi-v0-3.md) · [#65](docs/record/research_log/2026-09-09-kabul-testi-ve-frontier-kiyasi.md)).
+Weights are published at `Rfetha/HakHukuk-4B-v0.3-Q4_K_M` and are **currently private** while
+open defects are resolved ([tickets](docs/superpowers/plans/post-hp-hat-b-tickets.md)).
+🚨 **A frontier subject entered the pool and is AHEAD:** `claude-sonnet-5` mass **0,8348** ↔ ours
+**0,8011** (eye-corrected reading). The claim *"we are not behind on B1"* held only in the Gemini
+pool: `wrong_ref_rate` **0,0769 ↔ 0,0083**.
+🚨 **The product path is NOT the measured path:** `hakhukuk.servis.answer()` returns a **blank
+answer on ~5% of questions** (4/80, non-termination) and would fail ADR-0040's own 5% validity
+gate. Recorded, not fixed — `MODEL_CARD` §7.9.
+
+Still `v0.1` as an artifact, not `v1.0` — **and the reason changed on 2026-09-07.** The gate's three
 clauses now **pass on DEV** (above), but two things are still missing: the **acceptance test on
 the frozen TEST** has not run (its retrieval ceiling is ≈75%, not DEV's 95% — [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)),
 and **every number is still one judge family's verdict** (`gpt-4o-mini`, no κ, self-preference
@@ -131,10 +145,10 @@ thing (OFF hands the model the gold article by construction).
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#63** |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#65** |
 | what to work on next, tied to measured gaps | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
 | the open debt queue | `DEVIR-PROMPT.md` *(silindi)* ⚰️ *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0073**, next is **0074** |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0077**, next is **0078** |
 | questions raised and not yet answered | [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
@@ -250,8 +264,8 @@ decision ledger.
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#64**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0074**.
+  record, **authoritative for "what happened."** New findings continue at **#66**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0078**.
   **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
   places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.
 

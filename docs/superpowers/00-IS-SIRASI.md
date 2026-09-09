@@ -10,43 +10,45 @@
 > Sıra **insan tarafından kilitlendi** (2026-09-07). Bir planın *içindeki* adım sırası o planın
 > kendi meselesi; burası **planlar arası** sırayı bağlar.
 >
-> ⛔ Bir belgeyi sıradan çıkarmak ya da araya sokmak **insan kararıdır** — kendi başına yapma.
+> Bir belgeyi sıradan çıkarmak ya da araya sokmak **insan kararıdır** — kendi başına yapma.
 
 ---
 
 ## Bir bakışta
 
 ```
-✅ BİTTİ   ▸ 2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
+BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-▶️  ŞİMDİ  ▸ 2026-09-07-hp-hat-a-hat-b.md          89 kutucuk · **60 bitti**
-             başlatıcı: goal-hp-hat-a-hat-b.md  (YENİLENDİ 2026-09-07, 3.873 krk)
-             ✅ FAZ 1 HP (G1·G3) · ✅ FAZ 2 Hat A · ✅ FAZ 3 belge → 🏷️ **v0.2 ETİKETLENDİ**
-             ⛔ G2·G4 ATLANDI (bütçe, ADR-0074) · ⛔ G8 BEKLETİLİYOR
-             ⛔ G14+G15 EĞİTİM TURLARI ATLANDI (ADR-0075) — v1 SFT ile kapanır
-             ⏳ KALAN LİNEER SIRA (planın İCRA DURUMU bloğunda):
-                1. G8 Adım 1b  KUNYE taşınabilirlik   $0
-                2. G12 Adım 6-7 TUI gözle doğrula     $0 · GPU
-                3. G4  Sonnet-5 öznesi                ~$0,82 (ölçüldü)
-                4. G16 Adım 2-4 kabul testi           ~$0,10 ⛔⛔ donmuş TEST (ARAÇSIZ)
-                5. G18 araç katmanı  🆕                $0 · KAPI ↔ KALDIRAÇ (ADR-0076)
-                6. G17 modeli YAYINLA  🆕              $0 → 🏷️ v1.0 RELEASE
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          89 kutucuk · 79 bitti
+          başlatıcı: goal-hp-hat-a-hat-b.md  (3.675 karakter)
+          FAZ 1-2-3 bitti · FAZ 4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
+          G2 ATLANDI (bütçe, ADR-0074) · G8 BEKLETİLİYOR (Adım 1b hariç, o bitti)
+          G14+G15 EĞİTİM TURLARI ATLANDI (ADR-0075) — v1 SFT ile kapanır
+          LİNEER SIRANIN DURUMU (planın İCRA DURUMU bloğunda):
+             1. G8 Adım 1b  KUNYE taşınabilirlik   BİTTİ · recall@10 0,9500
+             2. G12 Adım 6-7 TUI gözle doğrula     AÇIK — insan gözü kapısı
+             3. G4  Sonnet-5 öznesi                BİTTİ · $1,1932 · Sonnet ÖNDE
+             4. G16 Adım 2-4 kabul testi           BİTTİ · TEST kütle 0,5804
+                                                   v1.0 VERİLMEDİ → v0.3 (ADR-0077)
+             5. G18 araç katmanı                   BİTTİ · regresyon 80/80 birebir
+             6. G17 modeli YAYINLA                 BİTTİ · HF'te, şu an ÖZEL
+          AÇIK KUSURLAR: plans/post-hp-hat-b-tickets.md (on ticket)
 ──────────────────────────────────────────────────────────────────────────────
-⏳ SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
+   SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
              korpus 40.496 → ~340.303 madde, 5 kat, her kat bir kapıdan
-             ⚠️ G7 kat 4-5 tek adımda >$1 (Modal ~1,5 sa) — DUR ve SOR
-             bitince → ana planın Görev 8'i AÇILIR → 🏷️ v0.2 yayını
+                G7 kat 4-5 tek adımda >$1 (Modal ~1,5 sa) — DUR ve SOR
+             bitince → ana planın Görev 8'i AÇILIR →    v0.2 yayını
 ──────────────────────────────────────────────────────────────────────────────
-⏳ EN SON  ▸ v2 — plan HENÜZ YAZILMADI · karar: ADR-0075
+   EN SON  ▸ v2 — plan HENÜZ YAZILMADI · karar: ADR-0075
              tgta_v1 (bf16, 8,8 GB) = yeni başlangıç → GRPO + düşünce ayarı → v2.0
              mümkün çünkü DOĞRULANABİLİR ÖDÜL hazır (terazi.py deterministik)
-             ⛔ ön koşul: ödül fonksiyonu çekinmeyi KORUMALI (ADR-0010'un RL hâli)
+                ön koşul: ödül fonksiyonu çekinmeyi KORUMALI (ADR-0010'un RL hâli)
 ```
 
 ---
 
-## 🔒 `v1` ↔ `v2` çizgisi — insan kararı 2026-09-08 ([ADR-0075](../adr/0075-v1-sft-kapanir-v2-sequential-rl.md))
+## `v1` ↔ `v2` çizgisi — insan kararı 2026-09-08 ([ADR-0075](../adr/0075-v1-sft-kapanir-v2-sequential-rl.md))
 
 ```
 v1   ham base ──► SFT (τ_g) + ORPO (τ_a) ──► ham TIES ──► tgta_v1 ──► YAYIN
@@ -58,26 +60,26 @@ ve **birbirinden farklı**: `B1`'de rakiplerden **geride değiliz** (8/80 ↔ 8�
 metrik yok; `B4` ise bir **merge** kaybı (`τ_a` tek başına 0,987) ve `v2`'de merge olmadığı
 için **konusuz** kalıyor.
 
-### 🔧 Araç katmanı `v1`'e dahil — [ADR-0076](../adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)
+### Araç katmanı `v1`'e dahil — [ADR-0076](../adr/0076-kapi-kaldirac-ayrimi-arac-katmani.md)
 
 **KAPI ↔ KALDIRAÇ ayrımı:** atıf doğrulama · mülga süzgeci · durum sınıflandırma **TOOL
 DEĞİLDİR** — döngünün dışında **koşulsuz** çalışır (uydurulmuş madde **0/114** garantisi
 oradan gelir). Model yalnız **deterministik kaldıraçları** çağırır: `ara` · `madde_getir` ·
 `madde_var_mi` · `kanun_bul` · `yururlukte_mi`.
-⛔ Döngü **sınırlı** (`AZAMI_ADIM`) ve sınıra dayanmak **görünür**: `Durum.ARAMA_TUKENDI`.
+Döngü **sınırlı** (`AZAMI_ADIM`) ve sınıra dayanmak **görünür**: `Durum.ARAMA_TUKENDI`.
 Sebep: bu hattın en pahalı hata sınıfı *"hata vermeden yanlış"* — 17 tuzağın **hepsi** o
 sınıftan, ve agentic akış tam o riski büyütür.
-⛔ **Kapı koşusuna GİRMEZ** (ADR-0076 m.4): %80,1 ve eşik **araçsız** ölçüldü, rakipler araç
+**Kapı koşusuna GİRMEZ** (ADR-0076 m.4): %80,1 ve eşik **araçsız** ölçüldü, rakipler araç
 kullanamaz ⇒ araçlı koşmak ADR-0057'nin eşit sınavını ihlal eder. Sıra: **kabul testi →
 araç katmanı → yayın.**
-⚠️ `v1`'de araç kullanımı **istem katmanındadır** (eğitilmedi, güvenilirliği düşük olacak);
+`v1`'de araç kullanımı **istem katmanındadır** (eğitilmedi, güvenilirliği düşük olacak);
 **öğrenilmesi `v2`'nin işi** — GRPO ödülüne *"doğru aracı doğru anda çağırdı mı"* girer.
-✅ **CLI + TUI yeterli** (insan kararı) — HTTP API ve web arayüzü `v2`.
+**CLI + TUI yeterli** (insan kararı) — HTTP API ve web arayüzü `v2`.
 
-🚨 **Bedeli:** `τ = θ_ft − θ_base` tanımı tüm kolların aynı base'i paylaşmasını şart koşar ⇒
+**Bedeli:** `τ = θ_ft − θ_base` tanımı tüm kolların aynı base'i paylaşmasını şart koşar ⇒
 `tgta_v1`'i yeni başlangıç almak bunu bozar ⇒ **ADR-0027'nin task-vector hattı `v1`'de
 DONDURULUR**, `v2`'ye taşınmaz. `v2`'nin iddiası merge değil **RL kazancıdır**.
-⚠️ `B1` ve `B4` **borç olarak açık kalır** — koşulmadılar, ne verecekleri **bilinmiyor**.
+`B1` ve `B4` **borç olarak açık kalır** — koşulmadılar, ne verecekleri **bilinmiyor**.
 
 ---
 
@@ -89,7 +91,7 @@ dosya ve **git'te değil**:
 | | |
 | :--- | :--- |
 | indeks | `data/index/mevzuat_bge_m3_s2/gomme.npy` = **79 MB** |
-| git'te mi | ⛔ **hayır** — `.gitignore:166` `data/index/**/*.npy` |
+| git'te mi | **hayır** — `.gitignore:166` `data/index/**/*.npy` |
 | korpus | `data/corpus/mevzuat_maddeler.jsonl` = 37 MB, git'te **var** |
 | sıfırdan üretmek | 40.496 maddeyi `bge-m3` ile gömmek: GPU ~10 dk, **CPU ~2 sa 45 dk** |
 
@@ -111,12 +113,12 @@ Görev 8 *"indeksi kullanıcıya nasıl dağıtırız"* sorusunu kapatıyor. Bug
 seçeneği bu yüzden öldü: gömme CPU'da ~23 saat). ⇒ Görev 8, korpus kararı koda dökülmeden
 koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md).
 
-### ⚠️ Ama iki iş BEKLEMEZ — ikisi de doğruluk meselesi, boyut meselesi değil
+### Ama iki iş BEKLEMEZ — ikisi de doğruluk meselesi, boyut meselesi değil
 
 | iş | neden beklemez |
 | :--- | :--- |
 | **Görev 8b** · mülga madde süzgeci | Bugün 800 getirilen kaynağın 2'si **yürürlükten kalkmış** madde ve vatandaşa gidiyor. Bu eksik özellik değil, **YANLIŞ CEVAP**. Korpus büyüyünce sayı da büyür — erken düzelt. |
-| **Görev 8 Adım 1b** · `KUNYE` taşınabilirlik kilidi | `KUNYE.json` **mutlak yol + `mtime`** damgalıyor ve `retriever.py`:143-152 bunu yüklemede doğruluyor ⇒ `git clone` sonrası `mtime` checkout zamanı olur ve **her makinede `SystemExit`**. İndeks 79 MB da olsa 697 MB da olsa aynı çöküş. |
+| **Görev 8 Adım 1b** · `KUNYE` taşınabilirlik kilidi | **BİTTİ 2026-09-09.** `KUNYE.json` mutlak yol + `mtime` damgalıyordu ve `retriever.py` bunu yüklemede doğruluyordu ⇒ `git clone` sonrası her makinede `SystemExit`. Yol indeks dizinine **göreli**, `mtime` vekili **sha256** oldu. Doğrulandı: kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500**. |
 
 ---
 
@@ -124,12 +126,13 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 
 | belge | tür | durum | ne der |
 | :--- | :--- | :--- | :--- |
-| [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | ✅ **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
-| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | ▶️ **AÇIK, 60/89** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` bu planla etiketlendi; kalan 17 kutucuk lineer sıraya indi. |
-| [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | 🔄 **YENİLENDİ 2026-09-07** | Planın `/goal` promptu. İlk sürüm planın tamamını başlatıyordu; ikinci sürüm **yalnız kalan 17 kutucuğun lineer sırasını** taşıyor (3.873/4000 krk). Plan ilerledikçe **bu da yenilenir**. |
-| [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | ✅ **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
-| [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | ✅ **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). ⚠️ Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |
-| [`plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md`](plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md) | plan | ⏳ **yazıldı, 0/62** | Yukarıdaki spec'in uygulaması. Ana plandan **sonra** koşar. |
+| [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
+| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 79/89** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. Lineer sıranın altısından beşi kapandı; açık olan tek kapı **SIRA 2**, insan gözüyle TUI doğrulaması. |
+| [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 10 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
+| [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-09** | Planın `/goal` promptu (3.675 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli altı sıralık lineer düzeni taşıyor ve beşi kapandı. |
+| [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
+| [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |
+| [`plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md`](plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md) | plan | **yazıldı, 0/62** | Yukarıdaki spec'in uygulaması. Ana plandan **sonra** koşar. |
 
 ---
 
@@ -137,15 +140,20 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 
 | iş | nerede | neden dışarıda |
 | :--- | :--- | :--- |
-| **T1** `models/` ~20 GB temizliği | Faz 0 planı §⏭️ | Ön koşulu S7'ydi; S7 kapandı (**yalnız merge GGUF**) ⇒ artık koşabilir, ama kimseyi bloke etmiyor |
+| **T1** `models/` ~20 GB temizliği | Faz 0 planı §| Ön koşulu S7'ydi; S7 kapandı (**yalnız merge GGUF**) ⇒ artık koşabilir, ama kimseyi bloke etmiyor |
 | **Hat C** metodoloji yazısı | yeni-belge-katmani spec §7 | `v1.0` sonrası |
 | **S9** `v2` barındırma · **S17** kuantizasyon eğrisi | — | Hiçbir planın kapsamında değil; açık soru olarak duruyor |
-| `recall_taban.json` | ana plan §⏭️ | Faz 0'ın tek *"kaynaklanmadı"* ihlali. $0, ~15 dk — bir sonraki durakta ödenir |
+| `recall_taban.json` | ana plan §| Faz 0'ın tek *"kaynaklanmadı"* ihlali. $0, ~15 dk — bir sonraki durakta ödenir |
 
 ---
 
 ## Bakım kuralı
 
-Bir plan kapandığında **iki yer** güncellenir: planın kendi ✅ kapanış bloğu ve **bu dosyanın
+Bir plan kapandığında **iki yer** güncellenir: planın kendi kapanış bloğu ve **bu dosyanın
 "Bir bakışta" kutusu**. Sıra değişirse gerekçe buraya yazılır — sıra değişikliğinin *niye*si
 başka hiçbir yerde durmuyor.
+
+Bir planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusur, plana
+sıkıştırılmaz: [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) gibi ayrı bir
+ticket dosyasına yazılır ve buradaki tabloya bir satır olarak girer. Planın kapsamı ile borcun
+kaydı ayrı tutulur; yoksa plan hiç kapanmaz.

@@ -1,53 +1,44 @@
 /goal Planı BİTİR: docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md
-⭐ ÖNCE OKU: planın "İCRA DURUMU" bloğu — sıra + adımlar orada.
-✅ BİTTİ: FAZ 1-2-3 → v0.2 · 143 test yeşil · $3,21. 🔒 v1 = ham base + SFT, SFT İLE KAPANIR
-(ADR-0075). ⛔ ATLANDI, açma: G14 (B1) · G15 (B4) · G2 (3. hakem) · G8 (indeks). B1: rakiplerden
-GERİDE DEĞİLİZ (8/80 ↔ 8·8·7·8); B4: MERGE kaybı, v2'de merge YOK. İkisi BORÇ.
+ÖNCE OKU: planın "İCRA DURUMU" bloğu (79/89) + plans/post-hp-hat-b-tickets.md (10 ticket).
+DURUM 2026-09-09: altı sıradan BEŞİ kapandı. Sürüm v0.3 etiketli; v1.0 VERİLMEDİ (ADR-0077) —
+engel model değil ÖLÇÜM AYGITI: tek hakem ailesi, κ 0,534 < 0,6. 164 test yeşil. 16 commit
+YEREL, push EDİLMEDİ. Ağırlıklar HF'te (Rfetha/HakHukuk-4B-v0.3-Q4_K_M) ama ÖZEL.
+Bakiye OpenRouter $2,20. ATLANDI, açma: G14 · G15 · G2 · G8 (Adım 1b hariç, o bitti).
 
-━━ SIRA 1 · G8/1b — KUNYE taşınabilirlik · $0 · bugün ürünü kıran TEK şey
-KUNYE.json MUTLAK YOL + mtime damgalıyor (retriever.py:143-152) ⇒ git clone sonrası HER MAKİNEDE
-SystemExit. Yol repo-göreli, mtime → içerik hash.
-verify: repo BAŞKA DİZİNE kopyalanır, retriever yükler, recall@10 0,9500.
+━━ AÇIK TEK KAPI · SIRA 2 · G12/6-7 — TUI gözle doğrula · $0 · GPU
+INSAN GÖZÜ KAPISI, kendi başına işaretlenmez. llama-server aç (bayraklar aşağıda),
+`python -m hakhukuk.tui`, ÜÇ soru sor.
+verify: üçünde de rozet + atıf + kaynak + sorumluluk ibaresi EKRANDA GÖRÜLDÜ, insan teyit etti.
+NOT: 2026-09-09'da bu kapı bir ürün kusuru yakaladı — komut hiç açılmıyordu (`__main__` bloğu
+yoktu). Onarıldı, testle çivilendi. Kapının varlık sebebi budur.
 
-━━ SIRA 2 · G12/6-7 — TUI gözle doğrula · $0 · GPU · ürün yüzü insan gözüyle HİÇ görülmedi
-llama-server aç, `python -m hakhukuk.tui`, ÜÇ soru sor (textual 8.2.8 KURULU).
-verify: üçünde de rozet+atıf+kaynak+ibare EKRANDA GÖRÜLDÜ.
+━━ SONRA: plans/post-hp-hat-b-tickets.md — ON TICKET, hiçbiri planın kapsamında değil
+En ağır üçü:
+ (1) Ürün yolunda cevapların ~%5'i TAMAMEN BOŞ (4/80, sonlanmama). ADR-0040'ın %5 geçerlilik
+     kapısını ürün yolu GEÇEMEZ. Düzeltme = iki geçişli zorunlu kapatma = REJİM DEĞİŞİKLİĞİ
+     ⇒ insan onayı + 80 kalem yeniden ölçüm.
+ (2) Sunucu KV ayarı cevabı DEĞİŞTİRİYOR (q8_0 ↔ fp16: SUSKUNLUK ↔ ÇEKİNCELİ, ölçüldü).
+     80 kalemdeki etkisi ÖLÇÜLMEDİ; 0,8011'in varsayılan KV'de korunacağı İDDİA EDİLMİYOR. $0, ~1 sa.
+ (4) Boş sorgu REDDEDİLMİYOR — sabit gürültü kümesi dönüyor ve model onunla çağrılıyor.
 
-━━ SIRA 3 · G4 — Sonnet-5 ÖZNE olarak rakip havuzuna · ~$0,82 · havuzda frontier sınıfı YOK
-✅ $1 KAPISI AÇIK: $0,82 BAKİYE farkından okundu = ZATEN gerçek fatura ⇒ 1,6× ÇARPMA, sormadan
-KOŞ. Kapıyı ETKİLEMEZ (ADR-0072 m.2). Rejim F0.4'ün BİREBİR aynısı: --reasoning-budget 1024
-(--think-budget DEĞİL) · k=10 · 900 klip · seed 3407 · önsözsüz · n=80. KAPI: recall@10 = 0,9500,
-değilse HÜKÜM KURULMAZ. Red-regex YENİ AİLEDE kalibre; ÜÇ okuma (ALET/GÖZ-orta/GÖZ-katı).
+━━ İNSAN KARARI BEKLEYENLER
+ · SIRA 2 onayı · push + master merge · ticket 1 ve 3 düzeltilsin mi · ticket 2 ölçülsün mü
+ · HF deposu ne zaman herkese açılacak
 
-━━ SIRA 4 · G16/2-4 — v1.0 KABUL TESTİ · ~$0,10 · ⛔ ARAÇSIZ (ADR-0076 m.4, eşit sınav)
-⛔⛔ DONMUŞ TEST TEK KEZ AÇILIR — açmadan ÖNCE İNSAN ONAYI AL. Adım 1 BİTTİ.
-ADR-0069: ham kütle MANŞET · tavan kullanımı + iki setin recall@10'u yanında · ⛔ rakip kıyası o
-orandan KURULMAZ. TEST tavanı ≈0,75 ⇒ kütle düşük çıkacak, BAŞARISIZLIK DEĞİL.
-Geçerse v1.0, geçmezse damgalanıp yayımlanır (ADR-0065).
+━━ BAĞLAYICI SUNUCU YAPILANDIRMASI (ölçümlerin yapıldığı, değiştirmek sonucu değiştirir)
+llama-server -m models/gguf/tgta_v1-q4_k_m.gguf -ngl 99 -fa on --no-context-shift
+  --cache-type-k q8_0 --cache-type-v q8_0 -c 8192 --host 127.0.0.1 --port 8080
 
-━━ SIRA 5 · G18 — ARAÇ KATMANI · $0 · ADR-0076 · davranışı değiştirir ⇒ kapıdan SONRA
-🚨 Gerekçesi ÇÜRÜDÜ: isabetsizlik 8/8, aşırı-red 4/4 — altın ZATEN BAĞLAMDAYDI ⇒ sorun SEÇİM. Tek
-ölçülmüş hedef recall kaybı 4/80. Yine de konur; gerekçe ÜRÜN YETENEĞİ, ÖLÇÜLMEMİŞ ⇒ kazancı
-sayıya EKLENMEZ.
-🔒 KAPI ↔ KALDIRAÇ: atıf doğrulama · mülga süzgeci · durum sınıflandırma TOOL DEĞİLDİR, döngü
-DIŞINDA koşulsuz çalışır (uydurma 0/114 oradan). 5 KALDIRAÇ: ara · madde_getir · madde_var_mi ·
-kanun_bul · yururlukte_mi — LLM ÇAĞIRMAZ.
-⛔ Döngü SINIRLI, sınır GÖRÜNÜR: Durum.ARAMA_TUKENDI (KESIK'le BİRLEŞTİRİLMEZ).
-🚨 REGRESYON: araçsız yolda 80 kalem BİREBİR aynı (suskunluk [15,37,45,66,79]).
-
-━━ SIRA 6 · G17 — MODELİ YAYINLA · $0 → 🏷️ RELEASE · kapı ADI belirler ⇒ EN SONDA
-🚨 Ağırlıklar hiçbir yerde yayında DEĞİL (.gitignore:41, HF linki YOK) ⇒ "açık kaynak" iddiası
-YARIM. HF reposu + kart + üç belgede indirme yolu. ⚠️ Kartın İLK EKRANINDA: model TEK BAŞINA
-sayıyı ÜRETEMEZ, indeks yok (G8). ⛔ HF_TOKEN .env'de YOK — İNSANDAN İSTE.
-
-━━ ERTELENDİ: G11/2 temiz makine kapısı — G8'e bağlı, bugün TANIM GEREĞİ düşer.
-🔮 SONRAKİ TUR (plan DIŞI): v2 = tgta_v1 üstüne GRPO + araç kullanımının EĞİTİMİ.
-Taban: uydurma 0/114 · aşırı-red 4/80 · kütle 0,8011.
-🚨 BÜTÇE: OpenRouter $3,40 · Modal $29,19; ihtiyaç ~$0,92. 1,6× SADECE judge_cost_usd'ye (liste
-fiyatı), BAKİYEYE DEĞİL. ⚡ GPU ÖNCESİ `güç : ŞARJDA`. 🔒 HAKEM = gpt-4o-mini.
+━━ BUGÜNKÜ SAYILAR (hepsi kaynaklı)
+DEV kütle 0,8011 · tavan recall@10 0,9500 · uydurma madde 0/114 · aşırı-red 4/80
+Donmuş TEST (tek kez açıldı): kütle 0,5804 · tavan 0,7500 · tavan kullanımı 0,7739 ↔ DEV 0,8433
+  düşüşün %76'sı bileşimden, %24'ü DEĞİL. Uydurma madde 0/52 KORUNDU.
+Sonnet-5 ÖNDE: kütle 0,8348 ↔ 0,8011 (GÖZ-katı). Önde olduğumuz tek eksen uydurma madde (0 ↔ 2).
+B1 hükmümüz ÇÜRÜDÜ: wrong_ref 0,0769 ↔ 0,0083 = 9,3× geride (yalnız Gemini havuzunda öndeydik).
 
 KURALLAR: TDD (failing test → koş → gör → kod) · uzun koşu setsid nohup, |tail YOK · GPU işini
 subagent'a ver · plan-göreli STATUS · sayı KAYNAKLANIR · çelişki İKİ YERDE damgalanır · gözle
 okuma bir KAPIDIR · kutucuk yalnız verify ALINDIKTAN sonra · yapısal ↔ davranışsal AYRI commit ·
-ADR 0077, log #65 · TÜRKÇE belge, İngilizce kod · ⛔ docs/record/** ve docs/adr/** dokunulmaz.
-⛔ DUR ve SOR: donmuş TEST · yeni rejim · AÇIK KARAR damgası · >$1 (SIRA 3 HARİÇ, ölçüldü).
+ADR 0078, log #66 · TÜRKÇE belge, İngilizce kod · YAYIMLANAN BELGEDE EMOJİ YOK, akademik register
+· docs/record/** ve docs/adr/** yeniden yazılmaz, yalnız yeni dosya eklenir.
+DUR ve SOR: donmuş TEST · yeni rejim · AÇIK KARAR damgası · >$1 · push · HF görünürlüğü.
