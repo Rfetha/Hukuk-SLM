@@ -1,10 +1,10 @@
-# post-hp-hat-b — açık biletler
+# post-hp-hat-b — açık tickets
 
 Bu dosya, `hp-hat-a-hat-b` planının yürütülmesi sırasında (2026-09-09) ortaya çıkan ve o planın
-kapsamında **çözülmeyen** kusurları kaydeder. Her bilet, gözlemi, kanıtı, kurulmuş hipotezi ve
+kapsamında **çözülmeyen** kusurları kaydeder. Her ticket, gözlemi, kanıtı, kurulmuş hipotezi ve
 yapılması gerekeni ayrı ayrı içerir. Hipotez ile ölçüm birbirine karıştırılmamıştır.
 
-Durum: plan altı sıradan beşini kapattı. Açık olan tek kapı SIRA 2'dir (bilet 9).
+Durum: plan altı sıradan beşini kapattı. Açık olan tek kapı SIRA 2'dir (ticket 9).
 
 ---
 
