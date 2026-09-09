@@ -7,6 +7,8 @@
 > **Ağırlıklar yayımlandı (2026-09-09):** [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) ·
 > `HakHukuk-4B-v0.3-Q4_K_M.gguf` · 2.783.446.720 bayt ·
 > `sha256 755e15e9…86e7bffc`. Örnek çıktılar aynı depoda `ORNEK_CEVAPLAR.md`.
+>
+> **Not (2026-09-09):** depo, açık kusurlar giderilene kadar geçici olarak **ÖZEL**dir.
 
 > ## BU HUKUKİ TAVSİYE DEĞİLDİR
 >

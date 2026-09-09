@@ -7,6 +7,8 @@
 
 ## Weights
 
+> **Note (2026-09-09):** the weights repository is temporarily **private** while open defects are being resolved. The link below will 404 until it is made public again.
+
 Published 2026-09-09: [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) — a single GGUF,
 `HakHukuk-4B-v0.3-Q4_K_M.gguf`, 2.783.446.720 bytes (2,592 GiB),
 `sha256 755e15e92e9f7021934f2d5eada6c1f02fcc92be23f0536b0c2a0a9586e7bffc`.

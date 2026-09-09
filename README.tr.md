@@ -7,6 +7,8 @@
 
 ## Ağırlıklar
 
+> **Not (2026-09-09):** ağırlık deposu, açık kusurlar giderilene kadar geçici olarak **özeldir**. Aşağıdaki bağlantı yeniden herkese açılana dek 404 verecektir.
+
 2026-09-09'da yayımlandı: [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) — tek GGUF,
 `HakHukuk-4B-v0.3-Q4_K_M.gguf`, 2.783.446.720 bayt (2,592 GiB),
 `sha256 755e15e92e9f7021934f2d5eada6c1f02fcc92be23f0536b0c2a0a9586e7bffc`.

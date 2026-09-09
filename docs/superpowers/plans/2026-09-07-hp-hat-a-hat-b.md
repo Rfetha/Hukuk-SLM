@@ -2043,7 +2043,9 @@ ekranda** durmalı, dipnotta değil.
 `verify:` HF kartı `MODEL_CARD.md`'nin manşetini **aynı sayıyla** taşıyor · indeks engeli
 (`Görev 8`) **açıkça** yazılı · Apache-2.0 + `NOTICE` yerinde.
 
-**ALINDI 2026-09-09** → **https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M** (public).
+**ALINDI 2026-09-09** → **https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M**
+**Durum: ÖZEL** — insan kararı 2026-09-09: açık kusurlar giderilene kadar depo özele alındı.
+Yükleme ve bütünlük doğrulaması tamamlanmıştır; geri alınan yalnız görünürlüktür.
 Yüklenenler: `HakHukuk-4B-v0.3-Q4_K_M.gguf` · `README.md` (model kartı) ·
 `ORNEK_CEVAPLAR.md` · `LICENSE` · `NOTICE`.
 
