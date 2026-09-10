@@ -19,9 +19,18 @@ dependencies = [
     "textual==8.2.8",              # ölçülen sürüm, 2026-09-07
 ]
 
+# ⚠️ ÇEKİRDEK KURULUM ŞİŞMEZ: HTTP API isteğe bağlıdır (Görev 19 karar 6). CLI ve TUI
+# kullanan biri `fastapi`/`uvicorn` indirmez. Sürümler kurulu ortamdan OKUNDU (2026-09-10).
+[project.optional-dependencies]
+api = [
+    "fastapi>=0.141",    # ölçülen: 0.141.1
+    "uvicorn>=0.52",     # ölçülen: 0.52.4
+]
+
 [project.scripts]
 hakhukuk = "hakhukuk.cli:main"
 hakhukuk-tui = "hakhukuk.tui:main"
+hakhukuk-api = "hakhukuk.api:main"
 
 [build-system]
 requires = ["setuptools>=68"]
