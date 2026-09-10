@@ -37,7 +37,7 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
              9. G20 konteyner dağıtımı             AÇIK — 5 karar kilitli (ADR-0078)
                                                    Adım 0 bir GPU KAPISI
           (8 = tickets; plan kutucuğu değil, numara goal ile aynı kalsın diye)
-          AÇIK KUSURLAR: plans/post-hp-hat-b-tickets.md (on bir ticket)
+          AÇIK KUSURLAR: plans/post-hp-hat-b-tickets.md (on üç ticket)
 ──────────────────────────────────────────────────────────────────────────────
    SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
@@ -146,7 +146,7 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | :--- | :--- | :--- | :--- |
 | [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
 | [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 87/99** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19, HTTP API) ve **SIRA 9** (Görev 20, konteyner dağıtımı) — son ikisinin kararları kilitli, kodu yazılmadı. |
-| [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 11 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
+| [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 13 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
 | [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-10** | Planın `/goal` promptu (3.995 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli dokuz sıralık düzeni taşıyor, açık üçü SIRA 2 · 7 · 9. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
 | [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |

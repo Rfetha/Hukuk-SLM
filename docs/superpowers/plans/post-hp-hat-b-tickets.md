@@ -4,8 +4,9 @@ Bu dosya, `hp-hat-a-hat-b` planının yürütülmesi sırasında (2026-09-09) or
 kapsamında **çözülmeyen** kusurları kaydeder. Her ticket, gözlemi, kanıtı, kurulmuş hipotezi ve
 yapılması gerekeni ayrı ayrı içerir. Hipotez ile ölçüm birbirine karıştırılmamıştır.
 
-Durum 2026-09-10: planın açık üç sırası var — SIRA 2 (ticket 9), SIRA 7 (Görev 19) ve SIRA 9
-(Görev 20, konteyner dağıtımı).
+Durum 2026-09-10: planın açık üç sırası var — SIRA 2 (ticket 9), SIRA 7 (Görev 19 Adım 6, göz
+kapısı) ve SIRA 9 (Görev 20, konteyner dağıtımı). **On üç ticket.** Son üçü (11 · 12 · 13)
+2026-09-10'da, Görev 19'un grill ve göz kapısı adımlarında doğdu.
 
 ---
 
@@ -120,6 +121,17 @@ doğruydu. Frontier havuzunda geçmiyor.
 
 **Yapılacak.** B1 borcu `v2` turuna taşındı. Bugün kapatılmıyor (ADR-0075).
 
+**Canlı örnek, 2026-09-10 (Görev 19 göz kapısı) — TEK gözlem, ölçüm DEĞİL.** Soru:
+*"Kiracı kira sözleşmesini feshetmek isterse ne kadar önce bildirmeli?"* Model
+**TBK Madde 330**'u seçti ve *"üç gün önceden"* dedi. Madde gerçektir, alıntı birebirdir ve
+atıf doğrulayıcısı **geçmiştir** — ama 330 **taşınır** kirasını düzenler. Vatandaşın
+*"kira sözleşmesi"* dediği şey konut/çatılı işyeri kirasıdır ve onun bildirim süresi **aynı
+kaynak listesindeki Madde 347**'dedir (sıra 2, modele verilmişti).
+
+Bu, kusurun cinsini gösteriyor: **uydurma değil, UYGULANABİLİRLİK hatası**. Deterministik
+atıf doğrulayıcısı bu sınıfı yakalayamaz — maddenin var olup olmadığına bakar, soruya
+uyup uymadığına değil. `wrong_ref_rate` tam olarak bunu sayıyor.
+
 ---
 
 ## 7. Duman koşusundan doğrusal maliyet tahmini kapı kurmuyor
@@ -193,3 +205,50 @@ ve tüm ölçüm hattı kullanıyor ⇒ kendi turunu ve kendi regresyon koşusun
 **Yapılacak.** İki seçenek ölçülerek karşılaştırılmalı: (a) `retriever.py`'yi `hakhukuk/`
 içine taşımak ve `scripts/` tarafını ondan import ettirmek; (b) `pyproject.toml`'daki cümleyi
 gerçeğe uydurup bağımlılığı açıkça yazmak. Bugün hiçbiri seçilmedi.
+
+---
+
+## 12. Eğitim verisinin `##begin_quote##` işaretleri vatandaşa GİDİYOR
+
+**Gözlem, 2026-09-10 (Görev 19 göz kapısı).** Ürün yolundan dönen cevabın gövdesinde:
+
+```
+2) ##begin_quote## "Taraflardan her biri, bir taşınıra ilişkin kira sözleşmesini üç gün
+   önceden yapılacak fesih bildirim süresine uyarak her zaman feshedebilir." ##end_quote##
+```
+
+**Kaynağı ölçüldü, tahmin edilmedi.** İşaretler **istem katmanından gelmiyor**:
+`hakhukuk/istem.py`'nin üç istem metninin hiçbirinde geçmiyorlar. Eğitim verisinin
+üretim biçimindeler — `scripts/veri_hazirlik/gen_v2b_answers.py:36-37` öğretmen modele
+*"`##begin_quote##` ile GOLD metinden kelimesi kelimesine alıntıla … `##end_quote##`"*
+diyor, ve `build_sft_v2b.py:57` bu bloğu pencere kırpmasında **koruyor**. Model işareti
+**öğrenmiş** ve üretiyor.
+
+**Sonucu.** Vatandaş, kendisine ait olmayan bir iskele işaretini okuyor. CLI, TUI ve HTTP
+API'nin üçü de aynı metni gösteriyor, çünkü üçü de `answer()`'ın metnini olduğu gibi taşıyor.
+
+**Ne YAPILMADI ve niçin.** İşaretleri kaldırmak iki yoldan yapılabilir ve ikisi aynı şey
+değildir: (a) **sunum katmanında süzmek** — bir KAPIdır, döngü dışındadır, modeli ve
+yayımlanan sayıyı değiştirmez; (b) **eğitim verisini düzeltmek** — `v2` turunun işidir ve
+yeniden eğitim ister. Bugün hiçbiri seçilmedi.
+
+**Uyarı.** (a) seçilirse, süzme **yalnız ürün yüzeyinde** yapılmalı; ölçüm hattına
+girmemeli. `scripts/puanlama/score_register.py:41` `##begin_quote##` işaretini bir
+**register göstergesi** olarak sayıyor ⇒ ölçüm hattında süzmek o metriği sessizce değiştirir.
+
+---
+
+## 13. `Atif.madde_no` ile `Kaynak.madde_no` biçimi tutmuyor
+
+**Gözlem, 2026-09-10.** Aynı yanıtta: `atiflar[0].madde_no == "Madde 330"`,
+`kaynaklar[2].madde_no == "MADDE 330"`. Biri istem çıktısından ayrıştırılıyor, öteki
+korpustan geliyor.
+
+**Sonucu.** Bugün bir kusura yol açmıyor — atıf doğrulaması sayı üzerinden yapılıyor ve
+**geçti**. Ama iki alan aynı şeyi adlandırıyor ve **farklı biçimde**; bir tüketici bu ikisini
+eşitlemeye kalkarsa sessizce yanlış sonuç alır. HTTP API bu iki alanı **dışarıya** açtı,
+dolayısıyla biçim artık bir sözleşme yüzeyidir.
+
+**Yapılacak.** Normalizasyonun nerede yapılacağına karar verilmeli. Karar verilmeden
+dokunulmadı: `terazi.py` ve korpus anahtarı (`kanun_no/madde_no`, tuzak 7.6) aynı biçime
+bağlı olabilir.
