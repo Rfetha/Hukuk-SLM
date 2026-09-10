@@ -21,7 +21,8 @@ models/gguf/tgta_v1-q4_k_m.gguf        ← ⛔ HF'den indirilir (Görev 8'de oto
 data/index/mevzuat_bge_m3_s2/          ← ⛔ git'te YOK, bugün elle üretilir (CPU ~2 sa 45 dk)
 data/corpus/mevzuat_maddeler.jsonl     ← ✅ git'te var (37 MB)
 .env                                    ← OPENROUTER_API_KEY
-llama-server                            ← llama.cpp, PATH'te
+llama-server                            ← ⛔ PATH'te DEĞİL, ölçüldü 2026-09-10:
+                                          llama.cpp/build-cuda/bin/llama-server
 source ~/code/global_venv/bin/activate
 ```
 
