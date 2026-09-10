@@ -19,12 +19,15 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md      99 kutucuk · 88 BİTTİ · 11 AÇIK
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md     115 kutucuk · 88 BİTTİ · 27 AÇIK
           2026-09-10: bitmiş 14 görev record/…-kapanan-gorevler.md'ye TAŞINDI
-             plan 2.337 → 1.343 satır · dosyadaki kutucuk 24, payda hâlâ 99
-          başlatıcı: goal-hp-hat-a-hat-b.md  (3.782 karakter, PLANLAMA MODU)
-             insan kararı 2026-09-10: goal icraya değil TASARIMA sürüyor;
-             kod yazmak, kutucuk işaretlemek ve commit ONAY ister
+             plan 2.337 → 1.343 satır; dosyadaki kutucuk 40, payda 115
+             (75 kutucuk kayda gitti; 2026-09-10 G21+G22 ile 16 kutucuk eklendi)
+          başlatıcı: goal-hp-hat-a-hat-b.md  (3.997 karakter, İCRA MODU)
+             insan onayı 2026-09-10: TASARIM FAZI BİTTİ. goal artık planın
+             kalanını sub-agent-driven YÜRÜTÜR; kapı yoksa otonom akar,
+             yalnız DUR listesinde (insan gözü · donmuş TEST · rejim · >$1 ·
+             push · HF · açık karar · plan dışı iş) durur
 
           ── YAPILDI ──────────────────────────────────────────────────────
              FAZ 1-2-3-4            v0.3 ETİKETLENDİ (2026-09-09)
@@ -41,8 +44,10 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
           ── YAPILMADI ────────────────────────────────────────────────────
              SIRA 2  G12 Adım 6-7  TUI gözle doğrula   İNSAN GÖZÜ KAPISI
              SIRA 7  G19 Adım 6    API gözle doğrula   İNSAN GÖZÜ KAPISI
-             SIRA 9  G20 Adım 1-8  konteyner kodu      insan onayı bekliyor
-                                                       ADR-0078, 5 karar kilitli
+             SIRA 9  G20 Adım 1-8  konteyner kodu      ADR-0078, 5 karar kilitli
+             SIRA 10 G21 Adım 1-11  ürün yüzeyi kusurları  $0 · kusur 3·4·5·7·8·12a·13
+                                                       Adım 11 İNSAN GÖZÜ KAPISI
+             SIRA 11 G22 Adım 1-5   rejim + KV ölçümü   GPU · Adım 2 ve 3 DUR-ve-SOR
 
           ── AÇILMAYACAK / BEKLİYOR (karar) ───────────────────────────────
              G2           üçüncü hakem ailesi    ATLANDI — bütçe (ADR-0074)
@@ -51,8 +56,11 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
              G8           indeks dağıtımı        BEKLETİLİYOR — korpus 8,4×
                                                  büyüyecek (Adım 1b hariç)
 
-          AÇIK KUSURLAR: planın SONUNDAKİ bölüm — on üç, KUTUCUK TAŞIMAZ ve
-                         paydaya (99) GİRMEZ; plan onlarla birlikte kapanabilir
+          AÇIK KUSURLAR: planın SONUNDAKİ bölüm — on üç, KUTUCUK TAŞIMAZ.
+                         11'i G21+G22'ye ALINDI. Üçü DEVREDİLDİ: kusur 6 ve 12b
+                         → v2 (borç B1 · B11) · kusur 11 → "sıranın dışında".
+                         Kapanışta açık kalan her kusur ADIYLA devredilir;
+                         devredilmemiş kusur KAPANIŞI GEÇERSİZ KILAR
 ──────────────────────────────────────────────────────────────────────────────
    SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
@@ -160,8 +168,8 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | belge | tür | durum | ne der |
 | :--- | :--- | :--- | :--- |
 | [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
-| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 88/99** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19 Adım 6 — kod bitti, göz kapısı açık) ve **SIRA 9** (Görev 20, konteyner — Adım 0 GEÇTİ). Plan kapsamı dışındaki on üç kusur da bu dosyanın **sonunda**, kutucuksuz. |
-| [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-10** | Planın `/goal` promptu (3.995 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli dokuz sıralık düzeni taşıyor, açık üçü SIRA 2 · 7 · 9. |
+| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 88/115** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19 Adım 6 — kod bitti, göz kapısı açık) ve **SIRA 9** (Görev 20, konteyner — Adım 0 GEÇTİ). Plan kapsamı dışındaki on üç kusur da bu dosyanın **sonunda**, kutucuksuz. |
+| [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **İCRA MODU 2026-09-10** | Planın `/goal` promptu (3.997 karakter, sınır 4.000). **Tasarım fazı kapandıktan sonra icraya hizalandı**: alt-ajan sürümlü, kapı yoksa otonom akar. Açık beş sıra: **2 · 7 · 9 · 10 · 11**; ikisi (2 ve 7) insan gözü kapısıdır. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
 | [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |
 | [`record/2026-09-10-…-kapanan-gorevler.md`](../record/2026-09-10-hp-hat-a-hat-b-kapanan-gorevler.md) | kayıt | **taşındı 2026-09-10** | Ana planın **bitmiş on dört görevinin** tam metni. Plan 2.337 → 1.343 satıra indi; yerlerinde kapanış blokları var. **Plan değildir** — kutucukları tarihseldir, açılmaz. Atlanan (G2·G14·G15) ve bekletilen (G8) görevler **planda kaldı**. |
@@ -174,6 +182,7 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | iş | nerede | neden dışarıda |
 | :--- | :--- | :--- |
 | **T1** `models/` ~20 GB temizliği | Faz 0 planı §| Ön koşulu S7'ydi; S7 kapandı (**yalnız merge GGUF**) ⇒ artık koşabilir, ama kimseyi bloke etmiyor |
+| **kusur 11** · `hakhukuk` paketi tek başına kurulamıyor | ana planın `AÇIK KUSURLAR` bölümü | **Ana plandan DEVREDİLDİ 2026-09-10.** `servis.py`:46 çalışma anında `scripts/`'e köprü kuruyor, `pyproject.toml`'un *"`scripts/` DIŞARIDA"* cümlesi geçersiz. Onarımı **yapısaldır**: aynı dosyayı 26 dosyanın yol köprüsü ve tüm ölçüm hattı kullanıyor ⇒ **kendi turu ve kendi regresyon koşusu**. [ADR-0078](../adr/0078-konteyner-dagitimi-rejim-kilidi.md) m.5 bugün onarmamaya karar verdi |
 | **Hat C** metodoloji yazısı | yeni-belge-katmani spec §7 | `v1.0` sonrası |
 | **S9** `v2` barındırma · **S17** kuantizasyon eğrisi | — | Hiçbir planın kapsamında değil; açık soru olarak duruyor |
 | `recall_taban.json` | ana plan §| Faz 0'ın tek *"kaynaklanmadı"* ihlali. $0, ~15 dk — bir sonraki durakta ödenir |
@@ -191,7 +200,7 @@ sıkıştırılmaz: ayrı bir ticket dosyasına yazılır ve buradaki tabloya bi
 
 **BU KURAL 2026-09-10'da DEĞİŞTİ (insan kararı).** Ayrı ticket dosyası **kaldırıldı**;
 `plans/post-hp-hat-b-tickets.md` silindi ve on üç kusur ana planın sonundaki
-[AÇIK KUSURLAR](plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--plan-kapsamında-çözülmeyenler)
+[AÇIK KUSURLAR](plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--kayıt-ve-devir)
 bölümüne taşındı. Gerekçe teknik değil, tercihtir; öyle yazılıyor.
 **Kuralın koruduğu şey ayakta:** *"planın kapsamı ile borcun kaydı ayrı tutulur, yoksa plan hiç
 kapanmaz"*. Ayrım artık dosyayla değil **kutucukla** sağlanıyor — kusur bölümü `- [ ]` taşımaz

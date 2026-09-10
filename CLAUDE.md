@@ -124,7 +124,7 @@ is paid on **its own axis** (B1), not with a prompt patch.
 figure is still one judge family's verdict and κ is **0,534**, below the tool's 0,6 threshold
 ([ADR-0077](docs/adr/0077-v1-0-verilmedi-v0-3.md) · [#65](docs/record/research_log/2026-09-09-kabul-testi-ve-frontier-kiyasi.md)).
 Weights are published at `Rfetha/HakHukuk-4B-v0.3-Q4_K_M` and are **currently private** while
-open defects are resolved ([açık kusurlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--plan-kapsamında-çözülmeyenler)).
+open defects are resolved ([açık kusurlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--kayıt-ve-devir)).
 **A frontier subject entered the pool and is AHEAD:** `claude-sonnet-5` mass **0,8348** ↔ ours
 **0,8011** (eye-corrected reading). The claim *"we are not behind on B1"* held only in the Gemini
 pool: `wrong_ref_rate` **0,0769 ↔ 0,0083**.

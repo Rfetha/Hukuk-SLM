@@ -2,19 +2,20 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-10 · **88/99 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-10 · **88/115 kutucuk** · `v0.3` etiketlendi
 
-> ⚠️ **Kutucukları SAYARAK doğrulamaya çalışma — bu dosyada 24 tane var, 99 değil.**
+> ⚠️ **Kutucukları SAYARAK doğrulamaya çalışma — bu dosyada 40 tane var, 115 değil.**
 > 2026-09-10'da bitmiş on dört görev **kapanış bloğuna indirildi** ve tam metinleri
 > [`docs/record/2026-09-10-hp-hat-a-hat-b-kapanan-gorevler.md`](../../record/2026-09-10-hp-hat-a-hat-b-kapanan-gorevler.md)'ye
 > **taşındı** (kopyalanmadı). Onların 75 kutucuğu kayıt dosyasında; sayıları kapanış
-> bloklarının başlığında duruyor (`4/4`, `6/6`, …). Planda kalan 24 kutucuk **açık üç işin**
-> ve bekletilen `G8`'in kutucuklarıdır. Payda **99 sabittir** ve bu blok tek doğru kaynaktır.
+> bloklarının başlığında duruyor (`4/4`, `6/6`, …). Planda kalan 40 kutucuk **açık beş işin**
+> ve bekletilen `G8`'in kutucuklarıdır. **Payda burada yazar ve tek doğru kaynak burasıdır**;
+> aynı gün G21 (11 kutucuk) + G22 (5 kutucuk) eklenerek **99 → 115** oldu.
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
 > `/goal` promptu: [`goal-hp-hat-a-hat-b.md`](goal-hp-hat-a-hat-b.md) *(2026-09-09'da yenilendi)*
-> Plan kapsamı dışında kalan açık kusurlar: **bu dosyanın sonundaki** [AÇIK KUSURLAR](#açık-kusurlar--plan-kapsamında-çözülmeyenler) bölümü
+> Açık kusurların kaydı ve devri: **bu dosyanın sonundaki** [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü
 
 | | durum |
 | :--- | :--- |
@@ -24,6 +25,7 @@
 | **G8** · indeks dağıtımı | **BEKLETİLİYOR** — korpus **8,4×** büyüyecek (40.496 → ~340.303 madde) |
 | **FAZ 3** · belge katmanı | **G13 bitti** — `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md` yazıldı, kırık işaretçiler onarıldı, `MODEL_CARD` §7.2/§8/§10 güncellendi |
 | **FAZ 5** · dağıtım | **AÇIK 2026-09-10** — insan kararıyla iki iş `v1` tarafına alındı: **G19** (HTTP API, 6 kutucuk) ve **G20** (konteyner dağıtımı, 9 kutucuk, [ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)). İkisi de **yerel ve tek kullanıcı**; `S9` açılmadı |
+| **FAZ 6** · kusur temizliği | **AÇIK 2026-09-10** — açık kusurların **on biri işe döndü**: **G21** (ürün yüzeyi, 11 kutucuk, **$0**) · **G22** (rejim + KV ölçümü, 5 kutucuk, GPU + insan kapısı). Üçü **devredildi**: kusur 6 ve 12b → `v2` (borç **B1** · **B11**), kusur 11 → sıranın dışı |
 | **FAZ 4** · Hat B | **KAPANDI 2026-09-09** — G16 (kabul testi, `v0.3`) · G4 (Sonnet-5) · G18 (araç katmanı) · G17 (yayın) bitti. G14 · G15 **atlandı** (ADR-0075). Açık kalan tek kapı: **G12 Adım 6**, insan gözü |
 
 **Ölçülen 2026-09-09:** **164 test yeşil**, 2 xfail · **16 commit** (yerelde, push edilmedi) ·
@@ -77,14 +79,16 @@ düştüğü üzerine kuruludur.
 | ~~5~~ | **G18** — araç katmanı | BİTTİ | 5 kaldıraç · sınırlı döngü · regresyon **80/80 birebir** |
 | ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
 | **7** | **G19** — HTTP API (FastAPI) | **5/6** | kod BİTTİ 2026-09-10, **178 test yeşil**; açık tek kutucuk **Adım 6 = insan gözü kapısı** |
-| **8** | **açık kusurlar** — plan kapsamı **DIŞI** | AÇIK | Bu dosyanın sonundaki [AÇIK KUSURLAR](#açık-kusurlar--plan-kapsamında-çözülmeyenler) bölümü, **on üç** kusur. Sıra numarası `goal` dosyasıyla **aynı kalsın** diye burada duruyor; **kutucuk değildir, paydaya girmez** |
+| ~~8~~ | **açık kusurlar** — kayıt | — | [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü. **On üçün on biri 2026-09-10'da G21+G22'ye alındı**, üçü devredildi. Kalan kayıt **kutucuk değildir, paydaya girmez** |
 | **9** | **G20** — konteyner dağıtımı | **1/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
+| **10** | **G21** — ürün yüzeyi kusur temizliği | **AÇIK 0/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
+| **11** | **G22** — rejim kusuru + KV ölçümü | **AÇIK 0/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
 ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
 test bunu görmemişti — kaynak denetimi mantığın sızmadığına bakar, programın çalıştığına değil.
 
-**Plan kapsamı dışındaki açık kusurlar:** [AÇIK KUSURLAR](#açık-kusurlar--plan-kapsamında-çözülmeyenler)
+**Plan kapsamı dışındaki açık kusurlar:** [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir)
 bölümü, **on üç** kusur, **kutucuk taşımaz**. En ağırı: ürün yolunda cevapların **~%5'i boş**
 dönüyor ve bu, ADR-0040'ın kendi geçerlilik kapısını geçmez.
 
@@ -892,10 +896,11 @@ Tur başlamadan ödül fonksiyonu + hedef bant + **durma kuralı** ön-kayıtlan
 
 | # | borç | ölçülen büyüklük | bugünkü durum |
 | :-- | :--- | :--- | :--- |
-| **B1** | **İsabetsizlik** — gerçek ama soruya uymayan maddeden cevaplama (`ADR-0055`) | ~~5/80~~ → **8/80** *(v2 birimi, ilk kez gözle)* | **Görev 14** — birinci sıra eksen |
+| **B1** | **İsabetsizlik** — gerçek ama soruya uymayan maddeden cevaplama (`ADR-0055`) | ~~5/80~~ → **8/80** *(v2 birimi, ilk kez gözle)* · **frontier kıyası 2026-09-09:** `wrong_ref_rate_micro` **0,0769 ↔ 0,0083 = 9,3×** | **`v2`'ye DEVREDİLDİ** (ADR-0075) — Görev 14 **atlandı**; **kusur 6** bu borcun ürün yüzündeki adıdır. Canlı örnek 2026-09-10: TBK **330** (taşınır kirası) seçildi, doğru cevap aynı kaynak listesindeki **347**'deydi |
 | **B4** | `τ_a` merge'de seyreliyor (0,987 → 0,766, **−22,1 p**); çare eğitim **genliğinde** | `‖τ_a‖` **1,1806** ↔ `‖τ_g‖` 10,4722 (8,87×) | **Görev 15** |
 | **YB2** | M2b bir **eğitim** borcu — kapı yolu ölçülerek öldü | `h2b@k=4` **0,735 < 0,766** | **Görev 15 Adım 3** |
 | **YB6** | 🔴 **Dağıtım istemi artefaktı YOK** | istem 5 dosyada, biri **sürüklenmiş** (S18) | **Görev 5** — sert engel |
+| **B11** | 🆕 **Eğitim verisinin iskele işaretleri modele ÖĞRETİLDİ** — `##begin_quote##` cevabın gövdesinde vatandaşa gidiyor | kaynak **istem değil**: `gen_v2b_answers.py`:36-37 öğretmene böyle söylüyor, `build_sft_v2b.py`:57 bloğu koruyor | **`v2`** — düzeltmesi yeniden eğitimdir. `v1`'de yalnız **sunum katmanında süzülür** (Görev 21 Adım 4); ⛔ ölçüm hattı dokunulmaz, `score_register.py`:41 işareti **register göstergesi sayıyor** |
 | **B8** | Katı kapı **tek karakterlik yazım hatasına** takılıyor (`…ESELERİ…`) | **1/80** · eğri ölçüldü, tolerans **BENİMSENMEDİ** (risk tarafında **0 gözlem**) | **açık, planda YOK** — düşük öncelik, ama kaydı burada |
 | **B9** | Tablo/cetvel parçaları madde diye indeksli (~**7.966** satır) | modele **0/800** blok ulaşıyor | **v2** — indeksi değiştirir, yeniden indeksleme turuyla paketlenir |
 | **B6** | **Canlı `bedesten` katmanı yok** — sözleşme **4/4 geçerli**, ürün çağırmıyor | **TR IP şart** (gov firewall yurtdışı/VPN'i bloke ediyor) | **v2** |
@@ -994,7 +999,7 @@ Bu da bir **insan gözü kapısıdır** (SIRA 2 ile aynı sınıf).
 
 **Bu görev ticket 1 ve 3'ü ÇÖZMEZ.** Boş cevap kusuru (~%5) API'de 503 olarak **görünür**
 hâle gelir ama **giderilmez**; donma sorunu API'de yoktur çünkü istek serileştirilir ve istemci
-bekler. İkisi de aşağıdaki [AÇIK KUSURLAR](#açık-kusurlar--plan-kapsamında-çözülmeyenler) bölümünde açık kalır.
+bekler. İkisi de aşağıdaki [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümünde açık kalır.
 
 ---
 
@@ -1098,21 +1103,176 @@ sayesinde **503 olarak görünür**. Paketleme bir model kusurunu onarmaz.
 
 ---
 
-## AÇIK KUSURLAR — plan kapsamında ÇÖZÜLMEYENLER
+### Görev 21 : Ürün yüzeyi kusur temizliği — kusur 3·4·5·7·8·12a·13 *(insan kararı 2026-09-10)*
 
-> **Bu bölüm KUTUCUK TAŞIMAZ ve paydaya (99) GİRMEZ.** Ayrımı korumak zorunlu: burada duran
-> bir kusur planı **kapanmaktan alıkoymaz**, çünkü bunlar planın *kapsamı* değil, yürütülmesi
-> sırasında **ortaya çıkan borcun kaydıdır**.
+**Dosyalar:** Modify: `hakhukuk/servis.py` · `hakhukuk/cli.py` · `hakhukuk/tui.py` ·
+`hakhukuk/tipler.py` · `tests/test_servis.py` · `tests/test_cli.py` · `tests/test_tui.py` ·
+`docs/record/yurutme-tuzaklari.md` *(yalnız EKLEME)* · Create: `tests/test_kusurlar.py`
+
+**Niçin bu görev var.** `AÇIK KUSURLAR` bölümünün başlığı *"plan kapsamında ÇÖZÜLMEYENLER"*
+diyordu ve okuyan *"çözülemez"* diye anlıyordu. 2026-09-10'da tek tek bakıldı: **on üç kusurun
+on biri bu planda çözülebilir, dokuzu $0 ve küçük.** Bu görev o dokuzu topluyor; ağır ikisi
+(kusur 1 ve 2) rejim ve GPU istediği için **Görev 22**'ye ayrıldı.
+
+**Grill'de kusur KAYITLARININ KENDİSİ üç yerde düzeltildi — bunlar yeni bulgudur:**
+
+| # | kayıt ne diyordu | grill ne buldu |
+| :--- | :--- | :--- |
+| 5a | *"skor dağılımına bakıp zayıf eşleşme durumunu göster"* | Eşik **ölçülmeden** konursa bu **uydurulmuş eşiktir** — bu hattın kendi yasakladığı şey (G19 karar 5, tuzak 2.17). Önce **ayrışma ölçülür**; `recall`'ın kaçırdığı **4/80** ile tutturduğu 76/80'in skor dağılımı **ayrışmıyorsa ROZET YOKTUR** ve bu bir **bulgudur**, başarısızlık değil |
+| 5b | *"kapsam dışı soruları ayırt edip kullanıcıya bildir"* | Ayırt etmek bir **sınıflandırıcıdır** ve yanılır; yanıldığında vatandaşa *"bu konu kapsamda yok"* der ve **cevabı olan soruyu öldürür**. Ucuz ve dürüst alternatif: kapsamı **her zaman statik olarak göstermek** — *"yürürlükteki kanunlar; yönetmelik · tüzük · KHK · tebliğ YOK"*. Sınıflandırıcı yok, yanlış negatif yok |
+| 13 | *"normalizasyon"* | Ham alanları **yeniden yazmak** kaynağın ne dediğini kaybettirir. Korpusun kendisi de tutarsız (`MADDE 349` ↔ `Madde 6`) ⇒ çare normalizasyon değil, **türetilmiş alan**: ham `madde_no` **korunur**, kıyas için `madde_sayisi` eklenir |
+
+**Kilitlenen dört karar:**
+
+| # | karar | gerekçe |
+| :--- | :--- | :--- |
+| 1 | Boş sorgu kapısı **`servis.answer()`'a** konur, arayüzlere değil | KAPI döngü dışındadır ve **üç yüzeyi birden** korur; G19'un 422'si yalnız HTTP yüzeyini koruyordu, `_getir` hâlâ savunmasızdı. **Uydurulmuş uzunluk eşiği YOK** — yalnız boş/boşluk |
+| 2 | `##begin_quote##` süzgeci **yalnız `bicimle()`'de**; `Cevap.metin` **HAM kalır** | `metin` modelin ham çıktısıdır, değiştirmek kaydı bozar. G19 karar 2'nin sözleşmesi zaten *"`sunum` dizesi"*tir. ⛔ Ölçüm hattına **DOKUNULMAZ**: `scripts/puanlama/score_register.py:41` aynı işareti **register göstergesi olarak SAYIYOR** |
+| 3 | Kapsam satırı **statik**, sınıflandırıcı YOK | Yanılan bir kapsam sınıflandırıcısı, cevabı olan soruyu öldürür |
+| 4 | Zayıf-eşleşme rozeti **ölçüme bağlı**; ayrışma yoksa **rozet YOK** | Uydurulmuş eşik, bu hattın en pahalı hata sınıfını (*"hata vermeden yanlış"*) doğrudan besler |
+
+- [ ] **Adım 1: Failing test** — `tests/test_kusurlar.py` + mevcut dosyalara ekler.
+Sınanacaklar: boş/boşluk sorgu `_getir`'e **hiç ulaşmıyor** · `"kira?"` **reddedilmiyor** ·
+`bicimle()` çıktısında `##begin_quote##` **yok** ama alıntı metni **duruyor** · `Cevap.metin`
+işaretleri **hâlâ taşıyor** (ham) · `Atif("6098","Madde 330").madde_sayisi ==
+Kaynak(...,"MADDE 330").madde_sayisi` · `tui.py` `answer()`'ı olay döngüsünde **çağırmıyor** ·
+açılış ekranında yönerge **ve** kapsam satırı var · `scripts/` altında süzgeç **yok**
+(ölçüm hattı dokunulmazlık kapısı).
+
+- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+
+- [ ] **Adım 3: kusur 4 — boş sorgu KAPISI** (`servis.answer`)
+`verify:` `_getir` boş sorguyla **çağrılmıyor**; CLI ve TUI okunur bir mesaj veriyor;
+`"kira?"` **geçiyor**. API'nin kendi 422'si **değişmiyor** (iki yerde iki kapı değil, API
+kendi sınırında erken reddeder — bu tekrar değil, sınır savunmasıdır).
+
+- [ ] **Adım 4: kusur 12a — `bicimle()`'de iskele işareti süzgeci**
+`verify:` `sunum` temiz · `Cevap.metin` **HAM** · `grep -rn "begin_quote" scripts/` çıktısı
+**değişmedi** (ölçüm hattı dokunulmadı).
+
+- [ ] **Adım 5: kusur 13 — `madde_sayisi` türetilmiş alanı**
+`verify:` ham `madde_no` alanları **aynen duruyor**; `madde_sayisi` üç yazım biçimini de
+(`MADDE 349` · `Madde 6` · `330`) aynı değere indiriyor.
+
+- [ ] **Adım 6: kusur 3 — TUI'yi çalışan iş parçacığına al**
+`verify:` kaynak denetimi `answer()`'ın olay döngüsünde çağrılmadığını gösteriyor;
+ilerleme satırı **gerçekten çiziliyor** (Adım 11'de gözle doğrulanır).
+
+- [ ] **Adım 7: kusur 8 + 5b — açılış yönergesi + STATİK kapsam satırı**
+`verify:` uygulama açıldığında ekran **boş değil**; kapsam satırı korpus künyesinin
+söylediğini diyor (**892 kanun · 40.496 madde · yönetmelik/tüzük/KHK/tebliğ YOK**) ve sayılar
+`data/corpus/KUNYE.json`'dan **okunuyor**, koda gömülmüyor.
+
+- [ ] **Adım 8: kusur 5a — ÖLÇÜM: zayıf eşleşme ayrışıyor mu**
+80 DEV kaleminde RRF skor dağılımı: `recall`'ın **kaçırdığı 4** kalem ile tutturduğu 76'yı
+ayıran bir eşik **var mı**. `verify:` ayrışma **sayıyla** raporlandı. **Ayrışmıyorsa rozet
+EKLENMEZ** ve bu sonuç kusur kaydına yazılır — *"ölçtük, ayrışmıyor"* bir **bulgudur**.
+⛔ Ayrışma zayıfsa eşik **uydurulmaz**; kusur 5a **açık kalır**.
+
+- [ ] **Adım 9: kusur 7 — kuralı YAZ (kod değil)**
+`docs/record/yurutme-tuzaklari.md`'ye **yeni satır eklenir** *(dosya yeniden yazılmaz)* ve
+Global kısıtlara bir cümle girer: *yeni özne eklenirken duman koşusu **tabakalanmış**
+(kısa/orta/uzun) seçilir ya da kapıya **%50 emniyet payı** konur.*
+`verify:` tuzak listesinde satır var ve **numarası çakışmıyor**.
+⚠️ **Grill bulgusu:** listede **iki ayrı `2.17` satırı** var (biri #58, biri #62) — numara
+çakışması **zaten mevcut**; yeni satır bunu büyütmemeli.
+
+- [ ] **Adım 10: Testler yeşil + commit** *(davranışsal ve yapısal değişiklikler AYRI commit)*
+
+- [ ] **Adım 11: GÖZ KAPISI** — TUI'de üç soru. **İNSAN GÖZÜ KAPISI, kendi başına işaretlenmez.**
+`verify:` ekran **donmuyor** ve ilerleme satırı çiziliyor · açılışta yönerge + kapsam satırı
+**görüldü** · cevapta `##begin_quote##` **YOK** · boş sorgu okunur bir mesaj alıyor.
+
+**Bu görev kusur 6 · 11 · 12b'yi ÇÖZMEZ** — üçü de devredildi, bkz. `AÇIK KUSURLAR` başlığı.
+
+---
+
+### Görev 22 : Rejim kusuru + KV ölçümü — kusur 1·2 *(insan kararı 2026-09-10)*
+
+**Dosyalar:** Modify: `hakhukuk/servis.py` *(onay gelirse)* · Create: `outputs/eval/g22-*/` ·
+yeni ADR + `research_log` girişi
+
+**Niçin ayrı görev.** İkisi de GPU ister, ikisi de **insan kapısı** taşır ve biri **rejim
+değişikliğidir**. Görev 21'in $0'lık akışına karıştırılırsa, onaya bağlı bir iş yüzünden
+ucuz iş de bekler.
+
+**Grill'de kusur 2'nin kaydı DÜZELTİLDİ — bu yeni bir bulgudur:**
+kayıt *"bedeli sıfır dolar, yaklaşık bir saat GPU"* diyordu. **Yanlış:** karşılaştırma
+**kütle** üzerinden yapılacaksa kütleyi **hakem** üretir ⇒ **para harcanır** ve bakiye
+**$2,20**. Bu yüzden iş ikiye bölündü: önce **$0'lık deterministik** karşılaştırma, kütle
+ancak **ayrı bir bedel kapısından** sonra.
+
+- [ ] **Adım 1: kusur 2 — DETERMİNİSTİK karşılaştırma ($0)**
+Varsayılan (fp16) KV ile ikinci sunucu açılır, 80 kalem üretilir; `q8_0` koşusuyla
+**hakem çağırmadan** karşılaştırılır. `verify:` kaç cevap **bayt olarak değişti** (`sha256`) ·
+çekinme sayısı · **uydurulmuş madde** sayısı · kesik/boş sayısı. **Kütle HESAPLANMAZ.**
+
+- [ ] **Adım 2: kusur 2 — bedel kapısı: kütle ölçülsün mü** — **DUR ve SOR**
+Adım 1 küçük bir sapma gösterirse kütle ölçmenin karşılığı yoktur. Büyük sapma gösterirse
+hakem bedeli **tahmin edilir** ve `$1` kapısına vurulur. ⚠️ Tahmin **tabakalanmış** duman
+koşusundan yapılır (kusur 7'nin dersi) ya da **%50 emniyet payı** eklenir.
+
+- [ ] **Adım 3: kusur 1 — REJİM KARARI** — **DUR ve SOR**
+Ürün yoluna ölçüm hattının **iki geçişli zorunlu düşünce kapatması** eklensin mi.
+Karar verilmeden **kod yazılmaz**. Kararın anlamı: ürün yolu ile ölçüm hattı **aynı rejime**
+gelir; yayımlanan **0,8011 ölçüm hattının sayısıdır ve DEĞİŞMEZ** — değişen ürün yoludur.
+
+- [ ] **Adım 4: kusur 1 — uygulama + 80 kalem yeniden ölçüm** *(onay gelirse)*
+Çıpa **elimizde**: `outputs/eval/g18-arac-katmani/aracsiz_yol_80.json` (öncesi: kesik 7/80,
+**tamamen boş 4/80**). `verify:` **tamamen boş 0/80** · kesik oranı ADR-0040'ın **%5**
+geçerlilik kapısını **GEÇİYOR** · suskunluk kümesi öncesiyle karşılaştırılıp **fark
+raporlanıyor** (gizlenmiyor).
+
+- [ ] **Adım 5: Bulguları yaz + commit** — yeni ADR *(0079'dan devam)* + `research_log` girişi.
+`verify:` her sayının yanında **kaynak dosya adı** var; kusur 1 ve 2'nin kayıtları
+**sonuçlarıyla** güncellendi.
+
+---
+
+## AÇIK KUSURLAR — kayıt ve devir
+
+> **Bu bölüm KUTUCUK TAŞIMAZ ve paydaya GİRMEZ.** Kusurun *kaydı* ile işin *kapsamı* ayrı tutulur.
 >
 > **2026-09-10 (insan kararı):** bu kayıt `plans/post-hp-hat-b-tickets.md`'de ayrı bir dosyaydı;
-> insan kararıyla plana **taşındı ve dosya silindi**. Bu, [`00-IS-SIRASI.md`](../00-IS-SIRASI.md)'nin
-> bakım kuralıyla **çelişir** — o kural *"kusur plana sıkıştırılmaz, ayrı ticket dosyasına yazılır;
-> yoksa plan hiç kapanmaz"* diyordu. Çelişki **iki yerde** damgalandı ve kuralın koruduğu şey
-> yukarıdaki *"kutucuk taşımaz"* şartıyla ayakta tutuldu. Gerekçe teknik değil, tercihtir.
+> plana **taşındı ve dosya silindi**. Bu, [`00-IS-SIRASI.md`](../00-IS-SIRASI.md)'nin eski bakım
+> kuralıyla **çelişir**; çelişki iki yerde damgalandı ve kuralın koruduğu şey *"kutucuk taşımaz"*
+> şartıyla ayakta tutuldu. Gerekçe teknik değil, tercihtir.
 >
-> On üç kusur. Her biri gözlemi, kanıtı, kurulmuş hipotezi ve yapılması gerekeni ayrı ayrı
-> taşır; hipotez ile ölçüm birbirine **karıştırılmamıştır**. Son üçü (11 · 12 · 13)
-> 2026-09-10'da, Görev 19'un grill ve göz kapısı adımlarında doğdu.
+> **Aynı gün ikinci karar:** başlık *"plan kapsamında ÇÖZÜLMEYENLER"* idi ve okuyan **"çözülemez"**
+> diye anlıyordu. Tek tek bakıldı — **on üçün on biri bu planda çözülebilir, dokuzu $0 ve küçük.**
+
+### Kusur → nerede kapanıyor
+
+| # | kusur | nerede |
+| :-- | :--- | :--- |
+| 1 | ürün yolunda 4/80 cevap **tamamen boş** | **Görev 22** Adım 3-4 · rejim kararı, insan kapısı |
+| 2 | KV ayarının 80 kalemdeki etkisi ölçülmedi | **Görev 22** Adım 1-2 · $0 deterministik, kütle bedel kapısında |
+| 3 | TUI donuyor | **Görev 21** Adım 6 |
+| 4 | boş sorgu reddedilmiyor | **Görev 21** Adım 3 |
+| 5a | zayıf eşleşme sinyali | **Görev 21** Adım 8 — **ölçüme bağlı**; ayrışmazsa rozet YOK ve kusur **açık kalır** |
+| 5b | kapsam bildirimi | **Görev 21** Adım 7 · statik satır, sınıflandırıcı YOK |
+| **6** | `wrong_ref` 9,3× geride | **DEVREDİLDİ → `v2`** · borç **B1**, ADR-0075 |
+| 7 | duman koşusu tahmini kapı kurmuyor | **Görev 21** Adım 9 · kural yazılır, kod değil |
+| 8 | açılışta yönlendirme yok | **Görev 21** Adım 7 |
+| 9 | SIRA 2 kapısı açık | **Görev 12** Adım 6-7 · yeni iş değil, aynı kapının aynası |
+| 10 | dağıtım kararları | push **KAPANDI** · **HF görünürlüğü insan kararı**, iş değil |
+| **11** | paket tek başına kurulamıyor | **DEVREDİLDİ → kendi turu** · [`00-IS-SIRASI`](../00-IS-SIRASI.md) *"sıranın dışında"*, ADR-0078 m.5 |
+| 12a | `##begin_quote##` vatandaşa gidiyor | **Görev 21** Adım 4 · sunum katmanı |
+| **12b** | işaretlerin **kaynağı** eğitim verisi | **DEVREDİLDİ → `v2`** · borç **B11** |
+| 13 | `madde_no` biçimi tutmuyor | **Görev 21** Adım 5 · türetilmiş alan, ham veri korunur |
+
+### Kapanış ve devir kuralı *(insan kararı 2026-09-10)*
+
+Bu bölüm planın kapanmasını **engellemez**, ama plan kapandığında **boş olmak zorunda değildir**.
+Şart şudur: **kapanış anında açık kalan her kusur, adıyla bir sonraki plana devredilir; hiçbir
+yere devredilmemiş açık kusur varsa kapanış GEÇERSİZDİR.** Devir, planın kapanış bloğunda tek
+tek yazılır.
+
+Sebep: plan kapandığı gün **kayda dönüşür** (`faz0` planı gibi — *"artık kayıttır, açılmaz"*).
+Devir kuralı olmazsa açık kusurlar **kapalı bir kaydın içinde donar**, ve bu tam olarak
+silinen bakım kuralının önlemek için var olduğu şeydir.
+
+---
 
 ### 1. Ürün yolunda cevapların yaklaşık yüzde beşi tamamen boş dönüyor
 
