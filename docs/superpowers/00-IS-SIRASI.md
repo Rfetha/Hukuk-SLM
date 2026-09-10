@@ -19,9 +19,10 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          90 kutucuk · 82 bitti
-          başlatıcı: goal-hp-hat-a-hat-b.md  (3.675 karakter)
-          FAZ 1-2-3 bitti · FAZ 4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          99 kutucuk · 82 bitti
+          başlatıcı: goal-hp-hat-a-hat-b.md  (3.995 karakter)
+          FAZ 1-2-3-4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
+          FAZ 5 (dağıtım) AÇILDI 2026-09-10 — G19 API + G20 konteyner
           G2 ATLANDI (bütçe, ADR-0074) · G8 BEKLETİLİYOR (Adım 1b hariç, o bitti)
           G14+G15 EĞİTİM TURLARI ATLANDI (ADR-0075) — v1 SFT ile kapanır
           LİNEER SIRANIN DURUMU (planın İCRA DURUMU bloğunda):
@@ -33,7 +34,10 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
              5. G18 araç katmanı                   BİTTİ · regresyon 80/80 birebir
              6. G17 modeli YAYINLA                 BİTTİ · HF'te, şu an ÖZEL
              7. G19 HTTP API (FastAPI)             AÇIK — 6 karar kilitlendi
-          AÇIK KUSURLAR: plans/post-hp-hat-b-tickets.md (on ticket)
+             9. G20 konteyner dağıtımı             AÇIK — 5 karar kilitli (ADR-0078)
+                                                   Adım 0 bir GPU KAPISI
+          (8 = tickets; plan kutucuğu değil, numara goal ile aynı kalsın diye)
+          AÇIK KUSURLAR: plans/post-hp-hat-b-tickets.md (on bir ticket)
 ──────────────────────────────────────────────────────────────────────────────
    SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
@@ -80,6 +84,15 @@ araç katmanı → yayın.**
 **Görev 19** olarak girdi. Gerekçe teknik değil, tercihtir; öyle yazılıyor.
 **S9 açılmadı:** API **yerel ve tek kullanıcı** (`127.0.0.1`, kimlik yok, hız sınırı yok).
 Barındırma, mahremiyet vaadi ve TR IP kısıtı soruları `v2`'de açık duruyor. Web arayüzü hâlâ `v2`.
+
+**2026-09-10'da ikinci kez genişledi (insan kararı):** **konteyner dağıtımı** da `v1` tarafına
+alındı ve ana plana **Görev 20** olarak girdi ([ADR-0078](../adr/0078-konteyner-dagitimi-rejim-kilidi.md)).
+**Konteyner web arayüzü değildir**; *"web arayüzü hâlâ `v2`"* cümlesi **yürürlükte kalır** ve
+**S9 yine açılmadı** — `llama` yalnız iç ağda, `app` yalnız `127.0.0.1`'e yayımlanır.
+Gerekçe bu kez teknik ve **ölçülmüş**: ticket 2, sunucu bayrağının **cevabı değiştirdiğini**
+gösterdi (`q8_0` ↔ fp16, aynı seed, farklı `sha256`), ve bağlayıcı yapılandırmayı bugün hiçbir
+şey zorlamıyor. `compose.yaml` onu zorlayan **ilk artefakttır** — paketleme burada kolaylık
+değil, **rejim kilidi**.
 
 **Bedeli:** `τ = θ_ft − θ_base` tanımı tüm kolların aynı base'i paylaşmasını şart koşar ⇒
 `tgta_v1`'i yeni başlangıç almak bunu bozar ⇒ **ADR-0027'nin task-vector hattı `v1`'de
@@ -132,9 +145,9 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | belge | tür | durum | ne der |
 | :--- | :--- | :--- | :--- |
 | [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
-| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 82/90** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık ikisi: **SIRA 2** (insan gözüyle TUI doğrulaması) ve **SIRA 7** (Görev 19, HTTP API — kararları kilitli, kodu yazılmadı). |
-| [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 10 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
-| [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-09** | Planın `/goal` promptu (3.675 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli altı sıralık lineer düzeni taşıyor ve beşi kapandı. |
+| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 82/99** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19, HTTP API) ve **SIRA 9** (Görev 20, konteyner dağıtımı) — son ikisinin kararları kilitli, kodu yazılmadı. |
+| [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 11 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
+| [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-10** | Planın `/goal` promptu (3.995 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli dokuz sıralık düzeni taşıyor, açık üçü SIRA 2 · 7 · 9. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
 | [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |
 | [`plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md`](plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md) | plan | **yazıldı, 0/62** | Yukarıdaki spec'in uygulaması. Ana plandan **sonra** koşar. |

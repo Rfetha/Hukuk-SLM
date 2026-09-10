@@ -2,7 +2,7 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-09 · **82/90 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-10 · **82/99 kutucuk** · `v0.3` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -16,6 +16,7 @@
 | **FAZ 2** · Hat A | **G5·G6·G7·G8b·G9·G10·G12 bitti**, G11 2/3 — `hakhukuk/` paketi doğdu (istem tek kaynak · tipler · terazi · servis · CLI · TUI), mülga süzgeci girdi, yeniden üretim zinciri yazıldı |
 | **G8** · indeks dağıtımı | **BEKLETİLİYOR** — korpus **8,4×** büyüyecek (40.496 → ~340.303 madde) |
 | **FAZ 3** · belge katmanı | **G13 bitti** — `PRODUCT.md` · `ROADMAP.md` · `TODO.md` · `docs/MIMARI.md` yazıldı, kırık işaretçiler onarıldı, `MODEL_CARD` §7.2/§8/§10 güncellendi |
+| **FAZ 5** · dağıtım | **AÇIK 2026-09-10** — insan kararıyla iki iş `v1` tarafına alındı: **G19** (HTTP API, 6 kutucuk) ve **G20** (konteyner dağıtımı, 9 kutucuk, [ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)). İkisi de **yerel ve tek kullanıcı**; `S9` açılmadı |
 | **FAZ 4** · Hat B | **KAPANDI 2026-09-09** — G16 (kabul testi, `v0.3`) · G4 (Sonnet-5) · G18 (araç katmanı) · G17 (yayın) bitti. G14 · G15 **atlandı** (ADR-0075). Açık kalan tek kapı: **G12 Adım 6**, insan gözü |
 
 **Ölçülen 2026-09-09:** **164 test yeşil**, 2 xfail · **16 commit** (yerelde, push edilmedi) ·
@@ -36,6 +37,12 @@ Ayrıca Görev 17 Adım 4 açık görünüyordu ama iş bitmişti (`v0.3` etiket
 Aynı gün **Görev 19** (HTTP API) insan kararıyla eklendi ve payda 84'ten **90**'a çıktı; açık
 sekiz kutucuğun ikisi SIRA 2, altısı Görev 19.
 
+**2026-09-10'da payda 90'dan 99'a çıktı:** **Görev 20** (konteyner dağıtımı) insan kararıyla
+eklendi, 9 kutucuk. Payda büyüdü çünkü **iş** eklendi — kapatılmış karar kalıntısı değil.
+Gerekçe [ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)'de: paketlemenin sebebi
+kolaylık değil, ticket 2'nin **ölçtüğü** kusurdur (sunucu bayrağı cevabı değiştiriyor ve
+bağlayıcı yapılandırmayı bugün hiçbir şey zorlamıyor).
+
 **Bitmiş görevlerde talimat silindi, bulgu tutuldu** (aynı gün, 16 blok / 18 KB): *"şu dosyayı
 yaz"* diyen kod kopyaları ve `git commit` reçeteleri çıkarıldı — karşılıkları repoda ve git
 geçmişinde, üstelik kopyalar **bayatlamıştı** (`tui.py`'ye `__main__` bloğu, `servis.py`'ye
@@ -54,6 +61,8 @@ düştüğü üzerine kuruludur.
 | ~~5~~ | **G18** — araç katmanı | BİTTİ | 5 kaldıraç · sınırlı döngü · regresyon **80/80 birebir** |
 | ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
 | **7** | **G19** — HTTP API (FastAPI) | **AÇIK** | dokuz karar kilitlendi 2026-09-09; kapıları görevin içinde |
+| **8** | **tickets** — plan kapsamı **DIŞI** | AÇIK | [`post-hp-hat-b-tickets.md`](post-hp-hat-b-tickets.md), on bir ticket. Sıra numarası `goal` dosyasıyla **aynı kalsın** diye burada duruyor; bu planın kutucuğu değildir |
+| **9** | **G20** — konteyner dağıtımı | **AÇIK** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 bir GPU kapısıdır**, tutmazsa topoloji yeniden kararlaştırılır |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
 ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
@@ -1959,3 +1968,100 @@ Bu da bir **insan gözü kapısıdır** (SIRA 2 ile aynı sınıf).
 **Bu görev ticket 1 ve 3'ü ÇÖZMEZ.** Boş cevap kusuru (~%5) API'de 503 olarak **görünür**
 hâle gelir ama **giderilmez**; donma sorunu API'de yoktur çünkü istek serileştirilir ve istemci
 bekler. İkisi de [`post-hp-hat-b-tickets.md`](post-hp-hat-b-tickets.md)'de açık kalır.
+
+---
+
+### Görev 20 : Konteyner dağıtımı — paketleme bir REJİM KİLİDİ *(insan kararı 2026-09-10 · [ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md))*
+
+**Dosyalar:** Create: `Dockerfile` · `compose.yaml` · `.dockerignore` · `hakhukuk/indir.py` ·
+`tests/test_konteyner.py` · Modify: `pyproject.toml` · `README.md` · `README.tr.md` · `MODEL_CARD.md`
+
+**KAPSAM İNSAN KARARIYLA GENİŞLETİLDİ, çelişki iki yerde damgalandı.**
+[`00-IS-SIRASI.md`](../00-IS-SIRASI.md) *"web arayüzü hâlâ `v2`"* diyor; **konteyner dağıtımı
+web arayüzü değildir** ve `v1` tarafına alınmıştır. Gerekçe teknik değil, insan tercihidir.
+**S9 yine AÇILMADI:** konteyner **yerel ve tek kullanıcı** — `llama` yalnız iç ağda,
+`app` yalnız `127.0.0.1`'e yayımlanır. Barındırma ve mahremiyet vaadi `v2`'de açık durur.
+
+**Gerekçe kolaylık DEĞİL, ölçülmüş bir kusurdur.** Ticket 2: aynı soru, aynı kod,
+`--seed 3407`, sıcaklık 0 — KV önbelleği `q8_0` ↔ fp16 değişince **cevap değişti**
+(`sha256` `79b6915a…` ↔ `e97a2b85…`, uzunluk 201 ↔ 622). Bağlayıcı yapılandırma bugün yalnız
+**düz metin** olarak üç belgede yazılı ve hiçbir şey onu zorlamıyor. `compose.yaml` onu
+zorlayan ilk artefakttır.
+
+**Grill'de kod okumasıyla çıkan üç bulgu (iddia değil, dosya satırı):**
+
+| # | bulgu | kanıt |
+| :--- | :--- | :--- |
+| F1 | `hakhukuk` paketi **tek başına kurulamıyor** — `servis.py` çalışma anında `sys.path`'e `scripts/` ekleyip `retriever.py`'yi oradan alıyor, indeks yolu repo köküne göreli | `hakhukuk/servis.py:27,46-48` ↔ `pyproject.toml` `packages = ["hakhukuk"]` ve ilk satırı *"`scripts/` bilerek DIŞARIDA"* |
+| F4 | *"en güncel modeli çek"* bu hattın hata sınıfı — yayımlanan sayı **belirli bir dosyanındır** | `sha256 755e15e9…` · **2.783.446.720 bayt** ([`kollar.md`](../../record/kollar.md) 2026-09-09) |
+| F5 | `pyproject.toml` `version = "0.2.0"`, git etiketi **`v0.3`** — imaj etiketi buradan türerse yanlış etiketlenir | `pyproject.toml:6` ↔ `git tag` |
+
+**Ortam ölçüldü 2026-09-10:** Docker **28.4.0** · compose **v2.39.4-desktop.1** ·
+RTX 5070 Ti Laptop **12227 MiB**, sürücü **591.97**. **`nvidia-ctk` WSL yolunda YOK** ⇒
+konteynerin GPU'yu görüp görmediği **ölçülmedi**; Adım 0 tam olarak bunu ölçer.
+
+**Topoloji — 3 kutu, 2 daemon, 2 imaj:**
+
+```
+hakhukuk-indir   TEK SEFERLİK   app imajının aynısı, farklı komut
+                 HF'ten pinlenmiş revizyon → sha256 KAPISI → paylaşılan volume
+                 tutmazsa çıkış ≠ 0 ⇒ iki servis de HİÇ başlamaz
+llama            daemon · GPU   llama.cpp sunucu imajı · volume'den GGUF
+                 bağlayıcı bayraklar compose'da YAZILI
+app              daemon · CPU   hakhukuk + bge-m3 · volume'den indeks
+                 HAKHUKUK_SUNUCU=http://llama:8080/v1 · ports "127.0.0.1:8000:8000"
+```
+
+`indir` ve `app` **aynı imajı** paylaşır (`huggingface-hub` zaten bağımlılık) — üçüncü
+Dockerfile yok. Üçüncü kutunun silme testi: silinirse `sha256` kapısı iki entrypoint'e
+dağılır ve **aynı mantık iki yerde** durur — S18'in ölçülmüş dersi.
+
+**Kilitlenen beş karar** *(tam gerekçe ve elenen seçenekler: [ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md))*:
+
+| # | karar | gerekçe |
+| :--- | :--- | :--- |
+| 1 | Bağlayıcı bayraklar `compose.yaml`'a **birebir** | Ticket 2 ölçtü: bunlar tercih değil, **cevabı belirleyen** ayarlar |
+| 2 | **Tek sapma:** `--host 127.0.0.1` → `--host 0.0.0.0` | Konteyner içinde `127.0.0.1` komşudan erişilemez. Erişim yüzeyi `ports: "127.0.0.1:8080:8080"` ile **aynı** kalır; üretimi etkilemez |
+| 3 | HF revizyonu **pinlenir** + `sha256` + bayt sayısı kapısı, tutmazsa **erken çıkış** | ADR-0026'nın *"tanımsız base ERKEN patlar"* kuralının aynı sınıfı |
+| 4 | İndeks **iki yollu**: volume öncelikli, HF yedek | G8'in bekleme gerekçesi bozulmaz — boyut kararı HF'te yaşar, **imaj değişmez** |
+| 5 | İmaj **repo ağacını kopyalar**, F1 onarılmaz | Retriever'ı pakete taşımak yapısal değişiklik; 26 dosyanın yol köprüsü ve tüm ölçüm hattı aynı dosyayı kullanıyor ⇒ kendi turunu ve regresyonunu hak eder. Borç **ticket 11** olarak yazılır |
+
+- [ ] **Adım 0: GPU KAPISI** — konteyner GPU'yu görüyor mu, **ölç**.
+`verify:` `--gpus all` ile açılan bir CUDA konteynerinde `nvidia-smi` **RTX 5070 Ti**'yi
+listeliyor. **Tutmazsa topoloji yeniden kararlaştırılır** (DUR ve SOR) — CPU'ya düşmek
+`-ngl 99`'u düşürür ve bu **yeni rejimdir**, sessizce yapılmaz.
+
+- [ ] **Adım 1: Failing test** — `tests/test_konteyner.py`. **Docker GEREKMEZ.**
+Sınanacaklar: `compose.yaml`'daki `llama` komutu kanonik bayrak kümesini **birebir** taşıyor ·
+`--host 0.0.0.0` sapması var ve `ports` yalnız `127.0.0.1`'e yayımlıyor · `indir.py` yanlış
+`sha256` karşısında **erken çıkıyor** (indirme monkeypatch'lenir, ağ YOK) · pinlenmiş revizyon
+dizesi `latest` **değil**.
+
+- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+
+- [ ] **Adım 3: `hakhukuk/indir.py`** — pinlenmiş revizyon · `sha256` + bayt kapısı · erken çıkış
+`verify:` bozuk baytla çağrıldığında çıkış kodu ≠ 0 ve **hiçbir dosya volume'de bırakılmıyor**
+(yarım-yazılmış artefakt, bu hattın *"hata vermeden yanlış"* sınıfının kendisidir).
+
+- [ ] **Adım 4: `Dockerfile` · `compose.yaml` · `.dockerignore`**
+`verify:` `.dockerignore` `data/index/**/*.npy` ve `models/**`'i **dışarıda** tutuyor
+(2,6 GB + 79 MB build bağlamına girmez); `compose.yaml` üç kutuyu ve
+`depends_on: service_completed_successfully` bağını taşıyor.
+
+- [ ] **Adım 5: Testi koş, GEÇTİĞİNİ gör + commit**
+
+- [ ] **Adım 6: `docker compose up` — indirme kapısı GERÇEKTEN koştu**
+`verify:` `indir` kutusu `sha256`'yı doğruladı ve çıkış kodu 0; `llama` ve `app` ayağa kalktı.
+**İmaj boyutu ÖLÇÜLÜR ve buraya yazılır** — tahmin yazılmaz.
+
+- [ ] **Adım 7: Gözle doğrula** — API'ye bir soru, cevabı **gör**. **İNSAN GÖZÜ KAPISI**
+(SIRA 2 ve Görev 19 Adım 6 ile aynı sınıf; kendi başına işaretlenmez).
+`verify:` `sunum` alanı rozet + atıf + kaynak + ibare taşıyor; boş sorgu **422**.
+
+- [ ] **Adım 8: Belgeler + sürüm** — `README.md` · `README.tr.md` · `MODEL_CARD.md`'ye
+`docker compose up` yolu; `pyproject.toml` `0.2.0` → `0.3.0` (F5).
+`verify:` `tests/test_belgeler.py` yeşil; üç belgede de konteyner yolu **ve** *"konteyner
+yayımlanan `0,8011`'i ÜRETMEZ"* şerhi var.
+
+**Bu görev ticket 1 · 3 · 4 · 6'yı ÇÖZMEZ.** Boş cevap konteynerde de boş döner, Görev 19
+sayesinde **503 olarak görünür**. Paketleme bir model kusurunu onarmaz.

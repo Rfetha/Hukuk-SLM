@@ -4,7 +4,8 @@ Bu dosya, `hp-hat-a-hat-b` planının yürütülmesi sırasında (2026-09-09) or
 kapsamında **çözülmeyen** kusurları kaydeder. Her ticket, gözlemi, kanıtı, kurulmuş hipotezi ve
 yapılması gerekeni ayrı ayrı içerir. Hipotez ile ölçüm birbirine karıştırılmamıştır.
 
-Durum: plan altı sıradan beşini kapattı. Açık olan tek kapı SIRA 2'dir (ticket 9).
+Durum 2026-09-10: planın açık üç sırası var — SIRA 2 (ticket 9), SIRA 7 (Görev 19) ve SIRA 9
+(Görev 20, konteyner dağıtımı).
 
 ---
 
@@ -157,8 +158,38 @@ Kapının varlık sebebi tam olarak budur.
 
 ## 10. Dağıtım kararları
 
-- **Push.** On üç commit `hp-hat-a-hat-b` dalında bekliyor, `origin`'e gönderilmedi. GitHub'daki
-  açılış sayfası `master`'ı gösterdiği için biçim temizliği orada henüz görünmüyor.
+- ~~**Push.** On üç commit `hp-hat-a-hat-b` dalında bekliyor, `origin`'e gönderilmedi.~~
+  **KAPANDI:** dal `master`'a alındı ve `origin`'e gönderildi; `v0.3` etiketi de push edildi.
+  Ağaç temiz, yerel ile `origin` eşit (2026-09-09).
 - **Hugging Face.** Depo 2026-09-09'da insan kararıyla **özele** alındı; açık kusurlar giderilene
   kadar böyle kalacak. Yükleme ve `sha256` doğrulaması tamamlanmıştır, geri alınan yalnız
   görünürlüktür.
+
+---
+
+## 11. `hakhukuk` paketi tek başına kurulamıyor — `pyproject`'in kendi cümlesi çalışma anında geçersiz
+
+**Gözlem.** `pyproject.toml` `packages = ["hakhukuk"]` der ve ilk satırı *"`scripts/` (ölçüm
+aleti) bilerek DIŞARIDA"* der. Oysa ürün paketi çalışma anında `scripts/`'e bağlıdır:
+
+```
+hakhukuk/servis.py:46-48   sys.path[:0] = [.../scripts, .../scripts/erisim_korpus]
+hakhukuk/servis.py:48      from retriever import Retriever
+hakhukuk/servis.py:27      _INDEKS = "data/index/mevzuat_bge_m3_s2"   # repo köküne GÖRELİ
+```
+
+Kök, `hakhukuk/servis.py`'nin kendi konumundan iki üst dizin olarak hesaplanır. Bu, **git
+ağacından** koşarken çalışır; bir wheel'den kurulduğunda `scripts/` ve `data/` orada yoktur.
+
+**Sonucu.** *"`pip install hakhukuk`"* diyen bir kurulum yolu **retriever'ı bulamaz**. Bugün
+kimse bu yolu belgelemiyor, dolayısıyla kullanıcıya yansımış bir kusur **değildir**; ama
+`pyproject.toml`'un kendi gerekçe cümlesi ile kodun davranışı **çelişmektedir**.
+
+**Kararla dokunulmadı.** [ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md) madde 5:
+Görev 20'nin imajı repo ağacını kopyalar ve köprü bugünkü gibi çalışır. Onarım (retriever'ı
+`hakhukuk/` içine taşımak) **yapısal bir değişikliktir**; aynı dosyayı 26 dosyanın yol köprüsü
+ve tüm ölçüm hattı kullanıyor ⇒ kendi turunu ve kendi regresyon koşusunu hak eder.
+
+**Yapılacak.** İki seçenek ölçülerek karşılaştırılmalı: (a) `retriever.py`'yi `hakhukuk/`
+içine taşımak ve `scripts/` tarafını ondan import ettirmek; (b) `pyproject.toml`'daki cümleyi
+gerçeğe uydurup bağımlılığı açıkça yazmak. Bugün hiçbiri seçilmedi.
