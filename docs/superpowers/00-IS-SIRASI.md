@@ -20,7 +20,9 @@
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
 ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          99 kutucuk · 88 bitti
-          başlatıcı: goal-hp-hat-a-hat-b.md  (3.995 karakter)
+          başlatıcı: goal-hp-hat-a-hat-b.md  (3.782 karakter, PLANLAMA MODU)
+             insan kararı 2026-09-10: goal artık icraya değil TASARIMA sürüyor;
+             kod yazmak, kutucuk işaretlemek ve commit ONAY ister
           FAZ 1-2-3-4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
           FAZ 5 (dağıtım) AÇILDI 2026-09-10 — G19 API + G20 konteyner
           G2 ATLANDI (bütçe, ADR-0074) · G8 BEKLETİLİYOR (Adım 1b hariç, o bitti)

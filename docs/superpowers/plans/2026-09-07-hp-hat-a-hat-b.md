@@ -62,7 +62,7 @@ düştüğü üzerine kuruludur.
 | ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
 | **7** | **G19** — HTTP API (FastAPI) | **5/6** | kod BİTTİ 2026-09-10, **178 test yeşil**; açık tek kutucuk **Adım 6 = insan gözü kapısı** |
 | **8** | **açık kusurlar** — plan kapsamı **DIŞI** | AÇIK | Bu dosyanın sonundaki [AÇIK KUSURLAR](#açık-kusurlar--plan-kapsamında-çözülmeyenler) bölümü, **on üç** kusur. Sıra numarası `goal` dosyasıyla **aynı kalsın** diye burada duruyor; **kutucuk değildir, paydaya girmez** |
-| **9** | **G20** — konteyner dağıtımı | **1/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor |
+| **9** | **G20** — konteyner dağıtımı | **1/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
 ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
