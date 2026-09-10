@@ -19,7 +19,7 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          99 kutucuk · 82 bitti
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          99 kutucuk · 87 bitti
           başlatıcı: goal-hp-hat-a-hat-b.md  (3.995 karakter)
           FAZ 1-2-3-4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
           FAZ 5 (dağıtım) AÇILDI 2026-09-10 — G19 API + G20 konteyner
@@ -33,7 +33,7 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
                                                    v1.0 VERİLMEDİ → v0.3 (ADR-0077)
              5. G18 araç katmanı                   BİTTİ · regresyon 80/80 birebir
              6. G17 modeli YAYINLA                 BİTTİ · HF'te, şu an ÖZEL
-             7. G19 HTTP API (FastAPI)             AÇIK — 6 karar kilitlendi
+             7. G19 HTTP API (FastAPI)             5/6 — kod bitti, göz kapısı açık
              9. G20 konteyner dağıtımı             AÇIK — 5 karar kilitli (ADR-0078)
                                                    Adım 0 bir GPU KAPISI
           (8 = tickets; plan kutucuğu değil, numara goal ile aynı kalsın diye)
@@ -145,7 +145,7 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | belge | tür | durum | ne der |
 | :--- | :--- | :--- | :--- |
 | [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
-| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 82/99** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19, HTTP API) ve **SIRA 9** (Görev 20, konteyner dağıtımı) — son ikisinin kararları kilitli, kodu yazılmadı. |
+| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 87/99** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19, HTTP API) ve **SIRA 9** (Görev 20, konteyner dağıtımı) — son ikisinin kararları kilitli, kodu yazılmadı. |
 | [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 11 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
 | [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-10** | Planın `/goal` promptu (3.995 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli dokuz sıralık düzeni taşıyor, açık üçü SIRA 2 · 7 · 9. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |

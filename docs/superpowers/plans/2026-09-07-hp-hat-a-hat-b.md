@@ -2,7 +2,7 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-10 · **82/99 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-10 · **87/99 kutucuk** · `v0.3` etiketlendi
 
 > **Bu blok planın tek doğru durum kaynağıdır.** Aşağıdaki görev başlıkları değişmedi;
 > ne bittiği kutucuklardan, **neyin sırada olduğu buradan** okunur.
@@ -60,7 +60,7 @@ düştüğü üzerine kuruludur.
 | ~~4~~ | **G16** — `v1.0` kabul testi | BİTTİ | donmuş TEST tek kez açıldı; kütle **0,5804** · `v1.0` VERİLMEDİ → `v0.3` (ADR-0077) |
 | ~~5~~ | **G18** — araç katmanı | BİTTİ | 5 kaldıraç · sınırlı döngü · regresyon **80/80 birebir** |
 | ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
-| **7** | **G19** — HTTP API (FastAPI) | **AÇIK** | dokuz karar kilitlendi 2026-09-09; kapıları görevin içinde |
+| **7** | **G19** — HTTP API (FastAPI) | **5/6** | kod BİTTİ 2026-09-10, **178 test yeşil**; açık tek kutucuk **Adım 6 = insan gözü kapısı** |
 | **8** | **tickets** — plan kapsamı **DIŞI** | AÇIK | [`post-hp-hat-b-tickets.md`](post-hp-hat-b-tickets.md), on bir ticket. Sıra numarası `goal` dosyasıyla **aynı kalsın** diye burada duruyor; bu planın kutucuğu değildir |
 | **9** | **G20** — konteyner dağıtımı | **AÇIK** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 bir GPU kapısıdır**, tutmazsa topoloji yeniden kararlaştırılır |
 
@@ -1945,21 +1945,26 @@ yerde durursa sessizce ayrışır).
 | 5 | Boş/boşluk sorgu → **422** | Ölçüldü: `_getir("")` sabit gürültü döndürüyor. Uydurulmuş uzunluk eşiği **YOK** |
 | 6 | **Serileştirilmiş** tek istek · opsiyonel ekstra `hakhukuk[api]` | Tekilin evre güvenliği **ölçülmedi**; ölçüm rejimi sıralı istekti. Çekirdek kurulum şişmez (`pyproject.toml` ilk satırındaki karar) |
 
-- [ ] **Adım 1: Failing test** — `tests/test_api.py`, `TestClient` ile, **sunucu ve model YOK**
+- [x] **Adım 1: Failing test** BİTTİ **2026-09-10** — `tests/test_api.py`, 14 test, `TestClient` ile, **sunucu ve model YOK**
 (`servis.answer` monkeypatch'lenir). Sınanacaklar: `sunum` dizesi dört parçayı da taşıyor ·
 boş sorgu 422 · boş metin 503 · dolu KESİK 200 · API'nin kendi mantığı yok (kaynak denetimi).
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör** BİTTİ **2026-09-10** — **8 failed + 6 error**, `api.py` yoktu
 
-- [ ] **Adım 3: Bağımlılığı opsiyonel ekstra olarak ekle**
+- [x] **Adım 3: Bağımlılığı opsiyonel ekstra olarak ekle** BİTTİ **2026-09-10** — `fastapi 0.141.1` · `uvicorn 0.52.4`, sürümler **kurulu ortamdan okundu**
 `verify:` `pip install -e .` çekirdek bağımlılıkları **değiştirmiyor**; `[api]` ekstrası
 `fastapi` ve `uvicorn`'u getiriyor, sürümler **kurulu ortamdan okunarak** pinlenir.
 
-- [ ] **Adım 4: `hakhukuk/api.py` — uygulama**
+- [x] **Adım 4: `hakhukuk/api.py` — uygulama** BİTTİ **2026-09-10**
 `verify:` her altı karar testle çivili; `api.py` içinde `REJECT_RE`, `siniflandir(`, `_getir(`
 geçmiyor (ince kabuk kapısı, `test_tui.py`'nin aynısı).
 
-- [ ] **Adım 5: Testi koş, GEÇTİĞİNİ gör + commit**
+- [x] **Adım 5: Testi koş, GEÇTİĞİNİ gör + commit** BİTTİ **2026-09-10** — **178 test yeşil** (164 → +14), 2 xfail · commit `0f02896`
+
+**Alet dersi, kayda geçti:** `pyproject` testinin ilk sürümü **metin araması** yapıyordu ve
+`[project.optional-dependencies]` başlığından önceki bir **yorum satırındaki** *"fastapi"*
+geçişine takıldı — kodu değil **aleti** yanılttı. `tomllib` ile yapı okunacak biçimde
+düzeltildi. Bu hattın bilinen sınıfı: *"hata vermeden yanlış"*.
 
 - [ ] **Adım 6: Gözle doğrula** — `hakhukuk-api` ile aç, bir soru sor, cevabı **gör**.
 `verify:` `sunum` alanı ekranda rozet + atıf + kaynak + ibare taşıyor; boş sorgu 422 dönüyor.
