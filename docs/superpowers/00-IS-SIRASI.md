@@ -20,6 +20,8 @@
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
 ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md      99 kutucuk · 88 BİTTİ · 11 AÇIK
+          2026-09-10: bitmiş 14 görev record/…-kapanan-gorevler.md'ye TAŞINDI
+             plan 2.337 → 1.343 satır · dosyadaki kutucuk 24, payda hâlâ 99
           başlatıcı: goal-hp-hat-a-hat-b.md  (3.782 karakter, PLANLAMA MODU)
              insan kararı 2026-09-10: goal icraya değil TASARIMA sürüyor;
              kod yazmak, kutucuk işaretlemek ve commit ONAY ister
@@ -162,6 +164,7 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-10** | Planın `/goal` promptu (3.995 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli dokuz sıralık düzeni taşıyor, açık üçü SIRA 2 · 7 · 9. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
 | [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |
+| [`record/2026-09-10-…-kapanan-gorevler.md`](../record/2026-09-10-hp-hat-a-hat-b-kapanan-gorevler.md) | kayıt | **taşındı 2026-09-10** | Ana planın **bitmiş on dört görevinin** tam metni. Plan 2.337 → 1.343 satıra indi; yerlerinde kapanış blokları var. **Plan değildir** — kutucukları tarihseldir, açılmaz. Atlanan (G2·G14·G15) ve bekletilen (G8) görevler **planda kaldı**. |
 | [`plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md`](plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md) | plan | **yazıldı, 0/62** | Yukarıdaki spec'in uygulaması. Ana plandan **sonra** koşar. |
 
 ---
