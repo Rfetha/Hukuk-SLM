@@ -5,7 +5,7 @@
 > en başına çıksın diye. 2026-09-08'de kısa bir süre `README.md` idi — GitHub klasör görünümü
 > için doğruydu ama IDE ağacında en dibe düşüp adını kaybediyordu; günlük bakılan yer IDE.)*
 
-> **Bu dosya bir HARİTA, bir plan değil.** Kutucuk taşımaz. Söylediği tek şey: *elimdeki beş
+> **Bu dosya bir HARİTA, bir plan değil.** Kutucuk taşımaz. Söylediği tek şey: *elimdeki altı
 > belgeden hangisi şimdi, hangisi sonra, ve hangisi neyi bekliyor.*
 > Sıra **insan tarafından kilitlendi** (2026-09-07). Bir planın *içindeki* adım sırası o planın
 > kendi meselesi; burası **planlar arası** sırayı bağlar.
@@ -19,7 +19,7 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          99 kutucuk · 87 bitti
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          99 kutucuk · 88 bitti
           başlatıcı: goal-hp-hat-a-hat-b.md  (3.995 karakter)
           FAZ 1-2-3-4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
           FAZ 5 (dağıtım) AÇILDI 2026-09-10 — G19 API + G20 konteyner
@@ -34,10 +34,9 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
              5. G18 araç katmanı                   BİTTİ · regresyon 80/80 birebir
              6. G17 modeli YAYINLA                 BİTTİ · HF'te, şu an ÖZEL
              7. G19 HTTP API (FastAPI)             5/6 — kod bitti, göz kapısı açık
-             9. G20 konteyner dağıtımı             AÇIK — 5 karar kilitli (ADR-0078)
-                                                   Adım 0 bir GPU KAPISI
+             9. G20 konteyner dağıtımı             1/9 — Adım 0 GPU KAPISI GEÇTİ
           (8 = tickets; plan kutucuğu değil, numara goal ile aynı kalsın diye)
-          AÇIK KUSURLAR: plans/post-hp-hat-b-tickets.md (on üç ticket)
+          AÇIK KUSURLAR: ana planın SONUNDAKİ bölüm (on üç, kutucuk taşımaz)
 ──────────────────────────────────────────────────────────────────────────────
    SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
@@ -145,8 +144,7 @@ koşmaz. Kaynak: [spec §7b](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.m
 | belge | tür | durum | ne der |
 | :--- | :--- | :--- | :--- |
 | [`plans/2026-09-06-faz0-olcum-zinciri.md`](plans/2026-09-06-faz0-olcum-zinciri.md) | plan | **48/48 KAPANDI** | Ölçüm zinciri onarıldı; v1.0 kapısının üç maddesi de DEV'de sayıyla geçti. Aletin **beş** kusuru bulundu. Artık **kayıt**tır — açılmaz, kutucuğu işaretlenmez. |
-| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 87/99** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19, HTTP API) ve **SIRA 9** (Görev 20, konteyner dağıtımı) — son ikisinin kararları kilitli, kodu yazılmadı. |
-| [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) | ticket | **AÇIK, 13 ticket** | Ana planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusurlar. En ağırı: ürün yolunda cevapların ~%5'i **boş** dönüyor ve bu, ADR-0040'ın geçerlilik kapısını geçmez. |
+| [`plans/2026-09-07-hp-hat-a-hat-b.md`](plans/2026-09-07-hp-hat-a-hat-b.md) | plan | **AÇIK, 88/99** | Yürüyen ana plan. **En üstünde İCRA DURUMU bloğu var — durum oradan okunur.** `v0.2` ve `v0.3` bu planla etiketlendi. İş sırasının yedisinden beşi kapandı. Açık üçü: **SIRA 2** (insan gözüyle TUI doğrulaması), **SIRA 7** (Görev 19 Adım 6 — kod bitti, göz kapısı açık) ve **SIRA 9** (Görev 20, konteyner — Adım 0 GEÇTİ). Plan kapsamı dışındaki on üç kusur da bu dosyanın **sonunda**, kutucuksuz. |
 | [`plans/goal-hp-hat-a-hat-b.md`](plans/goal-hp-hat-a-hat-b.md) | başlatıcı | **YENİLENDİ 2026-09-10** | Planın `/goal` promptu (3.995 karakter, sınır 4.000). Plan ilerledikçe **bu da yenilenir**; bugünkü hâli dokuz sıralık düzeni taşıyor, açık üçü SIRA 2 · 7 · 9. |
 | [`specs/2026-09-06-yeni-belge-katmani-design.md`](specs/2026-09-06-yeni-belge-katmani-design.md) | spec | **plana döküldü** | Ana planın *niye bu sırada* olduğunun gerekçesi. Yeni iş üretmez; sıra tartışılırsa buraya bakılır. |
 | [`specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md`](specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md) | spec | **plana döküldü** | Üç kilitli karar (K1 kapsam · K2 anlık görüntü + fark taraması · K3 kapsam kapısı). Plan yazılırken **iki sayısı ölçülerek çürütüldü** ve §7b'ye damgalandı. |
@@ -171,7 +169,13 @@ Bir plan kapandığında **iki yer** güncellenir: planın kendi kapanış bloğ
 "Bir bakışta" kutusu**. Sıra değişirse gerekçe buraya yazılır — sıra değişikliğinin *niye*si
 başka hiçbir yerde durmuyor.
 
-Bir planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusur, plana
-sıkıştırılmaz: [`plans/post-hp-hat-b-tickets.md`](plans/post-hp-hat-b-tickets.md) gibi ayrı bir
-ticket dosyasına yazılır ve buradaki tabloya bir satır olarak girer. Planın kapsamı ile borcun
-kaydı ayrı tutulur; yoksa plan hiç kapanmaz.
+~~Bir planın yürütülmesi sırasında çıkan ve o planın kapsamında **çözülmeyen** kusur, plana
+sıkıştırılmaz: ayrı bir ticket dosyasına yazılır ve buradaki tabloya bir satır olarak girer.~~
+
+**BU KURAL 2026-09-10'da DEĞİŞTİ (insan kararı).** Ayrı ticket dosyası **kaldırıldı**;
+`plans/post-hp-hat-b-tickets.md` silindi ve on üç kusur ana planın sonundaki
+[AÇIK KUSURLAR](plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--plan-kapsamında-çözülmeyenler)
+bölümüne taşındı. Gerekçe teknik değil, tercihtir; öyle yazılıyor.
+**Kuralın koruduğu şey ayakta:** *"planın kapsamı ile borcun kaydı ayrı tutulur, yoksa plan hiç
+kapanmaz"*. Ayrım artık dosyayla değil **kutucukla** sağlanıyor — kusur bölümü `- [ ]` taşımaz
+ve paydaya girmez. Bu şart düşerse kural da düşer ve plan kapanamaz hâle gelir.

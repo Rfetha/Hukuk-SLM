@@ -1,9 +1,9 @@
 /goal Planı BİTİR: docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md
-ÖNCE OKU: planın İCRA DURUMU + İŞ SIRASI blokları (82/99) · post-hp-hat-b-tickets.md.
+ÖNCE OKU: planın İCRA DURUMU + İŞ SIRASI + AÇIK KUSURLAR blokları (87/99).
 DURUM 2026-09-10: sürüm v0.3; v1.0 VERİLMEDİ (ADR-0077) — engel model değil ÖLÇÜM AYGITI (tek
 hakem ailesi, κ 0,534 < 0,6). 164 test yeşil. MASTER temiz, origin ile eşit, v0.3
 push edildi. Ağırlıklar HF'te ÖZEL. Bakiye $2,20. ATLANDI, açma: G2·G14·G15·G8.
-AÇIK SIRA: 2·7·9 (8 = tickets, plan dışı).
+AÇIK SIRA: 2·7·9 (8 = açık kusurlar, kutucuksuz).
 
 ━━ SIRA 2 · G12/6-7 — TUI gözle doğrula · $0 · GPU · İNSAN GÖZÜ KAPISI
 llama-server aç (bayraklar aşağıda), `python -m hakhukuk.tui`, ÜÇ soru sor.
@@ -20,7 +20,7 @@ hazır `sunum` dizesi (tek alanı bassa bile rozet+atıf+kaynak+ibare gider) · 
 TDD: failing test (TestClient, sunucu/model YOK, servis.answer monkeypatch) → koş → gör → kod.
 Adım 6 GÖZ KAPISI. Ticket 1/3'ü ÇÖZMEZ; boş cevap 503 GÖRÜNÜR, giderilmez.
 
-━━ SIRA 9 · G20 — KONTEYNER · $0 · 9 kutucuk · ADR-0078 · G19'DAN SONRA
+━━ SIRA 9 · G20 — KONTEYNER · $0 · 1/9 · ADR-0078 · G19'DAN SONRA
 Gerekçe kolaylık DEĞİL: ticket 2 ölçtü — sunucu bayrağı CEVABI DEĞİŞTİRİYOR ve bunu bugün
 hiçbir şey zorlamıyor; compose zorlayan ilk artefakt.
 3 kutu / 2 daemon / 2 imaj: hakhukuk-indir (TEK SEFERLİK; HF pinli revizyon → sha256 KAPISI
@@ -30,11 +30,11 @@ bayraklar birebir · tek sapma --host 0.0.0.0, sebebi yazılı, üretimi etkilem
 latest YOK, sha256+bayt kapısı, tutmazsa ERKEN ÇIKIŞ · indeks iki yollu (volume öncelikli, HF
 yedek) ⇒ G8'in bekleme gerekçesi bozulmaz · imaj repo AĞACINI kopyalar, F1 (paket tek başına
 kurulamıyor, servis.py:46) onarılmaz ve ticket 11'de durur.
-ADIM 0 KAPIDIR: konteyner GPU'yu görüyor mu ÖLÇ (nvidia-ctk YOK). Tutmazsa CPU'ya
-düşmek -ngl 99'u düşürür = YENİ REJİM ⇒ DUR ve SOR. Adım 7 İNSAN GÖZÜ KAPISI.
+ADIM 0 GPU KAPISI GEÇTİ 2026-09-10: konteyner RTX 5070 Ti'yi host ile BİREBİR görüyor
+(12227 MiB, 591.97). Topoloji değişmiyor. Adım 7 İNSAN GÖZÜ KAPISI.
 Konteyner 0,8011'i ÜRETMEZ (ölçüm hattının sayısı) ve ticket 1/3/4/6'yı ÇÖZMEZ.
 
-━━ SIRA 8 · tickets — plans/post-hp-hat-b-tickets.md, on bir ticket, planda DEĞİL
+━━ SIRA 8 · açık kusurlar — planın SONUNDAKİ bölüm, on üç, KUTUCUK TAŞIMAZ
 En ağırı: ürün yolunda cevapların ~%5'i TAMAMEN BOŞ (4/80) ve ADR-0040'ın %5 kapısını GEÇMEZ;
 düzeltmesi REJİM DEĞİŞİKLİĞİ ⇒ onay + 80 kalem yeniden ölçüm. Ayrıca: KV ayarının etkisi
 ÖLÇÜLMEDİ · boş sorgu reddedilmiyor.

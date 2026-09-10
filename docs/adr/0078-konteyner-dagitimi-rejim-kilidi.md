@@ -8,7 +8,7 @@
 [ADR-0057](0057-harness-rekabet-kapisi-esit-sinav.md) (eşit sınav) ·
 [ADR-0065](0065-bolunmus-surumleme.md) (bölünmüş sürümleme) ·
 [ADR-0077](0077-v1-0-verilmedi-v0-3.md) (`v0.3`)
-**Kaynak:** [`post-hp-hat-b-tickets.md`](../superpowers/plans/post-hp-hat-b-tickets.md) ticket 2 ·
+**Kaynak:** ana planın [AÇIK KUSURLAR](../superpowers/plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--plan-kapsamında-çözülmeyenler) bölümü, kusur 2 ·
 [`kollar.md`](../record/kollar.md) 2026-09-09 bloğu (`sha256`, bayt sayısı)
 
 ## Bağlam — konteynerin gerekçesi ölçülmüş bir kusurdur
