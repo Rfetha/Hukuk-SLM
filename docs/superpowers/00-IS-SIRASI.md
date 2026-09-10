@@ -19,26 +19,38 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md          99 kutucuk · 88 bitti
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md      99 kutucuk · 88 BİTTİ · 11 AÇIK
           başlatıcı: goal-hp-hat-a-hat-b.md  (3.782 karakter, PLANLAMA MODU)
-             insan kararı 2026-09-10: goal artık icraya değil TASARIMA sürüyor;
+             insan kararı 2026-09-10: goal icraya değil TASARIMA sürüyor;
              kod yazmak, kutucuk işaretlemek ve commit ONAY ister
-          FAZ 1-2-3-4 bitti → sürüm v0.3 ETİKETLENDİ (2026-09-09)
-          FAZ 5 (dağıtım) AÇILDI 2026-09-10 — G19 API + G20 konteyner
-          G2 ATLANDI (bütçe, ADR-0074) · G8 BEKLETİLİYOR (Adım 1b hariç, o bitti)
-          G14+G15 EĞİTİM TURLARI ATLANDI (ADR-0075) — v1 SFT ile kapanır
-          LİNEER SIRANIN DURUMU (planın İCRA DURUMU bloğunda):
-             1. G8 Adım 1b  KUNYE taşınabilirlik   BİTTİ · recall@10 0,9500
-             2. G12 Adım 6-7 TUI gözle doğrula     AÇIK — insan gözü kapısı
-             3. G4  Sonnet-5 öznesi                BİTTİ · $1,1932 · Sonnet ÖNDE
-             4. G16 Adım 2-4 kabul testi           BİTTİ · TEST kütle 0,5804
-                                                   v1.0 VERİLMEDİ → v0.3 (ADR-0077)
-             5. G18 araç katmanı                   BİTTİ · regresyon 80/80 birebir
-             6. G17 modeli YAYINLA                 BİTTİ · HF'te, şu an ÖZEL
-             7. G19 HTTP API (FastAPI)             5/6 — kod bitti, göz kapısı açık
-             9. G20 konteyner dağıtımı             1/9 — Adım 0 GPU KAPISI GEÇTİ
-          (8 = tickets; plan kutucuğu değil, numara goal ile aynı kalsın diye)
-          AÇIK KUSURLAR: ana planın SONUNDAKİ bölüm (on üç, kutucuk taşımaz)
+
+          ── YAPILDI ──────────────────────────────────────────────────────
+             FAZ 1-2-3-4            v0.3 ETİKETLENDİ (2026-09-09)
+             G8 Adım 1b   KUNYE taşınabilirlik    recall@10 0,9500
+             G4           Sonnet-5 öznesi         $1,1932 · Sonnet ÖNDE
+             G16          kabul testi             TEST kütle 0,5804 ⇒ v1.0
+                                                  VERİLMEDİ → v0.3 (ADR-0077)
+             G18          araç katmanı            regresyon 80/80 birebir
+             G17          modeli YAYINLA          HF'te, şu an ÖZEL
+             G19 Adım 1-5 HTTP API kodu           178 test yeşil (2026-09-10)
+             G20 Adım 0   GPU kapısı              GEÇTİ — konteyner GPU'yu
+                                                  host ile BİREBİR görüyor
+
+          ── YAPILMADI ────────────────────────────────────────────────────
+             SIRA 2  G12 Adım 6-7  TUI gözle doğrula   İNSAN GÖZÜ KAPISI
+             SIRA 7  G19 Adım 6    API gözle doğrula   İNSAN GÖZÜ KAPISI
+             SIRA 9  G20 Adım 1-8  konteyner kodu      insan onayı bekliyor
+                                                       ADR-0078, 5 karar kilitli
+
+          ── AÇILMAYACAK / BEKLİYOR (karar) ───────────────────────────────
+             G2           üçüncü hakem ailesi    ATLANDI — bütçe (ADR-0074)
+             G14 + G15    eğitim turları         ATLANDI — v1 SFT ile kapanır
+                                                 (ADR-0075)
+             G8           indeks dağıtımı        BEKLETİLİYOR — korpus 8,4×
+                                                 büyüyecek (Adım 1b hariç)
+
+          AÇIK KUSURLAR: planın SONUNDAKİ bölüm — on üç, KUTUCUK TAŞIMAZ ve
+                         paydaya (99) GİRMEZ; plan onlarla birlikte kapanabilir
 ──────────────────────────────────────────────────────────────────────────────
    SONRA   ▸ 2026-09-08-mevzuat-kapsam-ve-tazelik.md      9 görev · 62 kutucuk
              spec: specs/2026-09-07-mevzuat-kapsam-ve-tazelik-design.md (onaylı)
