@@ -2,7 +2,9 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-10 · **88/115 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-11 · **104/115 kutucuk** · `v0.3` etiketlendi
+
+> **2026-09-11 turu:** G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8) · G22 **1/5** (kalan ikisi **DUR-ve-SOR**). **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, karar **ADR-0079**. Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-19**. Harcanan: **$0**.
 
 > ⚠️ **Kutucukları SAYARAK doğrulamaya çalışma — bu dosyada 40 tane var, 115 değil.**
 > 2026-09-10'da bitmiş on dört görev **kapanış bloğuna indirildi** ve tam metinleri
