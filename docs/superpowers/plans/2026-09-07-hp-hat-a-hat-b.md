@@ -1181,7 +1181,7 @@ Global kısıtlara bir cümle girer: *yeni özne eklenirken duman koşusu **taba
 ⚠️ **Grill bulgusu:** listede **iki ayrı `2.17` satırı** var (biri #58, biri #62) — numara
 çakışması **zaten mevcut**; yeni satır bunu büyütmemeli.
 
-- [ ] **Adım 10: Testler yeşil + commit** *(davranışsal ve yapısal değişiklikler AYRI commit)*
+- [x] **Adım 10: Testler yeşil + commit** *(davranışsal ve yapısal değişiklikler AYRI commit)* — **195 yeşil, 2 xfail** (2026-09-11). Üç commit: `6d81340` ölçüm · `d75b5c5` davranış · `4f0b795` kayıt. Yapısal ↔ davranışsal ayrımı: bu turda saf yapısal değişiklik YOK — tek ad değişikliği (`_iskele_isaretlerini_sil` → kamusal) aynı turda DOĞAN kodun adıdır, mevcut kodun yeniden adlandırılması değil; ayrı commit onu gerekçesiz bırakırdı.
 
 - [ ] **Adım 11: GÖZ KAPISI** — TUI'de üç soru. **İNSAN GÖZÜ KAPISI, kendi başına işaretlenmez.**
 `verify:` ekran **donmuyor** ve ilerleme satırı çiziliyor · açılışta yönerge + kapsam satırı
