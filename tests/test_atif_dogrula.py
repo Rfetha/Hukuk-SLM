@@ -1,5 +1,10 @@
+import json
+import os
+
+import pytest
+
 from atif_dogrula import DOGRULANDI, AYRISTIRILAMADI, MADDE_YOK, KANUN_YOK, MULGA, \
-    atiflari_ayikla, dogrula  # noqa: E402
+    atiflari_ayikla, dogrula, Dogrulayici  # noqa: E402
 
 KORPUS = [
     {"kanun_no": "5271", "kanun_adi": "CEZA MUHAKEMESİ KANUNU", "madde_no": "Madde 161",
@@ -175,3 +180,98 @@ def test_cok_anlamli_ad_hepsi_mulgaysa_MULGA_kalir():
          "text": "…", "mulga": True},
     ]
     assert dogrula(atiflari_ayikla("(İş Kanunu, Madde 111)")[0], kayitlar).hukum == MULGA
+
+
+# ── Kusur 18 · tuzak 1.13: gevşek ad eşleşmesi YANLIŞ kanuna çözüyor ──────────
+# Ölçüm: outputs/eval/g22-atif-cozum/BULGU.md (2026-09-11)
+# Reçete: ad çözümü birebir ya da TEK bir gevşemeyle yapılır; çift gevşek eşleşme
+#         AYRISTIRILAMADI döner, sessizce bir kanun SEÇMEZ.
+
+_REPO_KOK = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_KORPUS_YOLU = os.path.join(_REPO_KOK, "data/corpus/mevzuat_maddeler.jsonl")
+_CIPA_YOLU = os.path.join(_REPO_KOK,
+                          "outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl")
+
+
+@pytest.fixture(scope="module")
+def gercek():
+    if not os.path.exists(_KORPUS_YOLU):
+        pytest.skip("korpus yok")
+    return Dogrulayici(_KORPUS_YOLU)
+
+
+def test_dogrula_parantezli_son_ekli_kanun_adini_dogru_cozer(gercek):
+    """⚠️ Tuzak 1.13'ün yanlış-POZİTİF yönü: 193 → 1319, madde yok → 'uydurma'.
+
+    Korpusta ad *"GELİR VERGİSİ KANUNU (G.V.K.)"*; model parantezsiz yazıyor. Eski alet
+    adın başındaki sözcüğü atıp `VERGİSİ KANUNU` sonekine düşüyor ve **EMLAK VERGİSİ
+    KANUNU**'na (1319) çözüyordu. `193/Madde 73` korpusta VAR.
+    """
+    h = gercek.cevabi_dogrula("Gelir Vergisi Kanunu Madde 73 uyarınca.")[0]
+    assert h.kanun_no == "193", f"yanlış kanuna çözüldü: {h}"
+    assert h.hukum == DOGRULANDI
+    assert "GELİR VERGİSİ" in h.kanun_adi
+
+
+def test_dogrula_gelir_vergisini_emlak_vergisine_COZMEZ(gercek):
+    """⚠️ Tuzak 1.13'ün yanlış-NEGATİF yönü — tehlikeli olan bu: yanlış kanun + DOGRULANDI."""
+    h = gercek.cevabi_dogrula("Gelir Vergisi Kanunu Madde 1 uyarınca.")[0]
+    assert h.kanun_no != "1319", f"EMLAK VERGİSİ KANUNU'na çözüldü: {h}"
+
+
+def test_dogrula_cift_gevsek_eslesmede_kanun_SECMEZ():
+    """Çift gevşeme (atıftan sözcük at **ve** korpus adının sonekine düş) = 'bilmiyorum'.
+
+    Korpusta yalnız EMLAK VERGİSİ KANUNU varken *"Gelir Vergisi Kanunu"* atfı hiçbir
+    kanuna birebir uymaz; eski alet `VERGİSİ KANUNU` sonekiyle 1319'u **seçiyor** ve
+    madde orada olduğu için `DOGRULANDI` basıyordu.
+    """
+    korpus = [{"kanun_no": "1319", "kanun_adi": "EMLAK VERGİSİ KANUNU",
+               "madde_no": "Madde 1", "text": "bina vergisi"}]
+    h = dogrula(atiflari_ayikla("Gelir Vergisi Kanunu Madde 1")[0], korpus)
+    assert h.hukum == AYRISTIRILAMADI, f"sessizce kanun seçildi: {h}"
+    assert h.kanun_no == ""
+
+
+def test_hukum_cozulen_kanunun_ADINI_tasir():
+    """Çözülen kanunun adı hükümle birlikte taşınmalı ki yanlış çözüm GÖZLE görülsün."""
+    korpus = [{"kanun_no": "4857", "kanun_adi": "İŞ KANUNU", "madde_no": "Madde 21",
+               "text": "işe iade"}]
+    h = dogrula(atiflari_ayikla("İŞ KANUNU Madde 21")[0], korpus)
+    assert h.kanun_adi == "İŞ KANUNU"
+    yok = dogrula(atiflari_ayikla("İŞ KANUNU Madde 9999")[0], korpus)
+    assert yok.hukum == MADDE_YOK and yok.kanun_adi == "İŞ KANUNU"
+
+
+def test_dogrula_kucuk_harfli_VE_ile_kesilen_adi_hala_cozer(gercek):
+    """Ayrıştırıcı *"İcra ve İflas Kanunu"*nu `İflas Kanunu`ya kesiyor — onarım bunu bozmamalı."""
+    h = gercek.cevabi_dogrula("İcra ve İflas Kanunu Madde 85 uyarınca.")[0]
+    assert h.hukum == DOGRULANDI and h.kanun_no == "2004"
+
+
+def test_dogrula_sapkali_harfle_kesilen_adi_hala_cozer(gercek):
+    """*"Sinaî Mülkiyet Kanunu"* → ayrıştırıcı `Mülkiyet Kanunu` görüyor (î kesiyor)."""
+    h = gercek.cevabi_dogrula("Sinaî Mülkiyet Kanunu Madde 3 uyarınca.")[0]
+    assert h.hukum == DOGRULANDI and h.kanun_no == "6769"
+
+
+def test_dogrula_ayni_adli_iki_kanunda_YURURLUKTEKINI_secer(gercek):
+    """`İş Kanunu` hem 4857 (yürürlükte) hem 1475 (mülga) — çıpanın 15 atfı bu kalıpta."""
+    h = gercek.cevabi_dogrula("İş Kanunu Madde 111 uyarınca.")[0]
+    assert h.hukum == DOGRULANDI and h.kanun_no == "4857"
+
+
+def test_CIPA_114_atfin_tamami_DOGRULANDI_kalir(gercek):
+    """⚠️ REGRESYON ÇIPASI — yayımlanan **0/114 uydurma** manşetinin kaynağı.
+
+    Onarım eski DOĞRULARI bozmamalı: çıpadaki 114 atfın tamamı `DOGRULANDI` kalmalı.
+    Kaynak: `outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl` (80 cevap).
+    """
+    if not os.path.exists(_CIPA_YOLU):
+        pytest.skip("çıpa koşusu yok")
+    sayac = {}
+    for satir in open(_CIPA_YOLU, encoding="utf-8"):
+        if satir.strip():
+            for h in gercek.cevabi_dogrula(json.loads(satir).get("cevap", "")):
+                sayac[h.hukum] = sayac.get(h.hukum, 0) + 1
+    assert sayac == {DOGRULANDI: 114}, f"çıpa kaydı: {sayac}"

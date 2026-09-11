@@ -106,7 +106,7 @@ def supur(detay_yolu: str, korpus_yolu: str, esikler=(0, 1, 2, 3)) -> dict:
                         continue
                     kova = sonuc[str(e)]
                     tasiyan = hukum = None
-                    for kn in sorted(_adaylar_toleransli(h.atif.kanun, dog._adlar, e)):
+                    for kn in sorted(_adaylar_toleransli(h.atif.kanun, dog._dizin.sonek, e)):
                         satirlar = dog._indeks.get((kn, h.atif.tip, h.atif.madde))
                         if satirlar:
                             tasiyan = kn

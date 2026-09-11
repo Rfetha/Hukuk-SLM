@@ -77,6 +77,9 @@ class Hukum:
     atif: Atif
     hukum: str
     kanun_no: str = ""
+    # Why: çözülen kanunun ADI hükümle birlikte taşınır ki yanlış çözüm GÖZLE görülebilsin
+    # (tuzak 1.13). Numara tek başına "193 mü 1319 mu" sorusunu okuyucuya sordurmaz.
+    kanun_adi: str = ""
 
 
 def atiflari_ayikla(cevap: str) -> list[Atif]:
@@ -96,9 +99,32 @@ def atiflari_ayikla(cevap: str) -> list[Atif]:
 
 ASGARI_SONEK_SOZCUK = 2   # "KANUNU" tek başına her kanuna uyar — doğrulayıcıyı öldürür
 
+_SON_PARANTEZ = re.compile(r"\s*\([^()]*\)\s*$")
 
-def _kanun_adlari(kayitlar) -> dict[str, set]:
-    """Kanun adı ve ≥2 sözcüklü SONEKLERİ → kanun_no **KÜMESİ**.
+
+@dataclass(frozen=True)
+class KanunDizini:
+    """Ad çözümünün üç tablosu — `_dizin_kur` doldurur, `_ad_adaylari` okur."""
+    sonek: dict      # ≥2 sözcüklü ad soneki → {kanun_no}
+    tam: dict        # birebir ad → {kanun_no}
+    adi: dict        # kanun_no → korpustaki ad
+
+
+def _ad_varyantlari(ad: str) -> set:
+    """Bir kanun adının eşleşmeye giren yazımları: tam ad + SONDAKİ parantezi atılmış hâli.
+
+    ⚠️ Why: korpusta 16 kanunun adı parantez taşıyor, 7'sinde parantez **sondadır**
+    (`GELİR VERGİSİ KANUNU (G.V.K.)`). Model parantezsiz yazar; parantezli ad birebir
+    eşleşmediği için çözüm gevşek sonek eşleşmesine düşüyor ve YANLIŞ kanuna gidiyordu:
+    *"Gelir Vergisi Kanunu Madde 73"* → `1319` EMLAK VERGİSİ KANUNU → `MADDE_YOK`
+    (tuzak 1.13 · `outputs/eval/g22-atif-cozum/BULGU.md` §4).
+    """
+    tam = _ad_normal(ad)
+    return {tam, _SON_PARANTEZ.sub("", tam)} - {""}
+
+
+def _dizin_kur(kayitlar) -> KanunDizini:
+    """Korpus kayıtlarından ad çözüm tablolarını kur.
 
     ⚠️ Why küme: bir ad birden çok kanuna ait olabilir. Ölçüldü — `İŞ KANUNU` hem
     **4857** (yürürlükte) hem **1475** (mülga) için geçerli. Ad→tek no eşlemesi
@@ -110,13 +136,18 @@ def _kanun_adlari(kayitlar) -> dict[str, set]:
     5 `KANUN_YOK`'un **tamamı** bu yüzden yanlış negatifti ve katı kapıda her yanlış
     negatif **doğrudan coverage kaybıdır** (ADR-0038'in adını koyduğu kalibrasyon borcu).
     """
-    adlar: dict[str, set] = {}
+    sonek: dict = {}
+    tam: dict = {}
+    adi: dict = {}
     for r in kayitlar:
         no = str(r["kanun_no"]).strip()
-        sozcukler = _ad_normal(r["kanun_adi"]).split()
-        for i in range(len(sozcukler) - ASGARI_SONEK_SOZCUK + 1):
-            adlar.setdefault(" ".join(sozcukler[i:]), set()).add(no)
-    return adlar
+        adi.setdefault(no, r.get("kanun_adi", ""))
+        for varyant in _ad_varyantlari(r.get("kanun_adi", "")):
+            tam.setdefault(varyant, set()).add(no)
+            sozcukler = varyant.split()
+            for i in range(len(sozcukler) - ASGARI_SONEK_SOZCUK + 1):
+                sonek.setdefault(" ".join(sozcukler[i:]), set()).add(no)
+    return KanunDizini(sonek, tam, adi)
 
 
 def _ad_normal(ad: str) -> str:
@@ -130,22 +161,48 @@ def _ad_normal(ad: str) -> str:
     return s.replace("i", "İ").replace("ı", "I").upper()
 
 
-def _ad_adaylari(kanun: str, adlar: dict) -> set:
-    """Bilinen bir kanun adına denk gelen en uzun SONEK'in kanun_no kümesi.
+def _ad_adaylari(kanun: str, dizin: KanunDizini) -> set:
+    """Atıftaki ad → kanun_no kümesi. **En çok TEK gevşeme**; yoksa boş küme.
 
-    ⚠️ Why sonek: ayrıştırıcı ad öncesindeki başlık-harfli sözcüğü de yutabiliyor
-    (*"Ayrıca TÜRK BORÇLAR KANUNU"*). Sonek daraltması yalnız korpusta **var olan**
-    adlarla eşleştiği için yanlış doğrulama üretemez.
+    İki gevşemeye ayrı ayrı izin vardır, ikisine BİRDEN asla:
+      (1) atıftaki adın **tamamı** bir kanun adının ≥2 sözcüklü soneki olabilir — model
+          resmî adın kısa hâlini yazıyor, ayrıştırıcı da adı küçük harfli `ve`'de ya da
+          `î`'de kesiyor (*"İflas Kanunu"* ⊂ `İCRA VE İFLAS KANUNU`).
+      (2) ayrıştırıcı ad önüne başlık-harfli bir sözcük katmış olabilir (*"Ayrıca TÜRK
+          BORÇLAR KANUNU"*); o sözcükler atılır, ama kalan **BİREBİR** bir kanun adı olmalı.
+
+    ⚠️ İkisi birden serbest bırakılırsa (eski davranış) *"Gelir Vergisi Kanunu"* önce
+    `GELİR`i atıp `VERGİSİ KANUNU` sonekine düşüyor ve **EMLAK VERGİSİ KANUNU**'na
+    çözülüyordu — tuzak 1.13'ün ta kendisi.
     """
     sozcukler = _ad_normal(kanun).split()
-    for i in range(len(sozcukler)):
-        adaylar = adlar.get(" ".join(sozcukler[i:]))
+    if len(sozcukler) < ASGARI_SONEK_SOZCUK:
+        return set()
+    adaylar = dizin.sonek.get(" ".join(sozcukler))
+    if adaylar:
+        return adaylar
+    for i in range(1, len(sozcukler) - ASGARI_SONEK_SOZCUK + 1):
+        adaylar = dizin.tam.get(" ".join(sozcukler[i:]))
         if adaylar:
             return adaylar
     return set()
 
 
-def _hukum(atif: Atif, adlar: dict, indeks: dict) -> Hukum:
+def _gevsek_adaylar(kanun: str, dizin: KanunDizini) -> set:
+    """ÇİFT gevşemeyle (baştan sözcük at **ve** korpus adının sonekine düş) ulaşılan adaylar.
+
+    Yalnız *"bilmiyorum"* diyebilmek için hesaplanır: boş değilse ad **çözülememiştir** ve
+    `AYRISTIRILAMADI` döner — sessizce bir kanun SEÇİLMEZ (tuzak 1.13 reçetesi).
+    """
+    sozcukler = _ad_normal(kanun).split()
+    for i in range(1, len(sozcukler) - ASGARI_SONEK_SOZCUK + 1):
+        adaylar = dizin.sonek.get(" ".join(sozcukler[i:]))
+        if adaylar:
+            return adaylar
+    return set()
+
+
+def _hukum(atif: Atif, dizin: KanunDizini, indeks: dict) -> Hukum:
     """Tek atıf → hüküm. Doğrulama mantığının TEK kaynağı.
 
     `indeks`: madde anahtarı → o anahtarı taşıyan korpus satırları (`korpus_indeksi`).
@@ -153,9 +210,12 @@ def _hukum(atif: Atif, adlar: dict, indeks: dict) -> Hukum:
     """
     if atif.tip == AYRISTIRILAMADI:
         return Hukum(atif, AYRISTIRILAMADI)
-    adaylar = _ad_adaylari(atif.kanun, adlar)
+    adaylar = _ad_adaylari(atif.kanun, dizin)
     if not adaylar:
-        return Hukum(atif, KANUN_YOK)
+        # Ad çözülemedi ≠ kanun yok. Gevşek eşleşme bir kanun SEÇMEZ, görünür kalır
+        # (tuzak 1.13); korpusta gerçekten olmayan kanun ise hüküm KANUN_YOK'tur.
+        return Hukum(atif, AYRISTIRILAMADI if _gevsek_adaylar(atif.kanun, dizin)
+                     else KANUN_YOK)
     # Ad çok anlamlıysa maddeyi TAŞIYAN kanun doğrular; hangisi olduğu hükme yazılır.
     # Why `all`: anahtar birden çok satıra düşebiliyor (korpusta madde kimliği yinelenebiliyor
     # — research_log #52). Yürürlükte TEK bir satır bile varsa atıf mülga sayılmaz; aksi hâlde
@@ -168,10 +228,11 @@ def _hukum(atif: Atif, adlar: dict, indeks: dict) -> Hukum:
                if indeks.get((kn, atif.tip, atif.madde))]
     for kn, satirlar in tasiyan:
         if not all(r.get("mulga") for r in satirlar):
-            return Hukum(atif, DOGRULANDI, kn)
+            return Hukum(atif, DOGRULANDI, kn, dizin.adi.get(kn, ""))
     if tasiyan:
-        return Hukum(atif, MULGA, tasiyan[0][0])
-    return Hukum(atif, MADDE_YOK, sorted(adaylar)[0])
+        return Hukum(atif, MULGA, tasiyan[0][0], dizin.adi.get(tasiyan[0][0], ""))
+    secilen = sorted(adaylar)[0]
+    return Hukum(atif, MADDE_YOK, secilen, dizin.adi.get(secilen, ""))
 
 
 def dogrula(atif: Atif, kayitlar) -> Hukum:
@@ -179,7 +240,7 @@ def dogrula(atif: Atif, kayitlar) -> Hukum:
     indeks: dict = {}
     for r in kayitlar:
         indeks.setdefault(madde_anahtari(r["kanun_no"], r["madde_no"]), []).append(r)
-    return _hukum(atif, _kanun_adlari(kayitlar), indeks)
+    return _hukum(atif, _dizin_kur(kayitlar), indeks)
 
 
 class Dogrulayici:
@@ -187,11 +248,11 @@ class Dogrulayici:
 
     def __init__(self, korpus_yolu: str = KORPUS):
         self._kayitlar = [json.loads(l) for l in open(korpus_yolu, encoding="utf-8") if l.strip()]
-        self._adlar = _kanun_adlari(self._kayitlar)
+        self._dizin = _dizin_kur(self._kayitlar)
         self._indeks = korpus_indeksi(korpus_yolu)
 
     def cevabi_dogrula(self, cevap: str) -> list[Hukum]:
-        return [_hukum(a, self._adlar, self._indeks) for a in atiflari_ayikla(cevap)]
+        return [_hukum(a, self._dizin, self._indeks) for a in atiflari_ayikla(cevap)]
 
 
 def main():
