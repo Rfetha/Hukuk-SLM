@@ -85,7 +85,7 @@ product number — v2 unit, 2026-09-07 (harness ON, k=10, S2 corpus, NO preamble
              recall@10                     0.9500     ← mass cannot exceed this
              over-refusal (by eye)          4/80
              misattribution (by eye)        8/80      ← next first-rank axis (B1)
-             fabricated article numbers     0/114     ↔ competitors 1 · 4 · 4
+             fabricated article numbers     0/114     ↔ competitors 1 · 4 · 4  ⚠️ see below
 
    v1.0 GATE CLOSED 2026-09-07 — all three clauses, with numbers (ADR-0064):
    (1) mass ≥ 3.5 Flash − 2,0 p   0.8011 ↔ threshold 0.7225   PASSED  +5.86 p
@@ -117,6 +117,20 @@ Binding metric is **mass** — an unanswered question is worthless to a citizen;
 is paid on **its own axis** (B1), not with a prompt patch.
 [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
 [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
+
+> ⚠️ **The `1 · 4 · 4` competitor figures above are the OLD TOOL'S numbers.** On 2026-09-11 the
+> citation verifier was **repaired** and this comparison was **not re-scored**. The verifier used to
+> resolve a law name loosely and land on the **wrong law** (*"Gelir Vergisi Kanunu"* → `1319 Emlak
+> Vergisi`), stamping `DOGRULANDI` against the wrong statute in **7 of the 16** laws whose corpus name
+> carries a parenthetical; after the repair that class is **0/16**. **Our own column did not move** —
+> `0/114` re-scored **byte-identical**, and the frozen TEST's `0/52` likewise. But the competitor
+> columns were produced with the **unrepaired** tool, and a probe shows the change runs **against us**
+> (3.1 Flash-Lite **1 → 0**, 3.5 Flash-Lite **4 → 3**). Those numbers are **deliberately not written
+> in** — the probe's denominator does not match the published pipeline's (154 ↔ 152 · 134 ↔ 130), so
+> the units are **not equal**. Re-scoring the competitor arms through the published pipeline is an
+> **open decision** ($0, deterministic, no judge): defect **22** in the plan. Until it is paid, read
+> the line as *"ours with the repaired tool, theirs with the unrepaired one"*.
+> Repair + measurement: `outputs/eval/g22-atif-onarim/BULGU.md` · trap **1.13**.
 
 **Product version is `v0.3` (tagged 2026-09-09); the model artifact is still `HakHukuk-4B-v0.1`.**
 `v1.0` was NOT granted — the acceptance test on the frozen TEST ran (raw mass **0,5804**, ceiling
