@@ -1096,8 +1096,13 @@ dizesi `latest` **değil**.
 klasörün değil)* · `data/index/**/*.npy` iki dosya, toplam **165.871.872 B = 158,2 MiB**
 *("79 MB" tek dosyaydı)*. Repo kökündeki `.env` de build bağlamının dışına alındı.
 
-✅ **İKİNCİ `--host` SAPMASI — İNSAN KARARI 2026-09-11: ONAYLANDI.** ADR-0078'e **altıncı karar**
-olarak yazılacak. *(Aşağıdaki gerekçe kararın dayanağıdır.)*
+✅ **İKİNCİ `--host` SAPMASI — İNSAN KARARI 2026-09-11: ONAYLANDI** →
+[ADR-0082](../../adr/0082-app-kutusu-host-sapmasi.md).
+⚠️ **Başta *"ADR-0078'e altıncı karar olarak yazılır"* denmişti; öyle YAPILMADI ve sebebi
+kayda geçti:** `docs/adr/**` **yeniden yazılmaz** ve bu deponun kendi emsali genişletmeyi
+**yeni ADR** ile yapmaktır (ADR-0052 → 0036, ADR-0039 → Kapı 5). 0078'in metni **değişmedi**
+— o gün **beş** karar kilitlenmişti ve kayıt öyle durur; 0078'e yalnız **tek satırlık işaretçi**
+düşüldü. Çelişki **iki yerde** damgalı. *(Aşağıdaki gerekçe kararın dayanağıdır.)*
 Karar 2 yalnız `llama` için sapma tanımlıyordu. `app` kutusu da aynı sorunu yaşıyor:
 `api.py` `HOST="127.0.0.1"` diyor ve konteyner içinde bu arayüz host'tan erişilemez
 (`ports` konteynerin eth0'ına proxy'ler, loopback'ine değil). Ajan `hakhukuk-api` yerine

@@ -8,6 +8,11 @@
 [ADR-0057](0057-harness-rekabet-kapisi-esit-sinav.md) (eşit sınav) ·
 [ADR-0065](0065-bolunmus-surumleme.md) (bölünmüş sürümleme) ·
 [ADR-0077](0077-v1-0-verilmedi-v0-3.md) (`v0.3`)
+> ⚠️ **GENİŞLETİLDİ 2026-09-11 → [ADR-0082](0082-app-kutusu-host-sapmasi.md).** İcra sırasında
+> madde 2'nin (**tek izinli `--host` sapması**) ikinci bir hâli doğdu: `app` kutusu da
+> `--host 0.0.0.0` istiyor. Bu ADR'nin metni **değiştirilmedi** — o gün beş karar kilitlenmişti
+> ve kayıt öyle durur; altıncı karar kendi ADR'sindedir.
+
 **Kaynak:** ana planın [AÇIK KUSURLAR](../superpowers/plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--kayıt-ve-devir) bölümü, kusur 2 ·
 [`kollar.md`](../record/kollar.md) 2026-09-09 bloğu (`sha256`, bayt sayısı)
 
