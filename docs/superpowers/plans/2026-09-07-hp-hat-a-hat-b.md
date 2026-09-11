@@ -2,7 +2,7 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-11 · **111/115 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-11 · **112/115 kutucuk** · `v0.3` etiketlendi
 
 > **2026-09-11 turu:** **G22 KAPANDI 5/5** (Adım 2 ve 3 insana soruldu, ikisi de onaylandı) · G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8). **Kalan 7 kutucuğun 3'ü insan gözü kapısı**, biri insandan sır bekliyor. **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, kararlar **ADR-0079** ve **ADR-0080**. Harcanan: **$0,045067** (OpenRouter ölçümü). Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-20**.
 
@@ -80,7 +80,7 @@ düştüğü üzerine kuruludur.
 | ~~4~~ | **G16** — `v1.0` kabul testi | BİTTİ | donmuş TEST tek kez açıldı; kütle **0,5804** · `v1.0` VERİLMEDİ → `v0.3` (ADR-0077) |
 | ~~5~~ | **G18** — araç katmanı | BİTTİ | 5 kaldıraç · sınırlı döngü · regresyon **80/80 birebir** |
 | ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
-| **7** | **G19** — HTTP API (FastAPI) | **5/6** | kod BİTTİ 2026-09-10, **178 test yeşil**; açık tek kutucuk **Adım 6 = insan gözü kapısı** |
+| ~~7~~ | **G19** — HTTP API (FastAPI) | **BİTTİ 6/6** | kod BİTTİ 2026-09-10, **178 test yeşil**; açık tek kutucuk **Adım 6 = insan gözü kapısı** |
 | ~~8~~ | **açık kusurlar** — kayıt | — | [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü. **On üçün on biri 2026-09-10'da G21+G22'ye alındı**, üçü devredildi. Kalan kayıt **kutucuk değildir, paydaya girmez** |
 | **9** | **G20** — konteyner dağıtımı | **5/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
 | ~~10~~ | **G21** — ürün yüzeyi kusur temizliği | **BİTTİ 11/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
@@ -999,9 +999,24 @@ geçmiyor (ince kabuk kapısı, `test_tui.py`'nin aynısı).
 geçişine takıldı — kodu değil **aleti** yanılttı. `tomllib` ile yapı okunacak biçimde
 düzeltildi. Bu hattın bilinen sınıfı: *"hata vermeden yanlış"*.
 
-- [ ] **Adım 6: Gözle doğrula** — `hakhukuk-api` ile aç, bir soru sor, cevabı **gör**.
-`verify:` `sunum` alanı ekranda rozet + atıf + kaynak + ibare taşıyor; boş sorgu 422 dönüyor.
-Bu da bir **insan gözü kapısıdır** (SIRA 2 ile aynı sınıf).
+- [x] **Adım 6: Gözle doğrula** — **İNSAN TEYİT ETTİ 2026-09-11.** İki `verify:` şartının ikisi de
+ekranda görüldü:
+**(1) `sunum` alanı dört parçayı da taşıyor** — rozet `✅ CEVAP — dayanağı getirilen kaynaklarda`
+· atıf `✓ 6098/Madde 330` (deterministik doğrulamadan geçmiş) · kaynak `[1]…[10]` numaralı liste
+· sorumluluk ibaresi. **(2) boş sorgu → `HTTP 422`.**
+Aynı ekranda ayrıca: tırnak düzeltmesi (kusur 26) **canlı çalışıyor** ve `metin` alanı **HAM**
+kalıyor (`##begin_quote##` taşıyor) — sözleşme korunuyor.
+
+🔴 **Kapı hazırlanırken bir kusur daha çıktı ve kapandı:** `hakhukuk-api` komutu **çalışmıyordu**
+(paket venv'e hiç kurulmamıştı **ve** `pyproject.toml`'un `build-system.requires` beyanı
+kullandığı PEP 639 lisans biçimini karşılamıyordu) — açık kusur **28**, aynı gün kapatıldı.
+İnsanın komutu kendi denemesi bunu **doğruladı**: çıktı `Started server process` +
+`Application startup complete` verdi, yalnız port çakıştı (8000'i hazırlık örneği tutuyordu).
+
+⚠️ **Kapının şartı OLMAYAN, ama görülüp kayda geçen:** soru *"kiracı nasıl feshedebilir"* idi;
+model **taşınır** kirasını düzenleyen TBK **330**'u getirdi, konut kirası için **347** daha
+isabetli olurdu. Bu **B1/isabetsizlik** eksenidir (frontier'ın 9,3× gerisi) ve kapı **biçime**
+bakar, hukuki isabete değil. Gizlenmedi.
 
 **Bu görev ticket 1 ve 3'ü ÇÖZMEZ.** Boş cevap kusuru (~%5) API'de 503 olarak **görünür**
 hâle gelir ama **giderilmez**; donma sorunu API'de yoktur çünkü istek serileştirilir ve istemci
