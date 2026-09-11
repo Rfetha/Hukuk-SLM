@@ -10,19 +10,33 @@ from dataclasses import dataclass
 from enum import Enum
 
 _MADDE_SAYISI_DESENI = re.compile(r"\d+")
+_HARF_OBEGI_DESENI = re.compile(r"[^\W\d_]+")
 
 
 def _madde_sayisi_cikar(madde_no: str) -> int | None:
     """`madde_no`'nun karşılaştırılabilir tam sayı hâli — HAM alanı DEĞİŞTİRMEZ.
 
-    Korpus tutarsız: "MADDE 349" ↔ "Madde 6" ↔ "330" aynı maddeyi üç yazımla taşır.
-    Karar: yalnız baştaki rakam dizisi alınır; alt-madde harfi ("31/a" → 31) bu alanda
-    ATILIR çünkü `madde_sayisi` kıyas/sıralama için bir SAYIdır, adres kimliği değil — adres
-    kimliği ham `madde_no`'da zaten duruyor. Ayrıştırılamayan girdi (rakam yoksa) → `None`,
-    sessiz bir tahmin üretilmez.
+    Korpus tutarsız: "MADDE 349" ↔ "Madde 6" ↔ "330" aynı maddeyi üç yazımla taşır; üçü de
+    aynı sayıya iner. Alt-madde harfi ("31/a" → 31) bu alanda ATILIR çünkü `madde_sayisi`
+    kıyas/sıralama için bir SAYIdır, adres kimliği değil — adres kimliği ham `madde_no`'da
+    zaten duruyor.
+
+    ⛔ ÖNEKLİ biçimler ("Geçici Madde 1", "Ek Madde 1", "Mükerrer Madde 1") düz sayıya
+    İNDİRGENMEZ, `None` döner. Gerekçe ölçülmüştür (`scripts/erisim_korpus/madde_anahtar.py`):
+    *"`Geçici Madde 1` ile `Madde 1` aynı sayılırsa recall@k şişer ve hiçbir yerde hata
+    çıkmaz"* — 40.496 madde 27.706 anahtara düşüyor. Bunlar FARKLI maddelerdir; bir `int`
+    ikisini de taşıyamaz, dolayısıyla burada üretilecek her değer sessiz bir yalan olurdu.
+    Önekli maddeyi kıyaslaması gereken kod `madde_anahtari()` kullanır (`terazi.py`,
+    `araclar.py` zaten öyle yapıyor); bu alan o işin YERİNE geçmez.
+    Ayrıştırılamayan girdi (rakam yoksa) da `None` — sessiz bir tahmin üretilmez.
     """
     eslesme = _MADDE_SAYISI_DESENI.search(madde_no)
-    return int(eslesme.group()) if eslesme else None
+    if eslesme is None:
+        return None
+    onek = madde_no[:eslesme.start()]
+    if any(k.casefold() != "madde" for k in _HARF_OBEGI_DESENI.findall(onek)):
+        return None
+    return int(eslesme.group())
 
 
 class Durum(Enum):

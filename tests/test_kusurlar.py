@@ -197,7 +197,7 @@ def test_tui_acilis_ekrani_yonerge_ve_kapsam_satirini_gosteriyor():
 def test_tui_suzgeci_cli_ile_AYNI_nesne():
     """`tui.py` süzgeci `cli.py`'den İMPORT etmeli, KOPYALAMAMALI (S18'in dersi:
     `SORUMLULUK_IBARESI` bu deponun yerleşik emsalidir — `is` ile sınanır)."""
-    assert tui.iskele_isaretlerini_sil is cli.iskele_isaretlerini_sil, (
+    assert tui.alinti_isaretlerini_tirnaga_cevir is cli.alinti_isaretlerini_tirnaga_cevir, (
         "tui'nin süzgeci cli'dekiyle AYNI nesne değil — kopyalanmış olabilir")
 
 
@@ -227,3 +227,147 @@ def test_tui_sunum_dizesinde_iskele_isareti_yok(monkeypatch):
     assert "##end_quote##" not in cikti, "TUI sunumunda iskele işareti kaldı"
     assert "ilgili kanun hükmü" in cikti, "işaretlerle birlikte alıntı metni de silindi"
 
+
+# ══ inceleme bulguları (kod incelemesi, 2026-09-11) ══════════════════════════════════
+
+# ── B1 — TUI'de eşzamanlı iki çalışan: "son biten kazanır" ekranda YANLIŞ eşleşme üretir ─
+
+def test_tui_kosu_surerken_ikinci_sorgu_calisan_baslatmiyor(monkeypatch):
+    """İki ardışık Enter → İKİ çalışan; yavaş biten 1. soruysa ekranda 2. sorunun altında
+    1. sorunun cevabı görünür ve hiçbir hata çıkmaz ("hata vermeden yanlış").
+
+    Kapatma: koşu sürerken girdi DEVRE DIŞI + çalışan `exclusive`.
+    """
+    import threading
+
+    kapi = threading.Event()
+    cagrilar = []
+
+    def yavas_answer(soru):
+        cagrilar.append(soru)
+        kapi.wait(timeout=5)
+        return Cevap(metin=f"cevap:{soru}", durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+
+    import asyncio
+
+    from textual.widgets import Input, Static
+
+    monkeypatch.setattr(tui, "answer", yavas_answer)
+
+    async def _calistir():
+        app = tui.HakHukukTUI()
+        async with app.run_test() as pilot:
+            await pilot.click("#soru")
+            await pilot.press(*"bir", "enter")
+            await pilot.pause()
+            await pilot.press(*"iki", "enter")   # koşu SÜRERKEN — yok sayılmalı
+            await pilot.pause()
+            kapi.set()
+            await app.workers.wait_for_complete()
+            await pilot.pause()
+            return (str(app.query_one("#cikti", Static).content),
+                    app.query_one("#soru", Input).disabled)
+
+    try:
+        cikti, girdi_kapali = asyncio.run(_calistir())
+    finally:
+        kapi.set()
+
+    assert cagrilar == ["bir"], (
+        f"koşu sürerken ikinci sorgu da başladı — iki çalışan yarışıyor: {cagrilar}")
+    assert "cevap:bir" in cikti, "ekranda koşan sorunun cevabı yok"
+    assert not girdi_kapali, "koşu bitti ama girdi kapalı kaldı — arayüz kilitli"
+
+
+def test_tui_hata_yolunda_girdi_tekrar_aciliyor(monkeypatch):
+    """`answer()` patlarsa girdi AÇILMALI — yoksa llama-server kapalıyken arayüz
+    tek bir hatadan sonra kalıcı olarak kilitlenir."""
+    import asyncio
+
+    from textual.widgets import Input
+
+    def patlayan_answer(soru):
+        raise RuntimeError("llama-server kapalı")
+
+    monkeypatch.setattr(tui, "answer", patlayan_answer)
+
+    async def _calistir():
+        app = tui.HakHukukTUI()
+        async with app.run_test() as pilot:
+            await pilot.click("#soru")
+            await pilot.press(*"soru", "enter")
+            await app.workers.wait_for_complete()
+            await pilot.pause()
+            return app.query_one("#soru", Input).disabled
+
+    assert not asyncio.run(_calistir()), "hata yolunda girdi kapalı kaldı"
+
+
+# ── B2 — kapsam satırı MÜLGA maddeleri "yürürlükteki" saymamalı ──────────────────────
+
+def test_kapsam_satiri_mulgayi_duserek_yururlukteki_madde_sayisini_veriyor(monkeypatch, tmp_path):
+    """`n_madde` TOPLAMdır; retriever varsayılanı mülgayı eler ⇒ vatandaşa gösterilecek
+    sayı `n_madde - n_mulga`. Sayı künyeden TÜRETİLİR, koda gömülmez (sahte künye)."""
+    sahte = tmp_path / "KUNYE.json"
+    sahte.write_text(json.dumps(
+        {"n_kanun": 3, "n_madde": 100, "n_mulga": 40, "anlik_goruntu_tarihi": "2026-01-01"}),
+        encoding="utf-8")
+    monkeypatch.setattr(cli, "_KUNYE_YOLU", sahte)
+    satir = cli.kapsam_satiri()
+    assert "yürürlükteki 60 madde" in satir, (
+        f"yürürlükteki madde sayısı mülga düşülerek verilmiyor: {satir!r}")
+
+
+def test_kapsam_satiri_tek_kaynak_tui_cli_ile_AYNI_nesne():
+    """B4: metin `cli.py`'de tanımlı, `tui.py` IMPORT eder (SORUMLULUK_IBARESI emsali)."""
+    assert tui.kapsam_satiri is cli.kapsam_satiri, (
+        "tui'nin kapsam satırı cli'dekiyle AYNI nesne değil — kopyalanmış olabilir")
+
+
+# ── B3 — `madde_sayisi` ÖNEKLİ biçimleri düz sayıya indirgememeli ────────────────────
+
+def test_madde_sayisi_gecici_maddeyi_duz_maddeye_indirgemiyor():
+    """`madde_anahtar.py`'nin önlemek için var olduğu SESSİZ hata: `Geçici Madde 1` ile
+    `Madde 1` FARKLI maddelerdir; aynı değere inerlerse eşleşme şişer ve hata çıkmaz."""
+    gecici = tipler.Atif(kanun_no="5237", madde_no="Geçici Madde 1")
+    duz = tipler.Atif(kanun_no="5237", madde_no="Madde 1")
+    assert duz.madde_sayisi == 1
+    assert gecici.madde_sayisi != duz.madde_sayisi, (
+        "Geçici Madde 1 ile Madde 1 aynı değere indi — yanlış maddeyi doğrular")
+
+
+def test_madde_sayisi_ek_ve_mukerrer_onekli_biciminde_de_indirgemiyor():
+    ek = tipler.Kaynak(kanun_adi="x", kanun_no="4857", madde_no="Ek Madde 1",
+                       metin="", sira=1)
+    mukerrer = tipler.Kaynak(kanun_adi="x", kanun_no="4857", madde_no="Mükerrer Madde 1",
+                             metin="", sira=1)
+    duz = tipler.Kaynak(kanun_adi="x", kanun_no="4857", madde_no="Madde 1",
+                        metin="", sira=1)
+    assert ek.madde_sayisi != duz.madde_sayisi, "Ek Madde 1 düz Madde 1'e indi"
+    assert mukerrer.madde_sayisi != duz.madde_sayisi, "Mükerrer Madde 1 düz Madde 1'e indi"
+
+
+# ── B6 — alıntı iskelesi SİLİNMEZ, tipografik tırnağa ÇEVRİLİR ───────────────────────
+
+def test_alinti_isaretleri_tipografik_tirnaga_ceviriliyor():
+    """İşaretin TAŞIDIĞI bilgi "burası kanunun kendi cümlesidir" sınırıdır; silinirse
+    birebir kanun metni ile modelin yorumu ayırt edilemez hâle gelir."""
+    sunum = cli.alinti_isaretlerini_tirnaga_cevir(
+        "Kanun der ki: ##begin_quote##İşçi kıdem tazminatına hak kazanır.##end_quote## Ancak…")
+    assert "“İşçi kıdem tazminatına hak kazanır.”" in sunum, f"alıntı sınırı kayboldu: {sunum!r}"
+    assert "##" not in sunum, "iskele işareti sunuma sızdı"
+
+
+def test_eslesmeyen_tek_alinti_isareti_siliniyor():
+    """Eşleşmeyen tek işaret (model kapatmayı unutmuş) tırnak AÇMAZ — silinir."""
+    sunum = cli.alinti_isaretlerini_tirnaga_cevir("Kanun der ki: ##begin_quote##İşçi …")
+    assert "##" not in sunum, "eşleşmeyen iskele işareti sunumda kaldı"
+    assert "İşçi" in sunum, "işaretle birlikte metin de silindi"
+    assert "“" not in sunum and "”" not in sunum, "eşleşmeyen işaret için tırnak açıldı"
+
+
+def test_alinti_cevirisi_ham_metni_bozmuyor():
+    ham = "Bu konuda ##begin_quote##ilgili kanun hükmü##end_quote## uygulanır."
+    c = Cevap(metin=ham, durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+    cli.bicimle(c)
+    assert c.metin == ham, "Cevap.metin sunum çevirisinden sonra değişti — ham kayıt bozuldu"

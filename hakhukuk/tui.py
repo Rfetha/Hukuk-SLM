@@ -4,12 +4,11 @@
 ayrışır (bkz. istem sürüklenmesi, S18: aynı metin beş dosyada, ikisi farklıydı).
 tests/test_tui.py bunu bir KAPI olarak sınar.
 """
-from textual import work
 from textual.app import App, ComposeResult
 from textual.containers import VerticalScroll
 from textual.widgets import Footer, Header, Input, Static
 
-from hakhukuk.cli import SORUMLULUK_IBARESI, iskele_isaretlerini_sil, kapsam_satiri
+from hakhukuk.cli import SORUMLULUK_IBARESI, alinti_isaretlerini_tirnaga_cevir, kapsam_satiri
 from hakhukuk.servis import answer
 from hakhukuk.tipler import Durum
 
@@ -34,32 +33,55 @@ class HakHukukTUI(App):
         yield VerticalScroll(Static("", id="cikti"))
         yield Footer()
 
+    # ⚠️ DOM'a dokunan HER ŞEY bu iki metotta — çalışan iş parçacığı onları yalnız
+    # `call_from_thread` ile çağırır (`query_one` da ana döngüde kalsın diye).
+    def _ciz(self, metin: str) -> None:
+        self.query_one("#cikti", Static).update(metin)
+
+    def _mesgul(self, mesgul: bool) -> None:
+        girdi = self.query_one("#soru", Input)
+        girdi.disabled = mesgul
+        girdi.placeholder = ("⏳ cevap bekleniyor…" if mesgul
+                             else "Hukuki sorunuzu yazın…")
+        if not mesgul:
+            girdi.focus()
+
     def on_input_submitted(self, olay: Input.Submitted) -> None:
-        self.query_one("#cikti", Static).update("⏳ kaynaklar taranıyor…")
-        self._soruyu_yanitla(olay.value)
+        if self.query_one("#soru", Input).disabled:
+            return          # koşu sürüyor — ikinci Enter YOK SAYILIR
+        self._mesgul(True)
+        self._ciz("⏳ kaynaklar taranıyor…")
+        # ⚠️ İki çalışan aynı anda koşarsa ekranı SON BİTEN kazanır: yavaş biten 1. soruysa
+        # vatandaş 2. sorusunun altında 1. sorunun cevabını görür ve hiçbir hata çıkmaz.
+        # `servis`'in modül düzeyi `_retriever`/`_araclar` tekilleri de KİLİTSİZ (api.py
+        # aynı riski `_KILIT` ile kapatıyor). İki kapı birden: girdi yukarıda devre dışı
+        # bırakıldı, `exclusive` de önceki çalışanı iptal eder.
+        self.run_worker(lambda: self._soruyu_yanitla(olay.value),
+                        thread=True, exclusive=True, group="sorgu")
 
     # ⚠️ kusur 3: `answer()` ağ + retriever I/O yapar, olay döngüsünde çağrılırsa
-    # arayüz 30-60 sn DONAR. `@work(thread=True)` çalışan iş parçacığına alır;
-    # widget güncellemesi `call_from_thread` ile ana döngüye postalanır (evre-güvenliği).
-    @work(thread=True)
+    # arayüz 30-60 sn DONAR; bu yüzden çalışan iş parçacığında koşar (thread=True).
     def _soruyu_yanitla(self, soru: str) -> None:
-        cikti = self.query_one("#cikti", Static)
         try:
-            c = answer(soru)
-        except Exception as hata:
-            # ⚠️ Savunmacı fazlalık DEĞİL: sunucunun kapalı olması (llama-server elle
-            # açılıyor) ya da indeksin yüklenememesi bu üründe OLASI bir senaryodur —
-            # ekran sessizce donuk kalırsa boş ekrandan ayırt edilemez.
-            self.call_from_thread(cikti.update, f"⛔ Hata: {hata}")
-            return
-        atif = "\n".join(
-            f"  {'✅' if a.dogrulandi else '⚠️ DOĞRULANAMADI'} {a.kanun_no} {a.madde_no}"
-            for a in c.atiflar) or "  (atıf yok)"
-        kaynak = "\n".join(f"  {k.sira}. {k.kanun_adi} {k.madde_no}" for k in c.kaynaklar)
-        self.call_from_thread(
-            cikti.update,
-            f"{ROZET[c.durum]}\n\n{iskele_isaretlerini_sil(c.metin)}\n\nATIFLAR:\n{atif}\n\n"
-            f"KAYNAKLAR:\n{kaynak}\n\n{SORUMLULUK_IBARESI}")
+            try:
+                c = answer(soru)
+            except Exception as hata:
+                # ⚠️ Savunmacı fazlalık DEĞİL: sunucunun kapalı olması (llama-server elle
+                # açılıyor) ya da indeksin yüklenememesi bu üründe OLASI bir senaryodur —
+                # ekran sessizce donuk kalırsa boş ekrandan ayırt edilemez.
+                self.call_from_thread(self._ciz, f"⛔ Hata: {hata}")
+                return
+            atif = "\n".join(
+                f"  {'✅' if a.dogrulandi else '⚠️ DOĞRULANAMADI'} {a.kanun_no} {a.madde_no}"
+                for a in c.atiflar) or "  (atıf yok)"
+            kaynak = "\n".join(f"  {k.sira}. {k.kanun_adi} {k.madde_no}" for k in c.kaynaklar)
+            self.call_from_thread(
+                self._ciz,
+                f"{ROZET[c.durum]}\n\n{alinti_isaretlerini_tirnaga_cevir(c.metin)}\n\n"
+                f"ATIFLAR:\n{atif}\n\nKAYNAKLAR:\n{kaynak}\n\n{SORUMLULUK_IBARESI}")
+        finally:
+            # ⚠️ Hata yolunda da açılmalı: açılmazsa tek bir hata arayüzü KALICI kilitler.
+            self.call_from_thread(self._mesgul, False)
 
 
 def main() -> None:

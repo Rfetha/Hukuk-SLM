@@ -116,13 +116,18 @@ def main():
     json.dump(kayitlar, open(skorlar_yolu, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
     repo_koku = os.path.dirname(_K)
+    # ⚠️ Sessiz `null` YASAK: künyede boş bir alan "commit alınamadı" ile "commit yok"u
+    # aynı şeye çevirirdi ve künyeyi okuyan rejimi doğrulayamazdı. Hata YAKALANIR ama
+    # GÖRÜNÜR kılınır — alana nedeni yazılır ve ekrana uyarı basılır.
     try:
         retriever_commit = subprocess.check_output(
             ["git", "log", "-1", "--format=%H", "--", "scripts/erisim_korpus/retriever.py"],
-            cwd=repo_koku,
-        ).decode().strip()
-    except Exception:
-        retriever_commit = None
+            cwd=repo_koku, stderr=subprocess.PIPE,
+        ).decode().strip() or "BOŞ: git bu dosya için kayıt döndürmedi"
+    except (OSError, subprocess.CalledProcessError) as hata:
+        retriever_commit = f"ALINAMADI: {type(hata).__name__}: {hata}"
+        print(f"[g21] ⚠️ retriever commit'i alınamadı — künyeye NEDENİ yazılıyor: {hata}",
+              flush=True)
 
     kunye = {
         "tarih": time.strftime("%Y-%m-%d"),

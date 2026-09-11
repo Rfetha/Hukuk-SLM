@@ -6,6 +6,7 @@ durum rozeti · cevap · atıflar (doğrulanmamışlar ⚠️ ile) · kaynaklar 
 import argparse
 import json
 import pathlib
+import re
 import sys
 
 from hakhukuk.tipler import Cevap, Durum
@@ -23,6 +24,11 @@ SORUMLULUK_IBARESI = (
 _KUNYE_YOLU = pathlib.Path(__file__).resolve().parent.parent / "data/corpus/KUNYE.json"
 
 
+def _nokta(sayi: int) -> str:
+    """Binlik ayracı Türkçe yazımla: 37949 → "37.949"."""
+    return f"{sayi:,}".replace(",", ".")
+
+
 def kapsam_satiri() -> str:
     """Statik kapsam satırı — SINIFLANDIRICI YOK (karar 3, brief Adım 7).
 
@@ -32,17 +38,22 @@ def kapsam_satiri() -> str:
     AÇILMAMASI kabul edilebilir bir karar DEĞİL (brief); bu yüzden sayısız ama
     dürüst bir satırla devam edilir, patlanmaz.
 
+    ⚠️ Gösterilen sayı `n_madde` DEĞİL, `n_madde - n_mulga`: `n_madde` TOPLAMdır ve
+    `retriever.getir()` varsayılanı (`Yururluk.YALNIZ_YURURLUKTE`) mülga maddeleri eler —
+    vatandaşın içinde arama yapılan madde sayısı budur. Toplam ve mülga sayısı da yazılır
+    ki fark GÖRÜNÜR olsun; üçü de künyeden TÜRETİLİR, hiçbiri koda gömülmez.
+
     ⚠️ Burası `tui.py`'de DEĞİL `cli.py`'de duruyor (`SORUMLULUK_IBARESI` emsali): metnin
     ikinci bir kopyası çıkarsa iki yüzey sessizce ayrışır (S18) ve `cli`/`api` bu satırı
     almak için `textual` bağımlılığını içeri çekmek zorunda kalırdı.
     """
     try:
         kunye = json.loads(_KUNYE_YOLU.read_text(encoding="utf-8"))
-        n_kanun, n_madde = kunye["n_kanun"], kunye["n_madde"]
-        n_madde_bicimli = f"{n_madde:,}".replace(",", ".")
+        n_kanun, n_madde, n_mulga = kunye["n_kanun"], kunye["n_madde"], kunye["n_mulga"]
         return (
-            f"Kapsam: yürürlükteki {n_kanun} kanun, {n_madde_bicimli} madde "
-            f"({kunye.get('anlik_goruntu_tarihi', '?')} itibarıyla). "
+            f"Kapsam: {n_kanun} kanun · yürürlükteki {_nokta(n_madde - n_mulga)} madde "
+            f"(toplam {_nokta(n_madde)}, mülga {_nokta(n_mulga)} elenir) "
+            f"· {kunye.get('anlik_goruntu_tarihi', '?')} itibarıyla. "
             "Yönetmelik · tüzük · KHK · tebliğ YOK."
         )
     except (OSError, KeyError, json.JSONDecodeError):
@@ -60,19 +71,30 @@ ROZET = {
 }
 
 
-def iskele_isaretlerini_sil(metin: str) -> str:
-    """`##begin_quote##`/`##end_quote##` iskelesini SUNUM katmanında temizler.
+_ALINTI_DESENI = re.compile(r"##begin_quote##(.*?)##end_quote##", re.DOTALL)
+
+
+def alinti_isaretlerini_tirnaga_cevir(metin: str) -> str:
+    """`##begin_quote##…##end_quote##` iskelesini SUNUM katmanında tipografik tırnağa çevirir.
+
+    ⚠️ İşaret gürültü DEĞİL: modele eğitim verisinden "GOLD metinden kelimesi kelimesine
+    alıntıla" diye öğretildi (B11) — taşıdığı bilgi *"burası kanunun kendi cümlesidir"*
+    sınırıdır. Silinirse birebir kanun metni ile modelin kendi yorumu tipografik olarak
+    ayırt edilemez hâle gelir; hukuk ürününde güven tam bu ayrıma dayanır.
+    Eşleşmeyen tek başına kalan işaret SİLİNİR: kapanışı olmayan bir tırnak açmak,
+    alıntının nerede bittiğine dair YANLIŞ bir sınır uydurmak olurdu.
 
     ⛔ Yalnız sunum katmanında: `Cevap.metin` modelin ham çıktısıdır, `score_register.py:41`
     aynı işareti register göstergesi olarak SAYIYOR — ham alanı değiştirmek ölçümü bozar.
     `tui.py` bu fonksiyonu IMPORT eder, KOPYALAMAZ (S18'in dersi).
     """
-    return metin.replace("##begin_quote##", "").replace("##end_quote##", "")
+    tirnakli = _ALINTI_DESENI.sub(lambda e: f"“{e.group(1)}”", metin)
+    return tirnakli.replace("##begin_quote##", "").replace("##end_quote##", "")
 
 
 def bicimle(cevap: Cevap) -> str:
     """Cevabı insan okur biçime çevir. Yan etkisi yok — test edilebilsin diye ayrı."""
-    parcalar = [ROZET[cevap.durum], "", iskele_isaretlerini_sil(cevap.metin.strip()), ""]
+    parcalar = [ROZET[cevap.durum], "", alinti_isaretlerini_tirnaga_cevir(cevap.metin.strip()), ""]
     if cevap.atiflar:
         parcalar.append("Atıflar:")
         for a in cevap.atiflar:
