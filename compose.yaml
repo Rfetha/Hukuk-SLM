@@ -59,6 +59,18 @@ services:
       - "q8_0"
       - "-c"
       - "8192"
+      # ⚠️ AÇIKÇA PİNLENDİ 2026-09-11 (insan kararı, açık kusur 20) — üretimin bağlayıcı
+      # komutunda BU BAYRAK YOKTU ve varsayılan `auto`'ya güveniyordu. Ürün yolunun iki
+      # geçişli zorunlu düşünce kapatması (ADR-0080) `message.reasoning_content` alanına
+      # BAĞIMLIDIR; `auto` başka bir biçime çözülürse mekanizma SESSİZCE tek geçişe düşer
+      # ve boş cevap kusuru (4/80) geri gelir.
+      # ⛔ REJİM DEĞİŞMİYOR: `auto`'nun bugün ne yaptığı ÖLÇÜLDÜ (2026-09-11, koşan sunucuya
+      # doğrudan istek) — `reasoning_content` DOLU, `content` BOŞ, `<think>` content'te YOK
+      # ⇒ `auto` ≡ `deepseek`. Bayrak o davranışı SABİTLER, değiştirmez.
+      # ⚠️ Ölçüm hattının betiği (`scripts/olcum_uretim/cp0_thinking_gen.sh`) bu bayrağı
+      # TAŞIMIYOR ve bilerek dokunulmadı: oraya bayrak eklemek rejim değişikliğidir.
+      - "--reasoning-format"
+      - "deepseek"
       # ⚠️ TEK İZİNLİ SAPMA (ADR-0078 madde 2): üretimde `--host 127.0.0.1`'dir.
       # Konteyner içinde `127.0.0.1` KOMŞU KUTUDAN erişilemez — `app` sunucuyu bulamaz.
       # Erişim yüzeyi daralmaz da GENİŞLEMEZ: aşağıdaki `ports` yayını host'un

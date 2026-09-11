@@ -31,6 +31,12 @@ KANONIK_DEGERLI = {
     "--cache-type-v": "q8_0",
     "-c": "8192",
     "--port": "8080",
+    # ⚠️ Üretimin bağlayıcı komutunda YOKTU; 2026-09-11'de insan kararıyla AÇIKÇA pinlendi
+    # (açık kusur 20). Ürün yolunun iki geçişli zorunlu kapatması (ADR-0080)
+    # `message.reasoning_content` alanına bağımlı; varsayılan `auto` başka bir biçime
+    # çözülürse mekanizma SESSİZCE tek geçişe düşer ve boş cevap kusuru geri gelir.
+    # Rejim DEĞİŞMEDİ: `auto` ≡ `deepseek` olduğu koşan sunucuya doğrudan istekle ÖLÇÜLDÜ.
+    "--reasoning-format": "deepseek",
 }
 KANONIK_DEGERSIZ = ("--no-context-shift",)
 
