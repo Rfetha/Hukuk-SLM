@@ -47,6 +47,13 @@ class Durum(Enum):
     SUSKUNLUK = "suskunluk"    # dürüst "bilmiyorum"
     KESIK = "kesik"            # üretim bütçesi bitti — YARIM cevap, gizlenmez
     ARAMA_TUKENDI = "arama_tukendi"   # araç döngüsü SINIRA dayandı — dayanak eksik OLABİLİR
+    BOS_SORGU = "bos_sorgu"    # soru yazılmadı — ARAMA YAPILMADI (ADR-0081)
+
+    # ⛔ BOS_SORGU, SUSKUNLUK ile BİRLEŞTİRİLMEZ (ADR-0081). İkisi vatandaşa FARKLI şey söyler:
+    #   SUSKUNLUK  = "aradım, kaynaklarda karşılık YOK"  → soru geçerli, cevap yok
+    #   BOS_SORGU  = "soru yazılmadı, ARAMA YAPILMADI"   → cevaplanacak bir şey yok
+    # Birleştirilmiş hâlde rozet ile gövde farklı şey söylüyordu (rozet "kaynaklarda
+    # karşılık bulunamadı", gövde "soru boş") ve boş sorgular suskunluk sayımına giriyordu.
 
     # ⛔ ARAMA_TUKENDI, KESIK ile BİRLEŞTİRİLMEZ (ADR-0076). İkisi vatandaşa FARKLI şey söyler:
     #   KESIK          = "cümle yarım kaldı"        → metne güvenme

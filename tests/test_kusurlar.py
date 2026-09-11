@@ -14,6 +14,8 @@ import json
 import pathlib
 import re
 
+import pytest
+
 from hakhukuk import cli, servis, tipler, tui
 from hakhukuk.tipler import Cevap, Durum, Kaynak
 
@@ -548,3 +550,72 @@ def test_yer_tutucu_suzgeci_UC_YUZEYDE_de_calisiyor(monkeypatch):
                       ("TUI", _tui_ekran_metni(monkeypatch, c)),
                       ("HTTP", _http_sunum(monkeypatch, c))):
         assert "KANUN ADI" not in metin, f"{ad} yüzeyinde yer tutucu kaldı"
+
+
+# ── kusur 16 — ALTINCI `Durum`: boş sorgu ≠ kaynakta karşılık yok ────────────────────
+#
+# İnsan kararı 2026-09-11: ALTINCI `Durum` EKLENSİN (tip düzeyi değişiklik ⇒ ADR-0081).
+# Kusur: boş sorgu `Durum.SUSKUNLUK` dönüyordu; rozet "kaynaklarda karşılık bulunamadı"
+# (aradım, bulamadım) derken gövde "soru boş" diyordu — oysa o dalda hiç ARAMA YAPILMADI.
+# `tipler.py`'nin kendi başlığının yasakladığı birleştirme: dedektör ÜÇ kez yanıldı çünkü
+# dünya ikili değil; iki FARKLI hâli tek değere indirmek tam o hatanın sınıfıdır.
+
+def test_bos_sorgu_SUSKUNLUK_degil_BOS_SORGU_doner(monkeypatch):
+    getir, _ = _patlayan_getir()
+    monkeypatch.setattr(servis, "_getir", getir)
+    for sorgu in ("", "   ", "\t\n"):
+        c = servis.answer(sorgu)
+        assert c.durum is Durum.BOS_SORGU, f"{sorgu!r} → {c.durum}"
+        assert c.durum is not Durum.SUSKUNLUK, "boş sorgu suskunluk sayımını kirletiyor"
+
+
+def test_answer_arac_da_BOS_SORGU_doner(monkeypatch):
+    getir, _ = _patlayan_getir()
+    monkeypatch.setattr(servis, "_getir", getir)
+    assert servis.answer_arac("   ", araclar=object()).durum is Durum.BOS_SORGU
+
+
+def test_gercek_suskunluk_hala_SUSKUNLUK(monkeypatch):
+    """Muhafız: kaynak bulunamadığında hâlâ SUSKUNLUK — altıncı değer onu YUTMAZ."""
+    monkeypatch.setattr(servis, "_getir", lambda soru, k: ())
+    assert servis.answer("ilgisiz soru").durum is Durum.SUSKUNLUK
+
+
+def test_terazi_BOS_SORGU_URETMEZ():
+    """⛔ Kapı `answer()`'da, TERAZİDEN ÖNCE. Terazi bir MODEL ÇIKTISINI sınıflandırır;
+    boş sorgu diye bir model çıktısı yoktur. Bu değeri terazinin üretebilmesi, ölçüm
+    hattına sızabileceği anlamına gelirdi — ölçüm hattı `siniflandir`'ı kullanır."""
+    from hakhukuk import terazi
+    kaynak = inspect.getsource(terazi)
+    assert "BOS_SORGU" not in kaynak, "altıncı durum terazi katmanına sızmış"
+    for metin, kaynaklar, finish in (("", (), "stop"), ("   ", (IS_K_31,), "stop"),
+                                     ("cevap", (IS_K_31,), "length")):
+        durum, _ = terazi.siniflandir(metin, kaynaklar, finish)
+        assert durum is not Durum.BOS_SORGU, "terazi BOS_SORGU üretti"
+
+
+def test_iki_ROZET_sozlugu_de_ALTI_durumu_tasiyor():
+    """`bicimle()` rozeti sözlükten okur: eksik değer `KeyError` ile ÜRÜNÜ düşürür."""
+    for ad, sozluk in (("cli", cli.ROZET), ("tui", tui.ROZET)):
+        eksik = [d.name for d in Durum if d not in sozluk]
+        assert not eksik, f"{ad}.ROZET eksik: {eksik}"
+
+
+def test_BOS_SORGU_rozeti_ARAMA_YAPILMADIGINI_soyluyor():
+    """Kusurun ta kendisi buydu: rozet "kaynaklarda karşılık bulunamadı" diyordu."""
+    for ad, sozluk in (("cli", cli.ROZET), ("tui", tui.ROZET)):
+        rozet = sozluk[Durum.BOS_SORGU].lower()
+        assert "boş" in rozet, f"{ad}.ROZET boş sorguyu adıyla anmıyor"
+        assert "bulunamadı" not in rozet, (
+            f"{ad}.ROZET hâlâ 'bulunamadı' diyor — o dalda arama YAPILMADI")
+
+
+def test_HTTP_yuzeyi_BOS_SORGUyu_hic_URETMEZ(monkeypatch):
+    """422 kapısı `answer()`'dan ÖNCE durur ⇒ bu değer HTTP'de görünmez. Bir tüketici
+    `durum == "bos_sorgu"` diye dal yazarsa o dal ÖLÜ olur; şema büyümedi."""
+    from fastapi.testclient import TestClient
+
+    from hakhukuk import api
+    monkeypatch.setattr(api.servis, "answer",
+                        lambda soru, **kw: pytest.fail("boş sorgu answer()'a ULAŞTI"))
+    assert TestClient(api.uygulama).post("/sor", json={"soru": "   "}).status_code == 422

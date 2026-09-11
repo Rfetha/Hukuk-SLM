@@ -19,6 +19,8 @@ ROZET = {
     Durum.KESIK: "🟠 KESİK — üretim bütçesi bitti, cevap YARIM",
     # ⛔ KESİK'ten AYRI (ADR-0076): cümle tam, DAYANAĞI eksik olabilir.
     Durum.ARAMA_TUKENDI: "🔵 ARAMA TÜKENDİ — arama sınırına dayanıldı, dayanak EKSİK olabilir",
+    # ⛔ SUSKUNLUK'tan AYRI (ADR-0081): orada arandı ve bulunamadı, burada HİÇ ARANMADI.
+    Durum.BOS_SORGU: "⚫ BOŞ SORU — soru yazılmadı, arama yapılmadı",
 }
 
 
