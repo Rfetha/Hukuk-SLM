@@ -1127,6 +1127,38 @@ Elenen seçenek: `api.py`'ye ortam değişkeni eklemek — ürün kodunu değiş
 Gerekçe `llama` sapmasıyla **aynı sınıftan**, ama karar metni onu kapsamıyor.
 
 - [ ] **Adım 6: `docker compose up` — indirme kapısı GERÇEKTEN koştu**
+⚠️ **KISMEN KOŞTU 2026-09-11 — `indir` GEÇTİ, `llama` port çakışmasına takıldı.**
+
+**Geçen kısım (asıl şart):** `indir` kutusu **çıkış 0** ile bitti ve logu şunu yazdı:
+`model: /artefakt/HakHukuk-4B-v0.3-Q4_K_M.gguf` · `indeks: /artefakt/mevzuat_bge_m3_s2`
+⇒ **`sha256` + bayt kapısı GERÇEKTEN ateşlendi ve TUTTU**; model HF'ten **pinli revizyondan
+indirildi** (insan `HF_TOKEN`'ı verdi), indeks **volume'de bulundu** ve HF yedeğine
+**hiç gidilmedi** — karar 4'ün *"volume öncelikli"* hükmü **çalıştı**.
+
+**Takılan kısım, ürün kusuru DEĞİL:** `llama` ayağa kalkamadı —
+`ports are not available: 127.0.0.1:8080 … bind` çünkü **göz kapıları için elle açılmış bir
+`llama-server` 8080'i tutuyordu** (kapatıldı). İkinci hata (`docker compose ps` → *"HF_TOKEN
+tanımsız"*) da yapılandırma değil kullanım: `HF_TOKEN=…` yalnız **ilk** komutun başındaydı,
+`export` edilmemişti; compose her çağrıda `${HF_TOKEN:?}` guard'ını yeniden yorumluyor.
+
+**İMAJ BOYUTU ÖLÇÜLDÜ** *(Adım 6'nın ikinci şartı — tahmin YAZILMADI)*, kaynak
+`outputs/eval/g20-imaj-olcumu/BULGU.md` + `KUNYE.json`:
+
+| ölçü | değer | nasıl |
+| :--- | ---: | :--- |
+| build bağlamı | **77,42 MB** | build logu `transferring context` |
+| `hakhukuk:0.3.0` | **2,13 GB** | `docker images` (açılmış) |
+| `llama.cpp:server-cuda-b10902` | **6,99 GB** | ″ |
+| **torch yapısı** | **`2.14.0+cpu` · `version.cuda = None`** | imajın içinde koşularak |
+
+⇒ **G20 ajanının endişesi ÇÜRÜTÜLDÜ:** `sentence-transformers` **CUDA tekerleğine düşmemiş**,
+katman 943 MB'da kalmış. Ağırlık ve indeks **imajda YOK** (`find / -xdev` ile `.gguf`/`gomme.npy`
+**0 eşleşme**). Duman denetimi **3/3 geçti** ve `hakhukuk --kuru-calisma` **imajda çalıştı**
+(açık kusur 28 imajda tekrarlamıyor).
+
+**Kalan:** `llama` + `app` ayağa kalkacak ve uçtan uca `app → llama` doğrulanacak.
+Komut (`export` şart, tek seferlik değil): `export HF_TOKEN=$(cat ~/.cache/huggingface/token)`
+sonra `docker compose up -d`.
 ⚠️ **İNSANDAN İSTENENLER (Adım 6 bunlarsız koşamaz):** (1) **`HF_TOKEN`** — depo ÖZEL, tokensız
 401; (2) **indeks kaynağı** — `HAKHUKUK_INDEKS_DEPO` bilerek BOŞ bırakıldı çünkü `G8`
 bekletiliyor ve yayımlanmış indeks deposu yok ⇒ indeks ya volume'e elle konur ya depo adı
@@ -1414,6 +1446,9 @@ raporlanıyor** (gizlenmiyor).
 | **26** | sunumda **çift tırnak**: model işaretlerin içine kendi düz tırnağını da yazınca `“ "…" ”` çıkıyor | **YENİ 2026-09-11, İNSAN GÖZÜ KAPISINDA yakalandı.** Kusuru **bugün ben ekledim** (kusur 12a/19 süzgeci); testlerim **tırnaksız** alıntıyla yazılmıştı ve bu hâli görmemişti. ⇒ **Kapının kendisi işe yaradı:** 267 test yeşilken duran bir kusuru ekran yakaladı |
 | **27** | Kaynaklar listesinde **madde biçimi tutmuyor** — `MADDE 349` · `Madde 8` · `MADDE 16` yan yana | **YENİ 2026-09-11**, aynı göz kapısında görüldü. Korpusun **ham** tutarsızlığı (kusur 13); veri bozulmasın diye ham alan **korunuyor**, ama **vatandaş ekranında** tekdüze gösterim ayrı bir iştir. ⚠️ Kusur 13 için eklenen `madde_sayisi` **kıyas** içindi ve kullanılmadığı için silindi (kusur 14) — **gösterim** sorunu onunla çözülmezdi, ayrı kalır |
 | **28** | ⭐ **`hakhukuk-api` / `hakhukuk-tui` / `hakhukuk` komutları ÇALIŞMIYOR** — paket kurulu değil | **YENİ 2026-09-11, göz kapısı hazırlanırken yakalandı.** `pyproject.toml:30-33` üç giriş noktası tanımlıyor ama `pip show hakhukuk` → **not found** ⇒ `hakhukuk-api` çağrısı `No such file or directory` veriyor. Çalışan yol: `python -m hakhukuk.cli` · `python -m hakhukuk.tui` · `python -m uvicorn hakhukuk.api:uygulama`. ⚠️ **Bugün yazdığım belgeler ve göz kapısı defteri `hakhukuk-api` komutunu ÖNERİYOR** — yani **çalışmayan bir komut belgelenmiş** durumda. Kusur **11**'in (paket tek başına kurulamıyor) doğrudan görünen yüzü. `plan Görev 19 Adım 6`'nın `verify:` metni de aynı komutu yazıyor  **→ KAPANDI 2026-09-11 (insan isteği: *"hakhukuk-api yazınca çalışsın"*).** İki ayrı sebep vardı: (1) paket venv'e **hiç kurulmamıştı** — `pip install -e .` koşuldu, üç giriş noktası da artık `which` ile bulunuyor ve `hakhukuk --kuru-calisma` çalışıyor; (2) **latent kusur:** `license = "Apache-2.0"` PEP 639 **dize** biçimidir ve `build-system.requires` yalnız `setuptools>=68` diyordu; kurulu **70.2.0** o biçimi **REDDEDİYOR**. Yalıtımlı kurulum çalışıyordu çünkü pip en yeni setuptools'u çekiyor — `--no-build-isolation` ile (CI'da ve çevrimdışı kurulumda yaygın) **PATLIYORDU**. `setuptools>=77` yazıldı ve `tests/test_belgeler.py::test_build_system_license_bicimiyle_TUTARLI` bunu **kapı** olarak çiviledi (kırmızı görüldü). ⚠️ Kusur **11** (paket `scripts/`'e bağımlı) **AÇIK kalır** — kurulum çalışıyor ama `servis.py` hâlâ çalışma anında `sys.path`'e `scripts/` ekliyor |
+| **29** | imaja ürünün **okumadığı bir korpus yedeği** giriyor | **YENİ 2026-09-11**, imaj ölçümünde. `COPY data/corpus/` `mevzuat_maddeler.jsonl.yedek-2026-08-05`'i (**36,1 MiB**) sokuyor — 76,7 MB'lık korpus katmanının **%49'u**. Tek satırlık `.dockerignore` düzeltmesi; `.dockerignore` bu turda dokunulmaz ilan edildiği için yapılmadı |
+| **30** | ⭐ `cli.py` künye yolunu **repo köküne göreli** çözüyor — kurulu pakette BULUNAMIYOR | **YENİ 2026-09-11**, imajın İÇİNDE ölçüldü. `site-packages`'e normal kurulumda yol `…/site-packages/data/corpus/KUNYE.json` oluyor; dosya imajda **var** (`/app/data/corpus/`), yanlış yerde aranıyor. **Sessiz bozulma:** patlamıyor, `except` dalına düşüyor ve vatandaş *"892 kanun · 37.949 madde"* yerine ***"künye okunamadı — sayı belirsiz"*** okuyor. ⚠️ Kusuru **bu tur BEN ekledim** (G21 Adım 7); host'ta görünmüyordu çünkü paket **editable** kurulu. TDD ile onarılıyor |
+| **31** | `compose` volume adını **proje adından** türetiyor (`hakhukuk_artefakt`), dizin adından değil | **YENİ 2026-09-11.** Hazırlıkta `hukuk-slm_artefakt` doldurulmuştu ve **kullanılmadı**. ⇒ **İYİ ki öyle oldu:** artefakt elle konsaydı `sha256` kapısı **hiç ateşlenmeyecek**, Adım 6'nın asıl şartı sınanmamış olacaktı. Kusur değil, **kayda değer davranış** |
 | **17** | `tui.py` `bicimle()`'yi çağırmıyor — **iki paralel sunum katmanı** | **YENİ 2026-09-11.** Bu turda iki sızıntının (iskele işareti · kapsam satırı) **kök nedeni**; ikisi de tek tek kapatıldı, **kök neden duruyor**  **İNSAN KARARI 2026-09-11: BİRLEŞTİR** — tek sunum katmanı; S18'in dersi bu turda **iki kez** ısırdı  **→ **KAPANDI 2026-09-11** — `tui.py` kendi sunum dizesini kurmayı **bıraktı**; tek katman `cli.bicimle(cevap, rozet=…)`, rozet **parametre** (bool bayrak yok), TUI ince kabuk kaldı. Commit `613e3ba` (yapısal) |
 
 ### Kapanış ve devir kuralı *(insan kararı 2026-09-10)*

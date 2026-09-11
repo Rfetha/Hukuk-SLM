@@ -19,7 +19,7 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md     115 kutucuk · 88 BİTTİ · 27 AÇIK
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md    115 kutucuk · 112 BİTTİ · 3 AÇIK
           2026-09-10: bitmiş 14 görev record/…-kapanan-gorevler.md'ye TAŞINDI
              plan 2.337 → 1.343 satır; dosyadaki kutucuk 40, payda 115
              (75 kutucuk kayda gitti; 2026-09-10 G21+G22 ile 16 kutucuk eklendi)
@@ -29,7 +29,31 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
              yalnız DUR listesinde (insan gözü · donmuş TEST · rejim · >$1 ·
              push · HF · açık karar · plan dışı iş) durur
 
-          ── YAPILDI ──────────────────────────────────────────────────────
+          ── 2026-09-11 TURU · 88 → 112 kutucuk ───────────────────────────
+             G21  11/11  ürün yüzeyi        7 kusur kapandı · göz kapısı GEÇTİ
+             G22   5/5   rejim + KV         iki DUR-ve-SOR insana soruldu, ikisi
+                                            de ONAYLANDI · $0,045067 harcandı
+             G12   6-7   TUI göz kapısı     GEÇTİ (insan teyidi)
+             G19   6     API göz kapısı     GEÇTİ (insan teyidi)
+             G20   1-5   konteyner kodu     207 test · compose AYRIŞTIRILARAK çivili
+             178 → 274 test yeşil · 43 commit YEREL (push EDİLMEDİ)
+             ADR 0079 · 0080 · 0081 · 0082 · kayıt #66 · tuzak 1.11 · 1.12 · 1.13
+
+             ⭐ TURUN DERSİ: ürün yüzeyini temizlemek ÖLÇÜM AYGITINDA üç kusur
+             buldu. En ağırı — atıf doğrulayıcı kanun adını gevşek eşleştirip
+             YANLIŞ kanuna DOGRULANDI basıyordu (7/16 → 0/16). Onarıldı,
+             çıpalar yeniden puanlandı: 0/114 ve donmuş TEST 0/52 OYNAMADI,
+             ama korunmanın ALETTEN değil ÖRNEKLEMDEN geldiği ortaya çıktı.
+             İnsan kararıyla rakipler de yeniden puanlandı ⇒ 3.1 Flash-Lite
+             1/152 → 0/153. ALEYHİMİZE ve öyle yazıldı; karşılığında EŞİT
+             SINAV alındı (ADR-0057).
+
+             ⭐ GÖZ KAPISININ BİLANÇOSU: 273 test YEŞİLKEN duran DÖRT kusuru
+             bakan göz yakaladı — çift tırnak · madde biçimi · hakhukuk-api
+             çalışmıyor · pyproject'in latent kurulum hatası. Hiçbirini
+             sayısal kapı görmedi.
+
+          ── YAPILDI (önceki turlar) ──────────────────────────────────────
              FAZ 1-2-3-4            v0.3 ETİKETLENDİ (2026-09-09)
              G8 Adım 1b   KUNYE taşınabilirlik    recall@10 0,9500
              G4           Sonnet-5 öznesi         $1,1932 · Sonnet ÖNDE
@@ -41,13 +65,19 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
              G20 Adım 0   GPU kapısı              GEÇTİ — konteyner GPU'yu
                                                   host ile BİREBİR görüyor
 
-          ── YAPILMADI ────────────────────────────────────────────────────
-             SIRA 2  G12 Adım 6-7  TUI gözle doğrula   İNSAN GÖZÜ KAPISI
-             SIRA 7  G19 Adım 6    API gözle doğrula   İNSAN GÖZÜ KAPISI
-             SIRA 9  G20 Adım 1-8  konteyner kodu      ADR-0078, 5 karar kilitli
-             SIRA 10 G21 Adım 1-11  ürün yüzeyi kusurları  $0 · kusur 3·4·5·7·8·12a·13
-                                                       Adım 11 İNSAN GÖZÜ KAPISI
-             SIRA 11 G22 Adım 1-5   rejim + KV ölçümü   GPU · Adım 2 ve 3 DUR-ve-SOR
+          ── YAPILMADI · 3 kutucuk, HEPSİ G20 ─────────────────────────────
+             G20 Adım 6  docker compose up   ⚠️ KISMEN KOŞTU 2026-09-11:
+                            `indir` kutusu ÇIKIŞ 0 ile bitti — sha256 + bayt
+                            kapısı GERÇEKTEN ateşlendi ve TUTTU; indeks
+                            volume'de bulundu (HF yedeğine gidilmedi).
+                            `llama` başlayamadı: 8080'i hazırlık için açılmış
+                            bir llama-server tutuyordu (kapatıldı).
+                            İmaj boyutu ÖLÇÜLDÜ: hakhukuk 2,13 GB · llama
+                            6,99 GB · torch 2.14.0+cpu (CUDA tekerleği YOK).
+             G20 Adım 7  konteyner göz kapısı   İNSAN GÖZÜ · Adım 6'ya bağlı
+             G20 Adım 8  belgeler + sürüm       YAZILDI, kutucuk BİLEREK AÇIK —
+                            konteyner yolu "HENÜZ UÇTAN UCA DOĞRULANMADI"
+                            damgasıyla girdi; Adım 6 kapanınca işaretlenir
 
           ── AÇILMAYACAK / BEKLİYOR (karar) ───────────────────────────────
              G2           üçüncü hakem ailesi    ATLANDI — bütçe (ADR-0074)
@@ -56,8 +86,11 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
              G8           indeks dağıtımı        BEKLETİLİYOR — korpus 8,4×
                                                  büyüyecek (Adım 1b hariç)
 
-          AÇIK KUSURLAR: planın SONUNDAKİ bölüm — on üç, KUTUCUK TAŞIMAZ.
-                         11'i G21+G22'ye ALINDI. Üçü DEVREDİLDİ: kusur 6 ve 12b
+          AÇIK KUSURLAR: planın SONUNDAKİ bölüm — ARTIK YİRMİ SEKİZ, KUTUCUK
+                         TAŞIMAZ. 2026-09-11'de on biri KAPANDI (1·2·3·4·5b·
+                         7·8·12a·13·14·15·16·17·18·19·20·21·22·26·28), on beşi
+                         YENİ DOĞDU (14-28) ve çoğu ölçüm aygıtından.
+                         Eskisi: on üç, 11'i G21+G22'ye ALINDI, üçü DEVREDİLDİ: kusur 6 ve 12b
                          → v2 (borç B1 · B11) · kusur 11 → "sıranın dışında".
                          Kapanışta açık kalan her kusur ADIYLA devredilir;
                          devredilmemiş kusur KAPANIŞI GEÇERSİZ KILAR
