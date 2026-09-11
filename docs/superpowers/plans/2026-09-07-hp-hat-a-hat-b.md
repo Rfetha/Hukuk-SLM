@@ -1156,7 +1156,11 @@ katman 943 MB'da kalmış. Ağırlık ve indeks **imajda YOK** (`find / -xdev` i
 **0 eşleşme**). Duman denetimi **3/3 geçti** ve `hakhukuk --kuru-calisma` **imajda çalıştı**
 (açık kusur 28 imajda tekrarlamıyor).
 
-**Kalan:** `llama` + `app` ayağa kalkacak ve uçtan uca `app → llama` doğrulanacak.
+**KALAN KISIM DA KOŞTU 2026-09-11 — ve UÇTAN UCA ÇALIŞMADI.** `export HF_TOKEN=…` ile üç kutu
+da ayağa kalktı: `indir` **çıkış 0** · `llama` **healthy** (GPU'lu imaj) · `app` **Up**, portlar
+`127.0.0.1:8000` ve `:8080`. Boş sorgu **422** döndü. **Ama gerçek soru HTTP 500 veriyor** —
+açık kusur **32**. ⇒ **Adım 6 KAPANMADI.** Bu tam olarak Adım 8'in *"HENÜZ UÇTAN UCA
+DOĞRULANMADI"* damgasının koruduğu durumdur; damga **haklı çıktı**.
 Komut (`export` şart, tek seferlik değil): `export HF_TOKEN=$(cat ~/.cache/huggingface/token)`
 sonra `docker compose up -d`.
 ⚠️ **İNSANDAN İSTENENLER (Adım 6 bunlarsız koşamaz):** (1) **`HF_TOKEN`** — depo ÖZEL, tokensız
@@ -1449,6 +1453,7 @@ raporlanıyor** (gizlenmiyor).
 | **29** | imaja ürünün **okumadığı bir korpus yedeği** giriyor | **YENİ 2026-09-11**, imaj ölçümünde. `COPY data/corpus/` `mevzuat_maddeler.jsonl.yedek-2026-08-05`'i (**36,1 MiB**) sokuyor — 76,7 MB'lık korpus katmanının **%49'u**. Tek satırlık `.dockerignore` düzeltmesi; `.dockerignore` bu turda dokunulmaz ilan edildiği için yapılmadı |
 | **30** | ⭐ `cli.py` künye yolunu **repo köküne göreli** çözüyor — kurulu pakette BULUNAMIYOR | **YENİ 2026-09-11**, imajın İÇİNDE ölçüldü. `site-packages`'e normal kurulumda yol `…/site-packages/data/corpus/KUNYE.json` oluyor; dosya imajda **var** (`/app/data/corpus/`), yanlış yerde aranıyor. **Sessiz bozulma:** patlamıyor, `except` dalına düşüyor ve vatandaş *"892 kanun · 37.949 madde"* yerine ***"künye okunamadı — sayı belirsiz"*** okuyor. ⚠️ Kusuru **bu tur BEN ekledim** (G21 Adım 7); host'ta görünmüyordu çünkü paket **editable** kurulu. TDD ile onarılıyor |
 | **31** | `compose` volume adını **proje adından** türetiyor (`hakhukuk_artefakt`), dizin adından değil | **YENİ 2026-09-11.** Hazırlıkta `hukuk-slm_artefakt` doldurulmuştu ve **kullanılmadı**. ⇒ **İYİ ki öyle oldu:** artefakt elle konsaydı `sha256` kapısı **hiç ateşlenmeyecek**, Adım 6'nın asıl şartı sınanmamış olacaktı. Kusur değil, **kayda değer davranış** |
+| **32** | 🚨 **KONTEYNER UÇTAN UCA ÇALIŞMIYOR — her soruda HTTP 500** | **YENİ 2026-09-11, `docker compose up` ile ÖLÇÜLDÜ.** Üç kutu da ayağa kalkıyor (`indir` çıkış **0**, `llama` **healthy**, `app` **Up**), boş sorgu **422** dönüyor — ama **gerçek soru 500 veriyor**. Kök sebep: indeksin `KUNYE.json`'u korpus yolunu **indeks dizinine göreli** tutuyor (`../../corpus/mevzuat_maddeler.jsonl`). Repoda bu `data/corpus/…`'a çözülüyor ✓; konteynerde indeks **volume'de** (`/artefakt/mevzuat_bge_m3_s2/`) olduğu için **`/corpus/`**'a çözülüyor ✗ ve korpus orada değil (`/app/data/corpus/`'ta). ⚠️ **Bu, `G8 Adım 1b`'nin taşınabilirlik onarımının TERS YÜZÜDÜR:** mutlak yol → göreli yol değişikliği `git clone`'u onardı, ama indeksin **repo ağacının dışına** taşındığı tek düzeni (konteyner) **kırdı**. ✅ **Sessiz değil:** `SystemExit` ile gürültülü patlıyor. ⛔ **G20 Adım 6 bu yüzden KAPANAMAZ** ve Adım 7 (göz kapısı) **açılamaz** |
 | **17** | `tui.py` `bicimle()`'yi çağırmıyor — **iki paralel sunum katmanı** | **YENİ 2026-09-11.** Bu turda iki sızıntının (iskele işareti · kapsam satırı) **kök nedeni**; ikisi de tek tek kapatıldı, **kök neden duruyor**  **İNSAN KARARI 2026-09-11: BİRLEŞTİR** — tek sunum katmanı; S18'in dersi bu turda **iki kez** ısırdı  **→ **KAPANDI 2026-09-11** — `tui.py` kendi sunum dizesini kurmayı **bıraktı**; tek katman `cli.bicimle(cevap, rozet=…)`, rozet **parametre** (bool bayrak yok), TUI ince kabuk kaldı. Commit `613e3ba` (yapısal) |
 
 ### Kapanış ve devir kuralı *(insan kararı 2026-09-10)*
