@@ -80,8 +80,8 @@ düştüğü üzerine kuruludur.
 | ~~6~~ | **G17** — modeli YAYINLA | BİTTİ | HF'te, `sha256` doğrulandı; **şu an ÖZEL** (insan kararı) |
 | **7** | **G19** — HTTP API (FastAPI) | **5/6** | kod BİTTİ 2026-09-10, **178 test yeşil**; açık tek kutucuk **Adım 6 = insan gözü kapısı** |
 | ~~8~~ | **açık kusurlar** — kayıt | — | [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü. **On üçün on biri 2026-09-10'da G21+G22'ye alındı**, üçü devredildi. Kalan kayıt **kutucuk değildir, paydaya girmez** |
-| **9** | **G20** — konteyner dağıtımı | **1/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
-| **10** | **G21** — ürün yüzeyi kusur temizliği | **AÇIK 0/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
+| **9** | **G20** — konteyner dağıtımı | **5/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
+| **10** | **G21** — ürün yüzeyi kusur temizliği | **10/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
 | **11** | **G22** — rejim kusuru + KV ölçümü | **AÇIK 0/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
@@ -1070,26 +1070,46 @@ dağılır ve **aynı mantık iki yerde** durur — S18'in ölçülmüş dersi.
 GPU'yu Docker Desktop'ın WSL2 arkayüzü geçiriyor. **Topoloji değişmiyor**, CPU'ya düşülmedi
 (düşmek `-ngl 99`'u düşürürdü ve bu **yeni rejim** olurdu).
 
-- [ ] **Adım 1: Failing test** — `tests/test_konteyner.py`. **Docker GEREKMEZ.**
+- [x] **Adım 1: Failing test** — `tests/test_konteyner.py`. **Docker GEREKMEZ.**
 Sınanacaklar: `compose.yaml`'daki `llama` komutu kanonik bayrak kümesini **birebir** taşıyor ·
 `--host 0.0.0.0` sapması var ve `ports` yalnız `127.0.0.1`'e yayımlıyor · `indir.py` yanlış
 `sha256` karşısında **erken çıkıyor** (indirme monkeypatch'lenir, ağ YOK) · pinlenmiş revizyon
 dizesi `latest` **değil**.
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör** — 2026-09-11: **12 hata** (compose ve `indir.py` yoktu)
 
-- [ ] **Adım 3: `hakhukuk/indir.py`** — pinlenmiş revizyon · `sha256` + bayt kapısı · erken çıkış
+- [x] **Adım 3: `hakhukuk/indir.py`** — pinlenmiş revizyon · `sha256` + bayt kapısı · erken çıkış
 `verify:` bozuk baytla çağrıldığında çıkış kodu ≠ 0 ve **hiçbir dosya volume'de bırakılmıyor**
 (yarım-yazılmış artefakt, bu hattın *"hata vermeden yanlış"* sınıfının kendisidir).
 
-- [ ] **Adım 4: `Dockerfile` · `compose.yaml` · `.dockerignore`**
+- [x] **Adım 4: `Dockerfile` · `compose.yaml` · `.dockerignore`**
 `verify:` `.dockerignore` `data/index/**/*.npy` ve `models/**`'i **dışarıda** tutuyor
 (2,6 GB + 79 MB build bağlamına girmez); `compose.yaml` üç kutuyu ve
 `depends_on: service_completed_successfully` bağını taşıyor.
 
-- [ ] **Adım 5: Testi koş, GEÇTİĞİNİ gör + commit**
+- [x] **Adım 5: Testi koş, GEÇTİĞİNİ gör + commit** — **207 yeşil, 2 xfail** · commit `c234313`
+
+**Adım 1-5'te ÖLÇÜLEN, plan metnini DÜZELTEN iki sayı** (2026-09-11, `du -sb` — tahmin değil):
+`models/**` **79.639.851.820 B = 74,2 GiB** *(Adım 4 metni "2,6 GB" diyordu — o tek GGUF'un boyutu,
+klasörün değil)* · `data/index/**/*.npy` iki dosya, toplam **165.871.872 B = 158,2 MiB**
+*("79 MB" tek dosyaydı)*. Repo kökündeki `.env` de build bağlamının dışına alındı.
+
+🛑 **İKİNCİ BİR `--host` SAPMASI DOĞDU ve kilitli beş kararda YOKTU — insan damgası bekliyor.**
+Karar 2 yalnız `llama` için sapma tanımlıyordu. `app` kutusu da aynı sorunu yaşıyor:
+`api.py` `HOST="127.0.0.1"` diyor ve konteyner içinde bu arayüz host'tan erişilemez
+(`ports` konteynerin eth0'ına proxy'ler, loopback'ine değil). Ajan `hakhukuk-api` yerine
+`uvicorn … --host 0.0.0.0` çağırdı ve **`api.py`'ye DOKUNMADI**; erişim yüzeyi
+`ports: "127.0.0.1:8000:8000"` ile aynı kaldı ⇒ S9 hâlâ açılmadı, ürün kodu değişmedi.
+Elenen seçenek: `api.py`'ye ortam değişkeni eklemek — ürün kodunu değiştirirdi.
+Gerekçe `llama` sapmasıyla **aynı sınıftan**, ama karar metni onu kapsamıyor.
 
 - [ ] **Adım 6: `docker compose up` — indirme kapısı GERÇEKTEN koştu**
+⚠️ **İNSANDAN İSTENENLER (Adım 6 bunlarsız koşamaz):** (1) **`HF_TOKEN`** — depo ÖZEL, tokensız
+401; (2) **indeks kaynağı** — `HAKHUKUK_INDEKS_DEPO` bilerek BOŞ bırakıldı çünkü `G8`
+bekletiliyor ve yayımlanmış indeks deposu yok ⇒ indeks ya volume'e elle konur ya depo adı
+verilir, aksi hâlde `indir` kutusu **kasten** patlar ve iki daemon da hiç başlamaz.
+⚠️ Boyut ölçülürken **özellikle bakılacak:** `sentence-transformers` torch'u kurulu bulmazsa
+PyPI'nin CUDA tekerleğine düşer ve imaj ~5 GB şişer.
 `verify:` `indir` kutusu `sha256`'yı doğruladı ve çıkış kodu 0; `llama` ve `app` ayağa kalktı.
 **İmaj boyutu ÖLÇÜLÜR ve buraya yazılır** — tahmin yazılmaz.
 
@@ -1263,7 +1283,11 @@ raporlanıyor** (gizlenmiyor).
 | **11** | paket tek başına kurulamıyor | **DEVREDİLDİ → kendi turu** · [`00-IS-SIRASI`](../00-IS-SIRASI.md) *"sıranın dışında"*, ADR-0078 m.5 |
 | 12a | `##begin_quote##` vatandaşa gidiyor | **Görev 21** Adım 4 · sunum katmanı |
 | **12b** | işaretlerin **kaynağı** eğitim verisi | **DEVREDİLDİ → `v2`** · borç **B11** |
-| 13 | `madde_no` biçimi tutmuyor | **Görev 21** Adım 5 · türetilmiş alan, ham veri korunur |
+| 13 | `madde_no` biçimi tutmuyor | **Görev 21** Adım 5 · türetilmiş alan, ham veri korunur. ⚠️ Alan eklendi ama **hiçbir yerde KULLANILMIYOR** — bkz. kusur **14** |
+| **14** | `madde_sayisi` **ölü alan**; asıl kıyas yeri zaten `madde_anahtari` kullanıyor | **YENİ 2026-09-11**, G21 incelemesinden. Silinmesi ya da bağlanması **ayrı karar** |
+| **15** | kapsam satırı **yalnız TUI'de**; CLI ve HTTP yüzeyi göstermiyor | **YENİ 2026-09-11.** Tek kaynak sağlandı (`cli.kapsam_satiri`), **gösterim** ürün kararıdır — insan |
+| **16** | boş sorgu: rozet *"kaynaklarda karşılık bulunamadı"* ↔ gövde *"soru boş"* | **YENİ 2026-09-11.** Altıncı bir `Durum` **tip düzeyi** değişikliktir, **ADR ister**; ölçüm etkisi bugün 0 (DEV'de 0 boş kalem) |
+| **17** | `tui.py` `bicimle()`'yi çağırmıyor — **iki paralel sunum katmanı** | **YENİ 2026-09-11.** Bu turda iki sızıntının (iskele işareti · kapsam satırı) **kök nedeni**; ikisi de tek tek kapatıldı, **kök neden duruyor** |
 
 ### Kapanış ve devir kuralı *(insan kararı 2026-09-10)*
 
