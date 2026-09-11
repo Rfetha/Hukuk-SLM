@@ -78,6 +78,18 @@ case " $MODES " in
   *" h1 "*|*" h2b "*) [ -n "${HARNESS_INDEKS:-}" ] || die "h1/h2b modu HARNESS_INDEKS ister (ör. data/index/mevzuat_bge_m3_s2)";;
 esac
 
+# --- KV kimliği: künye ile komut TEK kaynaktan (tuzak 1.12) -----------------
+# 1.12 fiilen ısırdı (2026-09-11): künye `KV q8_0/q8_0` diye SABİT DİZE basıyordu, koşu fp16'ydı.
+# Bu iki değişken bundan böyle HEM `--cache-type-k/-v` bayraklarına HEM künyeye gider; künyedeki
+# değer, koşan komutun kendisinden türer. İkiye ayırırsan tuzağı yeniden kurarsın.
+KV_K="q8_0"
+KV_V="q8_0"
+# Dış sunucuda KV ayarı OKUNAMAZ ve uydurulmaz: SERVER_URL'in portu $PORT'tan bağımsızdır, adres
+# uzak olabilir, sunucu konteynerdeyse /proc/<pid> bu ad alanında yoktur. Yanlış okuma, sabit
+# dizeyle aynı sınıftan bir yalandır — bu yüzden açıkça BİLİNMİYOR yazılır.
+if [ -n "$SERVER_URL" ]; then KV_KUNYE="BİLİNMİYOR (dış sunucu)"; else KV_KUNYE="$KV_K/$KV_V"; fi
+# --- /KV kimliği ------------------------------------------------------------
+
 echo "### künye"
 echo "  gguf      : $GGUF"
 # Why künyeye: bayrağı elle koşuya gömmek bu hattın en pahalı tuzak sınıfıdır
@@ -86,7 +98,7 @@ echo "  ekstra    : ${EXTRA_ARGS:-<yok>}"
 echo "  etiket    : *_${TAG}"
 echo "  modlar    : $MODES"
 echo "  thinking  : on   | cevap bütçesi: $MAXTOK | düşünce bütçesi: ${THINK_BUDGET:-—} | max_chunk_chars: 900 | seed: 3407"
-echo "  sunucu    : ctx=$CTX  -ngl $NGL -fa on  KV q8_0/q8_0  port=$PORT
+echo "  sunucu    : ctx=$CTX  -ngl $NGL -fa on  KV $KV_KUNYE  port=$PORT
   örnekleme : ${SERVER_EXTRA:-<varsayılan · ceza yok>}
   harness   : ${HARNESS_INDEKS:-KAPALI}${HARNESS_INDEKS:+ · k=${HARNESS_K:-5}}"
 echo "  güç       : $(cat /sys/class/power_supply/AC*/online 2>/dev/null | head -1 | sed 's/1/ŞARJDA/;s/0/PİLDE ⚠️/')"  # tuzak 1.6
@@ -99,7 +111,7 @@ if [ -n "$SERVER_URL" ]; then
 else
   SERVER_URL="http://127.0.0.1:$PORT/v1"
   "$BIN" -m "$GGUF" -ngl "$NGL" -fa on --no-context-shift \
-    --cache-type-k q8_0 --cache-type-v q8_0 -c "$CTX" \
+    --cache-type-k "$KV_K" --cache-type-v "$KV_V" -c "$CTX" \
     --host 127.0.0.1 --port "$PORT" ${SERVER_EXTRA:-} > "$LOG" 2>&1 &
   SRV=$!
   stop_server() { kill "$SRV" 2>/dev/null || true; wait "$SRV" 2>/dev/null || true; }
