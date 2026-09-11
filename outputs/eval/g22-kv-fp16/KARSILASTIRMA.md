@@ -284,3 +284,42 @@ gözle doğrulandı). Yani *"KV kuantizasyonu manşet dağılımı bozmuyor"* de
 Bu bir **ÖLÇÜMdür** (aynı hakem, aynı betik, aynı n, aynı sınav girdisi), doğrusal bir duman-koşusu
 ekstrapolasyonu değil — tuzak 1.11'in ısırdığı sınıf burada geçerli değil; emniyet payı yine de eklendi.
 ⛔ Harcama kararı **verilmedi**; bu tablo yalnız kapının girdisidir.
+
+---
+
+## SONUÇ SATIRI — kütle ÖLÇÜLDÜ (eklendi 2026-09-11, Adım 2)
+
+§8'in *"kütle — **ÖLÇÜLMEDİ**"* satırı **kapandı**. İnsan bedel kapısı geçildi, hakem koşuldu,
+**gerçek harcama $0,045067** (sert kapı $0,15 — kapının %30'u). Tam ölçüm, gürültü şerhi ve
+16 kalemlik birim eşitliği listesi: [`KUTLE.md`](KUTLE.md) · künye: [`KUTLE_KUNYE.json`](KUTLE_KUNYE.json).
+
+| eksen | ÇIPA `q8_0` | fp16 | fark | gürültü tabanı | taban üstünde mi |
+| :--- | ---: | ---: | ---: | ---: | :--- |
+| **kütle** | **0,8011** | **0,7932** | **−0,79 puan** | ≈0,28 puan | **evet, 2,8×** |
+| `A1_cevaplanan` | 0,8545 | 0,8461 | −0,84 puan | 0,30 puan | evet, 2,8× |
+| `coverage` | 0,9375 | 0,9375 | 0,00 | — | — |
+| `cit_precision_micro` | 0,9231 | 0,8252 | **−9,79 puan** | 0,30 puan | **evet, ~26×** |
+| `wrong_ref_rate_micro` | 0,0769 | 0,1553 | **2 katı (kötüleşme)** | — | evet |
+
+Kaynak dosyalar: `harness_tablo_gnd.json` (yeni) ↔ `../f02-biz-onsozsuz/harness_tablo.json` (çıpa) ·
+`gnd_h1_tgta_v1_g22_fp16_summary.json` ↔ `../f02-biz-onsozsuz/gnd_h1_tgta_v1_f02_nb_summary.json`.
+
+**Şerhli hüküm.** Fark gürültü tabanının üstünde, ama **yalnız 2,8×** ve tek yönlü bir cümleye
+yetmez: devralınan ~0,3 puanlık taban *aynı cevaplara* hakemi yeniden koşmanın gürültüsüdür,
+oysa burada **cevaplar da değişti** (§2: 65/80 kalem bayt olarak farklı) ve bu koşu çiftine ait
+aynı-cevap tabanı **ölçülmedi**. Kalem düzeyinde **18/80** kalemin `faithfulness`'ı **iki yönlü**
+oynadı (id 30 `0,00 → 0,875` · id 9 `0,50 → 1,00` yukarı; id 1 `0,833 → 0,00` · id 39 `1,00 → 0,00`
+aşağı) — toplam −0,79 puan bu ±0,5-1,0'lık salınımların **artakalanıdır**. Temiz alt kümede
+(n=78, id 7·63 hariç — §5'teki kontrol değişkeni düşmesi) sonuç aynı: **0,7960 → 0,7879, −0,81 puan**.
+
+Kurulabilen cümle: *"fp16 KV'ye geçmek kütleyi YÜKSELTMEDİ; en iyi tahmin ≈1 puan aşağıda."*
+Kurulamayan cümle: *"fp16 modeli 0,8 puan bozar."*
+
+**Tabanın açıkça üstündeki tek eksen atıf isabetidir** ve §5'in hakemsiz bulgusuyla aynı yöne
+bakar: fp16 daha çok atıf yaptı (114 → 152) ve bunların daha büyük bir oranı yanlış maddeye
+gitti (`wrong_ref_rate` 0,0769 → 0,1553). Bu, planın bir sonraki birinci-derece ekseni **B1** ile
+aynı eksendir; burada **hüküm kurulmuyor**, kayda geçiriliyor.
+
+⛔ **Yayımlanan 0,8011 DEĞİŞMEZ.** Ürünün taşıyıcı rejimi `q8_0/q8_0`'dır; manşet o koşunun
+(`outputs/eval/f02-biz-onsozsuz/`) sayısıdır. Bu ölçüm bir **taşıyıcı ayarının** kütle üzerindeki
+etkisini söyler, modelin ya da ürünün manşetini **yeniden yazmaz**.

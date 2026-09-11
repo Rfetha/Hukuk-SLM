@@ -1239,6 +1239,40 @@ değişti** ve **6 kalem durum sınıfı değiştirdi**; sayaçlar sabitken küt
 **çıkmaz**. Bedel **$0,0418** doğrusal, **%50 emniyet payıyla $0,0626** — `$1` kapısının
 **altında**, bakiyenin %2,8'i. ⚠️ Tahminin dayanağı duman koşusu **değil**, çıpanın
 **ÖLÇÜLMÜŞ** `$0,0417`'si (tuzak **1.11**'in istediği şey budur).
+
+**KOŞTU 2026-09-11.** Duman koşusu **tabakalanmış** (5 kalem, cevap uzunluğuna göre 5 eşit
+tabakanın medyanı) → ölçekleme kalem sayısı değil **hakem-istemi karakter yükü** üzerinden
+(×18,04; naif ×16,0'dan muhafazakâr) → doğrusal `$0,0487`, %50 payla `$0,0731`.
+**GERÇEK HARCAMA `$0,045067`** (OpenRouter `total_usage` 17,91293753 → 17,95800443, koşudan
+önce/sonra) — sert kapının (`$0,15`) **%30'u**. Bakiye `$2,0420`.
+⇒ **Tuzak 1.11'in reçetesi çalıştı:** tabakalanmış duman koşusu bu sefer **üstten** tahmin etti
+(tahmin 0,0487 ↔ gerçek 0,0451), 2026-09-09'daki gibi %45 alttan değil.
+
+| eksen | çıpa q8_0 | fp16 | fark | kaynak |
+| :--- | ---: | ---: | ---: | :--- |
+| **kütle** | **0,8011** | **0,7932** | **−0,79 p** | `harness_tablo.json` ↔ `harness_tablo_gnd.json` |
+| `coverage` | 0,9375 | 0,9375 | aynı | ″ |
+| `A1_cevaplanan` | 0,8545 | 0,8461 | −0,84 p | ″ (`rescore_answered.py` ile **çapraz doğrulandı**) |
+| `cit_precision_micro` | 0,9231 | 0,8252 | **−9,79 p** | `gnd_*_summary.json` |
+| **`wrong_ref_rate_micro`** | **0,0769** | **0,1553** | **2,0× KÖTÜLEŞME** | ″ |
+
+**HÜKÜM — iki ayrı okuma, ikisi de yazılıyor:**
+1. **Kütle farkı tek yönlü hükme YETMİYOR.** −0,79 p, devralınan ~0,3 puanlık gürültü tabanının
+   2,8 katı; ama o taban **aynı cevaplara** hakemi yeniden koşmanın gürültüsüdür ve burada
+   cevaplar da değişti (65/80 bayt farklı). **Bu koşu çiftine ait aynı-cevap tabanı ÖLÇÜLMEDİ**
+   (ikinci hakem koşusu ≈`$0,044`). Kalem düzeyinde **18/80** kalem **iki yönlü** oynadı; toplam
+   fark bu salınımların **artakalanıdır**. Ayrıca `groundedness.py` hakeme **seed göndermiyor**
+   (belirlenim yalnız `temperature=0`) — iki kolda da aynı olduğu için birimi bozmuyor, ama
+   küçük farkların yorumunu zayıflatıyor.
+2. **Tabanın AÇIKÇA üstündeki tek eksen atıf isabetidir ve o eksen KÖTÜLEŞTİ.**
+   `wrong_ref_rate` **iki katına** çıktı. Bu, Adım 1'in **hakemsiz** bulgusuyla aynı yönde
+   (atıf sayısı 114 → 152, katı kapı reddi 0 → 3) ⇒ iki bağımsız alet aynı şeyi söylüyor.
+   ⚠️ Bu **B1 eksenidir** ve zaten frontier'ın 9,3× gerisindeyiz (`0,0769 ↔ 0,0083`);
+   fp16 o açığı **2 katına** çıkarıyor. ⇒ **Ürünün taşıyıcı rejimi `q8_0` kalmalıdır** —
+   bu bir öneridir, kapı değil.
+
+**Yan bulgu:** çekinme **5/80 ↔ 5/80** ama **küme farklı**: `{15,37,45,66,79}` ↔ `{15,45,51,66,79}`.
+Aynı sayı, farklı kalemler — toplulaştırılmış sayacın neyi gizlediğinin örneği.
 Adım 1 küçük bir sapma gösterirse kütle ölçmenin karşılığı yoktur. Büyük sapma gösterirse
 hakem bedeli **tahmin edilir** ve `$1` kapısına vurulur. ⚠️ Tahmin **tabakalanmış** duman
 koşusundan yapılır (kusur 7'nin dersi) ya da **%50 emniyet payı** eklenir.
