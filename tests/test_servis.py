@@ -107,3 +107,129 @@ def test_araclı_yol_KESIGI_de_gizlemez(monkeypatch):
     monkeypatch.setattr(servis, "_getir", lambda soru, k: (IS_K_31,))
     uret = _uret_dizisi(("Yarım cüm", "length", ()))
     assert servis.answer_arac("x", araclar=_SahteAraclar(), uret=uret).durum is Durum.KESIK
+
+
+# ── Görev 22 kusur 1 — ÜRÜN YOLUNDA İKİ GEÇİŞLİ ZORUNLU DÜŞÜNCE KAPATMASI ────────────
+# 🛑 İnsan rejim onayı 2026-09-11: ürün yolu, ölçüm hattının rejimine gelir. Yayımlanan
+# 0,8011 ÖLÇÜM HATTININ sayısıdır ve değişmez; değişen ürün yoludur.
+# Ölçülmüş kusur: `aracsiz_yol_80.json` → 4/80 kalem TAMAMEN BOŞ (id 7·64·65·66), 7/80 kesik.
+# Sebep sonlanmama (research_log #42): model `</think>`'i kapatmıyor, bütçeyi düşüncede
+# bitiriyor, llama-server HTTP 200 + boş `content` + dolu `reasoning_content` döndürüyor.
+# ⛔ Bu testlerin hiçbiri ağ/GPU/model istemez — `_istek` (tek HTTP dikişi) sahtelenir.
+
+def _sahte_istek(*yanitlar):
+    """Sırayla verilen yanıtları döndürür; çağrılan (url, gövde) çiftlerini kaydeder."""
+    kalan = list(yanitlar)
+    kayit = []
+
+    def istek(url, govde):
+        kayit.append((url, govde))
+        return kalan.pop(0)
+    return istek, kayit
+
+
+def _yanit_dusunce_kapanmadi(dusunce="Kaynak 1 askerlik iznini düzenliyor, kaynak 2 ilgisiz"):
+    """llama-server'ın ölçülmüş davranışı: HTTP 200, boş içerik, dolu düşünce izi."""
+    return {"choices": [{"message": {"content": "", "reasoning_content": dusunce},
+                         "finish_reason": "length"}]}
+
+
+def test_uret_dusunce_kapanmazsa_BOS_METIN_DONMEZ(monkeypatch):
+    """🚨 Kusur 1'in çivisi: `</think>` kapanmadığında ürün yolu boş metin DÖNDÜREMEZ."""
+    istek, kayit = _sahte_istek(
+        _yanit_dusunce_kapanmadi(),
+        {"prompt": "<|im_start|>system…<|im_start|>assistant\n<think>\n"},
+        {"choices": [{"text": "İş Kanunu Madde 31 uyarınca sözleşme askıya alınır.",
+                      "finish_reason": "stop"}]},
+    )
+    monkeypatch.setattr(servis, "_istek", istek)
+    metin, finish = servis._uret([{"role": "user", "content": "x"}])
+    assert metin.strip(), "düşünce kapanmadı ve ürün yolu BOŞ METİN döndürdü"
+    assert finish == "stop"
+    assert len(kayit) == 3, f"iki geçişli zorunlu kapatma yapılmadı (istek sayısı {len(kayit)})"
+
+
+def test_uret_zorunlu_kapatmada_iz_ve_think_kapanisi_isteme_ekleniyor(monkeypatch):
+    """2. geçiş: şablonun ham istemi + düşünce izi + `</think>` — model cevabı yazmak
+    ZORUNDA kalır. İz atılırsa model kendi muhakemesini görmeden cevaplar (rejim değişir)."""
+    iz = "Kaynak 3 bu soruyu karşılıyor"
+    istek, kayit = _sahte_istek(
+        _yanit_dusunce_kapanmadi(iz),
+        {"prompt": "HAM_ISTEM"},
+        {"choices": [{"text": "cevap", "finish_reason": "stop"}]},
+    )
+    monkeypatch.setattr(servis, "_istek", istek)
+    servis._uret([{"role": "user", "content": "x"}])
+    sablon_url, _ = kayit[1]
+    tamamlama_url, tamamlama_govde = kayit[2]
+    assert sablon_url.endswith("/apply-template"), f"şablon uç noktası değil: {sablon_url}"
+    assert tamamlama_url.endswith("/completions") and "/chat/" not in tamamlama_url, (
+        f"2. geçiş sohbet uç noktasına gitti (mid-mesaj devam ettiremez): {tamamlama_url}")
+    istem = tamamlama_govde["prompt"]
+    assert istem.startswith("HAM_ISTEM"), "şablonun ham istemi kullanılmadı"
+    assert iz in istem, "düşünce izi 2. geçişe taşınmadı"
+    assert istem.rstrip().endswith("</think>"), "`</think>` zorla kapatılmadı"
+    assert tamamlama_govde["max_tokens"] == servis.CEVAP_BUTCESI, (
+        "2. geçiş cevap bütçesini almadı — bütçe hâlâ tek havuz")
+
+
+def test_uret_dusunce_kapanirsa_IKINCI_GECIS_YAPILMAZ(monkeypatch):
+    """Muhafız: normal kalemde fazladan istek YOK — 80 kalemin 76'sı bu daldan geçiyor."""
+    istek, kayit = _sahte_istek(
+        {"choices": [{"message": {"content": "Madde 31 uyarınca askıya alınır.",
+                                  "reasoning_content": "kısa muhakeme"},
+                      "finish_reason": "stop"}]})
+    monkeypatch.setattr(servis, "_istek", istek)
+    metin, finish = servis._uret([{"role": "user", "content": "x"}])
+    assert metin.startswith("Madde 31") and finish == "stop"
+    assert len(kayit) == 1, f"gereksiz 2. geçiş yapıldı ({len(kayit)} istek)"
+
+
+def test_uret_ilk_gecis_butcesi_dusunce_arti_cevap(monkeypatch):
+    """ADR-0043 · ADR-0070: 1. geçiş 1024+512 = 1536 alır (ölçüm hattıyla birebir)."""
+    istek, kayit = _sahte_istek(
+        {"choices": [{"message": {"content": "x"}, "finish_reason": "stop"}]})
+    monkeypatch.setattr(servis, "_istek", istek)
+    servis._uret([{"role": "user", "content": "x"}])
+    assert kayit[0][1]["max_tokens"] == servis.DUSUNCE_BUTCESI + servis.CEVAP_BUTCESI
+
+
+def test_uret_zorunlu_kapatma_sonrasi_KESIK_hala_damgalaniyor(monkeypatch):
+    """⛔ `Durum.KESIK` KORUNUR: 2. geçiş de bütçeyi doldurursa kesiklik GİZLENMEZ."""
+    istek, _ = _sahte_istek(
+        _yanit_dusunce_kapanmadi(),
+        {"prompt": "HAM"},
+        {"choices": [{"text": "Yarım cüm", "finish_reason": "length"}]},
+    )
+    monkeypatch.setattr(servis, "_istek", istek)
+    monkeypatch.setattr(servis, "_getir", lambda soru, k: (IS_K_31,))
+    assert servis.answer("x").durum is Durum.KESIK
+
+
+def test_answer_dusunce_kapanmazsa_bos_cevap_teslim_etmez(monkeypatch):
+    """Uçtan uca: kusurun ölçüldüğü hâl (`answer()` boş metin) artık ÜRETİLEMEZ."""
+    istek, _ = _sahte_istek(
+        _yanit_dusunce_kapanmadi(),
+        {"prompt": "HAM"},
+        {"choices": [{"text": "İş Kanunu Madde 31 uyarınca askıya alınır.",
+                      "finish_reason": "stop"}]},
+    )
+    monkeypatch.setattr(servis, "_istek", istek)
+    monkeypatch.setattr(servis, "_getir", lambda soru, k: (IS_K_31,))
+    c = servis.answer("Askerlikte sözleşme ne olur?")
+    assert c.metin.strip(), "🚨 ürün vatandaşa BOŞ cevap teslim etti"
+    assert c.durum is Durum.CEVAP
+
+
+def test_answer_arac_da_ayni_rejime_geliyor(monkeypatch):
+    """İkisi de ÜRÜN YOLUDUR; araçlı yol da `_uret` üzerinden zorunlu kapatmayı alır."""
+    istek, kayit = _sahte_istek(
+        _yanit_dusunce_kapanmadi(),
+        {"prompt": "HAM"},
+        {"choices": [{"text": "Madde 31 uyarınca askıya alınır.", "finish_reason": "stop"}]},
+    )
+    monkeypatch.setattr(servis, "_istek", istek)
+    monkeypatch.setattr(servis, "_getir", lambda soru, k: (IS_K_31,))
+    c = servis.answer_arac("x", araclar=_SahteAraclar())
+    assert c.metin.strip(), "🚨 araçlı ürün yolu BOŞ cevap teslim etti"
+    assert len(kayit) == 3, "araçlı yol zorunlu kapatmayı almadı"

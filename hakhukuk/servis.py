@@ -56,8 +56,23 @@ def _getir(soru: str, k: int) -> tuple[Kaynak, ...]:
     )
 
 
+def _istek(url: str, govde: dict) -> dict:
+    """llama-server'a tek POST → JSON. Taşıyıcının TEK dikişi (testler burayı sahteler)."""
+    istek = urllib.request.Request(
+        url, data=json.dumps(govde).encode("utf-8"),
+        headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(istek, timeout=300) as y:
+        return json.load(y)
+
+
+def _kok_url() -> str:
+    """`/apply-template` OpenAI uyumlu `/v1` altında DEĞİL, sunucu kökündedir."""
+    kok = SUNUCU_URL.rstrip("/")
+    return kok[:-3].rstrip("/") if kok.endswith("/v1") else kok
+
+
 def _uret(mesajlar: list[dict]) -> tuple[str, str]:
-    """llama-server'a tek istek. Döner: (metin, finish_reason).
+    """llama-server'dan cevap üret. Döner: (metin, finish_reason).
 
     Deterministik: temperature=0, sabit tohum — aynı soru aynı cevabı verir.
     ⚠️ Bu değişmez SUNUCU YAPILANDIRMASI SABİTKEN geçerlidir. Ölçüldü 2026-09-09: yalnız KV
@@ -65,24 +80,54 @@ def _uret(mesajlar: list[dict]) -> tuple[str, str]:
     sınıfını SUSKUNLUK'tan ÇEKİNCELİ'ye çeviriyor. Yayımlanan sayıların bağlayıcı
     yapılandırması: `-ngl 99 -fa on --no-context-shift --cache-type-k q8_0
     --cache-type-v q8_0 -c 8192` (MODEL_CARD §7.10).
-    ⚠️ Bütçe TEK havuzdur (düşünce + cevap). Ölçüm hattı iki geçişli zorunlu kapatma
-    kullanıyor; ürün kullanmıyor çünkü kesiklik burada GİZLENMİYOR: bütçe biterse
-    `finish_reason="length"` gelir ve terazi cevabı KESİK olarak damgalar.
+
+    **İKİ GEÇİŞLİ ZORUNLU DÜŞÜNCE KAPATMASI** — model `</think>`'i kapatmazsa istemin
+    sonuna düşünce izi + `</think>` yapıştırılır ve üretim `/completions` üzerinden
+    sürdürülür; model o noktadan sonra cevabı yazmak ZORUNDA kalır. Bütçe tek havuz
+    DEĞİLDİR: 1. geçiş `DUSUNCE_BUTCESI + CEVAP_BUTCESI`, 2. geçiş ayrıca `CEVAP_BUTCESI`
+    alır (ölçüm hattının ADR-0043/ADR-0070 rejimiyle birebir).
+
+    🔄 **REJİM DEĞİŞTİ 2026-09-11 (insan onayı, Görev 22).** Buradaki eski şerh *"ürün
+    zorunlu kapatma kullanmıyor çünkü kesiklik GİZLENMİYOR: bütçe biterse
+    finish_reason='length' gelir ve terazi KESİK damgalar"* diyordu. Gerekçe SİLİNMİYOR,
+    neyin değiştiği yazılıyor: o gerekçe kesikliği görünür kılıyordu ama **sonlanmamayı**
+    karşılamıyordu. Ölçüldü 2026-09-09 (`outputs/eval/g18-arac-katmani/aracsiz_yol_80.json`):
+    80 DEV kaleminin **4'ü (id 7·64·65·66) TAMAMEN BOŞ metin**, 7'si kesik (%8,75) — bütçe
+    düşüncede tükeniyor, HTTP 200 dönüyor, vatandaşa boş cevap gidiyor. Bu bir kesilme
+    değil sonlanmamadır (araştırma kaydı #42: bütçeyi 8× artırmak hiçbir şeyi değiştirmedi)
+    ve ADR-0040'ın %5 geçerlilik kapısını GEÇMİYOR. İnsan kararı: *"Ürün yolu, ölçüm
+    hattının iki geçişli zorunlu düşünce kapatmasına gelir. Yayımlanan 0,8011 ÖLÇÜM
+    HATTININ sayısıdır ve DEĞİŞMEZ — değişen ÜRÜN YOLUDUR."*
+    ⛔ `Durum.KESIK` KORUNUR: 2. geçişin `finish_reason`'ı taşınır, kesiklik hâlâ
+    damgalanır — yalnız AZALIR.
     """
-    govde = json.dumps({
+    d = _istek(SUNUCU_URL.rstrip("/") + "/chat/completions", {
         "model": "local",
         "messages": mesajlar,
         "max_tokens": DUSUNCE_BUTCESI + CEVAP_BUTCESI,
         "temperature": 0.0,
         "seed": TOHUM,
-    }).encode("utf-8")
-    istek = urllib.request.Request(
-        SUNUCU_URL.rstrip("/") + "/chat/completions", data=govde,
-        headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(istek, timeout=300) as y:
-        d = json.load(y)
+    })
     secim = d["choices"][0]
-    return secim["message"].get("content") or "", secim.get("finish_reason") or "stop"
+    mesaj = secim.get("message") or {}
+    metin = (mesaj.get("content") or "").strip()
+    dusunce = mesaj.get("reasoning_content") or ""
+    if metin or not dusunce:
+        return metin, secim.get("finish_reason") or "stop"
+
+    # ── 2. geçiş: zorunlu kapatma ────────────────────────────────────────────
+    # Sohbet API'si mid-mesaj devam ettiremez; ham istem `/apply-template`'ten alınır.
+    ham = _istek(_kok_url() + "/apply-template", {"messages": mesajlar})["prompt"]
+    d2 = _istek(SUNUCU_URL.rstrip("/") + "/completions", {
+        "model": "local",
+        "prompt": ham + dusunce + "\n</think>\n\n",
+        "max_tokens": CEVAP_BUTCESI,
+        "temperature": 0.0,
+        "seed": TOHUM,
+        "stop": ["<|im_end|>"],
+    })
+    s2 = d2["choices"][0]
+    return (s2.get("text") or "").strip(), s2.get("finish_reason") or "stop"
 
 
 ARAC_SEMALARI = (
