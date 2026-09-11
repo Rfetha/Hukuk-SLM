@@ -25,6 +25,10 @@ from hakhukuk.tipler import Kaynak, Yururluk
 _K = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts")
 sys.path[:0] = [_K, os.path.join(_K, "erisim_korpus")]
 from madde_anahtar import madde_anahtari  # noqa: E402
+# ⚠️ Ad çözümü TEK KAYNAK: yayımlanan sayıyı üreten doğrulayıcının ta kendisi.
+# Kusur 18 onarımı (2026-09-11) burada kopyalanmış ikinci bir indekse çarpmıştı;
+# tuzak 2.18 tam olarak budur — aynı ölçümün iki aleti sessizce ayrışır.
+from atif_dogrula import _ad_adaylari, _dizin_kur  # noqa: E402
 
 
 def _kaynak(kayit: dict, sira: int) -> Kaynak:
@@ -48,10 +52,7 @@ class Araclar:
         for r in kayitlar:
             self._indeks.setdefault(madde_anahtari(str(r["kanun_no"]), r["madde_no"]),
                                     []).append(r)
-        self._adlar: dict = {}
-        for r in kayitlar:
-            self._adlar.setdefault(_ad_normal(r["kanun_adi"]), set()).add(
-                (str(r["kanun_no"]), r["kanun_adi"]))
+        self._dizin = _dizin_kur(kayitlar)
 
     # ── 1 · ara — TEK ölçülmüş hedefi olan araç (4/80 recall kaybı) ───────────
     def ara(self, sorgu: str, k: int = 10) -> tuple[Kaynak, ...]:
@@ -76,10 +77,16 @@ class Araclar:
         """Ada uyan **BÜTÜN** kanunlar. ⛔ Tek numara dönmek yasak.
 
         🚨 Donmuş TEST'in dersi (2026-09-09): `İŞ KANUNU` hem **4857** (yürürlükte) hem
-        **1475** (mülga) demektir; `atif_dogrula.py` adayları alfabetik gezip ilkini seçtiği
-        için DOĞRU cevap MÜLGA damgası yiyordu. Aynı kusur burada tekrarlanmaz.
+        **1475** (mülga) demektir; adayları alfabetik gezip ilkini seçen bir çözüm DOĞRU
+        cevaba MÜLGA damgası vuruyordu. Aynı kusur burada tekrarlanmaz.
+
+        ⚠️ Boş demet İKİ hâli birden anlatır: ad korpusta YOK **ya da** ad çözülemedi
+        (`atif_dogrula` bu ikincisine `AYRISTIRILAMADI` der). Ayrımı buraya taşımak
+        ADR-0076'nın araç imzasını değiştirirdi; taşınmadı — ama ikisinde de sessizce
+        bir kanun **SEÇİLMEZ**, kusur 18'in kalıbı budur.
         """
-        return tuple(sorted(self._adlar.get(_ad_normal(ad), ())))
+        return tuple(sorted((no, self._dizin.adi.get(no, ""))
+                            for no in _ad_adaylari(ad, self._dizin)))
 
     # ── 5 · yururlukte_mi ────────────────────────────────────────────────────
     def yururlukte_mi(self, kanun_no: str, madde_no: str) -> Yururluk | None:
@@ -90,8 +97,3 @@ class Araclar:
         # Yürürlükte TEK satır bile varsa madde yürürlüktedir (atif_dogrula.py ile aynı ilke).
         return (Yururluk.MULGA_DAHIL if all(r.get("mulga") for r in satirlar)
                 else Yururluk.YALNIZ_YURURLUKTE)
-
-
-def _ad_normal(ad: str) -> str:
-    """Türkçe-duyarlı büyük harf. ⚠️ `str.upper()` Türkçe değil: `i` → `I` yapar, doğrusu `İ`."""
-    return " ".join((ad or "").split()).replace("i", "İ").replace("ı", "I").upper()

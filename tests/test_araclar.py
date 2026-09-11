@@ -18,6 +18,14 @@ KORPUS = [
      "text": "Mülga hüküm.", "mulga": True},
     {"kanun_no": "634", "kanun_adi": "KAT MÜLKİYETİ KANUNU", "madde_no": "Geçici Madde 1",
      "text": "Ortak giderlere katılmayan kat maliki gecikme tazminatı öder.", "mulga": False},
+    # ⚠️ Kusur 18/21 çivileri: SONDA parantezli ad + onun gevşek eşleşmede çalındığı kanun,
+    # ve resmî adın yalnız SONEKİ yazılan kanun. İkisi de gerçek atıflarda ölçüldü.
+    {"kanun_no": "193", "kanun_adi": "GELİR VERGİSİ KANUNU (G.V.K.)", "madde_no": "Madde 73",
+     "text": "Emsal kira bedeli esası.", "mulga": False},
+    {"kanun_no": "1319", "kanun_adi": "EMLAK VERGİSİ KANUNU", "madde_no": "Madde 1",
+     "text": "Bina vergisinin mevzuu.", "mulga": False},
+    {"kanun_no": "2004", "kanun_adi": "İCRA VE İFLAS KANUNU", "madde_no": "Madde 1",
+     "text": "İcra daireleri.", "mulga": False},
 ]
 
 
@@ -103,3 +111,41 @@ def test_hicbir_arac_LLM_cagirmaz():
     kaynak = inspect.getsource(m)
     for yasak in ("_uret(", "chat/completions", "urllib", "openai", "requests"):
         assert yasak not in kaynak, f"araç katmanına model çağrısı sızmış: {yasak}"
+
+
+# ── ad çözümü: ÜRÜN YÜZEYİ ↔ ÖLÇÜM ALETİ tek kaynak (kusur 21) ────────────────
+
+def _olcum_adaylari(ad: str) -> set:
+    """Ölçüm hattının (onarılmış `atif_dogrula`) aynı girdideki cevabı."""
+    from atif_dogrula import _ad_adaylari, _dizin_kur
+    return set(_ad_adaylari(ad, _dizin_kur(KORPUS)))
+
+
+@pytest.mark.parametrize("ad", [
+    "Gelir Vergisi Kanunu", "GELİR VERGİSİ KANUNU", "Emlak Vergisi Kanunu",
+    "İş Kanunu", "İflas Kanunu", "İcra ve İflas Kanunu",
+    "Kat Mülkiyeti Kanunu", "Bulunmayan Kanun", "Kanunu",
+])
+def test_kanun_bul_atif_dogrula_ile_AYNI_sonucu_verir(araclar, ad):
+    """🚨 Tuzak 2.18: aynı ölçümün İKİ aleti sessizce ayrışır.
+
+    Ürün yüzeyinin ad çözümü ile yayımlanan sayıyı üreten doğrulayıcınınki AYNI
+    olmalıdır; ayrıştıkları an vatandaşa giden rozet ile rapor edilen sayı farklı
+    dünyalardan gelir.
+    """
+    assert {no for no, _ in araclar.kanun_bul(ad)} == _olcum_adaylari(ad)
+
+
+def test_kanun_bul_parantezli_adi_DOGRU_kanuna_cozer(araclar):
+    """⛔ Kusur 18'in ürün yüzeyindeki hâli: *"Gelir Vergisi Kanunu"* → **193**, `1319` DEĞİL.
+
+    Korpus adı `GELİR VERGİSİ KANUNU (G.V.K.)`; sondaki parantez atılmadan birebir
+    eşleşme tutmaz ve çözüm `VERGİSİ KANUNU` soneğine düşüp EMLAK VERGİSİ'ne giderdi.
+    """
+    bulunan = {no for no, _ in araclar.kanun_bul("Gelir Vergisi Kanunu")}
+    assert bulunan == {"193"}, f"1319'a kayma ya da çözememe: {bulunan}"
+
+
+def test_kanun_bul_resmi_adin_SONEGINI_de_cozer(araclar):
+    """Model resmî adın kısa hâlini yazıyor: *"İflas Kanunu"* ⊂ `İCRA VE İFLAS KANUNU`."""
+    assert {no for no, _ in araclar.kanun_bul("İflas Kanunu")} == {"2004"}
