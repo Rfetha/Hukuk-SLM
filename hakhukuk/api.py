@@ -33,7 +33,9 @@ uygulama = FastAPI(
 
 
 class Soru(BaseModel):
-    # `min_length=1` boş dizeyi eler; `strip_whitespace` yalnız boşluktan ibaret olanı.
+    # `min_length=1` YALNIZ boş dizeyi eler. Yalnız-boşluktan ibaret girdiyi eleyen şey
+    # aşağıdaki açık `soru.strip()` kontrolüdür (422) — burada `strip_whitespace` YOKTUR;
+    # o kontrolü "gereksiz tekrar" sanıp silmek 422 kapısını sessizce kaldırır.
     # ⛔ UYDURULMUŞ uzunluk eşiği YOK: "kira?" geçerli bir sorudur.
     soru: str = Field(min_length=1)
     k: int | None = Field(default=None, ge=1)

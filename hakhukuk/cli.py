@@ -4,6 +4,8 @@
 durum rozeti · cevap · atıflar (doğrulanmamışlar ⚠️ ile) · kaynaklar · sorumluluk ibaresi.
 """
 import argparse
+import json
+import pathlib
 import sys
 
 from hakhukuk.tipler import Cevap, Durum
@@ -15,6 +17,38 @@ SORUMLULUK_IBARESI = (
     "⚖️  Bu yanıt hukuki tavsiye değil, bilgilendirme amaçlıdır. Bağlayıcı bir karar "
     "vermeden önce güncel mevzuatı doğrulayın ve bir avukata danışın."
 )
+
+# ⚠️ Görev 21 Adım 7: sayılar KUNYE.json'dan OKUNUR, koda gömülmez — künye değişince
+# bu satır da (yeniden okunarak) değişmeli, elle güncellenmemeli.
+_KUNYE_YOLU = pathlib.Path(__file__).resolve().parent.parent / "data/corpus/KUNYE.json"
+
+
+def kapsam_satiri() -> str:
+    """Statik kapsam satırı — SINIFLANDIRICI YOK (karar 3, brief Adım 7).
+
+    Bir soru sınıflandırıcısı yanılır ve yanıldığında vatandaşa "bu konu kapsam
+    dışı" diyerek cevabı olan soruyu öldürür. Ucuz ve dürüst alternatif: kapsamı
+    HER ZAMAN, aynı statik satırla göstermek. Künye dosyası bulunamazsa uygulamanın
+    AÇILMAMASI kabul edilebilir bir karar DEĞİL (brief); bu yüzden sayısız ama
+    dürüst bir satırla devam edilir, patlanmaz.
+
+    ⚠️ Burası `tui.py`'de DEĞİL `cli.py`'de duruyor (`SORUMLULUK_IBARESI` emsali): metnin
+    ikinci bir kopyası çıkarsa iki yüzey sessizce ayrışır (S18) ve `cli`/`api` bu satırı
+    almak için `textual` bağımlılığını içeri çekmek zorunda kalırdı.
+    """
+    try:
+        kunye = json.loads(_KUNYE_YOLU.read_text(encoding="utf-8"))
+        n_kanun, n_madde = kunye["n_kanun"], kunye["n_madde"]
+        n_madde_bicimli = f"{n_madde:,}".replace(",", ".")
+        return (
+            f"Kapsam: yürürlükteki {n_kanun} kanun, {n_madde_bicimli} madde "
+            f"({kunye.get('anlik_goruntu_tarihi', '?')} itibarıyla). "
+            "Yönetmelik · tüzük · KHK · tebliğ YOK."
+        )
+    except (OSError, KeyError, json.JSONDecodeError):
+        return ("Kapsam: yürürlükteki kanunlar (künye okunamadı — sayı belirsiz). "
+                "Yönetmelik · tüzük · KHK · tebliğ YOK.")
+
 
 ROZET = {
     Durum.CEVAP: "✅ CEVAP — dayanağı getirilen kaynaklarda",

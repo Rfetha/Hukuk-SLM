@@ -1,11 +1,11 @@
-"""Görev 21 · Adım 1-2 — kusur 3·4·5b·8·12a·13 için KIRMIZI kapı testleri.
+"""Görev 21 — kusur 3·4·5b·8·12a·13 kapı testleri (+ inceleme bulguları B1·B2·B3·B6).
 
-⚠️ Bu dosya `.superpowers/sdd/g21/gorev-21-brief.md`'nin Adım 1'idir: ÜRETİM KODU henüz
-DEĞİŞMEDİ (hakhukuk/*.py dokunulmadı). Testlerin bir kısmı bu yüzden KIRMIZI olmalı —
-kusur henüz kapatılmadı. İki test grubu istisna ve bilerek YEŞİL: "ölçüm hattı
-dokunulmazlık kapısı" (mevcut durumu ÇİVİLİYOR, henüz kırılmamış bir şeyi sınıyor) ve
-"kısa-ama-dolu sorgu reddedilmiyor" (bugün zaten reddedilmiyor, uydurulmuş bir eşik
-EKLENMEDİĞİNİ garanti eden bir muhafız).
+⚠️ Bu dosya KIRMIZI doğdu (Adım 1: üretim kodu henüz değişmemişti) ve artık KAPANIŞ hâlini
+anlatır: kusurlar kapatıldı, testler YEŞİL ve bundan sonra REGRESYON KAPISIdır — biri
+kapanan bir kusuru geri getirirse burası kırmızıya döner. Kırmızı hâlin kaydı commit
+mesajlarındadır (`d75b5c5` ve inceleme düzeltme turu). İki test grubu hiç kırmızı olmadı ve
+bilerek öyle: "ölçüm hattı dokunulmazlık kapısı" (henüz kırılmamış bir şeyi ÇİVİLİYOR) ve
+"kısa-ama-dolu sorgu reddedilmiyor" (uydurulmuş bir eşik EKLENMEDİĞİNİ garanti eden muhafız).
 
 Hiçbir test retriever/llama-server/korpus yüklemez — monkeypatch ve sahte nesne kullanılır.
 """
@@ -202,9 +202,9 @@ def test_tui_suzgeci_cli_ile_AYNI_nesne():
 
 
 def test_tui_sunum_dizesinde_iskele_isareti_yok(monkeypatch):
-    """Görev 21 Adım 4 süzgeci YALNIZ `cli.bicimle()`'e ekledi; `tui.py` kendi sunum
-    dizesini kurup `c.metin`'i HAM basıyor — ##begin_quote##/##end_quote## vatandaşa
-    hâlâ gidiyor. `servis.answer` sahtelenir; llama-server/indeks GEREKMEZ."""
+    """`tui.py` kendi sunum dizesini kuruyor (`bicimle()` çağırmıyor); süzgeci `cli`'den
+    IMPORT ettiği için ##begin_quote##/##end_quote## vatandaşa GİTMEZ — bu test o yolu
+    kapalı tutar. `servis.answer` sahtelenir; llama-server/indeks GEREKMEZ."""
     import asyncio
 
     from textual.widgets import Static
@@ -226,3 +226,4 @@ def test_tui_sunum_dizesinde_iskele_isareti_yok(monkeypatch):
     assert "##begin_quote##" not in cikti, "TUI sunumunda iskele işareti kaldı"
     assert "##end_quote##" not in cikti, "TUI sunumunda iskele işareti kaldı"
     assert "ilgili kanun hükmü" in cikti, "işaretlerle birlikte alıntı metni de silindi"
+
