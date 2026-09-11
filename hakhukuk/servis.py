@@ -197,6 +197,13 @@ def _bos_sorgu_cevabi() -> Cevap:
 
     Durum=SUSKUNLUK: kaynaksızlıkla aynı ailede, dürüst "cevaplayacak bir şey yok" hâli
     (uydurulmuş bir uzunluk eşiği yok — yalnız boş/boşluk sorgu bu kapıdan döner).
+
+    ⚠️ ŞERH (kod incelemesi B5, 2026-09-11): rozet ile gövde aynı şeyi SÖYLEMİYOR — rozet
+    "kaynaklarda karşılık bulunamadı" (aradım, bulamadım) derken bu dalda hiç arama
+    YAPILMADI ve gövde "soru boş" diyor. Ölçüm etkisi bugün SIFIR (DEV'de 0 boş kalem) ama
+    suskunluk sayımının içine bir yol açıldı. Altıncı bir `Durum` eklemek tip düzeyinde bir
+    tasarım değişikliğidir ve ADR ister; bu yüzden kapatılmadı, planın AÇIK KUSURLAR
+    bölümüne kaydedildi.
     """
     return Cevap(
         metin="Soru boş görünüyor. Cevap üretebilmem için mevzuatla ilgili bir soru yazmanız "

@@ -1,5 +1,16 @@
 # G21 — "Zayıf eşleşme" rozeti mümkün mü? (Adım 8)
 
+> **DÜZELTME — 2026-09-11.** Bu belgenin ilk hâlinde "Okuma" ve "HÜKÜM" bölümlerindeki iki
+> yorum cümlesi kendi tablolarıyla ÇELİŞİYORDU (bağımsız kod incelemesi, bulgu B7):
+> (1) `index 1`'in `entropi` yüzdeliği *"üst %70-79"* yazılmıştı — belgenin kendi entropi
+> tablosu **%10,5** diyor; (2) HÜKÜM parantezi kaçırılanların *"tutturulanların en iyi
+> yarısıyla örtüştüğü"*nü söylüyordu — en iyi aday gösterge `ortalama_skor`'un yüzdelikleri
+> **%19,7 · %21,1 · %10,5 · %30,3**, hiçbiri üst yarıda değil.
+> **Sayı tabloları ve HÜKÜM DEĞİŞMEDİ**; yalnız iki gerekçe cümlesi verinin gerçekten
+> desteklediğiyle değiştirildi ve her sayı `skorlar_80.json`'dan YENİDEN HESAPLANARAK
+> doğrulandı. Ölçüm yeniden koşulmadı. Bu hatta kural: çelişki damgalanır, sessizce
+> düzeltilmez.
+
 **Bu bir ÖLÇÜMDÜR, özellik geliştirme değil.** Sonuç "rozet eklenmez" ise bu bir BULGU'dur,
 başarısızlık değildir.
 
@@ -104,14 +115,18 @@ Yüzdelik konum: **%10,5 · %72,4 · %67,1 · %75,0**.
 **Hiçbir aday göstergede tam ayrışma yok.** En iyi aday (`ortalama_skor`, ilk 10 ortalaması)
 kaçırılanları en tutarlı biçimde düşük yüzdeliğe (%10,5–%30,3) koyuyor, ama bu bile "kaçırılan
 = alt kuyruk" demek değil: tutturulan 76'nın da alt %10-30'unda benzer ortalama skorlu kalemler
-var, yani bir eşik konsa aynı miktarda **doğru getirilmiş** kalem de "zayıf" diye damgalanır
-(yanlış pozitif rozet).
+var. Ölçülen bedel: dört kaçağın **dördünü birden** yakalayan eşik (`ortalama_skor ≤ 0,09721`)
+aynı anda doğru getirilmiş **23/76** kalemi de "zayıf" diye damgalar — yanlış pozitif rozet
+oranı **%30,3**. (Diğer beş göstergede bedel daha ağır: aynı hesapla 53 · 56 · 57 · 59 · 60
+yanlış pozitif.)
 
-Daha çarpıcısı: `index 1` (Madde 89) — kaçırılan bir kalem — hem `top1_skor` hem `marj_1_2`
-hem `yayilim` hem `std_skor` hem `entropi` göstergelerinde tutturulan dağılımının **üst
-%70-79'una** düşüyor. Yani bu kalem, retriever'ın "güvenli" göründüğü (yüksek 1. sıra skoru,
-geniş marj) çoğu doğru-getirilmiş sorudan **daha iddialı** bir skorla yanlış maddeyi
-getirmiş — retriever kendinden emin ama yanlış. Skor dağılımı bu hatayı işaretlemiyor.
+`index 1` (Madde 89) — kaçırılan bir kalem — `top1_skor`, `marj_1_2`, `yayilim` ve `std_skor`
+göstergelerinde tutturulan dağılımının **üst %70-79'una** düşüyor (%69,7 · %73,7 · %78,9 ·
+%77,6); `entropi`de ise dört kaçağın **en düşüğü** (%10,5). Bu ters yön değil, **aynı yön**:
+düşük entropi = yoğunlaşmış dağılım = "kendinden emin". Beş göstergenin beşi de aynı şeyi
+söylüyor: bu kalem, retriever'ın "güvenli" göründüğü çoğu doğru-getirilmiş sorudan **daha
+iddialı** bir skorla yanlış maddeyi getirmiş — kendinden emin ama yanlış. Skor dağılımı bu
+hatayı işaretlemiyor.
 
 **⚠️ n=4 uyarısı — zorunlu damga.** Dört kalemden türetilecek herhangi bir eşiğin güven
 aralığı berbattır: tek bir kalemin (index 1) konumu değişse "ayrışma" görüntüsü tamamen
@@ -122,5 +137,6 @@ daha büyük bir kaçırılan-kalem havuzu olmadan bu değişmez.
 
 ## HÜKÜM
 
-**Rozet EKLENMEZ — ayrışma yok/zayıf (en iyi aday göstergede bile kaçırılanların üçte biri
-tutturulanların en iyi yarısıyla örtüşüyor, biri en iyi çeyreğiyle); kusur 5a AÇIK kalır.**
+**Rozet EKLENMEZ — ayrışma yok/zayıf: en iyi aday gösterge (`ortalama_skor`) dört kaçağın
+dördünü birden yakalayacak biçimde eşiklenirse (`≤ 0,09721`), aynı eşik doğru getirilmiş
+23/76 kalemi de "zayıf eşleşme" diye damgalar (yanlış pozitif %30,3). Kusur 5a AÇIK kalır.**
