@@ -33,7 +33,12 @@ hakhukuk-tui = "hakhukuk.tui:main"
 hakhukuk-api = "hakhukuk.api:main"
 
 [build-system]
-requires = ["setuptools>=68"]
+# ⚠️ setuptools>=77: `license = "Apache-2.0"` PEP 639 DİZE biçimidir ve eski setuptools
+# onu reddeder ("must be valid exactly by one definition"). Ölçüldü 2026-09-11: kurulu
+# 70.2.0 ile `--no-build-isolation` kurulumu PATLIYOR ⇒ hakhukuk-api gibi giriş noktaları
+# hiç oluşmuyor (açık kusur 28). Yalıtımlı kurulum çalışıyordu çünkü pip en yeniyi çekiyor;
+# beyan edilen gereksinim KULLANILAN biçimi karşılamalı. tests/test_belgeler.py bunu çiviler.
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]

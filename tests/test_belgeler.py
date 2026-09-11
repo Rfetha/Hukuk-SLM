@@ -51,3 +51,36 @@ def test_mimari_her_urun_modulunu_var_olan_dosyaya_baglıyor():
     for modul in ("istem.py", "tipler.py", "terazi.py", "servis.py", "cli.py", "tui.py"):
         assert modul in metin, f"MIMARI.md {modul}'yi anmıyor"
         assert (KOK / "hakhukuk" / modul).exists(), f"hakhukuk/{modul} yok"
+
+
+def test_build_system_license_bicimiyle_TUTARLI():
+    """`pyproject.toml` PEP 639 dize lisansı kullanıyorsa setuptools>=77 İSTEMELİ.
+
+    ⚠️ Ölçüldü 2026-09-11: dosya `license = "Apache-2.0"` (PEP 639 dize biçimi) yazıyor ama
+    `build-system.requires` yalnız `setuptools>=68` diyordu. Kurulu setuptools **70.2.0** o
+    biçimi REDDEDİYOR:
+        configuration error: `project.license` must be valid exactly by one definition
+
+    Bugün `pip install -e .` çalışıyor çünkü **build yalıtımı** pip'e en yeni setuptools'u
+    çektiriyor ve o biçimi anlıyor. Yalıtım kapatılırsa (`--no-build-isolation`, CI'da ya da
+    çevrimdışı kurulumda yaygın) kurulum **patlar** ve `hakhukuk-api` gibi giriş noktaları
+    hiç oluşmaz — 2026-09-11'de tam olarak bu görüldü (açık kusur 28).
+
+    Bu test bir KAPI: beyan edilen gereksinim, kullanılan biçimi karşılamalı.
+    """
+    import re
+    import tomllib
+    kok = __import__("pathlib").Path(__file__).resolve().parent.parent
+    veri = tomllib.loads((kok / "pyproject.toml").read_text(encoding="utf-8"))
+    lisans = veri["project"]["license"]
+    if not isinstance(lisans, str):
+        return  # tablo biçimi (`{text = …}`) eski setuptools ile de çalışır
+    gerekli = veri["build-system"]["requires"]
+    st = [r for r in gerekli if r.replace(" ", "").startswith("setuptools")]
+    assert st, f"build-system.requires setuptools taşımıyor: {gerekli}"
+    eslesme = re.search(r">=\s*(\d+)", st[0])
+    assert eslesme, f"setuptools sürüm alt sınırı yok: {st[0]}"
+    assert int(eslesme.group(1)) >= 77, (
+        f"`license` PEP 639 dize biçiminde ({lisans!r}) ama build-system "
+        f"{st[0]!r} istiyor; PEP 639 dize lisansı setuptools>=77 ister. "
+        "Yalıtımsız kurulumda metadata üretimi PATLAR.")
