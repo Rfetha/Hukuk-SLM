@@ -85,7 +85,7 @@ product number — v2 unit, 2026-09-07 (harness ON, k=10, S2 corpus, NO preamble
              recall@10                     0.9500     ← mass cannot exceed this
              over-refusal (by eye)          4/80
              misattribution (by eye)        8/80      ← next first-rank axis (B1)
-             fabricated article numbers     0/114     ↔ competitors 1 · 4 · 4  ⚠️ see below
+             fabricated article numbers     0/114     ↔ competitors 0 · 4 · 4  (re-scored 2026-09-11)
 
    v1.0 GATE CLOSED 2026-09-07 — all three clauses, with numbers (ADR-0064):
    (1) mass ≥ 3.5 Flash − 2,0 p   0.8011 ↔ threshold 0.7225   PASSED  +5.86 p
@@ -118,19 +118,23 @@ is paid on **its own axis** (B1), not with a prompt patch.
 [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) ·
 [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)
 
-> ⚠️ **The `1 · 4 · 4` competitor figures above are the OLD TOOL'S numbers.** On 2026-09-11 the
-> citation verifier was **repaired** and this comparison was **not re-scored**. The verifier used to
-> resolve a law name loosely and land on the **wrong law** (*"Gelir Vergisi Kanunu"* → `1319 Emlak
-> Vergisi`), stamping `DOGRULANDI` against the wrong statute in **7 of the 16** laws whose corpus name
-> carries a parenthetical; after the repair that class is **0/16**. **Our own column did not move** —
-> `0/114` re-scored **byte-identical**, and the frozen TEST's `0/52` likewise. But the competitor
-> columns were produced with the **unrepaired** tool, and a probe shows the change runs **against us**
-> (3.1 Flash-Lite **1 → 0**, 3.5 Flash-Lite **4 → 3**). Those numbers are **deliberately not written
-> in** — the probe's denominator does not match the published pipeline's (154 ↔ 152 · 134 ↔ 130), so
-> the units are **not equal**. Re-scoring the competitor arms through the published pipeline is an
-> **open decision** ($0, deterministic, no judge): defect **22** in the plan. Until it is paid, read
-> the line as *"ours with the repaired tool, theirs with the unrepaired one"*.
-> Repair + measurement: `outputs/eval/g22-atif-onarim/BULGU.md` · trap **1.13**.
+> ⚠️ **This row was RE-SCORED on 2026-09-11 and one competitor number moved AGAINST us.** The
+> citation verifier was repaired (trap **1.13**): it used to resolve a law name loosely and land on
+> the **wrong law**, stamping `DOGRULANDI` against the wrong statute in **7 of the 16** laws whose
+> corpus name carries a parenthetical (after the repair: **0/16**). All five arms were then re-scored
+> through the **published** pipeline (`scripts/puanlama/harness_tablo.py`), and the calibration gate
+> passed — our own `harness_tablo.json` was reproduced **field for field** (mass `0.8011`, `coverage`
+> `0.9375`, `A1` `0.8545` included). **Of 702 citations exactly ONE changed**, and it was a stamp
+> wrongly held **against a competitor**: `gemini-3.1-flash-lite`, item 25, *"Gelir Vergisi Kanunu
+> Madde 73"* — old `1319 Emlak Vergisi → MADDE_YOK`, new `193 GELİR VERGİSİ KANUNU (G.V.K.) →
+> DOGRULANDI` (read by eye; the corpus witness exists and is not repealed). ⇒ **`1/152` → `0/153`**.
+> **We lost a lead and we say so:** on the one deterministic axis where we were ahead of every
+> competitor, 3.1 Flash-Lite is now **level with us**. What we bought is an **equal exam**
+> (ADR-0057): all five arms are now scored by the **same** tool. The other three arms did not move.
+> Each arm was run **twice**, byte-identical both times.
+> ⚠️ **The unit of this row:** numerator = `MADDE_YOK + KANUN_YOK`, denominator = **`DOGRULANDI`**
+> (not total citations). This was written down nowhere and had already misled one probe.
+> Measurement: `outputs/eval/g22-rakip-yeniden-puanlama/BULGU.md` · repair: `g22-atif-onarim/BULGU.md`.
 
 **Product version is `v0.3` (tagged 2026-09-09); the model artifact is still `HakHukuk-4B-v0.1`.**
 `v1.0` was NOT granted — the acceptance test on the frozen TEST ran (raw mass **0,5804**, ceiling

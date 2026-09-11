@@ -141,12 +141,31 @@ Sınavın eşit olduğu **varsayılmadı, ölçüldü** — kanıt §4'te.
 | `recall@10` (erişim) | 0,9500 | 0,9500 | 0,9500 | 0,9500 | ölçülemedi ᵇ | ↑ |
 | **aşırı-red** ↓ ᶜ | **4/80** | 8/80 | 9/80 | 11/80 | ölçülemedi ᵇ | ↑ (`altin_geldi_cekindi`) |
 | **isabetsizlik** ↓ ᵈ | 8/80 | 8/80 | **7/80** | 8/80 | ölçülemedi ᵇ | [`GOZLE_OKUMA_80.md`](outputs/eval/f02-biz-onsozsuz/GOZLE_OKUMA_80.md) · [`GOZLE_ISABETSIZLIK_*.md`](outputs/eval/f04-rakip-onsozsuz/GOZLE_ISABETSIZLIK_3_5_FLASH.md) |
-| **uydurulmuş madde** ↓ ʰ | **0/114** | 1/152 ʰ | 4/130 ʰ | 4/133 ʰ | ölçülemedi ᵇ | [`harness_tablo*.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) |
+| **uydurulmuş madde** ↓ ʰ | **0/114** | **0/153** ʰ | 4/130 | 4/133 | ölçülemedi ᵇ | [`harness_tablo*.json`](outputs/eval/f02-biz-onsozsuz/harness_tablo.json) · [yeniden puanlama](outputs/eval/g22-rakip-yeniden-puanlama/BULGU.md) |
 | **M5 ezber kütlesi** ↓ ᵉ | **0,3899** | 0,6710 | 0,7013 | 0,8241 | **0,4697** | [`f07/KUNYE.json`](outputs/eval/f07-m5-anti-hedef/KUNYE.json) · [`f10/KUNYE.json`](outputs/eval/f10-rakip-m5/KUNYE.json) |
 | **$ / cevap** ↓ ᵍ | **$0** | $0,001895 | **$0,001152** | $0,009914 | **$0** | [`MALIYET.json`](outputs/eval/f09-maliyet/MALIYET.json) |
 | ort. **token / cevap** ↓ | 782,5 | 861,5 | **171,1** | 699,4 | ölçülemedi ᵇ | [`KALIBRASYON_ve_OZET.md`](outputs/eval/f04-rakip-onsozsuz/KALIBRASYON_ve_OZET.md) |
 
-ʰ **Bu satır ESKİ ALETİN sayısıdır — 2026-09-11'de doğrulayıcı ONARILDI ve bu kıyas YENİDEN PUANLANMADI.** Kusur: `atif_dogrula.Dogrulayici` kanun adını gevşek eşleştirip **yanlış kanuna** çözebiliyordu (*"Gelir Vergisi Kanunu"* → `1319 Emlak Vergisi`); parantezli adlı 16 kanunun **7'sinde** yanlış kanuna `DOGRULANDI` basıyordu. Onarım sonrası o sınıf **0/16**. **BİZİM sütunumuz oynamadı** (`0/114` yeniden puanlandı, **birebir aynı**; donmuş TEST `0/52` de aynı) — ama **rakip sütunları ONARIMDAN ÖNCEKİ aletle** üretildi ve bir sonda **aleyhimize** oynadığı görüldü: ham cevaplara doğrudan uygulanan bağımsız bir sayım 3.1 Flash-Lite'ı **1 → 0**, 3.5 Flash-Lite'ı **4 → 3** veriyor. ⛔ O sayılar buraya **YAZILMADI**, çünkü sondanın paydası yayımlanan boru hattınınkiyle tutmuyor (154 ↔ 152 · 134 ↔ 130) ⇒ **birim eşit değil**. Rakip kollarının yayımlanan boru hattıyla yeniden puanlanması **açık bir karardır** ($0, deterministik, hakem gerekmez) ve [planın açık kusurları](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--kayıt-ve-devir) **kusur 22**'de duruyor. Bu şerh düşülene kadar satır *"bizimki onarılmış aletle, rakipler onarılmamış aletle"* diye okunmalıdır.
+ʰ **ESKİ ALETİN sayısıydı; 2026-09-11'de doğrulayıcı ONARILDI ve bu satır YENİDEN PUANLANDI.**
+Kusur: `atif_dogrula.Dogrulayici` kanun adını gevşek eşleştirip **yanlış kanuna** çözebiliyordu;
+parantezli adlı 16 kanunun **7'sinde** yanlış kanuna `DOGRULANDI` basıyordu (onarım sonrası
+**0/16**). Yayımlanan boru hattıyla (`scripts/puanlama/harness_tablo.py`) beş kol da yeniden
+puanlandı; **kalibrasyon kapısı geçildi** — bizim kolumuzun `harness_tablo.json`'u **alan alan
+birebir** yeniden üretildi (kütle `0,8011` · `coverage` `0,9375` · `A1` `0,8545` dâhil).
+**702 atfın YALNIZ 1'i değişti** ve o da **rakip aleyhine yanlış basılmış** bir damgaydı:
+`gemini-3.1-flash-lite`, soru id 25, *"Gelir Vergisi Kanunu Madde 73"* — eski `1319 Emlak
+Vergisi → MADDE_YOK`, yeni `193 GELİR VERGİSİ KANUNU (G.V.K.) → DOGRULANDI` (gözle okundu,
+korpus tanığı var, mülga değil). ⇒ **`1/152` → `0/153`.**
+**Bu değişim ALEYHİMİZEDİR ve öyle yazılmıştır:** rakiplerin tamamının üstünde olduğumuz tek
+deterministik eksende `3.1 Flash-Lite` artık bizimle **eşittir**. Karşılığında **eşit sınav**
+sağlandı (ADR-0057): beş kolun beşi de **aynı aletle** puanlanmış durumda. Diğer üç kolun sayısı
+**oynamadı**. Her kol **iki kez** koşuldu ve iki koşu **bayt bayt** aynı çıktı.
+⚠️ **Bu satırın birimi:** pay = `MADDE_YOK + KANUN_YOK`, payda = **`DOGRULANDI`** (toplam atıf
+DEĞİL). Bu ayrım daha önce hiçbir yerde yazılı değildi ve bir ön sondayı yanıltmıştı —
+*"3.5 FL 4 → 3"* diye okunan şey **birim kaymasıydı**, o kolda hiçbir atıf değişmedi.
+⚠️ **Sonnet-5 hücresi (`2/163`) FARKLI BİR BİRİM kullanıyor:** paydası **toplam atıf**.
+Aynı satırda iki kesir birimi duruyor — sayısı oynamadığı için hüküm etkilenmedi, açık kusur
+**25** olarak kaydedildi.
 
 **Dipnotlar — hepsi bir ölçüm hükmüdür, süsleme değildir:**
 
