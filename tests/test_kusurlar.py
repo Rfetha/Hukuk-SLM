@@ -436,3 +436,67 @@ def test_bicimleye_eklenen_yeni_parca_TUIde_KENDILIGINDEN_gorunuyor(monkeypatch)
     monkeypatch.setattr(tui, "bicimle", lambda cevap, rozet=None: "YENİ_PARÇA_İŞARETİ")
     assert "YENİ_PARÇA_İŞARETİ" in _tui_ekran_metni(monkeypatch, _ornek_cevap()), (
         "TUI `bicimle()`'yi çağırmıyor — sunuma eklenen her parça TUI'de ayrıca unutulur")
+
+
+# ── kusur 15 — kapsam satırı ÜÇ yüzeyde: CLI · TUI · HTTP ────────────────────────────
+#
+# İnsan kararı 2026-09-11: *"CLI ve HTTP'ye de EKLE"*. Tek kaynak `cli.kapsam_satiri()`
+# zaten vardı ama yalnız TUI AÇILIŞ ekranında görünüyordu; cevabın kendisiyle birlikte
+# hiçbir yüzeyde gitmiyordu. Kusur 17 kapandığı için tek yere (`bicimle()`) eklemek
+# üçünü birden kapatır — bu, 17'yi önce yapmanın ölçülebilir karşılığıdır.
+
+def _sahte_kunye(monkeypatch, tmp_path, *, n_kanun=3, n_madde=100, n_mulga=40):
+    sahte = tmp_path / "KUNYE.json"
+    sahte.write_text(json.dumps({"n_kanun": n_kanun, "n_madde": n_madde,
+                                 "n_mulga": n_mulga,
+                                 "anlik_goruntu_tarihi": "2026-01-01"}), encoding="utf-8")
+    monkeypatch.setattr(cli, "_KUNYE_YOLU", sahte)
+    return "yürürlükteki 60 madde"
+
+
+def _http_sunum(monkeypatch, cevap) -> str:
+    from fastapi.testclient import TestClient
+
+    from hakhukuk import api
+    monkeypatch.setattr(api.servis, "answer", lambda soru, **kw: cevap)
+    g = TestClient(api.uygulama).post("/sor", json={"soru": "zamanaşımı kaç yıl"})
+    assert g.status_code == 200, g.text
+    return g.json()["sunum"]
+
+
+def test_kapsam_satiri_CLI_ciktisinda_gorunuyor(monkeypatch, tmp_path):
+    beklenen = _sahte_kunye(monkeypatch, tmp_path)
+    assert beklenen in cli.bicimle(_ornek_cevap()), "kapsam satırı CLI çıktısında yok"
+
+
+def test_kapsam_satiri_TUI_cevabinda_gorunuyor(monkeypatch, tmp_path):
+    beklenen = _sahte_kunye(monkeypatch, tmp_path)
+    assert beklenen in _tui_ekran_metni(monkeypatch, _ornek_cevap()), (
+        "kapsam satırı TUI cevabında yok")
+
+
+def test_kapsam_satiri_HTTP_sunum_alaninda_gorunuyor(monkeypatch, tmp_path):
+    beklenen = _sahte_kunye(monkeypatch, tmp_path)
+    assert beklenen in _http_sunum(monkeypatch, _ornek_cevap()), (
+        "kapsam satırı HTTP `sunum` alanında yok")
+
+
+def test_kapsam_satiri_uc_yuzeyde_de_KUNYEDEN_geliyor(monkeypatch, tmp_path):
+    """⛔ Sayılar koda GÖMÜLMEZ: künye değişince üç yüzey de değişmeli.
+
+    Aynı sahte künyeyle üç yüzey sınanır; biri sabit metin taşısaydı burada ayrışırdı.
+    """
+    _sahte_kunye(monkeypatch, tmp_path, n_kanun=7, n_madde=200, n_mulga=50)
+    c = _ornek_cevap()
+    for ad, metin in (("CLI", cli.bicimle(c)),
+                      ("TUI", _tui_ekran_metni(monkeypatch, c)),
+                      ("HTTP", _http_sunum(monkeypatch, c))):
+        assert "yürürlükteki 150 madde" in metin, f"{ad} kapsam satırı künyeyi okumuyor"
+        assert "7 kanun" in metin, f"{ad} kapsam satırı künyedeki kanun sayısını okumuyor"
+
+
+def test_sorumluluk_ibaresi_SON_satir_kalir(monkeypatch, tmp_path):
+    """Kapsam satırı ibarenin ÜSTÜNE girer: kapsam bir olgu şerhi, ibare hukuki uyarıdır
+    ve çıktının EN GÜÇLÜ cümlesi son satır olarak kalmalıdır."""
+    _sahte_kunye(monkeypatch, tmp_path)
+    assert cli.bicimle(_ornek_cevap()).rstrip().endswith(cli.SORUMLULUK_IBARESI)

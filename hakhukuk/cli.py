@@ -114,7 +114,12 @@ def bicimle(cevap: Cevap, rozet: dict[Durum, str] = ROZET) -> str:
         parcalar.append("Kaynaklar:")
         parcalar += [f"  [{k.sira}] {k.kanun_adi} {k.madde_no}" for k in cevap.kaynaklar]
         parcalar.append("")
-    parcalar.append(SORUMLULUK_IBARESI)
+    # ⚠️ Kapsam satırı KAYNAKLARIN hemen ardında, ibarenin ÜSTÜNDE (kusur 15, insan
+    # kararı 2026-09-11). Gerekçe: kapsam bir OLGU şerhidir — "aranan korpus buydu" —
+    # ve okunması gereken yer, cevabın dayandığı kaynak listesinin dibidir; sorumluluk
+    # ibaresi ise HUKUKİ uyarıdır ve çıktının en güçlü cümlesi olarak SON satır kalır.
+    # Buraya konduğu için üç yüzeye de (CLI · TUI · HTTP `sunum`) kendiliğinden iner.
+    parcalar += [kapsam_satiri(), "", SORUMLULUK_IBARESI]
     return "\n".join(parcalar)
 
 
