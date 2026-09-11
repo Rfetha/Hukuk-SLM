@@ -43,3 +43,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["hakhukuk"]
+
+# ⚠️ `hakhukuk/veri/KUNYE.json` bir SEMBOLİK BAĞ → `data/corpus/KUNYE.json` (tek kaynak,
+# S18). Bu satır olmadan setuptools yalnız `.py` dosyalarını paketler; bu bağın normal
+# kurulumda (konteyner) SESSİZCE dışarıda kalması kusur B'nin ta kendisiydi.
+[tool.setuptools.package-data]
+hakhukuk = ["veri/KUNYE.json"]

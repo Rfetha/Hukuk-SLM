@@ -21,7 +21,32 @@ SORUMLULUK_IBARESI = (
 
 # ⚠️ Görev 21 Adım 7: sayılar KUNYE.json'dan OKUNUR, koda gömülmez — künye değişince
 # bu satır da (yeniden okunarak) değişmeli, elle güncellenmemeli.
-_KUNYE_YOLU = pathlib.Path(__file__).resolve().parent.parent / "data/corpus/KUNYE.json"
+#
+# ⚠️ KUSUR B DÜZELTMESİ (g20 imaj ölçümü, 2026-09-11): yol REPO KÖKÜNE göreli
+# (`__file__.parent.parent / "data/corpus/..."`) çözülüyordu. Editable kurulumda
+# (host, `pip install -e .`) `hakhukuk/` repo içinde kaldığı için bu YANLIŞ görünmüyordu;
+# paket NORMAL kurulunca (konteyner, `pip install ".[api]"`) `hakhukuk/` site-packages'a
+# taşınır ama `data/` ONUNLA BİRLİKTE TAŞINMAZ — yol bulunamayan bir yere düşer ve
+# `kapsam_satiri()` sessizce "künye okunamadı" dalına düşer (`except OSError` yutar).
+#
+# Üç seçenek tartıldı: (a) künyeyi PAKETİN İÇİNE taşı, importlib.resources ile oku —
+# kurulumdan bağımsız çalışır; (b) arama sırası (paket içi → repo köküne göreli); (c) ortam
+# değişkeni. **Seçilen: (a), importlib.resources yerine düz `Path(__file__).parent` ile**
+# (paket zaten dizin olarak kurulur, `resources` API'sinin zip-güvenli soyutlamasına gerek
+# yok — YAGNI). (b) ELENDİ: iki arama yolu, künyenin HANGİ kopyadan okunduğunu çağrı yerinde
+# belirsizleştirir ve "repo köküne göreli" dalı yalnız bugünkü kusuru sessizce geri getirir.
+# (c) ELENDİ: tek kullanıcılı yerel bir CLI için fazladan bir kurulum adımı (env değişkeni
+# unutulursa AYNI sessiz düşüş).
+#
+# ⛔ İKİNCİ KOPYA YOK: `hakhukuk/veri/KUNYE.json` bir SEMBOLİK BAĞ (symlink), gerçek dosya
+# `data/corpus/KUNYE.json`'da durmaya devam eder — künye üreten kod tek yerden (korpus
+# hattı) yazar. Geliştirme/editable kurulumda bağ CANLI çözülür (iki yer asla ayrışmaz,
+# S18); `pip install` (normal kurulum, konteyner) paketi paketlerken bu bağı OTOMATİK
+# olarak içeriğiyle birlikte bir gerçek dosyaya döker (`shutil.copytree`/wheel inşası
+# symlink'i İZLER, hedefi kopyalar) — build zamanında üretilen TEK kopya budur, elle
+# bakımı gereken bir ikinci künye DEĞİLDİR. `pyproject.toml`'un `package-data` ayarı bu
+# dosyayı taşınacak paket verisi olarak işaretler.
+_KUNYE_YOLU = pathlib.Path(__file__).resolve().parent / "veri" / "KUNYE.json"
 
 
 def _nokta(sayi: int) -> str:

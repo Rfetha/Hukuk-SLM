@@ -9,10 +9,13 @@ bilerek öyle: "ölçüm hattı dokunulmazlık kapısı" (henüz kırılmamış 
 
 Hiçbir test retriever/llama-server/korpus yüklemez — monkeypatch ve sahte nesne kullanılır.
 """
+import importlib
 import inspect
 import json
 import pathlib
 import re
+import shutil
+import sys
 
 import pytest
 
@@ -639,3 +642,85 @@ def test_duz_tirnakli_alinti_uc_yuzeyde_de_tek_tirnaga_iniyor(monkeypatch):
                       ("HTTP", _http_sunum(monkeypatch, c))):
         assert _GERCEK_EKRAN_BEKLENEN in metin, f"{ad} yüzeyinde çift tırnak/boşluk kaldı"
         assert '"' not in metin, f"{ad} yüzeyinde düz tırnak sızdı"
+
+
+# ── kusur B (g20 imaj ölçümü) — künye yolu KONTEYNERDE bulunamıyor, sessiz düşüş ────
+#
+# `_KUNYE_YOLU` repo köküne GÖRELİ çözülüyordu (`Path(__file__).parent.parent /
+# "data/corpus/KUNYE.json"`). Paket EDITABLE kuruluyken (host, `pip install -e .`) bu
+# yol repoya işaret ettiği için kusur GÖRÜNMEZDİ; paket NORMAL kurulunca (konteyner,
+# `pip install ".[api]"`) `hakhukuk/` site-packages altına taşınır ama `data/corpus/`
+# ONUNLA BİRLİKTE TAŞINMAZ — yol `site-packages/data/corpus/KUNYE.json`'a düşer, dosya
+# orada YOKTUR. `kapsam_satiri()` PATLAMAZ (`except OSError` yutar) ve vatandaş sessizce
+# "künye okunamadı — sayı belirsiz" okur. Duman denetiminde birebir görüldü
+# (`outputs/eval/g20-imaj-olcumu/BULGU.md`, endişe B).
+#
+# Bu testin `monkeypatch.setattr(cli, "_KUNYE_YOLU", ...)` ile yazılması kusuru SINAMAZ:
+# gerçek şart *"künye dosyası paket ağacına göre NEREDE aranıyor"*dur, sabitin değeri
+# değil. Bu yüzden paket repo AĞACI OLMADAN bir geçici dizine kopyalanır, künye paketin
+# İÇİNDE beklenen konuma konur ve `sys.path` üzerinden TAZE bir `hakhukuk.cli` içe
+# aktarılır — kurulu (editable olmayan) bir paketin gördüğü tam şartı taklit eder.
+
+def _hakhukuk_modullerini_yedekle_ve_temizle() -> dict:
+    yedek = {ad: mod for ad, mod in sys.modules.items()
+             if ad == "hakhukuk" or ad.startswith("hakhukuk.")}
+    for ad in yedek:
+        del sys.modules[ad]
+    return yedek
+
+
+def _hakhukuk_modullerini_geri_yukle(yedek: dict) -> None:
+    for ad in [a for a in sys.modules if a == "hakhukuk" or a.startswith("hakhukuk.")]:
+        del sys.modules[ad]
+    sys.modules.update(yedek)
+
+
+def test_kapsam_satiri_kurulu_pakette_repo_agaci_olmadan_sayilari_buluyor(tmp_path):
+    gercek_kunye = json.loads((REPO_KOK / "data/corpus/KUNYE.json").read_text(encoding="utf-8"))
+
+    paket_hedefi = tmp_path / "hakhukuk"
+    shutil.copytree(pathlib.Path(cli.__file__).resolve().parent, paket_hedefi,
+                    ignore=shutil.ignore_patterns("__pycache__"))
+    # Künye PAKETİN İÇİNDE beklenen konuma konur — `tmp_path` altında repo AĞACI (üstte
+    # bir `data/` klasörü) hiç YOK; kurulu paketin site-packages'ta göreceği şart budur.
+    kunye_hedefi = paket_hedefi / "veri" / "KUNYE.json"
+    kunye_hedefi.parent.mkdir(parents=True, exist_ok=True)
+    kunye_hedefi.write_text(json.dumps(gercek_kunye), encoding="utf-8")
+
+    yedek = _hakhukuk_modullerini_yedekle_ve_temizle()
+    sys.path.insert(0, str(tmp_path))
+    try:
+        kurulu_cli = importlib.import_module("hakhukuk.cli")
+        satir = kurulu_cli.kapsam_satiri()
+    finally:
+        sys.path.remove(str(tmp_path))
+        _hakhukuk_modullerini_geri_yukle(yedek)
+
+    assert "künye okunamadı" not in satir, (
+        f"kurulu pakette (repo ağacı yok) künye BULUNAMADI — kusur B geri geldi: {satir!r}")
+    assert str(gercek_kunye["n_kanun"]) in satir, f"kanun sayısı satırda yok: {satir!r}"
+    n_yururlukte = gercek_kunye["n_madde"] - gercek_kunye["n_mulga"]
+    assert f"{n_yururlukte:,}".replace(",", ".") in satir, f"yürürlükteki madde sayısı satırda yok: {satir!r}"
+
+
+def test_kapsam_satiri_kunye_hic_yoksa_durust_dusus_koruyor(tmp_path):
+    """Düşüş dalı KALMALI: künye gerçekten yoksa uygulama açılmamak yerine dürüst bir
+    satır göstermeye devam etmeli (brief madde 3) — bu, kurulu-paket düzeltmesiyle
+    bozulmaması gereken davranıştır."""
+    paket_hedefi = tmp_path / "hakhukuk"
+    shutil.copytree(pathlib.Path(cli.__file__).resolve().parent, paket_hedefi,
+                    ignore=shutil.ignore_patterns("__pycache__"))
+    kunye_yolu_olasi = paket_hedefi / "veri" / "KUNYE.json"
+    if kunye_yolu_olasi.exists():
+        kunye_yolu_olasi.unlink()
+
+    yedek = _hakhukuk_modullerini_yedekle_ve_temizle()
+    sys.path.insert(0, str(tmp_path))
+    try:
+        kurulu_cli = importlib.import_module("hakhukuk.cli")
+        satir = kurulu_cli.kapsam_satiri()
+    finally:
+        sys.path.remove(str(tmp_path))
+        _hakhukuk_modullerini_geri_yukle(yedek)
+
+    assert "künye okunamadı" in satir, f"künye gerçekten yokken düşüş dalı kaybolmuş: {satir!r}"
