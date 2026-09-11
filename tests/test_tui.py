@@ -13,9 +13,17 @@ def test_tui_kendi_mantigi_yok_yalnizca_answer_cagirir():
 
 
 def test_sorumluluk_ibaresi_TEK_kaynaktan_geliyor():
-    """S18'in dersi: aynı metin iki yerde durursa sessizce ayrışır."""
-    from hakhukuk.cli import SORUMLULUK_IBARESI
-    assert tui.SORUMLULUK_IBARESI is SORUMLULUK_IBARESI
+    """S18'in dersi: aynı metin iki yerde durursa sessizce ayrışır.
+
+    ⚠️ GÜNCELLENDİ 2026-09-11 (kusur 17): TUI ibareyi artık AYRICA import etmiyor —
+    sunumun tamamını `cli.bicimle()`'den alıyor ve ibare oradan geliyor. Sınanan şart
+    değişmedi: ibare TUI ekranına TEK kaynaktan ulaşmalı.
+    """
+    from hakhukuk import cli
+    from hakhukuk.tipler import Cevap, Durum
+    assert tui.bicimle is cli.bicimle
+    bos = Cevap(metin="x", durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+    assert cli.SORUMLULUK_IBARESI in tui.bicimle(bos, rozet=tui.ROZET)
 
 
 def test_modul_calistirilinca_uygulama_GERCEKTEN_baslar(monkeypatch):

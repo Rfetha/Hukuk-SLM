@@ -92,9 +92,18 @@ def alinti_isaretlerini_tirnaga_cevir(metin: str) -> str:
     return tirnakli.replace("##begin_quote##", "").replace("##end_quote##", "")
 
 
-def bicimle(cevap: Cevap) -> str:
-    """Cevabı insan okur biçime çevir. Yan etkisi yok — test edilebilsin diye ayrı."""
-    parcalar = [ROZET[cevap.durum], "", alinti_isaretlerini_tirnaga_cevir(cevap.metin.strip()), ""]
+def bicimle(cevap: Cevap, rozet: dict[Durum, str] = ROZET) -> str:
+    """Cevabı insan okur biçime çevir. Yan etkisi yok — test edilebilsin diye ayrı.
+
+    ⛔ **ÜRÜNÜN TEK SUNUM KATMANI** (kusur 17, insan kararı 2026-09-11). CLI · TUI · HTTP
+    üçü de buradan geçer; `rozet` sözlüğü yüzeyler arasındaki TEK meşru farktır ve bu
+    yüzden PARAMETREdir (bool bayrak değil — çağrı yerinde hangi sözlük olduğu okunur).
+    ⚠️ Niçin böyle: `tui.py` kendi sunum dizesini kuruyordu ve birinci turda `bicimle()`'ye
+    eklenen İKİ parça (iskele işareti süzgeci · kapsam satırı) TUI'de AYRI AYRI unutuldu.
+    S18'in ölçülmüş dersi *"aynı metin iki yerde durursa sessizce ayrışır"* bir turda
+    iki kez ısırdı. Buraya eklenen her parça artık üç yüzeye de KENDİLİĞİNDEN iner.
+    """
+    parcalar = [rozet[cevap.durum], "", alinti_isaretlerini_tirnaga_cevir(cevap.metin.strip()), ""]
     if cevap.atiflar:
         parcalar.append("Atıflar:")
         for a in cevap.atiflar:

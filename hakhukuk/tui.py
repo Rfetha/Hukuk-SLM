@@ -8,7 +8,7 @@ from textual.app import App, ComposeResult
 from textual.containers import VerticalScroll
 from textual.widgets import Footer, Header, Input, Static
 
-from hakhukuk.cli import SORUMLULUK_IBARESI, alinti_isaretlerini_tirnaga_cevir, kapsam_satiri
+from hakhukuk.cli import bicimle, kapsam_satiri
 from hakhukuk.servis import answer
 from hakhukuk.tipler import Durum
 
@@ -71,14 +71,10 @@ class HakHukukTUI(App):
                 # ekran sessizce donuk kalırsa boş ekrandan ayırt edilemez.
                 self.call_from_thread(self._ciz, f"⛔ Hata: {hata}")
                 return
-            atif = "\n".join(
-                f"  {'✅' if a.dogrulandi else '⚠️ DOĞRULANAMADI'} {a.kanun_no} {a.madde_no}"
-                for a in c.atiflar) or "  (atıf yok)"
-            kaynak = "\n".join(f"  {k.sira}. {k.kanun_adi} {k.madde_no}" for k in c.kaynaklar)
-            self.call_from_thread(
-                self._ciz,
-                f"{ROZET[c.durum]}\n\n{alinti_isaretlerini_tirnaga_cevir(c.metin)}\n\n"
-                f"ATIFLAR:\n{atif}\n\nKAYNAKLAR:\n{kaynak}\n\n{SORUMLULUK_IBARESI}")
+            # ⛔ Kendi sunum dizesi KURULMAZ (kusur 17): tek fark rozet sözlüğüdür ve o da
+            # `bicimle()`'ye PARAMETRE olarak geçer. Buradan bir `f"…"` kurmak, birinci
+            # turun iki sızıntısını (iskele işareti · kapsam satırı) yeniden açar.
+            self.call_from_thread(self._ciz, bicimle(c, rozet=ROZET))
         finally:
             # ⚠️ Hata yolunda da açılmalı: açılmazsa tek bir hata arayüzü KALICI kilitler.
             self.call_from_thread(self._mesgul, False)

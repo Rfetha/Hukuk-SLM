@@ -195,16 +195,22 @@ def test_tui_acilis_ekrani_yonerge_ve_kapsam_satirini_gosteriyor():
 # ── kusur: TUI sunumu `c.metin`'i HAM basıyor — iskele işareti vatandaşa gidiyor ─────
 
 def test_tui_suzgeci_cli_ile_AYNI_nesne():
-    """`tui.py` süzgeci `cli.py`'den İMPORT etmeli, KOPYALAMAMALI (S18'in dersi:
-    `SORUMLULUK_IBARESI` bu deponun yerleşik emsalidir — `is` ile sınanır)."""
-    assert tui.alinti_isaretlerini_tirnaga_cevir is cli.alinti_isaretlerini_tirnaga_cevir, (
-        "tui'nin süzgeci cli'dekiyle AYNI nesne değil — kopyalanmış olabilir")
+    """`tui.py` sunumu `cli.py`'den İMPORT etmeli, KOPYALAMAMALI (S18'in dersi:
+    `SORUMLULUK_IBARESI` bu deponun yerleşik emsalidir — `is` ile sınanır).
+
+    ⚠️ Test 2026-09-11'de GÜNCELLENDİ (silinmedi): kusur 17 kapatılınca TUI artık tek
+    tek süzgeç import etmiyor, SUNUMUN TAMAMINI import ediyor. Sınanan şart aynı, yalnız
+    daha güçlü — tek bir `is` bütün sunum katmanının ortaklığını çiviliyor.
+    """
+    assert tui.bicimle is cli.bicimle, (
+        "tui'nin sunumu cli'dekiyle AYNI nesne değil — kopyalanmış olabilir")
 
 
 def test_tui_sunum_dizesinde_iskele_isareti_yok(monkeypatch):
-    """`tui.py` kendi sunum dizesini kuruyor (`bicimle()` çağırmıyor); süzgeci `cli`'den
-    IMPORT ettiği için ##begin_quote##/##end_quote## vatandaşa GİTMEZ — bu test o yolu
-    kapalı tutar. `servis.answer` sahtelenir; llama-server/indeks GEREKMEZ."""
+    """TUI sunumu `cli.bicimle()`'den geldiği için ##begin_quote##/##end_quote##
+    vatandaşa GİTMEZ — bu test o yolu kapalı tutar (2026-09-11 öncesi TUI kendi dizesini
+    kuruyordu ve süzgeci yalnız AYRICA import ettiği için geçiyordu; kusur 17).
+    `servis.answer` sahtelenir; llama-server/indeks GEREKMEZ."""
     import asyncio
 
     from textual.widgets import Static
@@ -371,3 +377,62 @@ def test_alinti_cevirisi_ham_metni_bozmuyor():
     c = Cevap(metin=ham, durum=Durum.CEVAP, atiflar=(), kaynaklar=())
     cli.bicimle(c)
     assert c.metin == ham, "Cevap.metin sunum çevirisinden sonra değişti — ham kayıt bozuldu"
+
+
+# ══ İKİNCİ TUR (2026-09-11) — kusur 17 · 15 · 19 · 16 · 14 · 20 ══════════════════════
+#
+# ⚠️ Turun kök nedeni kusur **17**: `tui.py` `cli.bicimle()`'yi ÇAĞIRMIYOR, kendi sunum
+# dizesini kuruyordu. Birinci turda kapatılan iki sızıntının (`##begin_quote##` ve kapsam
+# satırı) ikisi de TUI'de AYRI AYRI unutuldu. S18'in ölçülmüş dersi: aynı metin iki yerde
+# durursa sessizce ayrışır — bu turda İKİ KEZ ayrıştı. Bu yüzden 17 önce kapatılır;
+# 15 · 19 · 16 onun üstüne oturur ve tek yerden ÜÇ yüzeye birden iner.
+
+def _tui_ekran_metni(monkeypatch, cevap) -> str:
+    """TUI'yi BAŞSIZ kipte gerçekten açar, sahte `answer` ile bir soru sorar, ekranı verir.
+
+    ⛔ Kaynak denetimi YETMEZ: `python -m hakhukuk.tui` bir kez hiç açılmıyordu ve 163 test
+    bunu görmedi (2026-09-09). Sunum birliği ancak ÇALIŞAN programdan okunarak sınanır.
+    """
+    import asyncio
+
+    from textual.widgets import Static
+
+    monkeypatch.setattr(tui, "answer", lambda soru: cevap)
+
+    async def _calistir() -> str:
+        app = tui.HakHukukTUI()
+        async with app.run_test() as pilot:
+            await pilot.click("#soru")
+            await pilot.press(*"soru", "enter")
+            await app.workers.wait_for_complete()
+            await pilot.pause()
+            return str(app.query_one("#cikti", Static).content)
+
+    return asyncio.run(_calistir())
+
+
+def _ornek_cevap() -> Cevap:
+    return Cevap(
+        metin="İş Kanunu Madde 31 uyarınca sözleşme askıya alınır.",
+        durum=Durum.CEVAP,
+        atiflar=(tipler.Atif(kanun_no="4857", madde_no="Madde 31", dogrulandi=True),
+                 tipler.Atif(kanun_no="", madde_no="Madde 99", dogrulandi=False)),
+        kaynaklar=(IS_K_31,))
+
+
+def test_tui_sunumu_bicimle_ciktisiyla_BIREBIR_AYNI(monkeypatch):
+    """kusur 17: TEK sunum katmanı. Tek meşru fark ROZET sözlüğüdür, o da PARAMETREdir."""
+    c = _ornek_cevap()
+    assert _tui_ekran_metni(monkeypatch, c) == cli.bicimle(c, rozet=tui.ROZET), (
+        "TUI kendi sunum dizesini kuruyor — iki sunum katmanı sessizce ayrışır (S18)")
+
+
+def test_bicimleye_eklenen_yeni_parca_TUIde_KENDILIGINDEN_gorunuyor(monkeypatch):
+    """Kusur 17'nin ASIL şartı: `bicimle()` büyüyünce TUI'nin DEĞİŞMESİ gerekmemeli.
+
+    Birinci turda tam bu şart yoktu: `bicimle()`'ye iskele süzgeci ve kapsam satırı
+    eklendi, TUI ikisini de almadı ve ikisi de vatandaşa kusurlu gitti.
+    """
+    monkeypatch.setattr(tui, "bicimle", lambda cevap, rozet=None: "YENİ_PARÇA_İŞARETİ")
+    assert "YENİ_PARÇA_İŞARETİ" in _tui_ekran_metni(monkeypatch, _ornek_cevap()), (
+        "TUI `bicimle()`'yi çağırmıyor — sunuma eklenen her parça TUI'de ayrıca unutulur")
