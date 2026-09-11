@@ -728,7 +728,19 @@ yapılandırma sabitken geçerlidir; bu şerh oraya da düşmelidir.
 Bağlayıcı yapılandırma: `-ngl 99 -fa on --no-context-shift --cache-type-k q8_0
 --cache-type-v q8_0 -c 8192`. HF kartının 3. bölümüne yazıldı.
 
-**Farkın 80 kalemdeki toplam etkisi ÖLÇÜLMEDİ.** Dolayısıyla varsayılan KV ile 0,8011'in
+~~**Farkın 80 kalemdeki toplam etkisi ÖLÇÜLMEDİ.**~~ → **ÖLÇÜLDÜ 2026-09-11** (Görev 22 Adım 1-2).
+Kaynak: [`KARSILASTIRMA.md`](outputs/eval/g22-kv-fp16/KARSILASTIRMA.md) · [`KUTLE.md`](outputs/eval/g22-kv-fp16/KUTLE.md).
+80 kalemin **65'i** (%81,2) fp16'da **bayt olarak değişti**, ama hiçbir sayaç birden fazla kalem
+oynamadı (kesik 4→3 · tamamen boş 0→0 · çekinme 5→5 · uydurulmuş madde 0→0). **Kütle
+0,8011 → 0,7932** (−0,79 p) — gürültü tabanının 2,8 katı, **ama tek yönlü hükme yetmiyor**:
+o taban *aynı cevaplara* hakemi yeniden koşmanın gürültüsüdür ve burada cevaplar da değişti;
+bu koşu çiftinin **kendi tabanı ölçülmedi**. Tabanın **açıkça** üstündeki tek eksen atıf
+isabetidir ve **kötüleşti**: `wrong_ref_rate_micro` **0,0769 → 0,1553 (2,0×)**.
+⇒ **İnsan kararı 2026-09-11: taşıyıcı rejim `q8_0` KALIR** — aşağıdaki bağlayıcı yapılandırma
+artık bir **karardır**, tercih değil. *(Bu paragraf, eski "ölçülmedi" cümlesini geçersiz kılar;
+cümle silinmedi, üstü çizildi — çelişki damgalanır, gizlenmez.)*
+
+**Eski cümlenin devamı, kaydı bozmamak için aynen:** Dolayısıyla varsayılan KV ile 0,8011'in
 korunacağı **iddia edilmiyor**. Açık borç; ölçümü $0 ve ~1 saat GPU.
 
 ---
