@@ -2,7 +2,7 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-11 · **108/115 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-11 · **111/115 kutucuk** · `v0.3` etiketlendi
 
 > **2026-09-11 turu:** **G22 KAPANDI 5/5** (Adım 2 ve 3 insana soruldu, ikisi de onaylandı) · G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8). **Kalan 7 kutucuğun 3'ü insan gözü kapısı**, biri insandan sır bekliyor. **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, kararlar **ADR-0079** ve **ADR-0080**. Harcanan: **$0,045067** (OpenRouter ölçümü). Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-20**.
 
@@ -75,7 +75,7 @@ düştüğü üzerine kuruludur.
 | sıra | iş | durum | kapı |
 | :--- | :--- | :--- | :--- |
 | ~~1~~ | **G8 Adım 1b** — `KUNYE` taşınabilirlik | BİTTİ | kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** |
-| **2** | **G12 Adım 6-7** — TUI gözle doğrula | **AÇIK** | üç soruda rozet + atıf + kaynak + ibare **ekranda görüldü**, insan teyit etti |
+| ~~2~~ | **G12 Adım 6-7** — TUI gözle doğrula | **BİTTİ** | üç soruda rozet + atıf + kaynak + ibare **ekranda görüldü**, insan teyit etti |
 | ~~3~~ | **G4** — Sonnet-5 rakip havuzunda | BİTTİ | eşit sınav kanıtlı; **Sonnet-5 ÖNDE** (0,8348 ↔ 0,8011) · $1,1932 |
 | ~~4~~ | **G16** — `v1.0` kabul testi | BİTTİ | donmuş TEST tek kez açıldı; kütle **0,5804** · `v1.0` VERİLMEDİ → `v0.3` (ADR-0077) |
 | ~~5~~ | **G18** — araç katmanı | BİTTİ | 5 kaldıraç · sınırlı döngü · regresyon **80/80 birebir** |
@@ -83,7 +83,7 @@ düştüğü üzerine kuruludur.
 | **7** | **G19** — HTTP API (FastAPI) | **5/6** | kod BİTTİ 2026-09-10, **178 test yeşil**; açık tek kutucuk **Adım 6 = insan gözü kapısı** |
 | ~~8~~ | **açık kusurlar** — kayıt | — | [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü. **On üçün on biri 2026-09-10'da G21+G22'ye alındı**, üçü devredildi. Kalan kayıt **kutucuk değildir, paydaya girmez** |
 | **9** | **G20** — konteyner dağıtımı | **5/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
-| **10** | **G21** — ürün yüzeyi kusur temizliği | **10/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
+| ~~10~~ | **G21** — ürün yüzeyi kusur temizliği | **BİTTİ 11/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
 | ~~11~~ | **G22** — rejim kusuru + KV ölçümü | **BİTTİ 5/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
@@ -549,11 +549,11 @@ edilir** — iki yere yazılmaz (S18'in dersi).
 
 Run: `python -m pytest tests/test_tui.py -v` → **1 passed**
 
-- [ ] **Adım 6: Gözle doğrula** — `python -m hakhukuk.tui`, üç soru sor.
+- [x] **Adım 6: Gözle doğrula** — **İNSAN TEYİT ETTİ 2026-09-11.** `python -m hakhukuk.tui` açıldı, üç soru soruldu. `verify:` **dört durumdan İKİSİ ekranda ayırt edildi** — `🟢 CEVAP` (kira feshi, TBK 330, atıf `✓` doğrulanmış) ↔ `⚪ SUSKUNLUK` (kapsam dışı soru, atıf bölümü hiç çıkmadı, **doğru davranış**); sorumluluk ibaresi **her iki cevapta da** görüldü.
 `verify:` dört durumdan en az ikisi ekranda **ayırt edilebiliyor**; sorumluluk ibaresi
 **her** cevapta görünüyor.
 
-- [ ] **Adım 7: Commit**
+- [x] **Adım 7: Commit** — TUI kodu 2026-09-09'da commit edilmişti; bu turda üç kez daha değişti (kusur 3 · 8 · 17 · 26) ve her biri kendi commit'ini aldı.
 
 ```bash
 git add hakhukuk/tui.py tests/test_tui.py pyproject.toml && \
@@ -1211,7 +1211,21 @@ Global kısıtlara bir cümle girer: *yeni özne eklenirken duman koşusu **taba
 
 - [x] **Adım 10: Testler yeşil + commit** *(davranışsal ve yapısal değişiklikler AYRI commit)* — **195 yeşil, 2 xfail** (2026-09-11). Üç commit: `6d81340` ölçüm · `d75b5c5` davranış · `4f0b795` kayıt. Yapısal ↔ davranışsal ayrımı: bu turda saf yapısal değişiklik YOK — tek ad değişikliği (`_iskele_isaretlerini_sil` → kamusal) aynı turda DOĞAN kodun adıdır, mevcut kodun yeniden adlandırılması değil; ayrı commit onu gerekçesiz bırakırdı.
 
-- [ ] **Adım 11: GÖZ KAPISI** — TUI'de üç soru. **İNSAN GÖZÜ KAPISI, kendi başına işaretlenmez.**
+- [x] **Adım 11: GÖZ KAPISI** — **İNSAN TEYİT ETTİ 2026-09-11.** Beş şartın beşi de ekranda görüldü:
+ekran **donmuyor** (`⏳ kaynaklar taranıyor…` Enter'dan **hemen sonra** çizildi) · açılışta yönerge
+**ve** kapsam satırı (`892 kanun · yürürlükteki 37.949 madde …`) · cevapta `##begin_quote##`
+**YOK** · boş sorgu okunur mesaj alıyor · **iki ardışık Enter'da girdi KİLİTLENDİ**, ikinci
+sorgu birincinin cevabını ezmedi.
+
+🔴 **VE KAPI İŞİNİ YAPTI — 273 test yeşilken duran İKİ kusuru ekran yakaladı:**
+**kusur 26** (sunumda **çift tırnak**: model işaretlerin içine kendi düz tırnağını da yazınca
+`“ "…" ”` çıkıyordu) — ⚠️ bu kusuru **aynı gün BEN eklemiştim** (kusur 12a/19 süzgeci) ve
+**testlerim tırnaksız alıntıyla yazıldığı için görmemişti**; TDD ile kapatıldı (commit
+`6a58d72`, +6 test). **kusur 27** (Kaynaklar listesinde `MADDE 349` ↔ `Madde 8` yan yana —
+korpusun ham tutarsızlığının vatandaş ekranına yansıması) — kayda geçti, **açık**.
+
+**Ders, bu turun üçüncüsü:** sayısal kapı (273 yeşil test) bu iki kusuru **geçirdi**; ikisini de
+**bakan göz** buldu. ADR-0051'in gözle-okuma şartı bu turda da karşılığını verdi.
 `verify:` ekran **donmuyor** ve ilerleme satırı çiziliyor · açılışta yönerge + kapsam satırı
 **görüldü** · cevapta `##begin_quote##` **YOK** · boş sorgu okunur bir mesaj alıyor.
 
