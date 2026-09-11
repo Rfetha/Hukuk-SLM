@@ -92,6 +92,29 @@ def alinti_isaretlerini_tirnaga_cevir(metin: str) -> str:
     return tirnakli.replace("##begin_quote##", "").replace("##end_quote##", "")
 
 
+# Ölçülmüş sızıntı (2026-09-11, fp16 koşusu · `outputs/eval/g22-kv-fp16/`): model
+# `istem.SISTEM_COK_KAYNAK`'ın son satırındaki yer tutucuyu — `(KANUN ADI, Madde X)` —
+# harfiyen basıyor. 2/80 kalem (id 23 · 36); çıpa rejiminde 0/80.
+_YER_TUTUCU_DESENI = re.compile(r"\(\s*KANUN ADI\s*(?=[,)])")
+
+
+def yer_tutucu_atiflarini_isaretle(metin: str) -> str:
+    """İstem yer tutucusunu (`(KANUN ADI, …`) DÜRÜST bir eksiklik işaretine çevirir.
+
+    ⚠️ Niçin SİLMEK değil: parantezin içinde modelin ürettiği GERÇEK bir bilgi var —
+    madde numarası. Parantezi tümden atmak vatandaşın doğrulayabileceği tek adresi yok
+    ederdi. Olduğu gibi bırakmak ise daha kötüsüdür: `KANUN ADI` büyük harfli bir kanun
+    ADI gibi okunur (korpustaki adlar da büyük harflidir — "İŞ KANUNU") ve vatandaş
+    olmayan bir kanuna atıf yapıldığını sanır. İkisi de vatandaşa yalandır.
+    Dürüst orta yol: numara KALIR, eksiklik AÇIKÇA yazılır — kusur GÖRÜNÜR olur, gizlenmez.
+
+    ⛔ Yalnız sunum katmanında: `Cevap.metin` ham çıktıdır ve `scripts/` ölçüm hattı onu
+    sayar (kusur 12a'nın emsali). Desen `istem.SISTEM_COK_KAYNAK`'taki BİREBİR literale
+    çivilidir — büyük harfli biçim ölçülen biçimdir; uydurulmuş bir genelleme yapılmaz.
+    """
+    return _YER_TUTUCU_DESENI.sub("(kanun adı belirtilmemiş", metin)
+
+
 def bicimle(cevap: Cevap, rozet: dict[Durum, str] = ROZET) -> str:
     """Cevabı insan okur biçime çevir. Yan etkisi yok — test edilebilsin diye ayrı.
 
@@ -103,7 +126,9 @@ def bicimle(cevap: Cevap, rozet: dict[Durum, str] = ROZET) -> str:
     S18'in ölçülmüş dersi *"aynı metin iki yerde durursa sessizce ayrışır"* bir turda
     iki kez ısırdı. Buraya eklenen her parça artık üç yüzeye de KENDİLİĞİNDEN iner.
     """
-    parcalar = [rozet[cevap.durum], "", alinti_isaretlerini_tirnaga_cevir(cevap.metin.strip()), ""]
+    govde = yer_tutucu_atiflarini_isaretle(
+        alinti_isaretlerini_tirnaga_cevir(cevap.metin.strip()))
+    parcalar = [rozet[cevap.durum], "", govde, ""]
     if cevap.atiflar:
         parcalar.append("Atıflar:")
         for a in cevap.atiflar:

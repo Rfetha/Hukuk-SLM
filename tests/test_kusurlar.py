@@ -500,3 +500,51 @@ def test_sorumluluk_ibaresi_SON_satir_kalir(monkeypatch, tmp_path):
     ve çıktının EN GÜÇLÜ cümlesi son satır olarak kalmalıdır."""
     _sahte_kunye(monkeypatch, tmp_path)
     assert cli.bicimle(_ornek_cevap()).rstrip().endswith(cli.SORUMLULUK_IBARESI)
+
+
+# ── kusur 19 — istem YER TUTUCUSU sızıntısı sunumda süzülür ──────────────────────────
+#
+# Ölçüldü 2026-09-11 (G22 Adım 1, fp16 koşusu): model istemin kendi yer tutucusunu
+# harfiyen bastı — `(KANUN ADI, Madde 13)` — `0/80 ↔ 2/80` (id 23 · 36),
+# `outputs/eval/g22-kv-fp16/KARSILASTIRMA.md`. Çıpa rejiminde yok; rejime bağlı bozulma.
+# İnsan kararı 2026-09-11: KAPATILSIN, sunum katmanında (kusur 12a'nın yanında).
+
+def test_yer_tutucu_sunumda_HARFIYEN_gorunmuyor():
+    ham = "Bu durumda (KANUN ADI, Madde 13) uygulanır."
+    c = Cevap(metin=ham, durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+    sunum = cli.bicimle(c)
+    assert "KANUN ADI" not in sunum, "istem yer tutucusu vatandaşa gitti"
+
+
+def test_yer_tutucu_MADDE_NUMARASINI_korur_ve_eksigi_DURUSTCE_soyler():
+    """⛔ Vatandaşa yalan söyleme: parantezi silmek, modelin ürettiği GERÇEK bilgiyi
+    (madde numarası) yok ederdi; `KANUN ADI`'nı olduğu gibi bırakmak ise onu bir kanun
+    ADI gibi gösterirdi. Dürüst orta yol: numara kalır, eksiklik AÇIKÇA yazılır."""
+    sunum = cli.bicimle(Cevap(metin="Bu durumda (KANUN ADI, Madde 13) uygulanır.",
+                              durum=Durum.CEVAP, atiflar=(), kaynaklar=()))
+    assert "(kanun adı belirtilmemiş, Madde 13)" in sunum, sunum
+
+
+def test_gercek_atiflar_BOZULMUYOR():
+    """Muhafız: süzgeç yalnız yer tutucuya dokunur; gerçek atıf aynen kalır."""
+    ham = "Kira artışı (Türk Borçlar Kanunu, Madde 344) ile sınırlıdır."
+    sunum = cli.bicimle(Cevap(metin=ham, durum=Durum.CEVAP, atiflar=(), kaynaklar=()))
+    assert "(Türk Borçlar Kanunu, Madde 344)" in sunum, "gerçek atıf bozuldu"
+
+
+def test_yer_tutucu_suzgeci_HAM_metni_bozmuyor():
+    """⛔ `Cevap.metin` modelin ham çıktısıdır — ölçüm hattı onu sayıyor, DEĞİŞTİRİLEMEZ."""
+    ham = "Bu durumda (KANUN ADI, Madde 13) uygulanır."
+    c = Cevap(metin=ham, durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+    cli.bicimle(c)
+    assert c.metin == ham, "ham kayıt sunum süzgecinden sonra değişti"
+
+
+def test_yer_tutucu_suzgeci_UC_YUZEYDE_de_calisiyor(monkeypatch):
+    """Kusur 17'nin karşılığı: süzgeç tek yere kondu, üç yüzey de aldı."""
+    c = Cevap(metin="Bu durumda (KANUN ADI, Madde 13) uygulanır.",
+              durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+    for ad, metin in (("CLI", cli.bicimle(c)),
+                      ("TUI", _tui_ekran_metni(monkeypatch, c)),
+                      ("HTTP", _http_sunum(monkeypatch, c))):
+        assert "KANUN ADI" not in metin, f"{ad} yüzeyinde yer tutucu kaldı"
