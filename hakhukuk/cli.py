@@ -26,9 +26,19 @@ ROZET = {
 }
 
 
+def iskele_isaretlerini_sil(metin: str) -> str:
+    """`##begin_quote##`/`##end_quote##` iskelesini SUNUM katmanında temizler.
+
+    ⛔ Yalnız sunum katmanında: `Cevap.metin` modelin ham çıktısıdır, `score_register.py:41`
+    aynı işareti register göstergesi olarak SAYIYOR — ham alanı değiştirmek ölçümü bozar.
+    `tui.py` bu fonksiyonu IMPORT eder, KOPYALAMAZ (S18'in dersi).
+    """
+    return metin.replace("##begin_quote##", "").replace("##end_quote##", "")
+
+
 def bicimle(cevap: Cevap) -> str:
     """Cevabı insan okur biçime çevir. Yan etkisi yok — test edilebilsin diye ayrı."""
-    parcalar = [ROZET[cevap.durum], "", cevap.metin.strip(), ""]
+    parcalar = [ROZET[cevap.durum], "", iskele_isaretlerini_sil(cevap.metin.strip()), ""]
     if cevap.atiflar:
         parcalar.append("Atıflar:")
         for a in cevap.atiflar:

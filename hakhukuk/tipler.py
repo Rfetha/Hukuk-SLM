@@ -5,8 +5,24 @@ yanıldı çünkü dünya ikili değil. `suskunluk_terazisi` üç hâl buldu (ce
 suskunluk); Faz 0 dördüncüyü ölçtü (kesik). Vatandaş için en tehlikelisi ORTADAKİdir:
 "doğrudan madde yok, bununla birlikte…" — cevap gibi görünür, değildir.
 """
+import re
 from dataclasses import dataclass
 from enum import Enum
+
+_MADDE_SAYISI_DESENI = re.compile(r"\d+")
+
+
+def _madde_sayisi_cikar(madde_no: str) -> int | None:
+    """`madde_no`'nun karşılaştırılabilir tam sayı hâli — HAM alanı DEĞİŞTİRMEZ.
+
+    Korpus tutarsız: "MADDE 349" ↔ "Madde 6" ↔ "330" aynı maddeyi üç yazımla taşır.
+    Karar: yalnız baştaki rakam dizisi alınır; alt-madde harfi ("31/a" → 31) bu alanda
+    ATILIR çünkü `madde_sayisi` kıyas/sıralama için bir SAYIdır, adres kimliği değil — adres
+    kimliği ham `madde_no`'da zaten duruyor. Ayrıştırılamayan girdi (rakam yoksa) → `None`,
+    sessiz bir tahmin üretilmez.
+    """
+    eslesme = _MADDE_SAYISI_DESENI.search(madde_no)
+    return int(eslesme.group()) if eslesme else None
 
 
 class Durum(Enum):
@@ -51,6 +67,11 @@ class Kaynak:
         """`kanun_no/madde_no` — korpustaki anahtar (bkz. tuzak 7.6: %22,7 yineleniyor)."""
         return f"{self.kanun_no}/{self.madde_no}"
 
+    @property
+    def madde_sayisi(self) -> int | None:
+        """Türetilmiş kıyas alanı — bkz. `_madde_sayisi_cikar`. `madde_no` HAM kalır."""
+        return _madde_sayisi_cikar(self.madde_no)
+
 
 @dataclass(frozen=True)
 class Atif:
@@ -59,6 +80,11 @@ class Atif:
     kanun_no: str
     madde_no: str
     dogrulandi: bool = False
+
+    @property
+    def madde_sayisi(self) -> int | None:
+        """Türetilmiş kıyas alanı — bkz. `_madde_sayisi_cikar`. `madde_no` HAM kalır."""
+        return _madde_sayisi_cikar(self.madde_no)
 
 
 @dataclass(frozen=True)

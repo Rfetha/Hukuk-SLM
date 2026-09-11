@@ -131,6 +131,8 @@ def answer_arac(soru: str, *, k: int = VARSAYILAN_K, azami_adim: int = AZAMI_ADI
     Bu, `KESIK` ile **birleştirilmez** — *"cümle yarım"* ile *"cümle tam, dayanağı eksik
     olabilir"* vatandaşa farklı şey söyler.
     """
+    if not soru.strip():
+        return _bos_sorgu_cevabi()
     araclar = araclar if araclar is not None else _varsayilan_araclar()
     uret = uret or _uret_arac
     kaynaklar = _getir(soru, k)
@@ -190,6 +192,18 @@ def _suskunluk() -> Cevap:
         durum=Durum.SUSKUNLUK, atiflar=(), kaynaklar=())
 
 
+def _bos_sorgu_cevabi() -> Cevap:
+    """Boş/yalnız-boşluk sorguya dürüst yanıt — `_getir` bu dala hiç girmez.
+
+    Durum=SUSKUNLUK: kaynaksızlıkla aynı ailede, dürüst "cevaplayacak bir şey yok" hâli
+    (uydurulmuş bir uzunluk eşiği yok — yalnız boş/boşluk sorgu bu kapıdan döner).
+    """
+    return Cevap(
+        metin="Soru boş görünüyor. Cevap üretebilmem için mevzuatla ilgili bir soru yazmanız "
+              "gerekir.",
+        durum=Durum.SUSKUNLUK, atiflar=(), kaynaklar=())
+
+
 def _uret_arac(mesajlar: list[dict], semalar=None) -> tuple[str, str, tuple]:
     """Araçlı üretim taşıyıcısı. Bugün araç çağrısı **ayrıştırılmıyor** — sunucu tarafı
     tool-calling desteği açılana kadar tek atış davranır ve bu **açıkça** böyle yazılıdır.
@@ -205,6 +219,8 @@ def answer(soru: str, *, k: int = VARSAYILAN_K) -> Cevap:
 
     Boş getirmede model çağrılmaz; dürüst suskunluk döner.
     """
+    if not soru.strip():
+        return _bos_sorgu_cevabi()
     kaynaklar = _getir(soru, k)
     if not kaynaklar:
         return Cevap(
