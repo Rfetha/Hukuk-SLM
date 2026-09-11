@@ -1269,7 +1269,12 @@ tabakanın medyanı) → ölçekleme kalem sayısı değil **hakem-istemi karakt
    (atıf sayısı 114 → 152, katı kapı reddi 0 → 3) ⇒ iki bağımsız alet aynı şeyi söylüyor.
    ⚠️ Bu **B1 eksenidir** ve zaten frontier'ın 9,3× gerisindeyiz (`0,0769 ↔ 0,0083`);
    fp16 o açığı **2 katına** çıkarıyor. ⇒ **Ürünün taşıyıcı rejimi `q8_0` kalmalıdır** —
-   bu bir öneridir, kapı değil.
+   ~~bu bir öneridir, kapı değil~~ → **İNSAN KARARI 2026-09-11: `q8_0` KALSIN.** Öneri
+   **karara döndü**; bağlayıcı yapılandırma (`--cache-type-k q8_0 --cache-type-v q8_0`)
+   `compose.yaml`'da, `MODEL_CARD` §7.10'da ve HF kartında **zaten yazılı** — bu karar onları
+   **teyit eder**, değiştirmez. Gerekçe ölçülmüştür: fp16'da `wrong_ref_rate` **2,0×**
+   kötüleşiyor (`outputs/eval/g22-kv-fp16/KUTLE.md`) ve bu, frontier'ın zaten 9,3× gerisinde
+   olduğumuz **B1 eksenidir**.
 
 **Yan bulgu:** çekinme **5/80 ↔ 5/80** ama **küme farklı**: `{15,37,45,66,79}` ↔ `{15,45,51,66,79}`.
 Aynı sayı, farklı kalemler — toplulaştırılmış sayacın neyi gizlediğinin örneği.
