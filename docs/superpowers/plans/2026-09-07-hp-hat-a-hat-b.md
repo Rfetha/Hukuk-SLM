@@ -184,6 +184,10 @@ TUI için `textual` (~~henüz kurulu değil~~ → **8.2.8 KURULU**, ölçüldü 
   okunur. **17 tuzağın hepsi** *"hata vermeden yanlış sayı üretir"* sınıfından.
 - **Gözle okuma bir kapıdır.** Faz 0'da sayısal kapı **beş kusuru** geçirdi; beşini de göz
   ya da *"bu sayıyı neyle, hangi birimde kıyaslayacağım?"* sorusu yakaladı.
+- **Parasal kapı tahmini TABAKALANMIŞ duman koşusundan yapılır** (tuzak **1.11**, ölçüldü
+  2026-09-09): yeni bir özne eklenirken duman koşusu kısa · orta · uzun soru içerecek biçimde
+  seçilir, ya da kapıya **%50 emniyet payı** konur. n=5'ten doğrusal çarpım $0,82 dedi, gerçek
+  **$1,1932** tuttu — $1 kapısı **hata vermeden** %45 aşıldı.
 - **Bütçe — ÖLÇÜLDÜ 2026-09-07:** OpenRouter **$6,60** (`total_credits` 20 −
   `total_usage` 13,397) · Modal **$29,19**. Devir notundaki *"~$8,88"* **yanlıştı**.
   Bu plan **~$10-20** harcar ⇒ **OpenRouter bakiyesi `HP` + kapı koşusuna yetmeyebilir.**
@@ -1131,7 +1135,7 @@ on biri bu planda çözülebilir, dokuzu $0 ve küçük.** Bu görev o dokuzu to
 | 3 | Kapsam satırı **statik**, sınıflandırıcı YOK | Yanılan bir kapsam sınıflandırıcısı, cevabı olan soruyu öldürür |
 | 4 | Zayıf-eşleşme rozeti **ölçüme bağlı**; ayrışma yoksa **rozet YOK** | Uydurulmuş eşik, bu hattın en pahalı hata sınıfını (*"hata vermeden yanlış"*) doğrudan besler |
 
-- [ ] **Adım 1: Failing test** — `tests/test_kusurlar.py` + mevcut dosyalara ekler.
+- [x] **Adım 1: Failing test** — `tests/test_kusurlar.py` + mevcut dosyalara ekler.
 Sınanacaklar: boş/boşluk sorgu `_getir`'e **hiç ulaşmıyor** · `"kira?"` **reddedilmiyor** ·
 `bicimle()` çıktısında `##begin_quote##` **yok** ama alıntı metni **duruyor** · `Cevap.metin`
 işaretleri **hâlâ taşıyor** (ham) · `Atif("6098","Madde 330").madde_sayisi ==
@@ -1139,37 +1143,37 @@ Kaynak(...,"MADDE 330").madde_sayisi` · `tui.py` `answer()`'ı olay döngüsün
 açılış ekranında yönerge **ve** kapsam satırı var · `scripts/` altında süzgeç **yok**
 (ölçüm hattı dokunulmazlık kapısı).
 
-- [ ] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör**
+- [x] **Adım 2: Testi koş, BAŞARISIZ olduğunu gör** — 2026-09-11: `tests/test_kusurlar.py` 15 test, **10 KIRMIZI görüldü** (183 geçti · 2 xfail). Beklenmedik geçen YOK.
 
-- [ ] **Adım 3: kusur 4 — boş sorgu KAPISI** (`servis.answer`)
+- [x] **Adım 3: kusur 4 — boş sorgu KAPISI** (`servis.answer`)
 `verify:` `_getir` boş sorguyla **çağrılmıyor**; CLI ve TUI okunur bir mesaj veriyor;
 `"kira?"` **geçiyor**. API'nin kendi 422'si **değişmiyor** (iki yerde iki kapı değil, API
 kendi sınırında erken reddeder — bu tekrar değil, sınır savunmasıdır).
 
-- [ ] **Adım 4: kusur 12a — `bicimle()`'de iskele işareti süzgeci**
+- [x] **Adım 4: kusur 12a — `bicimle()`'de iskele işareti süzgeci**
 `verify:` `sunum` temiz · `Cevap.metin` **HAM** · `grep -rn "begin_quote" scripts/` çıktısı
 **değişmedi** (ölçüm hattı dokunulmadı).
 
-- [ ] **Adım 5: kusur 13 — `madde_sayisi` türetilmiş alanı**
+- [x] **Adım 5: kusur 13 — `madde_sayisi` türetilmiş alanı**
 `verify:` ham `madde_no` alanları **aynen duruyor**; `madde_sayisi` üç yazım biçimini de
 (`MADDE 349` · `Madde 6` · `330`) aynı değere indiriyor.
 
-- [ ] **Adım 6: kusur 3 — TUI'yi çalışan iş parçacığına al**
+- [x] **Adım 6: kusur 3 — TUI'yi çalışan iş parçacığına al**
 `verify:` kaynak denetimi `answer()`'ın olay döngüsünde çağrılmadığını gösteriyor;
 ilerleme satırı **gerçekten çiziliyor** (Adım 11'de gözle doğrulanır).
 
-- [ ] **Adım 7: kusur 8 + 5b — açılış yönergesi + STATİK kapsam satırı**
+- [x] **Adım 7: kusur 8 + 5b — açılış yönergesi + STATİK kapsam satırı**
 `verify:` uygulama açıldığında ekran **boş değil**; kapsam satırı korpus künyesinin
 söylediğini diyor (**892 kanun · 40.496 madde · yönetmelik/tüzük/KHK/tebliğ YOK**) ve sayılar
 `data/corpus/KUNYE.json`'dan **okunuyor**, koda gömülmüyor.
 
-- [ ] **Adım 8: kusur 5a — ÖLÇÜM: zayıf eşleşme ayrışıyor mu**
+- [x] **Adım 8: kusur 5a — ÖLÇÜM: zayıf eşleşme ayrışıyor mu** — **KOŞTU 2026-09-11 · HÜKÜM: ROZET EKLENMEZ**
 80 DEV kaleminde RRF skor dağılımı: `recall`'ın **kaçırdığı 4** kalem ile tutturduğu 76'yı
 ayıran bir eşik **var mı**. `verify:` ayrışma **sayıyla** raporlandı. **Ayrışmıyorsa rozet
 EKLENMEZ** ve bu sonuç kusur kaydına yazılır — *"ölçtük, ayrışmıyor"* bir **bulgudur**.
 ⛔ Ayrışma zayıfsa eşik **uydurulmaz**; kusur 5a **açık kalır**.
 
-- [ ] **Adım 9: kusur 7 — kuralı YAZ (kod değil)**
+- [x] **Adım 9: kusur 7 — kuralı YAZ (kod değil)** — tuzak **1.11** eklendi (Bölüm 1; `1.10` ile aynı hata sınıfı, numara çakışmıyor; önceden var olan `2.17`/`5.8`/`5.9` çakışmalarına DOKUNULMADI) + Global kısıtlara bir cümle girdi
 `docs/record/yurutme-tuzaklari.md`'ye **yeni satır eklenir** *(dosya yeniden yazılmaz)* ve
 Global kısıtlara bir cümle girer: *yeni özne eklenirken duman koşusu **tabakalanmış**
 (kısa/orta/uzun) seçilir ya da kapıya **%50 emniyet payı** konur.*
@@ -1249,8 +1253,8 @@ raporlanıyor** (gizlenmiyor).
 | 2 | KV ayarının 80 kalemdeki etkisi ölçülmedi | **Görev 22** Adım 1-2 · $0 deterministik, kütle bedel kapısında |
 | 3 | TUI donuyor | **Görev 21** Adım 6 |
 | 4 | boş sorgu reddedilmiyor | **Görev 21** Adım 3 |
-| 5a | zayıf eşleşme sinyali | **Görev 21** Adım 8 — **ölçüme bağlı**; ayrışmazsa rozet YOK ve kusur **açık kalır** |
-| 5b | kapsam bildirimi | **Görev 21** Adım 7 · statik satır, sınıflandırıcı YOK |
+| 5a | zayıf eşleşme sinyali | **ÖLÇÜLDÜ 2026-09-11 · ROZET EKLENMEDİ · kusur AÇIK KALIR** — altı göstergenin hiçbiri ayırmıyor; en iyi adayda 4 kaçık için **23 yanlış alarm**. Ölçüm: `outputs/eval/g21-zayif-eslesme/BULGU.md`. Devri planın kapanış bloğunda yazılacak |
+| 5b | kapsam bildirimi | **KAPANDI 2026-09-11** · Görev 21 Adım 7 · statik satır, sınıflandırıcı YOK; sayılar `KUNYE.json`'dan okunuyor |
 | **6** | `wrong_ref` 9,3× geride | **DEVREDİLDİ → `v2`** · borç **B1**, ADR-0075 |
 | 7 | duman koşusu tahmini kapı kurmuyor | **Görev 21** Adım 9 · kural yazılır, kod değil |
 | 8 | açılışta yönlendirme yok | **Görev 21** Adım 7 |
@@ -1369,6 +1373,35 @@ yoktur.
 **Yapılacak.** İki ayrı iş: (a) getirilen kaynakların skor dağılımına bakıp *"zayıf eşleşme"*
 durumunu arayüzde göstermek; (b) kapsam dışı soruları ayırt edip kullanıcıya kapsamı bildirmek.
 İkisi de ürün yeteneğidir, ölçülen sayıya eklenmez.
+
+**(b) KAPANDI 2026-09-11** — Görev 21 Adım 7. Kapsam satırı **statik** yazıldı, sınıflandırıcı
+kurulmadı: yanılan bir kapsam sınıflandırıcısı vatandaşa *"bu konu kapsamda yok"* diyerek cevabı
+olan soruyu öldürür. Sayılar `data/corpus/KUNYE.json`'dan okunuyor, koda gömülmedi.
+
+**(a) ÖLÇÜLDÜ 2026-09-11 ve ROZET EKLENMEDİ — kusur 5a AÇIK KALIR.** Kaynak:
+`outputs/eval/g21-zayif-eslesme/BULGU.md` · ham veri `skorlar_80.json` · künye `KUNYE.json`
+(betik `scripts/erisim_korpus/zayif_eslesme_olc.py`, $0, hakemsiz, CPU). Aynı koşuda
+`recall@10` **0,9500 (76/80)** ölçüldü ve çıpayla (`outputs/eval/f02-biz-onsozsuz/KUNYE.json`)
+**birebir** tuttu ⇒ rejim farkı yok, ayrışmanın yokluğu ölçümün kusuru değil.
+
+Kaçırılan dört kalem: `5237/Madde 89` · `5237/Madde 103` · `6284/MADDE 10` · `6098/MADDE 99`.
+Altı aday göstergenin hiçbiri iki grubu ayırmıyor:
+
+| gösterge | kaçırılan (n=4) medyan | tutturulan (n=76) medyan | kaçırılanın EN İYİsinin altında kalan tutturulan |
+| :--- | ---: | ---: | ---: |
+| **`ortalama_skor`** *(en iyi aday)* | 0,09276 | 0,10163 | **23/76** |
+| `top1_skor` | 0,13691 | 0,16783 | 53/76 |
+| `marj_1_2` | 0,02084 | 0,02051 | 56/76 |
+| `std_skor` | 0,01934 | 0,02861 | 59/76 |
+| `yayilim` | 0,06546 | 0,09129 | 60/76 |
+| `entropi` | 2,28165 | 2,26997 | 57/76 |
+
+En iyi adayda bile dört kaçığı yakalayan bir eşik, **doğru getirilmiş 23 kalemi** *"zayıf
+eşleşme"* diye damgalardı — dört kalem için yirmi üç yanlış alarm. `marj_1_2` ve `entropi`'de
+kaçırılanların medyanı tutturulanlarınkinden **daha iyi**: retriever yanlış getirirken de
+kendinden emin görünüyor. ⚠️ **n=4 damgası:** dört kalemden türetilecek her eşiğin güven
+aralığı berbattır; ayrışma *tam* görünse bile tek kalem hükmü çevirirdi — burada zaten tam
+değil. Eşik **uydurulmadı**; *"ölçtük, ayrışmıyor"* bir **bulgudur**, başarısızlık değil.
 
 ---
 
