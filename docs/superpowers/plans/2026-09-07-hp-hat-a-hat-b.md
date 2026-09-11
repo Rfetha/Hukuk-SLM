@@ -2,9 +2,9 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-11 · **104/115 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-11 · **108/115 kutucuk** · `v0.3` etiketlendi
 
-> **2026-09-11 turu:** G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8) · G22 **1/5** (kalan ikisi **DUR-ve-SOR**). **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, karar **ADR-0079**. Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-19**. Harcanan: **$0**.
+> **2026-09-11 turu:** **G22 KAPANDI 5/5** (Adım 2 ve 3 insana soruldu, ikisi de onaylandı) · G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8). **Kalan 7 kutucuğun 3'ü insan gözü kapısı**, biri insandan sır bekliyor. **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, kararlar **ADR-0079** ve **ADR-0080**. Harcanan: **$0,045067** (OpenRouter ölçümü). Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-20**.
 
 > ⚠️ **Kutucukları SAYARAK doğrulamaya çalışma — bu dosyada 40 tane var, 115 değil.**
 > 2026-09-10'da bitmiş on dört görev **kapanış bloğuna indirildi** ve tam metinleri
@@ -84,7 +84,7 @@ düştüğü üzerine kuruludur.
 | ~~8~~ | **açık kusurlar** — kayıt | — | [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü. **On üçün on biri 2026-09-10'da G21+G22'ye alındı**, üçü devredildi. Kalan kayıt **kutucuk değildir, paydaya girmez** |
 | **9** | **G20** — konteyner dağıtımı | **5/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
 | **10** | **G21** — ürün yüzeyi kusur temizliği | **10/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
-| **11** | **G22** — rejim kusuru + KV ölçümü | **4/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
+| ~~11~~ | **G22** — rejim kusuru + KV ölçümü | **BİTTİ 5/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
 ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
@@ -1323,7 +1323,7 @@ dokunulmadı), doğrulanamayan atıf **10 → 10**.
 geçerlilik kapısını **GEÇİYOR** · suskunluk kümesi öncesiyle karşılaştırılıp **fark
 raporlanıyor** (gizlenmiyor).
 
-- [ ] **Adım 5: Bulguları yaz + commit** — yeni ADR *(0079'dan devam)* + `research_log` girişi.
+- [x] **Adım 5: Bulguları yaz + commit** — **YAZILDI 2026-09-11.** [ADR-0080](../../adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md) (rejim kararı, karar sahibi **insan**) + kayıt **#66**'ya *"EK — bu kayıt yazıldıktan SONRA eklendi"* bölümü (§8-§13). Ayrı bir #67 açılmadı: aynı gün, aynı tur. `verify:` her sayının yanında kaynak dosya adı **var**; kusur **1** ve **2**'nin kayıtları sonuçlarıyla **güncellendi**; `test_belgeler.py` **yeşil** (kırık işaretçi yok); andığı altı ADR'nin (0040 · 0043 · 0065 · 0070 · 0077 · 0078) **altısı da mevcut**.
 `verify:` her sayının yanında **kaynak dosya adı** var; kusur 1 ve 2'nin kayıtları
 **sonuçlarıyla** güncellendi.
 
@@ -1437,7 +1437,7 @@ düşürülmesi (llama.cpp varsayılanı f16).
 | eksen | q8_0 (çıpa) | fp16 |
 | :--- | ---: | ---: |
 | **bayt olarak değişen cevap** | — | **65/80 (%81,2)** |
-| karakter medyanı | 720 | 707 |
+| karakter medyanı *(n=80)* | 720 | 707 |
 | kesik (`finish_reason=length`) | 4/80 | 3/80 |
 | **tamamen boş** | 0/80 | 0/80 |
 | çekinme (`exact_reject`, `mode=data`) | 5/80 | 5/80 |
@@ -1446,6 +1446,11 @@ düşürülmesi (llama.cpp varsayılanı f16).
 | katı atıf kapısı reddi | 0 | 3 |
 | ürün durum sınıfı değişen kalem | — | 6/80 |
 | **istem yer tutucusu sızıntısı** (*"(KANUN ADI, Madde 13)"*) | **0/80** | **2/80** |
+
+⚠️ **İki medyan, iki payda — çelişki değil, damgalanması gereken bir ayrım:** yukarıdaki
+**720 → 707** medyanı **n=80** üzerinde; `KARSILASTIRMA.md` §2.1'deki **715,0 → 706,5** ise
+kontrol değişkeni düşen iki kalem (id 7 · 63) hariç **n=78** üzerinde. İkisi de doğru; hangi
+paydada olduğu yazılmazsa *"aynı ölçüm iki sayı veriyor"* diye okunur (tuzak **2.6**'nın sınıfı).
 
 **HÜKÜM: sapma toplulaştırılmış eksenlerde KÜÇÜK, kalem düzeyinde BÜYÜK.** Hiçbir sayaç
 birden fazla kalem oynamadı; buna karşılık cevapların **%81'i bayt olarak değişti**.

@@ -203,3 +203,161 @@ sayısal bir kapı yakalamadı.** Dördünü **kod incelemesi** yakaladı (testl
 
 Kayıt eşlemesi: methodology (ölçüm aygıtının kendi kusurları) · negatif bulgu (rozet eklenmedi,
 tek-soruluk KV gözlemi çürüdü) · limitations (kusur 17 · 18 · 19 açık).
+
+---
+
+# EK — bu kayıt yazıldıktan SONRA eklendi: Görev 22 Adım 2·3·4 koştu, tur kapandı
+
+> **Bu bölüm sonradan eklenmiştir.** Yukarıdaki §1-§7, tur **Görev 22 Adım 1**'de dururken
+> yazıldı (commit `05546ad`). Aynı gün, **aynı tur** Adım 2-4 ile devam etti ve kapandı;
+> ayrı bir `#67` **açılmadı** çünkü aynı günün, aynı görevin işidir.
+> **Eklenme:** 2026-09-11, Görev 22 Adım 5 · **commit aralığı** `05546ad..067ddca` (6 commit)
+> **Kararlar:** [ADR-0080](../../adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md)
+> **Yeni çıktılar:** [`outputs/eval/g22-atif-cozum/`](../../../outputs/eval/g22-atif-cozum/) ·
+> `g22-kv-fp16/KUTLE.md` · [`outputs/eval/g22-rejim/`](../../../outputs/eval/g22-rejim/)
+> **Bedel:** hakem **$0,045067** (tek koşu, ölçüldü) · GPU yerel · geri kalan her ölçüm **$0**
+
+---
+
+## 8. Adım 1'in kapanışı — KV kuantizasyonu, HAKEMSİZ ($0)
+
+*(§5'in sayıları; ek bölümün kendi başına okunabilmesi için tekrarlanıyor, kaynak
+[`g22-kv-fp16/KARSILASTIRMA.md`](../../../outputs/eval/g22-kv-fp16/KARSILASTIRMA.md).)*
+
+**Cevapların 65/80'i (%81,2) bayt olarak değişti, buna karşılık hiçbir sayaç birden fazla kalem
+oynamadı:** kesik `finish_reason=length` **4 → 3** · tamamen boş **0 → 0** · çekinme
+(`exact_reject`, `mode="data"`) **5 → 5** · uydurulmuş madde **0/114 ↔ 0/152** · karakter
+medyanı **715,0 → 706,5 (−%1,2)**.
+
+**Kusur 2 kaydının tek-soruluk gözlemi ÇÜRÜDÜ.** Kayıt `SUSKUNLUK → CEKINCELI` geçişi
+gözlemişti; **80 kalemin hiçbirinde tekrarlanmadı** (`CEKINCELI` iki koşuda da **1** ve aynı
+kalem). Bu bir **çürütmedir**, "doğrulanamadı" değil: tek soruluk gözlem genel kural değilmiş.
+
+**Kontrol değişkeni sızıntısı — damgalandı.** 2 kalem (`id 7` · `63`) farklı kaynak gördü;
+sebep **KV değil**, çıpadan **sonra** gelen yürürlük süzgecidir (`63b691e`, 2026-09-07).
+⇒ *"tek değişken KV"* cümlesi tam doğru değildir, temiz alt küme **n=78**'dir.
+
+## 9. Adım 2 — aynı koşunun KÜTLESİ, hakemle ölçüldü
+
+İnsan bedel kapısı geçildi (Adım 2 kararı: *"ÖLÇÜLSÜN"*). Kaynak:
+[`g22-kv-fp16/KUTLE.md`](../../../outputs/eval/g22-kv-fp16/KUTLE.md) · künye `KUTLE_KUNYE.json`.
+
+| eksen | çıpa `q8_0` | fp16 | fark | kaynak dosya |
+| :--- | ---: | ---: | ---: | :--- |
+| **kütle** (`coverage × A1_cevaplanan`) | **0,8011** | **0,7932** | **−0,79 p** | `harness_tablo.json` ↔ `harness_tablo_gnd.json` |
+| `coverage` | 0,9375 | 0,9375 | 0,00 | ″ |
+| `A1_cevaplanan` | 0,8545 | 0,8461 | −0,84 p | ″ (`rescore_answered.py` ile **çapraz doğrulandı**, iki kolda da BİREBİR) |
+| `cit_precision_micro` | 0,9231 | 0,8252 | **−9,79 p** | `gnd_*_summary.json` |
+| **`wrong_ref_rate_micro`** | **0,0769** | **0,1553** | **2,0× KÖTÜLEŞME** | ″ |
+
+**Gerçek harcama `$0,045067`** (OpenRouter `total_usage` 17,91293753 → 17,95800443, koşudan
+önce/sonra) — sert kapının (`$0,15`) **%30'u**. Tabakalanmış duman koşusundan yapılan tahmin
+`$0,0487` idi ⇒ bu sefer **üstten** tahmin edildi (tuzak **1.11**'in reçetesi çalıştı).
+
+**Kütle farkı tek yönlü hükme YETMİYOR.** −0,79 p, devralınan **~0,3 puanlık** gürültü
+tabanının **2,8 katı**; ama o taban **aynı cevaplara** hakemi yeniden koşmanın gürültüsüdür ve
+burada **cevaplar da değişti** (65/80 bayt farklı). **Bu koşu çiftine ait aynı-cevap tabanı
+ÖLÇÜLMEDİ** (ikinci hakem koşusu ≈`$0,044`, koşulmadı). Kalem düzeyinde **18/80** kalemin
+`faithfulness`'ı **iki yönlü** oynadı (`id 30` 0,00 → 0,875 · `id 9` 0,50 → 1,00 yukarı;
+`id 1` 0,833 → 0,00 · `id 39` 1,00 → 0,00 aşağı) ve toplam fark bu salınımların
+**artakalanıdır**. Temiz alt kümede (n=78) sonuç aynı: **0,7960 → 0,7879**.
+⇒ Kurulabilen cümle: *"fp16 KV kütleyi YÜKSELTMEDİ."* Kurulamayan: *"fp16 modeli 0,8 puan bozar."*
+
+**Tabanın açıkça üstündeki TEK eksen atıf isabetidir ve KÖTÜLEŞTİ.** `wrong_ref_rate_micro`
+**iki katına** çıktı — Adım 1'in **hakemsiz** bulgusuyla (atıf **114 → 152**, katı atıf kapısı
+reddi **0 → 3**) **aynı yönde**; iki bağımsız alet aynı şeyi söylüyor. Bu **B1 eksenidir** ve
+frontier'ın zaten **9,3×** gerisindeyiz (`0,0769 ↔ 0,0083`). **Öneri — kapı değil:** ürünün
+taşıyıcı rejimi **`q8_0` kalsın.**
+
+Yayımlanan **0,8011 DEĞİŞMEZ**: ürünün taşıyıcı rejimi `q8_0`'dır, manşet o koşunun
+(`outputs/eval/f02-biz-onsozsuz/`) sayısıdır. Burada ölçülen bir **taşıyıcı ayarının** etkisidir.
+
+## 10. Adım 3-4 — REJİM DEĞİŞİKLİĞİ: ürün yolu ölçüm hattının rejimine geldi
+
+**İnsan kararı** (DUR-ve-SOR kapısı, 2026-09-11): ürün yoluna **iki geçişli zorunlu düşünce
+kapatması** eklendi ⇒ [ADR-0080](../../adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md).
+Kaynak ölçüm: [`g22-rejim/KARSILASTIRMA.md`](../../../outputs/eval/g22-rejim/KARSILASTIRMA.md)
+· çıpa `outputs/eval/g18-arac-katmani/aracsiz_yol_80.json` · $0, q8_0, 1.061 s.
+
+| eksen | öncesi | sonrası | hüküm |
+| :--- | ---: | ---: | :--- |
+| **tamamen boş metin** | 4/80 (id 7·64·65·66) | **0/80** | **GEÇTİ** |
+| kesik (`Durum.KESIK`) | 7/80 (**%8,75**) | **3/80 (%3,75)** | **ADR-0040 %5 kapısı GEÇTİ** |
+| `sha256` değişen kalem | — | **4/80** (76 kalem **birebir aynı**) | değişiklik **CERRAHİ** |
+| getirilen kaynak kümesi değişen kalem | — | **0/80** | muhafız tuttu |
+
+**Suskunluk kümesi — fark GİZLENMEDİ:** `[10,34,63]` → `[7,10,34,63,64]`; **giren 2**
+(id **7** · **64**, ikisi de eskiden **boş** dönüyordu), **çıkan 0**; id **65** · **66** tam
+**CEVAP**'a döndü. **Kütle bu koşuda HESAPLANMADI** ve 0,8011'e dokunulmadı — bu, **ürün
+yolunun** sayısıdır, ölçüm hattının değil.
+
+**İki kabul edilen bedel** — *"gelecek işi"* diye geçiştirilmiyor:
+1. **B10'a +2 kalemlik yük.** Kesik sayacı düşerken **aşırı-red** ekseni iki kalem ağırlaştı;
+   bu tur bunu **ölçmedi**, yalnız kaydetti.
+2. **Açık kusur 20.** 2. geçiş `reasoning_content` alanına bağımlıdır: sunucunun
+   `--reasoning-format` varsayılanı değişirse mekanizma **sessizce tek geçişe düşer** ve boş
+   cevap kusuru **geri gelir**. **Testle çivilenemiyor** (bağımlılık sunucunun davranışında,
+   kodun değil) ⇒ yine *"hata vermeden yanlış"* sınıfı.
+
+## 11. Tuzak 1.13'ün TERS YÖNÜ ölçüldü — manşet temiz, ama **TESADÜFEN**
+
+İnsan kararı: *"1.13 onarılmadan ÖNCE ters yön ölçülsün."* `atif_dogrula.py`
+**DEĞİŞTİRİLMEDİ**; ad karşılaştırması denetlenen modülden **bağımsız** yazıldı (Türkçe
+`I→ı`/`İ→i` + `casefold`) ki denetim, denetlediği hatayı miras almasın. Kaynak:
+[`g22-atif-cozum/BULGU.md`](../../../outputs/eval/g22-atif-cozum/BULGU.md) ·
+`atif_cozum.jsonl` · `parantezli_prob.json` · **$0** (hakem yok, GPU yok, ağ yok).
+
+**Yayımlanan `0/114` TEMİZ:** çıpadaki 114 atfın **0'ı** yanlış kanuna çözülüp `DOGRULANDI`
+almış (ad uyuşmayan `UYUSMAZ` **0**; sonek uyuşan **9** atfın **9'u da gözle DOĞRU**; atıftaki
+ada birebir uyan başka bir kanun varken oraya gitmeyen **0**).
+
+**Ama korunma ALETTEN değil, ÖRNEKLEMDEN geliyor.** Temiz çıkmasının sebebi, 114 atfın
+hiçbirinin **parantezli adlı** bir kanuna denk gelmemesidir. Aynı alet, parantezli adlı
+**16 kanunun 7'sinde** yanlış kanuna `DOGRULANDI` basıyor (`parantezli_prob.json`:
+`193`→`1319` · `3806`→`3335` · `3824`→`4481` · `4447`→`5510` · `4568`→`1606` · `4646`→`5015` ·
+`4737`→`2565`). Bağımsız kanıt, doğrudan koşularak:
+*"Gelir Vergisi Kanunu Madde 1"* → **`1319` EMLAK VERGİSİ KANUNU** → **`DOGRULANDI`**.
+
+**Donmuş TEST'in `0/52`'si aynı aletle üretildi ve ölçülmedi.** Onarım ayrı turdur
+(1.13'ün reçetesi: gevşek eşleşme bir kanun **seçmez**, `AYRISTIRILAMADI` döner). Kusur **18**
+açık kalır.
+
+## 12. Tuzak 1.12 ONARILDI — ve davranışın değişmediği **iki bağımsız yolla** kanıtlandı
+
+`scripts/olcum_uretim/cp0_thinking_gen.sh`: künyenin KV satırı artık **sabit dize değil**;
+`KV_K`/`KV_V` değişkenleri **hem** `--cache-type-k/-v` bayraklarını **hem** künyeyi besliyor
+(tek kaynak). Kanıt (`.superpowers/sdd/g21/tuzak-1-12-1-13-report.md`):
+(1) **argv çıpası** — betikten ayıklanan sunucu komutu sahte bir `$BIN` ile koşuluyor ve
+üretilen argüman dizisi onarımdan **önceki** dizeyle birebir karşılaştırılıyor (değer, sıra,
+varlık aynı); (2) **mutasyon denetimi** — onarımdan önceki dosya geri konunca **5 test düşüyor,
+1 geçiyor** (yalnız `bash -n`) ⇒ testler onarıma gerçekten bağlı, dekor değil.
+
+**Dış sunucuda künye artık `BİLİNMİYOR (dış sunucu)` yazıyor.** `/proc/<pid>/cmdline` okuma yolu
+**SEÇİLMEDİ**; gerekçe kayıtta ve üçü de gerçek: `SERVER_URL`'in portu `$PORT`'tan bağımsızdır
+(yanlış süreç bulunabilir) · adres **uzak** olabilir · dış sunucu tipik olarak **konteynerde**
+koşar ve cmdline o ad alanında güvenilir görünmez. **Yanlış okuma, sabit dizeyle aynı sınıftan
+bir yalandır** — kırılgan okuma yerine açık *"bilmiyorum"* yazıldı.
+
+## 13. Turun ikinci dersi: **toplulaştırılmış sayaç neyi gizler?**
+
+*(Birincisi §7'de duruyor: bu turda ürün yüzeyinde kapatılan her kusur, aygıtta bir kusur
+açığa çıkardı.)*
+
+Bu turda **iki** örnek ölçüldü, ikisi de aynı şeyi söylüyor — **sayı sabitken içerik
+değişebiliyor**:
+
+1. **Çekinme 5/80 ↔ 5/80, ama küme farklı:** `{15, 37, 45, 66, 79}` ↔ `{15, 45, 51, 66, 79}`
+   (`KARSILASTIRMA.md` §4). `id 37` fp16'da **cevapladı**, `id 51` **çekindi**. `coverage`
+   sayısal olarak aynı, ama aynı kalemler değil — ve altın bağlamdayken susma (aşırı-red)
+   **4 → 3**, altın gelmediği için susma **1 → 2**.
+2. **Kütlenin −0,79 puanı, 18 kalemin iki yönlü salınımının ARTAKALANIDIR** (`KUTLE.md` §2).
+   Tek bir sayı olarak okununca *"küçük ve tek yönlü bir kayıp"* gibi görünüyor; kalem
+   düzeyinde bakıldığında ±0,5-1,0'lık zıt hareketler var.
+
+**Kural:** toplulaştırılmış bir sayaç **kıpırdamadıysa** *"hiçbir şey değişmedi"* demek
+değildir. Sayacın **bileşimi** ayrıca raporlanmazsa, değişim kayda geçmeden geçer.
+
+**Kayıt eşlemesi (ek bölüm):** methodology (rejim eşitlenmesi · aletin ters yönünün ölçülmesi) ·
+ablasyon (KV `q8_0` ↔ fp16, kütle + atıf isabeti) · negatif bulgu (tek-soruluk KV gözlemi
+çürüdü · fp16 kütleyi yükseltmedi) · limitations (kusur **18** · **19** · **20** açık;
+aynı-cevap gürültü tabanı ve donmuş TEST'in `0/52`'si **ölçülmedi**).
