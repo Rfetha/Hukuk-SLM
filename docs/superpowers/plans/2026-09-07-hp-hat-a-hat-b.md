@@ -1233,12 +1233,22 @@ Varsayılan (fp16) KV ile ikinci sunucu açılır, 80 kalem üretilir; `q8_0` ko
 **hakem çağırmadan** karşılaştırılır. `verify:` kaç cevap **bayt olarak değişti** (`sha256`) ·
 çekinme sayısı · **uydurulmuş madde** sayısı · kesik/boş sayısı. **Kütle HESAPLANMAZ.**
 
-- [ ] **Adım 2: kusur 2 — bedel kapısı: kütle ölçülsün mü** — **DUR ve SOR**
+- [x] **Adım 2: kusur 2 — bedel kapısı: kütle ölçülsün mü** — **SORULDU, İNSAN KARARI 2026-09-11: ÖLÇÜLSÜN.**
+Gerekçe (insan): Adım 1 sayaçların oynamadığını gösterdi ama cevapların **%81'i bayt olarak
+değişti** ve **6 kalem durum sınıfı değiştirdi**; sayaçlar sabitken kütlenin de sabit kaldığı
+**çıkmaz**. Bedel **$0,0418** doğrusal, **%50 emniyet payıyla $0,0626** — `$1` kapısının
+**altında**, bakiyenin %2,8'i. ⚠️ Tahminin dayanağı duman koşusu **değil**, çıpanın
+**ÖLÇÜLMÜŞ** `$0,0417`'si (tuzak **1.11**'in istediği şey budur).
 Adım 1 küçük bir sapma gösterirse kütle ölçmenin karşılığı yoktur. Büyük sapma gösterirse
 hakem bedeli **tahmin edilir** ve `$1` kapısına vurulur. ⚠️ Tahmin **tabakalanmış** duman
 koşusundan yapılır (kusur 7'nin dersi) ya da **%50 emniyet payı** eklenir.
 
-- [ ] **Adım 3: kusur 1 — REJİM KARARI** — **DUR ve SOR**
+- [x] **Adım 3: kusur 1 — REJİM KARARI** — **SORULDU, İNSAN KARARI 2026-09-11: EKLENSİN.**
+Ürün yolu, ölçüm hattının **iki geçişli zorunlu düşünce kapatmasına** gelir. ⛔ Yayımlanan
+**0,8011 ölçüm hattının sayısıdır ve DEĞİŞMEZ** — değişen **ürün yoludur**. Elenen seçenekler:
+*"şimdi karar verme"* (kusur 1'in çıpası elde, beklemenin karşılığı yok) ve *"ekleme"*
+(ADR-0040'ın %5 geçerlilik kapısını ürün yolu **%8,75** ile geçemiyor; kesikliği damgalamak
+onu **gidermiyor**). ⇒ Adım 4 AÇILDI.
 Ürün yoluna ölçüm hattının **iki geçişli zorunlu düşünce kapatması** eklensin mi.
 Karar verilmeden **kod yazılmaz**. Kararın anlamı: ürün yolu ile ölçüm hattı **aynı rejime**
 gelir; yayımlanan **0,8011 ölçüm hattının sayısıdır ve DEĞİŞMEZ** — değişen ürün yoludur.
