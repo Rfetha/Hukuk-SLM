@@ -233,3 +233,72 @@ def test_answer_arac_da_ayni_rejime_geliyor(monkeypatch):
     c = servis.answer_arac("x", araclar=_SahteAraclar())
     assert c.metin.strip(), "🚨 araçlı ürün yolu BOŞ cevap teslim etti"
     assert len(kayit) == 3, "araçlı yol zorunlu kapatmayı almadı"
+
+
+# ── Görev 21 kusur 20 — ÇALIŞMA ANI KAPISI: reasoning kanalı yoksa ERKEN ve GÜRÜLTÜLÜ ──
+#
+# ADR-0080'in 2. geçişi `message.reasoning_content` alanına BAĞIMLIDIR. `llama-server`'ın
+# `--reasoning-format` varsayılanı değişir ve iz ayrı alanda dönmezse, ayrım noktasındaki
+# *"içerik boş VE iz dolu"* koşulu hiç tutmaz: mekanizma SESSİZCE tek geçişe düşer ve boş
+# cevap kusuru (4/80) geri gelir. İnsan kararı 2026-09-11: kapı KODA, açık bayrak
+# compose'a (compose yarısı `1d0c616`'da yapıldı). ⛔ Sessiz düşüş YASAK — ADR-0026 kalıbı.
+
+def _kapiyi_sifirla(monkeypatch):
+    """Kapı bir KEZ yoklanır ⇒ bayrak modül düzeyinde. Testler yalıtılmalı."""
+    monkeypatch.setattr(servis, "_REASONING_KANALI_GORULDU", False)
+
+
+def test_uret_reasoning_kanali_YOKSA_erken_patlar(monkeypatch):
+    """🚨 Sunucu boş içerik döndürüyor ve `reasoning_content` HİÇ YOK ⇒ mekanizma ölü."""
+    import pytest
+    _kapiyi_sifirla(monkeypatch)
+    istek, _ = _sahte_istek({"choices": [{"message": {"content": ""},
+                                          "finish_reason": "length"}]})
+    monkeypatch.setattr(servis, "_istek", istek)
+    with pytest.raises(RuntimeError) as hata:
+        servis._uret([{"role": "user", "content": "x"}])
+    assert "--reasoning-format" in str(hata.value), "hata mesajı ONARIM YOLUNU söylemiyor"
+
+
+def test_uret_dusunce_CONTENT_icine_gomulurse_erken_patlar(monkeypatch):
+    """`--reasoning-format none`: iz `content`'in içinde `<think>` olarak gelir. Sunucu
+    "dolu" cevap döndürür, 2. geçiş hiç tetiklenmez ve vatandaşa MUHAKEME METNİ gider."""
+    import pytest
+    _kapiyi_sifirla(monkeypatch)
+    istek, _ = _sahte_istek({"choices": [
+        {"message": {"content": "<think>Kaynak 1 ilgili görünüyor"},
+         "finish_reason": "length"}]})
+    monkeypatch.setattr(servis, "_istek", istek)
+    with pytest.raises(RuntimeError):
+        servis._uret([{"role": "user", "content": "x"}])
+
+
+def test_kapi_DUSUNCESIZ_mesru_sunucuyu_OLDURMEZ(monkeypatch):
+    """⚠️ Kapının gerçek tehlikesi buydu: `reasoning_content` döndürmeyen MEŞRU bir
+    yapılandırmayı da öldürebilirdi. Öldürmez — çünkü kapı bir AÇILIŞ YOKLAMASI değil,
+    GÖZLEM kapısıdır: yalnız zaten kusurlu olan hâlde (boş içerik ya da `<think>` sızıntısı)
+    ateşler. Düşünmeyen ama düzgün cevap veren bir sunucu bu dala hiç girmez."""
+    _kapiyi_sifirla(monkeypatch)
+    istek, kayit = _sahte_istek({"choices": [
+        {"message": {"content": "Madde 31 uyarınca askıya alınır."}, "finish_reason": "stop"}]})
+    monkeypatch.setattr(servis, "_istek", istek)
+    metin, finish = servis._uret([{"role": "user", "content": "x"}])
+    assert metin.startswith("Madde 31") and finish == "stop"
+    assert len(kayit) == 1, "meşru yapılandırmaya fazladan istek atıldı"
+
+
+def test_kapi_BIR_KEZ_yoklanir_sonra_karismaz(monkeypatch):
+    """Kanal bir kez görüldükten sonra kapı kenara çekilir: sunucunun `reasoning_format`'ı
+    koşu ortasında değişmez. Aksi hâlde her kalemde yeniden hüküm kurulurdu."""
+    _kapiyi_sifirla(monkeypatch)
+    istek, _ = _sahte_istek(
+        _yanit_dusunce_kapanmadi(),                       # kanal GÖRÜLÜR
+        {"prompt": "HAM"},
+        {"choices": [{"text": "cevap", "finish_reason": "stop"}]},
+        {"choices": [{"message": {"content": ""}, "finish_reason": "length"}]},
+    )
+    monkeypatch.setattr(servis, "_istek", istek)
+    servis._uret([{"role": "user", "content": "x"}])
+    assert servis._REASONING_KANALI_GORULDU, "kanal görüldü ama bayrak kalkmadı"
+    metin, _ = servis._uret([{"role": "user", "content": "y"}])   # patlamamalı
+    assert metin == ""

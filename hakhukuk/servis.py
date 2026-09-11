@@ -71,6 +71,54 @@ def _kok_url() -> str:
     return kok[:-3].rstrip("/") if kok.endswith("/v1") else kok
 
 
+# ⛔ ÇALIŞMA ANI KAPISI — kusur 20 (insan kararı 2026-09-11). ADR-0080'in 2. geçişi
+# `message.reasoning_content` alanına BAĞIMLIDIR; sunucunun `--reasoning-format`
+# varsayılanı başka bir biçime çözülürse mekanizma SESSİZCE tek geçişe düşer ve boş
+# cevap kusuru (4/80) geri gelir. Bayrak modül düzeyinde: kanal BİR KEZ yoklanır,
+# çünkü sunucunun biçimi koşu ortasında değişmez.
+_REASONING_KANALI_GORULDU = False
+
+
+def _reasoning_kapisi(mesaj: dict) -> None:
+    """Düşünce kanalı yoksa ERKEN ve GÜRÜLTÜLÜ patla — sessiz düşüş YASAK (ADR-0026 kalıbı).
+
+    ⚠️ Bu bir AÇILIŞ YOKLAMASI (probe) DEĞİL, bir GÖZLEM kapısıdır. İki gerekçe, ikisi de
+    açılış yoklamasını eler:
+      (1) Yoklama her süreç başlangıcında GERÇEK bir üretim ister — CLI · TUI · API üçü de
+          ödeyecekti, üstelik normal yolda hiçbir karşılığı olmadan.
+      (2) Yoklama, *"sunucu yanlış yapılandırılmış"* ile *"model bu istemde düşünmedi"*yi
+          AYIRAMAZ. Tek bir deneme isteminde `reasoning_content`'in yokluğu hiçbir şey
+          kanıtlamaz ⇒ kapı ya yanlış öldürür ya boşuna geçirir.
+    Gözlem kapısı bu ayrımı kurmak ZORUNDA DEĞİLDİR: yalnız ZATEN KUSURLU olan hâlde
+    ateşler — içerik boş (vatandaşa boş cevap gidecekti) ya da içerikte `<think>` var
+    (vatandaşa muhakeme metni gidecekti). İkisi de teslim edilemez.
+
+    ⚠️ MEŞRU YAPILANDIRMA KARARI: düşünce üretmeyen ama düzgün cevap veren bir sunucu bu
+    dala HİÇ GİRMEZ ve öldürülmez — dolayısıyla kapı, düşünmeyen meşru kurulumları
+    engellemez. Kabul edilen tek bedel şudur ve açıkça yazılıdır: düşünen bir modeli
+    BİLEREK `--reasoning-format none` ile koşturan bir kurulum bu kapıdan geçemez.
+    Bu ISTENEN sonuçtur — o yapılandırmada ADR-0080'in mekanizması zaten ölüdür ve
+    sessizce tek geçişe düşmek, kusuru gizleyerek vatandaşa ödetmek olurdu.
+    """
+    global _REASONING_KANALI_GORULDU
+    if _REASONING_KANALI_GORULDU:
+        return
+    if mesaj.get("reasoning_content"):
+        _REASONING_KANALI_GORULDU = True
+        return
+    icerik = mesaj.get("content") or ""
+    if icerik.strip() and "<think>" not in icerik:
+        return          # düşünce hiç oynamadı ⇒ hüküm kurulamaz, sessiz kalınır
+    raise RuntimeError(
+        "llama-server düşünce izini AYRI bir `message.reasoning_content` alanında "
+        "döndürmüyor; ürün yolunun iki geçişli zorunlu düşünce kapatması (ADR-0080) "
+        "bu alana bağlıdır ve şu anda ÇALIŞAMAZ — sessizce tek geçişe düşmek, ölçülmüş "
+        "boş cevap kusurunu (4/80, id 7·64·65·66) geri getirirdi. "
+        "ONARIM: sunucuyu `--reasoning-format deepseek` ile başlatın "
+        "(compose.yaml bu bayrağı pinler). "
+        f"Gelen içerik: {(mesaj.get('content') or '')[:120]!r}")
+
+
 def _uret(mesajlar: list[dict]) -> tuple[str, str]:
     """llama-server'dan cevap üret. Döner: (metin, finish_reason).
 
@@ -100,6 +148,8 @@ def _uret(mesajlar: list[dict]) -> tuple[str, str]:
     HATTININ sayısıdır ve DEĞİŞMEZ — değişen ÜRÜN YOLUDUR."*
     ⛔ `Durum.KESIK` KORUNUR: 2. geçişin `finish_reason`'ı taşınır, kesiklik hâlâ
     damgalanır — yalnız AZALIR.
+    ⛔ Mekanizmanın `reasoning_content` bağımlılığı `_reasoning_kapisi()` ile ÇALIŞMA
+    ANINDA yoklanır (kusur 20): kanal yoksa sessizce tek geçişe düşülmez, PATLANIR.
     """
     d = _istek(SUNUCU_URL.rstrip("/") + "/chat/completions", {
         "model": "local",
@@ -110,6 +160,7 @@ def _uret(mesajlar: list[dict]) -> tuple[str, str]:
     })
     secim = d["choices"][0]
     mesaj = secim.get("message") or {}
+    _reasoning_kapisi(mesaj)
     metin = (mesaj.get("content") or "").strip()
     dusunce = mesaj.get("reasoning_content") or ""
     if metin or not dusunce:
