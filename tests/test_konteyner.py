@@ -190,3 +190,98 @@ def test_app_llama_kutusuna_yoneliyor_ve_yalniz_yerele_yayimliyor(compose):
 def test_daemonlar_indir_kapisina_bagli(compose, daemon):
     bag = compose["services"][daemon]["depends_on"]["indir"]
     assert bag["condition"] == "service_completed_successfully"
+
+
+# ── (g) kusur 32: indeksin künyesi korpusu GÖRELİ tutar — volume yerleşimi bunu çözmeli ──
+#
+# ⚠️ Bu kusur `G8 Adım 1b`'nin taşınabilirlik onarımının TERS YÜZÜdür: künyedeki mutlak yol
+# indekse göreli (`../../corpus/…`) yapılınca `git clone` düzeldi, ama indeksin repo ağacının
+# DIŞINA (volume'e) taşındığı tek düzen kırıldı — `/artefakt/<ad>/../../corpus` = `/corpus`.
+# Çözüm repo düzenini AYNALAMAK: indeks iki seviye derinde (`/artefakt/index/<ad>/`),
+# korpus `/artefakt/corpus/`. Aşağıdaki kapı bunu künyeden OKUYARAK doğrular — sabit yol
+# yazılmaz, çünkü künye değişirse kapının da değişmesi gerekir.
+
+def _indir_hedef_dizini(compose) -> str:
+    """`indir` kutusunun yazdığı volume dizini — komutun son argümanı."""
+    return compose["services"]["indir"]["command"][-1]
+
+
+def test_indeks_kunyesindeki_goreli_korpus_yolu_volume_yerlesiminde_cozuluyor(compose, indir):
+    """`normpath(HAKHUKUK_INDEKS + künyedeki göreli yol)` = `indir`'in korpusu koyduğu yer."""
+    import json
+    import os
+
+    hedef_dizin = _indir_hedef_dizini(compose)
+    indeks_yolu = compose["services"]["app"]["environment"]["HAKHUKUK_INDEKS"]
+    assert indeks_yolu == str(indir.indeks_hedefi(hedef_dizin)), \
+        "app'in gösterdiği indeks, `indir`'in kurduğu indeks DEĞİL"
+
+    kunye = json.loads((KOK / "data" / "index" / indir.INDEKS_ADI / "KUNYE.json")
+                       .read_text(encoding="utf-8"))
+    goreli = kunye["korpus"]["yol"]
+    assert not os.path.isabs(goreli), "künye mutlak yol taşıyor — taşınabilir değil"
+    cozulen = os.path.normpath(os.path.join(indeks_yolu, goreli))
+    assert cozulen == str(indir.korpus_hedefi(hedef_dizin)), (
+        f"künyedeki {goreli!r} {indeks_yolu} altında {cozulen} çözülüyor, ama `indir` korpusu "
+        f"{indir.korpus_hedefi(hedef_dizin)} yoluna koyuyor — retriever korpusu BULAMAZ")
+
+
+def test_cozulen_korpus_yolu_app_kutusuna_bagli_volumenin_altinda(compose, indir):
+    """Doğru çözülen yol, `app`'in gerçekten bağladığı bir volume'ün altında olmalı."""
+    bagli = [b.split(":")[1] for b in compose["services"]["app"]["volumes"]]
+    korpus = str(indir.korpus_hedefi(_indir_hedef_dizini(compose)))
+    assert any(korpus.startswith(hedef.rstrip("/") + "/") for hedef in bagli), \
+        f"{korpus} app'e bağlı volume'lerin ({bagli}) hiçbirinin altında değil"
+
+
+def test_indir_korpusu_kaynagindan_kopyalayip_sha256_dogruluyor(tmp_path, monkeypatch, indir):
+    """Korpus HF'ten İNMEZ, imajdaki kopyadan gelir; kopya `sha256` ile doğrulanır (ağ YOK)."""
+    import hashlib
+
+    kaynak = tmp_path / "kaynak" / "mevzuat_maddeler.jsonl"
+    kaynak.parent.mkdir(parents=True)
+    icerik = b'{"id": 1, "text": "madde"}\n'
+    kaynak.write_bytes(icerik)
+    monkeypatch.setattr(indir, "korpus_kaynagi", lambda: kaynak)
+
+    hedef_dizin = tmp_path / "artefakt"
+    yol = indir.yerlestir_korpus(hedef_dizin)
+    assert yol == indir.korpus_hedefi(hedef_dizin)
+    assert yol.read_bytes() == icerik
+    assert hashlib.sha256(yol.read_bytes()).hexdigest() == hashlib.sha256(icerik).hexdigest()
+    assert [y.name for y in yol.parent.iterdir()] == [indir.KORPUS_DOSYA], "geçici kalıntı var"
+
+
+def test_indir_volumedeki_korpus_imajdakinden_ayrisirsa_erken_patliyor(tmp_path, monkeypatch,
+                                                                       indir):
+    """S18 · İKİNCİ KOPYA: `servis.py` imajdakini, retriever volume'dekini okur. Ayrışırlarsa
+    ürün iki farklı korpustan cevap verir — bu SESSİZ yanlışlıktır, kapı burada durur."""
+    kaynak = tmp_path / "kaynak" / "mevzuat_maddeler.jsonl"
+    kaynak.parent.mkdir(parents=True)
+    kaynak.write_bytes(b'{"id": 1}\n')
+    monkeypatch.setattr(indir, "korpus_kaynagi", lambda: kaynak)
+
+    hedef_dizin = tmp_path / "artefakt"
+    hedef = indir.korpus_hedefi(hedef_dizin)
+    hedef.parent.mkdir(parents=True)
+    hedef.write_bytes(b'{"id": 2}\n')          # volume'deki kopya AYRIŞMIŞ
+
+    with pytest.raises(indir.KimlikHatasi):
+        indir.yerlestir_korpus(hedef_dizin)
+
+
+def test_indir_kapisi_korpus_dusunce_cikis_kodu_sifirdan_farkli(tmp_path, monkeypatch, indir,
+                                                                 sahte_inis):
+    """`main` üç artefaktı da kurar: model · korpus · indeks. YALNIZ korpus düşse bile ≠ 0."""
+    icerik = b"dogru artefakt oldugunu varsaydigimiz baytlar"
+    sahte_inis(icerik)
+    monkeypatch.setattr(indir, "GGUF_BAYT", len(icerik))
+    monkeypatch.setattr(indir, "GGUF_SHA256", hashlib.sha256(icerik).hexdigest())
+
+    hedef_dizin = tmp_path / "artefakt"
+    indeks = indir.indeks_hedefi(hedef_dizin)          # indeks kapısı GEÇSİN
+    indeks.mkdir(parents=True)
+    (indeks / "gomme.npy").write_bytes(b"")
+    monkeypatch.setattr(indir, "korpus_kaynagi", lambda: tmp_path / "yok.jsonl")
+
+    assert indir.main([str(hedef_dizin)]) != 0

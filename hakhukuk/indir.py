@@ -26,6 +26,19 @@ GGUF_SHA256 = "755e15e92e9f7021934f2d5eada6c1f02fcc92be23f0536b0c2a0a9586e7bffc"
 GGUF_BAYT = 2_783_446_720                                     # = 2,592 GiB
 
 INDEKS_ADI = "mevzuat_bge_m3_s2"
+KORPUS_DOSYA = "mevzuat_maddeler.jsonl"
+
+# ⛔ VOLUME YERLEŞİMİ REPO AĞACINI AYNALAR — kolaylık değil, ZORUNLULUK (kusur 32).
+# İndeksin `KUNYE.json`'u korpusu **indeks dizinine GÖRELİ** tutar (`../../corpus/…`).
+# Bu, `G8 Adım 1b`'nin taşınabilirlik onarımıydı: mutlak yol + mtime her `git clone`'dan
+# sonra yanlış alarm veriyordu. Onarım repo içini düzeltti, indeksin repo ağacının DIŞINA
+# taşındığı tek düzeni KIRDI: indeks `/artefakt/<ad>/` iken `../../corpus/` = `/corpus`'a
+# çıkar ve retriever *"korpus bulunamadı"* ile ölür (ölçüldü, canlı konteynerde HTTP 500).
+# ⚠️ Korpusu `/artefakt/corpus/`'a koymak TEK BAŞINA YETMEZ: indeks de **iki seviye derine**
+# inmelidir. `data/index/<ad>/` ↔ `data/corpus/` ikilisi burada `<volume>/index/<ad>/` ↔
+# `<volume>/corpus/` olarak birebir aynalanır.
+INDEKS_ALT = "index"
+KORPUS_ALT = "corpus"
 # ⛔ İndeks deposu bir PARAMETREdir, varsayılanı YOKTUR — ADR-0026'nın *"tanımsız base ERKEN
 # patlar"* kuralının aynı sınıfı. Görev 8 (indeks dağıtımı) BEKLETİLİYOR: korpus 8,4×
 # büyüyecek ve *"83 MB mı 697 MB mı"* kararı henüz verilmedi ⇒ uydurulmuş bir depo adı
@@ -53,18 +66,43 @@ def _hf_indeks_indir(depo: str, dizin: pathlib.Path) -> pathlib.Path:
                                           local_dir=str(dizin)))
 
 
+def _ozet(yol: pathlib.Path) -> str:
+    """Dosyanın `sha256`'sı, parça parça — 2,6 GB'lık artefakt belleğe alınmaz."""
+    ozet = hashlib.sha256()
+    with open(yol, "rb") as dosya:
+        for parca in iter(lambda: dosya.read(_OKUMA_PARCASI), b""):
+            ozet.update(parca)
+    return ozet.hexdigest()
+
+
 def _kapidan_gecir(yol: pathlib.Path, bekleyen_bayt: int, bekleyen_sha: str) -> None:
     """Bayt sayısı ve `sha256` tutmuyorsa `KimlikHatasi`. Önce boyut: 2,6 GB'ı boşuna özetleme."""
     boyut = yol.stat().st_size
     if boyut != bekleyen_bayt:
         raise KimlikHatasi(
             f"bayt sayısı tutmadı: {boyut} ≠ {bekleyen_bayt} (beklenen artefakt {GGUF_DOSYA})")
-    ozet = hashlib.sha256()
-    with open(yol, "rb") as dosya:
-        for parca in iter(lambda: dosya.read(_OKUMA_PARCASI), b""):
-            ozet.update(parca)
-    if ozet.hexdigest() != bekleyen_sha:
-        raise KimlikHatasi(f"sha256 tutmadı: {ozet.hexdigest()} ≠ {bekleyen_sha}")
+    bulunan = _ozet(yol)
+    if bulunan != bekleyen_sha:
+        raise KimlikHatasi(f"sha256 tutmadı: {bulunan} ≠ {bekleyen_sha}")
+
+
+def korpus_kaynagi() -> pathlib.Path:
+    """Korpusun İMAJDAKİ kopyası — `Dockerfile` `data/corpus/`'u repo köküne kopyalar.
+
+    ⛔ HF'ten İNMEZ. Korpus zaten imajda; ikinci bir indirme kapısı açmak, kimliği iki
+    yerde tutmak olurdu (S18'in ölçülmüş dersi).
+    """
+    return pathlib.Path(__file__).resolve().parent.parent / "data" / KORPUS_ALT / KORPUS_DOSYA
+
+
+def indeks_hedefi(hedef_dizin) -> pathlib.Path:
+    """İndeksin volume'deki yeri — künyedeki `../../corpus/…` bundan çözülür."""
+    return pathlib.Path(hedef_dizin) / INDEKS_ALT / INDEKS_ADI
+
+
+def korpus_hedefi(hedef_dizin) -> pathlib.Path:
+    """Korpusun volume'deki yeri. `indeks_hedefi` ile birlikte repo düzenini aynalar."""
+    return pathlib.Path(hedef_dizin) / KORPUS_ALT / KORPUS_DOSYA
 
 
 def indir_model(hedef_dizin) -> pathlib.Path:
@@ -100,7 +138,7 @@ def indir_indeks(hedef_dizin) -> pathlib.Path:
     olarak yasaklar.
     """
     hedef_dizin = pathlib.Path(hedef_dizin)
-    hedef = hedef_dizin / INDEKS_ADI
+    hedef = indeks_hedefi(hedef_dizin)
     if (hedef / "gomme.npy").exists():
         return hedef
 
@@ -108,16 +146,58 @@ def indir_indeks(hedef_dizin) -> pathlib.Path:
     if not depo:
         raise KimlikHatasi(
             f"indeks volume'de yok ve {INDEKS_DEPO_ORTAM} tanımsız. Görev 8 (indeks dağıtımı) "
-            "bekletiliyor ⇒ yayımlanmış bir HF deposu yok; indeksi volume'e elle koyun ya da "
+            f"bekletiliyor ⇒ yayımlanmış bir HF deposu yok; indeksi {hedef} yoluna elle koyun "
+            f"(⚠️ dizin derinliği ZORUNLU — künye korpusu `../../corpus/` ile arar) ya da "
             f"{INDEKS_DEPO_ORTAM} ile depo adını verin")
 
-    hedef_dizin.mkdir(parents=True, exist_ok=True)
-    gecici = pathlib.Path(tempfile.mkdtemp(dir=hedef_dizin, prefix=".indeks-"))
+    hedef.parent.mkdir(parents=True, exist_ok=True)
+    gecici = pathlib.Path(tempfile.mkdtemp(dir=hedef.parent, prefix=".indeks-"))
     try:
         inen = _hf_indeks_indir(depo, gecici)
         if not (inen / "gomme.npy").exists():
             raise KimlikHatasi(f"{depo} deposunda gomme.npy yok — bu bir indeks deposu değil")
         os.replace(inen, hedef)
+    finally:
+        shutil.rmtree(gecici, ignore_errors=True)
+    return hedef
+
+
+def yerlestir_korpus(hedef_dizin) -> pathlib.Path:
+    """Korpusu İMAJDAKİ kopyadan volume'e koyar ve **iki kopyanın `sha256`'sını eşitler**.
+
+    ⚠️ **S18 · İKİNCİ KOPYA — bu kapının varlık sebebi.** Korpus artık hem imajda hem
+    volume'de duruyor ve İKİ KOD YOLU ikisini ayrı ayrı okuyor: `hakhukuk.servis`
+    `_varsayilan_araclar` içinde imajdakini (repo köküne göreli), `retriever` ise indeksin
+    künyesinden çözdüğü volume'dekini. Bugün ikisi aynı dosyadan türüyor; ayrışırlarsa ürün
+    iki farklı korpustan cevap verir ve bu HATA VERMEDEN yanlıştır. Ayrışma hâlinde
+    `KimlikHatasi` → çıkış ≠ 0 ⇒ iki daemon da HİÇ başlamaz.
+
+    Idempotent: hedefte dosya varsa yeniden kopyalanmaz, ama YİNE DE eşitlik sınanır.
+    """
+    kaynak = korpus_kaynagi()
+    if not kaynak.exists():
+        raise KimlikHatasi(f"korpus imajda bulunamadı: {kaynak} (Dockerfile `data/corpus/`'u "
+                           "kopyalar — imaj yeniden kurulmalı)")
+    bekleyen = _ozet(kaynak)
+    hedef = korpus_hedefi(hedef_dizin)
+    if hedef.exists():
+        bulunan = _ozet(hedef)
+        if bulunan != bekleyen:
+            raise KimlikHatasi(
+                f"volume'deki korpus imajdakinden AYRIŞMIŞ: {hedef} sha256 {bulunan[:12]} ≠ "
+                f"{kaynak} sha256 {bekleyen[:12]} — `servis.py` ile `retriever` farklı "
+                "korpuslardan cevap verirdi; volume'deki kopyayı silin ve yeniden koşun")
+        return hedef
+
+    hedef.parent.mkdir(parents=True, exist_ok=True)
+    gecici = pathlib.Path(tempfile.mkdtemp(dir=hedef.parent, prefix=".korpus-"))
+    try:
+        ara = gecici / KORPUS_DOSYA
+        shutil.copyfile(kaynak, ara)
+        bulunan = _ozet(ara)
+        if bulunan != bekleyen:
+            raise KimlikHatasi(f"korpus kopyası bozuldu: sha256 {bulunan} ≠ {bekleyen}")
+        os.replace(ara, hedef)
     finally:
         shutil.rmtree(gecici, ignore_errors=True)
     return hedef
@@ -131,12 +211,14 @@ def main(argv: list[str] | None = None) -> int:
     hedef_dizin = argv[0]
     try:
         gguf = indir_model(hedef_dizin)
+        korpus = yerlestir_korpus(hedef_dizin)
         indeks = indir_indeks(hedef_dizin)
     except KimlikHatasi as hata:
         # ⛔ Sessiz düşme yok: çıkış ≠ 0 ⇒ compose iki daemon'u da HİÇ başlatmaz.
         print(f"KAPI TUTMADI: {hata}", file=sys.stderr)
         return 1
     print(f"model:  {gguf}")
+    print(f"korpus: {korpus}")
     print(f"indeks: {indeks}")
     return 0
 

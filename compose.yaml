@@ -100,7 +100,15 @@ services:
               "--host", "0.0.0.0", "--port", "8000"]
     environment:
       HAKHUKUK_SUNUCU: "http://llama:8080/v1"
-      HAKHUKUK_INDEKS: "/artefakt/mevzuat_bge_m3_s2"
+      # ⚠️ Yol İKİ SEVİYE DERİN ve bu ZORUNLU (kusur 32): indeksin künyesi korpusu
+      # `../../corpus/…` ile arar, yani indeks dizininden iki seviye yukarı çıkar. Düz
+      # `/artefakt/mevzuat_bge_m3_s2` düzeninde bu `/corpus`'a varıyordu ve retriever
+      # *"korpus bulunamadı"* ile ölüyordu (canlı konteynerde HTTP 500, ölçüldü).
+      # Yerleşim repo ağacını AYNALAR: `data/index/<ad>/` ↔ `data/corpus/` ⇒
+      # `/artefakt/index/<ad>/` ↔ `/artefakt/corpus/`. Korpusu tek başına `/artefakt/corpus`'a
+      # koymak YETMEZDİ — indeksin de iki seviye derine inmesi gerekti.
+      # `tests/test_konteyner.py` bunu künyeden OKUYUP `normpath` ile çiviler.
+      HAKHUKUK_INDEKS: "/artefakt/index/mevzuat_bge_m3_s2"
     ports:
       - "127.0.0.1:8000:8000"
     volumes:
