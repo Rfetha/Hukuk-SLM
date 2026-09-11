@@ -82,7 +82,7 @@ düştüğü üzerine kuruludur.
 | ~~8~~ | **açık kusurlar** — kayıt | — | [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü. **On üçün on biri 2026-09-10'da G21+G22'ye alındı**, üçü devredildi. Kalan kayıt **kutucuk değildir, paydaya girmez** |
 | **9** | **G20** — konteyner dağıtımı | **5/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
 | **10** | **G21** — ürün yüzeyi kusur temizliği | **10/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
-| **11** | **G22** — rejim kusuru + KV ölçümü | **AÇIK 0/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
+| **11** | **G22** — rejim kusuru + KV ölçümü | **1/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
 ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
@@ -1226,7 +1226,7 @@ kayıt *"bedeli sıfır dolar, yaklaşık bir saat GPU"* diyordu. **Yanlış:** 
 **$2,20**. Bu yüzden iş ikiye bölündü: önce **$0'lık deterministik** karşılaştırma, kütle
 ancak **ayrı bir bedel kapısından** sonra.
 
-- [ ] **Adım 1: kusur 2 — DETERMİNİSTİK karşılaştırma ($0)**
+- [x] **Adım 1: kusur 2 — DETERMİNİSTİK karşılaştırma ($0)** — **KOŞTU 2026-09-11**
 Varsayılan (fp16) KV ile ikinci sunucu açılır, 80 kalem üretilir; `q8_0` koşusuyla
 **hakem çağırmadan** karşılaştırılır. `verify:` kaç cevap **bayt olarak değişti** (`sha256`) ·
 çekinme sayısı · **uydurulmuş madde** sayısı · kesik/boş sayısı. **Kütle HESAPLANMAZ.**
@@ -1270,7 +1270,7 @@ raporlanıyor** (gizlenmiyor).
 | # | kusur | nerede |
 | :-- | :--- | :--- |
 | 1 | ürün yolunda 4/80 cevap **tamamen boş** | **Görev 22** Adım 3-4 · rejim kararı, insan kapısı |
-| 2 | KV ayarının 80 kalemdeki etkisi ölçülmedi | **Görev 22** Adım 1-2 · $0 deterministik, kütle bedel kapısında |
+| 2 | KV ayarının 80 kalemdeki etkisi ölçülmedi | **ÖLÇÜLDÜ 2026-09-11** ($0, hakemsiz): **%81 bayt değişimi**, sayaçlar ±1 kalem. **Kütle ölçülmedi** — Adım 2 insan bedel kapısı, tahmin **$0,0626** (%50 emniyet payı dahil) |
 | 3 | TUI donuyor | **Görev 21** Adım 6 |
 | 4 | boş sorgu reddedilmiyor | **Görev 21** Adım 3 |
 | 5a | zayıf eşleşme sinyali | **ÖLÇÜLDÜ 2026-09-11 · ROZET EKLENMEDİ · kusur AÇIK KALIR** — altı göstergenin hiçbiri ayırmıyor; en iyi adayda 4 kaçık için **23 yanlış alarm**. Ölçüm: `outputs/eval/g21-zayif-eslesme/BULGU.md`. Devri planın kapanış bloğunda yazılacak |
@@ -1287,6 +1287,8 @@ raporlanıyor** (gizlenmiyor).
 | **14** | `madde_sayisi` **ölü alan**; asıl kıyas yeri zaten `madde_anahtari` kullanıyor | **YENİ 2026-09-11**, G21 incelemesinden. Silinmesi ya da bağlanması **ayrı karar** |
 | **15** | kapsam satırı **yalnız TUI'de**; CLI ve HTTP yüzeyi göstermiyor | **YENİ 2026-09-11.** Tek kaynak sağlandı (`cli.kapsam_satiri`), **gösterim** ürün kararıdır — insan |
 | **16** | boş sorgu: rozet *"kaynaklarda karşılık bulunamadı"* ↔ gövde *"soru boş"* | **YENİ 2026-09-11.** Altıncı bir `Durum` **tip düzeyi** değişikliktir, **ADR ister**; ölçüm etkisi bugün 0 (DEV'de 0 boş kalem) |
+| **18** | ⭐ **atıf doğrulayıcı kanun adını YANLIŞ kanuna çözüyor** — *"Gelir Vergisi Kanunu"* → **1319 Emlak Vergisi** | **YENİ 2026-09-11**, G22 Adım 1. Alet **manşet `0/114`'ü üretenin ta kendisi**. Çıpada `MADDE_YOK` **hiç yok** ⇒ yayımlanan sayı bu yönden kirlenmemiş; ama aynı gevşek eşleştirme **yanlış `DOGRULANDI`** da üretebilir ve **o yön ÖLÇÜLMEDİ** |
+| **19** | fp16 rejiminde model **istem yer tutucusunu harfiyen basıyor** (*"(KANUN ADI, Madde 13)"*) | **YENİ 2026-09-11**, G22 Adım 1. `0/80 ↔ 2/80`. Çıpa rejiminde **yok**; rejime bağlı bir bozulma sınıfı |
 | **17** | `tui.py` `bicimle()`'yi çağırmıyor — **iki paralel sunum katmanı** | **YENİ 2026-09-11.** Bu turda iki sızıntının (iskele işareti · kapsam satırı) **kök nedeni**; ikisi de tek tek kapatıldı, **kök neden duruyor** |
 
 ### Kapanış ve devir kuralı *(insan kararı 2026-09-10)*
@@ -1346,7 +1348,42 @@ belirsizlik değil yapılandırmanın sonucudur.
 kartının üçüncü bölümüne yazıldı, `MODEL_CARD` §7.10'a ve `servis.py` docstring'ine şerh düşüldü.
 
 **Yapılacak.** Varsayılan KV ile 80 kalem yeniden ölçülmeli; bugün 0,8011'in o rejimde
-korunacağı **iddia edilmiyor**. Bedeli sıfır dolar, yaklaşık bir saat GPU.
+korunacağı **iddia edilmiyor**. ~~Bedeli sıfır dolar, yaklaşık bir saat GPU.~~
+
+**ÖLÇÜLDÜ 2026-09-11 — Görev 22 Adım 1.** Kaynak: `outputs/eval/g22-kv-fp16/KARSILASTIRMA.md`
+· ham `h1_tgta_v1_g22_fp16_detail.jsonl` · künye `KUNYE.json`. Çıpa
+`outputs/eval/f02-biz-onsozsuz/h1_tgta_v1_f02_nb_detail.jsonl`. Hakem ÇAĞRILMADI, **$0**,
+42 dk GPU (şarjda). Rejim eşitliği doğrulandı: iki koşuda da `n_slots 4` · `kv_unified true`
+· seed 3407 · bütçe 1024+512 · k=10 · önsözsüz; fark **yalnız** `--cache-type-k/-v`'nin
+düşürülmesi (llama.cpp varsayılanı f16).
+
+| eksen | q8_0 (çıpa) | fp16 |
+| :--- | ---: | ---: |
+| **bayt olarak değişen cevap** | — | **65/80 (%81,2)** |
+| karakter medyanı | 720 | 707 |
+| kesik (`finish_reason=length`) | 4/80 | 3/80 |
+| **tamamen boş** | 0/80 | 0/80 |
+| çekinme (`exact_reject`, `mode=data`) | 5/80 | 5/80 |
+| — bunun altın bağlamda olanı (aşırı-red) | 4 | 3 |
+| **uydurulmuş madde** | **0/114** | **0/152** |
+| katı atıf kapısı reddi | 0 | 3 |
+| ürün durum sınıfı değişen kalem | — | 6/80 |
+| **istem yer tutucusu sızıntısı** (*"(KANUN ADI, Madde 13)"*) | **0/80** | **2/80** |
+
+**HÜKÜM: sapma toplulaştırılmış eksenlerde KÜÇÜK, kalem düzeyinde BÜYÜK.** Hiçbir sayaç
+birden fazla kalem oynamadı; buna karşılık cevapların **%81'i bayt olarak değişti**.
+⛔ **Kütle üzerine cümle KURULMADI — ölçülmedi** (hakem ister, Adım 2'nin bedel kapısı).
+**Kusur kaydının tek-soruluk gözlemi (`SUSKUNLUK → CEKINCELI`) 80 kalemin hiçbirinde
+tekrarlanmadı** — genel kural değilmiş; gözlenen geçişler `KESIK` ekseninde toplanıyor.
+
+**Turun iki YAN BULGUSU (ikisi de aletin içinde, ikisi de onarılmadı):**
+- **Kontrol değişkeni sızıntısı:** çıpa ile yeni koşu **2 kalemde** (id 7 · 63) farklı kaynak
+  gördü. Sebep KV değil **kod**: yürürlük süzgeci (`63b691e`, 2026-09-07) çıpadan **sonra**
+  geldi. Bağımsız doğrulandı (`context_shown` farkı tam olarak bu iki id). Sayaçları
+  etkilemiyor (ikisi de her iki koşuda cevaplanmış, `finish=stop`), ama *"tek değişken KV"*
+  cümlesi **tam doğru değildir** ve bu damgalanmadan bırakılamaz.
+- Künyenin KV satırı **sabit dize** — tuzak **1.12**; bu koşunun `kosu.log`'u `q8_0` diyor,
+  gerçek `f16`. Gerçek rejim `/proc/<pid>/cmdline`'dan okundu.
 
 ---
 
