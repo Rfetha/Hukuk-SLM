@@ -48,6 +48,62 @@ That is the honest answer to the first question. **The model is measured; the pr
 until all three are packaged together. That packaging is the plan's **Hat A** phase, and its
 output is `v0.2` ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
 
+→ **Since 2026-09-11 there is a container path** — [`docker compose up`](#running-it-with-docker-compose--the-container-path).
+It is written and tested, but **not yet verified end to end**: `docker compose up` has never been run.
+
+---
+
+## Running it with Docker Compose — the container path
+
+> ⛔ **NOT YET VERIFIED END TO END (2026-09-11).** This section describes **what the files say**,
+> not what was observed. The container path is written and **nailed down by tests** —
+> [`tests/test_konteyner.py`](tests/test_konteyner.py) **parses** [`compose.yaml`](compose.yaml)
+> and checks the binding flags, the single permitted `--host` deviation and the pinned revision —
+> but **`docker compose up` has never been run**, the image has **never been built**, and the
+> image size has **not been measured**. No size is estimated here.
+
+Three boxes, two daemons, two images
+([ADR-0078](docs/adr/0078-konteyner-dagitimi-rejim-kilidi.md) ·
+[ADR-0082](docs/adr/0082-app-kutusu-host-sapmasi.md)): a one-shot `indir` box that pulls the
+GGUF at a **pinned revision** behind a `sha256` + byte-count gate, a GPU `llama` daemon, and a
+CPU `app` daemon. If the gate does not hold, `indir` exits non-zero and **neither daemon ever
+starts**.
+
+```bash
+export HF_TOKEN=...                # the weights repo is PRIVATE — without a token: 401
+export HAKHUKUK_INDEKS_DEPO=...    # see below — deliberately EMPTY by default
+docker compose up
+```
+
+| | |
+| :--- | :--- |
+| API | `127.0.0.1:8000` |
+| `llama-server` | `127.0.0.1:8080` |
+| `HF_TOKEN` | **required.** [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) is **private** today; if it is undefined, compose fails **before** starting anything |
+| `HAKHUKUK_INDEKS_DEPO` | **deliberately empty.** `G8` (index distribution) is on hold, so **no published index repository exists**. Either place the index in the volume by hand or name a repository — otherwise the `indir` box fails **on purpose** |
+| requirements | an NVIDIA GPU + Docker. Measured environment: Docker **28.4.0** · compose **v2.39.4-desktop.1** · RTX 5070 Ti Laptop **12227 MiB** · driver **591.97**. The `gpus: all` key needs compose **v2.30+** |
+| image tag | `hakhukuk:0.3.0` — the **product** version ([`pyproject.toml`](pyproject.toml)). The model artifact is still `HakHukuk-4B-v0.1`: versioning is split ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)) |
+
+**Both daemons publish to the host's `127.0.0.1` only.** There is no authentication and no rate
+limit: this is a local, single-user deployment, and hosting remains open decision `S9`.
+
+### The container does **not** produce the published `0.8011`
+
+`0.8011` is the **measurement pipeline's** number: harness ON, `k=10`, no sufficiency preamble,
+two-pass forced thinking closure, `q8_0` KV cache. The container carries the **product path**.
+On 2026-09-11 the product path was brought into the measurement pipeline's regime
+([ADR-0080](docs/adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md)) and empty answers went
+**4/80 → 0/80** — but **its mass was never measured**, and `0.8011` **is not the product path's
+number** ([comparison](outputs/eval/g22-rejim/KARSILASTIRMA.md)).
+
+### The flags are a **decision**, not a preference
+
+The KV cache quantization `q8_0` is a human decision (2026-09-11): with fp16 KV,
+`wrong_ref_rate` degrades **0.0769 → 0.1553 (2.0×)**
+([measurement](outputs/eval/g22-kv-fp16/KUTLE.md)). [`compose.yaml`](compose.yaml) **forces**
+these flags; whoever starts `llama-server` by hand has to write them **themselves**
+([MODEL_CARD §7.10](MODEL_CARD.md)).
+
 ---
 
 ## Headline numbers

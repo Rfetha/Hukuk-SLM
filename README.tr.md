@@ -49,6 +49,62 @@ kapsamıyorsa **çekin**.
 paketlenmeden yeniden üretilemez. Paketleme işi planın **Hat A** fazıdır ve çıktısı
 `v0.2`'dir ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
 
+→ **2026-09-11'den beri bir konteyner yolu var** — [`docker compose up`](#konteynerle-çalıştırma--docker-compose-up).
+Yazıldı ve testlerle çivilendi, ama **henüz uçtan uca doğrulanmadı**: `docker compose up` hiç koşulmadı.
+
+---
+
+## Konteynerle çalıştırma — `docker compose up`
+
+> ⛔ **HENÜZ UÇTAN UCA DOĞRULANMADI (2026-09-11).** Bu bölüm **dosyaların söylediğini** anlatır,
+> gözlenmiş olanı değil. Konteyner yolu yazıldı ve **testlerle çivilendi** —
+> [`tests/test_konteyner.py`](tests/test_konteyner.py) [`compose.yaml`](compose.yaml)'ı
+> **ayrıştırıp** bağlayıcı bayrakları, tek izinli `--host` sapmasını ve pinlenmiş revizyonu
+> sınar — ama **`docker compose up` hiç koşulmadı**, imaj **hiç build edilmedi** ve imaj boyutu
+> **ölçülmedi**. Buraya tahmini bir boyut **yazılmamıştır**.
+
+Üç kutu, iki daemon, iki imaj
+([ADR-0078](docs/adr/0078-konteyner-dagitimi-rejim-kilidi.md) ·
+[ADR-0082](docs/adr/0082-app-kutusu-host-sapmasi.md)): GGUF'u **pinlenmiş revizyondan**
+`sha256` + bayt sayısı kapısının arkasından çeken tek seferlik `indir` kutusu, GPU'daki `llama`
+daemon'u ve CPU'daki `app` daemon'u. Kapı tutmazsa `indir` sıfırdan farklı kodla çıkar ve
+**iki daemon da hiç başlamaz**.
+
+```bash
+export HF_TOKEN=...                # ağırlık deposu ÖZEL — tokensız 401
+export HAKHUKUK_INDEKS_DEPO=...    # aşağıya bakın — varsayılanı bilerek BOŞ
+docker compose up
+```
+
+| | |
+| :--- | :--- |
+| API | `127.0.0.1:8000` |
+| `llama-server` | `127.0.0.1:8080` |
+| `HF_TOKEN` | **zorunlu.** [`Rfetha/HakHukuk-4B-v0.3-Q4_K_M`](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) bugün **özeldir**; tanımsızsa compose hiçbir şey başlatmadan **önce** hata verir |
+| `HAKHUKUK_INDEKS_DEPO` | **bilerek boş.** `G8` (indeks dağıtımı) bekletiliyor ⇒ **yayımlanmış indeks deposu yok**. İndeks ya volume'e elle konur ya depo adı verilir; aksi hâlde `indir` kutusu **kasten** patlar |
+| gereksinim | NVIDIA GPU + Docker. Ölçülen ortam: Docker **28.4.0** · compose **v2.39.4-desktop.1** · RTX 5070 Ti Laptop **12227 MiB** · sürücü **591.97**. `gpus: all` anahtarı compose **v2.30+** ister |
+| imaj etiketi | `hakhukuk:0.3.0` — bu **ürünün** sürümüdür ([`pyproject.toml`](pyproject.toml)). Model artefaktı hâlâ `HakHukuk-4B-v0.1`'dir: sürümleme **bölünmüştür** ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)) |
+
+**İki daemon da yalnız host'un `127.0.0.1`'ine yayımlar.** Kimlik doğrulama ve hız sınırı
+**yoktur**: bu yerel ve tek kullanıcılık bir kurulumdur; barındırma `S9` olarak açık durur.
+
+### Konteyner yayımlanan `0,8011`'i **ÜRETMEZ**
+
+`0,8011` **ölçüm hattının** sayısıdır: harness AÇIK, `k=10`, önsözsüz, iki geçişli zorunlu
+düşünce kapatması, `q8_0` KV önbelleği. Konteyner **ürün yolunu** taşır. Ürün yolu
+2026-09-11'de ölçüm hattının rejimine geldi
+([ADR-0080](docs/adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md)) ve boş cevap
+**4/80 → 0/80** oldu — ama **kütlesi ölçülmedi** ve `0,8011` **ürün yolunun sayısı değildir**
+([karşılaştırma](outputs/eval/g22-rejim/KARSILASTIRMA.md)).
+
+### Bayraklar bir **karardır**, tercih değil
+
+KV önbelleğinin `q8_0` kuantizasyonu bir insan kararıdır (2026-09-11): fp16 KV'de
+`wrong_ref_rate` **0,0769 → 0,1553 (2,0×)** kötüleşir
+([ölçüm](outputs/eval/g22-kv-fp16/KUTLE.md)). [`compose.yaml`](compose.yaml) bu bayrakları
+**zorlar**; `llama-server`'ı elle açan kişi onları **kendi** yazmak zorundadır
+([MODEL_CARD §7.10](MODEL_CARD.md)).
+
 ---
 
 ## Manşet sayılar

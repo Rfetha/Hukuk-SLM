@@ -768,6 +768,57 @@ Dört şey **kullanıcı yüzünde** garanti edilir:
 Sorumluluk ibaresi **koşulsuz** basılır (durum ne olursa olsun) ve metni tek kaynakta durur
 (`hakhukuk/cli.py::SORUMLULUK_IBARESI`). **Nihai hukuki metin hâlâ açık — S10.**
 
+### Konteyner yolu — `docker compose up` *(2026-09-11)*
+
+> ⛔ **HENÜZ UÇTAN UCA DOĞRULANMADI.** Bu alt bölüm **dosyaların söylediğini** anlatır,
+> gözlenmiş olanı değil. Konteyner yolu yazıldı ve **testlerle çivilendi** —
+> [`tests/test_konteyner.py`](tests/test_konteyner.py) [`compose.yaml`](compose.yaml)'ı
+> **ayrıştırıp** bağlayıcı bayrak kümesini, tek izinli `--host` sapmasını ve pinlenmiş
+> revizyonu sınar — ama **`docker compose up` hiç koşulmadı**, imaj **hiç build edilmedi**,
+> imaj boyutu **ölçülmedi**. Buraya tahmini bir boyut **yazılmamıştır**; bu kartın kuralı
+> ölçülmeyen sayıyı yazmamaktır.
+
+Paketleme bir **rejim kilididir**, kolaylık değil: §7.10'un ölçtüğü bayraklar düz metin olarak
+üç belgede duruyordu ve hiçbiri kapı değildi. Üç kutu, iki daemon, iki imaj
+([ADR-0078](docs/adr/0078-konteyner-dagitimi-rejim-kilidi.md) ·
+[ADR-0082](docs/adr/0082-app-kutusu-host-sapmasi.md)): `indir` kutusu GGUF'u **pinlenmiş
+revizyondan** `sha256` + bayt sayısı kapısının arkasından çeker; kapı tutmazsa çıkış kodu ≠ 0
+olur ve **iki daemon da hiç başlamaz**.
+
+```bash
+export HF_TOKEN=...                # ağırlık deposu ÖZEL — tokensız 401
+export HAKHUKUK_INDEKS_DEPO=...    # varsayılanı bilerek BOŞ (aşağıya bakın)
+docker compose up
+```
+
+| | |
+| :--- | :--- |
+| API | `127.0.0.1:8000` |
+| `llama-server` | `127.0.0.1:8080` |
+| `HF_TOKEN` | **zorunlu** — depo bugün **özeldir**; tanımsızsa compose hiçbir şey başlatmadan **önce** hata verir |
+| `HAKHUKUK_INDEKS_DEPO` | **bilerek boş** — `G8` (indeks dağıtımı) bekletiliyor ⇒ yayımlanmış indeks deposu **yok**. İndeks ya volume'e elle konur ya depo adı verilir; aksi hâlde `indir` kutusu **kasten** patlar |
+| gereksinim | NVIDIA GPU + Docker. Ölçülen ortam: Docker **28.4.0** · compose **v2.39.4-desktop.1** · RTX 5070 Ti Laptop **12227 MiB** · sürücü **591.97**. `gpus: all` anahtarı compose **v2.30+** ister |
+| imaj etiketi | `hakhukuk:0.3.0` — **ürünün** sürümü ([`pyproject.toml`](pyproject.toml)). Bu kartın öznesi olan model artefaktı hâlâ **`HakHukuk-4B-v0.1`**'dir; sürümleme **bölünmüştür** ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)) |
+
+İki daemon da yalnız host'un `127.0.0.1`'ine yayımlar; kimlik doğrulama ve hız sınırı **yoktur**
+(`S9` açılmadı).
+
+**Bayraklar karardır, tercih değil.** §7.10 aynı soruda cevabın yalnız KV kuantizasyonu
+değişince değiştiğini ölçtü; 2026-09-11'de fp16 KV'nin **kütlesi** de ölçüldü ve
+`wrong_ref_rate` **0,0769 → 0,1553 (2,0×)** kötüleşti
+([`KUTLE.md`](outputs/eval/g22-kv-fp16/KUTLE.md)). `compose.yaml` `q8_0` KV dahil bağlayıcı
+bayrakları **zorlar**; `llama-server`'ı elle açan kişi onları **kendi** yazmak zorundadır.
+
+#### ⚠️ Konteyner yayımlanan `0,8011`'i **ÜRETMEZ**
+
+`0,8011` **ölçüm hattının** sayısıdır: harness AÇIK, `k=10`, önsözsüz, iki geçişli zorunlu
+düşünce kapatması, `q8_0` KV önbelleği. Konteyner **ürün yolunu** taşır — §7.9'un anlattığı
+hat. Ürün yolu 2026-09-11'de ölçüm hattının rejimine geldi
+([ADR-0080](docs/adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md)) ve tamamen boş cevap
+**4/80 → 0/80** oldu, ama **kütlesi ölçülmedi** (hakem ister, o turun bütçesi $0) ⇒ `0,8011`
+**ürün yolunun sayısı değildir** ve konteynerden o sayı **beklenmemelidir**.
+Kaynak: [`KARSILASTIRMA.md`](outputs/eval/g22-rejim/KARSILASTIRMA.md).
+
 ### Model, harness'ıyla birlikte gelir
 
 **Yayımlanan sayı retriever + indeks + istem olmadan YENİDEN ÜRETİLEMEZ.** `%80,1` bir
