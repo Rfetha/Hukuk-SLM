@@ -75,6 +75,20 @@ ROZET = {
 
 _ALINTI_DESENI = re.compile(r"##begin_quote##(.*?)##end_quote##", re.DOTALL)
 
+# Model işaretlerin İÇİNE çoğu zaman kendi düz tırnağını da yazıyor (göz kapısında
+# 2026-09-11 görüldü). Yalnız SARAN çifti soyarız — ortada geçen bir iç alıntı silinmez.
+# Kapsam bilinçli dar tutuldu (YAGNI): raporlanan kusur düz `"` ile; Türkçe „…” ve
+# guillemet «…» aynı sınıfta olduğu için eklendi, tek tırnak `'…'` kapsam dışı bırakıldı.
+_DIS_TIRNAK_CIFTLERI = (('"', '"'), ('„', '”'), ('«', '»'))
+
+
+def _ic_tirnagi_soy(icerik: str) -> str:
+    icerik = icerik.strip()
+    for ac, kapa in _DIS_TIRNAK_CIFTLERI:
+        if len(icerik) >= 2 and icerik[0] == ac and icerik[-1] == kapa:
+            return icerik[1:-1].strip()
+    return icerik
+
 
 def alinti_isaretlerini_tirnaga_cevir(metin: str) -> str:
     """`##begin_quote##…##end_quote##` iskelesini SUNUM katmanında tipografik tırnağa çevirir.
@@ -85,12 +99,15 @@ def alinti_isaretlerini_tirnaga_cevir(metin: str) -> str:
     ayırt edilemez hâle gelir; hukuk ürününde güven tam bu ayrıma dayanır.
     Eşleşmeyen tek başına kalan işaret SİLİNİR: kapanışı olmayan bir tırnak açmak,
     alıntının nerede bittiğine dair YANLIŞ bir sınır uydurmak olurdu.
+    Model işaretlerin içine kendi tırnağını da yazdığında (göz kapısı, 2026-09-11) baştaki/
+    sondaki boşluk kırpılır ve içeriği SARAN düz/„…”/«…» tırnak çifti soyulup tek
+    tipografik tırnağa iner — çift tırnak + kaçak boşluk oluşmaz, ortadaki iç alıntı dokunulmaz kalır.
 
     ⛔ Yalnız sunum katmanında: `Cevap.metin` modelin ham çıktısıdır, `score_register.py:41`
     aynı işareti register göstergesi olarak SAYIYOR — ham alanı değiştirmek ölçümü bozar.
     `tui.py` bu fonksiyonu IMPORT eder, KOPYALAMAZ (S18'in dersi).
     """
-    tirnakli = _ALINTI_DESENI.sub(lambda e: f"“{e.group(1)}”", metin)
+    tirnakli = _ALINTI_DESENI.sub(lambda e: f"“{_ic_tirnagi_soy(e.group(1))}”", metin)
     return tirnakli.replace("##begin_quote##", "").replace("##end_quote##", "")
 
 

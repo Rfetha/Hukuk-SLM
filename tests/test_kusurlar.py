@@ -575,3 +575,67 @@ def test_HTTP_yuzeyi_BOS_SORGUyu_hic_URETMEZ(monkeypatch):
     monkeypatch.setattr(api.servis, "answer",
                         lambda soru, **kw: pytest.fail("boş sorgu answer()'a ULAŞTI"))
     assert TestClient(api.uygulama).post("/sor", json={"soru": "   "}).status_code == 422
+
+
+# ══ DÖRDÜNCÜ TUR (2026-09-11) — insan gözü kapısı: ÇİFT TIRNAK + KAÇAK BOŞLUK ════════
+#
+# Kusur GERÇEK ekranda görüldü: model çoğu zaman ##begin_quote##…##end_quote##
+# işaretlerinin İÇİNE kendi düz tırnağını (") da yazıyor. `alinti_isaretlerini_tirnaga_
+# cevir` bunu SOYMADAN üstüne bir tırnak daha sarıyordu ⇒ çift tırnak + kaçak boşluk.
+# Testler tırnaksız alıntıyla yazılmıştı (bkz. B6 testleri yukarıda) ve bu hâli hiç
+# görmemişti — kapıyı insan gözü yakaladı, otomatik test değil.
+
+_GERCEK_EKRAN_GIRDISI = (
+    '2) ##begin_quote## "Taraflardan her biri, üç gün önceden feshedebilir." '
+    '##end_quote##')
+_GERCEK_EKRAN_BEKLENEN = '2) “Taraflardan her biri, üç gün önceden feshedebilir.”'
+
+
+def test_duz_tirnakli_alinti_tek_tirnaga_iner_boslukla_birlikte():
+    """Model işaretin İÇİNE kendi düz tırnağını da yazmış — çift tırnak + kaçak boşluk
+    OLUŞMAMALI. Gerçek ekranda görülen girdi (2026-09-11) birebir kullanılıyor."""
+    sunum = cli.alinti_isaretlerini_tirnaga_cevir(_GERCEK_EKRAN_GIRDISI)
+    assert sunum == _GERCEK_EKRAN_BEKLENEN, f"çift tırnak/kaçak boşluk kaldı: {sunum!r}"
+    assert '"' not in sunum, "düz tırnak sunuma sızdı"
+
+
+def test_tirnaksiz_alinti_davranisi_bugunku_gibi_korunuyor():
+    """Tırnaksız içerik bugün zaten DOĞRU çalışıyor — düzeltme bunu BOZMAMALI."""
+    sunum = cli.alinti_isaretlerini_tirnaga_cevir(
+        "2) ##begin_quote##Tırnaksız alıntı metni##end_quote##")
+    assert sunum == "2) “Tırnaksız alıntı metni”", f"tırnaksız davranış bozuldu: {sunum!r}"
+
+
+def test_alinti_ortasindaki_duz_tirnak_silinmiyor_yalniz_saran_cift_bozuluyor():
+    """Yalnız SARAN çift tırnak soyulur; içerikte ORTADA geçen düz tırnak (bir iç
+    alıntı) SİLİNMEZ."""
+    sunum = cli.alinti_isaretlerini_tirnaga_cevir(
+        '##begin_quote##Sözleşme "makul süre" içinde feshedilir.##end_quote##')
+    assert sunum == '“Sözleşme "makul süre" içinde feshedilir.”', (
+        f"ortadaki iç alıntı yanlış değiştirildi: {sunum!r}")
+
+
+def test_eslesmeyen_tek_alinti_isareti_hala_siliniyor_duz_tirnakli_icerikte_de():
+    """Kapanışı olmayan işaret düz tırnaklı içerikte de SİLİNMELİ — tırnak açmaz."""
+    sunum = cli.alinti_isaretlerini_tirnaga_cevir('Kanun der ki: ##begin_quote## "İşçi …')
+    assert "##" not in sunum, "eşleşmeyen iskele işareti sunumda kaldı"
+    assert "“" not in sunum and "”" not in sunum, "eşleşmeyen işaret için tırnak açıldı"
+
+
+def test_alinti_cevirisi_duz_tirnakli_girdide_de_ham_metni_bozmuyor():
+    """`Cevap.metin` bu durumda da HAM kalmalı — fonksiyon saf, yan etkisiz."""
+    ham = _GERCEK_EKRAN_GIRDISI
+    c = Cevap(metin=ham, durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+    cli.bicimle(c)
+    assert c.metin == ham, "Cevap.metin düz tırnaklı girdide de değişmemeli"
+
+
+def test_duz_tirnakli_alinti_uc_yuzeyde_de_tek_tirnaga_iniyor(monkeypatch):
+    """Kusur 17 emsali: düzeltme CLI · TUI · HTTP üçünde de KENDİLİĞİNDEN görünmeli —
+    üçü de `cli.bicimle()` üzerinden aynı süzgeci kullanır."""
+    c = Cevap(metin=_GERCEK_EKRAN_GIRDISI, durum=Durum.CEVAP, atiflar=(), kaynaklar=())
+    for ad, metin in (("CLI", cli.bicimle(c)),
+                      ("TUI", _tui_ekran_metni(monkeypatch, c)),
+                      ("HTTP", _http_sunum(monkeypatch, c))):
+        assert _GERCEK_EKRAN_BEKLENEN in metin, f"{ad} yüzeyinde çift tırnak/boşluk kaldı"
+        assert '"' not in metin, f"{ad} yüzeyinde düz tırnak sızdı"
