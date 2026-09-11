@@ -19,7 +19,7 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md    115 kutucuk · 112 BİTTİ · 3 AÇIK
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md    115 kutucuk · 113 BİTTİ · 2 AÇIK
           2026-09-10: bitmiş 14 görev record/…-kapanan-gorevler.md'ye TAŞINDI
              plan 2.337 → 1.343 satır; dosyadaki kutucuk 40, payda 115
              (75 kutucuk kayda gitti; 2026-09-10 G21+G22 ile 16 kutucuk eklendi)
@@ -66,7 +66,11 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
                                                   host ile BİREBİR görüyor
 
           ── YAPILMADI · 3 kutucuk, HEPSİ G20 ─────────────────────────────
-             G20 Adım 6  docker compose up   ⚠️ KISMEN KOŞTU 2026-09-11:
+             G20 Adım 6  docker compose up   ✅ KAPANDI 2026-09-11 (aşağıdaki
+                            kusur onarıldıktan sonra). Konteyner UÇTAN UCA
+                            ÇALIŞIYOR: HTTP 200, iki farklı soruyla doğrulandı.
+                            ── önceki hâli ─────────────────────────────────
+                                                 ⚠️ KISMEN KOŞTU 2026-09-11:
                             `indir` kutusu ÇIKIŞ 0 ile bitti — sha256 + bayt
                             kapısı GERÇEKTEN ateşlendi ve TUTTU; indeks
                             volume'de bulundu (HF yedeğine gidilmedi).
@@ -74,7 +78,8 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
                             bir llama-server tutuyordu (kapatıldı).
                             İmaj boyutu ÖLÇÜLDÜ: hakhukuk 2,13 GB · llama
                             6,99 GB · torch 2.14.0+cpu (CUDA tekerleği YOK).
-             G20 Adım 7  konteyner göz kapısı   İNSAN GÖZÜ · Adım 6'ya bağlı
+             G20 Adım 7  konteyner göz kapısı   İNSAN GÖZÜ — ⚡ ARTIK AÇIK,
+                            Adım 6 kapandı; konteyner soru cevaplıyor
              G20 Adım 8  belgeler + sürüm       YAZILDI, kutucuk BİLEREK AÇIK —
                             konteyner yolu "HENÜZ UÇTAN UCA DOĞRULANMADI"
                             damgasıyla girdi; Adım 6 kapanınca işaretlenir

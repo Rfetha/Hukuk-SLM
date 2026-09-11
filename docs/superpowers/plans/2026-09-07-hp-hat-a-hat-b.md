@@ -2,7 +2,7 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-11 · **112/115 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-11 · **113/115 kutucuk** · `v0.3` etiketlendi
 
 > **2026-09-11 turu:** **G22 KAPANDI 5/5** (Adım 2 ve 3 insana soruldu, ikisi de onaylandı) · G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8). **Kalan 7 kutucuğun 3'ü insan gözü kapısı**, biri insandan sır bekliyor. **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, kararlar **ADR-0079** ve **ADR-0080**. Harcanan: **$0,045067** (OpenRouter ölçümü). Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-20**.
 
@@ -1126,7 +1126,7 @@ Karar 2 yalnız `llama` için sapma tanımlıyordu. `app` kutusu da aynı sorunu
 Elenen seçenek: `api.py`'ye ortam değişkeni eklemek — ürün kodunu değiştirirdi.
 Gerekçe `llama` sapmasıyla **aynı sınıftan**, ama karar metni onu kapsamıyor.
 
-- [ ] **Adım 6: `docker compose up` — indirme kapısı GERÇEKTEN koştu**
+- [x] **Adım 6: `docker compose up` — indirme kapısı GERÇEKTEN koştu** — **KAPANDI 2026-09-11**
 ⚠️ **KISMEN KOŞTU 2026-09-11 — `indir` GEÇTİ, `llama` port çakışmasına takıldı.**
 
 **Geçen kısım (asıl şart):** `indir` kutusu **çıkış 0** ile bitti ve logu şunu yazdı:
@@ -1159,8 +1159,38 @@ katman 943 MB'da kalmış. Ağırlık ve indeks **imajda YOK** (`find / -xdev` i
 **KALAN KISIM DA KOŞTU 2026-09-11 — ve UÇTAN UCA ÇALIŞMADI.** `export HF_TOKEN=…` ile üç kutu
 da ayağa kalktı: `indir` **çıkış 0** · `llama` **healthy** (GPU'lu imaj) · `app` **Up**, portlar
 `127.0.0.1:8000` ve `:8080`. Boş sorgu **422** döndü. **Ama gerçek soru HTTP 500 veriyor** —
-açık kusur **32**. ⇒ **Adım 6 KAPANMADI.** Bu tam olarak Adım 8'in *"HENÜZ UÇTAN UCA
-DOĞRULANMADI"* damgasının koruduğu durumdur; damga **haklı çıktı**.
+açık kusur **32**. ⇒ Adım 6 o an **KAPANMADI**. Bu tam olarak Adım 8'in *"HENÜZ UÇTAN UCA DOĞRULANMADI"*
+damgasının koruduğu durumdu; damga **haklı çıktı**.
+
+**KUSUR 32 ONARILDI ve ADIM 6 KAPANDI — aynı gün, commit `0e2a470`.** İnsan kararı:
+*"korpusu da volume'e koy"*. Çözümün inceliği: korpusu `/artefakt/corpus/`'a koymak **yetmedi**
+— `../../` indeks dizininden **iki** seviye çıkar, o yüzden **repo düzeni birebir aynalandı**:
+
+```
+/artefakt/HakHukuk-4B-v0.3-Q4_K_M.gguf
+/artefakt/index/mevzuat_bge_m3_s2/{KUNYE.json,gomme.npy}
+/artefakt/corpus/mevzuat_maddeler.jsonl
+```
+`HAKHUKUK_INDEKS: /artefakt/index/mevzuat_bge_m3_s2` ⇒ `../../corpus/` doğru çözülüyor.
+
+**S18 kapısı kuruldu:** korpus artık imajda **ve** volume'de. `indir.py::yerlestir_korpus`
+kopyayı imajdaki kaynaktan alır ve **her koşuda `sha256` eşitliğini sınar**; tutmazsa
+`KimlikHatasi` → çıkış ≠ 0 ⇒ iki daemon da **hiç başlamaz**. Ölçüldü: imaj = volume = künye
+`a35e6efc1612…`.
+
+`verify:` **karşılandı** — `indir` **çıkış 0**, logu `model: … · korpus: … · indeks: …`;
+`llama` **healthy**, `app` **Up**; **uçtan uca HTTP 200** (bağımsız olarak **ikinci, farklı**
+bir soruyla da doğrulandı: *"İşveren iş sözleşmesini haklı nedenle nasıl feshedebilir?"* →
+`İŞ KANUNU Madde 25`, 4 atıf, 10 kaynak, `✓` doğrulanmış); boş sorgu **422**.
+Model **yeniden inmedi** — koşu sonrası `sha256 755e15e9…86e7bffc` · `2.783.446.720` bayt
+birebir. **İmaj boyutu ÖLÇÜLDÜ** (yukarıdaki tablo).
+
+⚠️ **Üç şerh, hiçbiri gizlenmedi:** (a) `git clone` sonrası indeks dizinini **insan doldurmak
+zorunda** — G8 bekletiliyor, indeks ne HF'te ne imajda; hata mesajı artık tam yolu **ve
+derinlik şartını** yazıyor, kusur kapanmadı **görünür oldu**. (b) Korpus artık **üç yerde**
+(repo · imaj · volume); kapı imaj↔volume'ü sınıyor, **repo↔imaj ayrışması SINANMIYOR** —
+kalıcı çare kusur **11**. (c) Uçtan uca doğrulama **iki soru** ile yapıldı; ürün yolunun
+**%5 boş cevap** kusuru (`MODEL_CARD` §7.9) bu koşuyla **ölçülmedi**.
 Komut (`export` şart, tek seferlik değil): `export HF_TOKEN=$(cat ~/.cache/huggingface/token)`
 sonra `docker compose up -d`.
 ⚠️ **İNSANDAN İSTENENLER (Adım 6 bunlarsız koşamaz):** (1) **`HF_TOKEN`** — depo ÖZEL, tokensız
@@ -1453,7 +1483,7 @@ raporlanıyor** (gizlenmiyor).
 | **29** | imaja ürünün **okumadığı bir korpus yedeği** giriyor | **YENİ 2026-09-11**, imaj ölçümünde. `COPY data/corpus/` `mevzuat_maddeler.jsonl.yedek-2026-08-05`'i (**36,1 MiB**) sokuyor — 76,7 MB'lık korpus katmanının **%49'u**. Tek satırlık `.dockerignore` düzeltmesi; `.dockerignore` bu turda dokunulmaz ilan edildiği için yapılmadı |
 | **30** | ⭐ `cli.py` künye yolunu **repo köküne göreli** çözüyor — kurulu pakette BULUNAMIYOR | **YENİ 2026-09-11**, imajın İÇİNDE ölçüldü. `site-packages`'e normal kurulumda yol `…/site-packages/data/corpus/KUNYE.json` oluyor; dosya imajda **var** (`/app/data/corpus/`), yanlış yerde aranıyor. **Sessiz bozulma:** patlamıyor, `except` dalına düşüyor ve vatandaş *"892 kanun · 37.949 madde"* yerine ***"künye okunamadı — sayı belirsiz"*** okuyor. ⚠️ Kusuru **bu tur BEN ekledim** (G21 Adım 7); host'ta görünmüyordu çünkü paket **editable** kurulu. TDD ile onarılıyor |
 | **31** | `compose` volume adını **proje adından** türetiyor (`hakhukuk_artefakt`), dizin adından değil | **YENİ 2026-09-11.** Hazırlıkta `hukuk-slm_artefakt` doldurulmuştu ve **kullanılmadı**. ⇒ **İYİ ki öyle oldu:** artefakt elle konsaydı `sha256` kapısı **hiç ateşlenmeyecek**, Adım 6'nın asıl şartı sınanmamış olacaktı. Kusur değil, **kayda değer davranış** |
-| **32** | 🚨 **KONTEYNER UÇTAN UCA ÇALIŞMIYOR — her soruda HTTP 500** | **YENİ 2026-09-11, `docker compose up` ile ÖLÇÜLDÜ.** Üç kutu da ayağa kalkıyor (`indir` çıkış **0**, `llama` **healthy**, `app` **Up**), boş sorgu **422** dönüyor — ama **gerçek soru 500 veriyor**. Kök sebep: indeksin `KUNYE.json`'u korpus yolunu **indeks dizinine göreli** tutuyor (`../../corpus/mevzuat_maddeler.jsonl`). Repoda bu `data/corpus/…`'a çözülüyor ✓; konteynerde indeks **volume'de** (`/artefakt/mevzuat_bge_m3_s2/`) olduğu için **`/corpus/`**'a çözülüyor ✗ ve korpus orada değil (`/app/data/corpus/`'ta). ⚠️ **Bu, `G8 Adım 1b`'nin taşınabilirlik onarımının TERS YÜZÜDÜR:** mutlak yol → göreli yol değişikliği `git clone`'u onardı, ama indeksin **repo ağacının dışına** taşındığı tek düzeni (konteyner) **kırdı**. ✅ **Sessiz değil:** `SystemExit` ile gürültülü patlıyor. ⛔ **G20 Adım 6 bu yüzden KAPANAMAZ** ve Adım 7 (göz kapısı) **açılamaz** |
+| **32** | 🚨 **KONTEYNER UÇTAN UCA ÇALIŞMIYOR — her soruda HTTP 500** | **YENİ 2026-09-11, `docker compose up` ile ÖLÇÜLDÜ.** Üç kutu da ayağa kalkıyor (`indir` çıkış **0**, `llama` **healthy**, `app` **Up**), boş sorgu **422** dönüyor — ama **gerçek soru 500 veriyor**. Kök sebep: indeksin `KUNYE.json`'u korpus yolunu **indeks dizinine göreli** tutuyor (`../../corpus/mevzuat_maddeler.jsonl`). Repoda bu `data/corpus/…`'a çözülüyor ✓; konteynerde indeks **volume'de** (`/artefakt/mevzuat_bge_m3_s2/`) olduğu için **`/corpus/`**'a çözülüyor ✗ ve korpus orada değil (`/app/data/corpus/`'ta). ⚠️ **Bu, `G8 Adım 1b`'nin taşınabilirlik onarımının TERS YÜZÜDÜR:** mutlak yol → göreli yol değişikliği `git clone`'u onardı, ama indeksin **repo ağacının dışına** taşındığı tek düzeni (konteyner) **kırdı**. ✅ **Sessiz değil:** `SystemExit` ile gürültülü patlıyor. ⛔ **G20 Adım 6 bu yüzden KAPANAMAZ** ve Adım 7 (göz kapısı) **açılamaz**  **→ KAPANDI 2026-09-11**, commit `0e2a470`; yerleşim repo ağacını aynalıyor + `sha256` eşitlik kapısı |
 | **17** | `tui.py` `bicimle()`'yi çağırmıyor — **iki paralel sunum katmanı** | **YENİ 2026-09-11.** Bu turda iki sızıntının (iskele işareti · kapsam satırı) **kök nedeni**; ikisi de tek tek kapatıldı, **kök neden duruyor**  **İNSAN KARARI 2026-09-11: BİRLEŞTİR** — tek sunum katmanı; S18'in dersi bu turda **iki kez** ısırdı  **→ **KAPANDI 2026-09-11** — `tui.py` kendi sunum dizesini kurmayı **bıraktı**; tek katman `cli.bicimle(cevap, rozet=…)`, rozet **parametre** (bool bayrak yok), TUI ince kabuk kaldı. Commit `613e3ba` (yapısal) |
 
 ### Kapanış ve devir kuralı *(insan kararı 2026-09-10)*
