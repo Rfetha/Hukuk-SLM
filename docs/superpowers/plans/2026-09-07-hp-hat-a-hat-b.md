@@ -84,7 +84,7 @@ düştüğü üzerine kuruludur.
 | ~~8~~ | **açık kusurlar** — kayıt | — | [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir) bölümü. **On üçün on biri 2026-09-10'da G21+G22'ye alındı**, üçü devredildi. Kalan kayıt **kutucuk değildir, paydaya girmez** |
 | **9** | **G20** — konteyner dağıtımı | **5/9** | beş karar kilitlendi 2026-09-10 ([ADR-0078](../../adr/0078-konteyner-dagitimi-rejim-kilidi.md)); **Adım 0 GPU kapısı GEÇTİ** — konteyner RTX 5070 Ti'yi host ile birebir görüyor. **Adım 1-8 KODLANMADI:** insan kararı 2026-09-10 — bu tur yalnız *tasarım* turuydu, icra ayrı onayla başlar |
 | **10** | **G21** — ürün yüzeyi kusur temizliği | **10/11** | kusur 3·4·5·7·8·12a·13 · **$0** · dört karar kilitli 2026-09-10. **Adım 8 bir ÖLÇÜMDÜR** — ayrışma yoksa rozet **EKLENMEZ** ve kusur 5a açık kalır. **Adım 11 insan gözü kapısı** |
-| **11** | **G22** — rejim kusuru + KV ölçümü | **1/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
+| **11** | **G22** — rejim kusuru + KV ölçümü | **4/5** | kusur 1·2 · GPU · **Adım 2 ve Adım 3 DUR-ve-SOR**. Kusur 2'nin *"bedeli sıfır dolar"* kaydı grill'de **çürütüldü**: kütle **hakem** ister ⇒ para. Önce $0'lık deterministik karşılaştırma |
 
 **SIRA 2 bir insan gözü kapısıdır** ve kendi başına işaretlenmez. Bu kapı 2026-09-09'da bir
 ürün kusuru yakaladı: `python -m hakhukuk.tui` hiç açılmıyordu (`__main__` bloğu yoktu) ve 163
@@ -1287,7 +1287,37 @@ onu **gidermiyor**). ⇒ Adım 4 AÇILDI.
 Karar verilmeden **kod yazılmaz**. Kararın anlamı: ürün yolu ile ölçüm hattı **aynı rejime**
 gelir; yayımlanan **0,8011 ölçüm hattının sayısıdır ve DEĞİŞMEZ** — değişen ürün yoludur.
 
-- [ ] **Adım 4: kusur 1 — uygulama + 80 kalem yeniden ölçüm** *(onay gelirse)*
+- [x] **Adım 4: kusur 1 — uygulama + 80 kalem yeniden ölçüm** — **KOŞTU 2026-09-11, ÜÇ ŞARTIN ÜÇÜ DE GEÇTİ**
+
+Kaynak: `outputs/eval/g22-rejim/KARSILASTIRMA.md` · ham `aracsiz_yol_80_zorunlu_kapatma.json`
+· künye `KUNYE.json`. Çıpa `outputs/eval/g18-arac-katmani/aracsiz_yol_80.json`. $0, q8_0 rejimi,
+1.061 s. Üç şart bağımsız olarak **yeniden hesaplanarak** doğrulandı.
+
+| `verify:` şartı | öncesi | sonrası | hüküm |
+| :--- | ---: | ---: | :--- |
+| **tamamen boş 0/80** | 4/80 (id 7·64·65·66) | **0/80** | **GEÇTİ** |
+| kesik, ADR-0040 **%5** kapısı (≤4/80) | 7/80 (**%8,75**) | **3/80 (%3,75)** | **GEÇTİ** |
+| suskunluk farkı **raporlanıyor** | `[10,34,63]` | `[7,10,34,63,64]` | **GEÇTİ** — aşağıda |
+
+**Suskunluk kümesi — ⛔ fark GİZLENMEDİ.** Giren **2** (id **7** · **64**), çıkan **0**.
+İkisi de daha önce **tamamen boş** dönen kalemlerdi; şimdi açıkça *"verilen kaynaklarda bu
+konuyu düzenleyen madde bulunmuyor"* diyorlar. Diğer iki bozuk kalem (id **65** · **66**) tam
+**CEVAP**'a döndü (TMK 406 / TMK 425). ⇒ Dört kusurlu kalemin **ikisi cevaba, ikisi açık
+çekinmeye** gitti.
+
+**Değişiklik CERRAHİ:** `sha256` olarak değişen **yalnız 4/80** kalem — tam da bozuk olan
+dördü; kalan **76 kalem birebir aynı**. Kaynak kümesi **80/80'de değişmedi** (retriever'a
+dokunulmadı), doğrulanamayan atıf **10 → 10**.
+
+⛔ **Kütle HESAPLANMADI** ve **0,8011'e DOKUNULMADI** — bu koşu ürün yolunun sayısıdır.
+
+⚠️ **İki şerh, ikisi de kayda geçti:**
+1. **B10'a +2 kalemlik yük.** Kesik sayacının düşmesi karşılığında **aşırı-red** ekseni iki
+   kalem ağırlaştı. Bu tur bunu **ölçmedi**, yalnız kaydetti — B10 eşiği ayrı bir turun işi.
+2. **2. geçiş `reasoning_content` alanına bağımlı.** `llama-server`'ın `--reasoning-format`
+   varsayılanı değişirse mekanizma **sessizce tek geçişe düşer**. Koşuda doğrulandı ama
+   **testle çivilenemiyor** (sunucu davranışı, kodun değil) ⇒ *"hata vermeden yanlış"*
+   sınıfından bir bağımlılık, açık kusur **20**.
 Çıpa **elimizde**: `outputs/eval/g18-arac-katmani/aracsiz_yol_80.json` (öncesi: kesik 7/80,
 **tamamen boş 4/80**). `verify:` **tamamen boş 0/80** · kesik oranı ADR-0040'ın **%5**
 geçerlilik kapısını **GEÇİYOR** · suskunluk kümesi öncesiyle karşılaştırılıp **fark
@@ -1315,7 +1345,7 @@ raporlanıyor** (gizlenmiyor).
 
 | # | kusur | nerede |
 | :-- | :--- | :--- |
-| 1 | ürün yolunda 4/80 cevap **tamamen boş** | **Görev 22** Adım 3-4 · rejim kararı, insan kapısı |
+| 1 | ürün yolunda 4/80 cevap **tamamen boş** | **KAPANDI 2026-09-11** · insan rejim onayı + Görev 22 Adım 4: **0/80**, kesik %8,75 → %3,75, ADR-0040 kapısı GEÇTİ. Şerh: B10'a +2 kalem, ve kusur **20** doğdu |
 | 2 | KV ayarının 80 kalemdeki etkisi ölçülmedi | **ÖLÇÜLDÜ 2026-09-11** ($0, hakemsiz): **%81 bayt değişimi**, sayaçlar ±1 kalem. **Kütle ölçülmedi** — Adım 2 insan bedel kapısı, tahmin **$0,0626** (%50 emniyet payı dahil) |
 | 3 | TUI donuyor | **Görev 21** Adım 6 |
 | 4 | boş sorgu reddedilmiyor | **Görev 21** Adım 3 |
@@ -1335,6 +1365,7 @@ raporlanıyor** (gizlenmiyor).
 | **16** | boş sorgu: rozet *"kaynaklarda karşılık bulunamadı"* ↔ gövde *"soru boş"* | **YENİ 2026-09-11.** Altıncı bir `Durum` **tip düzeyi** değişikliktir, **ADR ister**; ölçüm etkisi bugün 0 (DEV'de 0 boş kalem) |
 | **18** | ⭐ **atıf doğrulayıcı kanun adını YANLIŞ kanuna çözüyor** — *"Gelir Vergisi Kanunu"* → **1319 Emlak Vergisi** | **YENİ 2026-09-11**, G22 Adım 1; **ters yön aynı gün ÖLÇÜLDÜ** (insan kararı), `outputs/eval/g22-atif-cozum/BULGU.md`. Alet **manşet `0/114`'ü üretenin ta kendisi**. **Manşet TEMİZ — ama TESADÜFEN:** 114 atfın **0'ı** yanlış kanuna çözülüp `DOGRULANDI` almış; sebebi hiçbirinin **parantezli adlı** kanuna denk gelmemesi. Alet, parantezli adlı **16 kanunun 7'sinde** yanlış kanuna `DOGRULANDI` basıyor (kanıtlandı: *"Gelir Vergisi Kanunu Madde 1"* → `1319` → `DOGRULANDI`). ⚠️ Donmuş TEST'in **`0/52`**'si aynı aletle üretildi ve **ölçülmedi**. **Onarım AÇIK KARAR** — insan *"önce ölç"* dedi, ölçüldü |
 | **19** | fp16 rejiminde model **istem yer tutucusunu harfiyen basıyor** (*"(KANUN ADI, Madde 13)"*) | **YENİ 2026-09-11**, G22 Adım 1. `0/80 ↔ 2/80`. Çıpa rejiminde **yok**; rejime bağlı bir bozulma sınıfı |
+| **20** | ürün yolunun 2. geçişi `reasoning_content` alanına bağımlı — sunucunun `--reasoning-format` varsayılanı değişirse **sessizce tek geçişe düşer** | **YENİ 2026-09-11**, G22 Adım 4. Koşuda doğrulandı ama **testle çivilenemiyor** (sunucu davranışı). Boş cevap kusuru **sessizce geri gelebilir** |
 | **17** | `tui.py` `bicimle()`'yi çağırmıyor — **iki paralel sunum katmanı** | **YENİ 2026-09-11.** Bu turda iki sızıntının (iskele işareti · kapsam satırı) **kök nedeni**; ikisi de tek tek kapatıldı, **kök neden duruyor** |
 
 ### Kapanış ve devir kuralı *(insan kararı 2026-09-10)*
