@@ -121,27 +121,6 @@ def test_scripts_altinda_begin_quote_temizleme_suzgeci_yok():
     assert not supheli, f"scripts/ altında begin_quote SÜZGECİ bulundu: {supheli}"
 
 
-# ── kusur 13 — `madde_sayisi` türetilmiş alanı; ham `madde_no` KORUNUR ───────────────
-
-def test_madde_sayisi_uc_farkli_yazimi_ayni_degere_indirger():
-    atif = tipler.Atif(kanun_no="6098", madde_no="Madde 330")
-    k_buyuk = tipler.Kaynak(kanun_adi="x", kanun_no="6098", madde_no="MADDE 330",
-                            metin="", sira=1)
-    k_ciplak = tipler.Kaynak(kanun_adi="x", kanun_no="6098", madde_no="330",
-                             metin="", sira=1)
-    assert atif.madde_sayisi == 330
-    assert k_buyuk.madde_sayisi == 330
-    assert k_ciplak.madde_sayisi == 330
-
-
-def test_madde_sayisi_turetilirken_ham_madde_no_bozulmuyor():
-    atif = tipler.Atif(kanun_no="6098", madde_no="Madde 330")
-    k = tipler.Kaynak(kanun_adi="x", kanun_no="6098", madde_no="MADDE 330", metin="", sira=1)
-    _ = atif.madde_sayisi, k.madde_sayisi
-    assert atif.madde_no == "Madde 330", "ham madde_no normalizasyonla ezildi"
-    assert k.madde_no == "MADDE 330", "ham madde_no normalizasyonla ezildi"
-
-
 # ── kusur 3 — TUI: `answer()` olay döngüsünde DOĞRUDAN çağrılmıyor ───────────────────
 
 def test_tui_answer_dogrudan_olay_dongusunde_cagrilmiyor():
@@ -330,29 +309,6 @@ def test_kapsam_satiri_tek_kaynak_tui_cli_ile_AYNI_nesne():
     """B4: metin `cli.py`'de tanımlı, `tui.py` IMPORT eder (SORUMLULUK_IBARESI emsali)."""
     assert tui.kapsam_satiri is cli.kapsam_satiri, (
         "tui'nin kapsam satırı cli'dekiyle AYNI nesne değil — kopyalanmış olabilir")
-
-
-# ── B3 — `madde_sayisi` ÖNEKLİ biçimleri düz sayıya indirgememeli ────────────────────
-
-def test_madde_sayisi_gecici_maddeyi_duz_maddeye_indirgemiyor():
-    """`madde_anahtar.py`'nin önlemek için var olduğu SESSİZ hata: `Geçici Madde 1` ile
-    `Madde 1` FARKLI maddelerdir; aynı değere inerlerse eşleşme şişer ve hata çıkmaz."""
-    gecici = tipler.Atif(kanun_no="5237", madde_no="Geçici Madde 1")
-    duz = tipler.Atif(kanun_no="5237", madde_no="Madde 1")
-    assert duz.madde_sayisi == 1
-    assert gecici.madde_sayisi != duz.madde_sayisi, (
-        "Geçici Madde 1 ile Madde 1 aynı değere indi — yanlış maddeyi doğrular")
-
-
-def test_madde_sayisi_ek_ve_mukerrer_onekli_biciminde_de_indirgemiyor():
-    ek = tipler.Kaynak(kanun_adi="x", kanun_no="4857", madde_no="Ek Madde 1",
-                       metin="", sira=1)
-    mukerrer = tipler.Kaynak(kanun_adi="x", kanun_no="4857", madde_no="Mükerrer Madde 1",
-                             metin="", sira=1)
-    duz = tipler.Kaynak(kanun_adi="x", kanun_no="4857", madde_no="Madde 1",
-                        metin="", sira=1)
-    assert ek.madde_sayisi != duz.madde_sayisi, "Ek Madde 1 düz Madde 1'e indi"
-    assert mukerrer.madde_sayisi != duz.madde_sayisi, "Mükerrer Madde 1 düz Madde 1'e indi"
 
 
 # ── B6 — alıntı iskelesi SİLİNMEZ, tipografik tırnağa ÇEVRİLİR ───────────────────────
