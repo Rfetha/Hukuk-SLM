@@ -12,7 +12,7 @@
 
 | # | iş | durum |
 | :-- | :--- | :--- |
-| **1** | **`v1-son-iş`** — `v1.0`'ı kapatan tur | ⏭️ **SIRADAKİ** · planı **yazılmadı**, grill'den çıkacak |
+| **1** | **`v1-son-iş`** — `v1.0`'ı kapatan tur | ▶️ **AÇIK** · [planı yazıldı](plans/2026-09-12-v1-son-is.md) (**46 kutucuk**) · [goal'ü hazır](plans/goal-2026-09-12-v1-son-is.md) · sıradaki adım **5** |
 | **2** | **`v2-RL-GRPO`** — `tgta_v1` üstüne GRPO + düşünce ayarı | ⏸️ **DURUYOR** · planlanmadı, açılmayacak |
 
 **Klasör 2026-09-12'de boşaltıldı.** Kapanan iki plan ve iki spec **silindi**; taşıyıcı içerikleri
@@ -22,7 +22,7 @@ tablosu** ve silinen tasarımın **mimari özü**. Gerekçe ve kabul edilen bede
 
 ---
 
-## 1 · `v1-son-iş` — SIRADAKİ
+## 1 · `v1-son-iş` — AÇIK, planı yazıldı
 
 ### `v1.0`'ı bugün ne engelliyor — **tek şey**
 
@@ -46,9 +46,10 @@ Borcun kapanma koşulu [ADR-0074](../adr/0074-hakem-paneli-kuruldu-baglayici-huk
 `n=5`'ten yapılan doğrusal tahmin **$0,82** dedi, gerçek **$1,1932** tuttu ve `$1` kapısı
 **%45** aşıldı.
 
-### Turun içeriği — grill belirleyecek
+### Turun içeriği — grill BELİRLEDİ (2026-09-12)
 
-Girdiler hazır, **plan yazılmadı**:
+**Plan yazıldı:** [`plans/2026-09-12-v1-son-is.md`](plans/2026-09-12-v1-son-is.md) — 46 kutucuk,
+18 kilitli karar, ön-kayıtlı kapı ve dört maddelik DUR listesi. Girdileri:
 
 | girdi | nerede |
 | :--- | :--- |
@@ -64,7 +65,7 @@ Kural: her açık kusur ya **bu turda biter** ya **`v2`'ye gider**. Üçüncü s
 
 | # | kusur | nereye | niçin |
 | :-- | :--- | :--- | :--- |
-| **5a** | zayıf eşleşme sinyali — ölçüldü, **ayrışma YOK** (n=4) | **BU TUR** | Korpus büyürse skor dağılımı ve kaçık sayısı değişir ⇒ ölçüm **zaten yeniden koşulacak**; rozet kararı o koşuda verilir |
+| **5a** | zayıf eşleşme sinyali — ölçüldü, **ayrışma YOK** (n=4) | ~~BU TUR~~ → **`v2`** | ⚠️ **GRILL'DE DEĞİŞTİ 2026-09-12.** Gerekçesi *"korpus büyürse ölçüm zaten yeniden koşulacak"*idi; grill **karar 1** korpus işini `v1.0`'dan **sonraya** aldı ve **karar 9** bu planın dışında bıraktı ⇒ tetikleyici **düştü**. Ölçüm `v2`'de korpusla birlikte yeniden koşar |
 | **10** | **HF görünürlüğü** (`push` yarısı kapandı) | **BU TUR · adım 9** | Turun son adımı zaten bu |
 | **23** | bir yeniden-puanlama koşusu **tekrarlanamadı** | **BU TUR** | κ borcu **puanlama** işidir; aynı boru hattı koşarken bu sınıf **ikinci kez** sınanır. Kural: bu sınıftan sayı **tek koşuya dayandırılmaz** |
 | ~~24~~ | ~~bayat README tablosu~~ | ✅ **2026-09-12'de KAPANDI** | public açılışın ön koşuluydu |
@@ -73,9 +74,9 @@ Kural: her açık kusur ya **bu turda biter** ya **`v2`'ye gider**. Üçüncü s
 | **29** | imaja ürünün okumadığı **36,1 MiB** korpus yedeği giriyor | **BU TUR** | Tek satırlık `.dockerignore` düzeltmesi; imaj bu turda zaten elleniyor |
 | **31** | `compose` volume adını **proje adından** türetiyor | **KAYIT** | Kusur değil, **kayda değer davranış**: artefaktı elle koymak `sha256` kapısını hiç ateşlemeyecekti. Kapanmaz, **hatırlanır** |
 
-⇒ **BU TUR: 5** (5a · 10 · 23 · 25 · 29) · **`v2`: 1** (27) · **kayıt: 1** (31) · **kapandı: 1** (24).
-⚠️ Bu dağılım **grill'in girdisidir, hükmü değil** — grill bir kusuru başka yere alırsa
-**gerekçesiyle** buraya yazılır.
+⇒ **BU TUR: 4** (10 · 23 · 25 · 29) · **`v2`: 2** (5a · 27) · **kayıt: 1** (31) · **kapandı: 1** (24).
+✅ **Grill koştu 2026-09-12** ve bir kusuru yerinden aldı: **5a → `v2`**, gerekçesi yukarıda.
+Diğer altısı yerinde kaldı.
 
 ⭐ **Grill'e girmeden bilinmesi gereken tek düzeltme:** silinen tasarımın hedef sayısı
 (**340.303 madde**) **yanlıştı** — `KANUN` satırı `917 × 102,7` sayıyordu, oysa korpustan ölçülen
@@ -87,11 +88,11 @@ doğruymuş**; hedefi kaydıran tek bir satırdı. Ayrıntı ve üçüncü tutar
 
 ```
 1 · inceleme          BİTTİ
-2 · tazeleme          BU TUR — docs/superpowers boşaltıldı, işaretçiler onarıldı
-3 · 00-IS-SIRASI      BU DOSYA
-4a· GRILL             tek yeni plan, YALNIZ v1-son-iş        ← insan oturumu
-4b· GOAL YAZILIR      4 → 9 arasını bitiren tek prompt         ← plandan SONRA
-5 · master'a al, push
+2 · tazeleme          BİTTİ — docs/superpowers boşaltıldı, işaretçiler onarıldı
+3 · 00-IS-SIRASI      BİTTİ — bu dosya
+4a· GRILL             BİTTİ 2026-09-12 — 18 karar kilitlendi → plans/2026-09-12-v1-son-is.md
+4b· GOAL YAZILIR      BİTTİ — plans/goal-2026-09-12-v1-son-is.md (3.323 krk)
+5 · master'a al, push  ← SIRADAKİ
 6 · planı EXECUTE
 7 · bekleyen commit'leri push
 8 · PUBLIC kontrolü   repo + HF
@@ -136,7 +137,7 @@ araç kullanımının **öğrenilmesi** (GRPO ödülüne *"doğru aracı doğru 
 ```
 sürüm      v0.3 (ürün) · artefakt HakHukuk-4B-v0.1 · ağırlıklar HF'te ÖZEL
 test       281 yeşil, 2 xfail
-dal        master push'lu · docs-tazeleme açık
+dal        master push'lu · docs-tazeleme açık (5 commit ileri)
 kayıt      ADR 0001-0083 · research_log #1-#67 · tuzak defteri 1.1-7.x
 ```
 
