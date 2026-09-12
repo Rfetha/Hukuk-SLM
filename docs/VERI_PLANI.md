@@ -8,8 +8,8 @@
 >
 > | | eski | yeni |
 > | :--- | :--- | :--- |
-> | proje | tez, private+proprietary | **OSS, Apache-2.0** (`ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*) |
-> | `TEKNIK_PLAN.md` atıfları | aktif plan | **arşivde** → [`_arsiv/`](_arsiv/) |
+> | proje | tez, private+proprietary | **OSS, Apache-2.0** ([`ROADMAP.md`](../ROADMAP.md) *(2026-09-06'da silinmişti, 2026-09-07'de yeniden yazıldı)*) |
+> | `TEKNIK_PLAN.md` atıfları | aktif plan | **arşive** alınmıştı; `docs/_arsiv/` 2026-09-06'da **silindi** — yerine geçen yön belgesi [`ROADMAP.md`](../ROADMAP.md) |
 > | hedef kitle | uzman (ADR-0010) | **vatandaş** — ama ADR-0010 **hâlâ yürürlükte**: sade dille *eğitmek* doğruluğu düşürdü, sadeleştirme **istem katmanında** yapılır |
 > | "tez kapsamı dışı" ibareleri | tez sınırı | artık **kapsam kararı** — graph-RAG ve içtihat katmanı yeniden açılabilir (ADR-0019 kilidi kalktı) |
 
@@ -67,7 +67,7 @@
 
 | Kaynak | Ne · neden şimdi değil |
 | :-- | :-- |
-| [`erdem-erdem/Turkish-Law-Documents-700k-clustered`](https://huggingface.co/datasets/erdem-erdem/Turkish-Law-Documents-700k-clustered) *(2026-07-29)* | **İçtihat**, mevzuat değil: 702.295 satır · 1.75 GB · Yargıtay + Danıştay kararları (2006-2024), `fikriokan` repo'larından yeniden paketlenmiş; alanlar `text`/`source`/`esasNo`/`kararNo`/`kararTarihi` + 4 küme kimliği (e5 KNN/HDBSCAN). **Korpusumuzla kesişimi sıfır.** 🚫 **Lisans belirtilmemiş** → varsayılan "tüm hakları saklı"; kaynak portallar açık ama bu paketleme değil, kullanılacaksa kaynaktan çekilir. ⚠️ **EDA borcu** — kümeleme etiketleri metnin kalitesi hakkında hiçbir şey söylemez (EuroHPC dersi). **Tez için kullanım yeri yok:** eğitim değil (kapsam mevzuat; içtihat uzman-uzun kayıt, register'ı kaydırır) · harness retriever değil (ADR-0019 graph-RAG'i dışarıda bırakıyor, Sprint 4 mevzuat üzerinde) · distractor madenciliği değil (tür farkı distractor'ı fazla kolaylaştırır). **Gerçek değeri Faz 2/3 içtihat katmanı** — orada da muhtemelen bedesten API'sinden (`docs/BEDESTEN_API.md`), taze ve lisans zinciri temiz. *Bkz. [açık kararlar](superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` ⚰️ 2026-09-07'de silindi; canlı 9 soru plana taşındı)** |
+| [`erdem-erdem/Turkish-Law-Documents-700k-clustered`](https://huggingface.co/datasets/erdem-erdem/Turkish-Law-Documents-700k-clustered) *(2026-07-29)* | **İçtihat**, mevzuat değil: 702.295 satır · 1.75 GB · Yargıtay + Danıştay kararları (2006-2024), `fikriokan` repo'larından yeniden paketlenmiş; alanlar `text`/`source`/`esasNo`/`kararNo`/`kararTarihi` + 4 küme kimliği (e5 KNN/HDBSCAN). **Korpusumuzla kesişimi sıfır.** 🚫 **Lisans belirtilmemiş** → varsayılan "tüm hakları saklı"; kaynak portallar açık ama bu paketleme değil, kullanılacaksa kaynaktan çekilir. ⚠️ **EDA borcu** — kümeleme etiketleri metnin kalitesi hakkında hiçbir şey söylemez (EuroHPC dersi). **Tez için kullanım yeri yok:** eğitim değil (kapsam mevzuat; içtihat uzman-uzun kayıt, register'ı kaydırır) · harness retriever değil (ADR-0019 graph-RAG'i dışarıda bırakıyor, Sprint 4 mevzuat üzerinde) · distractor madenciliği değil (tür farkı distractor'ı fazla kolaylaştırır). **Gerçek değeri Faz 2/3 içtihat katmanı** — orada da muhtemelen bedesten API'sinden (`docs/BEDESTEN_API.md`), taze ve lisans zinciri temiz. *Bkz. açık kararlar *(soruları taşıyan `docs/open_questions.md` 2026-09-07'de, onları devralan plan da 2026-09-12'de silindi; grill'e girecek dokuz madde [ADR-0083](adr/0083-kusur-sicili-adrye-tasindi.md) §EK E.5'te)** |
 
 ---
 

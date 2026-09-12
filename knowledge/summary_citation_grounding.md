@@ -1,6 +1,6 @@
 # Citation Grounding + hukuk graf-RAG literatürü — proje notu
 
-> ⚠️ **LİTERATÜR ÖZETİ — tez döneminde alındı.** Kaynak makalelerin bulguları geçerli; bunlardan çıkarılan **proje kararları** [`../docs/adr/`](../docs/adr/) ve `ROADMAP.md` ⚰️ *(2026-09-06'da silindi → [güncel plan](../docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md); yeniden yazımı **Görev 13**)*'de olabilir ve **değişmiş olabilir** (ör. base artık Qwen3.5-4B, proje OSS).
+> ⚠️ **LİTERATÜR ÖZETİ — tez döneminde alındı.** Kaynak makalelerin bulguları geçerli; bunlardan çıkarılan **proje kararları** [`../docs/adr/`](../docs/adr/) ve [`ROADMAP.md`](../ROADMAP.md) *(2026-09-06'da silinmişti, 2026-09-07'de yeniden yazıldı)*'de olabilir ve **değişmiş olabilir** (ör. base artık Qwen3.5-4B, proje OSS).
 
 > **Ne:** 2026-07-23 taraması. Üç makale, iki soruya cevap arıyordu: (1) graf teze girsin mi ve
 > hangi biçimde (→ ADR-0022), (2) v4 reçetesinin negatif-üretim yöntemi doğru mu (→ v4 güncellemesi).

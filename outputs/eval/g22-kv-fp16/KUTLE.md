@@ -199,7 +199,7 @@ mekanik sebebi budur.
 
 ## 8 · Tam komutlar — YAN YANA
 
-**ÇIPA** (kaynak: `docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md` Görev 2 Adım 2):
+**ÇIPA** (kaynak: `faz0-olcum-zinciri` planı Görev 2 Adım 2 — plan 2026-09-12'de silindi; koşunun kaydı [#62](../../../docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md)):
 
 ```bash
 cd /home/ersoy/code/Hukuk-SLM && source ~/code/global_venv/bin/activate && \

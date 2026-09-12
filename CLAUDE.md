@@ -1,26 +1,31 @@
 # CLAUDE.md
 
-> **2026-09-07 — the doc layer is HALF rebuilt. Read this box before trusting a pointer.**
+> **2026-09-12 — the doc layer is REBUILT and `docs/superpowers/` has been EMPTIED. Read this box before trusting a pointer.**
 >
 > Deleted 2026-09-06 (human decision, on a backup branch): `ROADMAP.md` · `TODO.md` ·
 > `TASARIM.md` · `docs/VISION.md` · `docs/PAPER_TARGET.md` · `docs/_arsiv/**`.
 > The measurement record (`docs/record/**`), the decision ledger (`docs/adr/**`) and
 > `outputs/eval/**` were **kept** — they are the source of every number published here.
 >
-> **Rebuilt since:** `docs/superpowers/` is **back and live** — two specs, three plans, and
-> [`00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md), the file that says which one is current.
 > **Rebuilt 2026-09-07 (Görev 13):** [`PRODUCT.md`](PRODUCT.md) — what the product is and what it
 > **does NOT promise** · [`ROADMAP.md`](ROADMAP.md) — direction, every step tied to a *measured* gap ·
 > [`TODO.md`](TODO.md) — only what is runnable today · [`docs/MIMARI.md`](docs/MIMARI.md) — the `v1`
 > chain. `tests/test_belgeler.py` walks every link in them, so a dead pointer now FAILS a test.
 >
+> **Emptied 2026-09-12:** `docs/superpowers/` carried two specs and three plans; **all five were
+> deleted** when the `hp` → Hat A → Hat B plan closed at **115/115**. Their load-bearing content —
+> the register of **32 defects**, the handover table, and the architectural core of the deleted
+> design — was moved into [`ADR-0083`](docs/adr/0083-kusur-sicili-adrye-tasindi.md). The folder now
+> holds **exactly one** file. The 9 links that died with the deletion are listed in ADR-0083 §(D)
+> and are **deliberately left unrepaired** inside `docs/adr/**` and `docs/record/**`.
+>
 > | you want | read |
 > | :--- | :--- |
-> | **what to do next** | [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md) — **the work order across all plans**; start here, it says which plan is current |
-> | the current plan itself | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) — 17 tasks, 89 boxes · Görev 8 is HELD (corpus grows 8,4×) |
-> | why it is sequenced that way | [`docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md`](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md) |
-> | what closed on 2026-09-06/07 | [`docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md`](docs/superpowers/plans/2026-09-06-faz0-olcum-zinciri.md) — **48/48** |
-> | the rescued debt queue | `DEVIR-PROMPT.md` *(silindi)* *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 — its *direction* sections are **superseded** by the plan above |
+> | **what to do next** | [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md) — **the work order**, and the folder's only file. Next is **`v1-son-iş`**; its plan is **not written yet** — it comes out of a grill session. `v2-RL-GRPO` is parked. |
+> | the defect register, the handover, the deleted design's core | [`ADR-0083`](docs/adr/0083-kusur-sicili-adrye-tasindi.md) — **8 defects still open** (5a · 10 · 23 · 24 · 25 · 27 · 29 · 31) · **3 handed on** (6 · 11 · 12b) |
+> | what closed on 2026-09-12 | the `hp-hat-a-hat-b` round, **115/115** — narrative in [#66](docs/record/research_log/2026-09-11-urun-yuzeyi-ve-aygit-kusurlari.md) and [#67](docs/record/research_log/2026-09-12-konteyner-ve-alet-onarimlari.md) |
+> | what closed on 2026-09-06/07 | the `faz0-olcum-zinciri` plan, **48/48** *(plan deleted 2026-09-12)* — [#62](docs/record/research_log/2026-09-06-faz0-olcum-zinciri.md) |
+> | the rescued debt queue | `DEVIR-PROMPT.md` *(deleted 2026-09-07 — its job was done)*; the queue it carried was folded into the `hp-hat-a-hat-b` plan, and from there into [`ADR-0083`](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §(C) |
 >
 > **Framing: open-source PRODUCT** — a legal adviser a Turkish citizen can actually ask.
 > `v1` = model layer · `v2` = app layer · arxiv is a **by-product**.
@@ -142,17 +147,26 @@ is paid on **its own axis** (B1), not with a prompt patch.
 figure is still one judge family's verdict and κ is **0,534**, below the tool's 0,6 threshold
 ([ADR-0077](docs/adr/0077-v1-0-verilmedi-v0-3.md) · [#65](docs/record/research_log/2026-09-09-kabul-testi-ve-frontier-kiyasi.md)).
 Weights are published at `Rfetha/HakHukuk-4B-v0.3-Q4_K_M` and are **currently private** while
-open defects are resolved ([açık kusurlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md#açık-kusurlar--kayıt-ve-devir)).
+open defects are resolved — **8 are still open**, registered in
+[ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §(A)/§(C) (5a · 10 · 23 · 24 · 25 · 27 · 29 · 31).
+Defect **10** is exactly this one: the HF **visibility** half is still a human decision.
 **A frontier subject entered the pool and is AHEAD:** `claude-sonnet-5` mass **0,8348** ↔ ours
 **0,8011** (eye-corrected reading). The claim *"we are not behind on B1"* held only in the Gemini
 pool: `wrong_ref_rate` **0,0769 ↔ 0,0083**.
-**The product path is NOT the measured path:** `hakhukuk.servis.answer()` returns a **blank
-answer on ~5% of questions** (4/80, non-termination) and would fail ADR-0040's own 5% validity
-gate. Recorded, not fixed — `MODEL_CARD` §7.9.
+~~**The product path is NOT the measured path:** `hakhukuk.servis.answer()` returns a blank
+answer on ~5% of questions (4/80, non-termination) and would fail ADR-0040's own 5% validity
+gate. Recorded, not fixed.~~ → **FIXED 2026-09-11** ([ADR-0080](docs/adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md),
+a REGIME change taken by the human): the product path now forces the thinking channel closed in
+a second pass, exactly as the measurement line does. Blank answers went **4/80 → 0/80** and
+truncation **8,75% → 3,75%**, so ADR-0040's gate now **passes**. Only **4 of 80** answers changed
+byte-wise — the four that were broken. ⚠️ The fix lives in `hakhukuk/servis.py`: a caller who
+drives `llama-server` directly, without this package, still hits the original defect.
 
 Still `v0.1` as an artifact, not `v1.0` — **and the reason changed on 2026-09-07.** The gate's three
 clauses now **pass on DEV** (above), but two things are still missing: the **acceptance test on
-the frozen TEST** has not run (its retrieval ceiling is ≈75%, not DEV's 95% — [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)),
+the frozen TEST** had not run at the time this sentence was written — **it ran on 2026-09-09**
+(raw mass **0,5804**, above) and clause (a) is **closed**; what follows is kept because the
+*ceiling* argument still binds (its retrieval ceiling is ≈75%, not DEV's 95% — [ADR-0069](docs/adr/0069-kabul-testi-tavan-kullanimi-raporlamasi.md)),
 and **every number is still one judge family's verdict** (`gpt-4o-mini`, no κ, self-preference
 unmeasured — ADR-0064 *"Ne KURULMAZ"* clause 2). Product vs. claim versioning is split:
 [ADR-0065](docs/adr/0065-bolunmus-surumleme.md).
@@ -163,11 +177,11 @@ thing (OFF hands the model the gold article by construction).
 
 | you want | read |
 | :--- | :--- |
-| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#65** |
-| what to work on next, tied to measured gaps | [`plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(replaces the deleted `ROADMAP.md`)* |
-| the open debt queue | `DEVIR-PROMPT.md` *(silindi)* *(silindi 2026-09-07 — işi bitti; borç kuyruğu §5 [güncel plana](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) taşındı)* §5 *(rescued from the deleted `sprint3-part1.md`)* |
-| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0077**, next is **0078** |
-| questions raised and not yet answered | [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — **S5·S7·S8·S9·S10·S12·S16·S17·S18** live |
+| every measurement, dated, with its source file | [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — entries **#39-#67** |
+| what to work on next, tied to measured gaps | [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md) — next is **`v1-son-iş`**, **plan not yet written** · direction in [`ROADMAP.md`](ROADMAP.md) |
+| the open debt queue | [`ADR-0083`](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §(A) register + §(C) handover — 8 open, 3 handed on *(it passed through `DEVIR-PROMPT.md` and the `hp-hat-a-hat-b` plan, both deleted)* |
+| why a decision went the way it did | [`docs/adr/`](docs/adr/) — ledger runs to **0083**, next is **0084** |
+| questions raised and not yet answered | the nine items that go **into the grill**, [`ADR-0083`](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §EK E.5 *(they passed through `docs/open_questions.md` and then the `hp-hat-a-hat-b` plan, both deleted)* |
 
 **Two things a new session must not get wrong** (both were *measured*, not assumed):
 
@@ -193,15 +207,20 @@ thing (OFF hands the model the gold article by construction).
   the refusal regex. The official anchor holds at least one verified false positive and the
   contamination size is **unmeasured**. A programmatic probe was wrong in *both* directions, so
   the only closing move is reading all 80 items by eye — decided, scheduled, and pre-registered
-  ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
-  [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` 2026-09-07'de silindi; canlı 9 soru plana taşındı)* **S13**).
+  ([#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md); the decision was taken
+  as open question **S13** — a pointer with no target left, the question carrier having been
+  `docs/open_questions.md` and then the `hp-hat-a-hat-b` plan, both deleted. Its outcome is
+  [ADR-0061](docs/adr/0061-cekinme-dedektoru-istem-rejimi-bagimliligi.md) and
+  [#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md)).
 - 🧭 **Framing, 2026-09-06: the release language is v1/v2.** `v1` = a fine-tuned model release
   that actually works end to end (weights + code + data + research record, shipped with the
   retriever and the preamble, because the headline number is not reproducible without them);
   `v2` = the API over that same model; arxiv is a **by-product, not the goal**. Sequenced plan,
   acceptance criteria and rejected options:
-  `specs/2026-09-06-v1-v2-roadmap-taslak.md` *(superseded by [the design spec](docs/superpowers/specs/2026-09-06-yeni-belge-katmani-design.md))*
-  (draft, awaiting human sign-off) · direction stays in [`ROADMAP.md`](ROADMAP.md).
+  the drafts `specs/2026-09-06-v1-v2-roadmap-taslak.md` and
+  `specs/2026-09-06-yeni-belge-katmani-design.md` — **both deleted** (2026-09-06 and 2026-09-12);
+  what survived of the second is [ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §EK ·
+  direction stays in [`ROADMAP.md`](ROADMAP.md).
 
 **Status of work: B10 over-refusal round CLOSED 2026-09-06 — the target was met with NO
 training** ([ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md)).
@@ -227,7 +246,13 @@ items, so the round was closed. Over-refusal is **smaller, not gone** — 8/80 s
   — this round did not need them; **the next training round will**.
 
 **What caught it was not a numeric gate** — the gate (`kabul_orani 0.1733 > 0.10`) **passed** the
-broken measurement. The eyeball step caught it. ADR-0051 has now paid for itself twice.
+broken measurement. The eyeball step caught it, and it has now caught something three times —
+[#60](docs/record/research_log/2026-09-06-hasat-kabul-olcutu-coktu.md) ·
+[#61](docs/record/research_log/2026-09-06-dedektor-onarimi-b10-yeniden.md) ·
+[#65](docs/record/research_log/2026-09-09-kabul-testi-ve-frontier-kiyasi.md). *(The record layer
+credits this to "ADR-0051"; that ADR's subject is `τ_a`'s M2b pairs and it carries the
+read-it-by-eye rule only as its closing lesson. The rule is quoted here **without an ADR number**
+so nobody chases a decision that was never written as one.)*
 
 **Not blocked by any of that:** the Phase 0 cheap repairs run in parallel —
 [`ROADMAP.md`](ROADMAP.md) · [`TODO.md`](TODO.md).
@@ -248,8 +273,8 @@ So: train for correctness and abstention, simplify at the **prompt layer**.
 | :--- | :--- | :--- |
 | **record** | `docs/record/` | *what happened, what the number was* — retrospective, no checkboxes |
 | **decision** | `docs/adr/` | *why this way, which alternative was eliminated* |
-| **spec** | `docs/superpowers/specs/` | *what we will build* — `brainstorming`/`grill` output |
-| **plan** | `docs/superpowers/plans/` | *what will be done* — `- [ ]` boxes; gets an closing block when executed |
+| **spec** | a `specs/` folder under `docs/superpowers/` | *what we will build* — `brainstorming`/`grill` output. **Gone since 2026-09-12**; recreated when the next spec is written |
+| **plan** | a `plans/` folder under `docs/superpowers/` | *what will be done* — `- [ ]` boxes; gets a closing block when executed. **Gone since 2026-09-12** — the convention (ADR-0056) survives the emptying: **at most one live plan**, and today there is none ([ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md)) |
 | **execution** | repo root `sprint*.md` | **only the OPEN sprint's** live doc |
 | **archive** | `docs/_arsiv/` | anything of any type no longer in force |
 
@@ -282,8 +307,8 @@ decision ledger.
   version* answerable from the filename), `HakHukuk-4B-v0.1` is outward-facing. Carries the
   base/ours/Gemini table under an explicit **"NOT a parity claim"** banner.
 - [`docs/record/research_log/README.md`](docs/record/research_log/README.md) — the chronological
-  record, **authoritative for "what happened."** New findings continue at **#66**.
-- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0078**.
+  record, **authoritative for "what happened."** New findings continue at **#68**.
+- [`docs/adr/`](docs/adr/) — new decisions get a new ADR; numbering continues at **0084**.
   **0059 is RESERVED** — the round's `τ_a` v2 data-symmetry ADR, written in Görev 10. Six
   places already cite `ADR-0059 §sapma-1`; do not take that number for anything else.
 
@@ -297,7 +322,8 @@ decision ledger.
   data pipeline, recipe, ablation matrix. Authoritative for *how*.
 - [`docs/VERI_PLANI.md`](docs/VERI_PLANI.md) — **the authoritative data plan.**
 - [`docs/BEDESTEN_API.md`](docs/BEDESTEN_API.md) — live legislation API contract.
-- [açık kararlar](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) *(`docs/open_questions.md` 2026-09-07'de silindi; canlı 9 soru plana taşındı)* — questions raised and not yet answered.
+- [`ADR-0083`](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §EK E.5 — the nine questions raised
+  and not yet answered; they go into the grill that writes the `v1-son-iş` plan.
 
 ### Historical — still load-bearing, no longer authority
 

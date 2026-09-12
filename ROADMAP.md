@@ -2,8 +2,10 @@
 
 > **Yön belgesi.** Her adım bir **ölçülmüş boşluğa** bağlıdır; hiçbir satır *"iyi olurdu"*
 > gerekçesiyle burada değil. Kutucuklu iş listesi için: [`TODO.md`](TODO.md).
-> Bu turun ayrıntılı planı: [`docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md`](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md)
-> · sıra: [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md)
+> Bu yönü yürüten tur (`hp` → Hat A → Hat B) 2026-09-12'de **115/115** kapandı ve planı silindi;
+> kusur sicili ile devir tablosu [ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md)'te.
+> Sıradaki iş ve sırası: [`docs/superpowers/00-IS-SIRASI.md`](docs/superpowers/00-IS-SIRASI.md)
+> — **`v1-son-iş`**, planı **henüz yazılmadı**.
 
 ## Kritik yol
 
@@ -79,7 +81,10 @@ korpusta **tek bir tarih alanı bile yoktu** (2026-09-07'de eklendi: `data/corpu
 **Hedef:** ~**340.303** madde (**8,4×**), indeks 83 MB → **~697 MB**.
 **Bağımlılık:** ana planın **Görev 8'i (indeks dağıtımı) bunu bekliyor** — bugünkü 79 MB'ı
 paketlemek, birkaç hafta sonra atılacak bir iştir.
-`verify:` [`plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md`](docs/superpowers/plans/2026-09-08-mevzuat-kapsam-ve-tazelik.md)
+`verify:` planı `2026-09-08-mevzuat-kapsam-ve-tazelik` yazılmıştı, 2026-09-12'de **silindi**;
+mimari özü ve **DÜZELTİLMİŞ kat merdiveni** [ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §EK'te.
+⚠️ Yukarıdaki **340.303** hedefi **yanlıştır** — `KANUN` satırı `917 × 102,7` sayıyordu; korpustan
+ölçülen gerçek oran **45,4 madde/belge** ve düzeltilmiş hedef **~287,6-287,8 bin**.
 
 ## Faz 4 — `v1.0` kapısı + **YAYIN** *(~$1)* → `v1.0` RELEASE
 

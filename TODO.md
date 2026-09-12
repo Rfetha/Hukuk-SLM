@@ -10,7 +10,8 @@
 - [x] **1 · `KUNYE` taşınabilirlik** **2026-09-09** — yol artık indeks dizinine göreli,
       `mtime` vekili yerine **içerik hash'i**; künye `onek` sözleşmesini de taşıyor.
       `verify:` kopyalanmış ağaçtan yüklendi, `recall@10` **0,9500** (76/80) · **$0**
-      → [plan · Görev 8 Adım 1b](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md)
+      → plan `hp-hat-a-hat-b` Görev 8 Adım 1b *(2026-09-12'de kapandı ve silindi)* ·
+      [#65](docs/record/research_log/2026-09-09-kabul-testi-ve-frontier-kiyasi.md)
 - [ ] **2 · TUI gözle doğrulama** — `python -m hakhukuk.tui`, üç soru, gözle gör ·
       **$0** (GPU) → [ROADMAP · Faz 4](ROADMAP.md)
 - [x] **3 · Sonnet-5 öznesi** **2026-09-09** — **Sonnet-5 ÖNDE**: kütle **0,8348** ↔

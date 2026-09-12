@@ -23,8 +23,9 @@
 >
 > **Bu ibarenin NİHAİ metni henüz kararlaştırılmadı.** Avukatlık Kanunu ve hukuki
 > sorumluluk sınırı repoda **hiç değerlendirilmedi** ve **hukukçu görüşü gerektiriyor** —
-> açık karar **S10**
-> ([plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) §S10, Görev 10/11'i bloke ediyor).
+> açık karar **S10** — soruyu taşıyan plan 2026-09-12'de kapandı ve silindi; soru
+> [ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md) §EK'te grill'e giren maddeler arasında
+> **açık** duruyor.
 > Yukarıdaki metin bir **taslaktır**, hukuki olarak denetlenmiş bir feragatname değildir.
 
 ---
@@ -625,7 +626,7 @@ Sürüm bu yüzden **ikiye ayrıldı** ([ADR-0065](docs/adr/0065-bolunmus-suruml
 | **aşırı-red küçüldü, ÇÖZÜLMEDİ** | 4/80 | B10 turu **eğitimsiz** kapandı; *"eğitim bunu ne kadar aşağı çekerdi"* **hiç ölçülmedi** | [ADR-0062](docs/adr/0062-b10-turu-kapatildi-hedef-egitimsiz-karsilandi.md) |
 | **`exact_reject` kör mod dalı** | — | §7.1'de damgalandı; sonraki turda **koşudan önce** düzeltilir | [`GOZLE_OKUMA_CEKINME.md`](outputs/eval/f07-m5-anti-hedef/GOZLE_OKUMA_CEKINME.md) |
 | **kuantizasyon eğrisi** | ölçülmedi | `Q5_K_M`/`Q8_0`'ın kütle kaybı **bilinmiyor**; [ADR-0031](docs/adr/0031-precision-inference-q4km-egitim-bf16-lora.md) hassasiyeti *seçti*, **kaybı ölçmedi**. Açık karar **S17** | [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) |
-| **ürün paketi (CLI/TUI)** | yok | Yayımlanan sayı bugün yalnız **eval koşucusuyla** yeniden üretilebilir; paketleme Hat A'nın işi (`v0.2`) | [plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) |
+| **ürün paketi (CLI/TUI)** | yok | Yayımlanan sayı bugün yalnız **eval koşucusuyla** yeniden üretilebilir; paketleme Hat A'nın işi (`v0.2`). **2026-09-12'de `hakhukuk/` paketi doğdu** (CLI · TUI · HTTP API · araç katmanı); kalan borç paketin `scripts/`'e bağımlılığıdır — açık kusur **11** | [ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md) · [#67](docs/record/research_log/2026-09-12-konteyner-ve-alet-onarimlari.md) |
 | **bedesten canlı mevzuat API'si** | bağlanmadı | Sözleşme doğrulandı (4/4) ama **ürün henüz kullanmıyor** — borç **B6** | [`BEDESTEN_API.md`](docs/BEDESTEN_API.md) |
 
 > **Harness'ın kendi gerekçelerinden İKİSİ de çürütüldü, ve bu kartın okunma biçimini
@@ -995,7 +996,9 @@ Güven aralıkları buna göre geniştir. Bugünkü iki oranın **Wilson %95** a
 
 ⇒ *"8/80 ↔ 6/80"* gibi farklar bu genişliğin **çok altındadır**. **Soru:** kaç kalem, hangi
 çeşitlilikte yeterlidir? İkili oranların çözünürlük sınırı zaten **açık karar S5**'tir
-([plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md)); aynı sınıfta ölçülmüş ikinci bir
+(soruyu taşıyan plan 2026-09-12'de kapandı ve silindi; ilgili kusur **5a** açık kalır —
+[ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md) · [ADR-0079](docs/adr/0079-zayif-eslesme-rozeti-eklenmedi.md));
+aynı sınıfta ölçülmüş ikinci bir
 örnek: M2'nin kuantumu `1/66 = 1,52 puan`, yani `+0,000` ile `±1 kalem` **ayırt edilemiyor**
 ([#59](docs/record/research_log/2026-08-06-m2-paydasi-ve-karar-4.md) · [`kollar.md`](docs/record/kollar.md)).
 
