@@ -2,7 +2,71 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-11 · **114/115 kutucuk** · `v0.3` etiketlendi
+## KAPANIŞ — 2026-09-12 · **115/115 · PLAN KAPANDI**
+
+> **Bu plan artık bir KAYITTIR, açılmaz.** `faz0` planının kalıbı: kapanan plan yeniden
+> işletilmez; devamı yeni bir planda yaşar.
+
+**Ölçülen kapanış durumu:** **281 test yeşil**, 2 xfail *(plan açıldığında 164)* ·
+**50 commit**, hepsi **YEREL — push EDİLMEDİ** · toplam harcanan **$0,045067** *(bu turda;
+OpenRouter `total_usage` önce/sonra ölçüldü)* · ürün sürümü **`v0.3`**, artefakt
+**`HakHukuk-4B-v0.1`**, ağırlıklar HF'te **ÖZEL** · konteyner yolu **uçtan uca çalışıyor**.
+
+**Bu planda yazılan kararlar:** ADR **0074 · 0075 · 0076 · 0077 · 0078 · 0079 · 0080 · 0081 ·
+0082**. **Kayıtlar:** research_log **#64 · #65 · #66 · #67**. **Tuzaklar:** **1.11 · 1.12 · 1.13**.
+
+### Kapanışın üç dersi
+
+1. **Ürün yüzeyini temizlemek ÖLÇÜM AYGITINDA kusur bulur.** Bu turda kapatılan her ürün
+   kusuru, aygıtta bir kusur açığa çıkardı — en ağırı, atıf doğrulayıcının kanun adını gevşek
+   eşleştirip **yanlış kanuna `DOGRULANDI`** basmasıydı (tuzak **1.13**). Onarıldı
+   (**7/16 → 0/16**), çıpalar yeniden puanlandı: **`0/114` ve donmuş TEST `0/52` OYNAMADI** —
+   ama korunmanın **aletten değil ÖRNEKLEMDEN** geldiği ortaya çıktı.
+2. **Aleyhe çıkan sonuç da yazılır.** İnsan kararıyla rakip kolları da yeniden puanlandı:
+   `gemini-3.1-flash-lite` **`1/152` → `0/153`**. Tek deterministik üstünlüğümüzde artık
+   **eşitiz**; karşılığında **eşit sınav** alındı (ADR-0057). Sayı `MODEL_CARD` ve `CLAUDE.md`'de
+   **değiştirildi**, şerhle **iki yerde** damgalandı.
+3. **Sayısal kapı, TESTİN KÖRLÜĞÜNÜ görmez.** Üç insan gözü kapısı, **273 test yeşilken duran
+   dört kusuru** yakaladı (**26 · 27 · 28 · 30**) ve **ikisi aynı gün bizim yazdığımız koddandı**.
+   Testler kusurun *görülmediği* varsayımla yazılmıştı: tırnaksız alıntı · editable kurulum ·
+   repo ağacı. Ayrıca bir **onarımın** (`G8 Adım 1b` taşınabilirlik) başka bir düzeni kırması
+   (kusur **32**), *"onarım da bir değişikliktir ve kendi regresyonunu ister"* kuralının bu
+   hattaki yeni kanıtıdır.
+
+### DEVİR — kapanış kuralının şartı
+
+> *"Kapanış anında açık kalan **her** kusur, **adıyla** bir sonraki plana devredilir; hiçbir yere
+> devredilmemiş açık kusur varsa kapanış **GEÇERSİZDİR**."*
+
+Açık kusurların tam metni bu dosyanın [AÇIK KUSURLAR](#açık-kusurlar--kayıt-ve-devir)
+bölümündedir ve **orada kalır** — aşağıdaki tablo **nereye gittiklerini** söyler.
+
+| # | kusur | DEVREDİLDİ |
+| :-- | :--- | :--- |
+| **5a** | zayıf eşleşme sinyali — **ölçüldü, ayrışma YOK**, rozet eklenmedi | **`v2`** · yeni bir gösterge ya da daha büyük `n` gerektirir ([ADR-0079](../../adr/0079-zayif-eslesme-rozeti-eklenmedi.md)) |
+| **6** | `wrong_ref` frontier'ın **9,3×** gerisinde | **`v2` · borç `B1`** (ADR-0075) — **bu turda ağırlaştı**: fp16'da 2,0× kötüleşiyor |
+| **11** | paket `scripts/`'e bağımlı, tek başına kurulamıyor | **kendi turu** — kusur **21** onarımı importu birden **ikiye** çıkardı; kalıcı çare `madde_anahtar`+`atif_dogrula`+`score_abstention` üçlüsünün **pakete taşınması** |
+| **12b** | iskele işaretlerinin **kaynağı** eğitim verisi | **`v2` · borç `B11`** |
+| **23** | bir yeniden-puanlama koşusu **eski sayıyı verdi, tekrarlanamadı** | **`v2`** · modül gölgeleme arandı **bulunamadı**; bu sınıftan sayı **tek koşuya dayandırılmamalı** |
+| **24** | iki README'nin *"Bugün kurup çalıştırabilir miyim? — HAYIR"* tablosu **BAYAT** | **kendi turu** · *"`hakhukuk/` dizini yok"* ve *"ağırlıklar yayımlanmadı"* **ikisi de YANLIŞ**; depo açık, vatandaşa yanlış bilgi veriyor |
+| **25** | `MODEL_CARD` *uydurulmuş madde* satırında **iki farklı kesir birimi** | **`v2`** · Sonnet-5 hücresi **toplam atıf**, Gemini sütunları **`DOGRULANDI`** paydası kullanıyor |
+| **27** | Kaynaklar listesinde **madde biçimi tutmuyor** (`MADDE 349` ↔ `Madde 8`) | **`v2`** · korpusun **ham** tutarsızlığının vatandaş ekranına yansıması; **gösterim** katmanı işi |
+| **29** | imaja ürünün **okumadığı** 36,1 MiB korpus yedeği giriyor | **G20'nin devamı** · tek satırlık `.dockerignore` düzeltmesi |
+| **31** | `compose` volume adını **proje adından** türetiyor | **kayıt** — kusur değil, **kayda değer davranış**: artefaktı elle koymak `sha256` kapısını **hiç ateşlemeyecekti** |
+| **10** | HF **görünürlüğü** (ağırlıklar ÖZEL) | **insan kararı**, iş değil — açık kusurlar çözülünce açılır |
+
+**Devredilmemiş açık kusur YOKTUR** ⇒ kapanış **geçerlidir**.
+
+### Bu plandan SONRAKİ tur ne DEĞİLDİR
+
+Kapanış *"ürün bitti"* demez. `v1.0` **verilmedi** ve sebebi değişmedi:
+**engel model değil ÖLÇÜM AYGITIDIR** — her sayı hâlâ **tek hakem ailesinin** verdiği hükümdür
+ve κ **0,534** < 0,6 ([ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md)). Bu turda aygıtta
+**üç yeni kusur** bulunması o teşhisi **güçlendirdi**, çürütmedi.
+
+---
+
+## İCRA DURUMU — 2026-09-12 · **115/115 kutucuk · PLAN KAPANDI** · `v0.3` etiketlendi
 
 > **2026-09-11 turu:** **G22 KAPANDI 5/5** (Adım 2 ve 3 insana soruldu, ikisi de onaylandı) · G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8). **Kalan 7 kutucuğun 3'ü insan gözü kapısı**, biri insandan sır bekliyor. **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, kararlar **ADR-0079** ve **ADR-0080**. Harcanan: **$0,045067** (OpenRouter ölçümü). Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-20**.
 
@@ -1202,9 +1266,17 @@ PyPI'nin CUDA tekerleğine düşer ve imaj ~5 GB şişer.
 `verify:` `indir` kutusu `sha256`'yı doğruladı ve çıkış kodu 0; `llama` ve `app` ayağa kalktı.
 **İmaj boyutu ÖLÇÜLÜR ve buraya yazılır** — tahmin yazılmaz.
 
-- [ ] **Adım 7: Gözle doğrula** — API'ye bir soru, cevabı **gör**. **İNSAN GÖZÜ KAPISI**
-(SIRA 2 ve Görev 19 Adım 6 ile aynı sınıf; kendi başına işaretlenmez).
-`verify:` `sunum` alanı rozet + atıf + kaynak + ibare taşıyor; boş sorgu **422**.
+- [x] **Adım 7: Gözle doğrula** — **İNSAN TEYİT ETTİ 2026-09-12: GEÇTİ.** İki `verify:` şartı da
+konteynerin **içinden** görüldü: `sunum` alanı **rozet** (`✅ CEVAP — dayanağı getirilen
+kaynaklarda`) · **atıf** (`✓ 6098/Madde 330`, deterministik doğrulamadan geçmiş) · **kaynak**
+(`[1]…[10]`) · **sorumluluk ibaresi** taşıyor; boş sorgu **HTTP 422**.
+
+İnsan 422'nin gerçekten konteynerden gelip gelmediğini **sorguladı** ve üç kanıtla doğrulandı:
+portu `hakhukuk-app-1` tutuyor (host'ta ayrı `uvicorn` **yok**) · gövde `api.py`'nin kendi
+kısıtından geliyor (`string_too_short`, `min_length: 1`) · konteynerin erişim günlüğünde istek
+**kayıtlı** (`172.18.0.1 … "POST /sor" 422`). Ayırt edici nokta: API kapalıyken `curl` **`000`**
+döner, `422` değil — bu oturumda bir kez **fiilen görüldü**. Şüphe bir kapının nasıl
+kullanılacağının örneğidir: *"cevap geldi"* ile *"doğru yerden geldi"* ayrı şeylerdir.
 
 - [x] **Adım 8: Belgeler + sürüm** — **KAPANDI 2026-09-11.** `verify:` karşılandı: `tests/test_belgeler.py` **yeşil**; üç belgede de (`README.md` · `README.tr.md` · `MODEL_CARD.md` §8) **konteyner yolu** ve ***"konteyner yayımlanan `0,8011`'i ÜRETMEZ"*** şerhi var. `pyproject` `0.2.0` → **`0.3.0`** (F5). Belgeye yazılan her olgu `compose.yaml` **ayrıştırılarak** doğrulandı (**22/22**), hiçbiri hatırlanarak yazılmadı.
 
@@ -1456,7 +1528,7 @@ raporlanıyor** (gizlenmiyor).
 | 4 | boş sorgu reddedilmiyor | **Görev 21** Adım 3 |
 | 5a | zayıf eşleşme sinyali | **ÖLÇÜLDÜ 2026-09-11 · ROZET EKLENMEDİ · kusur AÇIK KALIR** — altı göstergenin hiçbiri ayırmıyor; en iyi adayda 4 kaçık için **23 yanlış alarm**. Ölçüm: `outputs/eval/g21-zayif-eslesme/BULGU.md`. Devri planın kapanış bloğunda yazılacak |
 | 5b | kapsam bildirimi | **KAPANDI 2026-09-11** · Görev 21 Adım 7 · statik satır, sınıflandırıcı YOK; sayılar `KUNYE.json`'dan okunuyor |
-| **6** | `wrong_ref` 9,3× geride | **DEVREDİLDİ → `v2`** · borç **B1**, ADR-0075 |
+| **6** | `wrong_ref` 9,3× geride | **DEVREDİLDİ → `v2`** · borç **B1**, ADR-0075  **→ KAPANDI 2026-09-11** (G21 Adım 5). ⚠️ Alan sonradan **silindi** (kusur **14**, ölü koddu); **gösterim** tutarsızlığı ayrı kalır ⇒ kusur **27** |
 | 7 | duman koşusu tahmini kapı kurmuyor | **Görev 21** Adım 9 · kural yazılır, kod değil |
 | 8 | açılışta yönlendirme yok | **Görev 21** Adım 7 |
 | 9 | SIRA 2 kapısı açık | **Görev 12** Adım 6-7 · yeni iş değil, aynı kapının aynası |
