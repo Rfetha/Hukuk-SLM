@@ -107,25 +107,69 @@ def _korpus_yolu(indeks_dizini: str, imza: dict) -> str:
     return os.path.normpath(os.path.join(indeks_dizini, imza["yol"]))
 
 
-def _korpus_bul(indeks_dizini: str, imza: dict) -> str:
-    """Korpus dosyasının yolunu çöz ve kimliğini doğrula. Bulunamazsa/uyuşmazsa erken patlar.
+# ── Korpus KİMLİKLE bulunur (ADIM 6.1, kusur 32) ─────────────────────────────
+# İndeks HF'ten dataset olarak inince indeks dizininin İKİ ÜSTÜNDE `corpus/` OLMAYACAK
+# — künyedeki göreli yol tek başına artık yeterli değil. Çözüm merdiveni SIRAYLA:
+#   (a) HAKHUKUK_KORPUS ortam değişkeni — açık geçersiz kılma, tanımlıysa YALNIZ o denenir
+#   (b) künyedeki göreli yol — bugünkü davranış, DEĞİŞMEDİ
+#   (c) bilinen köklerde sha256 ile arama — (b) çözülemediğinde devreye girer
+# Her basamakta sha256 doğrulanır; tutmayan aday atlanır (yerleşim değil, KİMLİK bağlar).
+_KORPUS_ORTAM_DEGISKENI = "HAKHUKUK_KORPUS"
+_KORPUS_DOSYA_ADI = "mevzuat_maddeler.jsonl"
+_REPO_KOKU = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-    Why ayrı fonksiyon (Extract Method): `yukle` içindeki bu blok ADIM 6.1'de bir
-    çözüm merdiveni kazanacak — davranış değişmeden önce isim/sınır netleşsin diye
-    çıkarıldı. Bu değişiklik davranışı DEĞİŞTİRMEZ.
+
+def _korpus_hash_tutuyor_mu(yol: str, beklenen_sha256: str) -> bool:
+    return os.path.exists(yol) and hashlib.sha256(open(yol, "rb").read()).hexdigest() == beklenen_sha256
+
+
+def _bilinen_kokler(indeks_dizini: str) -> list[str]:
+    """(c) basamağının SIRAYLA arayacağı kökler. Kök 1 = (b), burada TEKRAR denenmez."""
+    return [
+        os.path.normpath(os.path.join(indeks_dizini, "..", "corpus")),
+        os.path.normpath(os.path.join(indeks_dizini, "corpus")),
+        os.path.join(_REPO_KOKU, "data", "corpus"),
+        os.path.join(_REPO_KOKU, "hakhukuk", "veri"),
+    ]
+
+
+def _korpus_bul(indeks_dizini: str, imza: dict) -> str:
+    """Korpusu bul: (a) ortam değişkeni → (b) göreli yol → (c) bilinen köklerde kimlikle arama.
+
+    ⚠️ (b) adayı VAR ama sha256 tutmuyorsa arama SÜRMEZ — bu, bayat indeksi yakalayan
+    kapıdır (kural 3) ve "korpus DEĞİŞTİ" der. Dosya HİÇ yoksa (c)'ye geçilir.
     """
-    korpus_yolu = _korpus_yolu(indeks_dizini, imza)
-    if not os.path.exists(korpus_yolu):
-        raise SystemExit(f"[retriever] 🚫 korpus bulunamadı: {korpus_yolu}")
-    simdi = _korpus_imzasi(korpus_yolu, indeks_dizini)
-    if simdi["sha256"] != imza["sha256"]:
+    ortam = os.environ.get(_KORPUS_ORTAM_DEGISKENI)
+    if ortam:
+        if _korpus_hash_tutuyor_mu(ortam, imza["sha256"]):
+            return ortam
+        raise SystemExit(
+            f"[retriever] 🚫 {_KORPUS_ORTAM_DEGISKENI}={ortam} — dosya yok ya da sha256 "
+            f"tutmuyor; açık geçersiz kılma olduğu için YALNIZ bu yol denendi, arama sürmedi")
+
+    b_yolu = _korpus_yolu(indeks_dizini, imza)
+    if os.path.exists(b_yolu):
+        if _korpus_hash_tutuyor_mu(b_yolu, imza["sha256"]):
+            return b_yolu
+        simdi = _korpus_imzasi(b_yolu, indeks_dizini)
         raise SystemExit(
             f"[retriever] 🚫 korpus indeks kurulduğundan beri DEĞİŞTİ "
             f"({imza['bayt']}→{simdi['bayt']} bayt, sha256 {imza['sha256'][:12]}→"
             f"{simdi['sha256'][:12]}) — indeks bayat, yeniden kur:\n"
-            f"   python scripts/erisim_korpus/retriever.py kur --korpus {korpus_yolu} "
+            f"   python scripts/erisim_korpus/retriever.py kur --korpus {b_yolu} "
             f"--indeks {indeks_dizini}")
-    return korpus_yolu
+
+    denenen = [b_yolu]
+    for kok in _bilinen_kokler(indeks_dizini):
+        aday = os.path.join(kok, _KORPUS_DOSYA_ADI)
+        if _korpus_hash_tutuyor_mu(aday, imza["sha256"]):
+            return aday
+        denenen.append(aday)
+
+    raise SystemExit(
+        "[retriever] 🚫 korpus hiçbir bilinen yolda bulunamadı (kimlik: sha256 "
+        f"{imza['sha256'][:12]}…) — denenen yollar:\n" +
+        "\n".join(f"   {y}" for y in denenen))
 
 
 def _model_revizyonu(model_adi: str) -> str | None:

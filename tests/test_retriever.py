@@ -73,7 +73,9 @@ def test_yukle_korpus_degistiyse_erken_patlar(tmp_path):
     Retriever.kur(korpus, idx, gomucu=_sahte_gomucu)
     with open(korpus, "a", encoding="utf-8") as f:
         f.write(json.dumps(KORPUS[0], ensure_ascii=False) + "\n")
-    with pytest.raises(SystemExit, match="korpus"):
+    # ⚠️ ADIM 6.1 kural 3: (b) adayı VAR ama hash tutmuyorsa bu mesaj KORUNUR —
+    # (c)'nin "denenen yollar" mesajına sessizce düşmemeli.
+    with pytest.raises(SystemExit, match="DEĞİŞTİ"):
         Retriever.yukle(idx)
 
 
@@ -153,6 +155,79 @@ def test_yukle_eski_bicim_kunyeyi_acikca_reddeder(tmp_path):
     _kunye_yaz(idx, korpus={"yol": os.path.abspath(korpus), "bayt": 1, "mtime": 2})
     with pytest.raises(SystemExit, match="eski biçim"):
         Retriever.yukle(idx, gomucu=_sahte_gomucu)
+
+
+# ── Korpus KİMLİKLE bulunur (ADIM 6.1) ───────────────────────────────────────
+# ⚠️ Kusur 32: künye korpusu indeks dizinine GÖRELİ tutuyordu, indeks HF'ten dataset
+# olarak inince (G8) indeks dizininin iki üstünde `corpus/` OLMAYACAK. Çözüm merdiveni:
+# (a) HAKHUKUK_KORPUS ortam değişkeni · (b) künyedeki göreli yol (bugünkü davranış) ·
+# (c) bilinen köklerde sha256 ile arama. Her basamakta kimlik (sha256) doğrulanır.
+
+def test_yukle_ortam_degiskeniyle_yalitik_indekste_calisir(tmp_path, monkeypatch):
+    # Kırmızı test: indeks `corpus/` komşuluğu OLMAYAN bir dizine taşınır, korpus
+    # bambaşka bir yere konur, yalnız HAKHUKUK_KORPUS ile gösterilir.
+    (tmp_path / "kaynak").mkdir()
+    korpus = _korpus_yaz(tmp_path / "kaynak")
+    idx_kaynak = str(tmp_path / "kaynak" / "indeks")
+    Retriever.kur(korpus, idx_kaynak, gomucu=_sahte_gomucu)
+
+    yalitik = tmp_path / "yalitik" / "indeks"
+    shutil.copytree(idx_kaynak, yalitik)
+    korpus_baska_yer = tmp_path / "hic-ilgisiz" / "yer" / "korpus.jsonl"
+    korpus_baska_yer.parent.mkdir(parents=True)
+    shutil.copy(korpus, korpus_baska_yer)
+
+    monkeypatch.setenv("HAKHUKUK_KORPUS", str(korpus_baska_yer))
+    r = Retriever.yukle(str(yalitik), gomucu=_sahte_gomucu)
+    assert r.getir("Cumhuriyet savcısı", k=1)[0]["madde_no"] == "Madde 161"
+
+
+def test_yukle_c_basamagi_indeks_ustundeki_corpus_dizininde_bulur(tmp_path):
+    # (c) basamağı: env YOK, (b) göreli yolu ÇÖZÜLEMİYOR (indeksin yanında corpus/
+    # yok), ama kimliği tutan bir dosya `<indeks_dizini>/../corpus/` altında duruyor.
+    (tmp_path / "kaynak").mkdir()
+    korpus = _korpus_yaz(tmp_path / "kaynak")
+    idx_kaynak = str(tmp_path / "kaynak" / "indeks")
+    Retriever.kur(korpus, idx_kaynak, gomucu=_sahte_gomucu)
+
+    hedef_indeks = tmp_path / "yeni" / "indeks"
+    hedef_indeks.parent.mkdir(parents=True)
+    shutil.copytree(idx_kaynak, hedef_indeks)
+    hedef_corpus_dizin = tmp_path / "yeni" / "corpus"
+    hedef_corpus_dizin.mkdir()
+    shutil.copy(korpus, hedef_corpus_dizin / "mevzuat_maddeler.jsonl")
+
+    r = Retriever.yukle(str(hedef_indeks), gomucu=_sahte_gomucu)
+    assert r.getir("Cumhuriyet savcısı", k=1)[0]["madde_no"] == "Madde 161"
+
+
+def test_yukle_icerigi_farkli_aday_kullanilmaz_denenenler_listelenir(tmp_path):
+    # Kimlik kapısı: bir aday VAR ama içeriği (dolayısıyla sha256'sı) farklı →
+    # kullanılmaz, arama sürer; hiçbir aday tutmazsa SystemExit denenen yolları listeler.
+    (tmp_path / "kaynak").mkdir()
+    korpus = _korpus_yaz(tmp_path / "kaynak")
+    idx_kaynak = str(tmp_path / "kaynak" / "indeks")
+    Retriever.kur(korpus, idx_kaynak, gomucu=_sahte_gomucu)
+
+    hedef_indeks = tmp_path / "yeni" / "indeks"
+    hedef_indeks.parent.mkdir(parents=True)
+    shutil.copytree(idx_kaynak, hedef_indeks)
+    yanlis_dizin = tmp_path / "yeni" / "corpus"
+    yanlis_dizin.mkdir()
+    (yanlis_dizin / "mevzuat_maddeler.jsonl").write_text("başka içerik\n", encoding="utf-8")
+
+    with pytest.raises(SystemExit, match="denenen"):
+        Retriever.yukle(str(hedef_indeks), gomucu=_sahte_gomucu)
+
+
+def test_yukle_bugunku_repo_yerlesimi_b_basamagi_degismeden_calisir(tmp_path):
+    # Gerileme: bugünkü repo yerleşimi (künyedeki göreli yol, basamak (b)) hâlâ
+    # ortam değişkeni ya da arama gerekmeden doğrudan çözülüp çalışmalı.
+    korpus = _korpus_yaz(tmp_path)
+    idx = str(tmp_path / "indeks")
+    Retriever.kur(korpus, idx, gomucu=_sahte_gomucu)
+    r = Retriever.yukle(idx, gomucu=_sahte_gomucu)
+    assert r.getir("işçi", k=1)[0]["madde_no"] == "Madde 21"
 
 
 def _kunye_yaz(idx, **alanlar):
