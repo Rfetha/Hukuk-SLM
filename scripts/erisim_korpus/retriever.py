@@ -107,6 +107,27 @@ def _korpus_yolu(indeks_dizini: str, imza: dict) -> str:
     return os.path.normpath(os.path.join(indeks_dizini, imza["yol"]))
 
 
+def _korpus_bul(indeks_dizini: str, imza: dict) -> str:
+    """Korpus dosyasının yolunu çöz ve kimliğini doğrula. Bulunamazsa/uyuşmazsa erken patlar.
+
+    Why ayrı fonksiyon (Extract Method): `yukle` içindeki bu blok ADIM 6.1'de bir
+    çözüm merdiveni kazanacak — davranış değişmeden önce isim/sınır netleşsin diye
+    çıkarıldı. Bu değişiklik davranışı DEĞİŞTİRMEZ.
+    """
+    korpus_yolu = _korpus_yolu(indeks_dizini, imza)
+    if not os.path.exists(korpus_yolu):
+        raise SystemExit(f"[retriever] 🚫 korpus bulunamadı: {korpus_yolu}")
+    simdi = _korpus_imzasi(korpus_yolu, indeks_dizini)
+    if simdi["sha256"] != imza["sha256"]:
+        raise SystemExit(
+            f"[retriever] 🚫 korpus indeks kurulduğundan beri DEĞİŞTİ "
+            f"({imza['bayt']}→{simdi['bayt']} bayt, sha256 {imza['sha256'][:12]}→"
+            f"{simdi['sha256'][:12]}) — indeks bayat, yeniden kur:\n"
+            f"   python scripts/erisim_korpus/retriever.py kur --korpus {korpus_yolu} "
+            f"--indeks {indeks_dizini}")
+    return korpus_yolu
+
+
 def _model_revizyonu(model_adi: str) -> str | None:
     """Modelin yerel HF önbelleğindeki commit'i. Bilinmiyorsa `None` — uydurulmaz."""
     from huggingface_hub.constants import HF_HUB_CACHE
@@ -198,17 +219,7 @@ class Retriever:
                 f"[retriever] 🚫 önek sözleşmesi uyuşmuyor: indeks {kunye.get('onek')} ↔ "
                 f"kod {ONEK} — sorgu bu indeksin kodlandığı gibi kodlanmıyor, recall SESSİZCE "
                 f"düşer; indeksi yeniden kur")
-        korpus_yolu = _korpus_yolu(indeks_dizini, imza)
-        if not os.path.exists(korpus_yolu):
-            raise SystemExit(f"[retriever] 🚫 korpus bulunamadı: {korpus_yolu}")
-        simdi = _korpus_imzasi(korpus_yolu, indeks_dizini)
-        if simdi["sha256"] != imza["sha256"]:
-            raise SystemExit(
-                f"[retriever] 🚫 korpus indeks kurulduğundan beri DEĞİŞTİ "
-                f"({imza['bayt']}→{simdi['bayt']} bayt, sha256 {imza['sha256'][:12]}→"
-                f"{simdi['sha256'][:12]}) — indeks bayat, yeniden kur:\n"
-                f"   python scripts/erisim_korpus/retriever.py kur --korpus {korpus_yolu} "
-                f"--indeks {indeks_dizini}")
+        korpus_yolu = _korpus_bul(indeks_dizini, imza)
         kayitlar = [json.loads(l) for l in open(korpus_yolu, encoding="utf-8") if l.strip()]
         gomme = np.load(os.path.join(indeks_dizini, "gomme.npy"))
         if len(kayitlar) != gomme.shape[0]:
