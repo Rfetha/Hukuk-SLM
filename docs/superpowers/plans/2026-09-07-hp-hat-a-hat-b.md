@@ -26,8 +26,11 @@ OpenRouter `total_usage` önce/sonra ölçüldü)* · ürün sürümü **`v0.3`*
    `gemini-3.1-flash-lite` **`1/152` → `0/153`**. Tek deterministik üstünlüğümüzde artık
    **eşitiz**; karşılığında **eşit sınav** alındı (ADR-0057). Sayı `MODEL_CARD` ve `CLAUDE.md`'de
    **değiştirildi**, şerhle **iki yerde** damgalandı.
-3. **Sayısal kapı, TESTİN KÖRLÜĞÜNÜ görmez.** Üç insan gözü kapısı, **273 test yeşilken duran
-   dört kusuru** yakaladı (**26 · 27 · 28 · 30**) ve **ikisi aynı gün bizim yazdığımız koddandı**.
+3. **Sayısal kapı, TESTİN KÖRLÜĞÜNÜ görmez.** Üç insan gözü kapısı, **süit yeşilken duran dört
+   kusuru** yakaladı (**26 · 27 · 28 · 30**) ve **ikisi aynı gün bizim yazdığımız koddandı**.
+   ⚠️ **DÜZELTME 2026-09-12:** burada önce *"273 test yeşilken"* yazılmıştı ve **yanlıştı** —
+   dördü aynı ana ait değil. Commit sırasından okunan doğrusu: **26·27** → süit **267**
+   (`faad932` ↔ `063330c`) · **28** → **273** · **30** → **274**.
    Testler kusurun *görülmediği* varsayımla yazılmıştı: tırnaksız alıntı · editable kurulum ·
    repo ağacı. Ayrıca bir **onarımın** (`G8 Adım 1b` taşınabilirlik) başka bir düzeni kırması
    (kusur **32**), *"onarım da bir değişikliktir ve kendi regresyonunu ister"* kuralının bu
@@ -1369,7 +1372,7 @@ ekran **donmuyor** (`⏳ kaynaklar taranıyor…` Enter'dan **hemen sonra** çiz
 **YOK** · boş sorgu okunur mesaj alıyor · **iki ardışık Enter'da girdi KİLİTLENDİ**, ikinci
 sorgu birincinin cevabını ezmedi.
 
-🔴 **VE KAPI İŞİNİ YAPTI — 273 test yeşilken duran İKİ kusuru ekran yakaladı:**
+🔴 **VE KAPI İŞİNİ YAPTI — süit YEŞİLKEN duran İKİ kusuru ekran yakaladı** *(⚠️ DÜZELTME 2026-09-12: burada önce "273" yazılmıştı; o an süit **267** yeşildi — 273, bu kusurların **düzeltilmesinden SONRAKİ** sayıdır, `6a58d72` +6 test)***:**
 **kusur 26** (sunumda **çift tırnak**: model işaretlerin içine kendi düz tırnağını da yazınca
 `“ "…" ”` çıkıyordu) — ⚠️ bu kusuru **aynı gün BEN eklemiştim** (kusur 12a/19 süzgeci) ve
 **testlerim tırnaksız alıntıyla yazıldığı için görmemişti**; TDD ile kapatıldı (commit

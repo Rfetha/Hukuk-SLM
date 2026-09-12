@@ -50,7 +50,9 @@ BİTTİ     2026-09-07-hp-hat-a-hat-b.md    115/115 · KAPANDI 2026-09-12
              1/152 → 0/153. ALEYHİMİZE ve öyle yazıldı; karşılığında EŞİT
              SINAV alındı (ADR-0057).
 
-             ⭐ GÖZ KAPISININ BİLANÇOSU: 273 test YEŞİLKEN duran DÖRT kusuru
+             ⭐ GÖZ KAPISININ BİLANÇOSU: SÜİT YEŞİLKEN duran DÖRT kusuru
+             (26·27 → 267 · 28 → 273 · 30 → 274; "273" tek sayı olarak YANLIŞTI,
+              düzeltildi 2026-09-12)
              bakan göz yakaladı — çift tırnak · madde biçimi · hakhukuk-api
              çalışmıyor · pyproject'in latent kurulum hatası. Hiçbirini
              sayısal kapı görmedi.
