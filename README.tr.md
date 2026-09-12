@@ -3,7 +3,7 @@
 > **Türkçe bir hukuk asistanı: dizüstünde koşacak kadar küçük, "bu kaynaklarda yok" demeyi öğrenmiş 4B'lik bir model.**
 > Açık kaynak **ürün** — ağırlık + kod + veri + **araştırma kaydının tamamı**. Tez değil.
 
-[Model kartı](MODEL_CARD.md) · [English](README.md) · [Yol haritası / plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) · [Hugging Face'te ağırlıklar](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) · [Lisans](LICENSE)
+[Model kartı](MODEL_CARD.md) · [English](README.md) · [Yol haritası](ROADMAP.md) · [İş sırası](docs/superpowers/00-IS-SIRASI.md) · [Hugging Face'te ağırlıklar](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) · [Lisans](LICENSE)
 
 ## Ağırlıklar
 
@@ -19,8 +19,12 @@ hf download Rfetha/HakHukuk-4B-v0.3-Q4_K_M HakHukuk-4B-v0.3-Q4_K_M.gguf --local-
 
 Kullanmadan önce oradaki model kartı okunmalıdır. İki kısıt kartın ilk ekranında
 bildirilmiştir: model tek başına bildirilen başarımı üretemez (arama indeksi henüz
-dağıtılmamıştır) ve ürün yolunda cevapların yaklaşık %5'i boş dönmektedir — kaydedilmiş,
-gizlenmemiş bir sonlanmama kusurudur. Örnek çıktılar aynı depodaki `ORNEK_CEVAPLAR.md`
+dağıtılmamıştır) ve ürün yolu **80 sorunun 4'ünde** boş cevap döndürüyordu — kaydedilmiş,
+gizlenmemiş bir sonlanmama kusuruydu. **2026-09-11'de giderildi**
+([ADR-0080](docs/adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md)): ürün yolu artık düşünce
+kanalını ikinci geçişte zorla kapatıyor; boş cevap **4/80 → 0/80**, kesiklik %8,75'ten %3,75'e
+indi. ⚠️ Onarım `hakhukuk/servis.py` içindedir — `llama-server`'ı bu paket olmadan doğrudan
+süren biri **özgün kusuru yaşamaya devam eder**. Örnek çıktılar aynı depodaki `ORNEK_CEVAPLAR.md`
 dosyasındadır.
 
 Bir hukuk asistanının işinin büyük kısmı cevap vermek değil, **kaynak desteklemiyorken
@@ -34,23 +38,34 @@ kapsamıyorsa **çekin**.
 
 ---
 
-## Bugün kurup çalıştırabilir miyim? — **HAYIR**
+## Bugün kurup çalıştırabilir miyim? — **KISMEN**
 
-İlk sorunun dürüst cevabı budur. **Model ölçüldü, ürün paketlenmedi.**
+İlk sorunun dürüst cevabı budur ve 2026-09-11'de değişti: **ürün artık koşan kod olarak
+vardır.** Eksik olan şey **dağıtımdır** — aşağıdaki dört parçanın ikisi henüz bir yabancıya
+teslim edilebilir durumda değildir.
 
-| parça | durum | kanıt (ölçüldü, 2026-09-07) |
+| parça | durum | kanıt (ölçüldü, 2026-09-12) |
 | :--- | :--- | :--- |
-| Model ağırlıkları (Q4_K_M GGUF, **2,59 GiB**) | var ve ölçüldü — **henüz hiçbir yerde yayımlanmadı** | boyut: [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) · `git ls-files models/` → **0 dosya**; adaptörler bilinçli olarak repoda tutulmuyor |
-| Erişim indeksi (**40.496** madde) | yerelde var — **git'te yok**, dağıtım biçimi karara bağlı | `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**; `git ls-files data/index` → yalnız 2 `KUNYE.json`; **açık karar S8** (plan §S8) |
-| Servis katmanı (API / CLI / TUI) | **kod olarak yok** | `grep -rlE "fastapi\|uvicorn\|flask\|gradio" scripts/` → **0**; `hakhukuk/` dizini **yok** |
-| İstem (prompt) | dağıtılabilir artefakt değil — ölçüm script'lerinin içinde | plan **Görev 5** · **açık karar S18** |
+| Model ağırlıkları (Q4_K_M GGUF, **2,59 GiB**) | 2026-09-09'da **yayımlandı** — ama depo **bugün özeldir**, dolayısıyla erişimi olan bir `HF_TOKEN` gerekir | `Rfetha/HakHukuk-4B-v0.3-Q4_K_M`, tek dosya, **2.783.446.720 bayt**, `sha256 755e15e9…86e7bffc`. Kimlik kapısı [`hakhukuk/indir.py`](hakhukuk/indir.py)'dir (`GGUF_SHA256` · `GGUF_BAYT`) ve konteyner koşusunda **ateşlendi ve tuttu** · [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) |
+| Erişim indeksi (**40.496** madde) | **tek gerçek tıkaç.** Yerelde var, **git'te yok** ve **hiçbir yerde yayımlanmadı**: dağıtım kararı verildi (HF dataset) ama **koşulmadı**, çünkü korpus 8,4× büyümek üzere | `git ls-files data/index` → **2 `KUNYE.json`, başka hiçbir şey**; `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**. İki yollu indeks (önce volume, sonra HF) [ADR-0078 madde 4](docs/adr/0078-konteyner-dagitimi-rejim-kilidi.md)'tür; ikisi de yoksa `indir` **kasten** sıfırdan farklı kodla çıkar ve tam yolu yazar |
+| Servis katmanı (API / CLI / TUI) | **kod olarak var ve çalışıyor.** `pip install -e .` üç komut üretir; konteyner yolu uçtan uca gerçek soru cevapladı | `git ls-files hakhukuk/` → **11 dosya** (`cli.py` · `tui.py` · `api.py` · `servis.py` · `araclar.py` · `terazi.py` · `istem.py` · `tipler.py` · `indir.py`) · [`pyproject.toml`](pyproject.toml) `[project.scripts]` → `hakhukuk` · `hakhukuk-tui` · `hakhukuk-api` · `pytest tests/` → **281 passed, 2 xfailed** |
+| İstem (prompt) | **dağıtılabilir artefakt**; artık ölçüm script'lerinin içindeki bir kopya değil: [`hakhukuk/istem.py`](hakhukuk/istem.py) **tek kaynaktır** | ölçüm hattı da onu içe aktarır (`scripts/olcum_uretim/gen_eval_grounded.py:55` → `from hakhukuk.istem import …`); [`tests/test_istem.py`](tests/test_istem.py) bir kapıdır — metni `ISTEM_SURUMU` / `DAMGA_v1` yükseltmeden değiştirirsen düşer |
 
-**Manşet sayı `model + retriever + istem` üçlüsünün sayısıdır.** Üçü bir arada
-paketlenmeden yeniden üretilemez. Paketleme işi planın **Hat A** fazıdır ve çıktısı
-`v0.2`'dir ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
+**Yani tek başına `git clone` çalışan ürün ELDE ETMEZ.** İndeks içinde değildir ve bu durumda
+`indir` **kasten** patlar; vatandaşa yarım kurulmuş bir erişim katmanı sunmaz. Bir `HF_TOKEN`
+ve kendi indeks dizininizle aşağıdaki konteyner yolu koşar.
 
-→ **2026-09-11'den beri bir konteyner yolu var** — [`docker compose up`](#konteynerle-çalıştırma--docker-compose-up).
-**Uçtan uca DOĞRULANDI 2026-09-11:** `docker compose up` koştu, üç kutu ayağa kalktı ve API soru cevapladı.
+**Ve `0,8011`'i yeniden üretmez.** O sayı **ölçüm hattınındır**; konteyner **ürün yolunu**
+taşır (aşağıya bakın). Paketlemenin kendisi bitmiştir: **ürün sürümü `v0.3`**'tür
+(2026-09-09'da etiketlendi, [`pyproject.toml`](pyproject.toml)), model artefaktı ise hâlâ
+`HakHukuk-4B-v0.1`'dir — sürümleme bilerek bölünmüştür
+([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)). `v1.0` **verilmedi** ve tıkaç modelde değil,
+ölçüm aletindedir ([ADR-0077](docs/adr/0077-v1-0-verilmedi-v0-3.md)).
+
+→ **Konteyner yolu:** [`docker compose up`](#konteynerle-çalıştırma--docker-compose-up).
+**Uçtan uca DOĞRULANDI 2026-09-11:** `indir` **çıkış 0** ile bitti, `llama` **healthy** oldu,
+`app` ayağa kalktı, API **iki farklı soruyu** HTTP **200** ile cevapladı ve boş sorgu **422**
+döndü ([kayıt #67](docs/record/research_log/2026-09-12-konteyner-ve-alet-onarimlari.md)).
 
 ---
 
@@ -263,8 +278,10 @@ kıyaslanamaz; kol kol dökümü ve künyeler: [`docs/record/kollar.md`](docs/re
 
 ## Yol haritası
 
-Sırası **bağlayıcı** (insan kararı 2026-09-07) —
-[tam plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md):
+Sırası **bağlayıcıydı** (insan kararı 2026-09-07). O tur 2026-09-12'de **115/115** kapandı ve
+planı silindi; kusur sicili ile devir tablosu
+[ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md)'te, sıradaki iş
+[iş sırası](docs/superpowers/00-IS-SIRASI.md) dosyasındadır:
 
 | faz | ne | çıktı |
 | :--- | :--- | :--- |
@@ -281,7 +298,7 @@ Sırası **bağlayıcı** (insan kararı 2026-09-07) —
 
 | yer | ne |
 | :--- | :--- |
-| `hakhukuk/` | **henüz yok** — ürün paketi; Hat A yazacak |
+| [`hakhukuk/`](hakhukuk/) | **ürün paketi** — istem · tipler · terazi · servis · CLI · TUI · HTTP API · indirici (git'te 11 dosya) |
 | [`scripts/`](scripts/) | **ölçüm aleti** (üründen ayrı, bilinçli). Beş alt klasör: [`egitim/`](scripts/egitim/) · [`olcum_uretim/`](scripts/olcum_uretim/) · [`puanlama/`](scripts/puanlama/) · [`erisim_korpus/`](scripts/erisim_korpus/) · [`veri_hazirlik/`](scripts/veri_hazirlik/) |
 | [`docs/record/research_log/`](docs/record/research_log/) | **araştırma kaydı** — ne olduğu, kronolojik, her sayıyla; son giriş **#62** |
 | [`docs/adr/`](docs/adr/) | **karar defteri** — 46 numaralı dosya, numaralandırma **0073**'e kadar (`0001-0026` tek dosyada: [`gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md); **0059 rezerve**) |

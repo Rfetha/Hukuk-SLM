@@ -3,7 +3,7 @@
 > **A Turkish legal assistant: a 4B model small enough to run on a laptop, trained to say "that is not in these sources."**
 > An open-source **product** — weights + code + data + **the entire research record**. Not a thesis.
 
-[Model card](MODEL_CARD.md) · [Türkçe](README.tr.md) · [Roadmap / plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md) · [Weights on Hugging Face](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) · [License](LICENSE)
+[Model card](MODEL_CARD.md) · [Türkçe](README.tr.md) · [Roadmap](ROADMAP.md) · [Work order](docs/superpowers/00-IS-SIRASI.md) · [Weights on Hugging Face](https://huggingface.co/Rfetha/HakHukuk-4B-v0.3-Q4_K_M) · [License](LICENSE)
 
 ## Weights
 
@@ -19,8 +19,12 @@ hf download Rfetha/HakHukuk-4B-v0.3-Q4_K_M HakHukuk-4B-v0.3-Q4_K_M.gguf --local-
 
 Read the model card there before use. Two constraints are stated on its first screen: the
 model cannot reproduce the published figure on its own (the retrieval index is not yet
-distributed), and in the product path roughly 5% of answers come back empty — a
-non-termination defect that is recorded, not hidden.
+distributed), and the product path used to return an empty answer on **4 of 80** questions —
+a non-termination defect that was recorded, not hidden. It was **fixed on 2026-09-11**
+([ADR-0080](docs/adr/0080-urun-yolu-zorunlu-dusunce-kapatmasi.md)): the product path now forces
+the thinking channel closed in a second pass, and blank answers went **4/80 → 0/80** while
+truncation fell from 8.75% to 3.75%. ⚠️ The fix lives in `hakhukuk/servis.py` — a caller who
+drives `llama-server` directly, without this package, still hits the original defect.
 
 Most of the work in a legal assistant is not answering. It is **refusing to answer when the
 sources do not support one.** A confident, wrong article number is worse than silence — it is
@@ -33,23 +37,34 @@ working on Turkish legal NLP (the record goal).
 
 ---
 
-## Can I install and run it today? — **NO**
+## Can I install and run it today? — **PARTLY**
 
-That is the honest answer to the first question. **The model is measured; the product is not packaged.**
+That is the honest answer to the first question, and it changed on 2026-09-11: **the product
+exists as running code.** What is still missing is **distribution** — two of the four pieces
+below cannot yet be handed to a stranger.
 
-| piece | status | evidence (measured, 2026-09-07) |
+| piece | status | evidence (measured, 2026-09-12) |
 | :--- | :--- | :--- |
-| Model weights (Q4_K_M GGUF, **2.59 GiB**) | exist and are measured — **not published anywhere yet** | size: [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) · `git ls-files models/` → **0 files**; adapters are deliberately not kept in the repo |
-| Retrieval index (**40,496** articles) | exists locally — **not in git**, distribution format undecided | `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**; `git ls-files data/index` → only 2 `KUNYE.json` files; **open decision S8** (plan §S8) |
-| Serving layer (API / CLI / TUI) | **does not exist as code** | `grep -rlE "fastapi\|uvicorn\|flask\|gradio" scripts/` → **0**; there is no `hakhukuk/` directory |
-| Prompt | not a shippable artifact — it lives inside the evaluation scripts | plan **Task 5** · **open decision S18** |
+| Model weights (Q4_K_M GGUF, **2.59 GiB**) | **published** 2026-09-09 — but the repository is **private today**, so an `HF_TOKEN` with access to it is required | `Rfetha/HakHukuk-4B-v0.3-Q4_K_M`, a single file, **2,783,446,720 bytes**, `sha256 755e15e9…86e7bffc`. The identity gate is [`hakhukuk/indir.py`](hakhukuk/indir.py) (`GGUF_SHA256` · `GGUF_BAYT`); it **fired and held** on the container run · [ADR-0071](docs/adr/0071-v1-release-artefakti-tek-gguf.md) |
+| Retrieval index (**40,496** articles) | **the one blocker.** Exists locally, is **not in git**, and is **published nowhere**: the distribution decision was taken (an HF dataset) and then **not executed**, because the corpus is about to grow 8.4× | `git ls-files data/index` → **2 `KUNYE.json` files and nothing else**; `du -sh data/index/mevzuat_bge_m3_s2` → **80 MB**. The two-way index path (volume first, HF second) is [ADR-0078, clause 4](docs/adr/0078-konteyner-dagitimi-rejim-kilidi.md); with neither present, `indir` **deliberately** exits non-zero and prints the exact path |
+| Serving layer (API / CLI / TUI) | **exists as code and runs.** `pip install -e .` produces three commands; the container path answered real questions end to end | `git ls-files hakhukuk/` → **11 files** (`cli.py` · `tui.py` · `api.py` · `servis.py` · `araclar.py` · `terazi.py` · `istem.py` · `tipler.py` · `indir.py`) · [`pyproject.toml`](pyproject.toml) `[project.scripts]` → `hakhukuk` · `hakhukuk-tui` · `hakhukuk-api` · `pytest tests/` → **281 passed, 2 xfailed** |
+| Prompt | **a shippable artifact**, no longer a copy inside the measurement scripts: [`hakhukuk/istem.py`](hakhukuk/istem.py) is the single source | the measurement pipeline imports it too (`scripts/olcum_uretim/gen_eval_grounded.py:55` → `from hakhukuk.istem import …`); [`tests/test_istem.py`](tests/test_istem.py) is a gate — change the text without raising `ISTEM_SURUMU` / `DAMGA_v1` and it fails |
 
-**The headline number is produced by `model + retriever + prompt`.** It cannot be reproduced
-until all three are packaged together. That packaging is the plan's **Hat A** phase, and its
-output is `v0.2` ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
+**So a `git clone` on its own does not get you a working product.** The index is not in it, and
+in that case `indir` fails **on purpose** rather than serving a citizen a half-built retriever.
+With an `HF_TOKEN` and an index directory of your own, the container path below runs.
 
-→ **Since 2026-09-11 there is a container path** — [`docker compose up`](#running-it-with-docker-compose--the-container-path).
-**Verified end to end on 2026-09-11:** `docker compose up` ran, all three boxes came up and the API answered questions.
+**And it does not reproduce `0.8011`.** That figure belongs to the **measurement pipeline**; the
+container carries the **product path** (see below). Packaging itself is done: the **product
+version is `v0.3`** (tagged 2026-09-09, [`pyproject.toml`](pyproject.toml)) while the model
+artifact is still `HakHukuk-4B-v0.1` — versioning is deliberately split
+([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)). `v1.0` was **not** granted, and the blocker is
+the measuring instrument, not the model ([ADR-0077](docs/adr/0077-v1-0-verilmedi-v0-3.md)).
+
+→ **The container path:** [`docker compose up`](#running-it-with-docker-compose--the-container-path).
+**Verified end to end on 2026-09-11:** `indir` exited **0**, `llama` went **healthy**, `app` came
+up, the API answered **two different questions** with HTTP **200** and an empty query returned
+**422** ([record #67](docs/record/research_log/2026-09-12-konteyner-ve-alet-onarimlari.md)).
 
 ---
 
@@ -273,8 +288,10 @@ to the headline numbers above; per-branch figures and manifests live in
 
 ## Roadmap
 
-The order is **binding** (human decision, 2026-09-07) —
-[full plan](docs/superpowers/plans/2026-09-07-hp-hat-a-hat-b.md):
+The order was **binding** (human decision, 2026-09-07). That round closed at **115/115** on
+2026-09-12 and its plan was deleted; the defect register and the handover live in
+[ADR-0083](docs/adr/0083-kusur-sicili-adrye-tasindi.md), and what comes next is in the
+[work order](docs/superpowers/00-IS-SIRASI.md):
 
 | phase | what | output |
 | :--- | :--- | :--- |
@@ -291,7 +308,7 @@ The order is **binding** (human decision, 2026-09-07) —
 
 | location | what |
 | :--- | :--- |
-| `hakhukuk/` | **does not exist yet** — the product package; Hat A will write it |
+| [`hakhukuk/`](hakhukuk/) | the **product package** — prompt · types · abstention scale (`terazi`) · service · CLI · TUI · HTTP API · downloader (11 files in git) |
 | [`scripts/`](scripts/) | the **measuring instrument** (deliberately separate from the product). Five subfolders: [`egitim/`](scripts/egitim/) · [`olcum_uretim/`](scripts/olcum_uretim/) · [`puanlama/`](scripts/puanlama/) · [`erisim_korpus/`](scripts/erisim_korpus/) · [`veri_hazirlik/`](scripts/veri_hazirlik/) |
 | [`docs/record/research_log/`](docs/record/research_log/) | the **research record** — what happened, chronologically, with every number; latest entry **#62** |
 | [`docs/adr/`](docs/adr/) | the **decision ledger** — 46 numbered files, numbering runs to **0073** (`0001-0026` live in one file: [`gemma4-12b-dersler.md`](docs/adr/gemma4-12b-dersler.md); **0059 is reserved**) |
