@@ -53,9 +53,29 @@ Girdiler hazır, **plan yazılmadı**:
 | girdi | nerede |
 | :--- | :--- |
 | silinen tasarımın **mimari özü** + grill'e girecek **9 madde** | [ADR-0083](../adr/0083-kusur-sicili-adrye-tasindi.md) §EK |
-| **8 açık kusur** — 5a · 10 · 23 · 24 · 25 · 27 · 29 · 31 | [ADR-0083](../adr/0083-kusur-sicili-adrye-tasindi.md) |
+| **8 açık kusur** — hepsi **yere bağlandı**, aşağıdaki tablo | [ADR-0083](../adr/0083-kusur-sicili-adrye-tasindi.md) |
 | **3 devredilen** — **6** → `B1` · **11** → paket · **12b** → `B11` | ″ |
 | κ borcu | ADR-0074 · ADR-0077 |
+
+### Açık kusurlar — **boşta duran YOK** *(insan kararı 2026-09-12)*
+
+Kural: her açık kusur ya **bu turda biter** ya **`v2`'ye gider**. Üçüncü seçenek yok —
+*"açık"* diye duran bir kusur, sahibi olmayan bir borçtur.
+
+| # | kusur | nereye | niçin |
+| :-- | :--- | :--- | :--- |
+| **5a** | zayıf eşleşme sinyali — ölçüldü, **ayrışma YOK** (n=4) | **BU TUR** | Korpus büyürse skor dağılımı ve kaçık sayısı değişir ⇒ ölçüm **zaten yeniden koşulacak**; rozet kararı o koşuda verilir |
+| **10** | **HF görünürlüğü** (`push` yarısı kapandı) | **BU TUR · adım 9** | Turun son adımı zaten bu |
+| **23** | bir yeniden-puanlama koşusu **tekrarlanamadı** | **BU TUR** | κ borcu **puanlama** işidir; aynı boru hattı koşarken bu sınıf **ikinci kez** sınanır. Kural: bu sınıftan sayı **tek koşuya dayandırılmaz** |
+| ~~24~~ | ~~bayat README tablosu~~ | ✅ **2026-09-12'de KAPANDI** | public açılışın ön koşuluydu |
+| **25** | aynı satırda **iki kesir birimi** | **BU TUR · adım 8** | Public kontrolünde kapanır; kıyas tablosu vatandaşa gidiyor |
+| **27** | Kaynaklar listesinde **madde biçimi tutmuyor** | **`v2`** | Korpusun **ham** tutarsızlığının gösterim katmanına yansıması. Veriyi bozmadan çözmek ayrı bir tasarım işi |
+| **29** | imaja ürünün okumadığı **36,1 MiB** korpus yedeği giriyor | **BU TUR** | Tek satırlık `.dockerignore` düzeltmesi; imaj bu turda zaten elleniyor |
+| **31** | `compose` volume adını **proje adından** türetiyor | **KAYIT** | Kusur değil, **kayda değer davranış**: artefaktı elle koymak `sha256` kapısını hiç ateşlemeyecekti. Kapanmaz, **hatırlanır** |
+
+⇒ **BU TUR: 5** (5a · 10 · 23 · 25 · 29) · **`v2`: 1** (27) · **kayıt: 1** (31) · **kapandı: 1** (24).
+⚠️ Bu dağılım **grill'in girdisidir, hükmü değil** — grill bir kusuru başka yere alırsa
+**gerekçesiyle** buraya yazılır.
 
 ⭐ **Grill'e girmeden bilinmesi gereken tek düzeltme:** silinen tasarımın hedef sayısı
 (**340.303 madde**) **yanlıştı** — `KANUN` satırı `917 × 102,7` sayıyordu, oysa korpustan ölçülen
@@ -69,13 +89,22 @@ doğruymuş**; hedefi kaydıran tek bir satırdı. Ayrıntı ve üçüncü tutar
 1 · inceleme          BİTTİ
 2 · tazeleme          BU TUR — docs/superpowers boşaltıldı, işaretçiler onarıldı
 3 · 00-IS-SIRASI      BU DOSYA
-4 · GRILL             tek yeni plan, YALNIZ v1-son-iş        ← insan oturumu
+4a· GRILL             tek yeni plan, YALNIZ v1-son-iş        ← insan oturumu
+4b· GOAL YAZILIR      4 → 9 arasını bitiren tek prompt         ← plandan SONRA
 5 · master'a al, push
 6 · planı EXECUTE
 7 · bekleyen commit'leri push
 8 · PUBLIC kontrolü   repo + HF
 9 · her şey PUBLIC    HF görünürlüğü açılır
 ```
+
+**`4b` bir kutucuk değil, kapıdır:** grill planı doğurur, **goal o planı yürütür**. Prompt
+**4.000 karakterin altında** olmalı (harness sınırı) ve **planla aynı yerde**, kendi `.md`
+dosyasında durur (`docs/superpowers/plans/goal-<plan-adı>.md`). Emsali bu turda işledi: kapanan
+planın goal'u 115 kutucuğu alt-ajan sürüşlü yürüttü ve yalnız **DUR listesinde** durdu.
+Goal'un taşıması gerekenler: **sıra (4→9)** · **kilitli kararlar** · **kaynaklı sayılar** ·
+**DUR listesi** · **kurallar**. ⚠️ Prompt **planın kopyası değildir** — planı *işaret eder*,
+durum ve kapıları taşır.
 
 ---
 
