@@ -50,18 +50,26 @@ paketlenmeden yeniden üretilemez. Paketleme işi planın **Hat A** fazıdır ve
 `v0.2`'dir ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
 
 → **2026-09-11'den beri bir konteyner yolu var** — [`docker compose up`](#konteynerle-çalıştırma--docker-compose-up).
-Yazıldı ve testlerle çivilendi, ama **henüz uçtan uca doğrulanmadı**: `docker compose up` hiç koşulmadı.
+**Uçtan uca DOĞRULANDI 2026-09-11:** `docker compose up` koştu, üç kutu ayağa kalktı ve API soru cevapladı.
 
 ---
 
 ## Konteynerle çalıştırma — `docker compose up`
 
-> ⛔ **HENÜZ UÇTAN UCA DOĞRULANMADI (2026-09-11).** Bu bölüm **dosyaların söylediğini** anlatır,
-> gözlenmiş olanı değil. Konteyner yolu yazıldı ve **testlerle çivilendi** —
-> [`tests/test_konteyner.py`](tests/test_konteyner.py) [`compose.yaml`](compose.yaml)'ı
-> **ayrıştırıp** bağlayıcı bayrakları, tek izinli `--host` sapmasını ve pinlenmiş revizyonu
-> sınar — ama **`docker compose up` hiç koşulmadı**, imaj **hiç build edilmedi** ve imaj boyutu
-> **ölçülmedi**. Buraya tahmini bir boyut **yazılmamıştır**.
+> ✅ **UÇTAN UCA DOĞRULANDI — 2026-09-11.** `docker compose up` **koştu**: `indir` kutusu
+> **çıkış 0** ile bitti (`sha256` + bayt kapısı **ateşlendi ve tuttu**), `llama` **healthy**
+> oldu, `app` ayağa kalktı ve API **iki farklı soruyu** HTTP **200** ile cevapladı; boş sorgu
+> **422** döndü. İmaj **ölçüldü** (tahmin değil): `hakhukuk:0.3.0` **2,13 GB** ·
+> `llama.cpp:server-cuda-b10902` **6,99 GB** · imajdaki `torch` **`2.14.0+cpu`**
+> (CUDA tekerleği çekilmemiş). Ağırlık ve indeks **imajda YOK**.
+> Ölçüm: [`g20-imaj-olcumu/BULGU.md`](outputs/eval/g20-imaj-olcumu/BULGU.md).
+>
+> ⚠️ **Üç şerh, hiçbiri giderilmedi.** (1) `git clone` sonrası **indeks dizinini insan
+> doldurmak zorunda** — `G8` bekletiliyor, indeks ne HF'te ne imajda; `indir` bu durumda
+> **kasten patlar** ve tam yolu **ve** derinlik şartını yazar. (2) Korpus artık **üç yerde**
+> (repo · imaj · volume); `indir` imaj↔volume `sha256` eşitliğini **her koşuda sınar**, ama
+> repo↔imaj ayrışması **sınanmaz**. (3) Uçtan uca doğrulama **iki soru** ile yapıldı; ürün
+> yolunun bilinen **boş cevap** kusuru (§7.9) bu koşuyla **ölçülmedi**.
 
 Üç kutu, iki daemon, iki imaj
 ([ADR-0078](docs/adr/0078-konteyner-dagitimi-rejim-kilidi.md) ·

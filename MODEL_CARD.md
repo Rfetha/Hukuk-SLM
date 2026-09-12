@@ -801,13 +801,29 @@ Sorumluluk ibaresi **koşulsuz** basılır (durum ne olursa olsun) ve metni tek 
 
 ### Konteyner yolu — `docker compose up` *(2026-09-11)*
 
-> ⛔ **HENÜZ UÇTAN UCA DOĞRULANMADI.** Bu alt bölüm **dosyaların söylediğini** anlatır,
-> gözlenmiş olanı değil. Konteyner yolu yazıldı ve **testlerle çivilendi** —
-> [`tests/test_konteyner.py`](tests/test_konteyner.py) [`compose.yaml`](compose.yaml)'ı
-> **ayrıştırıp** bağlayıcı bayrak kümesini, tek izinli `--host` sapmasını ve pinlenmiş
-> revizyonu sınar — ama **`docker compose up` hiç koşulmadı**, imaj **hiç build edilmedi**,
-> imaj boyutu **ölçülmedi**. Buraya tahmini bir boyut **yazılmamıştır**; bu kartın kuralı
-> ölçülmeyen sayıyı yazmamaktır.
+> ✅ **UÇTAN UCA DOĞRULANDI — 2026-09-11.** `docker compose up` **koştu** ve ürün konteynerin
+> içinden soru cevapladı. Gözlenenler (tahmin değil, ölçüm):
+>
+> | ölçü | değer | kaynak |
+> | :--- | :--- | :--- |
+> | `indir` çıkış kodu | **0** — `sha256` + bayt kapısı **ateşlendi ve tuttu** | `docker logs hakhukuk-indir-1` |
+> | `llama` / `app` | **healthy** / **Up** | `docker inspect` |
+> | uçtan uca | **HTTP 200**, iki farklı soru; boş sorgu **422** | [`g20-imaj-olcumu/BULGU.md`](outputs/eval/g20-imaj-olcumu/BULGU.md) |
+> | `hakhukuk:0.3.0` | **2,13 GB** | `docker images` |
+> | `llama.cpp:server-cuda-b10902` | **6,99 GB** | ″ |
+> | imajdaki `torch` | **`2.14.0+cpu`** · `version.cuda = None` | imajın içinde koşularak |
+>
+> Ağırlık ve indeks **imajda YOK** (`find / -xdev` ile `.gguf`/`gomme.npy` **0 eşleşme**).
+>
+> ⚠️ **Üç şerh, hiçbiri giderilmedi ve *"gelecek işi"* diye geçiştirilmiyor.**
+> **(a)** `git clone` sonrası **indeks dizinini insan doldurmak zorunda** — `G8` bekletiliyor,
+> indeks ne HF'te ne imajda; `indir` bu durumda **kasten** sıfırdan farklı kodla çıkar ve iki
+> daemon da **hiç başlamaz**. Kusur kapanmadı, **görünür** oldu.
+> **(b)** Korpus artık **üç yerde**: repo · imaj · volume. `indir` imaj↔volume `sha256`
+> eşitliğini **her koşuda** sınar ve tutmazsa erken patlar; ama **repo↔imaj** ayrışması
+> **sınanmaz** — kalıcı çare paketin `scripts/`'ten kurtulmasıdır (açık kusur 11).
+> **(c)** Uçtan uca doğrulama **iki soru** ile yapıldı. §7.9'un **boş cevap** kusuru
+> (ürün yolunda ~%5) bu koşuyla **ölçülmedi** ve konteynerde de **giderilmiş değildir**.
 
 Paketleme bir **rejim kilididir**, kolaylık değil: §7.10'un ölçtüğü bayraklar düz metin olarak
 üç belgede duruyordu ve hiçbiri kapı değildi. Üç kutu, iki daemon, iki imaj

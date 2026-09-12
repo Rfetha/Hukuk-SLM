@@ -2,7 +2,7 @@
 
 > Başlık 2026-09-09'da düzeltildi: hedef `v1.0` idi, **verilmedi**. Gerekçe [ADR-0077](../../adr/0077-v1-0-verilmedi-v0-3.md): engel modelin başarımı değil, ölçüm aygıtının güvenilirliği (tek hakem ailesi, κ 0,534 < 0,6).
 
-## İCRA DURUMU — 2026-09-11 · **113/115 kutucuk** · `v0.3` etiketlendi
+## İCRA DURUMU — 2026-09-11 · **114/115 kutucuk** · `v0.3` etiketlendi
 
 > **2026-09-11 turu:** **G22 KAPANDI 5/5** (Adım 2 ve 3 insana soruldu, ikisi de onaylandı) · G21 **10/11** (kalan: Adım 11 insan gözü) · G20 **5/9** (kalan: Adım 6 `HF_TOKEN` ister · Adım 7 göz · Adım 8). **Kalan 7 kutucuğun 3'ü insan gözü kapısı**, biri insandan sır bekliyor. **178 → 216 test yeşil**, 2 xfail · 12 commit (yerelde, push EDİLMEDİ). Kayıt **#66**, kararlar **ADR-0079** ve **ADR-0080**. Harcanan: **$0,045067** (OpenRouter ölçümü). Yeni tuzaklar **1.11 · 1.12 · 1.13** — üçü de **ölçüm aygıtının içinde**. Yeni açık kusurlar **14-20**.
 
@@ -1206,10 +1206,9 @@ PyPI'nin CUDA tekerleğine düşer ve imaj ~5 GB şişer.
 (SIRA 2 ve Görev 19 Adım 6 ile aynı sınıf; kendi başına işaretlenmez).
 `verify:` `sunum` alanı rozet + atıf + kaynak + ibare taşıyor; boş sorgu **422**.
 
-- [ ] **Adım 8: Belgeler + sürüm** — ⚠️ **YAZILDI 2026-09-11, kutucuk BİLEREK AÇIK.** İnsan cevabı iki dışlayıcı seçeneği birden işaretledi (*"şimdi yaz"* + *"Adım 6'dan sonra"*); ikisini karşılayan okuma uygulandı: belgeler **yazıldı**, ama konteyner yolu *"**HENÜZ UÇTAN UCA DOĞRULANMADI**"* damgasıyla girdi ve kutucuk **Adım 6 koşana kadar açık** kalır. Commit `b7c3638`. Üç belgede de: `docker compose up` yolu · *"konteyner yayımlanan `0,8011`'i ÜRETMEZ"* şerhi · *"`docker compose up` hiç koşulmadı, imaj hiç build edilmedi, boyut ölçülmedi"* damgası (⛔ **tahmini boyut YAZILMADI**). `pyproject` `0.2.0` → **`0.3.0`** (F5). Belgeye yazılan her olgu `compose.yaml` **ayrıştırılarak** doğrulandı — **22/22 TUTTU**, hiçbiri hatırlanarak yazılmadı. — `README.md` · `README.tr.md` · `MODEL_CARD.md`'ye
-`docker compose up` yolu; `pyproject.toml` `0.2.0` → `0.3.0` (F5).
-`verify:` `tests/test_belgeler.py` yeşil; üç belgede de konteyner yolu **ve** *"konteyner
-yayımlanan `0,8011`'i ÜRETMEZ"* şerhi var.
+- [x] **Adım 8: Belgeler + sürüm** — **KAPANDI 2026-09-11.** `verify:` karşılandı: `tests/test_belgeler.py` **yeşil**; üç belgede de (`README.md` · `README.tr.md` · `MODEL_CARD.md` §8) **konteyner yolu** ve ***"konteyner yayımlanan `0,8011`'i ÜRETMEZ"*** şerhi var. `pyproject` `0.2.0` → **`0.3.0`** (F5). Belgeye yazılan her olgu `compose.yaml` **ayrıştırılarak** doğrulandı (**22/22**), hiçbiri hatırlanarak yazılmadı.
+
+⚠️ **Kutucuk bir gün AÇIK bırakılmıştı ve bu bilinçliydi:** konteyner yolu ilk yazıldığında *"HENÜZ UÇTAN UCA DOĞRULANMADI"* damgasıyla girdi, çünkü `docker compose up` koşmamıştı. **Damga işini yaptı** — Adım 6 koştuğunda konteynerin her soruda **HTTP 500** verdiği ortaya çıktı (kusur 32). Damga olmasaydı belgeler çalışmayan bir yolu **çalışıyor gibi** gösterecekti. Kusur onarıldıktan ve uçtan uca doğrulandıktan **sonra** damga, **ölçülen gerçekle** değiştirildi (imaj boyutları · torch yapısı · üç şerh).
 
 **Bu görev ticket 1 · 3 · 4 · 6'yı ÇÖZMEZ.** Boş cevap konteynerde de boş döner, Görev 19
 sayesinde **503 olarak görünür**. Paketleme bir model kusurunu onarmaz.

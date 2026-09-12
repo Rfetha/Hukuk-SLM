@@ -19,7 +19,7 @@
 ```
 BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPANDI
 ──────────────────────────────────────────────────────────────────────────────
-ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md    115 kutucuk · 113 BİTTİ · 2 AÇIK
+ŞİMDİ     2026-09-07-hp-hat-a-hat-b.md    115 kutucuk · 114 BİTTİ · 1 AÇIK
           2026-09-10: bitmiş 14 görev record/…-kapanan-gorevler.md'ye TAŞINDI
              plan 2.337 → 1.343 satır; dosyadaki kutucuk 40, payda 115
              (75 kutucuk kayda gitti; 2026-09-10 G21+G22 ile 16 kutucuk eklendi)
@@ -80,9 +80,10 @@ BİTTİ     2026-09-06-faz0-olcum-zinciri.md            48/48 · $1,47 · KAPAND
                             6,99 GB · torch 2.14.0+cpu (CUDA tekerleği YOK).
              G20 Adım 7  konteyner göz kapısı   İNSAN GÖZÜ — ⚡ ARTIK AÇIK,
                             Adım 6 kapandı; konteyner soru cevaplıyor
-             G20 Adım 8  belgeler + sürüm       YAZILDI, kutucuk BİLEREK AÇIK —
-                            konteyner yolu "HENÜZ UÇTAN UCA DOĞRULANMADI"
-                            damgasıyla girdi; Adım 6 kapanınca işaretlenir
+             G20 Adım 8  belgeler + sürüm       ✅ KAPANDI 2026-09-11. Damga İŞİNİ
+                            YAPTI: Adım 6 koştuğunda konteynerin her soruda
+                            HTTP 500 verdiği ortaya çıktı (kusur 32). Onarım
+                            sonrası damga ÖLÇÜLEN GERÇEKLE değiştirildi.
 
           ── AÇILMAYACAK / BEKLİYOR (karar) ───────────────────────────────
              G2           üçüncü hakem ailesi    ATLANDI — bütçe (ADR-0074)

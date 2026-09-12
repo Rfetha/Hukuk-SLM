@@ -49,18 +49,27 @@ until all three are packaged together. That packaging is the plan's **Hat A** ph
 output is `v0.2` ([ADR-0065](docs/adr/0065-bolunmus-surumleme.md)).
 
 → **Since 2026-09-11 there is a container path** — [`docker compose up`](#running-it-with-docker-compose--the-container-path).
-It is written and tested, but **not yet verified end to end**: `docker compose up` has never been run.
+**Verified end to end on 2026-09-11:** `docker compose up` ran, all three boxes came up and the API answered questions.
 
 ---
 
 ## Running it with Docker Compose — the container path
 
-> ⛔ **NOT YET VERIFIED END TO END (2026-09-11).** This section describes **what the files say**,
-> not what was observed. The container path is written and **nailed down by tests** —
-> [`tests/test_konteyner.py`](tests/test_konteyner.py) **parses** [`compose.yaml`](compose.yaml)
-> and checks the binding flags, the single permitted `--host` deviation and the pinned revision —
-> but **`docker compose up` has never been run**, the image has **never been built**, and the
-> image size has **not been measured**. No size is estimated here.
+> ✅ **VERIFIED END TO END — 2026-09-11.** `docker compose up` **ran**: the `indir` box exited
+> **0** (the `sha256` + byte-count gate **fired and held**), `llama` went **healthy**, `app` came
+> up, and the API answered **two different questions** with HTTP **200**; an empty query returned
+> **422**. Image sizes were **measured**, not estimated: `hakhukuk:0.3.0` **2.13 GB** ·
+> `llama.cpp:server-cuda-b10902` **6.99 GB** · `torch` inside the image is **`2.14.0+cpu`**
+> (no CUDA wheel was pulled). Weights and index are **not baked into the image**.
+> Measurement: [`g20-imaj-olcumu/BULGU.md`](outputs/eval/g20-imaj-olcumu/BULGU.md).
+>
+> ⚠️ **Three caveats, none of them fixed.** (1) After a `git clone` **a human must populate the
+> index directory** — `G8` is on hold, so the index is neither on HF nor in the image; `indir`
+> **deliberately fails** in that case and prints the exact path **and** the depth requirement.
+> (2) The corpus now lives in **three places** (repo · image · volume); `indir` checks the
+> image↔volume `sha256` equality **on every run**, but a repo↔image divergence is **not**
+> checked. (3) End-to-end verification used **two questions**; the product path's known
+> **blank-answer** defect (§7.9) was **not** measured by this run.
 
 Three boxes, two daemons, two images
 ([ADR-0078](docs/adr/0078-konteyner-dagitimi-rejim-kilidi.md) ·
